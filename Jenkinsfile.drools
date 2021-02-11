@@ -10,25 +10,21 @@ pipeline {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
-    triggers {
-        cron ('H 2 * * *')
-    }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
         timeout(time: 360, unit: 'MINUTES')
     }
-    parameters {
-        string(name: 'BRANCH_NAME', defaultValue: "master", description: 'Set the branch to build&test')
-    }
+
     environment {
-        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
+
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         // Set into 'Initialize' stage
         // DROOLS_VERSION
     }
     stages {
-        stage("Initialize"){
+        stage('Initialize') {
             steps {
                 script {
                     checkoutDroolsRepo()
@@ -52,7 +48,7 @@ pipeline {
                                 script: 'mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout',
                                 returnStdout: true
                             ).trim()}"""
-                        assert env.DROOLS_VERSION != ""
+                        assert env.DROOLS_VERSION != ''
                         echo "Latest kie7 version is: ${env.DROOLS_VERSION}"
                     }
                 }
@@ -129,7 +125,7 @@ pipeline {
     }
 }
 
-void sendNotification(){
+void sendNotification() {
     emailext body: "Kogito daily Drools #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
              subject: "[${params.BRANCH_NAME}][d] Runtimes Drools snapshot",
              to: env.KOGITO_CI_EMAIL_TO
@@ -137,7 +133,7 @@ void sendNotification(){
 
 void checkoutRepo(String repoName, String dirName=repoName) {
     dir(dirName) {
-        checkout(githubscm.resolveRepository(repoName, 'kiegroup', params.BRANCH_NAME, false))
+        checkout(githubscm.resolveRepository(repoName, params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
     }
 }
 
@@ -148,9 +144,9 @@ void checkoutDroolsRepo() {
 }
 
 void checkoutOptaplannerRepo() {
-    String targetBranch = params.BRANCH_NAME
+    String targetBranch = params.BUILD_BRANCH_NAME
     String [] versionSplit = targetBranch.split("\\.")
-    if(versionSplit.length == 3 
+    if (versionSplit.length == 3
         && versionSplit[0].isNumber()
         && versionSplit[1].isNumber()
        && versionSplit[2] == 'x') {
@@ -159,11 +155,11 @@ void checkoutOptaplannerRepo() {
         echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
     }
     dir('optaplanner') {
-        checkout(githubscm.resolveRepository('optaplanner', 'kiegroup', targetBranch, false))
+        checkout(githubscm.resolveRepository('optaplanner', params.GIT_AUTHOR, targetBranch, false))
     }
 }
 
-MavenCommand getMavenCommandWithDroolsVersion(String directory){
+MavenCommand getMavenCommandWithDroolsVersion(String directory) {
     return new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
                 .inDirectory(directory)

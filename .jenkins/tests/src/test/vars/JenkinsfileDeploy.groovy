@@ -8,34 +8,34 @@ class JenkinsfileDeploy extends JenkinsPipelineSpecification {
         Jenkinsfile = loadPipelineScriptForTest('Jenkinsfile.deploy')
     }
 
-    def '[Jenkinsfile.deploy] isRelease param true' () {
-				setup:
-        Jenkinsfile.getBinding().setVariable('params', ['RELEASE' : true])
-				when:
+    def '[Jenkinsfile.deploy] isRelease env true' () {
+        setup:
+        Jenkinsfile.getBinding().setVariable('env', ['RELEASE' : "true"])
+        when:
         def output = Jenkinsfile.isRelease()
-				then:
+        then:
         output
     }
 
-    def '[Jenkinsfile.deploy] isRelease param false' () {
-				setup:
-        Jenkinsfile.getBinding().setVariable('params', ['RELEASE' : false])
-				when:
+    def '[Jenkinsfile.deploy] isRelease env false' () {
+        setup:
+        Jenkinsfile.getBinding().setVariable('env', ['RELEASE' : "false"])
+        when:
         def output = Jenkinsfile.isRelease()
-				then:
+        then:
         !output
     }
 
-    def '[Jenkinsfile.deploy] getGitAuthor with param' () {
+    def '[Jenkinsfile.deploy] getGitAuthor' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('params', ['GIT_AUTHOR' : 'AUTHOR'])
+        Jenkinsfile.getBinding().setVariable('GIT_AUTHOR', 'AUTHOR')
         when:
         def output = Jenkinsfile.getGitAuthor()
         then:
         output == 'AUTHOR'
     }
 
-    def '[Jenkinsfile.deploy] getBuildBranch with param' () {
+    def '[Jenkinsfile.deploy] getBuildBranch()' () {
         setup:
         Jenkinsfile.getBinding().setVariable('params', ['BUILD_BRANCH_NAME' : 'BRANCH'])
         when:
@@ -63,18 +63,18 @@ class JenkinsfileDeploy extends JenkinsPipelineSpecification {
         output == 'VERSION-HASH'
     }
 
-    def '[Jenkinsfile.deploy] getBotAuthor with param' () {
+    def '[Jenkinsfile.deploy] getBotAuthor with env' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('params', ['GIT_AUTHOR_BOT' : 'AUTHOR_BOT'])
+        Jenkinsfile.getBinding().setVariable('env', ['GIT_AUTHOR_BOT' : 'AUTHOR_BOT'])
         when:
         def output = Jenkinsfile.getBotAuthor()
         then:
         output == 'AUTHOR_BOT'
     }
 
-    def '[Jenkinsfile.deploy] getBotAuthorCredsID with param' () {
+    def '[Jenkinsfile.deploy] getBotAuthorCredsID with env' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('params', ['BOT_CREDENTIALS_ID' : 'CREDS_BOT_ID'])
+        Jenkinsfile.getBinding().setVariable('env', ['BOT_CREDENTIALS_ID' : 'CREDS_BOT_ID'])
         when:
         def output = Jenkinsfile.getBotAuthorCredsID()
         then:

@@ -7,20 +7,17 @@ pipeline {
         label 'kie-rhel7 && kie-mem16g'
     }
     environment {
-        // QUARKUS_BRANCH should be defined directly into the job environemtn
+        // QUARKUS_BRANCH should be defined directly into the job environment
 
-        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     tools {
         maven 'kie-maven-3.6.3'
         jdk 'kie-jdk11'
     }
-    triggers {
-        cron ('H 4 * * *')
-    }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
         timeout(time: 360, unit: 'MINUTES')
     }
     stages {
@@ -118,16 +115,16 @@ pipeline {
     }
 }
 
-void sendNotification(){
+void sendNotification() {
     emailext body: 'Kogito daily Quarkus master #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
             'Please look here: ${BUILD_URL} ',
-            subject: "[${env.BRANCH_NAME}][d] Runtimes Quarkus snapshot",
+            subject: "[${params.BUILD_BRANCH_NAME}][d] Runtimes Quarkus snapshot",
             to: env.KOGITO_CI_EMAIL_TO
 }
 
 void checkoutRepo(String repoName, String dirName=repoName) {
     dir(dirName) {
-        checkout(githubscm.resolveRepository(repoName, 'kiegroup', env.BRANCH_NAME, false))
+        checkout(githubscm.resolveRepository(repoName, params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
     }
 }
 
@@ -138,9 +135,9 @@ void checkoutQuarkusRepo() {
 }
 
 void checkoutOptaplannerRepo() {
-    String targetBranch = env.BRANCH_NAME
+    String targetBranch = params.BUILD_BRANCH_NAME
     String [] versionSplit = targetBranch.split("\\.")
-    if(versionSplit.length == 3 
+    if (versionSplit.length == 3
         && versionSplit[0].isNumber()
         && versionSplit[1].isNumber()
        && versionSplit[2] == 'x') {
@@ -149,15 +146,15 @@ void checkoutOptaplannerRepo() {
         echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
     }
     dir('optaplanner') {
-        checkout(githubscm.resolveRepository('optaplanner', 'kiegroup', targetBranch, false))
+        checkout(githubscm.resolveRepository('optaplanner', params.GIT_AUTHOR, targetBranch, false))
     }
 }
 
-MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true){
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
     def mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
                 .inDirectory(directory)
-    if(addQuarkusVersion){
+    if (addQuarkusVersion) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
     }
     return mvnCmd

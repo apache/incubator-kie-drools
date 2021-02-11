@@ -7,6 +7,7 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
     void setup() {
         Jenkinsfile = loadPipelineScriptForTest('Jenkinsfile.promote')
         Jenkinsfile.getBinding().setVariable('PROPERTIES_FILE_NAME', 'deployment.properties')
+        Jenkinsfile.getBinding().setVariable('env', ['REPO_NAME' : 'kogito-runtimes'])
     }
 
     def '[Jenkinsfile.promote] readDeployProperties: no DEPLOY_BUILD_URL parameter' () {
@@ -89,44 +90,22 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
     // Getter / Setter
     //////////////////////////////////////////////////////////////////////////////
 
-    def '[Jenkinsfile.promote] isRelease: only RELEASE param true' () {
+    def '[Jenkinsfile.promote] isRelease env true' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('params', ['RELEASE' : true])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['release' : false])
+        Jenkinsfile.getBinding().setVariable('env', ['RELEASE' : "true"])
         when:
         def value = Jenkinsfile.isRelease()
         then:
-        value == true
+        value
     }
 
-    def '[Jenkinsfile.promote] isRelease: only deploy property true' () {
+    def '[Jenkinsfile.promote] isRelease env false' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('params', ['RELEASE' : false])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['release' : true])
+        Jenkinsfile.getBinding().setVariable('env', ['RELEASE' : "false"])
         when:
         def value = Jenkinsfile.isRelease()
         then:
-        value == true
-    }
-
-    def '[Jenkinsfile.promote] isRelease: both true' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['RELEASE' : true])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['release' : true])
-        when:
-        def value = Jenkinsfile.isRelease()
-        then:
-        value == true
-    }
-
-    def '[Jenkinsfile.promote] isRelease: both false' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['RELEASE' : false])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['release' : false])
-        when:
-        def value = Jenkinsfile.isRelease()
-        then:
-        value == false
+        !value
     }
 
     def '[Jenkinsfile.promote] getSnapshotVersion' () {
@@ -188,101 +167,29 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         value == 'version'
     }
 
-    def '[Jenkinsfile.promote] getBuildBranch: no BUILD_BRANCH_NAME parameter' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['BUILD_BRANCH_NAME' : ''])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['git.branch' : 'branch'])
-        when:
-        def value = Jenkinsfile.getBuildBranch()
-        then:
-        value == 'branch'
-    }
-
-    def '[Jenkinsfile.promote] getBuildBranch: BUILD_BRANCH_NAME parameter' () {
+    def '[Jenkinsfile.promote] getBuildBranch()' () {
         setup:
         Jenkinsfile.getBinding().setVariable('params', ['BUILD_BRANCH_NAME' : 'param branch'])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['git.branch' : 'branch'])
         when:
         def value = Jenkinsfile.getBuildBranch()
         then:
         value == 'param branch'
     }
 
-    def '[Jenkinsfile.promote] getBuildBranch: no value' () {
+    def '[Jenkinsfile.promote] getGitAuthor' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('params', ['BUILD_BRANCH_NAME' : ''])
-        Jenkinsfile.getBinding().setVariable('deployProperties', [:])
-        when:
-        def value = Jenkinsfile.getBuildBranch()
-        then:
-        value == ''
-    }
-
-    def '[Jenkinsfile.promote] getGitAuthor: GIT_AUTHOR param' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['GIT_AUTHOR' : 'GIT_AUTHOR'])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['git.author' : 'git.author'])
+        Jenkinsfile.getBinding().setVariable('env', ['GIT_AUTHOR' : 'GIT_AUTHOR'])
         when:
         def value = Jenkinsfile.getGitAuthor()
         then:
         value == 'GIT_AUTHOR'
     }
 
-    def '[Jenkinsfile.promote] getGitAuthor: no GIT_AUTHOR param' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['GIT_AUTHOR' : ''])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['git.author' : 'git.author'])
-        when:
-        def value = Jenkinsfile.getGitAuthor()
-        then:
-        value == 'git.author'
-    }
-
-    def '[Jenkinsfile.promote] getGitAuthor: no value' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['GIT_AUTHOR' : ''])
-        Jenkinsfile.getBinding().setVariable('deployProperties', [:])
-        when:
-        def value = Jenkinsfile.getGitAuthor()
-        then:
-        value == ''
-    }
-
-    def '[Jenkinsfile.promote] getStagingRepoUrl: STAGING_REPO_URL param' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['STAGING_REPO_URL' : 'STAGING_REPO_URL'])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['staging-repo.url' : 'staging-repo.url'])
-        when:
-        def value = Jenkinsfile.getStagingRepoUrl()
-        then:
-        value == 'STAGING_REPO_URL'
-    }
-
-    def '[Jenkinsfile.promote] getStagingRepoUrl: no STAGING_REPO_URL param' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['STAGING_REPO_URL' : ''])
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['staging-repo.url' : 'staging-repo.url'])
-        when:
-        def value = Jenkinsfile.getStagingRepoUrl()
-        then:
-        value == 'staging-repo.url'
-    }
-
-    def '[Jenkinsfile.promote] getStagingRepoUrl: no value' () {
-        setup:
-        Jenkinsfile.getBinding().setVariable('params', ['STAGING_REPO_URL' : ''])
-        Jenkinsfile.getBinding().setVariable('deployProperties', [:])
-        when:
-        def value = Jenkinsfile.getStagingRepoUrl()
-        then:
-        value == ''
-    }
-
     def '[Jenkinsfile.promote] getDeployPrLink' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('deployProperties', ['repo.pr.link' : 'repo.pr.link'])
+        Jenkinsfile.getBinding().setVariable('deployProperties', ['kogito-runtimes.pr.link' : 'repo.pr.link'])
         when:
-        def value = Jenkinsfile.getDeployPrLink('repo')
+        def value = Jenkinsfile.getDeployPrLink()
         then:
         value == 'repo.pr.link'
     }
@@ -291,16 +198,16 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         setup:
         Jenkinsfile.getBinding().setVariable('deployProperties', [:])
         when:
-        def value = Jenkinsfile.getDeployPrLink('repo')
+        def value = Jenkinsfile.getDeployPrLink()
         then:
         value == ''
     }
 
     def '[Jenkinsfile.promote] getPipelinePrLink' () {
         setup:
-        Jenkinsfile.getBinding().setVariable('pipelineProperties', ['repo.pr.link' : 'repo.pr.link'])
+        Jenkinsfile.getBinding().setVariable('pipelineProperties', ['kogito-runtimes.pr.link' : 'repo.pr.link'])
         when:
-        def value = Jenkinsfile.getPipelinePrLink('repo')
+        def value = Jenkinsfile.getPipelinePrLink()
         then:
         value == 'repo.pr.link'
     }
@@ -309,7 +216,7 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         setup:
         Jenkinsfile.getBinding().setVariable('pipelineProperties', [:])
         when:
-        def value = Jenkinsfile.getPipelinePrLink('repo')
+        def value = Jenkinsfile.getPipelinePrLink()
         then:
         value == null
     }
@@ -318,9 +225,9 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
         setup:
         Jenkinsfile.getBinding().setVariable('pipelineProperties', [:])
         when:
-        Jenkinsfile.setPipelinePrLink('repo', 'value')
+        Jenkinsfile.setPipelinePrLink('value')
         then:
-        Jenkinsfile.getPipelinePrLink('repo') == 'value'
+        Jenkinsfile.getPipelinePrLink() == 'value'
     }
 
     def '[Jenkinsfile.promote] getSnapshotBranch' () {

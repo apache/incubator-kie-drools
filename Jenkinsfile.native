@@ -10,15 +10,11 @@ pipeline {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
-    triggers {
-        cron ('H 6 * * *')
-    }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
         timeout(time: 360, unit: 'MINUTES')
     }
     environment {
-        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
     stages {
         stage('Initialize') {
@@ -75,22 +71,22 @@ pipeline {
     }
 }
 
-void sendNotification(){
+void sendNotification() {
     emailext body: "Kogito daily native #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-             subject: "[${env.BRANCH_NAME}][d] Runtimes native",
+             subject: "[${params.BUILD_BRANCH_NAME}][d] Runtimes native",
              to: env.KOGITO_CI_EMAIL_TO
 }
 
 void checkoutRepo(String repoName, String dirName=repoName) {
     dir(dirName) {
-        checkout(githubscm.resolveRepository(repoName, 'kiegroup', env.BRANCH_NAME, false))
+        checkout(githubscm.resolveRepository(repoName, params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
     }
 }
 
 void checkoutOptaplannerRepo() {
-    String targetBranch = env.BRANCH_NAME
+    String targetBranch = params.BUILD_BRANCH_NAME
     String [] versionSplit = targetBranch.split("\\.")
-    if(versionSplit.length == 3 
+    if (versionSplit.length == 3
         && versionSplit[0].isNumber()
         && versionSplit[1].isNumber()
        && versionSplit[2] == 'x') {
@@ -99,17 +95,17 @@ void checkoutOptaplannerRepo() {
         echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
     }
     dir('optaplanner') {
-        checkout(githubscm.resolveRepository('optaplanner', 'kiegroup', targetBranch, false))
+        checkout(githubscm.resolveRepository('optaplanner', params.GIT_AUTHOR, targetBranch, false))
     }
 }
 
-MavenCommand getMavenCommand(String directory){
+MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
                 .inDirectory(directory)
 }
 
-MavenCommand getNativeMavenCommand(String directory){
+MavenCommand getNativeMavenCommand(String directory) {
     return getMavenCommand(directory)
                 .withProfiles(['native'])
                 .withProperty('quarkus.native.container-build', true)

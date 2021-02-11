@@ -6,23 +6,28 @@ pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
     }
-    triggers {
-        cron('H 20 * * 1-5')
-    }
     tools {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 360, unit: 'MINUTES')
     }
     environment {
-        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
+
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
         SONARCLOUD_TOKEN = credentials('SONARCLOUD_TOKEN')
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout(githubscm.resolveRepository('kogito-runtimes', params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
+                }
+            }
+        }
         stage('Build') {
             steps {
                 script {
@@ -47,7 +52,7 @@ pipeline {
         unsuccessful {
             emailext body: 'Kogito Runtimes daily Sonar #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
                             'Please look here: ${BUILD_URL} ',
-                     subject: "[${env.BRANCH_NAME}][d] Runtimes Sonar",
+                     subject: "[${params.BUILD_BRANCH_NAME}][d] Runtimes Sonar",
                      to: env.KOGITO_CI_EMAIL_TO
         }
         always {
@@ -57,7 +62,7 @@ pipeline {
     }
 }
 
-MavenCommand getMavenCommand(){
+MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
 }

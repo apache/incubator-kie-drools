@@ -15,45 +15,19 @@ pipeline {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
-    
+
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 360, unit: 'MINUTES')
     }
 
-    parameters {
-        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-        
-        // Deploy job url to retrieve deployment.properties
-        string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
-        
-        // Git information which can override `deployment.properties`
-        string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
-        string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
-
-        // Build&Deploy information for next snapshots
-        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
-        string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
-        string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
-        
-        // Release information which can override `deployment.properties`
-        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
-        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
-        string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
-        string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
-
-        // Bot author information. Set as params for easy testing.
-        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
-
-        // Main author creds
-        string(name: 'AUTHOR_CREDS_ID', defaultValue: 'kie-ci', description: 'Credentials for PR merge')
-        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')
-    }
+    // parameters {
+    // For parameters, check into .jenkins/dsl/jobs.groovy file
+    // }
 
     environment {
-        PROPERTIES_FILE_NAME = 'deployment.properties'
+        // Static env is defined into .jenkins/dsl/jobs.groovy file
+
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
-        GITHUB_CLI_VERSION = '0.11.1'
     }
 
     stages {
@@ -61,7 +35,7 @@ pipeline {
             steps {
                 script {
                     cleanWs()
-                    
+
                     if (params.DISPLAY_NAME != '') {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
@@ -69,10 +43,10 @@ pipeline {
                     readDeployProperties()
 
                     if (isRelease()) {
-                        assert getProjectVersion() != ''
+                        // Verify version is set and if on right release branch
+                        assert getProjectVersion()
+                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
-
-                    installGithubCLI()
                 }
             }
         }
@@ -80,34 +54,34 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
-                    dir('kogito-runtimes') {
-                        checkoutRepo('kogito-runtimes')
-                        mergeAndPush('kogito-runtimes', getDeployPrLink('kogito-runtimes'))
+                    dir(getRepoName()) {
+                        checkoutRepo()
+                        mergeAndPush(getDeployPrLink())
                         tagLatest()
                     }
                 }
             }
         }
-        stage('Set next snapshot version'){
+        stage('Set next snapshot version') {
             when {
                 expression { return isRelease() }
             }
             steps {
                 script {
-                    dir('kogito-runtimes-bot') {
-                        prepareForPR('kogito-runtimes')
-                        
+                    dir('bot') {
+                        prepareForPR()
+
                         maven.mvnVersionsSet(getMavenCommand(), getSnapshotVersion(), true)
 
-                        commitAndCreatePR('kogito-runtimes')
+                        commitAndCreatePR()
                     }
-                    dir('kogito-runtimes') {
+                    dir(getRepoName()) {
                         sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush('kogito-runtimes', getPipelinePrLink('kogito-runtimes'))
-                        
-                        runMavenDeploy(getMavenCommand())
+                        mergeAndPush(getPipelinePrLink())
+
+                        runMavenDeploy()
                     }
                 }
             }
@@ -124,32 +98,32 @@ pipeline {
 // Deployment properties
 //////////////////////////////////////////////////////////////////////////////
 
-void readDeployProperties(){
+void readDeployProperties() {
     String deployUrl = params.DEPLOY_BUILD_URL
-    if (deployUrl != ''){
-        if(!deployUrl.endsWith('/')){
+    if (deployUrl != '') {
+        if (!deployUrl.endsWith('/')) {
             deployUrl += '/'
         }
         sh "wget ${deployUrl}artifact/${PROPERTIES_FILE_NAME} -O ${PROPERTIES_FILE_NAME}"
         deployProperties = readProperties file: PROPERTIES_FILE_NAME
         // echo all properties
-        echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+        echo deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
     }
 }
 
-boolean hasDeployProperty(String key){
+boolean hasDeployProperty(String key) {
     return deployProperties[key] != null
 }
 
-String getDeployProperty(String key){
-    if(hasDeployProperty(key)){
+String getDeployProperty(String key) {
+    if (hasDeployProperty(key)) {
         return deployProperties[key]
     }
     return ''
 }
 
-String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
-    if (params[paramKey] != ''){
+String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
+    if (params[paramKey] != '') {
         return params[paramKey]
     }
     return getDeployProperty(deployPropertyKey)
@@ -160,7 +134,11 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isRelease() {
-    return params.RELEASE || (getDeployProperty('release') == 'true')
+    return env.RELEASE.toBoolean()
+}
+
+String getRepoName() {
+    return env.REPO_NAME
 }
 
 String getProjectVersion() {
@@ -176,38 +154,34 @@ String getGitTag() {
 }
 
 String getBuildBranch() {
-    return getParamOrDeployProperty('BUILD_BRANCH_NAME', 'git.branch')
+    return params.BUILD_BRANCH_NAME
 }
 
 String getGitAuthor() {
-    return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
+    return env.GIT_AUTHOR
 }
 
-String getGitAuthorCredsID(){
-    return params.AUTHOR_CREDS_ID
+String getGitAuthorCredsID() {
+    return env.AUTHOR_CREDS_ID
 }
 
-String getBotAuthorCredsID(){
-    return params.BOT_CREDENTIALS_ID
+String getBotAuthorCredsID() {
+    return env.BOT_CREDENTIALS_ID
 }
 
-String getStagingRepoUrl(){
-    return getParamOrDeployProperty('STAGING_REPO_URL', 'staging-repo.url')
+String getDeployPrLink() {
+    return getDeployProperty("${getRepoName()}.pr.link")
 }
 
-String getDeployPrLink(String repo){
-    return getDeployProperty("${repo}.pr.link")
+String getPipelinePrLink() {
+    return pipelineProperties["${getRepoName()}.pr.link"]
 }
 
-String getPipelinePrLink(String repo){
-    return pipelineProperties["${repo}.pr.link"]
+void setPipelinePrLink(String value) {
+    pipelineProperties["${getRepoName()}.pr.link"] = value
 }
 
-void setPipelinePrLink(String repo, String value){
-    pipelineProperties["${repo}.pr.link"] = value
-}
-
-String getSnapshotBranch(){
+String getSnapshotBranch() {
     return "${getSnapshotVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
 }
 
@@ -215,14 +189,14 @@ String getSnapshotBranch(){
 // Git
 //////////////////////////////////////////////////////////////////////////////
 
-void checkoutRepo(String repo) {
+void checkoutRepo() {
     deleteDir()
-    checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${getBuildBranch()}"
 }
 
-void mergeAndPush(String repo, String prLink) {
+void mergeAndPush(String prLink) {
     if (prLink != '') {
         githubscm.mergePR(prLink, getGitAuthorCredsID())
         githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
@@ -236,43 +210,34 @@ void tagLatest() {
     }
 }
 
-void prepareForPR(String repo) {
-    checkoutRepo(repo)
+void prepareForPR() {
+    checkoutRepo()
     githubscm.forkRepo(getBotAuthorCredsID())
     githubscm.createBranch(getSnapshotBranch())
 }
 
-void commitAndCreatePR(String repo) {
-    def commitMsg = "[${getBuildBranch()}] Update snapshot version to ${getSnapshotVersion()}"
-    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
-    
+void commitAndCreatePR() {
+    def commitMsg = "[${getBuildBranch()}] Update project version to ${getSnapshotVersion()}"
+    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it should be merged automatically."
+
     githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
     githubscm.pushObject('origin', getSnapshotBranch(), getBotAuthorCredsID())
-    setPipelinePrLink(repo, githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID()))
-}
-
-void installGithubCLI() {
-    sh """
-    wget https://github.com/cli/cli/releases/download/v${env.GITHUB_CLI_VERSION}/gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
-    tar xzf gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
-    mv gh_${env.GITHUB_CLI_VERSION}_linux_amd64/bin/gh .
-    rm -r gh_${env.GITHUB_CLI_VERSION}_linux_amd64*
-    """
+    setPipelinePrLink(githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID()))
 }
 
 MavenCommand getMavenCommand() {
     mvnCmd = new MavenCommand(this, ['-fae'])
-                    .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
-    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
-        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+                    .withSettingsXmlId("${env.MAVEN_SETTINGS_CONFIG_FILE_ID}")
+    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }
     return mvnCmd
 }
 
-void runMavenDeploy(MavenCommand mvnCmd){
-    mvnCmd = mvnCmd.clone()
-    if(params.MAVEN_DEPLOY_REPOSITORY){
-        mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
+void runMavenDeploy() {
+    mvnCmd = getMavenCommand()
+    if (env.MAVEN_DEPLOY_REPOSITORY) {
+        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
 }
