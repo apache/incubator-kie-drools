@@ -29,7 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class EnumerationWithNullTest extends AbstractDTAnalysisTest {

@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.lt;
 
 public class ManualUnaryTestsTest {

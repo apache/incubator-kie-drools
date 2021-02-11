@@ -23,7 +23,7 @@ import org.drools.workbench.models.testscenarios.shared.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.drools.core.addon.TypeResolver;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertNotNull;
@@ -50,7 +50,7 @@ public class FieldPopulatorFactoryTest {
         field.setFact(new Fact());
 
         Mockito.<Class>when(
-                typeResolver.resolveType(Matchers.<String>any())
+                typeResolver.resolveType(ArgumentMatchers.<String>any())
         ).thenReturn(
                 Cheese.class
         );
