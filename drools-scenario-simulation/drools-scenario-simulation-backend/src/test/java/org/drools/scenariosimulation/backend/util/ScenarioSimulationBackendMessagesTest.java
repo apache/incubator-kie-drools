@@ -38,8 +38,7 @@ public class ScenarioSimulationBackendMessagesTest {
         String message = ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage("wrong", Arrays.asList("Step 1", "Step 2"));
         assertNotNull(message);
         assertFalse(message.trim().isEmpty());
-        assertTrue(message.contains("<strong>\"wrong\"</strong>"));
-        assertTrue(message.contains("<em>Step 1\nStep 2</em>"));
+        assertTrue(message.contains("<em>Step 1\nStep 2\nValue: <strong>\"wrong\"</strong></em>"));
     }
 
     @Test

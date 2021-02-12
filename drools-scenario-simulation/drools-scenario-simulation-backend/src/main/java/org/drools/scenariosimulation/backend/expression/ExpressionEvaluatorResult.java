@@ -68,15 +68,15 @@ public class ExpressionEvaluatorResult {
     }
 
     public void addFieldItemStepToPath(String fieldName) {
-        pathToWrongValue.add(0, "Field \"" + fieldName+ "\"");
+        pathToWrongValue.add(0, "Field: \"" + fieldName+ "\"");
     }
 
     public void addListItemStepToPath(int elementNumber) {
-        pathToWrongValue.add(0, "List's item: " + elementNumber);
+        pathToWrongValue.add(0, "Item #: " + elementNumber);
     }
 
     public void addMapItemStepToPath(String key) {
-        pathToWrongValue.add(0, "Map item with \"" + key + "\" key");
+        pathToWrongValue.add(0, "Item key\"" + key + "\"");
     }
 
     public void setWrongValue(String wrongValue) {

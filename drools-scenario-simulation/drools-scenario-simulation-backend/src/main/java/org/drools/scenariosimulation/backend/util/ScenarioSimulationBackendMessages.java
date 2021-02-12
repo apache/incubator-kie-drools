@@ -31,16 +31,16 @@ public class ScenarioSimulationBackendMessages {
         if (wrongValue == null) {
             return getCollectionWithoutWrongValueHTMLErrorMessage(pathToWrongValue);
         }
-        return "Value <strong>\"" + wrongValue + "\"</strong>" +
-                " is wrong inside:\n" +
-                "<em>" + String.join("\n", pathToWrongValue) + "</em>";
+        return "Assertion failed in:\n" +
+                "<em>" + String.join("\n", pathToWrongValue) + "\n" +
+                "Value: <strong>\"" + wrongValue + "\"</strong></em>";
     }
 
     private static String getCollectionWithoutWrongValueHTMLErrorMessage(List<String> pathToWrongValue) {
         if (pathToWrongValue == null || pathToWrongValue.isEmpty()) {
             return getGenericCollectionErrorMessage();
         }
-        return "Following path is wrong:\n" +
+        return "Error in:\n" +
                 "<em>" + String.join("\n", pathToWrongValue) + "</em>";
     }
 
