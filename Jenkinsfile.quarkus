@@ -118,7 +118,7 @@ pipeline {
 void sendNotification() {
     emailext body: 'Kogito daily Quarkus master #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
             'Please look here: ${BUILD_URL} ',
-            subject: "[${params.BUILD_BRANCH_NAME}][d] Runtimes Quarkus snapshot",
+            subject: "[${params.BUILD_BRANCH_NAME}][d] Runtimes Quarkus ${getQuarkusBranch()}",
             to: env.KOGITO_CI_EMAIL_TO
 }
 
