@@ -25,6 +25,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+// TODO: EM Need to migrate this to executable model
 public class PhreakLiaNodeTest {
 
     @Test

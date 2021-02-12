@@ -35,6 +35,7 @@ import org.junit.Test;
 
 import static org.drools.mvel.integrationtests.phreak.Pair.t;
 
+// TODO: EM Need to migrate this to executable model
 public class PhreakJoinNodeTest {
     BuildContext          buildContext;
     JoinNode              joinNode;

@@ -37,6 +37,7 @@ import static org.drools.mvel.integrationtests.phreak.Pair.t;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+// TODO: EM Need to migrate this to executable model
 public class ScenarioTest {
     BuildContext          buildContext;
     JoinNode              joinNode;
