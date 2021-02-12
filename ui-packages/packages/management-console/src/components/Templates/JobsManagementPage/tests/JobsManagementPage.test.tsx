@@ -15,16 +15,10 @@ const MockedServerErrors = (): React.ReactElement => {
   return <></>;
 };
 
-const MockedKogitoEmptyState = (): React.ReactElement => {
-  return <></>;
-};
 jest.mock('@kogito-apps/common', () => ({
   ...jest.requireActual('@kogito-apps/common'),
   ServerErrors: () => {
     return <MockedServerErrors />;
-  },
-  KogitoEmptyState: () => {
-    return <MockedKogitoEmptyState />;
   }
 }));
 
@@ -97,6 +91,24 @@ describe('Jobs management page tests', () => {
   ];
 
   const mocks2 = [
+    {
+      request: {
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          values: ['SCHEDULED'],
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          },
+          offset: 0,
+          limit: 10
+        }
+      },
+      result: {
+        data: {
+          Jobs: []
+        }
+      }
+    },
     {
       request: {
         query: GraphQL.GetJobsWithFiltersDocument,
@@ -209,7 +221,7 @@ describe('Jobs management page tests', () => {
     });
   });
   it('mock data with empty response', async () => {
-    const wrapper = await getWrapperAsync(
+    let wrapper = await getWrapperAsync(
       <MockedProvider mocks={mocks2} addTypename={false}>
         <BrowserRouter>
           <JobsManagementPage {...props} />
@@ -218,16 +230,20 @@ describe('Jobs management page tests', () => {
       'JobsManagementPage'
     );
     expect(wrapper).toMatchSnapshot();
-    const redirectObj = {
-      pathname: '/NoData',
-      state: {
-        buttonText: 'Go to process instance',
-        description: 'There are no jobs associated with any process instance.',
-        prev: '/ProcessInstances',
-        title: 'Jobs not found'
-      }
-    };
-    expect(wrapper.find('Redirect').props()['to']).toEqual(redirectObj);
+    const event: any = {};
+    await act(async () => {
+      wrapper
+        .find('.pf-c-button')
+        .at(1)
+        .props()
+        ['onClick'](event);
+    });
+    wrapper = wrapper.update();
+    console.log;
+    expect(wrapper.find('h5').text()).toEqual('No results found');
+    expect(wrapper.find('.pf-c-empty-state__body').text()).toEqual(
+      'Try using different filters'
+    );
   });
 
   it('mock data with error response', async () => {
@@ -322,7 +338,8 @@ describe('Jobs management page tests', () => {
     const event: any = {};
     await act(async () => {
       wrapper
-        .find('KogitoEmptyState')
+        .find('.pf-c-button')
+        .at(1)
         .props()
         ['onClick'](event);
     });
@@ -385,5 +402,29 @@ describe('Jobs management page tests', () => {
     });
     wrapper = wrapper.update();
     expect(mocks5[0].request.variables.offset).toEqual(0);
+  });
+  it('test clearAllFilters on toolbar', async () => {
+    let wrapper = await getWrapperAsync(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <BrowserRouter>
+          <JobsManagementPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'JobsManagementPage'
+    );
+    await act(async () => {
+      wrapper
+        .find('Toolbar')
+        .props()
+        ['clearAllFilters']();
+    });
+    wrapper = wrapper.update();
+    const defaultChip: string[] = ['SCHEDULED'];
+    expect(wrapper.find('JobsManagementFilters').props()['chips']).toEqual(
+      defaultChip
+    );
+    expect(
+      wrapper.find('JobsManagementFilters').props()['selectedStatus']
+    ).toEqual(defaultChip);
   });
 });
