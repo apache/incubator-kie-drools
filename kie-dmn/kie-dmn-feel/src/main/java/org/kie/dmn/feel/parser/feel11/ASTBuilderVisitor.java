@@ -16,16 +16,12 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -68,39 +64,6 @@ public class ASTBuilderVisitor
     
     private ScopeHelper scopeHelper;
     private FEELTypeRegistry typeRegistry;
-
-    private static class ScopeHelper {
-        Deque<Map<String, Type>> stack;
-        
-        public ScopeHelper() {
-            this.stack = new ArrayDeque<>();
-            this.stack.push(new HashMap<>());
-        }
-        
-        public void addTypes(Map<String, Type> inputTypes) {
-            stack.peek().putAll(inputTypes);
-        }
-        
-        public void addType(String name, Type type) {
-            stack.peek().put(name, type);
-        }
-        
-        public void pushScope() {
-            stack.push(new HashMap<>());
-        }
-        
-        public void popScope() {
-            stack.pop();
-        }
-        
-        public Optional<Type> resolveType(String name) {
-            return stack.stream()
-                .map( scope -> Optional.ofNullable( scope.get( name )) )
-                .flatMap( o -> o.isPresent() ? Stream.of( o.get() ) : Stream.empty() )
-                .findFirst()
-                ;
-        }
-    }
 
     public ASTBuilderVisitor(Map<String, Type> inputTypes, FEELTypeRegistry typeRegistry) {
         this.scopeHelper = new ScopeHelper();

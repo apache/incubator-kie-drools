@@ -20,17 +20,13 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.time.Duration;
 import java.time.chrono.ChronoPeriod;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -88,41 +84,13 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.ScopeHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
 public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
-
-    private static class ScopeHelper {
-        Deque<Map<String, Type>> stack;
-
-        public ScopeHelper() {
-            this.stack = new ArrayDeque<>();
-            this.stack.push(new HashMap<>());
-        }
-
-        public void addType(String name, Type type) {
-            stack.peek().put(name,
-                             type);
-        }
-
-        public void pushScope() {
-            stack.push(new HashMap<>());
-        }
-
-        public void popScope() {
-            stack.pop();
-        }
-
-        public Optional<Type> resolveType(String name) {
-            return stack.stream()
-                    .map(scope -> Optional.ofNullable(scope.get(name)))
-                    .flatMap(o -> o.isPresent() ? Stream.of(o.get()) : Stream.empty())
-                    .findFirst();
-        }
-    }
 
     ScopeHelper scopeHelper = new ScopeHelper();
 
