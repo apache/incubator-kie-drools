@@ -19,6 +19,7 @@ package org.kie.kogito.rules.units;
 import java.util.function.Function;
 
 import org.drools.core.addon.TypeResolver;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.RuleUnitConfig;
 
 public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
@@ -80,7 +81,7 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     @Override
-    public KogitoRuleUnitVariable getVar( String name) {
+    public RuleUnitVariable getVar( String name) {
          try {
              return super.getVar(name);
          } catch (UndefinedRuleUnitVariable e) {

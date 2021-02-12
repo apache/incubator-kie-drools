@@ -25,20 +25,20 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.SingletonStore;
-import org.kie.kogito.rules.units.KogitoRuleUnitDescription;
-import org.kie.kogito.rules.units.KogitoRuleUnitVariable;
 
 public class RuleUnitDTOSourceClass implements RuleFileGenerator {
 
-    private final KogitoRuleUnitDescription ruleUnit;
+    private final RuleUnitDescription ruleUnit;
 
     private final String targetCanonicalName;
     private final String generatedFilePath;
     private final String packageName;
     private final RuleUnitHelper ruleUnitHelper;
 
-    public RuleUnitDTOSourceClass(KogitoRuleUnitDescription ruleUnit, RuleUnitHelper ruleUnitHelper ) {
+    public RuleUnitDTOSourceClass( RuleUnitDescription ruleUnit, RuleUnitHelper ruleUnitHelper ) {
         this.ruleUnit = ruleUnit;
 
         this.targetCanonicalName = ruleUnit.getSimpleName() + "DTO";
@@ -66,7 +66,7 @@ public class RuleUnitDTOSourceClass implements RuleFileGenerator {
         BlockStmt supplierBlock = supplier.createBody();
         supplierBlock.addStatement(String.format("%s unit = new %s();", ruleUnit.getSimpleName(), ruleUnit.getSimpleName()));
 
-        for (KogitoRuleUnitVariable unitVarDeclaration : ruleUnit.getUnitVarDeclarations()) {
+        for (RuleUnitVariable unitVarDeclaration : ruleUnit.getUnitVarDeclarations()) {
             FieldProcessor fieldProcessor = new FieldProcessor(unitVarDeclaration, ruleUnitHelper );
             FieldDeclaration field = fieldProcessor.createField();
             supplierBlock.addStatement(fieldProcessor.fieldInitializer());
@@ -82,13 +82,13 @@ public class RuleUnitDTOSourceClass implements RuleFileGenerator {
 
     private static class FieldProcessor {
 
-        final KogitoRuleUnitVariable ruleUnitVariable;
+        final RuleUnitVariable ruleUnitVariable;
         final boolean isDataSource;
         final RuleUnitHelper ruleUnitHelper;
         final boolean isSingletonStore;
         private String genericType;
 
-        public FieldProcessor( KogitoRuleUnitVariable ruleUnitVariable, RuleUnitHelper ruleUnitHelper ) {
+        public FieldProcessor( RuleUnitVariable ruleUnitVariable, RuleUnitHelper ruleUnitHelper ) {
             this.ruleUnitVariable = ruleUnitVariable;
             this.isDataSource = ruleUnitVariable.isDataSource();
             this.ruleUnitHelper = ruleUnitHelper;

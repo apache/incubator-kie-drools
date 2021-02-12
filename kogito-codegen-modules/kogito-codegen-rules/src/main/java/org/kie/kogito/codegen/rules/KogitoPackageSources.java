@@ -31,7 +31,6 @@ import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.rules.units.KogitoRuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,7 @@ public class KogitoPackageSources extends PackageSources {
 
     private Map<String, String> modelsByUnit = new HashMap<>();
 
-    private Collection<KogitoRuleUnitDescription> ruleUnits;
+    private Collection<RuleUnitDescription> ruleUnits;
 
     private String rulesFileName;
 
@@ -57,7 +56,7 @@ public class KogitoPackageSources extends PackageSources {
         RuleWriter rules = PackageSources.writeRules( pkgModel, sources, packageModelWriter );
         sources.rulesFileName = pkgModel.getRulesFileName();
 
-        sources.ruleUnits = (Collection<KogitoRuleUnitDescription>) (Object) pkgModel.getRuleUnits();
+        sources.ruleUnits = pkgModel.getRuleUnits();
         if (!sources.ruleUnits.isEmpty()) {
             sources.queries = new HashMap<>();
             for (RuleUnitDescription ruleUnit : sources.ruleUnits) {
@@ -92,7 +91,7 @@ public class KogitoPackageSources extends PackageSources {
         return modelsByUnit;
     }
 
-    public Collection<KogitoRuleUnitDescription> getRuleUnits() {
+    public Collection<RuleUnitDescription> getRuleUnits() {
         return ruleUnits;
     }
 

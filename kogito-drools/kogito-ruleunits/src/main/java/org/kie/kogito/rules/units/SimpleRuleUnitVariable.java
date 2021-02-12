@@ -14,10 +14,12 @@
  */
 package org.kie.kogito.rules.units;
 
+import org.kie.internal.ruleunit.RuleUnitVariable;
+
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.kie.kogito.rules.units.StringUtils.capitalize;
 
-public final class SimpleRuleUnitVariable implements KogitoRuleUnitVariable {
+public final class SimpleRuleUnitVariable implements RuleUnitVariable {
 
     private final String name;
     private final Class<?> type;
