@@ -67,8 +67,9 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
-import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -131,15 +132,7 @@ public class ModelGenerator {
 
     public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel, boolean isPattern) {
         TypeResolver typeResolver = pkg.getTypeResolver();
-        packageModel.addImports(pkg.getImports().keySet());
-        packageModel.addStaticImports(pkg.getStaticImports());
-        packageModel.addEntryPoints(packageDescr.getEntryPointDeclarations());
-        packageModel.addGlobals(pkg);
-        packageModel.addAccumulateFunctions(pkg.getAccumulateFunctions());
-        packageModel.setInternalKnowledgePackage(pkg);
-        new WindowReferenceGenerator(packageModel, typeResolver).addWindowReferences(kbuilder, packageDescr.getWindowDeclarations());
-        packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
-
+        initPackageModel( kbuilder, pkg, typeResolver, packageDescr, packageModel );
 
         for(RuleDescr descr : packageDescr.getRules()) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
@@ -166,6 +159,17 @@ public class ModelGenerator {
         for (RuleUnitDescription rud : ruleUnitDescriptions) {
             packageModel.addRuleUnit(rud);
         }
+    }
+
+    public static void initPackageModel( KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, TypeResolver typeResolver, PackageDescr packageDescr, PackageModel packageModel ) {
+        packageModel.addImports( pkg.getImports().keySet());
+        packageModel.addStaticImports( pkg.getStaticImports());
+        packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());
+        packageModel.addGlobals( pkg );
+        packageModel.addAccumulateFunctions( pkg.getAccumulateFunctions());
+        packageModel.setInternalKnowledgePackage( pkg );
+        new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( kbuilder, packageDescr.getWindowDeclarations());
+        packageModel.addAllFunctions( packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
     }
 
     private static void processRule(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, RuleContext context) {

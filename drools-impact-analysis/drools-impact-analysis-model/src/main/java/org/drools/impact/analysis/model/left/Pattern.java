@@ -24,10 +24,12 @@ public class Pattern {
     private final Class<?> patternClass;
     private final Collection<Constraint> constraints = new ArrayList<>();
     private final Collection<String> reactOnFields = new HashSet<>();
+    private final boolean positive;
     private boolean classReactive = false;
 
-    public Pattern( Class<?> patternClass ) {
+    public Pattern( Class<?> patternClass, boolean positive ) {
         this.patternClass = patternClass;
+        this.positive = positive;
     }
 
     public Class<?> getPatternClass() {
@@ -56,6 +58,10 @@ public class Pattern {
 
     public void setClassReactive( boolean classReactive ) {
         this.classReactive = classReactive;
+    }
+
+    public boolean isPositive() {
+        return positive;
     }
 
     @Override

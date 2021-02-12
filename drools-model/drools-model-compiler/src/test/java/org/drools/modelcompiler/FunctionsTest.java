@@ -86,6 +86,30 @@ public class FunctionsTest extends BaseModelTest {
         assertEquals(1, rulesFired);
     }
 
+    @Test
+    public void testConstraintCallingImportedStaticFunction() {
+        String str =
+                "import " + Person.class.getName() + ";\n" +
+                "import " + FunctionEnum.class.getCanonicalName() + ";\n" +
+                "import static " + FunctionEnum.class.getCanonicalName() + ".constantEnumValue;\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        $p: Person(constantEnumValue(parentP.name) == FunctionEnum.YES)\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+
+        Person john = new Person("John", 10);
+        Person johnFather = new Person("father", 80);
+        john.setParentP(johnFather);
+
+        ksession.insert(john);
+        int rulesFired = ksession.fireAllRules();
+        assertEquals(1, rulesFired);
+    }
+
     public enum FunctionEnum {
         YES, NO;
 

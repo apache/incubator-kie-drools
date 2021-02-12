@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.impact.analysis.graph.Graph;
-import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.model.Rule;
 import org.junit.Test;
 
@@ -42,10 +42,10 @@ public class GraphvizOutputTest {
         Node node4 = new Node(new Rule("org.example", "rule4", "dummy"));
         Node node5 = new Node(new Rule("org.example", "rule5", "dummy"));
 
-        Node.linkNodes(node1, node2, Link.Type.POSITIVE);
-        Node.linkNodes(node1, node3, Link.Type.NEGATIVE);
-        Node.linkNodes(node2, node4, Link.Type.UNKNOWN);
-        Node.linkNodes(node3, node5, Link.Type.POSITIVE);
+        Node.linkNodes(node1, node2, ReactivityType.POSITIVE);
+        Node.linkNodes(node1, node3, ReactivityType.NEGATIVE);
+        Node.linkNodes(node2, node4, ReactivityType.UNKNOWN);
+        Node.linkNodes(node3, node5, ReactivityType.POSITIVE);
 
         Map<String, Node> nodeMap = new HashMap<>();
         nodeMap.put(node1.getFqdn(), node1);
