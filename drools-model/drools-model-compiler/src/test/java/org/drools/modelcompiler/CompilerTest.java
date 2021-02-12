@@ -1863,6 +1863,40 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testHalfBinaryWithParenthesis() {
+        // DROOLS-6006
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(intValue (> 2 && < 5))\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexHalfBinary() {
+        // DROOLS-6006
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(intValue ((> 2 && < 4) || (> 5 && < 7)) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
     public void testMapPrimitiveComparison() {
         final String drl1 =
                 "import java.util.Map;\n" +

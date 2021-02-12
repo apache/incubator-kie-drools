@@ -84,10 +84,9 @@ import static com.github.javaparser.Range.*;
 import static com.github.javaparser.Position.*;
 import static com.github.javaparser.ast.type.ArrayType.*;
 import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
+import static org.drools.mvel.parser.utils.AstUtils.*;
 
 import com.github.javaparser.JavaToken;
-
-import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
 
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
@@ -1934,7 +1933,7 @@ Expression PrimaryPrefix():
 	  	{
 
 	  		if (hasArgs) {
-	  			ret = new MethodCallExpr(range(begin, token()), null, null, name, args);
+	  			ret = parseMethodExprOrHalfBinary(range(begin, token()), name, args);
 			} else {
 	  			ret = new DrlNameExpr(name, numberOfBackReferences );
 			}
