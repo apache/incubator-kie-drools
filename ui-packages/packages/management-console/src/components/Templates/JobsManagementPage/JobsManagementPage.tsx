@@ -218,7 +218,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   ];
 
   const onRefresh = (): void => {
-    window.location.reload();
+    refetch();
   };
 
   const onReset = (): void => {

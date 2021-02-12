@@ -75,6 +75,24 @@ describe('Jobs management page tests', () => {
           Jobs: JobsData
         }
       }
+    },
+    {
+      request: {
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          values: ['SCHEDULED'],
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          },
+          offset: 0,
+          limit: 10
+        }
+      },
+      result: {
+        data: {
+          Jobs: JobsData
+        }
+      }
     }
   ];
 
