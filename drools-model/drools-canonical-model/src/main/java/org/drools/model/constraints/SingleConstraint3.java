@@ -49,6 +49,7 @@ public class SingleConstraint3<A, B, C> extends AbstractSingleConstraint {
 
     public SingleConstraint3(Expr3ViewItemImpl<A, B, C> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getPredicate());
+        setIndex( expr.getIndex() );
         setReactivitySpecs( expr.getReactivitySpecs() );
     }
 

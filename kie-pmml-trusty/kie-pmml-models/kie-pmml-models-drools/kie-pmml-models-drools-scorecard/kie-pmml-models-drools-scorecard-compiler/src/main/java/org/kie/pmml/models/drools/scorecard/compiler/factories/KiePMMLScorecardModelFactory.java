@@ -84,7 +84,7 @@ public class KiePMMLScorecardModelFactory {
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        setConstructor(model, constructorDeclaration, modelTemplate.getName());
+        setConstructor(model,  dataDictionary, constructorDeclaration, modelTemplate.getName());
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
@@ -110,9 +110,12 @@ public class KiePMMLScorecardModelFactory {
         return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
     }
 
-    static void setConstructor(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
-        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(scorecard.getMiningSchema());
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(scorecard.getOutput());
+    static void setConstructor(final Scorecard scorecard,
+                               final DataDictionary dataDictionary,
+                               final ConstructorDeclaration constructorDeclaration,
+                               final SimpleName modelName) {
+        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(scorecard.getMiningSchema(), dataDictionary);
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(scorecard.getOutput(), dataDictionary);
         setKiePMMLModelConstructor(modelName.asString(), constructorDeclaration, scorecard.getModelName(), miningFields, outputFields);
     }
 }

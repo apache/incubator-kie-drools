@@ -1,0 +1,18 @@
+package org.drools.mvel.parser;
+
+import blah.*;
+
+unit Example;
+
+rule fooBar
+when {
+    Foo foo = /blah/baz[x == "test"];
+    Bar bar = /blah/baz[y];
+} do {
+    System.out.println("hello");
+} when {
+    Blah blah = /a/b/c;
+} do {
+    System.out.println("more hello");
+}
+

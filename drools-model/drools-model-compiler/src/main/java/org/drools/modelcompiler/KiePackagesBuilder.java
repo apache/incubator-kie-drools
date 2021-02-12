@@ -82,6 +82,7 @@ import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
 import org.drools.model.Constraint;
+import org.drools.model.DomainClassMetadata;
 import org.drools.model.DynamicValueSupplier;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
@@ -156,9 +157,11 @@ import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
+import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
@@ -732,7 +735,21 @@ public class KiePackagesBuilder {
         }
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
+        addReactiveMasksToPattern( pattern, modelPattern );
         return pattern;
+    }
+
+    // this method sets the property reactive masks on the pattern and it's strictly necessary for native compilation
+    // before changing this check DroolsTestIT in kogito-quarkus-integration-test-legacy module
+    private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
+        if (pattern.getListenedProperties() != null) {
+            DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
+            if (patternMetadata != null) {
+                String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
+                pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
+                pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
+            }
+        }
     }
 
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,

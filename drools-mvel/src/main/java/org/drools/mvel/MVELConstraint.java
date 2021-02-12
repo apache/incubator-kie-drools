@@ -34,8 +34,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.mvel.extractors.MVELObjectClassFieldReader;
-import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -53,6 +51,7 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
+import org.drools.core.spi.TupleValueExtractor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.bitmask.BitMask;
@@ -65,6 +64,8 @@ import org.drools.mvel.ConditionAnalyzer.FieldAccessInvocation;
 import org.drools.mvel.ConditionAnalyzer.Invocation;
 import org.drools.mvel.ConditionAnalyzer.MethodInvocation;
 import org.drools.mvel.ConditionAnalyzer.SingleCondition;
+import org.drools.mvel.expr.MVELCompilationUnit;
+import org.drools.mvel.extractors.MVELObjectClassFieldReader;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
@@ -99,7 +100,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
     private Declaration[] declarations;
     private EvaluatorWrapper[] operators;
-    private Declaration indexingDeclaration;
+    private TupleValueExtractor indexingDeclaration;
     private InternalReadAccessor extractor;
     private boolean isUnification;
     protected boolean isDynamic;
@@ -156,7 +157,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           EvaluatorWrapper[] operators,
                           MVELCompilationUnit compilationUnit,
                           IndexUtil.ConstraintType constraintType,
-                          Declaration indexingDeclaration,
+                          TupleValueExtractor indexingDeclaration,
                           InternalReadAccessor extractor,
                           boolean isUnification) {
         this.packageNames = new LinkedHashSet<>(packageNames);
@@ -378,7 +379,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     public FieldIndex getFieldIndex() {
         // declaration's offset can be modified by the reteoo's PatternBuilder so modify the indexingDeclaration accordingly
-        indexingDeclaration.getPattern().setOffset(declarations[0].getOffset());
+        indexingDeclaration.setOffset(declarations[0].getOffset());
         return new FieldIndex(extractor, indexingDeclaration);
     }
 
@@ -386,7 +387,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return extractor;
     }
 
-    public Declaration getIndexingDeclaration() {
+    @Override
+    public TupleValueExtractor getIndexExtractor() {
         return indexingDeclaration;
     }
 

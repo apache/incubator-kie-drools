@@ -71,7 +71,7 @@ public class KieModuleModelTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType(KieSessionType.STATEFUL)
-                .setClockType(ClockTypeOption.get("realtime"))
+                .setClockType(ClockTypeOption.REALTIME)
                 .setBeliefSystem(BeliefSystemTypeOption.get("jtms"))
                 .setFileLogger("drools.log", 10, true)
                 .addCalendar("monday", "org.domain.Monday")
@@ -126,7 +126,7 @@ public class KieModuleModelTest {
         KieSessionModel kieSessionModelXML = kieBaseModelXML.getKieSessionModels().get("KSession1");
         assertSame(kieBaseModelXML, ((KieSessionModelImpl)kieSessionModelXML).getKieBaseModel());
         assertEquals(KieSessionType.STATEFUL, kieSessionModelXML.getType());
-        assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
+        assertEquals(ClockTypeOption.REALTIME, kieSessionModelXML.getClockType());
         assertEquals(BeliefSystemTypeOption.get("jtms"), kieSessionModelXML.getBeliefSystem());
         assertEquals("org.domain.Monday", kieSessionModelXML.getCalendars().get("monday"));
 

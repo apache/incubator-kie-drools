@@ -60,7 +60,7 @@ public class DynamicEvalTest {
         // config
         sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         // use a pseudo clock, which starts at 0 and can be advanced manually
-        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
+        sessionConfig.setOption( ClockTypeOption.PSEUDO );
 
         // create and return session
         session = kbase.newKieSession(sessionConfig, null);

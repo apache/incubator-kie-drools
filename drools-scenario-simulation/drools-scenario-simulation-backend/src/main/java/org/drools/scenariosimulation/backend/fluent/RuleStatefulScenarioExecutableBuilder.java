@@ -52,7 +52,7 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
         if (kieSessionConfiguration == null) {
             throw new ScenarioException("Impossible to find a KieSession with name " + sn);
         }
-        kieSessionConfiguration.setOption(ClockTypeOption.get("pseudo"));
+        kieSessionConfiguration.setOption(ClockTypeOption.PSEUDO);
         return kieSessionConfiguration;
     };
 

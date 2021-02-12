@@ -2256,7 +2256,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = kBase.newKieSession( ksconf, null );
 
@@ -2395,7 +2395,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = kBase.newKieSession( ksconf, null );
 
@@ -2481,7 +2481,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KieBase kBase = loadKnowledgeBaseFromString(config, str);
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = kBase.newKieSession( ksconf, null );
 
@@ -2534,7 +2534,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBaseFromString( conf, str );
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = createKnowledgeSession(kbase, ksconf);
 
@@ -2609,7 +2609,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBaseFromString( conf, str );
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ksconf.setOption( ClockTypeOption.PSEUDO );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
         KieSession ksession = createKnowledgeSession(kbase, ksconf);
 
@@ -2691,7 +2691,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ksconf.setOption( ClockTypeOption.PSEUDO );
 
         Environment env = EnvironmentFactory.newEnvironment();
         env.set( EnvironmentName.GLOBALS, globals );
@@ -2778,7 +2778,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                EventProcessingOption.STREAM );
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
+        sessionConfig.setOption( ClockTypeOption.PSEUDO );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         ksession.insert( "ATrigger" );
@@ -2910,7 +2910,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         ksconf.setOption( TimedRuleExecutionOption.YES );
         ksconf.setOption(TimerJobFactoryOption.get("trackable"));
-        ksconf.setOption(ClockTypeOption.get("pseudo"));
+        ksconf.setOption(ClockTypeOption.PSEUDO);
 
         KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL )
                                         .build( EventProcessingOption.STREAM );

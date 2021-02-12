@@ -163,8 +163,8 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
 
     private Comparable getIndexedValue( Tuple tuple, boolean left ) {
         return left ?
-               (Comparable) index.getDeclaration().getExtractor().getValue( tuple.getObject( index.getDeclaration() ) ) :
-               (Comparable) index.getExtractor().getValue( tuple.getFactHandle().getObject() );
+               (Comparable) index.getLeftExtractor().getValue( tuple ) :
+               (Comparable) index.getRightExtractor().getValue( tuple.getFactHandle().getObject() );
     }
 
     private Tuple getNext(Comparable key, boolean first) {

@@ -126,6 +126,7 @@ public class KiePMMLMiningModelFactory {
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         setConstructor(model,
+                       dataDictionary,
                        constructorDeclaration,
                        targetFieldName,
                        segmentationClass);
@@ -137,13 +138,14 @@ public class KiePMMLMiningModelFactory {
     }
 
     static void setConstructor(final MiningModel miningModel,
+                               final DataDictionary dataDictionary,
                                final ConstructorDeclaration constructorDeclaration,
                                final String targetField,
                                final String segmentationClass) {
         final List<org.kie.pmml.api.models.MiningField> miningFields =
-                ModelUtils.convertToKieMiningFieldList(miningModel.getMiningSchema());
+                ModelUtils.convertToKieMiningFieldList(miningModel.getMiningSchema(), dataDictionary);
         final List<org.kie.pmml.api.models.OutputField> outputFields =
-                ModelUtils.convertToKieOutputFieldList(miningModel.getOutput());
+                ModelUtils.convertToKieOutputFieldList(miningModel.getOutput(), dataDictionary);
         setKiePMMLModelConstructor(getSanitizedClassName(miningModel.getModelName()), constructorDeclaration,
                                    miningModel.getModelName(), miningFields, outputFields);
         Expression miningFunctionExpression;

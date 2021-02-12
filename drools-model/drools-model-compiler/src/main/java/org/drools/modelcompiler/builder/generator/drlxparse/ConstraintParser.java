@@ -64,7 +64,6 @@ import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.MvelCompiler;
-import org.drools.mvelcompiler.CompiledBlockResult;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
@@ -405,7 +404,7 @@ public class ConstraintParser {
         }
 
 
-        boolean isBetaNode = right.getExpression() != null && context.getDeclarationById( getExpressionSymbol( right.getExpression() ) ).isPresent();
+        boolean isBetaConstraint = right.getExpression() != null && hasNonGlobalDeclaration( expressionTyperContext );
         if (isEnclosed) {
             combo = new EnclosedExpr( combo );
         }
@@ -415,10 +414,16 @@ public class ConstraintParser {
             constraintType = Index.ConstraintType.FORALL_SELF_JOIN;
         }
 
-        boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
+        boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
         return new SingleDrlxParseSuccess(patternType, bindingId, combo, isBooleanOperator( operator ) ? boolean.class : left.getType()).setDecodeConstraintType( constraintType )
                 .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft ).setUnification( constraint.isUnification() )
-                .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaNode(isBetaNode).setRequiresSplit( requiresSplit );
+                .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaConstraint(isBetaConstraint).setRequiresSplit( requiresSplit );
+    }
+
+    private boolean hasNonGlobalDeclaration( ExpressionTyperContext expressionTyperContext ) {
+        return expressionTyperContext.getUsedDeclarations().stream()
+                .map( context::getDeclarationById )
+                .anyMatch( optDecl -> optDecl.isPresent() && !optDecl.get().isGlobal() );
     }
 
     private boolean isForallSelfJoinConstraint( TypedExpression left, TypedExpression right, Index.ConstraintType constraintType ) {

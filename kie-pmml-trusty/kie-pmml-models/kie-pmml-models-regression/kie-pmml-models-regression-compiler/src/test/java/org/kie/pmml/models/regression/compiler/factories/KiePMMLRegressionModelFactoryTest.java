@@ -186,6 +186,7 @@ public class KiePMMLRegressionModelFactoryTest {
         String targetField = "targetField";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
         KiePMMLRegressionModelFactory.setConstructor(regressionModel,
+                                                     dataDictionary,
                                                      nestedTable,
                                                      constructorDeclaration,
                                                      targetField);

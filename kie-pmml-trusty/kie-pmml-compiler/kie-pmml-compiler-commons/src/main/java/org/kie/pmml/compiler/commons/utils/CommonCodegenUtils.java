@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,12 +31,17 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -209,6 +215,37 @@ public class CommonCodegenUtils {
     }
 
     /**
+     * Create an empty <b>Arrays.asList()</b> <code>ExpressionStmt</code>
+     *
+     * @return
+     */
+    public static ExpressionStmt createArraysAsListExpression() {
+        ExpressionStmt toReturn = new ExpressionStmt();
+        MethodCallExpr arraysCallExpression = new MethodCallExpr();
+        SimpleName arraysName = new SimpleName(Arrays.class.getName());
+        arraysCallExpression.setScope(new NameExpr(arraysName));
+        arraysCallExpression.setName(new SimpleName("asList"));
+        toReturn.setExpression(arraysCallExpression);
+        return toReturn;
+    }
+
+    /**
+     * Create a populated <b>Arrays.asList(?... a)</b> <code>ExpressionStmt</code>
+     *
+     * @param source
+     * @return
+     */
+    public static ExpressionStmt createArraysAsListFromList(List<?> source) {
+        ExpressionStmt toReturn = createArraysAsListExpression();
+        MethodCallExpr arraysCallExpression = toReturn.getExpression().asMethodCallExpr();
+        NodeList<Expression> arguments = new NodeList<>();
+        source.forEach(value -> arguments.add(getExpressionForObject(value)));
+        arraysCallExpression.setArguments(arguments);
+        toReturn.setExpression(arraysCallExpression);
+        return toReturn;
+    }
+
+    /**
      * Returns
      * <pre>
      *     empty (<i>methodName</i>)((list of <i>parameterType</i> <i>parameter name</i>)) {
@@ -337,7 +374,7 @@ public class CommonCodegenUtils {
     public static Optional<ExplicitConstructorInvocationStmt> getExplicitConstructorInvocationStmt(final BlockStmt body) {
         return body.getStatements().stream()
                 .filter(statement -> statement instanceof ExplicitConstructorInvocationStmt)
-                .map(statement -> (ExplicitConstructorInvocationStmt) statement)
+                .map(ExplicitConstructorInvocationStmt.class::cast)
                 .findFirst();
     }
 
@@ -411,5 +448,33 @@ public class CommonCodegenUtils {
                 .stream()
                 .filter(variableDeclarator -> variableDeclarator.getName().asString().equals(variableName))
                 .findFirst();
+    }
+
+    public static Expression getExpressionForObject(Object source) {
+        if (source == null) {
+            return new NullLiteralExpr();
+        }
+        String className = source.getClass().getSimpleName();
+        switch(className) {
+            case "String" :
+            return new StringLiteralExpr((String) source);
+            case "int":
+            case "Integer":
+                return new IntegerLiteralExpr((Integer) source);
+            case "double":
+            case "Double":
+                return new DoubleLiteralExpr((Double) source);
+            case "float":
+            case "Float":
+                return new DoubleLiteralExpr(((Float) source).doubleValue());
+            case "boolean":
+            case "Boolean":
+                return new BooleanLiteralExpr((Boolean)source);
+            default:
+                return new NameExpr(source.toString());
+
+
+        }
+
     }
 }
