@@ -36,6 +36,7 @@ import org.junit.Test;
 import static org.drools.mvel.integrationtests.phreak.A.a;
 import static org.drools.mvel.integrationtests.phreak.B.b;
 
+// TODO: EM Need to migrate this to executable model
 public class PhreakNotNodeTest {
 
     BuildContext          buildContext;

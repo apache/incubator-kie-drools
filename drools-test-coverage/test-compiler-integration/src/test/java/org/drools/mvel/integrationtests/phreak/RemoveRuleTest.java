@@ -51,6 +51,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+// TODO: EM Need to migrate this to executable model
 public class RemoveRuleTest {
 
     @Test
@@ -62,13 +63,13 @@ public class RemoveRuleTest {
         wm.insert(new B(1));
         wm.insert(new C(1));
         wm.insert(new C(2));
-        wm.insert(new D(1));
+        wm.insert(new X(1));
         wm.insert(new E(1));
 
         wm.fireAllRules();
 
 
-        kbase.addPackages( buildKnowledgePackage("r1", "   A() B() C(object == 2) D() E()\n") );
+        kbase.addPackages( buildKnowledgePackage("r1", "   A() B() C(object == 2) X() E()\n") );
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -109,14 +110,14 @@ public class RemoveRuleTest {
 
         wm.insert(new A(1));
         wm.insert(new A(2));
-        wm.insert(new D(1));
+        wm.insert(new X(1));
         wm.insert(new E(1));
 
         wm.insert(new C(2));
         wm.fireAllRules();
 
 
-        kbase.addPackages( buildKnowledgePackage("r1", "   A() not( B() and C() ) D() E()\n") );
+        kbase.addPackages( buildKnowledgePackage("r1", "   A() not( B() and C() ) X() E()\n") );
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -144,7 +145,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedRuleMidwayShare() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C(1;) D() E()\n");
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C(1;) X() E()\n");
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
@@ -156,13 +157,13 @@ public class RemoveRuleTest {
         wm.insert(new B(1));
         wm.insert(new C(1));
         wm.insert(new C(2));
-        wm.insert(new D(1));
+        wm.insert(new X(1));
         wm.insert(new E(1));
         wm.fireAllRules();
 
         assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) X() E()\n") );
         wm.fireAllRules();
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
@@ -216,7 +217,7 @@ public class RemoveRuleTest {
         wm.insert(new B(1));
         wm.insert(new C(1));
         wm.insert(new C(2));
-        wm.insert(new D(1));
+        wm.insert(new X(1));
         wm.insert(new E(1));
         wm.fireAllRules();
 
@@ -267,7 +268,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedSharedLiaNode() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() D() E()\n");
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -278,14 +279,14 @@ public class RemoveRuleTest {
         wm.insert(new B(1));
         wm.insert(new B(2));
         wm.insert(new C(1));
-        wm.insert(new D(1));
+        wm.insert(new X(1));
         wm.insert(new E(1));
 
         wm.fireAllRules();
         assertEquals( 3, list.size() );
         assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() X() E()\n") );
         wm.fireAllRules();
         assertEquals( 17, countNodeMemories(wm.getNodeMemories()));
 
@@ -371,7 +372,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedSharedToRtn() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() D() E()\n");
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -380,14 +381,14 @@ public class RemoveRuleTest {
         wm.insert(new A(2));
         wm.insert(new B(1));
         wm.insert(new C(1));
-        wm.insert(new D(1));
+        wm.insert(new X(1));
         wm.insert(new E(1));
 
         wm.fireAllRules();
         assertEquals( 2, list.size() );
         assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() X() E()\n") );
         wm.fireAllRules();
         assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
         assertEquals(4, list.size() );
@@ -433,7 +434,7 @@ public class RemoveRuleTest {
 
     @Test
          public void testPopulatedMultipleSharesRemoveFirst() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n" );
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -446,14 +447,14 @@ public class RemoveRuleTest {
         InternalFactHandle fh6 =  (InternalFactHandle) wm.insert(new B(2));
         InternalFactHandle fh7 =  (InternalFactHandle) wm.insert(new C(1));
         InternalFactHandle fh8 =  (InternalFactHandle) wm.insert(new C(2));
-        InternalFactHandle fh9 =  (InternalFactHandle) wm.insert(new D(1));
+        InternalFactHandle fh9 =  (InternalFactHandle) wm.insert(new X(1));
         InternalFactHandle fh10 =  (InternalFactHandle) wm.insert(new E(1));
 
         wm.fireAllRules();
         assertEquals( 2, list.size() );
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) D() E()\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
         assertEquals( 5, list.size() );
@@ -479,7 +480,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedMultipleSharesRemoveMid() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n" );
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -492,14 +493,14 @@ public class RemoveRuleTest {
         InternalFactHandle fh6 =  (InternalFactHandle) wm.insert(new B(2));
         InternalFactHandle fh7 =  (InternalFactHandle) wm.insert(new C(1));
         InternalFactHandle fh8 =  (InternalFactHandle) wm.insert(new C(2));
-        InternalFactHandle fh9 =  (InternalFactHandle) wm.insert(new D(1));
+        InternalFactHandle fh9 =  (InternalFactHandle) wm.insert(new X(1));
         InternalFactHandle fh10 =  (InternalFactHandle) wm.insert(new E(1));
 
         wm.fireAllRules();
         assertEquals( 2, list.size() );
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) D() E()\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
         assertEquals( 5, list.size() );
@@ -525,7 +526,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedMultipleSharesRemoveLast() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n" );
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -538,14 +539,14 @@ public class RemoveRuleTest {
         InternalFactHandle fh6 =  (InternalFactHandle) wm.insert(new B(2));
         InternalFactHandle fh7 =  (InternalFactHandle) wm.insert(new C(1));
         InternalFactHandle fh8 =  (InternalFactHandle) wm.insert(new C(2));
-        InternalFactHandle fh9 =  (InternalFactHandle) wm.insert(new D(1));
+        InternalFactHandle fh9 =  (InternalFactHandle) wm.insert(new X(1));
         InternalFactHandle fh10 =  (InternalFactHandle) wm.insert(new E(1));
 
         wm.fireAllRules();
         assertEquals( 2, list.size() );
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) D() E()\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
         assertEquals( 5, list.size() );
@@ -611,9 +612,9 @@ public class RemoveRuleTest {
 
     @Test
     public void testSplitTwoBeforeCreatedSegment() throws Exception {
-        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n" );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;)\n") );
         kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
@@ -671,7 +672,7 @@ public class RemoveRuleTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 
@@ -700,7 +701,7 @@ public class RemoveRuleTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 

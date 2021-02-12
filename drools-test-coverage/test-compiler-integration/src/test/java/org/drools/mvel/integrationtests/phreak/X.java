@@ -17,25 +17,25 @@ package org.drools.mvel.integrationtests.phreak;
 
 import org.kie.api.definition.type.Position;
 
-public class D {
+public class X {
 
     @Position(0)
     Object object;
 
-    public D(Object object) {
+    public X(Object object) {
         super();
         this.object = object;
     }
 
-    public static D b(Object object) {
-        return new D( object );
+    public static X b(Object object) {
+        return new X(object );
     }
 
-    public static D[] b(Object... objects) {
-        D[] bs = new D[objects.length];
+    public static X[] b(Object... objects) {
+        X[] bs = new X[objects.length];
         int i = 0;
         for ( Object object : objects ) {
-            bs[i++] = new D( object );
+            bs[i++] = new X(object );
         }
         return bs;
     }        
@@ -61,7 +61,7 @@ public class D {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        D other = (D) obj;
+        X other = (X) obj;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
