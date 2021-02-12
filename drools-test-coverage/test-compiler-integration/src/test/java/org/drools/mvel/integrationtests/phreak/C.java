@@ -13,38 +13,38 @@
  * limitations under the License.
 */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 import org.kie.api.definition.type.Position;
 
-public class A {
+public class C {
 
     @Position(0)
-    Integer object;
+    Object object;
 
-    public A(Integer object) {
+    public C(Object object) {
         super();
         this.object = object;
     }
-    
-    public static A a(Integer object) {
-        return new A( object );
+
+    public static C b(Object object) {
+        return new C( object );
     }
 
-    public static A[] a(Integer... objects) {
-        A[] as = new A[objects.length];
+    public static C[] b(Object... objects) {
+        C[] bs = new C[objects.length];
         int i = 0;
-        for ( Integer object : objects ) {
-            as[i++] = new A( object );
+        for ( Object object : objects ) {
+            bs[i++] = new C( object );
         }
-        return as;
+        return bs;
     }        
 
     public Object getObject() {
         return object;
     }
 
-    public void setObject(Integer object) {
+    public void setObject(Object object) {
         this.object = object;
     }
 
@@ -61,7 +61,7 @@ public class A {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        A other = (A) obj;
+        C other = (C) obj;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
@@ -70,7 +70,7 @@ public class A {
 
     @Override
     public String toString() {
-        return "A[" + object + "]";
+        return "C [" + object + "]";
     }
 
 }

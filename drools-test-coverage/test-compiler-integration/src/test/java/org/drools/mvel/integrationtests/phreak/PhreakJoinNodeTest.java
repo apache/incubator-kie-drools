@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
@@ -33,7 +33,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.junit.Test;
 
-import static org.drools.mvel.compiler.phreak.Pair.t;
+import static org.drools.mvel.integrationtests.phreak.Pair.t;
 
 public class PhreakJoinNodeTest {
     BuildContext          buildContext;
