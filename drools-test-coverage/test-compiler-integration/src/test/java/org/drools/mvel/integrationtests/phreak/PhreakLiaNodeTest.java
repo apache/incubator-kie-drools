@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -24,7 +24,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class PhreakLiaNodeTest {
 

@@ -26,7 +26,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
-import org.drools.mvel.compiler.phreak.A;
+import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.DynamicRulesTest;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
