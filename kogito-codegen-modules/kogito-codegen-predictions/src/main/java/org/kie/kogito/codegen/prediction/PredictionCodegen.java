@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsError;
@@ -46,6 +47,8 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
+import org.kie.kogito.pmml.openapi.api.PMMLOASResult;
+import org.kie.kogito.pmml.openapi.factories.PMMLOASResultFactory;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
@@ -55,6 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
 public class PredictionCodegen extends AbstractGenerator {
@@ -148,6 +152,15 @@ public class PredictionCodegen extends AbstractGenerator {
                 if (!(model instanceof KiePMMLFactoryModel)) {
                     PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model, applicationCanonicalName());
                     storeFile(PMML_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+                    final PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
+                    try {
+                        String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());
+                        String jsonFile = String.format("%s.json", getSanitizedClassName(model.getName()));
+                        String jsonFilePath = String.format("META-INF/resources/%s", jsonFile);
+                        storeFile(GeneratedFileType.RESOURCE, jsonFilePath, jsonContent);
+                    } catch (Exception e) {
+                        LOGGER.warn("Failed to write OAS schema");
+                    }
             }
             if (model instanceof HasNestedModels) {
                 addModels(((HasNestedModels) model).getNestedModels(), resource, batch);

@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
@@ -34,40 +35,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import static org.kie.kogito.integrationtests.springboot.CommonPMMLTestUtils.testDescriptive;
+import static org.kie.kogito.integrationtests.springboot.CommonPMMLTestUtils.testResult;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
 class PMMLTreeTest extends BaseRestTest {
+
+    private static final String BASE_PATH = "/SampleMine/";
+    private static final String TARGET = "decision";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void testWholeModel() {
+    void testEvaluateSampleMineResult() {
         String inputData = "{\"temperature\":30.0, \"humidity\":10.0}";
-        Object resultVariables =  given()
-                .contentType(ContentType.JSON)
-                .body(inputData)
-                .when()
-                .post("/SampleMine")
-                .then()
-                .statusCode(200)
-                .body("correlationId", nullValue())
-                .body("segmentationId", nullValue())
-                .body("segmentId", nullValue())
-                .body("segmentIndex", is(0)) // as JSON is not schema aware, here we assert the RAW string
-                .body("resultCode", is("OK"))
-                .body("resultObjectName", is("decision"))
-                .extract()
-                .path("resultVariables");
-        assertNotNull(resultVariables);
-        assertTrue(resultVariables instanceof Map);
-        Map<String, Object> mappedResultVariables = (Map) resultVariables;
-        assertTrue(mappedResultVariables.containsKey("decision"));
-        assertEquals("sunglasses", mappedResultVariables.get("decision"));
-        assertTrue(mappedResultVariables.containsKey("weatherdecision"));
-        assertEquals("sunglasses", mappedResultVariables.get("weatherdecision"));
+        testResult(inputData, BASE_PATH, TARGET, "sunglasses");
+    }
+
+    @Test
+    void testEvaluateSampleMineDescriptive() {
+        String inputData = "{\"temperature\":30.0, \"humidity\":10.0}";
+        final Map<String, Object> expectedResultMap = new HashMap<>();
+        expectedResultMap.put(TARGET, "sunglasses");
+        expectedResultMap.put("weatherdecision", "sunglasses");
+        testDescriptive(inputData, BASE_PATH, TARGET, expectedResultMap);
     }
 }

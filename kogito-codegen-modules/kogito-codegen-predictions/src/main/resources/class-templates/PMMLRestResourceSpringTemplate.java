@@ -3,24 +3,40 @@ package org.kie.kogito.pmml.rest;
 import java.util.Map;
 
 import org.kie.kogito.Application;
-import org.kie.kogito.prediction.PredictionModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
-import org.kie.kogito.prediction.PredictionModels;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/$nameURL$")
-public class PMMLRestResourceTemplate {
+public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRestResource {
 
+    final String MODEL_NAME;
     Application application;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Object pmml(@RequestBody(required = false) Map<String, Object> variables) {
-        PredictionModel prediction = application.get(PredictionModels.class).getPredictionModel("$modelName$");
-        return prediction.evaluateAll(prediction.newContext(variables));
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/InputSet")), description = "PMML input")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/ResultSet")), description = "PMML result")
+    public Object result(@RequestBody(required = true) Map<String, Object> variables) {
+        return super.result(application, MODEL_NAME, variables);
     }
+
+    @PostMapping(value = "/descriptive", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/InputSet")), description = "PMML input")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/pmmlDefinitions.json#/definitions/OutputSet")), description = "PMML full output")
+    public org.kie.api.pmml.PMML4Result descriptive(@RequestBody(required = true) Map<String, Object> variables) {
+        return super.descriptive(application, MODEL_NAME, variables);
+    }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity toResponse(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(org.kie.kogito.pmml.AbstractPMMLRestResource.getJsonErrorMessage(e));
+    }
+
 }

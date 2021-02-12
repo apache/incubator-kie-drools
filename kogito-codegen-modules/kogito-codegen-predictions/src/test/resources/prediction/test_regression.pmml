@@ -18,7 +18,7 @@
       <MiningField name="fld4" usageType="predicted"/>
     </MiningSchema>
     <Output>
-      <OutputField name="result" targetField="fld4" />
+      <OutputField name="result" targetField="fld4" dataType="double" />
     </Output>
     <RegressionTable intercept="0.5">
       <NumericPredictor coefficient="5" exponent="2" name="fld1"/>

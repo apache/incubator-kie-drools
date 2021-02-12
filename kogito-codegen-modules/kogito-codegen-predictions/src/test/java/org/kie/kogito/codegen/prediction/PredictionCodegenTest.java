@@ -24,6 +24,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
@@ -31,20 +32,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PredictionCodegenTest {
+class PredictionCodegenTest {
 
     private static final String SOURCE = "prediction/test_regression.pmml";
     private static final Path BASE_PATH = Paths.get("src/test/resources/").toAbsolutePath();
     private static final Path FULL_SOURCE = BASE_PATH.resolve(SOURCE);
 
     @Test
-    public void generateAllFiles() {
+    void generateAllFiles() {
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 JavaKogitoBuildContext.builder().build(),
                 CollectedResourceProducer.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(4, generatedFiles.size());
+        assertEquals(5, generatedFiles.size());
+        assertEquals(4, generatedFiles.stream()
+                .filter(generatedFile ->
+                                                               generatedFile.category().equals(GeneratedFileType.Category.SOURCE) &&
+                                                                       generatedFile.type().name().equals("PMML") &&
+                                                                       generatedFile.relativePath().endsWith(".java"))
+                .count());
+        assertEquals(1, generatedFiles.stream()
+                .filter(generatedFile ->
+                                                               generatedFile.category().equals(GeneratedFileType.Category.RESOURCE) &&
+                                                                       generatedFile.type().name().equals(GeneratedFileType.RESOURCE.name()) &&
+                                                                       generatedFile.relativePath().endsWith(".json"))
+                .count());
 
         Optional<ApplicationSection> optionalApplicationSection = codeGenerator.section();
         assertTrue(optionalApplicationSection.isPresent());

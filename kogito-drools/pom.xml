@@ -32,6 +32,7 @@
     <module>kogito-ruleunits</module>
     <module>kogito-pmml-api-dependencies</module>
     <module>kogito-pmml-dependencies</module>
+    <module>kogito-pmml-openapi</module>
     <module>kogito-pmml</module>
     <module>kogito-dmn</module>
     <module>drools-decisiontables</module>
