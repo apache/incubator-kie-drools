@@ -62,12 +62,12 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
     
-    private ScopeHelper scopeHelper;
+    private ScopeHelper<Type> scopeHelper;
     private FEELTypeRegistry typeRegistry;
 
     public ASTBuilderVisitor(Map<String, Type> inputTypes, FEELTypeRegistry typeRegistry) {
-        this.scopeHelper = new ScopeHelper();
-        this.scopeHelper.addTypes(inputTypes);
+        this.scopeHelper = new ScopeHelper<>();
+        this.scopeHelper.addInScope(inputTypes);
         this.typeRegistry = typeRegistry != null ? typeRegistry : DefaultBuiltinFEELTypeRegistry.INSTANCE;
     }
 
@@ -313,7 +313,7 @@ public class ASTBuilderVisitor
             ContextEntryNode visited = (ContextEntryNode) visit( c ); // forced cast similarly to visitFunctionDefinition() method
             if (visited != null) {
                 nodes.add( visited );
-                scopeHelper.addType( visited.getName().getText() , visited.getResultType() );
+                scopeHelper.addInScope(visited.getName().getText(), visited.getResultType());
             }
         }
         scopeHelper.popScope();
@@ -388,7 +388,7 @@ public class ASTBuilderVisitor
         for ( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
             String originalText = ParserHelper.getOriginalText(t);
             if ( typeCursor == null ) {
-                typeCursor = scopeHelper.resolveType( originalText ).orElse( BuiltInType.UNKNOWN );
+                typeCursor = scopeHelper.resolve(originalText).orElse(BuiltInType.UNKNOWN);
             } else if ( typeCursor instanceof CompositeType ) {
                 typeCursor = ((CompositeType) typeCursor).getFields().get(originalText);
             } else {

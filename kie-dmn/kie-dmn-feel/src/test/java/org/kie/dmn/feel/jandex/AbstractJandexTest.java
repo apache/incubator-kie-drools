@@ -66,6 +66,7 @@ public abstract class AbstractJandexTest {
         Index index = indexer.complete();
 
         Set<ClassInfo> founds = index.getAllKnownImplementors(DotName.createSimple(FEELFunction.class.getCanonicalName()));
+        boolean removeIf = founds.removeIf(ci -> ci.name().toString().contains("ASTTemporalConstantVisitor")); // not needed at run-time.
         LOG.debug("founds: \n{}", founds);
         Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withFormatting(true));
         List<Object> results = new ArrayList<>();

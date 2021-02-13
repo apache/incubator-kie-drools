@@ -23,22 +23,21 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.kie.dmn.feel.lang.Type;
+public class ScopeHelper<T> {
 
-public class ScopeHelper {
-    Deque<Map<String, Type>> stack;
+    Deque<Map<String, T>> stack;
     
     public ScopeHelper() {
         this.stack = new ArrayDeque<>();
         this.stack.push(new HashMap<>());
     }
     
-    public void addTypes(Map<String, Type> inputTypes) {
-        stack.peek().putAll(inputTypes);
+    public void addInScope(Map<String, T> inputTs) {
+        stack.peek().putAll(inputTs);
     }
     
-    public void addType(String name, Type type) {
-        stack.peek().put(name, type);
+    public void addInScope(String name, T T) {
+        stack.peek().put(name, T);
     }
     
     public void pushScope() {
@@ -49,7 +48,7 @@ public class ScopeHelper {
         stack.pop();
     }
     
-    public Optional<Type> resolveType(String name) {
+    public Optional<T> resolve(String name) {
         return stack.stream()
             .map( scope -> Optional.ofNullable( scope.get( name )) )
             .flatMap( o -> o.isPresent() ? Stream.of( o.get() ) : Stream.empty() )

@@ -92,7 +92,7 @@ import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
 public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
 
-    ScopeHelper scopeHelper = new ScopeHelper();
+    ScopeHelper<Type> scopeHelper = new ScopeHelper<>();
 
     @Override
     public DirectCompilerResult visit(ASTNode n) {
@@ -183,7 +183,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
     @Override
     public DirectCompilerResult visit(NameRefNode n) {
         String nameRef = EvalHelper.normalizeVariableName(n.getText());
-        Type type = scopeHelper.resolveType(nameRef).orElse(BuiltInType.UNKNOWN);
+        Type type = scopeHelper.resolve(nameRef).orElse(BuiltInType.UNKNOWN);
         return DirectCompilerResult.of(FeelCtx.getValue(nameRef), type);
     }
 
@@ -375,7 +375,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                 .stream()
                 .map(e -> {
                     DirectCompilerResult r = e.accept(this);
-                    scopeHelper.addType(e.getName().getText(), r.resultType);
+                    scopeHelper.addInScope(e.getName().getText(), r.resultType);
                     return r;
                 })
                 .reduce(openContext,

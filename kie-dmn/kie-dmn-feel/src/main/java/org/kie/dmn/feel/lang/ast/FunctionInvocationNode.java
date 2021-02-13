@@ -37,7 +37,7 @@ public class FunctionInvocationNode
 
     private BaseNode name;
     private ListNode params;
-    private Object result;
+    private TemporalConstantNode tcFolded; // this is NOT a child node intentionally.
 
     public FunctionInvocationNode(ParserRuleContext ctx, BaseNode name, ListNode params) {
         super( ctx );
@@ -61,10 +61,18 @@ public class FunctionInvocationNode
         this.params = params;
     }
 
+    public void setTcFolded(TemporalConstantNode tcFolded) {
+        this.tcFolded = tcFolded;
+    }
+
+    public TemporalConstantNode getTcFolded() {
+        return tcFolded;
+    }
+
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        if (this.result != null) {
-            return result;
+        if (this.tcFolded != null) {
+            return tcFolded.value;
         }
         FEELFunction function = null;
         Object value = null;
@@ -95,10 +103,6 @@ public class FunctionInvocationNode
                 functionNameParts = Collections.emptyList();
             }
             Object result = invokeTheFunction(functionNameParts, function, ctx, p);
-            //            if ((function == DateFunction.INSTANCE || function == org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE) && p.length == 1 && p[0] instanceof String) {
-            //                System.out.println("caching " + result);
-            //                this.result = result;
-            //            }
             return result;
         } else if( value instanceof UnaryTest ) {
             if( params.getElements().size() == 1 ) {

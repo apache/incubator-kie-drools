@@ -51,7 +51,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
                 heuristicChecks.forEach(listener::onEvent);
             }
         }
-        ast.accept(new ASTTemporalConstantVisitor());
+        ast.accept(new ASTTemporalConstantVisitor(ctx));
     }
 
     public CompiledFEELExpression getResult() {
