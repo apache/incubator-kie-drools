@@ -10,6 +10,7 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.visitor.ASTHeuristicCheckerVisitor;
 import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.impl.CompiledExecutableExpression;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;

@@ -16,7 +16,7 @@
  *
  */
 
-package org.kie.dmn.feel.codegen.feel11;
+package org.kie.dmn.feel.lang.ast.visitor;
 
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
