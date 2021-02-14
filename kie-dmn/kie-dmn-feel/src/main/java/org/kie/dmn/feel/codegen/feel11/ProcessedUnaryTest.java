@@ -28,9 +28,12 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
                               CompilerContext ctx, List<FEELProfile> profiles) {
         super(expressions, ctx, Collections.emptyList());
         ParseTree tree = getFEELParser(expression, ctx, profiles).unaryTestsRoot();
-        BaseNode initialAst = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry()));
+        ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
+        BaseNode initialAst = tree.accept(astVisitor);
         ast = initialAst.accept(new ASTUnaryTestTransform()).node();
-        ast.accept(new ASTTemporalConstantVisitor(ctx));
+        if (astVisitor.isVisitedTemporalCandidate()) {
+            ast.accept(new ASTTemporalConstantVisitor(ctx));
+        }
     }
 
     private DirectCompilerResult getCompilerResult() {

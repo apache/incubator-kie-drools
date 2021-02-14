@@ -42,7 +42,8 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         super(expression, ctx, profiles);
         this.defaultBackend = defaultBackend;
         ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
-        ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry()));
+        ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
+        ast = tree.accept(astVisitor);
         if (ast == null) {
             return; // if parsetree/ast is invalid, no need of further processing and early return.
         }
@@ -52,7 +53,9 @@ public class ProcessedExpression extends ProcessedFEELUnit {
                 heuristicChecks.forEach(listener::onEvent);
             }
         }
-        ast.accept(new ASTTemporalConstantVisitor(ctx));
+        if (astVisitor.isVisitedTemporalCandidate()) {
+            ast.accept(new ASTTemporalConstantVisitor(ctx));
+        }
     }
 
     public CompiledFEELExpression getResult() {

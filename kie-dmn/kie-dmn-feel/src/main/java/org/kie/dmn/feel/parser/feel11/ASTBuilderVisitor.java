@@ -52,6 +52,7 @@ import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
+import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
@@ -64,11 +65,16 @@ public class ASTBuilderVisitor
     
     private ScopeHelper<Type> scopeHelper;
     private FEELTypeRegistry typeRegistry;
+    private boolean visitedTemporalCandidate = false;
 
     public ASTBuilderVisitor(Map<String, Type> inputTypes, FEELTypeRegistry typeRegistry) {
         this.scopeHelper = new ScopeHelper<>();
         this.scopeHelper.addInScope(inputTypes);
         this.typeRegistry = typeRegistry != null ? typeRegistry : DefaultBuiltinFEELTypeRegistry.INSTANCE;
+    }
+
+    public boolean isVisitedTemporalCandidate() {
+        return visitedTemporalCandidate;
     }
 
     @Override
@@ -472,6 +478,9 @@ public class ASTBuilderVisitor
     public BaseNode visitFnInvocation(FEEL_1_1Parser.FnInvocationContext ctx) {
         BaseNode name = visit(ctx.unaryExpression());
         ListNode params = (ListNode) visit(ctx.parameters());
+        if (ASTTemporalConstantVisitor.TEMPORAL_FNS_NAMES.contains(name.getText())) {
+            visitedTemporalCandidate = true;
+        }
         return buildFunctionCall(ctx, name, params);
     }
 

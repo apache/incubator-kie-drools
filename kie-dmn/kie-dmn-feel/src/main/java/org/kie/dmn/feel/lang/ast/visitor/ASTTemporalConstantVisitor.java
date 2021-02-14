@@ -47,14 +47,14 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
 
     private final ScopeHelper<FEELFunction> scopeHelper = new ScopeHelper<>();
     private static final FEELFunction MASKED = new DUMMY();
-    private static final List<FEELFunction> TEMPORAL_FNS = Arrays.asList(DateFunction.INSTANCE,
+    public static final List<FEELFunction> TEMPORAL_FNS = Arrays.asList(DateFunction.INSTANCE,
                                                                          TimeFunction.INSTANCE,
                                                                          DateAndTimeFunction.INSTANCE,
                                                                          DurationFunction.INSTANCE,
                                                                          org.kie.dmn.feel.runtime.functions.extended.TimeFunction.INSTANCE,
                                                                          org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE,
                                                                          org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE);
-    private static final Set<String> TEMPORAL_FNS_NAMES = TEMPORAL_FNS.stream().map(FEELFunction::getName).collect(Collectors.toSet());
+    public static final Set<String> TEMPORAL_FNS_NAMES = TEMPORAL_FNS.stream().map(FEELFunction::getName).collect(Collectors.toSet());
 
     public ASTTemporalConstantVisitor(CompilerContext ctx) {
         Stream.of(BuiltInFunctions.getFunctions()).forEach(f -> scopeHelper.addInScope(f.getName(), f));
