@@ -92,6 +92,14 @@ public class Constants {
         return "ZZFN_" + CodegenStringUtil.escapeIdentifier(originalText);
     }
 
+    public static FieldDeclaration dtConstant(String name, Expression initializer) {
+        return of(parseClassOrInterfaceType(Object.class.getName()), name, initializer);
+    }
+
+    public static String dtConstantName(String originalText) {
+        return "K_DT_" + CodegenStringUtil.escapeIdentifier(originalText);
+    }
+
     public static FieldAccessExpr rangeBoundary(RangeNode.IntervalBoundary boundary) {
         return new FieldAccessExpr(
                 new NameExpr(RangeBoundary),

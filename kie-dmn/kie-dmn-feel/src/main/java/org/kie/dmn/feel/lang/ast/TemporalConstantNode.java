@@ -26,9 +26,9 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 
 public class TemporalConstantNode extends BaseNode {
 
-    final Object value;
-    final FEELFunction fn;
-    final List<Object> params;
+    public final Object value;
+    public final FEELFunction fn;
+    public final List<Object> params;
 
     public TemporalConstantNode(FunctionInvocationNode orig, Object value, FEELFunction fn, List<Object> params) {
         copyLocationAttributesFrom(orig);
