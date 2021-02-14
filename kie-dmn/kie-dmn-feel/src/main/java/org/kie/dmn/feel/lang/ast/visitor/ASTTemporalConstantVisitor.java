@@ -13,7 +13,6 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.ast.ASTNode;
-import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
@@ -151,7 +150,7 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
                     TemporalConstantNode tcNode = buildTemporalConstantNode(n, fn);
                     n.setTcFolded(tcNode);
                 } catch (Exception e) {
-                    // temporal constant folding failed, not an issue.
+                    // temporal constant inlining failed, not an issue, simply not memoized.
                 }
             }
         }
@@ -262,11 +261,6 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
             }
         }
         return null;
-    }
-
-    @Override
-    public ASTNode visit(AtLiteralNode n) {
-        return super.visit(n); // TODO
     }
 
     private static final class DUMMY implements FEELFunction {
