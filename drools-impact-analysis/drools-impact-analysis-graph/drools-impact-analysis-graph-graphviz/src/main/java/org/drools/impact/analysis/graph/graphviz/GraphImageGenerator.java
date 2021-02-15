@@ -31,6 +31,7 @@ import guru.nidi.graphviz.engine.Graphviz;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.ReactivityType;
 
 import static guru.nidi.graphviz.attribute.Rank.RankDir.TOP_TO_BOTTOM;
 import static guru.nidi.graphviz.model.Factory.graph;
@@ -78,9 +79,9 @@ public class GraphImageGenerator {
             }
             for (Link l : n.getOutgoingLinks()) {
                 Style<ForNodeLink> style;
-                if (l.getType() == Link.Type.POSITIVE) {
+                if (l.getReactivityType() == ReactivityType.POSITIVE) {
                     style = Style.SOLID;
-                } else if (l.getType() == Link.Type.NEGATIVE) {
+                } else if (l.getReactivityType() == ReactivityType.NEGATIVE) {
                     style = Style.DASHED;
                 } else {
                     // UNKNOWN

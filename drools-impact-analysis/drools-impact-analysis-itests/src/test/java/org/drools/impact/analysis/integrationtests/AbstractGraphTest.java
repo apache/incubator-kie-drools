@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.graph.graphviz.GraphImageGenerator;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -47,7 +48,7 @@ public class AbstractGraphTest {
         generator.generatePng(graph);
     }
 
-    protected void assertNodeLink(Graph graph, String sourceFqdn, String targetFqdn, Link.Type type) {
+    protected void assertNodeLink(Graph graph, String sourceFqdn, String targetFqdn, ReactivityType type) {
         Node source = graph.getNodeMap().get(sourceFqdn);
         Node target = graph.getNodeMap().get(targetFqdn);
         Optional<Link> optOutgoing = source.getOutgoingLinks().stream().filter(l -> l.getTarget().equals(target)).findFirst();
@@ -64,7 +65,7 @@ public class AbstractGraphTest {
             fail("links are not the same : outgoingLink = " + outgoingLink + ", incomingLink = " + incomingLink);
         }
 
-        assertEquals(type, outgoingLink.getType());
+        assertEquals(type, outgoingLink.getReactivityType());
     }
 
     protected void assertNoNodeLink(Graph graph, String sourceFqdn, String targetFqdn) {

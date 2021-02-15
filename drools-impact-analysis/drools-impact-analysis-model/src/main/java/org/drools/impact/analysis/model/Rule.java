@@ -14,6 +14,8 @@
 
 package org.drools.impact.analysis.model;
 
+import java.util.Objects;
+
 import org.drools.impact.analysis.model.left.LeftHandSide;
 import org.drools.impact.analysis.model.right.RightHandSide;
 
@@ -62,5 +64,18 @@ public class Rule {
                 ",\n lhs=" + lhs +
                 ",\n rhs=" + rhs +
                 '}';
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        Rule rule = ( Rule ) o;
+        return pkg.equals( rule.pkg ) && name.equals( rule.name );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( pkg, name );
     }
 }

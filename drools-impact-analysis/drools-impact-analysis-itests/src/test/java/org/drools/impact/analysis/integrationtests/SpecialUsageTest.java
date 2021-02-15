@@ -19,8 +19,8 @@ package org.drools.impact.analysis.integrationtests;
 import java.math.BigDecimal;
 
 import org.drools.impact.analysis.graph.Graph;
-import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
+import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.integrationtests.domain.ControlFact;
 import org.drools.impact.analysis.integrationtests.domain.FunctionUtils;
 import org.drools.impact.analysis.integrationtests.domain.ProductItem;
@@ -60,7 +60,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -92,7 +92,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }
@@ -125,7 +125,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -158,7 +158,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }

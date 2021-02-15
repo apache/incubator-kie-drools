@@ -18,7 +18,6 @@ package org.drools.impact.analysis.graph;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.impact.analysis.model.AnalysisModel;
@@ -58,13 +57,13 @@ public class ModelToGraphConverter {
                     Collection<String> reactOnFields = pattern.getReactOnFields();
                     if (pattern.isClassReactive()) {
                         // Pattern which cannot analyze reactivity (e.g. Person(blackBoxMethod())) so reacts to all properties
-                        graphAnalysis.addClassReactiveRule(patternClass, rule);
+                        graphAnalysis.addClassReactiveRule(patternClass, rule, pattern.isPositive());
                     } else if (reactOnFields.size() == 0) {
                         // Pattern without constraint (e.g. Person()) so doesn't react to properties (only react to  insert/delete)
-                        graphAnalysis.addInsertReactiveRule(patternClass, rule);
+                        graphAnalysis.addInsertReactiveRule(patternClass, rule, pattern.isPositive());
                     } else {
                         for (String field : reactOnFields) {
-                            graphAnalysis.addPropertyReactiveRule(patternClass, field, rule);
+                            graphAnalysis.addPropertyReactiveRule(patternClass, field, rule, pattern.isPositive());
                         }
                     }
                 }
@@ -99,31 +98,26 @@ public class ModelToGraphConverter {
     }
 
     private void processInsert(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
-        // TODO: consider not()
         Class<?> insertedClass = action.getActionClass();
         // all rules which react to the fact
-        Set<Rule> reactedRules = graphAnalysis.getRulesReactiveTo(insertedClass);
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
-        for (Rule reactedRule : reactedRules) {
-            Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getName()));
-            Node.linkNodes(source, target, Link.Type.POSITIVE);
+        for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(insertedClass)) {
+            Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
+            Node.linkNodes(source, target, reactedRule.getReactivityType());
         }
     }
 
     private void processDelete(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
-        // TODO: consider exists()
         Class<?> deletedClass = action.getActionClass();
         // all rules which react to the fact
-        Set<Rule> reactedRules = graphAnalysis.getRulesReactiveTo(deletedClass);
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
-        for (Rule reactedRule : reactedRules) {
-            Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getName()));
-            Node.linkNodes(source, target, Link.Type.NEGATIVE);
+        for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(deletedClass)) {
+            Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
+            Node.linkNodes(source, target, reactedRule.getReactivityType().negate());
         }
     }
 
     private void processModify(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ModifyAction action) {
-        // TODO: consider exists()/not()
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
 
         Class<?> modifiedClass = action.getActionClass();
@@ -135,48 +129,45 @@ public class ModelToGraphConverter {
         List<ModifiedProperty> modifiedProperties = action.getModifiedProperties();
         for (ModifiedProperty modifiedProperty : modifiedProperties) {
             String property = modifiedProperty.getProperty();
-            Set<Rule> rules = graphAnalysis.getRulesReactiveTo(modifiedClass, property);
-            if (rules == null) {
-                // Not likely happen but not invalid
-                logger.warn("Not found " + property + " in reactiveMap");
-                continue;
-            }
-            for (Rule reactedRule : rules) {
-                List<Constraint> constraints = reactedRule.getLhs().getPatterns().stream()
+            for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(modifiedClass, property)) {
+                List<Constraint> constraints = reactedRule.getRule().getLhs().getPatterns().stream()
                                                           .filter(pattern -> pattern.getPatternClass() == modifiedClass)
                                                           .flatMap(pattern -> pattern.getConstraints().stream())
                                                           .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
                                                           .collect(Collectors.toList());
-                Link.Type combinedLinkType = Link.Type.UNKNOWN;
+                ReactivityType combinedLinkType = ReactivityType.UNKNOWN;
                 if (constraints.size() == 0) {
                     // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
-                    combinedLinkType = Link.Type.UNKNOWN;
+                    combinedLinkType = ReactivityType.UNKNOWN;
                 } else {
                     // If constraints contain at least one POSITIVE, we consider it's POSITIVE.
                     for (Constraint constraint : constraints) {
-                        Link.Type linkType = linkType(constraint, modifiedProperty);
-                        if (linkType == Link.Type.POSITIVE) {
-                            combinedLinkType = Link.Type.POSITIVE;
+                        ReactivityType linkType = linkType(constraint, modifiedProperty);
+                        if (linkType == ReactivityType.POSITIVE) {
+                            combinedLinkType = ReactivityType.POSITIVE;
                             break;
-                        } else if (linkType == Link.Type.NEGATIVE) {
-                            combinedLinkType = Link.Type.NEGATIVE; // TODO: consider whether NEGATIVE or UNKNOWN should be stronger (meaningful for users)
+                        } else if (linkType == ReactivityType.NEGATIVE) {
+                            combinedLinkType = ReactivityType.NEGATIVE; // TODO: consider whether NEGATIVE or UNKNOWN should be stronger (meaningful for users)
                         } else {
                             combinedLinkType = linkType; // UNKNOWN
                         }
                     }
                 }
-                Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getName()));
+                if (reactedRule.getReactivityType() == ReactivityType.NEGATIVE) {
+                    combinedLinkType = combinedLinkType.negate();
+                }
+                Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
                 Node.linkNodes(source, target, combinedLinkType);
             }
         }
     }
 
-    private Link.Type linkType(Constraint constraint, ModifiedProperty modifiedProperty) {
+    private ReactivityType linkType(Constraint constraint, ModifiedProperty modifiedProperty) {
         Object value = constraint.getValue();
         Object modifiedValue = modifiedProperty.getValue();
 
         if (modifiedValue == null || value == null) {
-            return Link.Type.UNKNOWN;
+            return ReactivityType.UNKNOWN;
         }
 
         if (value instanceof Number && modifiedValue instanceof Number) {
@@ -187,39 +178,39 @@ public class ModelToGraphConverter {
         switch (constraint.getType()) {
             case EQUAL:
                 if (modifiedValue.equals(value)) {
-                    return Link.Type.POSITIVE;
+                    return ReactivityType.POSITIVE;
                 } else {
-                    return Link.Type.NEGATIVE;
+                    return ReactivityType.NEGATIVE;
                 }
             case NOT_EQUAL:
                 if (!modifiedValue.equals(value)) {
-                    return Link.Type.POSITIVE;
+                    return ReactivityType.POSITIVE;
                 } else {
-                    return Link.Type.NEGATIVE;
+                    return ReactivityType.NEGATIVE;
                 }
             case GREATER_THAN:
                 if (((Comparable) modifiedValue).compareTo((Comparable) value) > 0) {
-                    return Link.Type.POSITIVE;
+                    return ReactivityType.POSITIVE;
                 } else {
-                    return Link.Type.NEGATIVE;
+                    return ReactivityType.NEGATIVE;
                 }
             case GREATER_OR_EQUAL:
                 if (((Comparable) modifiedValue).compareTo((Comparable) value) >= 0) {
-                    return Link.Type.POSITIVE;
+                    return ReactivityType.POSITIVE;
                 } else {
-                    return Link.Type.NEGATIVE;
+                    return ReactivityType.NEGATIVE;
                 }
             case LESS_THAN:
                 if (((Comparable) modifiedValue).compareTo((Comparable) value) < 0) {
-                    return Link.Type.POSITIVE;
+                    return ReactivityType.POSITIVE;
                 } else {
-                    return Link.Type.NEGATIVE;
+                    return ReactivityType.NEGATIVE;
                 }
             case LESS_OR_EQUAL:
                 if (((Comparable) modifiedValue).compareTo((Comparable) value) <= 0) {
-                    return Link.Type.POSITIVE;
+                    return ReactivityType.POSITIVE;
                 } else {
-                    return Link.Type.NEGATIVE;
+                    return ReactivityType.NEGATIVE;
                 }
             case RANGE:
                 // TODO:
@@ -227,7 +218,7 @@ public class ModelToGraphConverter {
             case UNKNOWN:
                 break;
         }
-        return Link.Type.UNKNOWN;
+        return ReactivityType.UNKNOWN;
     }
 
     private static String fqdn(String pckageName, String ruleName) {

@@ -16,11 +16,14 @@ package org.drools.impact.analysis.parser.impl;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -71,17 +74,8 @@ public class RhsParser {
         Expression actionArg = statement.getArgument( 0 );
         Class<?> actionClass = null;
         if (actionArg.isNameExpr()) {
-            actionClass = context.getDeclarationById( actionArg.toString() ).map( DeclarationSpec::getDeclarationClass ).orElseGet( () -> {
-                AssignExpr assignExpr = consequenceExpr.findAll( AssignExpr.class ).stream()
-                        .filter( assign -> assign.getTarget().isVariableDeclarationExpr() && (( VariableDeclarationExpr ) assign.getTarget()).getVariable( 0 ).toString().equals( actionArg.toString() ) )
-                        .findFirst().orElseThrow( () -> new RuntimeException("Unknown mask: " + actionArg.toString()) );
-                String className = assignExpr.getTarget().asVariableDeclarationExpr().getVariable( 0 ).getType().asString();
-                try {
-                    return pkgRegistry.getTypeResolver().resolveType( className );
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException( e );
-                }
-            } );
+            actionClass = context.getDeclarationById( actionArg.toString() ).map( DeclarationSpec::getDeclarationClass )
+                    .orElseGet( () -> getClassFromAssignment( consequenceExpr, actionArg ) );
         } else if (actionArg.isLiteralExpr()) {
             actionClass = literalType(actionArg.asLiteralExpr());
         } else if (actionArg.isObjectCreationExpr()) {
@@ -92,6 +86,34 @@ public class RhsParser {
             }
         }
         return new ConsequenceAction(type, actionClass);
+    }
+
+    private Class<?> getClassFromAssignment( MethodCallExpr consequenceExpr, Expression actionArg ) {
+        String className = getClassNameFromAssignment( consequenceExpr, actionArg )
+                .orElseGet( () -> getClassNameFromCreation( consequenceExpr, actionArg ) );
+        try {
+            return pkgRegistry.getTypeResolver().resolveType( className );
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private Optional<String> getClassNameFromAssignment( MethodCallExpr consequenceExpr, Expression actionArg ) {
+        return consequenceExpr.findAll( AssignExpr.class ).stream()
+                .filter( assign -> assign.getTarget().isVariableDeclarationExpr() &&
+                         (( VariableDeclarationExpr ) assign.getTarget()).getVariable( 0 ).toString().equals( actionArg.toString() ) )
+                .findFirst()
+                .map( assignExpr -> assignExpr.getTarget().asVariableDeclarationExpr().getVariable( 0 ).getType().asString() );
+    }
+
+    private String getClassNameFromCreation( MethodCallExpr consequenceExpr, Expression actionArg ) {
+        return consequenceExpr.findAll( VariableDeclarator.class ).stream()
+                .filter( varDecl -> varDecl.getName().toString().equals( actionArg.toString() ) &&
+                         varDecl.getInitializer().filter( ObjectCreationExpr.class::isInstance ).isPresent() )
+                .map( varDecl -> ( ObjectCreationExpr ) varDecl.getInitializer().get() )
+                .map( objCreat -> objCreat.getType().getNameAsString() )
+                .findFirst()
+                .orElseThrow( () -> new RuntimeException("Unknown variable: " + actionArg) );
     }
 
     private ModifyAction processModify( RuleContext context, MethodCallExpr consequenceExpr, MethodCallExpr statement, BlockStmt ruleVariablesBlock ) {

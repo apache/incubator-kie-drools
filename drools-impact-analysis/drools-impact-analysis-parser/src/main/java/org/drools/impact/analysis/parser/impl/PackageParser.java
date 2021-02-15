@@ -50,6 +50,7 @@ public class PackageParser {
 
     private Rule parseRule( RuleDescr ruleDescr ) {
         RuleContext context = new RuleContext(kbuilder, packageModel, pkgRegistry.getTypeResolver(), false);
+        context.setDialectFromAttributes( packageDescr.getAttributes() );
         Rule rule = new Rule( packageDescr.getName(), ruleDescr.getName(), ruleDescr.getResource().getSourcePath() );
 
         new LhsParser( packageModel, pkgRegistry ).parse( ruleDescr, context, rule );
