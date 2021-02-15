@@ -37,7 +37,7 @@ public class JITDMNServiceImplTest {
     @BeforeAll
     public static void setup() throws IOException {
         model = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/test.dmn")));
-        jitdmnService = new JITDMNServiceImpl();
+        jitdmnService = new JITDMNServiceImpl(300, 1);
     }
 
     @Test

@@ -56,10 +56,18 @@ public class JITDMNServiceImpl implements JITDMNService {
     private static final String EXPLAINABILITY_SUCCEEDED = "SUCCEEDED";
 
     @ConfigProperty(name = "kogito.explainability.lime.sample-size", defaultValue = "300")
-    private static int explainabilityLimeSampleSize;
+    int explainabilityLimeSampleSize;
 
     @ConfigProperty(name = "kogito.explainability.lime.no-of-perturbation", defaultValue = "1")
-    private static int explainabilityLimeNoOfPerturbation;
+    int explainabilityLimeNoOfPerturbation;
+
+    public JITDMNServiceImpl() {
+    }
+
+    public JITDMNServiceImpl(int explainabilityLimeSampleSize, int explainabilityLimeNoOfPerturbation) {
+        this.explainabilityLimeSampleSize = explainabilityLimeSampleSize;
+        this.explainabilityLimeNoOfPerturbation = explainabilityLimeNoOfPerturbation;
+    }
 
     @Override
     public KogitoDMNResult evaluateModel(String modelXML, Map<String, Object> context) {
