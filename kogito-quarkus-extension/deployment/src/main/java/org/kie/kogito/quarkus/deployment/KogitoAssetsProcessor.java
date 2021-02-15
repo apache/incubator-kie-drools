@@ -41,6 +41,7 @@ import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
+import io.quarkus.deployment.builditem.RunTimeConfigurationDefaultBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
@@ -75,6 +76,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
 
@@ -128,7 +130,8 @@ public class KogitoAssetsProcessor {
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<GeneratedResourceBuildItem> genResBI
+            BuildProducer<GeneratedResourceBuildItem> genResBI,
+            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration
     ) throws IOException {
 
         if (liveReload.isLiveReload()) {
@@ -165,7 +168,8 @@ public class KogitoAssetsProcessor {
                 index,
                 generatedBeans,
                 resource,
-                reflectiveClass));
+                reflectiveClass,
+                runTimeConfiguration));
 
         // Json schema files
         generatedFiles.addAll(generateJsonSchema(context, index));
@@ -259,11 +263,12 @@ public class KogitoAssetsProcessor {
             IndexView inputIndex,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<NativeImageResourceBuildItem> resource,
-            BuildProducer<ReflectiveClassBuildItem> reflectiveClass) throws IOException {
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration) throws IOException {
 
         CompositeIndex index = CompositeIndex.create(combinedIndexBuildItem.getIndex(), inputIndex);
 
-        Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(index, context, reflectiveClass);
+        Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(index, context, reflectiveClass, runTimeConfiguration);
 
         validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.RESOURCE));
 
@@ -287,7 +292,8 @@ public class KogitoAssetsProcessor {
 
     private Collection<GeneratedFile> getGeneratedPersistenceFiles(IndexView index,
                                                                    KogitoBuildContext context,
-                                                                   BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+                                                                   BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+                                                                   BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration) {
         ClassInfo persistenceClass = index
                 .getClassByName(persistenceFactoryClass);
 
@@ -304,9 +310,12 @@ public class KogitoAssetsProcessor {
                 context,
                 protoGenerator);
 
-        if(persistenceGenerator.persistenceType().equals(PersistenceGenerator.MONGODB_PERSISTENCE_TYPE)) {
+        if (persistenceGenerator.persistenceType().equals(PersistenceGenerator.MONGODB_PERSISTENCE_TYPE)) {
             addInnerClasses(org.jbpm.marshalling.impl.JBPMMessages.class, reflectiveClass);
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, "java.lang.String"));
+        } else if (persistenceGenerator.persistenceType().equals(PersistenceGenerator.KAFKA_PERSISTENCE_TYPE)) {
+            String processIds = protoGenerator.getProcessIds().stream().map(s -> "kogito.process." + s).collect(joining(","));
+            runTimeConfiguration.produce(new RunTimeConfigurationDefaultBuildItem(PersistenceGenerator.QUARKUS_KAFKA_STREAMS_TOPICS_PROP, processIds));
         }
 
         return persistenceGenerator.generate();

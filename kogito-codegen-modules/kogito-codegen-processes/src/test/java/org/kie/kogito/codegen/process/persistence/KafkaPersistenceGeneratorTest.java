@@ -14,9 +14,17 @@
  */
 package org.kie.kogito.codegen.process.persistence;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.AddonsConfig;
@@ -27,19 +35,11 @@ import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.FILESYSTEM_PERSISTENCE_TYPE;
-import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.PATH_NAME;
+import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.KAFKA_PERSISTENCE_TYPE;
 
-class FileSystemPersistenceGeneratorTest {
+class KafkaPersistenceGeneratorTest {
 
     private static final String TEST_RESOURCES = "src/test/resources";
     KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
@@ -50,7 +50,7 @@ class FileSystemPersistenceGeneratorTest {
 
     @Test
     void test() {
-        context.setApplicationProperty("kogito.persistence.type", FILESYSTEM_PERSISTENCE_TYPE);
+        context.setApplicationProperty("kogito.persistence.type", KAFKA_PERSISTENCE_TYPE);
 
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
@@ -60,13 +60,16 @@ class FileSystemPersistenceGeneratorTest {
 
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE)).count()).isEqualTo(2);
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE) && gf.relativePath().endsWith(".json")).count()).isEqualTo(1);
-        assertThat(generatedFiles).hasSize(3);
 
         Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
                 .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
                 .findFirst();
+        List<GeneratedFile> marshallerFiles = generatedFiles.stream().filter(gf -> gf.relativePath().endsWith("MessageMarshaller.java")).collect(Collectors.toList());
 
+        String expectedMarshaller = "PersonMessageMarshaller";
         assertThat(persistenceFactoryImpl).isNotEmpty();
+        assertThat(marshallerFiles.size()).isEqualTo(1);
+        assertThat(marshallerFiles.get(0).relativePath()).endsWith(expectedMarshaller + ".java");
 
         final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
 
@@ -74,16 +77,11 @@ class FileSystemPersistenceGeneratorTest {
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
-        final Optional<MethodDeclaration> methodDeclaration = classDeclaration
-                .findFirst(MethodDeclaration.class, d -> d.getName().getIdentifier().equals(PATH_NAME));
+        final MethodDeclaration methodDeclaration = classDeclaration
+                .findFirst(MethodDeclaration.class, d -> d.getName().getIdentifier().equals("marshallers"))
+                .orElseThrow(() -> new NoSuchElementException("Class declaration doesn't contain a method named \"marshallers\"!"));
 
-        assertThat(methodDeclaration).isNotEmpty();
-
-        final Optional<FieldDeclaration> fieldDeclaration = classDeclaration
-                .findFirst(FieldDeclaration.class);
-
-        assertThat(fieldDeclaration).isNotEmpty();
-        assertThat(fieldDeclaration.get().getVariables()).hasSize(1);
-        assertThat(fieldDeclaration.get().getVariables().get(0).getName().asString()).isEqualTo(PATH_NAME);
+        assertThat(methodDeclaration.getBody()).isNotEmpty();
+        assertThat(methodDeclaration.getBody().get().toString()).contains(expectedMarshaller);
     }
 }

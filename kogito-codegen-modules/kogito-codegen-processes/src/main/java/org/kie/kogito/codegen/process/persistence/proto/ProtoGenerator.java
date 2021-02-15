@@ -20,6 +20,7 @@ import org.kie.kogito.codegen.api.GeneratedFileType;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 public interface ProtoGenerator {
 
@@ -30,6 +31,8 @@ public interface ProtoGenerator {
 
     Collection<GeneratedFile> generateProtoFiles();
 
+    Set<String> getProcessIds();
+    
     /**
      * Returns params of first constructor of persistence class
      * @return

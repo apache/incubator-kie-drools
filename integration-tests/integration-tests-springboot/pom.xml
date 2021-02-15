@@ -8,6 +8,11 @@
   <artifactId>integration-tests-springboot</artifactId>
   <name>Kogito :: Integration Tests :: SpringBoot</name>
 
+  <properties>
+    <!-- Override version to match the one used by spring-kafka -->
+    <version.org.apache.kafka>2.5.0</version.org.apache.kafka>
+  </properties>
+  
   <dependencies>
     <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
       <groupId>org.kie.kogito</groupId>

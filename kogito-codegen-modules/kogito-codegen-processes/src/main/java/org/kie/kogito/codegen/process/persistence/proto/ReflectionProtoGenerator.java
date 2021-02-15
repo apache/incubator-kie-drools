@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -37,6 +38,8 @@ import org.kie.kogito.codegen.VariableInfo;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toSet;
 
 public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
 
@@ -85,6 +88,14 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             }
         }
         return parameters;
+    }
+
+    @Override
+    public Set<String> getProcessIds() {
+        return modelClasses.stream().map(c -> {
+            Generated generated = c.getAnnotation(Generated.class);
+            return generated == null ? null : generated.reference();
+        }).filter(Objects::nonNull).collect(toSet());
     }
 
     protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName, String messageComment, String fieldComment) throws Exception {
