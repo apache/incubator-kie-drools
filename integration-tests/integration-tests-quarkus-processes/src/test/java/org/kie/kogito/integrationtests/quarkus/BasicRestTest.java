@@ -24,6 +24,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.acme.travels.Traveller;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
@@ -68,6 +69,31 @@ class BasicRestTest {
                 .statusCode(200)
                 .body("id", equalTo(id))
                 .body("var1", equalTo("Kermit"));
+    }
+
+    @Test
+    void testWithInaccurateModel() {
+
+        Traveller traveller = new Traveller("Javierito", "Dimequienes", "pepe@pepe.com", "Spanish");
+        String processId = given()
+                .contentType(ContentType.JSON)
+                .body(traveller)
+                .when()
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
+                .then()
+                .statusCode(200);
     }
 
     @Test

@@ -801,11 +801,11 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             }
         }
 
+        Context variableScope = ((org.jbpm.process.core.Process) process)
+                .getDefaultContext( VariableScope.VARIABLE_SCOPE );
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance
+                .getContextInstance( variableScope );
         if ( _instance.getVariableCount() > 0 ) {
-            Context variableScope = ((org.jbpm.process.core.Process) process)
-                    .getDefaultContext( VariableScope.VARIABLE_SCOPE );
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance
-                    .getContextInstance( variableScope );
             for ( JBPMMessages.Variable _variable : _instance.getVariableList() ) {
                 try {
                     Object _value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );

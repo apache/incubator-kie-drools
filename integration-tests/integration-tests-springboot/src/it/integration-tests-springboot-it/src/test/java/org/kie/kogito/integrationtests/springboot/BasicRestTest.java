@@ -17,6 +17,7 @@
 package org.kie.kogito.integrationtests.springboot;
 
 import java.util.HashMap;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,6 +34,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import org.acme.travels.Traveller;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
@@ -64,6 +67,31 @@ class BasicRestTest extends BaseRestTest {
                 .statusCode(200)
                 .body("id", equalTo(id))
                 .body("var1", equalTo("Kermit"));
+    }
+    
+    @Test
+    void testWithInaccurateModel () {
+        
+        Traveller traveller = new Traveller ("Javierito","Dimequienes","pepe@pepe.com","Spanish", null);
+        String processId = given()
+                .contentType(ContentType.JSON)
+                .body(traveller)
+                .when()
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+        
+        given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
+                .then()
+                .statusCode(200);
     }
 
     @Test
