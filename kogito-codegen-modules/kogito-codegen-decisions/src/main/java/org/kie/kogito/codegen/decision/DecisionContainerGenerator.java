@@ -36,6 +36,8 @@ import static org.kie.kogito.codegen.decision.ReadResourceUtil.getReadResourceMe
 
 public class DecisionContainerGenerator extends AbstractApplicationSection {
 
+    protected static final String PMML_ABSTRACT_CLASS = "org.kie.kogito.pmml.AbstractPredictionModels";
+    protected static final String PMML_FUNCTION = PMML_ABSTRACT_CLASS + ".kieRuntimeFactoryFunction";
     private static final String SECTION_CLASS_NAME = "DecisionModels";
 
     private final String applicationCanonicalName;
@@ -69,6 +71,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
                         templatedGenerator,
                         "Missing init() method"));
 
+        setupPmmlIfAvailable(initMethod);
         setupExecIdSupplierVariable(initMethod);
         setupDecisionModelTransformerVariable(initMethod);
 
@@ -79,6 +82,11 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         }
 
         return compilationUnit;
+    }
+
+    private void setupPmmlIfAvailable(MethodCallExpr initMethod) {
+        boolean hasPMML = context.hasClassAvailable(PMML_ABSTRACT_CLASS);
+        initMethod.addArgument(hasPMML ? PMML_FUNCTION : "null");
     }
 
     private void setupExecIdSupplierVariable(MethodCallExpr initMethod) {
