@@ -1259,6 +1259,9 @@ limitations under the License.
             <mapping>
               <drl>JAVADOC_STYLE</drl>
             </mapping>
+            <properties>
+              <license.git.copyrightLastYearMaxCommitsLookup>100</license.git.copyrightLastYearMaxCommitsLookup>
+            </properties>
           </configuration>
           <dependencies>
             <dependency>
