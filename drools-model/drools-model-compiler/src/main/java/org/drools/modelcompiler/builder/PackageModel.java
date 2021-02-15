@@ -55,9 +55,11 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -75,14 +77,13 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -136,6 +137,7 @@ public class PackageModel {
     private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private Set<Class<?>> domainClasses = new HashSet<>();
+    private Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
 
     private List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
@@ -830,9 +832,16 @@ public class PackageModel {
     public boolean registerDomainClass(Class<?> domainClass) {
         if (!domainClass.isPrimitive() && !domainClass.isArray()) {
             domainClasses.add( domainClass );
+            classDefinitionsMap.put(domainClass, createClassDefinition(domainClass));
             return true;
         }
         return false;
+    }
+
+    private ClassDefinition createClassDefinition(Class<?> domainClass) {
+        ClassDefinition classDef = new ClassDefinition(domainClass);
+        TypeDeclarationUtils.processModifiedProps(domainClass, classDef);
+        return classDef;
     }
 
     public String getDomainClassesMetadataSource() {
@@ -889,4 +898,9 @@ public class PackageModel {
     public Map<String, PredicateInformation> getAllConstraintsMap() {
         return Collections.unmodifiableMap(allConstraintsMap);
     }
+
+    public ClassDefinition getClassDefinition(Class<?> cls) {
+        return classDefinitionsMap.get(cls);
+    }
+
 }
