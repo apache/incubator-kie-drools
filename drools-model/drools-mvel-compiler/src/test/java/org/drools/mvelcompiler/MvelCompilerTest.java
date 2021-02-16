@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -143,6 +144,29 @@ public class MvelCompilerTest implements CompilerTest {
              "{ modify ( $p )  { salary = 50000B }; }",
              "{ $p.setSalary(new java.math.BigDecimal(\"50000\")); }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testBigDecimalModulo() {
+        test(ctx -> ctx.addDeclaration("$b1", BigDecimal.class),
+             "{ java.math.BigDecimal result = $b1 % 2; }",
+             "{ java.math.BigDecimal result = $b1.remainder(new java.math.BigDecimal(2)); }");
+    }
+
+    @Test
+    public void testBigDecimalModuloPromotion() {
+        test("{ BigDecimal result = 12 % 10; }",
+             "{ java.math.BigDecimal result = new java.math.BigDecimal(12 % 10); }");
+    }
+
+    @Test
+    public void testBigDecimalModuloWithOtherBigDecimal() {
+        test(ctx -> {
+                 ctx.addDeclaration("$b1", BigDecimal.class);
+                 ctx.addDeclaration("$b2", BigDecimal.class);
+             },
+             "{ java.math.BigDecimal result = $b1 % $b2; }",
+             "{ java.math.BigDecimal result = $b1.remainder($b2); }");
     }
 
     @Test
