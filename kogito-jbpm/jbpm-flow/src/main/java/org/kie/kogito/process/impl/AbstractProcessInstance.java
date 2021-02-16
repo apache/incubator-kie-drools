@@ -43,6 +43,9 @@ import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.process.event.KogitoEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
@@ -53,11 +56,8 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
@@ -122,7 +122,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected void reconnect() {
         if (processInstance.getKnowledgeRuntime() == null) {
-            processInstance.setKnowledgeRuntime(((InternalProcessRuntime) getProcessRuntime()).getInternalKieRuntime());
+            processInstance.setKnowledgeRuntime(getProcessRuntime().getInternalKieRuntime());
         }
         processInstance.reconnect();
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
@@ -207,7 +207,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             processInstance.setReferenceId(referenceId);
         }
 
-        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance);
+        getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);
         this.id = processInstance.getStringId();
         addCompletionEventListener();
         KogitoProcessInstance processInstance = getProcessRuntime().getKogitoProcessRuntime().startProcessInstance(this.id, trigger);
@@ -220,7 +220,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addToUnitOfWork(Consumer<ProcessInstance<T>> action) {
-        ((InternalProcessRuntime) getProcessRuntime()).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
+        getProcessRuntime().getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
     }
 
     @Override
@@ -421,6 +421,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
         getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
+    }
+    
+    @Override 
+    public Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
+        return getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().updateWorkItem(id, variables,
+                policies);
     }
 
     @Override

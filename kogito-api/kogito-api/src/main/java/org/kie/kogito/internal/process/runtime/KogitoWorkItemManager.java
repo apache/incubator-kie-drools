@@ -37,6 +37,18 @@ public interface KogitoWorkItemManager extends WorkItemManager {
                           Policy<?>... policies);
 
     /**
+     * Updates work item results, merging the input parameter with 
+     * already existing one
+     * @param id the id of the work item that has been completed
+     * @param results the results related to this work item
+     * @param policies optional security information
+     * @return map containing updated model
+     */
+    Map<String, Object> updateWorkItem(String id,
+                        Map<String, Object> results,
+                        Policy<?>... policies);
+
+    /**
      * Notifies the work item manager that the work item with the given
      * id could not be executed and should be aborted.
      *
@@ -52,6 +64,7 @@ public interface KogitoWorkItemManager extends WorkItemManager {
      * @param workItemName the type of work this work item handler can execute
      * @param handler the handler for executing work items
      */
+    @Override
     void registerWorkItemHandler(String workItemName,
                                  WorkItemHandler handler);
 

@@ -24,4 +24,8 @@ public class XXXTaskOutput implements org.kie.kogito.MapOutput {
     public Map<String, Object> toMap() {
         
     }
+    
+    public static XXXTaskOutput fromMap (Map<String,Object> params) {
+        
+    }
 }

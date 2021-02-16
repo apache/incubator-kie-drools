@@ -32,6 +32,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.AssignExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -287,23 +288,30 @@ public class UserTaskModelMetaData {
     private CompilationUnit compilationUnitOutput() {
         CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskOutputTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
-        Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
-
-        if (!processMethod.isPresent()) {
-            throw new RuntimeException("Cannot find class declaration in the template");
-        }
-        ClassOrInterfaceDeclaration modelClass = processMethod.get();
+        ClassOrInterfaceDeclaration modelClass = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class,
+                sl1 -> true).orElseThrow(() -> new IllegalStateException(
+                        "Cannot find class declaration in the template"));
         compilationUnit.addOrphanComment(new LineComment("Task output model for user task '" + humanTaskNode.getName() + "' in process '" + processId + "'"));
         addUserTaskAnnotation(modelClass);
         modelClass.setName(outputModelClassSimpleName);
 
         // setup of the toMap method body
         BlockStmt toMapBody = new BlockStmt();
-        ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(
-                                                                                                                                                                                                                        null,
-                                                                                                                                                                                                                        Object.class.getSimpleName())));
+        BlockStmt fromMapBody = new BlockStmt();
+        NameExpr params = new NameExpr(PARAMS);
+        final String fromMapReturnName = "result";
+        NameExpr fromMapReturn = new NameExpr(fromMapReturnName);
+        fromMapBody.addStatement(new AssignExpr(new VariableDeclarationExpr(parseClassOrInterfaceType(
+                outputModelClassName), fromMapReturnName),
+                new ObjectCreationExpr().setType(outputModelClassSimpleName), Operator.ASSIGN));
+
+        ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList
+                .nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(null,
+                        Object.class.getSimpleName())));
+
         VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, PARAMS);
-        toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
+        toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null,
+                HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
         for (Entry<String, String> entry : humanTaskNode.getOutMappings().entrySet()) {
             if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
@@ -338,16 +346,29 @@ public class UserTaskModelMetaData {
             fd.createSetter();
 
             // toMap method body
-            MethodCallExpr putVariable = new MethodCallExpr(new NameExpr(PARAMS), "put");
+            MethodCallExpr putVariable = new MethodCallExpr(params, "put");
             putVariable.addArgument(new StringLiteralExpr(entry.getKey()));
             putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), entry.getKey()));
             toMapBody.addStatement(putVariable);
+
+            // fromMap method body
+            fromMapBody.addStatement(new AssignExpr(new FieldAccessExpr(fromMapReturn,entry.getKey()),
+                    new CastExpr(new ClassOrInterfaceType(null, variable.getType().getStringType()),
+                            new MethodCallExpr(params, "get").addArgument(new StringLiteralExpr(entry.getKey()))),
+                    Operator.ASSIGN));
+
         }
 
-        Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
+        toMapBody.addStatement(new ReturnStmt(params));
+        fromMapBody.addStatement(new ReturnStmt(fromMapReturn));
+        modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap")).ifPresent(
+                methodDeclaration -> methodDeclaration.setBody(toMapBody));
+        modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap")).ifPresent(
+                methodDeclaration -> {
+                    methodDeclaration.setBody(fromMapBody);
+                    methodDeclaration.setType(outputModelClassSimpleName);
+                });
 
-        toMapBody.addStatement(new ReturnStmt(new NameExpr(PARAMS)));
-        toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
         return compilationUnit;
     }
 

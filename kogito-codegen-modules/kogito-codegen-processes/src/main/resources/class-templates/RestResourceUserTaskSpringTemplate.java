@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -64,7 +65,7 @@ public class $Type$Resource {
 
     @PostMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> completeTask(@PathVariable("id") final String id,
+    public ResponseEntity<$Type$Output> taskTransition(@PathVariable("id") final String id,
                                                      @PathVariable("workItemId") final String workItemId,
                                                      @RequestParam(value = "phase", required = false, defaultValue =
                                                              "complete") final String phase,
@@ -85,6 +86,48 @@ public class $Type$Resource {
                                                                                                             groups)));
                                     return ResponseEntity.ok(pi.checkError().variables().toOutput());
                                 })
+                                .orElseGet(() -> ResponseEntity.notFound().build()));
+    }
+    
+    @PostMapping(value = "/{id}/$taskName$/{workItemId}/phases/{phase}", produces = MediaType.APPLICATION_JSON_VALUE,
+                 consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<$Type$Output> completeTask(@PathVariable("id") final String id,
+                                                     @PathVariable("workItemId") final String workItemId,
+                                                     @PathVariable("phase") final String phase,
+                                                     @RequestParam("user") final String user,
+                                                     @RequestParam("group") final List<String> groups,
+                                                     @RequestBody(required = false) final $TaskOutput$ model) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> {
+                                    pi.transitionWorkItem(
+                                            workItemId,
+                                            HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
+                                    return ResponseEntity.ok(pi.checkError().variables().toOutput());
+                                })
+                                .orElseGet(() -> ResponseEntity.notFound().build()));
+    }
+    
+    
+    @PatchMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<$TaskOutput$> updateTask(@PathVariable("id") final String id,
+                                                     @PathVariable("workItemId") final String workItemId,
+                                                     @RequestParam("user") final String user,
+                                                     @RequestParam("group") final List<String> groups,
+                                                     @RequestBody final Map<String,Object> model) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> ResponseEntity.ok($TaskOutput$.fromMap(pi.updateWorkItem(workItemId, model,
+                                        Policies.of(user, groups)))))
                                 .orElseGet(() -> ResponseEntity.notFound().build()));
     }
 

@@ -37,6 +37,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.PATCH;
+
 
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Application;

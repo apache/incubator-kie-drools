@@ -110,6 +110,16 @@ public interface ProcessInstance<T> {
      * @param policies  optional list of policies to be enforced
      */
     void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
+    
+    
+    /**
+     * Update work item output model without changing phase
+     *
+     * @param id        id of the work item to complete
+     * @param variables information that will replace existing output model
+     * @param policies  optional list of policies to be enforced
+     */
+    Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
 
     /**
      * Aborts work item belonging to this process instance

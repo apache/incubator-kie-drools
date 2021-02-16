@@ -45,8 +45,8 @@ import org.kie.kogito.signal.SignalManager;
 import static org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler.transitionToPhase;
 import static org.jbpm.process.instance.impl.workitem.Abort.ID;
 import static org.jbpm.process.instance.impl.workitem.Abort.STATUS;
-import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.ABORTED;
-import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.COMPLETED;
+import static org.kie.api.runtime.process.WorkItem.ABORTED;
+import static org.kie.api.runtime.process.WorkItem.COMPLETED;
 
 public class LightWorkItemManager implements KogitoWorkItemManager {
  
@@ -66,6 +66,7 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
         this.eventSupport = eventSupport;
     }
 
+    @Override
     public void internalExecuteWorkItem( KogitoWorkItem workItem) {
         (( KogitoWorkItemImpl ) workItem).setId(UUID.randomUUID().toString());
         internalAddWorkItem(workItem);
@@ -83,10 +84,12 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
         }
     }    
 
+    @Override
     public void internalAddWorkItem( KogitoWorkItem workItem) {
         workItems.put(workItem.getStringId(), workItem);
     }
 
+    @Override
     public void internalAbortWorkItem(String id) {
         KogitoWorkItemImpl workItem = ( KogitoWorkItemImpl ) workItems.get(id);
         // work item may have been aborted
@@ -135,14 +138,48 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
         }
     }
     
+    @Override
     public KogitoWorkItem getWorkItem( String id) {
         return workItems.get(id);
     }
 
+    @Override
     public void completeWorkItem(String id, Map<String, Object> results, Policy<?>... policies) {
         transitionWorkItem(id, new TransitionToComplete(results, Arrays.asList(policies)));
     }
     
+    @Override
+    public Map<String, Object> updateWorkItem(String id, Map<String, Object> params, Policy<?>... policies) {
+        KogitoWorkItem workItem = workItems.get(id);
+        if (workItem != null) {
+            if (!workItem.enforce(policies)) {
+                throw new NotAuthorizedException("User is not authorized to access task instance with id " + id);
+            }
+            Map<String, Object> results = workItem.getResults() == null ? new HashMap<>() : workItem.getResults();
+            results.putAll(params);
+            eventSupport.fireAfterWorkItemTransition(processInstanceManager.getProcessInstance(workItem
+                    .getProcessInstanceStringId()), workItem, new Transition<Map<String, Object>>() {
+                        @Override
+                        public String phase() {
+                            return workItem.getPhaseId();
+                        }
+                        @Override
+                        public Map<String, Object> data() {
+                            return results;
+                        }
+                        @Override
+                        public List policies() {
+                            return Arrays.asList(policies);
+                        }
+                    }, null);
+            return results;
+        } else {
+            throw new WorkItemNotFoundException(id);
+        }
+    }
+
+
+    @Override
     public void internalCompleteWorkItem( KogitoWorkItem workItem) {
         ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceStringId());
         workItem.setState(COMPLETED);
@@ -156,35 +193,40 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
  
     }
     
-    @SuppressWarnings("unchecked")
+    @Override
     public void transitionWorkItem(String id, Transition<?> transition) {
         KogitoWorkItem workItem = workItems.get(id);
-        // work item may have been aborted
         if (workItem != null) {
-                        
-            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
-            if (handler != null) {
-                ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceStringId());
-                eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
-                
-                if ( !transitionToPhase(handler, workItem, this, transition) ) {
-                    workItem.setResults((Map<String, Object>)transition.data()); 
-                    workItem.setPhaseId(Complete.ID);
-                    workItem.setPhaseStatus(Complete.STATUS);
-                    completePhase.apply(workItem, transition);
-                    internalCompleteWorkItem(workItem);                                        
-                }
-
-                eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
-            } else {
-                throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
-            }
-                
+            transitionWorkItem(workItem, transition);
         } else {
             throw new WorkItemNotFoundException("Work Item (" + id + ") does not exist", id);
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void transitionWorkItem(KogitoWorkItem workItem, Transition<?> transition) {
+        // work item may have been aborted
+        WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
+        if (handler != null) {
+            ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem
+                    .getProcessInstanceStringId());
+            eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
+
+            if (!transitionToPhase(handler, workItem, this, transition)) {
+                workItem.setResults((Map<String, Object>) transition.data());
+                workItem.setPhaseId(Complete.ID);
+                workItem.setPhaseStatus(Complete.STATUS);
+                completePhase.apply(workItem, transition);
+                internalCompleteWorkItem(workItem);
+            }
+
+            eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
+        } else {
+            throw new KogitoWorkItemHandlerNotFoundException(workItem.getName());
+        }
+    }
+
+    @Override
     public void abortWorkItem(String id, Policy<?>... policies) {
         KogitoWorkItemImpl workItem = ( KogitoWorkItemImpl ) workItems.get(id);
         // work item may have been aborted
@@ -219,14 +261,17 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void registerWorkItemHandler( String workItemName, WorkItemHandler handler) {
         this.workItemHandlers.put(workItemName, handler);
     }
 
+    @Override
     public void clear() {
         this.workItems.clear();
     }
     
+    @Override
     public void signalEvent(String type, Object event) { 
         this.signalManager.signalEvent(type, event);
     }
@@ -236,6 +281,7 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void signalEvent(String type, Object event, String processInstanceId) {
         this.signalManager.signalEvent(processInstanceId, type, event);
     }

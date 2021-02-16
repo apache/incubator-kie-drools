@@ -30,6 +30,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
@@ -123,6 +124,22 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
             workItems.remove(id);
+        }
+    }
+    
+    public Map<String,Object> updateWorkItem(String id, Map<String, Object> params, Policy<?>... policies) {
+        KogitoWorkItem workItem = workItems.get(id);
+        if (workItem != null) {
+            Map<String,Object> results = workItem.getResults();
+            if (results == null) {
+                workItem.setResults(params);
+                return params;
+            } else {
+                results.putAll(params);
+                return results;
+            }
+        } else {
+            throw new WorkItemNotFoundException(id);
         }
     }
 

@@ -78,6 +78,54 @@ public class $Type$Resource {
                     })
                     .orElseThrow(() -> new NotFoundException()));
     }
+    
+    
+    @POST
+    @Path("/{id}/$taskName$/{workItemId}/phases/{phase}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public $Type$Output taskTransition(
+                                       @PathParam("id") final String id,
+                                       @PathParam("workItemId") final String workItemId,
+                                       @PathParam("phase") final String phase,
+                                       @QueryParam("user") final String user,
+                                       @QueryParam("group") final List<String> groups,
+                                       final $TaskOutput$ model) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> {
+                                    pi.transitionWorkItem(
+                                            workItemId,
+                                            HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
+                                    return pi.variables().toOutput();
+                                })
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+    
+    
+    @PATCH
+    @Path("/{id}/$taskName$/{workItemId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public $TaskOutput$ updateTask(@PathParam("id") final String id,
+                               @PathParam("workItemId") final String workItemId,
+                               @QueryParam("user") final String user,
+                               @QueryParam("group") final List<String> groups,
+                               final Map<String,Object> params) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> $TaskOutput$.fromMap(pi.updateWorkItem(workItemId, params,
+                                        Policies.of(user, groups))))
+                                .orElseThrow(() -> new NotFoundException()));
+    }
 
     @GET
     @Path("/{id}/$taskName$/{workItemId}")
