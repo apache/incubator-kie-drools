@@ -47,12 +47,14 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.drools.modelcompiler.builder.errors.ConsequenceRewriteException;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
@@ -318,9 +320,9 @@ public class Consequence {
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
-        Map<String, String> newDeclarations = new HashMap<>();
+        Map<String, Type> rhsBodyDeclarations = new HashMap<>();
         for (VariableDeclarator variableDeclarator : rhs.findAll(VariableDeclarator.class)) {
-            variableDeclarator.getInitializer().ifPresent( init -> newDeclarations.put( variableDeclarator.getNameAsString(), init.toString() ) );
+            variableDeclarator.getInitializer().ifPresent( init -> rhsBodyDeclarations.put(variableDeclarator.getNameAsString(), variableDeclarator.getType()));
         }
 
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
@@ -348,7 +350,11 @@ public class Consequence {
             if ( argExpr instanceof NameExpr ) {
 
                 String updatedVar = (( NameExpr ) argExpr).getNameAsString();
-                Class<?> updatedClass = findUpdatedClass( newDeclarations, updatedVar );
+                Class<?> updatedClass = classFromRHSDeclarations(rhsBodyDeclarations, updatedVar );
+
+                // We might need to generate the domain metadata class for types used in consequence
+                // without an explicit pattern. See CompilerTest.testConsequenceInsertThenUpdate
+                context.getPackageModel().registerDomainClass(updatedClass);
 
                 if (context.isPropertyReactive(updatedClass)) {
 
@@ -367,9 +373,19 @@ public class Consequence {
         return requireDrools.get();
     }
 
-    private Class<?> findUpdatedClass( Map<String, String> newDeclarations, String updatedVar ) {
-        String declarationVar = newDeclarations.getOrDefault(updatedVar, updatedVar);
-        return context.getDeclarationById(declarationVar).map( DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
+    private Class<?> classFromRHSDeclarations(Map<String, Type> rhsDeclarations, String updatedVar) {
+        Type type = rhsDeclarations.get(updatedVar);
+        if (type != null) {
+            try {
+                return context.getTypeResolver().resolveType(type.toString());
+            } catch (ClassNotFoundException e) {
+                throw new ConsequenceRewriteException();
+            }
+        } else {
+            return context.getDeclarationById(updatedVar)
+                    .map(DeclarationSpec::getDeclarationClass)
+                    .orElseThrow(ConsequenceRewriteException::new);
+        }
     }
 
     private MethodCallExpr createBitMaskInitialization(Class<?> updatedClass, Set<String> modifiedProps) {
