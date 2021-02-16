@@ -15,7 +15,6 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,7 +67,6 @@ public class FactMappingValue {
         cloned.expressionIdentifier = expressionIdentifier;
         cloned.factIdentifier = factIdentifier;
         cloned.rawValue = rawValue;
-        cloned.pathToValue = pathToValue != null ? new ArrayList<>(pathToValue) : null;
         return cloned;
     }
 

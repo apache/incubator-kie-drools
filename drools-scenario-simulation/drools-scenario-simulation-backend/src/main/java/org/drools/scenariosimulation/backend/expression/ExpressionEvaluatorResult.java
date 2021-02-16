@@ -77,7 +77,7 @@ public class ExpressionEvaluatorResult {
     }
 
     public void addMapItemStepToPath(String key) {
-        pathToWrongValue.add(0, "Item key\"" + key + "\"");
+        pathToWrongValue.add(0, "Item key \"" + key + "\"");
     }
 
     public void setWrongValue(String wrongValue) {

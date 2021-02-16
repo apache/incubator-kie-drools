@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -119,6 +120,13 @@ public class AbstractRunnerHelperTest {
         verify(expectedResultSpy, times(1)).setExceptionMessage(eq("Error"));
 
         reset(expectedResultSpy);
+
+        // Fail in collection case
+        List<String> pathToValue = Arrays.asList("field1", "fields2");
+        resultWrapperAtomicReference.set(ValueWrapper.errorWithPath(VALUE, pathToValue));
+        assertFalse(abstractRunnerHelper.fillResult(expectedResultSpy, resultWrapperSupplier, expressionEvaluator).getResult());
+        verify(expectedResultSpy, times(1)).setPathToValue(eq(pathToValue));
+        verify(expectedResultSpy, times(1)).setErrorValue(eq(VALUE));
 
         // Fail with exception
         resultWrapperAtomicReference.set(ValueWrapper.errorWithMessage("detailedError"));
