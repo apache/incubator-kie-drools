@@ -16,10 +16,13 @@
 
 package org.drools.compiler.lang.descr;
 
+import java.io.Serializable;
+
 import org.drools.core.util.StringUtils;
 
-public class QualifiedName {
+public class QualifiedName implements Serializable {
 
+    private static final long serialVersionUID = 500964956132811301L;
     private String name;
     private String namespace;
 
