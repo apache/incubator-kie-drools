@@ -51,7 +51,6 @@ class OASTest extends BaseRestTest {
         SwaggerParseResult result = new OpenAPIV3Parser().readLocation(url, null, parseOptions);
 
         List<String> messages = result.getMessages();
-        messages.removeIf(m -> m.endsWith("parameters.[group].schemas.default is not of type `array`")); // KOGITO-4268
         assertThat(messages).isEmpty();
 
         OpenAPI openAPI = result.getOpenAPI();

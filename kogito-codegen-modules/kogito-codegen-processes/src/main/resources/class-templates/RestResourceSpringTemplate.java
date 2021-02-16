@@ -130,7 +130,7 @@ public class $Type$Resource {
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WorkItem>> getTasks_$name$(@PathVariable("id") String id,
                                                           @RequestParam(value = "user", required = false) final String user,
-                                                          @RequestParam(value = "group", required = false, defaultValue = "") final List<String> groups) {
+                                                          @RequestParam(value = "group", required = false) final List<String> groups) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)
                 .map(pi -> pi.workItems(Policies.of(user, groups)))

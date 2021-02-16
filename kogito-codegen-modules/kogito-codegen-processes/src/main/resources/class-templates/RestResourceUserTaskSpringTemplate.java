@@ -69,7 +69,7 @@ public class $Type$Resource {
                                                      @RequestParam(value = "phase", required = false, defaultValue =
                                                              "complete") final String phase,
                                                      @RequestParam(value = "user", required = false) final String user,
-                                                     @RequestParam(value = "group", required = false, defaultValue = "") final List<String> groups,
+                                                     @RequestParam(value = "group", required = false) final List<String> groups,
                                                      @RequestBody(required = false) final $TaskOutput$ model) {
         return UnitOfWorkExecutor
                 .executeInUnitOfWork(
@@ -92,7 +92,7 @@ public class $Type$Resource {
     public ResponseEntity<$TaskInput$> getTask(@PathVariable("id") String id,
                                @PathVariable("workItemId") String workItemId,
                                @RequestParam(value = "user", required = false) final String user,
-                               @RequestParam(value = "group", required = false, defaultValue = "") final List<String> groups) {
+                               @RequestParam(value = "group", required = false) final List<String> groups) {
         return process
             .instances()
             .findById(id)
@@ -110,7 +110,7 @@ public class $Type$Resource {
     public Map<String, Object> getSchemaAndPhases(@PathVariable("id") final String id,
                                          @PathVariable("workItemId") final String workItemId,
                                          @RequestParam(value = "user", required = false) final String user,
-                                         @RequestParam(value = "group", required = false, defaultValue = "") final List<String> groups) {
+                                         @RequestParam(value = "group", required = false) final List<String> groups) {
         return JsonSchemaUtil
             .addPhases(
                 process,
@@ -127,7 +127,7 @@ public class $Type$Resource {
                                                   @RequestParam(value = "phase", required = false, defaultValue =
                                                           "abort") final String phase,
                                                   @RequestParam(value = "user", required = false) final String user,
-                                                  @RequestParam(value = "group", required = false, defaultValue = "") final List<String> groups) {
+                                                  @RequestParam(value = "group", required = false) final List<String> groups) {
         return UnitOfWorkExecutor
                 .executeInUnitOfWork(
                         application.unitOfWorkManager(),
