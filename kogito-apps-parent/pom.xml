@@ -33,7 +33,7 @@
     <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
 
     <!-- OptaPlanner version -->
-    <version.org.optaplanner>8.3.0-SNAPSHOT</version.org.optaplanner>
+    <version.org.optaplanner>8.4.0-SNAPSHOT</version.org.optaplanner>
   </properties>
 
   <repositories>
