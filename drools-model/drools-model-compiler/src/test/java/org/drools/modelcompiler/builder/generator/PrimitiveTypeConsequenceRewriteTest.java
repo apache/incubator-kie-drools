@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 public class PrimitiveTypeConsequenceRewriteTest {
 
     @Test
-    public void shouldConvertCastOfShortToShortValue() {
+    public void shouldConvertCastOfShortToIntegerToShortValue() {
         RuleContext context = createContext();
         context.addDeclaration("$interimVar", int.class);
 
@@ -21,7 +21,18 @@ public class PrimitiveTypeConsequenceRewriteTest {
                 .rewrite("{ $address.setShortNumber((short)$interimVar); }");
 
         assertThat(rewritten,
-                   equalToIgnoringWhiteSpace("{ $address.setShortNumber($interimVar.shortValue()); }"));
+                   equalToIgnoringWhiteSpace("{ $address.setShortNumber(java.lang.Integer.valueOf($interimVar).shortValue()); }"));
+    }
+
+    @Test
+    public void shouldConvertCastOfShortNegativeValueToIntegerToShortValue() {
+        RuleContext context = createContext();
+
+        String rewritten = new PrimitiveTypeConsequenceRewrite(context)
+                .rewrite("{ $address.setShortNumber((short)-2); }");
+
+        assertThat(rewritten,
+                   equalToIgnoringWhiteSpace("{ $address.setShortNumber(java.lang.Integer.valueOf(-2).shortValue()); }"));
     }
 
     @Test
@@ -44,7 +55,7 @@ public class PrimitiveTypeConsequenceRewriteTest {
                 .rewrite("{ $address.setShortNumber((short)($interimVar)); }");
 
         assertThat(rewritten,
-                   equalToIgnoringWhiteSpace("{ $address.setShortNumber($interimVar.shortValue()); }"));
+                   equalToIgnoringWhiteSpace("{ $address.setShortNumber(java.lang.Integer.valueOf($interimVar).shortValue()); }"));
     }
 
     public static class WithIntegerField {
@@ -71,7 +82,7 @@ public class PrimitiveTypeConsequenceRewriteTest {
                 .rewrite("{ $address.setShortNumber((short)($interimVar.unboxed())); }");
 
         assertThat(rewritten,
-                   equalToIgnoringWhiteSpace("{ $address.setShortNumber($interimVar.unboxed().shortValue()); }"));
+                   equalToIgnoringWhiteSpace("{ $address.setShortNumber(java.lang.Integer.valueOf($interimVar.unboxed()).shortValue()); }"));
     }
 
 
