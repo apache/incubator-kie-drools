@@ -86,6 +86,9 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
+        <configuration>
+          <skipOriginalJarRename>true</skipOriginalJarRename>
+        </configuration>
         <executions>
           <execution>
             <goals>
