@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -2252,6 +2253,95 @@ public class CompilerTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         assertNotNull( ksession);
+    }
+
+    @Test // DROOLS-6034
+    public void testConsequenceInsertThenUpdate() throws Exception {
+        String str =
+                "global java.util.List children;\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"a new baby is born\" when\n" +
+                        "  " + // No pattern
+                        "then\n" +
+                        "  Person andrea = new Person();\n" +
+                        "  insert(andrea);\n" +
+                        "  andrea.setName(\"Andrea\");\n" +
+                        "  update(andrea);\n" +
+                        "  children.add(andrea.getName());\n" +
+                        "end";
+
+        KieSession kSession = getKieSession( str );
+
+        ArrayList<String> children = new ArrayList<>();
+        kSession.setGlobal("children", children);
+
+        Person luca = new Person( "Luca", 36 );
+
+        kSession.insert( luca );
+        assertEquals(1, kSession.fireAllRules());
+
+        Assertions.assertThat(children).containsOnly("Andrea");
+    }
+
+    @Test // DROOLS-6034
+    public void testConsequenceInsertThenModify() throws Exception {
+        String str =
+                "global java.util.List children;\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "dialect \"mvel\"" +
+                        "rule \"a new baby is born\" when\n" +
+                        "  " + // No pattern
+                        "then\n" +
+                        "  Person andrea = new Person();\n" +
+                        "  insert(andrea);\n" +
+                        "  modify(andrea) {" +
+                        "       name = \"Andrea\" " +
+                        "  }" +
+                        "  children.add(andrea.getName());\n" +
+                        "end";
+
+        KieSession kSession = getKieSession( str );
+
+        ArrayList<String> children = new ArrayList<>();
+        kSession.setGlobal("children", children);
+
+        Person luca = new Person( "Luca", 36 );
+
+        kSession.insert( luca );
+        assertEquals(1, kSession.fireAllRules());
+
+        Assertions.assertThat(children).containsOnly("Andrea");
+    }
+
+    @Test // DROOLS-6034
+    public void testConsequenceInsertThenUpdateWithPatternInitializer() throws Exception {
+        String str =
+                "global java.util.List result;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import static " + Person.class.getName() + ".identityFunction;\n" +
+                "no-loop true\n" +
+                "rule R1 when\n" +
+                "  $p : Person($name : name)\n" +
+                "then\n" +
+                "  Person fromMethodCall = identityFunction($p);" +
+                "  Person fromNameExpr = fromMethodCall;" +
+                "  Person fromNameExprTwice = fromNameExpr;\n" +
+                "  insert(fromNameExprTwice);\n" +
+                "  update(fromNameExprTwice);\n" +
+                "  result.add(fromNameExprTwice.getName());\n" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        ArrayList<String> children = new ArrayList<>();
+        kSession.setGlobal("result", children);
+
+        Person luca = new Person( "Luca", 36 );
+
+        kSession.insert( luca );
+        assertEquals(1, kSession.fireAllRules());
+
+        Assertions.assertThat(children).containsOnly("Luca");
     }
 
     @Test
