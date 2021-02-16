@@ -42,6 +42,7 @@ public class FactMappingValueTest {
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
         assertThat(value.getExceptionMessage()).isNull();
         assertThat(value.getErrorValue()).isNull();
+        assertThat(value.getPathToValue()).isNull();
     }
 
     @Test
