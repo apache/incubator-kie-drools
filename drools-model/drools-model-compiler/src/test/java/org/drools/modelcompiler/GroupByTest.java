@@ -14,10 +14,6 @@
 
 package org.drools.modelcompiler;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 
 import org.assertj.core.api.Assertions;
@@ -1217,5 +1212,42 @@ public class GroupByTest {
         public Object getValue() {
             return value;
         }
+    }
+
+    @Test
+    public void testFilterOnGroupByKey() throws Exception {
+        // DROOLS-6031
+        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+
+        final Variable<String> var_$key = D.declarationOf(String.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1)),
+                // Filter
+                D.pattern(var_$key).expr(s -> s.length() > 0).expr(s -> s.length() < 2),
+                // Consequence
+                D.on(var_$key, var_results)
+                        .execute(($key, results) -> results.add($key))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( "A" );
+        ksession.insert( "test" );
+        ksession.insert(new Person("Mark", 42));
+        // PROBLEM 1: Replace both uses of var_$keyWithFrom by var_$key and test will throw.
+        // PROBLEM 2: Remove the insert of "test" and the test no longer throws when from() is not used.
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        Assertions.assertThat(results.size()).isEqualTo(1);
+        Assertions.assertThat(results.get(0)).isEqualTo("M");
     }
 }
