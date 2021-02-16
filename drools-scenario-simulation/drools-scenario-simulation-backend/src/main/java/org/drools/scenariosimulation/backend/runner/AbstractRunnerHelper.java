@@ -46,7 +46,6 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
-import org.drools.scenariosimulation.backend.util.ScenarioSimulationBackendMessages;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +54,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithValidValue;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithPath;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
 
 public abstract class AbstractRunnerHelper {
@@ -286,6 +286,9 @@ public abstract class AbstractRunnerHelper {
         } else if (resultValue.getErrorMessage().isPresent()) {
             // propagate error message
             expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
+        } else if (resultValue.getPathToValue() != null) {
+            expectedResult.setPathToValue(resultValue.getPathToValue());
+            expectedResult.setErrorValue(resultValue.getValue());
         } else {
             try {
                 // set actual as proposed value
@@ -312,8 +315,7 @@ public abstract class AbstractRunnerHelper {
             if (evaluationResult.isSuccessful()) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
-                return errorWithMessage(ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage(evaluationResult.getWrongValue(),
-                                                                                                        evaluationResult.getPathToWrongValue()));
+                return errorWithPath(evaluationResult.getWrongValue(), evaluationResult.getPathToWrongValue());
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
             }

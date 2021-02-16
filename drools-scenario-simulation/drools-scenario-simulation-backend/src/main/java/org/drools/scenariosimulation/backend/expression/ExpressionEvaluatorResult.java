@@ -16,6 +16,7 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,7 +69,7 @@ public class ExpressionEvaluatorResult {
     }
 
     public void addFieldItemStepToPath(String fieldName) {
-        pathToWrongValue.add(0, "Field: \"" + fieldName+ "\"");
+        pathToWrongValue.add(0, fieldName);
     }
 
     public void addListItemStepToPath(int elementNumber) {
@@ -88,6 +89,6 @@ public class ExpressionEvaluatorResult {
     }
 
     public List<String> getPathToWrongValue() {
-        return pathToWrongValue;
+        return Collections.unmodifiableList(pathToWrongValue);
     }
 }

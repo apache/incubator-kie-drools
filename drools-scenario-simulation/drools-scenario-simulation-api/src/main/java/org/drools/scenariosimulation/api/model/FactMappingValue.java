@@ -15,6 +15,8 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -31,6 +33,8 @@ public class FactMappingValue {
     private FactMappingValueStatus status = FactMappingValueStatus.SUCCESS;
     @XStreamOmitField
     private Object errorValue;
+    @XStreamOmitField
+    private List<String> pathToValue;
     @XStreamOmitField
     private String exceptionMessage;
 
@@ -64,6 +68,7 @@ public class FactMappingValue {
         cloned.expressionIdentifier = expressionIdentifier;
         cloned.factIdentifier = factIdentifier;
         cloned.rawValue = rawValue;
+        cloned.pathToValue = pathToValue == null ? null : new ArrayList<>(pathToValue);
         return cloned;
     }
 
@@ -89,9 +94,19 @@ public class FactMappingValue {
         this.status = FactMappingValueStatus.FAILED_WITH_EXCEPTION;
     }
 
+    public List<String> getPathToValue() {
+        return pathToValue;
+    }
+
+    public void setPathToValue(List<String> pathToValue) {
+        this.pathToValue = pathToValue;
+        this.status = FactMappingValueStatus.FAILED_WITH_ERROR;
+    }
+
     public void resetStatus() {
         this.status = FactMappingValueStatus.SUCCESS;
         this.exceptionMessage = null;
         this.errorValue = null;
+        this.pathToValue = null;
     }
 }
