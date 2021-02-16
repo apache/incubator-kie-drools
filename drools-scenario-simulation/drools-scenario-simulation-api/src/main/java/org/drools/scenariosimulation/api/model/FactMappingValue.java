@@ -68,7 +68,7 @@ public class FactMappingValue {
         cloned.expressionIdentifier = expressionIdentifier;
         cloned.factIdentifier = factIdentifier;
         cloned.rawValue = rawValue;
-        cloned.pathToValue = pathToValue == null ? null : new ArrayList<>(pathToValue);
+        cloned.pathToValue = pathToValue != null ? new ArrayList<>(pathToValue) : null;
         return cloned;
     }
 

@@ -132,19 +132,21 @@ public class AbstractRunnerHelperTest {
         Object resultRaw = "test";
         Object expectedResultRaw = "";
         String collectionWrongValue = "value";
-        String collectionValuePath = "Item(1)";
+        String collectionValuePath = "Item #: 1";
         String genericErrorMessage = "errorMessage";
 
         // case 1: succeed
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofSuccessful());
         ValueWrapper valueWrapper = abstractRunnerHelper.getResultWrapper(String.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, String.class);
         assertTrue(valueWrapper.isValid());
+        assertNull(valueWrapper.getPathToValue());
 
         // case 2: failed with actual value
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed());
         valueWrapper = abstractRunnerHelper.getResultWrapper(String.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, String.class);
         assertFalse(valueWrapper.isValid());
         assertEquals(resultRaw, valueWrapper.getValue());
+        assertNull(valueWrapper.getPathToValue());
 
         // case 3: failed without actual value (list)
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
