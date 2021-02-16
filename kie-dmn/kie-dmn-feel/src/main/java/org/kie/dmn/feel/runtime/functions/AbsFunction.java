@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.time.Period;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class AbsFunction
@@ -43,6 +44,14 @@ public class AbsFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "duration", "cannot be null"));
         }
         return FEELFnResult.ofResult( duration.toTotalMonths() < 0 ? duration.negated() : duration );
+    }
+
+    public FEELFnResult<ComparablePeriod> invoke(@ParameterName("n") ComparablePeriod comparablePeriod) {
+        Period duration = comparablePeriod.asPeriod();
+        if (duration == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "duration", "cannot be null"));
+        }
+        return FEELFnResult.ofResult(new ComparablePeriod(duration.toTotalMonths() < 0 ? duration.negated() : duration));
     }
 
     public FEELFnResult<Duration> invoke(@ParameterName( "n" ) Duration duration) {

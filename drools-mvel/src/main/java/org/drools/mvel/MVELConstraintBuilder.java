@@ -725,6 +725,10 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             }
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+            if (!usedIdentifiers.getGlobals().isEmpty()) {
+                // cannot create a read accessors here when using globals
+                return null;
+            }
 
             if (!usedIdentifiers.getDeclrClasses().isEmpty()) {
                 if (reportError && descr instanceof BindingDescr ) {
@@ -744,12 +748,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             (( MVELCompileable ) reader).compile(data, context.getRule());
             data.addCompileable((MVELCompileable) reader);
         } catch (final Exception e) {
-            int dotPos = fieldName.indexOf('.');
-            String varName = dotPos > 0 ? fieldName.substring(0, dotPos).trim() : fieldName;
-            if (context.getKnowledgeBuilder().getGlobals().containsKey(varName)) {
-                return null;
-            }
-
             if (reportError) {
                 AsmUtil.copyErrorLocation(e, descr);
                 registerDescrBuildError(context, descr, e,

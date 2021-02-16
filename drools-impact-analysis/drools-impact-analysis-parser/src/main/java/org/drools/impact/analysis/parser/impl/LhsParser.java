@@ -17,10 +17,13 @@ package org.drools.impact.analysis.parser.impl;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.left.Constraint;
+import org.drools.impact.analysis.model.left.LeftHandSide;
 import org.drools.impact.analysis.model.left.Pattern;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -46,13 +49,24 @@ public class LhsParser {
 
     public void parse( RuleDescr ruleDescr, RuleContext context, Rule rule ) {
         for (BaseDescr baseDescr : ruleDescr.getLhs().getDescrs()) {
-            if (baseDescr instanceof PatternDescr) {
-                rule.getLhs().addPattern( parsePattern( context, (PatternDescr) baseDescr) );
+            parseDescr( context, rule.getLhs(), baseDescr, true );
+        }
+    }
+
+    private void parseDescr( RuleContext context, LeftHandSide lhs, BaseDescr baseDescr, boolean positive ) {
+        if (baseDescr instanceof PatternDescr) {
+            lhs.addPattern( parsePattern( context, (PatternDescr) baseDescr, positive) );
+        } else if (baseDescr instanceof ConditionalElementDescr ) {
+            if (baseDescr instanceof NotDescr) {
+                positive = !positive;
+            }
+            for (BaseDescr innerDescr : (( ConditionalElementDescr ) baseDescr).getDescrs()) {
+                parseDescr( context, lhs, innerDescr, positive );
             }
         }
     }
 
-    private Pattern parsePattern( RuleContext context, PatternDescr patternDescr ) {
+    private Pattern parsePattern( RuleContext context, PatternDescr patternDescr, boolean positive ) {
         String type = patternDescr.getObjectType();
         Class<?> patternClass;
         try {
@@ -61,7 +75,7 @@ public class LhsParser {
             throw new RuntimeException( e );
         }
 
-        Pattern pattern = new Pattern( patternClass );
+        Pattern pattern = new Pattern( patternClass, positive );
         if ( patternDescr.getIdentifier() != null ) {
             context.addDeclaration( patternDescr.getIdentifier(), patternClass );
         }

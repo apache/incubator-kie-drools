@@ -17,8 +17,8 @@
 package org.drools.impact.analysis.integrationtests;
 
 import org.drools.impact.analysis.graph.Graph;
-import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
+import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.integrationtests.domain.Address;
 import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.model.AnalysisModel;
@@ -53,8 +53,8 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }
@@ -95,10 +95,10 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", Link.Type.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R4", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R3", "mypkg.R4", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
+        assertNodeLink(graph, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }
@@ -125,7 +125,7 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -152,8 +152,8 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
 
         generatePng(graph);
     }
@@ -205,7 +205,7 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -234,9 +234,9 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R2", Link.Type.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", ReactivityType.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R2", "mypkg.R2", ReactivityType.NEGATIVE);
 
         generatePng(graph);
     }

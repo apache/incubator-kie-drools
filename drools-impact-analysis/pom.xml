@@ -21,7 +21,7 @@
     <parent>
         <artifactId>drools</artifactId>
         <groupId>org.drools</groupId>
-        <version>7.50.0-SNAPSHOT</version>
+        <version>7.51.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -45,27 +45,27 @@
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-impact-analysis-model</artifactId>
-                <version>7.50.0-SNAPSHOT</version>
+                <version>7.51.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-impact-analysis-parser</artifactId>
-                <version>7.50.0-SNAPSHOT</version>
+                <version>7.51.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-impact-analysis-graph-common</artifactId>
-                <version>7.50.0-SNAPSHOT</version>
+                <version>7.51.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
-                <version>7.50.0-SNAPSHOT</version>
+                <version>7.51.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-impact-analysis-itests</artifactId>
-                <version>7.50.0-SNAPSHOT</version>
+                <version>7.51.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

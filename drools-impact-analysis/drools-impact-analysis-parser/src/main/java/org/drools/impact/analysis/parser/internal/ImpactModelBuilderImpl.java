@@ -43,6 +43,7 @@ import static java.util.Collections.emptyList;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.core.util.Drools.hasMvel;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.initPackageModel;
 
 public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
 
@@ -109,6 +110,7 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
         Collection<CompositePackageDescr> packages = findPackages();
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
+        buildOtherDeclarations(packages);
         buildRules(packages);
     }
 
@@ -186,6 +188,7 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
             PackageRegistry pkgRegistry = getPackageRegistry(packageDescr.getNamespace());
 
             PackageModel packageModel = getPackageModel(packageDescr, pkgRegistry, packageDescr.getName());
+            initPackageModel( this, pkgRegistry.getPackage(), pkgRegistry.getPackage().getTypeResolver(), packageDescr, packageModel );
             analysisModel.addPackage( new PackageParser(this, packageModel, packageDescr, pkgRegistry).parse() );
         }
     }

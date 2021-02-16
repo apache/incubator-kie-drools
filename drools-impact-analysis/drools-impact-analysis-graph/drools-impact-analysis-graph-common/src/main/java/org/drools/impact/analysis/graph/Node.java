@@ -81,7 +81,7 @@ public class Node {
         return outgoingLinks;
     }
 
-    public static void linkNodes(Node source, Node target, Link.Type type) {
+    public static void linkNodes(Node source, Node target, ReactivityType type) {
         // TODO: We may omit a link to oneself (Or it may be decided when rendering)
         Link link = new Link(source, target, type);
         source.getOutgoingLinks().add(link);

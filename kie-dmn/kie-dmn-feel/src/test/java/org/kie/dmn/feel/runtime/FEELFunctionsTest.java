@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -153,6 +154,8 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "abs(@\"PT5H\")", Duration.parse("PT5H") , null},
                 { "abs(@\"-PT5H\")", Duration.parse("PT5H") , null},
                 { "abs(n: @\"-PT5H\")", Duration.parse("PT5H") , null},
+                { "abs(duration(\"P1Y\"))", ComparablePeriod.parse("P1Y") , null},
+                { "abs(duration(\"-P1Y\"))", ComparablePeriod.parse("P1Y"), null},
                 { "sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
                                                                                  BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ), null },
                 { "sort( [3, 1, 4, 5, 2] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
