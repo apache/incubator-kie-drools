@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.api.io;
 
 import org.kie.api.io.Resource;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -31,11 +32,18 @@ public class CollectedResource {
     public CollectedResource(Path basePath, Resource resource) {
         // basePath must be a prefix of sourcePath
         // unless it is a jar file, then the check is ignored
-        if (! basePath.toString().endsWith(".jar") &&
-                ! Paths.get(resource.getSourcePath()).toAbsolutePath().startsWith(basePath.toAbsolutePath())) {
+        try {
+            if (! basePath.toString().endsWith(".jar") &&
+                    ! Paths.get(resource.getSourcePath()).toAbsolutePath().toRealPath()
+                            .startsWith(basePath.toAbsolutePath().toRealPath())) {
+                throw new IllegalArgumentException(
+                        String.format("basePath %s is not a prefix to the resource sourcePath %s",
+                                      basePath, resource.getSourcePath()));
+            }
+        } catch (IOException e) {
             throw new IllegalArgumentException(
-                    String.format("basePath %s is not a prefix to the resource sourcePath %s",
-                                  basePath, resource.getSourcePath()));
+                    String.format("Could not determine if basePath %s is a prefix to the resource sourcePath %s",
+                            basePath, resource.getSourcePath()), e);
         }
         this.basePath = basePath;
         this.resource = resource;
