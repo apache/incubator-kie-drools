@@ -2971,4 +2971,35 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(Boolean.TRUE));
     }
+
+    @Test
+    public void testArthimeticSub1() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("arithmeticSub1.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7B82BF58-74D1-4727-820F-9925FA3F7812", "arithmeticSub1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("var3", 3);
+        context.set("var4", 4);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("ExpressionTest").getResult(), is(new BigDecimal("-10")));
+    }
+
+    @Test
+    public void testArthimeticSub2() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("arithmeticSub2.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FCE6849C-6535-4629-A132-8DFD292A4765", "arithmeticSub2");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("ExpressionTest").getResult(), is(new BigDecimal("-3")));
+    }
 }

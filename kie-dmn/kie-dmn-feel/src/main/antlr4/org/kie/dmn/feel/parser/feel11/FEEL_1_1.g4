@@ -271,11 +271,11 @@ filterPathExpression
     ;
 
 unaryExpression
-	:	SUB unaryExpression                      #signedUnaryExpressionMinus
+	:	unaryExpression parameters               #fnInvocation
+    |	SUB unaryExpression                      #signedUnaryExpressionMinus
 	|   unaryExpressionNotPlusMinus              #nonSignedUnaryExpression
     |	ADD unaryExpressionNotPlusMinus          #signedUnaryExpressionPlus
-    | unaryExpression parameters #fnInvocation
-	;
+  	;
 
 unaryExpressionNotPlusMinus
 	: primary (DOT {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName parameters? {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
