@@ -17,7 +17,6 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -93,8 +92,8 @@ public class FactMappingValue {
         this.status = FactMappingValueStatus.FAILED_WITH_EXCEPTION;
     }
 
-    public Optional<List<String>> getPathToValue() {
-        return Optional.ofNullable(pathToValue);
+    public List<String> getPathToValue() {
+        return pathToValue;
     }
 
     public void setPathToValue(List<String> pathToValue) {

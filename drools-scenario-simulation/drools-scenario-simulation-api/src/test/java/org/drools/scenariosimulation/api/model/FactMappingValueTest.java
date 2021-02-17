@@ -21,7 +21,6 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
-import static org.junit.Assert.assertFalse;
 
 public class FactMappingValueTest {
 
@@ -43,7 +42,7 @@ public class FactMappingValueTest {
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
         assertThat(value.getExceptionMessage()).isNull();
         assertThat(value.getErrorValue()).isNull();
-        assertFalse(value.getPathToValue().isPresent());
+        assertThat(value.getPathToValue()).isNull();
     }
 
     @Test
