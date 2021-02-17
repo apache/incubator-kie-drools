@@ -49,6 +49,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -57,20 +58,19 @@ import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
-import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-
-import static java.util.stream.Collectors.toSet;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toSet;
+import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.isGetter;
 import static org.drools.core.util.ClassUtils.isSetter;
-import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
@@ -362,7 +362,7 @@ public class Consequence {
                 if (context.isPropertyReactive(updatedClass)) {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
-                        Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
+                        Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar, updatedClass );
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
                     }
@@ -399,7 +399,7 @@ public class Consequence {
         return new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
     }
 
-    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
+    private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
             if (!isDirectExpression(methodCall)) {
@@ -410,6 +410,19 @@ public class Consequence {
                     .filter(s -> isNameExprWithName(s, updatedVar));
             if (methodCall.getScope().isPresent() && root.isPresent()) {
                 boolean isDirectMethod = removeRootNodeViaScope.getFirstChild().equals(removeRootNodeViaScope.getWithoutRootNode());
+                if (isDirectMethod) {
+                    ClassDefinition clsDef = packageModel.getClassDefinition(updatedClass);
+                    if (clsDef != null) {
+                        String methodName = methodCall.getNameAsString();
+                        int argNum = methodCall.getArguments().size();
+                        List<String> propNames = clsDef.getModifiedPropsByMethod(methodName, argNum); // method annotated with @Modifies
+                        if (propNames != null && !propNames.isEmpty()) {
+                            modifiedProps.addAll(propNames);
+                            continue;
+                        }
+                    }
+                }
+
                 String propName = null;
                 if (isDirectMethod && isSetter(methodCall.getNameAsString())) {
                     // direct setter of the updated fact
@@ -426,7 +439,6 @@ public class Consequence {
                     continue;
                 }
                 if (propName != null) {
-                    // TODO: also register additional property in case the invoked method is annotated with @Modifies
                     modifiedProps.add(propName);
                 } else {
                     // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle

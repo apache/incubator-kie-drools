@@ -44,10 +44,9 @@ public class VarargsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM caused infinite loop with testVarargs. Need to clarify and file JIRA
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
-    
+
     @Test
     public void testStrStartsWith() throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "varargs.drl");
@@ -69,7 +68,8 @@ public class VarargsTest {
 
         MySet mySet = new MySet( "one", "two" );
         ksession.insert(mySet);
-        ksession.fireAllRules();
+        int fired = ksession.fireAllRules(20);
+        assertEquals(5, fired);
 
         assertTrue(mySet.contains("one"));
         assertTrue( mySet.contains("two") );
