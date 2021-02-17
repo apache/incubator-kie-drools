@@ -624,9 +624,13 @@ public class KiePackagesBuilder {
         if (c instanceof CompositePatterns) {
             c.getSubConditions().forEach(sc -> recursivelyAddConditions(ctx, group, allSubConditions, sc));
         } else if (c instanceof ExistentialPatternImpl) {
-            GroupElement existGroupElement = new GroupElement(conditionToGroupElementType( c.getType() ));
-            allSubConditions.addChild(existGroupElement);
-            recursivelyAddConditions(ctx, existGroupElement, existGroupElement, c.getSubConditions().iterator().next());
+            if ( c.getType() == Condition.Type.FORALL ) {
+                allSubConditions.addChild( buildForAll( ctx, group, c ) );
+            } else {
+                GroupElement existGroupElement = new GroupElement( conditionToGroupElementType( c.getType() ) );
+                allSubConditions.addChild( existGroupElement );
+                recursivelyAddConditions( ctx, existGroupElement, existGroupElement, c.getSubConditions().iterator().next() );
+            }
         } else if (c instanceof PatternImpl) {
             org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
             if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
