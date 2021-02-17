@@ -1123,6 +1123,9 @@
       "name":"javax.xml.datatype.Duration"
     },
     {
+      "name":"javax.xml.namespace.QName"
+    },
+    {
       "name":"org.kie.dmn.model.v1_2.TDMNElementReference",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
@@ -1241,6 +1244,51 @@
     },
     {
       "name":"org.kie.kogito.dmn.rest.KogitoDMNDecisionResult",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.kie.kogito.dmn.rest.KogitoDMNMessage",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.sun.xml.internal.stream.events.XMLEventFactoryImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.drools.core.command.impl.CommandFactoryServiceImpl",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
