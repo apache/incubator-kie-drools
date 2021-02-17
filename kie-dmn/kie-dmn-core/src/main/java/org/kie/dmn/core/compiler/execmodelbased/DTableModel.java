@@ -58,6 +58,7 @@ import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.inferTypeRef;
 import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 import static org.kie.dmn.feel.runtime.decisiontables.HitPolicy.fromString;
 
+@Deprecated
 public class DTableModel {
     private final DMNFEELHelper feel;
     private final DMNModelImpl model;
