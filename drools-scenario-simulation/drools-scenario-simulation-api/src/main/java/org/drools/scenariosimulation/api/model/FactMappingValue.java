@@ -33,7 +33,7 @@ public class FactMappingValue {
     @XStreamOmitField
     private Object errorValue;
     @XStreamOmitField
-    private List<String> pathToValue;
+    private List<String> collectionPathToValue;
     @XStreamOmitField
     private String exceptionMessage;
 
@@ -92,12 +92,12 @@ public class FactMappingValue {
         this.status = FactMappingValueStatus.FAILED_WITH_EXCEPTION;
     }
 
-    public List<String> getPathToValue() {
-        return pathToValue;
+    public List<String> getCollectionPathToValue() {
+        return collectionPathToValue;
     }
 
-    public void setPathToValue(List<String> pathToValue) {
-        this.pathToValue = pathToValue;
+    public void setCollectionPathToValue(List<String> collectionPathToValue) {
+        this.collectionPathToValue = collectionPathToValue;
         this.status = FactMappingValueStatus.FAILED_WITH_ERROR_COLLECTION;
     }
 
@@ -105,6 +105,6 @@ public class FactMappingValue {
         this.status = FactMappingValueStatus.SUCCESS;
         this.exceptionMessage = null;
         this.errorValue = null;
-        this.pathToValue = null;
+        this.collectionPathToValue = null;
     }
 }

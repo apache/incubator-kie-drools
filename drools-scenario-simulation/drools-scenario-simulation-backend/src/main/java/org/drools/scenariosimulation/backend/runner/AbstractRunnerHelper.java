@@ -54,7 +54,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithValidValue;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
-import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithPath;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithCollectionPathToValue;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
 
 public abstract class AbstractRunnerHelper {
@@ -286,8 +286,8 @@ public abstract class AbstractRunnerHelper {
         } else if (resultValue.getErrorMessage().isPresent()) {
             // propagate error message
             expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
-        } else if (resultValue.getPathToValue() != null) {
-            expectedResult.setPathToValue(resultValue.getPathToValue());
+        } else if (resultValue.getCollectionPathToValue() != null) {
+            expectedResult.setCollectionPathToValue(resultValue.getCollectionPathToValue());
             expectedResult.setErrorValue(resultValue.getValue());
         } else {
             try {
@@ -315,7 +315,7 @@ public abstract class AbstractRunnerHelper {
             if (evaluationResult.isSuccessful()) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
-                return errorWithPath(evaluationResult.getWrongValue(), evaluationResult.getPathToWrongValue());
+                return errorWithCollectionPathToValue(evaluationResult.getWrongValue(), evaluationResult.getPathToWrongValue());
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
             }

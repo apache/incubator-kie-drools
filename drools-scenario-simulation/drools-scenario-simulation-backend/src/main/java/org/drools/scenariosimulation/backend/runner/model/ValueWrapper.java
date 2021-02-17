@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 /**
  * Utility class to wrap a value with the possibility to specify error message or propose valid value.
+ * - collectionPathToValue: In case of a failure with a collection value type, it holds the path to reach the wrong value
  * Note: null can be used as value.
  * @param <T>
  */
@@ -32,14 +33,14 @@ public class ValueWrapper<T> {
     private final T value;
     private final T expected;
     private final String errorMessage;
-    private final List<String> pathToValue;
+    private final List<String> collectionPathToValue;
 
-    private ValueWrapper(T value, T expected, boolean valid, String errorMessage, List<String> pathToValue) {
+    private ValueWrapper(T value, T expected, boolean valid, String errorMessage, List<String> collectionPathToValue) {
         this.valid = valid;
         this.value = value;
         this.expected = expected;
         this.errorMessage = errorMessage;
-        this.pathToValue = pathToValue;
+        this.collectionPathToValue = collectionPathToValue;
     }
 
     public static <T> ValueWrapper<T> of(T value) {
@@ -58,7 +59,7 @@ public class ValueWrapper<T> {
         return new ValueWrapper<>(null, null, false, null, null);
     }
 
-    public static <T> ValueWrapper<T> errorWithPath(T value, List<String> path) {
+    public static <T> ValueWrapper<T> errorWithCollectionPathToValue(T value, List<String> path) {
         return new ValueWrapper<>(value, null, false, null, path);
     }
 
@@ -78,8 +79,8 @@ public class ValueWrapper<T> {
         return Optional.ofNullable(errorMessage);
     }
 
-    public List<String> getPathToValue() {
-        return pathToValue;
+    public List<String> getCollectionPathToValue() {
+        return collectionPathToValue;
     }
 
     public T orElse(T defaultValue) {
