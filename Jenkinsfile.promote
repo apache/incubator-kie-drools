@@ -92,7 +92,10 @@ pipeline {
     }
     post {
         always {
-            cleanWs()
+            script {
+                cleanWs()
+                cloud.cleanContainersAndImages('docker')
+            }
         }
     }
 }
