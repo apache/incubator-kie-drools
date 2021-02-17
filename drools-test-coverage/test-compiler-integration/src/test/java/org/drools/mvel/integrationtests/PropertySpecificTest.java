@@ -75,7 +75,7 @@ public class PropertySpecificTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM caused infinite loop with some tests e.g. testNodeSharing. Need to clarify and file JIRAs
+        // TODO: EM caused infinite loop with some tests e.g. testNoConstraint, testFrom, testNodeSharing. Need to clarify and file JIRAs
         return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 

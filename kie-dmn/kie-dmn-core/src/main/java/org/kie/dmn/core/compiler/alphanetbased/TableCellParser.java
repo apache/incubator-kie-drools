@@ -18,7 +18,10 @@ package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.List;
 
-import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.model.api.DecisionRule;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.InputClause;
 
 public class TableCellParser {
     TableCell.TableCellFactory tableCellFactory;
@@ -27,26 +30,26 @@ public class TableCellParser {
         this.tableCellFactory = tableCellFactory;
     }
 
-    public TableCells parseCells(DTableModel dTableModel) {
-
-        List<DTableModel.DRowModel> rows = dTableModel.getRows();
-        List<DTableModel.DColumnModel> columns = dTableModel.getColumns();
+    public TableCells parseCells(DecisionTable decisionTable, DTQNameToTypeResolver resolver) {
+        List<DecisionRule> rows = decisionTable.getRule();
+        List<InputClause> columns = decisionTable.getInput();
         TableCells tableCells = new TableCells(rows.size(), columns.size());
 
         for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
-            DTableModel.DRowModel row = rows.get(rowIndex);
+            DecisionRule row = rows.get(rowIndex);
 
-            for (int inputColumnIndex = 0; inputColumnIndex < row.getInputs().size(); inputColumnIndex++) {
-                String input = row.getInputs().get(inputColumnIndex);
+            for (int inputColumnIndex = 0; inputColumnIndex < row.getInputEntry().size(); inputColumnIndex++) {
+                String input = row.getInputEntry().get(inputColumnIndex).getText();
                 TableIndex tableIndex = new TableIndex(rowIndex, inputColumnIndex);
-                DTableModel.DColumnModel column = tableIndex.getColumn(columns);
+                InputClause column = tableIndex.getColumn(columns);
+                final String columnName = column.getInputExpression().getText();
+                final Type columnType = resolver.resolve(column.getInputExpression().getTypeRef());
                 TableCell cell = tableCellFactory.createInputCell(tableIndex,
                                                                   input,
-                                                                  column.getName(),
-                                                                  column.getType());
-
-                if(inputColumnIndex == row.getInputs().size() - 1) { // last column
-                    cell.setOutput(row.getOutputs().get(0)); // assume only one output
+                                                                  columnName,
+                                                                  columnType);
+                if (inputColumnIndex == row.getInputEntry().size() - 1) { // last column
+                    cell.setOutput(row.getOutputEntry().get(0).getText()); // assume only one output
                 }
 
                 tableCells.add(cell);

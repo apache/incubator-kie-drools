@@ -18,7 +18,7 @@ package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.List;
 
-import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
+import org.kie.dmn.model.api.InputClause;
 
 public class TableIndex {
 
@@ -39,7 +39,7 @@ public class TableIndex {
         return String.format("%sR%sC%s", sourceString, row + 1, column + 1);
     }
 
-    public DTableModel.DColumnModel getColumn(List<DTableModel.DColumnModel> columns) {
+    public InputClause getColumn(List<InputClause> columns) {
         return columns.get(column);
     }
 
