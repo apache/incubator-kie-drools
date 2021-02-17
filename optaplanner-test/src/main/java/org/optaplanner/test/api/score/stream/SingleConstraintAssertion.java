@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,6 +87,49 @@ public interface SingleConstraintAssertion {
     void penalizesBy(BigDecimal matchWeightTotal, String message);
 
     /**
+     * Asserts that the {@link Constraint} being tested, given a set of facts, results in a given number of penalties.
+     * <p>
+     * Ignores the constraint and match weights: it only asserts the number of matches
+     * For example: if there are two matches with weight of {@code 10} each, this assertion will check for 2 matches.
+     *
+     * @param times at least 0, expected number of times that the constraint will penalize
+     * @throws AssertionError when the expected penalty is not observed
+     */
+    default void penalizes(long times) {
+        penalizes(times, null);
+    }
+
+    /**
+     * As defined by {@link #penalizes(long)}.
+     *
+     * @param times at least 0, expected number of times that the constraint will penalize
+     * @param message sometimes null, description of the scenario being asserted
+     * @throws AssertionError when the expected penalty is not observed
+     */
+    void penalizes(long times, String message);
+
+    /**
+     * Asserts that the {@link Constraint} being tested, given a set of facts, results in any number of penalties.
+     * <p>
+     * Ignores the constraint and match weights: it only asserts the number of matches
+     * For example: if there are two matches with weight of {@code 10} each, this assertion will succeed.
+     * If there are no matches, it will fail.
+     *
+     * @throws AssertionError when there are no penalties
+     */
+    default void penalizes() {
+        penalizes(null);
+    }
+
+    /**
+     * As defined by {@link #penalizes()}.
+     *
+     * @param message sometimes null, description of the scenario being asserted
+     * @throws AssertionError when there are no penalties
+     */
+    void penalizes(String message);
+
+    /**
      * Asserts that the {@link Constraint} being tested, given a set of facts, results in a specific reward.
      * <p>
      * Ignores the constraint weight: it only asserts the match weights.
@@ -148,5 +191,48 @@ public interface SingleConstraintAssertion {
      * @throws AssertionError when the expected reward is not observed
      */
     void rewardsWith(BigDecimal matchWeightTotal, String message);
+
+    /**
+     * Asserts that the {@link Constraint} being tested, given a set of facts, results in a given number of rewards.
+     * <p>
+     * Ignores the constraint and match weights: it only asserts the number of matches
+     * For example: if there are two matches with weight of {@code 10} each, this assertion will check for 2 matches.
+     *
+     * @param times at least 0, expected number of times that the constraint will reward
+     * @throws AssertionError when the expected reward is not observed
+     */
+    default void rewards(long times) {
+        rewards(times, null);
+    }
+
+    /**
+     * As defined by {@link #rewards(long)}.
+     *
+     * @param times at least 0, expected number of times that the constraint will reward
+     * @param message sometimes null, description of the scenario being asserted
+     * @throws AssertionError when the expected reward is not observed
+     */
+    void rewards(long times, String message);
+
+    /**
+     * Asserts that the {@link Constraint} being tested, given a set of facts, results in any number of rewards.
+     * <p>
+     * Ignores the constraint and match weights: it only asserts the number of matches
+     * For example: if there are two matches with weight of {@code 10} each, this assertion will succeed.
+     * If there are no matches, it will fail.
+     *
+     * @throws AssertionError when there are no rewards
+     */
+    default void rewards() {
+        rewards(null);
+    }
+
+    /**
+     * As defined by {@link #rewards()}.
+     *
+     * @param message sometimes null, description of the scenario being asserted
+     * @throws AssertionError when there are no rewards
+     */
+    void rewards(String message);
 
 }

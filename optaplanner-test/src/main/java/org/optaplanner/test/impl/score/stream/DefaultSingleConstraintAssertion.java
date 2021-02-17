@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,16 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     }
 
     @Override
+    public void penalizes(long times, String message) {
+        assertMatchCount(ScoreImpactType.PENALTY, times, message);
+    }
+
+    @Override
+    public void penalizes(String message) {
+        assertMatch(ScoreImpactType.PENALTY, message);
+    }
+
+    @Override
     public void rewardsWith(int matchWeightTotal, String message) {
         validateMatchWeighTotal(matchWeightTotal);
         assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
@@ -88,6 +98,16 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     public void rewardsWith(BigDecimal matchWeightTotal, String message) {
         validateMatchWeighTotal(matchWeightTotal);
         assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
+    }
+
+    @Override
+    public void rewards(long times, String message) {
+        assertMatchCount(ScoreImpactType.REWARD, times, message);
+    }
+
+    @Override
+    public void rewards(String message) {
+        assertMatch(ScoreImpactType.REWARD, message);
     }
 
     private void validateMatchWeighTotal(Number matchWeightTotal) {
@@ -141,6 +161,44 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         return matchWeightsFound.get(0);
     }
 
+    private void assertMatchCount(ScoreImpactType scoreImpactType, long expectedMatchCount, String message) {
+        long actualMatchCount = determineMatchCount(scoreImpactType);
+        if (actualMatchCount == expectedMatchCount) {
+            return;
+        }
+        AbstractConstraint<Solution_, ?> constraint = (AbstractConstraint<Solution_, ?>) scoreDirectorFactory
+                .getConstraints()[0];
+        String constraintId = constraint.getConstraintId();
+        String assertionMessage =
+                buildAssertionErrorMessage(scoreImpactType, expectedMatchCount, actualMatchCount, constraintId, message);
+        throw new AssertionError(assertionMessage);
+    }
+
+    private void assertMatch(ScoreImpactType scoreImpactType, String message) {
+        if (determineMatchCount(scoreImpactType) > 0) {
+            return;
+        }
+        AbstractConstraint<Solution_, ?> constraint = (AbstractConstraint<Solution_, ?>) scoreDirectorFactory
+                .getConstraints()[0];
+        String constraintId = constraint.getConstraintId();
+        String assertionMessage = buildAssertionErrorMessage(scoreImpactType, constraintId, message);
+        throw new AssertionError(assertionMessage);
+    }
+
+    private long determineMatchCount(ScoreImpactType scoreImpactType) {
+        if (constraintMatchTotalCollection.isEmpty()) {
+            return 0;
+        }
+        AbstractConstraint<Solution_, ?> constraint = (AbstractConstraint<Solution_, ?>) scoreDirectorFactory
+                .getConstraints()[0];
+        if (constraint.getScoreImpactType() != scoreImpactType) {
+            return 0;
+        }
+        return constraintMatchTotalCollection.stream()
+                .mapToLong(constraintMatchTotal -> constraintMatchTotal.getConstraintMatchSet().size())
+                .sum();
+    }
+
     private String buildAssertionErrorMessage(ScoreImpactType expectedImpactType, Number expectedImpact,
             ScoreImpactType actualImpactType, Number actualImpact, String constraintId, String message) {
         String expectation = message != null ? message : "Broken expectation.";
@@ -156,6 +214,38 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
                 "Constraint", constraintId,
                 expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
                 actualImpactLabel, actualImpact, actualImpact.getClass(),
+                DefaultScoreExplanation.explainScore(score, constraintMatchTotalCollection, indictmentCollection));
+    }
+
+    private String buildAssertionErrorMessage(ScoreImpactType impactType, long expectedTimes, long actualTimes,
+            String constraintId, String message) {
+        String expectation = message != null ? message : "Broken expectation.";
+        String preformattedMessage = "%s%n" +
+                "%18s: %s%n" +
+                "%18s: %s time(s)%n" +
+                "%18s: %s time(s)%n%n" +
+                "  %s";
+        String expectedImpactLabel = "Expected " + getImpactTypeLabel(impactType);
+        String actualImpactLabel = "Actual " + getImpactTypeLabel(impactType);
+        return String.format(preformattedMessage,
+                expectation,
+                "Constraint", constraintId,
+                expectedImpactLabel, expectedTimes,
+                actualImpactLabel, actualTimes,
+                DefaultScoreExplanation.explainScore(score, constraintMatchTotalCollection, indictmentCollection));
+    }
+
+    private String buildAssertionErrorMessage(ScoreImpactType impactType, String constraintId, String message) {
+        String expectation = message != null ? message : "Broken expectation.";
+        String preformattedMessage = "%s%n" +
+                "%18s: %s%n" +
+                "%18s but there was none.%n%n" +
+                "  %s";
+        String expectedImpactLabel = "Expected " + getImpactTypeLabel(impactType);
+        return String.format(preformattedMessage,
+                expectation,
+                "Constraint", constraintId,
+                expectedImpactLabel,
                 DefaultScoreExplanation.explainScore(score, constraintMatchTotalCollection, indictmentCollection));
     }
 
