@@ -23,7 +23,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.io.impl.InputStreamResource;
+import org.drools.utils.io.InputStreamResource;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.junit.Test;

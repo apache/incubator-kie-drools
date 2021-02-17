@@ -16,7 +16,7 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 
 import java.io.IOException;
 import java.io.ObjectInput;

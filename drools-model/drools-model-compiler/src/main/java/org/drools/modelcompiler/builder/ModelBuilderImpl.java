@@ -40,7 +40,7 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;

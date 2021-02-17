@@ -44,10 +44,10 @@ import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 
 import static org.drools.core.rule.LogicTransformer.toIntArray;
-import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
+import static org.drools.utils.StringUtils.isDereferencingIdentifier;
 
 public class QueryElementBuilder
     implements

@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutableRunner;

@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;

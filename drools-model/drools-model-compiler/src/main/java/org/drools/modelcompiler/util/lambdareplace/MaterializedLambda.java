@@ -47,7 +47,7 @@ import org.drools.model.functions.HashedExpression;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
-import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.utils.StringUtils.md5Hash;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
 abstract class MaterializedLambda {

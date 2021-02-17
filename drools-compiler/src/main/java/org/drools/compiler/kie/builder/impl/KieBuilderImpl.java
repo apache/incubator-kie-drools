@@ -37,10 +37,10 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.io.ResourceConfigurationImpl;
+import org.drools.utils.io.InternalResource;
+import org.drools.utils.IoUtils;
+import org.drools.utils.StringUtils;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 import static org.drools.core.util.Drools.hasXSTream;
-import static org.drools.core.util.StringUtils.codeAwareIndexOf;
+import static org.drools.utils.StringUtils.codeAwareIndexOf;
 
 public class KieBuilderImpl
         implements

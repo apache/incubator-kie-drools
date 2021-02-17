@@ -20,7 +20,7 @@ import org.dmg.pmml.pmml_4_2.descr.Attribute;
 import org.dmg.pmml.pmml_4_2.descr.Characteristic;
 import org.dmg.pmml.pmml_4_2.descr.Characteristics;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.pmml.pmml_4_2.extensions.AggregationStrategy;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.drools.scorecards.ScorecardError;

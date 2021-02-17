@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.io.impl.BaseResource;
+import org.drools.utils.io.BaseResource;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;

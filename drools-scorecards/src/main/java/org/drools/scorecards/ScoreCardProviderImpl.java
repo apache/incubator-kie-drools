@@ -18,7 +18,7 @@ package org.drools.scorecards;
 import java.io.InputStream;
 
 import org.drools.compiler.compiler.ScoreCardProvider;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;

@@ -54,6 +54,7 @@
     <module>drools-core-reflective</module>
     <module>drools-core-dynamic</module>
     <module>kie-test-util</module>
+    <module>drools-utils</module>
     <module>drools-core</module>
     <module>drools-ecj</module>
     <module>drools-compiler</module>
@@ -84,7 +85,7 @@
     <module>drools-alphanetwork-compiler</module>
     <module>drools-engine</module>
     <module>drools-engine-classic</module>
-<!--    <module>drools-impact-analysis</module>-->
+      <!--    <module>drools-impact-analysis</module>-->
   </modules>
 
   <dependencyManagement>

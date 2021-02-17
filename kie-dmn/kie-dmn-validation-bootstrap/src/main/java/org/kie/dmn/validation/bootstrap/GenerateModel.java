@@ -37,7 +37,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;

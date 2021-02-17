@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;

@@ -32,7 +32,7 @@ import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.io.impl.ResourceFactoryServiceImpl;
+import org.drools.utils.io.ResourceFactoryServiceImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

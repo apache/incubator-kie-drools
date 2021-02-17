@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.utils.io.ByteArrayResource;
 import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.api.KieBase;

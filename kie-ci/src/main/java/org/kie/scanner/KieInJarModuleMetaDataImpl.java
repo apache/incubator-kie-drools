@@ -41,7 +41,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ import static java.util.Collections.enumeration;
 import static java.util.stream.Collectors.toList;
 import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.IoUtils.UTF8_CHARSET;
+import static org.drools.utils.IoUtils.UTF8_CHARSET;
 
 public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
 

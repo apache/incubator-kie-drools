@@ -25,7 +25,7 @@ import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.State;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.utils.io.ByteArrayResource;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.Modifies;

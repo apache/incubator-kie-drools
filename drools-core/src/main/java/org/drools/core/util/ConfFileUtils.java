@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.drools.utils.IoUtils;
+
 public class ConfFileUtils {
    
     /**

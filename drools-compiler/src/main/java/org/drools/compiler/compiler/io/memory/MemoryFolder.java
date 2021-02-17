@@ -23,7 +23,7 @@ import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.FileSystemItem;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 
 public class MemoryFolder
         implements

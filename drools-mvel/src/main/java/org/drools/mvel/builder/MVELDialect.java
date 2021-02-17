@@ -85,7 +85,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.expr.MVELCompilationUnit;

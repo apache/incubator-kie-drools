@@ -15,7 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.utils.io.FileSystemResource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

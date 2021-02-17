@@ -32,7 +32,7 @@ import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.BetaRangeIndexOption;

@@ -58,7 +58,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.core.util.index.TupleList;
 import org.drools.reflective.ComponentsFactory;
 import org.kie.api.event.rule.MatchCancelledCause;

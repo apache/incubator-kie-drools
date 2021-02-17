@@ -29,7 +29,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.utils.io.ByteArrayResource;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.junit.Test;

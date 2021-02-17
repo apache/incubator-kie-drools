@@ -33,7 +33,7 @@ import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.util.FileManager;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.KieBase;

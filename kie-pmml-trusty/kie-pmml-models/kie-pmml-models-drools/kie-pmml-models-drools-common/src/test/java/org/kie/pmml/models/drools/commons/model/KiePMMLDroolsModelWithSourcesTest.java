@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.utils.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;

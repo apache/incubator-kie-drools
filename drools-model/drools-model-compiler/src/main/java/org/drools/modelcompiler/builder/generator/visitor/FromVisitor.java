@@ -55,7 +55,7 @@ import static java.util.Optional.ofNullable;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.utils.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;

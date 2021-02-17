@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.utils.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;

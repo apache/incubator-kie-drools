@@ -55,10 +55,10 @@ import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReacti
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.findEndOfMethodArgsIndex;
-import static org.drools.core.util.StringUtils.splitArgumentsList;
-import static org.drools.core.util.StringUtils.splitStatements;
+import static org.drools.utils.StringUtils.extractFirstIdentifier;
+import static org.drools.utils.StringUtils.findEndOfMethodArgsIndex;
+import static org.drools.utils.StringUtils.splitArgumentsList;
+import static org.drools.utils.StringUtils.splitStatements;
 
 public final class AsmUtil {
     private static final Pattern LINE_BREAK_FINDER = Pattern.compile( "\\r\\n|\\r|\\n" );

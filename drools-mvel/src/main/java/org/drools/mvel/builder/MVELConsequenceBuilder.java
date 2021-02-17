@@ -42,8 +42,8 @@ import org.mvel2.MacroProcessor;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.core.util.StringUtils.findEndOfMethodArgsIndex;
-import static org.drools.core.util.StringUtils.splitStatements;
+import static org.drools.utils.StringUtils.findEndOfMethodArgsIndex;
+import static org.drools.utils.StringUtils.splitStatements;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 
 public class MVELConsequenceBuilder

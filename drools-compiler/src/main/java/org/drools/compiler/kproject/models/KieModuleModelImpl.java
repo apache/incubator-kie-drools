@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 

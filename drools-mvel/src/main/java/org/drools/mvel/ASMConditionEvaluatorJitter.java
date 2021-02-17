@@ -68,7 +68,7 @@ import static org.drools.mvel.ConditionAnalyzer.isFixed;
 import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.utils.StringUtils.generateUUID;
 import static org.mvel2.asm.Opcodes.AALOAD;
 import static org.mvel2.asm.Opcodes.ACC_FINAL;
 import static org.mvel2.asm.Opcodes.ACC_PRIVATE;

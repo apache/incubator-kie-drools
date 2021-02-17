@@ -82,7 +82,7 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;

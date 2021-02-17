@@ -27,7 +27,7 @@ import java.util.List;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.UrlResource;
+import org.drools.utils.io.UrlResource;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;

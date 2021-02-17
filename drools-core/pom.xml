@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-core-reflective</artifactId>
     </dependency>
     <dependency>

@@ -23,7 +23,7 @@ import java.util.Map;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.drools.ruleunit.RuleUnit;
 

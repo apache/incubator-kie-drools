@@ -17,7 +17,7 @@ package org.drools.workbench.models.guided.dtable.backend;
 
 import org.drools.compiler.compiler.GuidedDecisionTableProvider;
 import org.drools.compiler.compiler.ResourceConversionResult;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;

@@ -25,7 +25,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.java.JavaRuleBuilderHelper;

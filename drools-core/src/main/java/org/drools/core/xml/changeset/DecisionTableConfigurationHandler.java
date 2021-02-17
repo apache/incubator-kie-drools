@@ -19,8 +19,8 @@ package org.drools.core.xml.changeset;
 import java.util.HashSet;
 
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.util.StringUtils;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.utils.StringUtils;
+import org.drools.utils.io.InternalResource;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

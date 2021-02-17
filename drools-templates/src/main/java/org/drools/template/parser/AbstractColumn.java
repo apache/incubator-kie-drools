@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 
 /**
  * Base column of in a decision table

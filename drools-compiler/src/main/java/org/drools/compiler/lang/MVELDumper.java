@@ -39,7 +39,7 @@ import org.drools.core.util.ReflectiveVisitor;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
 import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.findClass;
-import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
+import static org.drools.utils.StringUtils.indexOfOutOfQuotes;
 
 public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
 

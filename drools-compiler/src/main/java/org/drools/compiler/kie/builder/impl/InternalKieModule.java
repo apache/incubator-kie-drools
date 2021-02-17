@@ -36,7 +36,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.utils.io.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;

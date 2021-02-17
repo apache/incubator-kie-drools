@@ -45,8 +45,8 @@ import org.eclipse.aether.artifact.Artifact;
 
 import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.IoUtils.UTF8_CHARSET;
-import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import static org.drools.utils.IoUtils.UTF8_CHARSET;
+import static org.drools.utils.IoUtils.readBytesFromZipEntry;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
 

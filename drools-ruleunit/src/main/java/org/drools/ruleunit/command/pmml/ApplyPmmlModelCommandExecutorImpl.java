@@ -29,7 +29,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.OutputFieldFactory;
 import org.kie.api.pmml.PMML4Output;

@@ -31,7 +31,7 @@ import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.Location;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.utils.io.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 

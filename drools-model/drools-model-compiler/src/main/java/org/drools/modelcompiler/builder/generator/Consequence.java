@@ -50,7 +50,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;

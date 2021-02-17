@@ -29,7 +29,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.io.impl.DescrResource;
+import org.drools.utils.io.DescrResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;

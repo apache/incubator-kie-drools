@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.compiler.lang.descr.AndDescr;

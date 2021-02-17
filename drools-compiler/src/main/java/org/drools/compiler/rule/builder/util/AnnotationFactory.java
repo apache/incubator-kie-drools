@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.utils.StringUtils.ucFirst;
 
 public class AnnotationFactory {
 

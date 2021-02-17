@@ -55,7 +55,7 @@ import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.DateUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.definition.rule.ActivationListener;
 import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;

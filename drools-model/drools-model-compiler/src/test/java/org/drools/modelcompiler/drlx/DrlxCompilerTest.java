@@ -31,7 +31,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.io.impl.InputStreamResource;
+import org.drools.utils.io.InputStreamResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.drools.modelcompiler.KJARUtils;
 import org.drools.modelcompiler.builder.PackageModel;

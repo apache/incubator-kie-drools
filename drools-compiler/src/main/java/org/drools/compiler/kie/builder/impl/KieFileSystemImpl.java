@@ -26,8 +26,8 @@ import java.util.Properties;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.io.InternalResource;
+import org.drools.utils.IoUtils;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;

@@ -52,7 +52,7 @@ import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.FastClassLoader;

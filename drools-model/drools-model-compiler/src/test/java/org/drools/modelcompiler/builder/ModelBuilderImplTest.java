@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 
-import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.core.util.StringUtils.getPkgUUID;
+import static org.drools.utils.StringUtils.generateUUID;
+import static org.drools.utils.StringUtils.getPkgUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

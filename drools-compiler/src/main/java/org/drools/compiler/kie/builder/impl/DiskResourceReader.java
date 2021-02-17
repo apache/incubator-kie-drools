@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.kie.memorycompiler.resources.ResourceReader;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.utils.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceReader implements ResourceReader {
     private final File root;

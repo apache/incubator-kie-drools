@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableProvider;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.RuleTemplateConfiguration;

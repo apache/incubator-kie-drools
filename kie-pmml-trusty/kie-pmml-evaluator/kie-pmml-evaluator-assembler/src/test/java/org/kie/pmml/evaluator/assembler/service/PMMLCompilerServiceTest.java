@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.drools.core.io.impl.FileSystemResource;
+import org.drools.utils.io.FileSystemResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.pmml.commons.HasRule;
@@ -35,7 +35,7 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.utils.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;

@@ -25,7 +25,7 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.utils.io.ClassPathResource;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;

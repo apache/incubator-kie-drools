@@ -32,7 +32,7 @@ import org.dmg.pmml.pmml_4_2.descr.DataField;
 import org.dmg.pmml.pmml_4_2.descr.Extension;
 import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.utils.io.ClassPathResource;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;

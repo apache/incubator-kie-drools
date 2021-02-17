@@ -32,8 +32,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Dialectable;
 
 import static org.drools.core.util.ClassUtils.getter2property;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.lcFirst;
+import static org.drools.utils.StringUtils.extractFirstIdentifier;
+import static org.drools.utils.StringUtils.lcFirst;
 
 public class RuleDescr extends AnnotatedBaseDescr
     implements

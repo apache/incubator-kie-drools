@@ -18,7 +18,7 @@ package org.drools.compiler.lang.descr;
 
 import java.io.Serializable;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 
 public class QualifiedName implements Serializable {
 

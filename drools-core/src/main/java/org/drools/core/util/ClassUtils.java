@@ -56,7 +56,7 @@ import static java.lang.System.arraycopy;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.utils.StringUtils.ucFirst;
 
 public final class ClassUtils {
     private static final ProtectionDomain  PROTECTION_DOMAIN;

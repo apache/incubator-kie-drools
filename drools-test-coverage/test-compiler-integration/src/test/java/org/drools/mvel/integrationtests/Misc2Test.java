@@ -16,8 +16,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -69,7 +67,7 @@ import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.utils.io.ByteArrayResource;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -115,7 +113,6 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -133,8 +130,6 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;

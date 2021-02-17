@@ -29,7 +29,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.slf4j.Logger;

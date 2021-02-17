@@ -42,7 +42,7 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.core.xml.ChangeSetSemanticModule;
 import org.drools.core.xml.DefaultSemanticModule;
 import org.drools.core.xml.Handler;

@@ -20,7 +20,7 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
-import org.drools.core.io.impl.ResourceFactoryServiceImpl;
+import org.drools.utils.io.ResourceFactoryServiceImpl;
 import org.drools.core.util.FileManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;

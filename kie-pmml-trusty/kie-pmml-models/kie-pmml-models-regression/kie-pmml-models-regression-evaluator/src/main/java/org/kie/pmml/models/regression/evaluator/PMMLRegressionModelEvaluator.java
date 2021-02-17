@@ -17,7 +17,7 @@ package org.kie.pmml.models.regression.evaluator;
 
 import java.util.Map;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;

@@ -37,7 +37,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.utils.IoUtils.readBytesFromInputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

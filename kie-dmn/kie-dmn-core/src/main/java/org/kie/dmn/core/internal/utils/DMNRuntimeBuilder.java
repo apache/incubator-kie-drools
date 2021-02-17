@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.utils.io.ResourceConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.io.impl.ClassPathResource;
+import org.drools.utils.io.ClassPathResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntimeFactory;

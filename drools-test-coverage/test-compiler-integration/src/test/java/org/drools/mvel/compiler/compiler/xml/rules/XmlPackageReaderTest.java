@@ -38,7 +38,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;
 

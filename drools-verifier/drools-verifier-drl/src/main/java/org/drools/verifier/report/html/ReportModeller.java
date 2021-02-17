@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.mvel2.templates.TemplateRuntime;
 
 abstract class ReportModeller {

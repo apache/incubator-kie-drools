@@ -34,7 +34,7 @@ import org.drools.template.model.Package;
 import org.drools.template.model.Rule;
 import org.drools.template.parser.DecisionTableParseException;
 
-import static org.drools.core.util.StringUtils.replaceOutOfQuotes;
+import static org.drools.utils.StringUtils.replaceOutOfQuotes;
 import static org.drools.decisiontable.parser.ActionType.Code;
 import static org.drools.template.model.Rule.MAX_ROWS;
 

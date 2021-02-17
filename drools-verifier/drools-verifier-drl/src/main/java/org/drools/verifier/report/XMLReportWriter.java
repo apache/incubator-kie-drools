@@ -17,7 +17,7 @@
 package org.drools.verifier.report;
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Gap;

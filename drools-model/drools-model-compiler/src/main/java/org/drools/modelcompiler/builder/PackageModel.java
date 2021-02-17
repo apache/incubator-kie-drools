@@ -85,7 +85,7 @@ import static com.github.javaparser.ast.Modifier.staticModifier;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
-import static org.drools.core.util.StringUtils.getPkgUUID;
+import static org.drools.utils.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;

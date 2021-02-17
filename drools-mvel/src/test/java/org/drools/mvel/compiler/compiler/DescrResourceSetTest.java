@@ -15,7 +15,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.io.impl.InputStreamResource;
+import org.drools.utils.io.InputStreamResource;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;

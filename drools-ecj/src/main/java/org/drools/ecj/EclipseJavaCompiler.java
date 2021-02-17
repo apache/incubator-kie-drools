@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;

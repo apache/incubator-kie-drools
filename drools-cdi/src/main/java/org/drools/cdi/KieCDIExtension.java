@@ -48,7 +48,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;

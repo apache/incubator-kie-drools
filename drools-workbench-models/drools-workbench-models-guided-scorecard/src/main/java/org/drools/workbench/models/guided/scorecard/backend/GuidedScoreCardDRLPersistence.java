@@ -31,7 +31,7 @@ import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;

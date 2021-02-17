@@ -23,8 +23,8 @@ import java.io.Serializable;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
-import org.drools.core.io.impl.InputStreamResource;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.io.InputStreamResource;
+import org.drools.utils.StringUtils;
 
 public class MemoryFile implements File,
                                    Serializable {

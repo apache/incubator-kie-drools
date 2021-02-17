@@ -3,7 +3,7 @@ package org.drools.modelcompiler;
 import org.appformer.maven.support.AFReleaseId;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.utils.io.ByteArrayResource;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 
 public class DMNRuleClassFile {
 

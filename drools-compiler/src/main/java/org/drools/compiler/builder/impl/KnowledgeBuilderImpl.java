@@ -118,11 +118,11 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.BaseResource;
-import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.DescrResource;
-import org.drools.core.io.impl.ReaderResource;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.utils.io.BaseResource;
+import org.drools.utils.io.ClassPathResource;
+import org.drools.utils.io.DescrResource;
+import org.drools.utils.io.ReaderResource;
+import org.drools.utils.io.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -130,8 +130,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.IoUtils;
+import org.drools.utils.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
@@ -165,8 +165,8 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
-import static org.drools.core.util.StringUtils.isEmpty;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.utils.StringUtils.isEmpty;
+import static org.drools.utils.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 

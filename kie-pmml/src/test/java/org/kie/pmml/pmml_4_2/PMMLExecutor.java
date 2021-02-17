@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.ruleunit.executor.InternalRuleUnitExecutor;
 import org.kie.api.KieBase;
 import org.kie.api.logger.KieRuntimeLogger;

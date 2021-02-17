@@ -24,7 +24,7 @@ import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.utils.io.InternalResource;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.reflective.ResourceProvider;

@@ -97,7 +97,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
@@ -107,7 +107,7 @@ import org.kie.internal.builder.ResultSeverity;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
-import static org.drools.core.util.StringUtils.isIdentifier;
+import static org.drools.utils.StringUtils.isIdentifier;
 
 /**
  * A builder for patterns

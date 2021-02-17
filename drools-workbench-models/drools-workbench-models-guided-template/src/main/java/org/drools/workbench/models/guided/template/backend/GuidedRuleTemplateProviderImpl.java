@@ -18,7 +18,7 @@ package org.drools.workbench.models.guided.template.backend;
 
 import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.ResourceConversionResult;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.api.io.ResourceType;
 

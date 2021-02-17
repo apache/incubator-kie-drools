@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
-import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.utils.StringUtils.md5Hash;
 
 public class DRLIdGenerator {
 

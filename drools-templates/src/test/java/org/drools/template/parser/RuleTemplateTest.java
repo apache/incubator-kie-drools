@@ -15,7 +15,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.junit.Test;
 
 import java.util.List;

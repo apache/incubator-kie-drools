@@ -71,7 +71,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
-import static org.drools.core.util.StringUtils.lcFirstForBean;
+import static org.drools.utils.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createMvelCompiler;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;

@@ -17,7 +17,7 @@
 package org.drools.scorecards;
 
 import org.dmg.pmml.pmml_4_2.descr.PMML;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
 import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;

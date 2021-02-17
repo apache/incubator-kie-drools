@@ -16,8 +16,6 @@
 package org.kie.pmml.models.drools.provider;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +44,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.StringUtils.getPkgUUID;
+import static org.drools.utils.StringUtils.getPkgUUID;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
 /**

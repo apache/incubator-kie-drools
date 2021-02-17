@@ -58,7 +58,7 @@ import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
@@ -135,7 +135,7 @@ import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.utils.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.adjustParam;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.findField;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.findFields;

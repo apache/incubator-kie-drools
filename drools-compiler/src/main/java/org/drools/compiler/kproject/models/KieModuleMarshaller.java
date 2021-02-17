@@ -31,12 +31,12 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.utils.IoUtils.readBytesFromInputStream;
 import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 
 public class KieModuleMarshaller {

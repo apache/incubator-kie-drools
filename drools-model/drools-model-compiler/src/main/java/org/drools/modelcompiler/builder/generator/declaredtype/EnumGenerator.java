@@ -42,7 +42,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.generator.Generat
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.utils.StringUtils.ucFirst;
 
 public class EnumGenerator {
 

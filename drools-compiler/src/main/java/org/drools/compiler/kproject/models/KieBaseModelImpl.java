@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -45,7 +45,7 @@ import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.ResourceType;
 
-import static org.drools.core.util.IoUtils.recursiveListFile;
+import static org.drools.utils.IoUtils.recursiveListFile;
 import static org.kie.api.conf.SequentialOption.YES;
 
 public class KieBaseModelImpl

@@ -24,7 +24,7 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.Fact;
 import org.drools.core.factmodel.Field;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.util.IoUtils;
+import org.drools.utils.IoUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

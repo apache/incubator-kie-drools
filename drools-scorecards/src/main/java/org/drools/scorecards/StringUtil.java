@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.util.StringUtils;
+import org.drools.utils.StringUtils;
 
 public class StringUtil {
 
