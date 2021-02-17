@@ -25,6 +25,8 @@ import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
@@ -154,7 +156,17 @@ public class DrlCloneVisitor extends CloneVisitor implements DrlGenericVisitor<V
     }
 
     @Override
+    public Visitable visit(ListCreationLiteralExpression n, Object arg) {
+        return null;
+    }
+
+    @Override
     public Visitable visit(MapCreationLiteralExpressionKeyValuePair n, Object arg) {
+        return null;
+    }
+
+    @Override
+    public Visitable visit(ListCreationLiteralExpressionElement n, Object arg) {
         return null;
     }
 
