@@ -98,7 +98,7 @@ public class FactMappingValue {
 
     public void setPathToValue(List<String> pathToValue) {
         this.pathToValue = pathToValue;
-        this.status = FactMappingValueStatus.FAILED_WITH_ERROR;
+        this.status = FactMappingValueStatus.FAILED_WITH_ERROR_COLLECTION;
     }
 
     public void resetStatus() {

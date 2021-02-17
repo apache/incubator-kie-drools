@@ -16,6 +16,9 @@
 
 package org.drools.scenariosimulation.api.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,12 +50,12 @@ public class FactMappingValueTest {
 
     @Test
     public void setErrorValue() {
-        String errorValue = VALUE;
         FactMappingValue value = new FactMappingValue();
-        value.setErrorValue(errorValue);
+        value.setErrorValue(VALUE);
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
         assertThat(value.getExceptionMessage()).isNull();
-        assertThat(value.getErrorValue()).isEqualTo(errorValue);
+        assertThat(value.getPathToValue()).isNull();
+        assertThat(value.getErrorValue()).isEqualTo(VALUE);
     }
 
     @Test
@@ -63,5 +66,17 @@ public class FactMappingValueTest {
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
         assertThat(value.getExceptionMessage()).isEqualTo(exceptionValue);
         assertThat(value.getErrorValue()).isNull();
+        assertThat(value.getPathToValue()).isNull();
+    }
+
+    @Test
+    public void setPathToValue() {
+        List<String> path = Arrays.asList("Step1", "Step2");
+        FactMappingValue value = new FactMappingValue();
+        value.setPathToValue(path);
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR_COLLECTION);
+        assertThat(value.getExceptionMessage()).isNull();
+        assertThat(value.getErrorValue()).isNull();
+        assertThat(value.getPathToValue()).isSameAs(path);
     }
 }
