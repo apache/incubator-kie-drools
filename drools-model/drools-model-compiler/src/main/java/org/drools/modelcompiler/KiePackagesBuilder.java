@@ -110,12 +110,14 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.AbstractSingleConstraint;
+import org.drools.model.constraints.MultipleConstraints;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Exchange;
+import org.drools.model.impl.From1Impl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
@@ -483,7 +485,7 @@ public class KiePackagesBuilder {
             case SENDER:
             case RECEIVER:
             case PATTERN:
-                return buildPattern( ctx, group, condition );
+                return buildPattern( ctx, group, (org.drools.model.Pattern<?>) condition );
 
             case EVAL:
                 return buildEval( ctx, ( EvalImpl ) condition );
@@ -626,15 +628,16 @@ public class KiePackagesBuilder {
             allSubConditions.addChild(existGroupElement);
             recursivelyAddConditions(ctx, existGroupElement, existGroupElement, c.getSubConditions().iterator().next());
         } else if (c instanceof PatternImpl) {
-            if (ctx.getAccumulateSource( (( PatternImpl ) c).getPatternVariable() ) == null) {
-                allSubConditions.addChild( buildPattern( ctx, group, c ) );
+            org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
+            if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
+                allSubConditions.addChild( buildPattern( ctx, group, pattern ) );
             }
         } else if (c instanceof AccumulatePattern) {
             allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
         }
     }
 
-    private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
+    private RuleConditionElement buildEval(RuleContext ctx, EvalImpl eval) {
         Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getDeclaration ).toArray( Declaration[]::new );
         EvalExpression evalExpr = new LambdaEvalExpression(declarations, eval.getExpr());
         return new EvalCondition(evalExpr, declarations);
@@ -712,9 +715,24 @@ public class KiePackagesBuilder {
                                  false ); // TODO: query.isAbductive() );
     }
 
-    private Pattern buildPattern(RuleContext ctx, GroupElement group, Condition condition) {
-        org.drools.model.Pattern<?> modelPattern = (org.drools.model.Pattern) condition;
-        Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable(), condition.getType() );
+    private RuleConditionElement buildPattern(RuleContext ctx, GroupElement group, org.drools.model.Pattern<?> modelPattern) {
+        Variable patternVariable = modelPattern.getPatternVariable();
+        boolean isGroupKeyVar = ctx.getGroupKeyDeclaration( patternVariable ) != null;
+        if ( isGroupKeyVar ) {
+            // if the pattern variable is a group key and there are no bindings, the variable is already bound and it is not
+            // necessary to create a proper pattern, so simply translate the filtering constraints on that key into evals
+            if (modelPattern.getBindings().isEmpty()) {
+                return buildEvalsFromPatternConstraints( ctx, modelPattern.getConstraint() );
+            }
+            // if there are bindings it is necessary to create a new pattern variable having as from the group key
+            patternVariable = new DeclarationImpl( patternVariable.getType() );
+        }
+
+        Pattern pattern = addPatternForVariable( ctx, group, patternVariable, modelPattern.getType() );
+        if ( isGroupKeyVar ) {
+            pattern.setSource( buildFrom( ctx, pattern, new From1Impl<>( modelPattern.getPatternVariable() ) ) );
+        }
+
         Arrays.stream( modelPattern.getWatchedProps() ).forEach( pattern::addWatchedProperty );
 
         for (Binding binding : modelPattern.getBindings()) {
@@ -729,26 +747,35 @@ public class KiePackagesBuilder {
             ctx.addDeclaration(binding.getBoundVariable(), declaration);
         }
 
-        Declaration queryArgDecl = ctx.getQueryDeclaration( modelPattern.getPatternVariable() );
+        Declaration queryArgDecl = ctx.getQueryDeclaration( patternVariable );
         if (queryArgDecl != null) {
             pattern.addConstraint( new UnificationConstraint( queryArgDecl ) );
         }
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
-        addReactiveMasksToPattern( pattern, modelPattern );
+        addReactiveMasksToPattern( pattern, modelPattern.getPatternClassMetadata() );
         return pattern;
+    }
+
+    private RuleConditionElement buildEvalsFromPatternConstraints( RuleContext ctx, Constraint constraint ) {
+        if ( constraint instanceof SingleConstraint) {
+            return buildEval( ctx, new EvalImpl( ( SingleConstraint ) constraint ) );
+        }
+
+        GroupElement evals = new GroupElement(GroupElement.Type.AND);
+        for ( Constraint child : (( MultipleConstraints ) constraint).getChildren() ) {
+            evals.addChild( buildEvalsFromPatternConstraints( ctx, child ) );
+        }
+        return evals;
     }
 
     // this method sets the property reactive masks on the pattern and it's strictly necessary for native compilation
     // before changing this check DroolsTestIT in kogito-quarkus-integration-test-legacy module
-    private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
-        if (pattern.getListenedProperties() != null) {
-            DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
-            if (patternMetadata != null) {
-                String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
-                pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
-                pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
-            }
+    private void addReactiveMasksToPattern( Pattern pattern, DomainClassMetadata patternMetadata ) {
+        if (pattern.getListenedProperties() != null && patternMetadata != null) {
+            String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
+            pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
+            pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
         }
     }
 
@@ -785,7 +812,7 @@ public class KiePackagesBuilder {
 
             Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
             if (isGroupBy) {
-                ctx.addDependantDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
             }
 
             Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunction, binding, bindingEvaluator );
@@ -808,7 +835,7 @@ public class KiePackagesBuilder {
                 pattern.addDeclaration( declaration );
                 ctx.addDeclaration( boundVar, declaration );
                 if (isGroupBy) {
-                    ctx.addDependantDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                    ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
                 }
                 accumulators[i] = accumulator;
 
@@ -938,11 +965,7 @@ public class KiePackagesBuilder {
                     }
                     pattern.setSource( new org.drools.core.rule.WindowReference( window.getName() ) );
                 } else if ( decl.getSource() instanceof From ) {
-                    From<?> from = (From) decl.getSource();
-                    DataProvider provider = createFromDataProvider( ctx, from );
-                    org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
-                    fromSource.setResultPattern(pattern);
-                    pattern.setSource(fromSource);
+                    pattern.setSource( buildFrom( ctx, pattern, (From) decl.getSource() ) );
                 } else if ( decl.getSource() instanceof UnitData ) {
                     UnitData unitData = (UnitData ) decl.getSource();
                     pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + unitData.getName() ) );
@@ -987,6 +1010,13 @@ public class KiePackagesBuilder {
 
         ctx.registerPattern( patternVariable, pattern );
         return pattern;
+    }
+
+    private org.drools.core.rule.From buildFrom( RuleContext ctx, Pattern pattern, From<?> from ) {
+        DataProvider provider = createFromDataProvider( ctx, from );
+        org.drools.core.rule.From fromSource = new org.drools.core.rule.From(provider);
+        fromSource.setResultPattern( pattern );
+        return fromSource;
     }
 
     private DataProvider createFromDataProvider( RuleContext ctx, From<?> from ) {

@@ -43,7 +43,9 @@ public class RuleContext {
     private final RuleImpl rule;
 
     private final Map<Variable, Declaration> declarations = new HashMap<>();
-    private final Map<Variable, Declaration> dependantDeclarations = new HashMap<>();
+
+    private Map<Variable, Declaration> groupKeyDeclarations;
+    private Map<Variable, Declaration> dependantDeclarations;
 
     private Map<Variable, Declaration> queryDeclarations;
     private Map<Variable, Accumulate> accumulateSource;
@@ -86,7 +88,7 @@ public class RuleContext {
             existing.setPattern( pattern );
         }
 
-        Declaration dependant = dependantDeclarations.get( variable );
+        Declaration dependant = dependantDeclarations == null ? null : dependantDeclarations.get( variable );
         if (dependant != null) {
             dependant.setPattern( pattern );
         }
@@ -130,9 +132,20 @@ public class RuleContext {
         declarations.put( variable, declaration );
     }
 
-    void addDependantDeclaration( Variable variable, Variable dependingOn, Declaration declaration ) {
-        addDeclaration( variable, declaration );
+    void addGroupByDeclaration( Variable groupKeyVar, Variable dependingOn, Declaration declaration ) {
+        addDeclaration( groupKeyVar, declaration );
+        if (groupKeyDeclarations == null) {
+            groupKeyDeclarations = new HashMap<>();
+        }
+        groupKeyDeclarations.put( groupKeyVar, declaration );
+        if (dependantDeclarations == null) {
+            dependantDeclarations = new HashMap<>();
+        }
         dependantDeclarations.put( dependingOn, declaration );
+    }
+
+    Declaration getGroupKeyDeclaration( Variable groupKeyVar ) {
+        return groupKeyDeclarations == null ? null : groupKeyDeclarations.get( groupKeyVar );
     }
 
     Accumulate getAccumulateSource( Variable variable) {
