@@ -45,7 +45,7 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
 
     @Override
     public Score_ updateScore(Solution_ solution) {
-        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, false)) {
             scoreDirector.setWorkingSolution(solution);
             return scoreDirector.calculateScore();
         }
@@ -59,7 +59,7 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
     @Override
     public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
-                scoreDirectorFactory.buildScoreDirector(true, true)) {
+                scoreDirectorFactory.buildScoreDirector(false, true)) {
             scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
             boolean constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
