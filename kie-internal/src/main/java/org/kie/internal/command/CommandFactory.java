@@ -387,7 +387,7 @@ public class CommandFactory {
             Class<ExtendedKieCommands> cls = (Class<ExtendedKieCommands>) Class.forName( "org.drools.core.command.impl.CommandFactoryServiceImpl" );
             setCommandFactoryProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new RuntimeException( "Provider org.drools.core.command.impl.CommandFactoryProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.core.command.impl.CommandFactoryServiceImpl could not be set.",
                                                        e2 );
         }
     }
