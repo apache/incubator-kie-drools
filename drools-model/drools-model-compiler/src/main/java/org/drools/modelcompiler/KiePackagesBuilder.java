@@ -786,8 +786,12 @@ public class KiePackagesBuilder {
 
         boolean isGroupBy = accPattern instanceof GroupByPattern;
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
-        if (isGroupBy && accFunctions.length == 0) {
-            accFunctions = new AccumulateFunction[] { new AccumulateFunction( null, CountAccumulateFunction::new ) };
+        GroupByDeclaration groupByDeclaration = null;
+        if (isGroupBy) {
+            groupByDeclaration = new GroupByDeclaration(pattern);
+            if (accFunctions.length == 0) {
+                accFunctions = new AccumulateFunction[]{new AccumulateFunction( null, CountAccumulateFunction::new )};
+            }
         }
         Accumulate accumulate;
 
@@ -813,7 +817,7 @@ public class KiePackagesBuilder {
 
             Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
             if (isGroupBy) {
-                ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, groupByDeclaration );
             }
 
             Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunction, binding, bindingEvaluator );
@@ -836,7 +840,7 @@ public class KiePackagesBuilder {
                 pattern.addDeclaration( declaration );
                 ctx.addDeclaration( boundVar, declaration );
                 if (isGroupBy) {
-                    ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                    ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, groupByDeclaration );
                 }
                 accumulators[i] = accumulator;
 
