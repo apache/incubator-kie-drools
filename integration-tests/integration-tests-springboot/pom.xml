@@ -30,7 +30,7 @@
        <groupId>io.rest-assured</groupId>
        <artifactId>json-schema-validator</artifactId>
        <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
-       <version>${version.io.restassured.springboot}</version>
+       <version>${version.io.rest-assured.springboot}</version>
        <scope>test</scope>
     </dependency>
 
@@ -50,24 +50,24 @@
     <dependency>
       <groupId>io.projectreactor.kafka</groupId>
       <artifactId>reactor-kafka</artifactId>
-      <version>${version.spring.reactor.kafka}</version>
+      <version>${version.io.projectreactor.kafka}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
-      <version>${version.spring.reactor}</version>
+      <version>${version.io.projectreactor}</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>${version.spring.netty}</version>
+      <version>${version.io.netty}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-epoll</artifactId>
-      <version>${version.spring.netty}</version>
+      <version>${version.io.netty}</version>
       <classifier>linux-x86_64</classifier>
       <scope>test</scope>
     </dependency>

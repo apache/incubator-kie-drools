@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>@version.springboot@</version>
+        <version>@version.org.springframework.boot@</version>
     </parent>
     
     <groupId>org.kie.kogito</groupId>
@@ -32,7 +32,7 @@
         <java.version>@maven.compiler.release@</java.version>
         <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
         <infinispan.version>@version.org.infinispan@</infinispan.version>
-        <rest-assured.version>@version.io.restassured@</rest-assured.version>
+        <rest-assured.version>@version.io.rest-assured@</rest-assured.version>
     </properties>
     
     <dependencyManagement>
@@ -47,7 +47,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>@version.springboot@</version>
+                <version>@version.org.springframework.boot@</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -104,7 +104,7 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
-            <version>@version.io.restassured.springboot@</version>
+            <version>@version.io.rest-assured.springboot@</version>
             <scope>test</scope>
         </dependency>
 
@@ -135,7 +135,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>@version.springboot@</version>
+                <version>@version.org.springframework.boot@</version>
                 <executions>
                     <execution>
                         <goals>
