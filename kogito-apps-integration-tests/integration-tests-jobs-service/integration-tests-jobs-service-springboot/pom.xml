@@ -36,7 +36,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
-      <version>${version.springboot}</version>
+      <version>${version.org.springframework.boot}</version>
       <exclusions>
         <exclusion>
           <groupId>org.junit.vintage</groupId>
@@ -82,7 +82,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${version.springboot}</version>
+        <version>${version.org.springframework.boot}</version>
         <executions>
           <execution>
             <goals>
