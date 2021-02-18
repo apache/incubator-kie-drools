@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,7 +58,8 @@ public class SingleRangeCheck extends CheckBase {
 
     private final Collection<RuleInspector> ruleInspectors;
 
-    public SingleRangeCheck(AnalyzerConfiguration configuration, Collection<RuleInspector> ruleInspectors) {
+    public SingleRangeCheck(final AnalyzerConfiguration configuration,
+                            final Collection<RuleInspector> ruleInspectors) {
         super(configuration);
         this.ruleInspectors = ruleInspectors;
     }
