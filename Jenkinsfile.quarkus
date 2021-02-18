@@ -43,12 +43,26 @@ pipeline {
                         .run('clean install')
                 }
             }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
+                }
+            }
         }
         stage('Build kogito-runtimes') {
             steps {
                 script {
                     getMavenCommand('kogito-runtimes')
                         .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
                 }
             }
         }
@@ -60,12 +74,26 @@ pipeline {
                         .run('clean verify')
                 }
             }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
+                }
+            }
         }
         stage('Build optaplanner') {
             steps {
                 script {
                     getMavenCommand('optaplanner')
                         .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
                 }
             }
         }
@@ -76,12 +104,26 @@ pipeline {
                         .run('clean install')
                 }
             }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
+                }
+            }
         }
         stage('Build kogito-examples') {
             steps {
                 script {
                     getMavenCommand('kogito-examples')
                         .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
                 }
             }
         }
@@ -93,6 +135,13 @@ pipeline {
                             .run('clean verify')
                 }
             }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
+                }
+            }
         }
         stage('Build kogito-examples with events') {
             steps {
@@ -102,6 +151,13 @@ pipeline {
                             .run('clean verify')
                 }
             }
+            post {
+                always {
+                    script {
+                        cloud.cleanContainersAndImages('docker')
+                    }
+                }
+            }
         }
     }
     post {
@@ -109,8 +165,11 @@ pipeline {
             sendNotification()
         }
         always {
-            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-            cleanWs()
+            script {
+                junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+                cleanWs()
+                cloud.cleanContainersAndImages('docker')
+            }
         }
     }
 }
