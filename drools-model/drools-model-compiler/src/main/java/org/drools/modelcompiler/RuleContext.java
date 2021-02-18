@@ -90,7 +90,12 @@ public class RuleContext {
         if (existing == null) {
             declarations.put( variable, pattern.getDeclaration() );
         } else {
-            existing.setPattern( pattern );
+            Pattern oldPattern = existing.getPattern();
+            for (Declaration declaration : declarations.values()) {
+                if (declaration.getPattern() == oldPattern) {
+                    declaration.setPattern( pattern );
+                }
+            }
         }
 
         Declaration dependant = dependantDeclarations == null ? null : dependantDeclarations.get( variable );
