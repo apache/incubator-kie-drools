@@ -16,7 +16,9 @@
   <description>Kogito Apps</description>
 
   <properties>
-    <version.apps.jib-core>0.17.0</version.apps.jib-core>
+    <!-- Override: temporarily override Apps until we upgrade to ISPN 12 -->
+    <version.io.quarkus>1.11.3.Final</version.io.quarkus>
+    <!-- End of Override -->
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
     <version.node>v12.16.2</version.node>
     <version.npm>6.10.3</version.npm>
