@@ -332,7 +332,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         }
         if (expr != null) {
             if ( getExprType() == Boolean.class || getExprType() == boolean.class ) {
-                return true;
+                return right != null || exprBinding == null;
             }
             if (expr instanceof EnclosedExpr ) {
                 return isEnclosedExprValid( (( EnclosedExpr ) expr).getInner());
