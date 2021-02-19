@@ -51,7 +51,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
         Object[] args = new Object[groupingDeclarations.length];
         for (int i = 0; i < groupingDeclarations.length; i++) {
             Declaration declaration = groupingDeclarations[i];
-            Object object = tuple != null && declaration.getOffset() < tuple.size() ? tuple.getObject(declaration.getOffset()) : handle.getObject();
+            Object object = tuple != null && declaration.getOffset() < tuple.size() ? declaration.getValue(tuple) : handle.getObject();
             args[i] = declaration.getValue( workingMemory.getInternalWorkingMemory(), object );
         }
         return groupingFunction.apply( args );
