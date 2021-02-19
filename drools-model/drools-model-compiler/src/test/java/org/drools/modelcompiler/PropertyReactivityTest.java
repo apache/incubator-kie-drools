@@ -1171,4 +1171,26 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals(43, p.getAge());
     }
+
+    @Test
+    public void testSettersInAndOutModifyBlock() {
+        // RHDM-1552
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( age < 50 )\n" +
+                "then\n" +
+                "    $p.setAge( $p.getAge() + 1 );\n" +
+                "    modify($p) { setName( \"Mario\" ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals(43, p.getAge());
+    }
 }
