@@ -92,7 +92,7 @@ public class RuleContext {
         } else {
             Pattern oldPattern = existing.getPattern();
             for (Declaration declaration : declarations.values()) {
-                if (declaration.getPattern() == oldPattern) {
+                if (declaration.getPattern() == oldPattern && declaration.getTypeName().equals( existing.getTypeName() )) {
                     declaration.setPattern( pattern );
                 }
             }
