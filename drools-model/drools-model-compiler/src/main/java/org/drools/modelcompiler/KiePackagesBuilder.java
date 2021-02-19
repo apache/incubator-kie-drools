@@ -663,7 +663,8 @@ public class KiePackagesBuilder {
                                       consequence.getElseBranch() != null ? buildConditionalConsequence(ctx, consequence.getElseBranch()) : null );
     }
 
-    private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions) {
+    private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions ) {
+        ctx.setSubconditions( subconditions );
         for (int i = 0; i < subconditions.size(); i++) {
             RuleConditionElement element = conditionToElement( ctx, ge, subconditions.get(i) );
             if (element != null) {
@@ -721,7 +722,7 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement buildPattern(RuleContext ctx, GroupElement group, org.drools.model.Pattern<?> modelPattern) {
         Variable patternVariable = modelPattern.getPatternVariable();
-        boolean isGroupKeyVar = ctx.getGroupKeyDeclaration( patternVariable ) != null;
+        boolean isGroupKeyVar = ctx.isGroupKeyVariable( patternVariable );
         if ( isGroupKeyVar ) {
             // if the pattern variable is a group key and there are no bindings, the variable is already bound and it is not
             // necessary to create a proper pattern, so simply translate the filtering constraints on that key into evals
@@ -789,8 +790,12 @@ public class KiePackagesBuilder {
 
         boolean isGroupBy = accPattern instanceof GroupByPattern;
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
-        if (isGroupBy && accFunctions.length == 0) {
-            accFunctions = new AccumulateFunction[] { new AccumulateFunction( null, CountAccumulateFunction::new ) };
+        GroupByDeclaration groupByDeclaration = null;
+        if (isGroupBy) {
+            groupByDeclaration = new GroupByDeclaration(pattern);
+            if (accFunctions.length == 0) {
+                accFunctions = new AccumulateFunction[]{new AccumulateFunction( null, CountAccumulateFunction::new )};
+            }
         }
         Accumulate accumulate;
 
@@ -816,7 +821,7 @@ public class KiePackagesBuilder {
 
             Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
             if (isGroupBy) {
-                ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, groupByDeclaration );
             }
 
             Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunction, binding, bindingEvaluator );
@@ -839,7 +844,7 @@ public class KiePackagesBuilder {
                 pattern.addDeclaration( declaration );
                 ctx.addDeclaration( boundVar, declaration );
                 if (isGroupBy) {
-                    ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                    ctx.addGroupByDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, groupByDeclaration );
                 }
                 accumulators[i] = accumulator;
 
@@ -864,9 +869,23 @@ public class KiePackagesBuilder {
 
         for (Variable boundVar : accPattern.getBoundVariables()) {
             ctx.addAccumulateSource( boundVar, accumulate );
+            movePatternAfterAccumulate( ctx.getSubconditions(), accPattern, boundVar );
         }
 
         return accumulate;
+    }
+
+    private void movePatternAfterAccumulate( List<Condition> subconditions, AccumulatePattern accPattern, Variable boundVar ) {
+        int accPatternPos = subconditions.indexOf( accPattern );
+        if (accPatternPos >= 0) {
+            for (int i = accPatternPos+2; i < subconditions.size(); i++)  {
+                Condition condition = subconditions.get(i);
+                if (condition instanceof org.drools.model.Pattern && (( org.drools.model.Pattern ) condition).getPatternVariable() == boundVar ) {
+                    subconditions.add( accPatternPos+1, subconditions.remove( i ) );
+                    break;
+                }
+            }
+        }
     }
 
     private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {
