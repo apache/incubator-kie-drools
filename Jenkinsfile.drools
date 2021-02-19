@@ -64,7 +64,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -80,7 +80,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -95,7 +95,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -110,7 +110,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -125,7 +125,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -141,7 +141,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -157,7 +157,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cloud.cleanContainersAndImages('docker')
+                        cleanContainers()
                     }
                 }
             }
@@ -170,8 +170,11 @@ pipeline {
         always {
             script {
                 junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-                cleanWs()
-                cloud.cleanContainersAndImages('docker')
+            }
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
             }
         }
     }
@@ -216,4 +219,8 @@ MavenCommand getMavenCommandWithDroolsVersion(String directory) {
                 .withSettingsXmlId('kogito_release_settings')
                 .inDirectory(directory)
                 .withProperty('version.org.kie7', "${DROOLS_VERSION}")
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
 }
