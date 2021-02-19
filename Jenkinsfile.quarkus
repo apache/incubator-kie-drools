@@ -46,7 +46,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -61,7 +61,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -77,7 +77,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -92,7 +92,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -107,7 +107,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -122,7 +122,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -138,7 +138,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -154,7 +154,7 @@ pipeline {
             post {
                 always {
                     script {
-                        cleanContainers()
+                        cloud.cleanContainersAndImages('docker')
                     }
                 }
             }
@@ -167,11 +167,8 @@ pipeline {
         always {
             script {
                 junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-            }
-        }
-        cleanup {
-            script {
-                util.cleanNode('docker')
+                cleanWs()
+                cloud.cleanContainersAndImages('docker')
             }
         }
     }
@@ -224,8 +221,4 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
 
 String getQuarkusBranch() {
     return env['QUARKUS_BRANCH'] ?: 'master'
-}
-
-void cleanContainers() {
-    cloud.cleanContainersAndImages('docker')
 }

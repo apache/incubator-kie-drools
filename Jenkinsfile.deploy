@@ -156,11 +156,9 @@ pipeline {
                 def propertiesStr = deployProperties.collect { entry ->  "${entry.key}=${entry.value}" }.join('\n')
                 writeFile(text: propertiesStr, file: 'deployment.properties')
                 archiveArtifacts(artifacts: 'deployment.properties')
-            }
-        }
-        cleanup {
-            script {
-                util.cleanNode('docker')
+                
+                cleanWs()
+                cloud.cleanContainersAndImages('docker')
             }
         }
     }
