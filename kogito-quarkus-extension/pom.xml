@@ -28,14 +28,34 @@
     </dependencies>
   </dependencyManagement>
 
-  <modules>
-    <module>bom</module>
-    <module>deployment</module>
-    <module>runtime</module>
-    <module>integration-test</module>
-    <module>integration-test-hot-reload</module>
-    <module>integration-test-legacy</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>bom</module>
+        <module>deployment</module>
+        <module>runtime</module>
+        <module>integration-test</module>
+        <module>integration-test-hot-reload</module>
+        <module>integration-test-legacy</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>productized</id>
+      <activation>
+        <property>
+          <name>productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>deployment</module>
+        <module>runtime</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>

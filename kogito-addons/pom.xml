@@ -12,17 +12,37 @@
   <packaging>pom</packaging>
   <name>Kogito :: Add-Ons</name>
   <description>Various Add-Ons to the runtimes modules (administration, monitoring, etc)</description>
-  <modules>
-    <module>persistence</module>
-    <module>cloudevents</module>
-    <module>events</module>
-    <module>jobs</module>
-    <module>predictions</module>
-    <module>process-management</module>
-    <module>process-svg</module>
-    <module>tracing</module>
-    <module>monitoring</module>
-    <module>explainability-addon</module>
-  </modules>
+
+  <profiles>
+    <profile>
+      <id>community</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>persistence</module>
+        <module>cloudevents</module>
+        <module>events</module>
+        <module>jobs</module>
+        <module>predictions</module>
+        <module>process-management</module>
+        <module>process-svg</module>
+        <module>tracing</module>
+        <module>monitoring</module>
+        <module>explainability-addon</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>productized</id>
+      <activation>
+        <property>
+          <name>productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>monitoring</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
