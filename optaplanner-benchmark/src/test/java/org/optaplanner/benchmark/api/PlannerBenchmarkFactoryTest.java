@@ -31,6 +31,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
+import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -275,6 +279,46 @@ class PlannerBenchmarkFactoryTest {
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
+    }
+
+    // ************************************************************************
+    // Instance methods
+    // ************************************************************************
+
+    @Test
+    void buildPlannerBenchmark() {
+        PlannerBenchmarkConfig benchmarkConfig = new PlannerBenchmarkConfig();
+        SolverBenchmarkConfig inheritedSolverConfig = new SolverBenchmarkConfig();
+        inheritedSolverConfig.setSolverConfig(new SolverConfig()
+                .withSolutionClass(TestdataSolution.class)
+                .withEntityClasses(TestdataEntity.class)
+                .withConstraintProviderClass(TestdataConstraintProvider.class));
+        benchmarkConfig.setInheritedSolverBenchmarkConfig(inheritedSolverConfig);
+
+        benchmarkConfig.setSolverBenchmarkConfigList(Arrays.asList(
+                new SolverBenchmarkConfig(), new SolverBenchmarkConfig(), new SolverBenchmarkConfig()));
+
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(benchmarkConfig);
+
+        TestdataSolution solution1 = new TestdataSolution("s1");
+        solution1.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        solution1.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        TestdataSolution solution2 = new TestdataSolution("s2");
+        solution2.setEntityList(Arrays.asList(new TestdataEntity("e11"), new TestdataEntity("e12"), new TestdataEntity("e13")));
+        solution2.setValueList(Arrays.asList(new TestdataValue("v11"), new TestdataValue("v12")));
+
+        DefaultPlannerBenchmark plannerBenchmark =
+                (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(solution1, solution2);
+        assertThat(plannerBenchmark).isNotNull();
+        assertThat(plannerBenchmark.getPlannerBenchmarkResult().getSolverBenchmarkResultList().size()).isEqualTo(3);
+        assertThat(plannerBenchmark.getPlannerBenchmarkResult().getUnifiedProblemBenchmarkResultList().size()).isEqualTo(2);
+    }
+
+    public static class TestdataConstraintProvider implements ConstraintProvider {
+        @Override
+        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+            return new Constraint[0];
+        }
     }
 
 }

@@ -69,14 +69,16 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
             return false;
         }
         InstanceProblemProvider<?> that = (InstanceProblemProvider<?>) o;
+        // Do not compare the solutionCloner, because the same extraProblem instance or the same problem inputFile
+        // might be benchmarked with different solvers using different SolutionCloner configurations
+        // yet they should be reported on a single BEST_SCORE graph
         return Objects.equals(problemName, that.problemName) &&
-                Objects.equals(problem, that.problem) &&
-                Objects.equals(solutionCloner, that.solutionCloner);
+                Objects.equals(problem, that.problem);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(problemName, problem, solutionCloner);
+        return Objects.hash(problemName, problem);
     }
 
     @Override
