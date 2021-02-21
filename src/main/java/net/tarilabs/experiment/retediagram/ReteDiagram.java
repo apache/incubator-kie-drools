@@ -1,5 +1,6 @@
 package net.tarilabs.experiment.retediagram;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,11 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.parse.Parser;
+
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -49,16 +55,6 @@ public class ReteDiagram {
         CWD("./");
         private String path;
         PredefinedOutputPath(String path) {
-            this.path = path;
-        }
-        public String getPath() {
-            return path;
-        }
-    }
-    public enum DefaultGraphvizPath {
-        USE_SYSTEM_PATH("");
-        private String path;
-        DefaultGraphvizPath(String path) {
             this.path = path;
         }
         public String getPath() {
@@ -84,7 +80,6 @@ public class ReteDiagram {
     private Layout layout;
     private String outputPath;
     private boolean prefixTimestamp;
-    private String graphvizPath;
     private boolean outputSVG;
     private boolean outputPNG;
     private String browserCommand;
@@ -102,7 +97,7 @@ public class ReteDiagram {
         return new ReteDiagram()
                 .configLayout(Layout.VLEVEL)
                 .configFilenameScheme(PredefinedOutputPath.CWD, true)
-                .configGraphviz(DefaultGraphvizPath.USE_SYSTEM_PATH, true, true)
+                .configGraphviz(true, true)
                 .configOpenFileWithBrowser(DefaultBrowser.GOOGLE_CHROME, true, false)
                 ;
     }
@@ -129,14 +124,10 @@ public class ReteDiagram {
         return configFilenameScheme(predefinedPath.getPath(), prefixTimestamp);
     }
     
-    public ReteDiagram configGraphviz(String graphvizPath, boolean outputSVG, boolean outputPNG) {
-        this.graphvizPath = graphvizPath;
+    public ReteDiagram configGraphviz(boolean outputSVG, boolean outputPNG) {
         this.outputSVG = outputSVG;
         this.outputPNG = outputPNG;
         return this;
-    }
-    public ReteDiagram configGraphviz(DefaultGraphvizPath graphvizPath, boolean outputSVG, boolean outputPNG) {
-        return configGraphviz(graphvizPath.getPath(), outputSVG, outputPNG);
     }
     
     public ReteDiagram configOpenFileWithBrowser(String browserCommand, boolean openSVG, boolean openPNG) {
@@ -205,18 +196,16 @@ public class ReteDiagram {
 
         if (outputSVG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( graphvizPath + "dot", "-Tsvg", "-o", svgFileName, gvFileName );
-            pbuilder.redirectErrorStream( true );
-            pbuilder.start();
+            MutableGraph g = new Parser().read(new File(gvFileName));
+            Graphviz.fromGraph(g).render(Format.SVG).toFile(new File(svgFileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
         }
         if (outputPNG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( graphvizPath + "dot", "-Tpng", "-o", pngFileName, gvFileName );
-            pbuilder.redirectErrorStream( true );
-            pbuilder.start();
+            MutableGraph g = new Parser().read(new File(gvFileName));
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(pngFileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
