@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.tarilabs.experiment.retediagram.ReteDiagram.DefaultBrowser;
 import net.tarilabs.experiment.retediagram.ReteDiagram.Layout;
 import net.tarilabs.model.Measurement;
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.mvel.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.ReteDumper;
 import org.junit.Test;
