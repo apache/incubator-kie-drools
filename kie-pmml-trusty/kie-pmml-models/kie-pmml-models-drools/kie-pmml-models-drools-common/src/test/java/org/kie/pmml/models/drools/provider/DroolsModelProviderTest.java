@@ -217,15 +217,6 @@ public class DroolsModelProviderTest {
         assertNotNull(retrieved);
         final String rootPath = PACKAGE_NAME + ".";
         commonVerifyRulesSourcesMap(retrieved, packageDescr, rootPath);
-//        packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
-//            String expectedPath = rootPath + typeDeclarationDescr.getTypeName();
-//            assertTrue(retrieved.keySet().stream().anyMatch(className -> className.equals(expectedPath)));
-//        });
-//        String pkgUUID = packageDescr.getPreferredPkgUUID().get();
-//        String expectedRule = rootPath + "Rules" + pkgUUID;
-//        assertTrue(retrieved.keySet().stream().anyMatch(className -> className.equals(expectedRule)));
-//        String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID;
-//        assertTrue(retrieved.keySet().stream().anyMatch(className -> className.equals(expectedDomain)));
     }
 
     @Test
@@ -397,18 +388,6 @@ public class DroolsModelProviderTest {
             this.dataDictionary = dataDictionary;
             this.model = model;
             this.fieldTypeMap = fieldTypeMap;
-        }
-    }
-
-    //  Needed to avoid Mockito usage
-    private static class PackageDescrTest extends PackageDescr {
-
-        final KiePMMLDroolsAST kiePMMLDroolsAST;
-        final String packageName;
-
-        public PackageDescrTest(KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
-            this.kiePMMLDroolsAST = kiePMMLDroolsAST;
-            this.packageName = packageName;
         }
     }
 }
