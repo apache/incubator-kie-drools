@@ -91,10 +91,9 @@ pipeline {
         }
     }
     post {
-        always {
+        cleanup {
             script {
-                cleanWs()
-                cloud.cleanContainersAndImages('docker')
+                util.cleanNode('docker')
             }
         }
     }

@@ -62,8 +62,11 @@ pipeline {
         always {
             script {
                 junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-                cleanWs()
-                cloud.cleanContainersAndImages('docker')
+            }
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
             }
         }
     }
