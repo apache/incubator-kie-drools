@@ -634,7 +634,10 @@ public class KiePackagesBuilder {
         } else if (c instanceof PatternImpl) {
             org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
             if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
-                allSubConditions.addChild( buildPattern( ctx, group, pattern ) );
+                RuleConditionElement rce = buildPattern( ctx, group, pattern );
+                if (rce != null) {
+                    allSubConditions.addChild( rce );
+                }
             }
         } else if (c instanceof AccumulatePattern) {
             allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
@@ -727,7 +730,7 @@ public class KiePackagesBuilder {
             // if the pattern variable is a group key and there are no bindings, the variable is already bound and it is not
             // necessary to create a proper pattern, so simply translate the filtering constraints on that key into evals
             if (modelPattern.getBindings().isEmpty()) {
-                return (( PatternImpl ) modelPattern).hasConstraints() ? buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable ) : null;
+                return buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable );
             }
             // if there are bindings it is necessary to create a new pattern variable having as from the group key
             patternVariable = new DeclarationImpl( patternVariable.getType() );
@@ -766,7 +769,7 @@ public class KiePackagesBuilder {
         if ( constraint instanceof SingleConstraint) {
             EvalCondition evalCondition = buildEval( ctx, new EvalImpl( ( SingleConstraint ) constraint ) );
             Map<String, Declaration> declarationsMap = new HashMap<>();
-            declarationsMap.put( groupKeyVar.getName(), evalCondition.getRequiredDeclarations()[0] );
+            declarationsMap.put( groupKeyVar.getName(), ctx.getDeclaration( groupKeyVar ) );
             evalCondition.setOuterDeclarations( declarationsMap );
             return evalCondition;
         }

@@ -1496,7 +1496,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testNestedGroupBy1() throws Exception {
+    public void testNestedGroupBy1a() throws Exception {
         // DROOLS-6045
         final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
 
@@ -1515,6 +1515,46 @@ public class GroupByTest {
                                 // Bindings
                                 D.pattern(var_$key)
                                         .expr(k -> ((Integer)k) > 0)
+                        ),
+                        D.accFunction(CollectListAccumulateFunction::new, var_$key).as(var_$accresult)
+                ),
+                // Consequence
+                D.on(var_$accresult, var_results)
+                        .execute(($accresult, results) -> {
+                            results.add($accresult);
+                        })
+        );
+
+        final Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        final KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        final List<Object> results = new ArrayList<>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        Assertions.assertThat(results).containsOnly(Collections.singletonList(42));
+    }
+
+    @Test
+    public void testNestedGroupBy1b() throws Exception {
+        // DROOLS-6045
+        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+
+        final Variable<Object> var_$key = D.declarationOf(Object.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+        final Variable<Object> var_$accresult = D.declarationOf(Object.class);
+
+        final Rule rule1 = PatternDSL.rule("R1").build(
+                D.accumulate(
+                        D.and(
+                                D.groupBy(
+                                        // Patterns
+                                        D.pattern(var_$p),
+                                        // Grouping Function
+                                        var_$p, var_$key, Person::getAge),
+                                // Bindings
+                                D.pattern(var_$key)
                         ),
                         D.accFunction(CollectListAccumulateFunction::new, var_$key).as(var_$accresult)
                 ),
