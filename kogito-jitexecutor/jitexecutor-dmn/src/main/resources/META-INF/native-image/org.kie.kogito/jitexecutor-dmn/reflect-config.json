@@ -1414,6 +1414,36 @@
       "allPublicFields" : true,
       "allPublicClasses" : true
     },
+    {
+      "name":"org.kie.kogito.trusty.service.responses.SalienciesResponse",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true,
+      "allPublicClasses" : true
+    },
+    {
+      "name":"org.kie.kogito.trusty.service.responses.SaliencyResponse",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true,
+      "allPublicClasses" : true
+    },
+    {
+      "name":"org.kie.kogito.trusty.service.responses.FeatureImportanceResponse",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true,
+      "allPublicClasses" : true
+    },
    {
       "name":"sun.misc.Unsafe",
       "fields":[{"name":"theUnsafe"}],
