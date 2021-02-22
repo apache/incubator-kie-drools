@@ -62,7 +62,6 @@ pipeline {
         always {
             sh '$WORKSPACE/trace.sh'
             junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
-            cleanWs()
         }
         failure {
             script {
@@ -77,6 +76,12 @@ pipeline {
         fixed {
             script {
                 mailer.sendEmail_fixedPR()
+            }
+        }
+        cleanup {
+            script {
+                // Clean also docker in case of usage of testcontainers lib
+                util.cleanNode('docker')
             }
         }
     }

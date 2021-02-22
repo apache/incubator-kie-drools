@@ -221,7 +221,12 @@ pipeline {
                 writeFile(text: propertiesStr, file: env.PROPERTIES_FILE_NAME)
                 archiveArtifacts(artifacts: env.PROPERTIES_FILE_NAME)
             }
-            cleanWs()
+        }
+        cleanup {
+            script {
+                // Clean also docker in case of usage of testcontainers lib
+                util.cleanNode('docker')
+            }
         }
     }
 }
