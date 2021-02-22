@@ -37,6 +37,7 @@ public class FunctionInvocationNode
 
     private BaseNode name;
     private ListNode params;
+    private TemporalConstantNode tcFolded; // this is NOT a child node intentionally.
 
     public FunctionInvocationNode(ParserRuleContext ctx, BaseNode name, ListNode params) {
         super( ctx );
@@ -60,8 +61,19 @@ public class FunctionInvocationNode
         this.params = params;
     }
 
+    public void setTcFolded(TemporalConstantNode tcFolded) {
+        this.tcFolded = tcFolded;
+    }
+
+    public TemporalConstantNode getTcFolded() {
+        return tcFolded;
+    }
+
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        if (this.tcFolded != null) {
+            return tcFolded.value;
+        }
         FEELFunction function = null;
         Object value = null;
         if ( name instanceof NameRefNode ) {

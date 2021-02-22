@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang;
+package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.ArrayList;
 import java.util.List;

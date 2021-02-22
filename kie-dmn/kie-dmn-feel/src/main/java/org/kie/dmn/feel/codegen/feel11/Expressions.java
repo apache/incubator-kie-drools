@@ -18,7 +18,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -456,6 +455,12 @@ public class Expressions {
         MethodCallExpr coerceNumberMethodCallExpr = new MethodCallExpr(new NameExpr(CompiledFEELSupport.class.getSimpleName()), "coerceNumber");
         coerceNumberMethodCallExpr.addArgument(exprCursor);
         return coerceNumberMethodCallExpr;
+    }
+
+    public static ObjectCreationExpr newIllegalState() {
+        return new ObjectCreationExpr(null,
+                                      parseClassOrInterfaceType(IllegalStateException.class.getCanonicalName()),
+                                      new NodeList<>());
     }
 }
 

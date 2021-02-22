@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class DurationFunction
         extends BaseFEELFunction {
 
+    public static final DurationFunction INSTANCE = new DurationFunction();
+
     public DurationFunction() {
         super(FEELConversionFunctionNames.DURATION);
     }

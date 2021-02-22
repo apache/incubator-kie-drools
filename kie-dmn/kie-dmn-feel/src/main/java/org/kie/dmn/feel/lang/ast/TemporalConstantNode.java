@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,40 @@
 
 package org.kie.dmn.feel.lang.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
+import java.util.Collections;
+import java.util.List;
+
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.runtime.FEELFunction;
 
-public class StringNode
-        extends BaseNode {
+public class TemporalConstantNode extends BaseNode {
 
-    public StringNode(ParserRuleContext ctx) {
-        super( ctx );
+    public final Object value;
+    public final FEELFunction fn;
+    public final List<Object> params;
+
+    public TemporalConstantNode(FunctionInvocationNode orig, Object value, FEELFunction fn, List<Object> params) {
+        copyLocationAttributesFrom(orig);
+        this.value = value;
+        this.fn = fn;
+        this.params = Collections.unmodifiableList(params);
     }
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        return getValue();
-    }
-
-    public String getValue() {
-        return EvalHelper.unescapeString(getText());
+        return value;
     }
 
     @Override
     public Type getResultType() {
-        return BuiltInType.STRING;
+        return BuiltInType.UNKNOWN;
     }
 
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
+
 }
