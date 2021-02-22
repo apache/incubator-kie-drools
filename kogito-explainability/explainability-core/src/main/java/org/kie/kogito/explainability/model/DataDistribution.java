@@ -24,24 +24,28 @@ public interface DataDistribution {
 
     /**
      * Sample a {@code PredictionInput} from this distribution.
+     * 
      * @return a prediction input
      */
     PredictionInput sample();
 
     /**
      * Sample a number of {@code PredictionInputs} from this distribution.
+     * 
      * @return a list of prediction inputs
      */
     List<PredictionInput> sample(int sampleSize);
 
     /**
      * Get all the {@code PredictionInputs} from this distribution.
+     * 
      * @return a list of prediction inputs
      */
     List<PredictionInput> getAllSamples();
 
     /**
      * Get separate (independent) distributions for each feature.
+     * 
      * @return a list of feature distributions
      */
     List<FeatureDistribution> asFeatureDistributions();

@@ -61,9 +61,9 @@ public class DataUtils {
      * If a same number is added to all values the mean also changes by the same number so we add {@code mean - m1} to
      * all numbers.
      *
-     * @param mean         desired mean
+     * @param mean desired mean
      * @param stdDeviation desired standard deviation
-     * @param size         size of the array
+     * @param size size of the array
      * @return the generated data
      */
     public static double[] generateData(double mean, double stdDeviation, int size, Random random) {
@@ -84,8 +84,8 @@ public class DataUtils {
         }
 
         // get the new mean
-        double newMean = generatedDataStdDev != 0 ? generatedDataMean * stdDeviation / generatedDataStdDev :
-                generatedDataMean * stdDeviation;
+        double newMean = generatedDataStdDev != 0 ? generatedDataMean * stdDeviation / generatedDataStdDev
+                : generatedDataMean * stdDeviation;
 
         // force desired mean
         for (int i = 0; i < size; i++) {
@@ -95,7 +95,7 @@ public class DataUtils {
         return data;
     }
 
-    static double getMean(double[] data) {
+    public static double getMean(double[] data) {
         double m = 0;
         for (double datum : data) {
             m += datum;
@@ -104,7 +104,7 @@ public class DataUtils {
         return m;
     }
 
-    static double getStdDev(double[] data, double mean) {
+    public static double getStdDev(double[] data, double mean) {
         double d = 0;
         for (double datum : data) {
             d += Math.pow(datum - mean, 2);
@@ -117,8 +117,8 @@ public class DataUtils {
     /**
      * Generate equally {@code size} sampled values between {@code min} and {@code max}.
      *
-     * @param min  minimum value
-     * @param max  maximum value
+     * @param min minimum value
+     * @param max maximum value
      * @param size dataset size
      * @return the generated data
      */
@@ -157,7 +157,7 @@ public class DataUtils {
      * Perform perturbations on a fixed number of features in the given input.
      * Which feature will be perturbed is non deterministic.
      *
-     * @param originalFeatures    the input features that need to be perturbed
+     * @param originalFeatures the input features that need to be perturbed
      * @param perturbationContext the perturbation context
      * @return a perturbed copy of the input features
      */
@@ -172,8 +172,7 @@ public class DataUtils {
             int perturbationSize = 0;
             if (lowerBound == upperBound) {
                 perturbationSize = lowerBound;
-            }
-            else if (upperBound > lowerBound) {
+            } else if (upperBound > lowerBound) {
                 perturbationSize = perturbationContext.getRandom().ints(1, lowerBound, 1 + upperBound).findFirst().orElse(1);
             }
             if (perturbationSize > 0) {
@@ -181,7 +180,8 @@ public class DataUtils {
                         .distinct().limit(perturbationSize).toArray();
                 for (int index : indexesToBePerturbed) {
                     Feature feature = newFeatures.get(index);
-                    Feature perturbedFeature = FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
+                    Feature perturbedFeature =
+                            FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
                     newFeatures.set(index, perturbedFeature);
                 }
             }
@@ -193,7 +193,7 @@ public class DataUtils {
      * Drop a given feature from a list of existing features.
      *
      * @param features the existing features
-     * @param target   the feature to drop
+     * @param target the feature to drop
      * @return a new list of features having the target feature dropped
      */
     public static List<Feature> dropFeature(List<Feature> features, Feature target) {
@@ -227,7 +227,7 @@ public class DataUtils {
      * Drop a target feature from a "linearized" version of a source feature.
      * Any of such linearized features are eventually dropped if they match on associated name, type and value.
      *
-     * @param target        the target feature
+     * @param target the target feature
      * @param sourceFeature the source feature
      * @return the source feature having one of its underlying "linearized" values eventually dropped
      */
@@ -237,7 +237,8 @@ public class DataUtils {
         int i = 0;
         for (Feature linearizedFeature : linearizedFeatures) {
             if (target.getValue().equals(linearizedFeature.getValue())) {
-                linearizedFeatures.set(i, FeatureFactory.copyOf(linearizedFeature, linearizedFeature.getType().drop(target.getValue())));
+                linearizedFeatures.set(i,
+                        FeatureFactory.copyOf(linearizedFeature, linearizedFeature.getType().drop(target.getValue())));
                 f = FeatureFactory.newCompositeFeature(target.getName(), linearizedFeatures);
                 break;
             } else {
@@ -319,8 +320,8 @@ public class DataUtils {
     /**
      * Calculate the Gaussian kernel of a given value.
      *
-     * @param x     Gaussian kernel input value
-     * @param mu    mean
+     * @param x Gaussian kernel input value
+     * @param mu mean
      * @param sigma variance
      * @return the Gaussian filtered value
      */
@@ -331,7 +332,7 @@ public class DataUtils {
     /**
      * Calculate exponentially smoothed kernel of a given value (e.g. distance between two points).
      *
-     * @param x     value to smooth
+     * @param x value to smooth
      * @param width kernel width
      * @return the exponentially smoothed value
      */
@@ -342,7 +343,7 @@ public class DataUtils {
     /**
      * Generate a random data distribution.
      *
-     * @param noOfFeatures     number of features
+     * @param noOfFeatures number of features
      * @param distributionSize number of samples for each feature
      * @return a data distribution
      */
@@ -412,7 +413,7 @@ public class DataUtils {
      * Build Predictions from PredictionInputs and PredictionOutputs.
      *
      * @param inputs prediction inputs
-     * @param os     prediction outputs
+     * @param os prediction outputs
      * @return a list of predictions
      */
     public static List<Prediction> getPredictions(List<PredictionInput> inputs, List<PredictionOutput> os) {
@@ -423,10 +424,10 @@ public class DataUtils {
     /**
      * Sample (with replacement) from a list of values.
      *
-     * @param values     the list to sample from
+     * @param values the list to sample from
      * @param sampleSize the no. of samples to draw
-     * @param random     a random instance
-     * @param <T>        the type of values to sample
+     * @param random a random instance
+     * @param <T> the type of values to sample
      * @return a list of sampled values
      */
     public static <T> List<T> sampleWithReplacement(List<T> values, int sampleSize, Random random) {
@@ -442,6 +443,7 @@ public class DataUtils {
 
     /**
      * Persist a {@link PartialDependenceGraph} into a CSV file.
+     * 
      * @param partialDependenceGraph the PDP to persist
      * @param path the path to the CSV file to be created
      * @throws IOException whether any IO error occurs while writing the CSV
