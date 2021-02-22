@@ -165,11 +165,16 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 
     }
 
+    /**
+     * This method depends on exec-model. Be aware in case of refactoring
+     *
+     * @param packageDescr
+     * @return
+     */
     protected List<GeneratedFile> generateRulesFiles(PackageDescr packageDescr) {
         ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
                                                                                new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()),
-                                                                               new ReleaseIdImpl("dummy:dummy:0.0" +
-                                                                                                         ".0"),
+                                                                               new ReleaseIdImpl("dummy:dummy:0.0.0"),
                                                                                true, false);
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         batch.add(new DescrResource(packageDescr), ResourceType.DESCR);
