@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -32,6 +34,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.model.Condition;
 import org.drools.model.Global;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
@@ -44,7 +47,7 @@ public class RuleContext {
 
     private final Map<Variable, Declaration> declarations = new HashMap<>();
 
-    private Map<Variable, Declaration> groupKeyDeclarations;
+    private Set<Variable> groupKeyVariables;
     private Map<Variable, Declaration> dependantDeclarations;
 
     private Map<Variable, Declaration> queryDeclarations;
@@ -54,6 +57,8 @@ public class RuleContext {
 
     private int patternIndex = -1;
     private boolean needStreamMode = false;
+
+    private List<Condition> subconditions;
 
     public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.builder = builder;
@@ -85,7 +90,12 @@ public class RuleContext {
         if (existing == null) {
             declarations.put( variable, pattern.getDeclaration() );
         } else {
-            existing.setPattern( pattern );
+            Pattern oldPattern = existing.getPattern();
+            for (Declaration declaration : declarations.values()) {
+                if (declaration.getPattern() == oldPattern && declaration.getTypeName().equals( existing.getTypeName() )) {
+                    declaration.setPattern( pattern );
+                }
+            }
         }
 
         Declaration dependant = dependantDeclarations == null ? null : dependantDeclarations.get( variable );
@@ -134,18 +144,18 @@ public class RuleContext {
 
     void addGroupByDeclaration( Variable groupKeyVar, Variable dependingOn, Declaration declaration ) {
         addDeclaration( groupKeyVar, declaration );
-        if (groupKeyDeclarations == null) {
-            groupKeyDeclarations = new HashMap<>();
+        if ( groupKeyVariables == null) {
+            groupKeyVariables = new HashSet<>();
         }
-        groupKeyDeclarations.put( groupKeyVar, declaration );
+        groupKeyVariables.add( groupKeyVar );
         if (dependantDeclarations == null) {
             dependantDeclarations = new HashMap<>();
         }
         dependantDeclarations.put( dependingOn, declaration );
     }
 
-    Declaration getGroupKeyDeclaration( Variable groupKeyVar ) {
-        return groupKeyDeclarations == null ? null : groupKeyDeclarations.get( groupKeyVar );
+    boolean isGroupKeyVariable( Variable groupKeyVar ) {
+        return groupKeyVariables == null ? false : groupKeyVariables.contains( groupKeyVar );
     }
 
     Accumulate getAccumulateSource( Variable variable) {
@@ -199,5 +209,13 @@ public class RuleContext {
             }
         }
         return null;
+    }
+
+    public List<Condition> getSubconditions() {
+        return subconditions;
+    }
+
+    public void setSubconditions( List<Condition> subconditions ) {
+        this.subconditions = subconditions;
     }
 }

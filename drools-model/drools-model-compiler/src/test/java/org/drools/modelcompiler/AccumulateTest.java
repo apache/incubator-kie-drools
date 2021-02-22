@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,9 +61,9 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
@@ -3378,5 +3379,57 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals( "A180", result.get(0).getName() );
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testAccumulateWithForAll() {
+        // DROOLS-6025
+        String str =
+                "import " + GrandChild.class.getCanonicalName() + ";\n" +
+                "import " + GrandParent.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "        accumulate ( " +
+                "        $gp: GrandParent() and\n" +
+                "        forall( $gc: GrandChild( ) from $gp.grandChild " +
+                "                GrandChild( this == $gc, name == \"A\" ) );\n" +
+                "        $count : count())\n" +
+                "    then\n" +
+                "        System.out.println(\"exec \" + $count);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        GrandParent grandParent = new GrandParent();
+        GrandChild grandChild = new GrandChild();
+        grandChild.setName("A");
+        grandParent.setGrandChild( Collections.singletonList( grandChild ));
+
+        ksession.insert(grandParent);
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static class GrandChild {
+
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class GrandParent {
+        private List<GrandChild> grandChild;
+
+        public List<GrandChild> getGrandChild() {
+            return grandChild;
+        }
+
+        public void setGrandChild(List<GrandChild> grandChild) {
+            this.grandChild = grandChild;
+        }
     }
 }
