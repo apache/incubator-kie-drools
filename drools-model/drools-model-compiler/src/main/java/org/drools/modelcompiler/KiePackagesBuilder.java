@@ -727,7 +727,7 @@ public class KiePackagesBuilder {
             // if the pattern variable is a group key and there are no bindings, the variable is already bound and it is not
             // necessary to create a proper pattern, so simply translate the filtering constraints on that key into evals
             if (modelPattern.getBindings().isEmpty()) {
-                return buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable );
+                return (( PatternImpl ) modelPattern).hasConstraints() ? buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable ) : null;
             }
             // if there are bindings it is necessary to create a new pattern variable having as from the group key
             patternVariable = new DeclarationImpl( patternVariable.getType() );

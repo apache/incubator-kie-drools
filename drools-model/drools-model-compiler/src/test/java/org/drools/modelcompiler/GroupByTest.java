@@ -1218,6 +1218,42 @@ public class GroupByTest {
     }
 
     @Test
+    public void testEmptyPatternOnGroupByKey() throws Exception {
+        // DROOLS-6031
+        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+
+        final Variable<String> var_$key = D.declarationOf(String.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1)),
+                // Filter
+                D.pattern(var_$key),
+                // Consequence
+                D.on(var_$key, var_results)
+                        .execute(($key, results) -> results.add($key))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( "A" );
+        ksession.insert( "test" );
+        ksession.insert(new Person("Mark", 42));
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        Assertions.assertThat(results.size()).isEqualTo(1);
+        Assertions.assertThat(results.get(0)).isEqualTo("M");
+    }
+
+    @Test
     public void testFilterOnGroupByKey() throws Exception {
         // DROOLS-6031
         final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
@@ -1247,8 +1283,7 @@ public class GroupByTest {
         ksession.insert( "A" );
         ksession.insert( "test" );
         ksession.insert(new Person("Mark", 42));
-        // PROBLEM 1: Replace both uses of var_$keyWithFrom by var_$key and test will throw.
-        // PROBLEM 2: Remove the insert of "test" and the test no longer throws when from() is not used.
+
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         Assertions.assertThat(results.size()).isEqualTo(1);
         Assertions.assertThat(results.get(0)).isEqualTo("M");
@@ -1524,51 +1559,6 @@ public class GroupByTest {
                                         .expr(k -> ((Integer)k) > 0)
                         ),
                         var_$key, var_$keyOuter, k -> ((Integer)k) * 2,
-                        D.accFunction(CollectListAccumulateFunction::new, var_$keyOuter).as(var_$accresult)
-                ),
-                // Consequence
-                D.on(var_$keyOuter, var_$accresult, var_results)
-                        .execute(($outerKey, $accresult, results) -> {
-                            results.add($accresult);
-                        })
-        );
-
-        final Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        final KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
-
-        final List<Object> results = new ArrayList<>();
-        ksession.setGlobal( "results", results );
-
-        ksession.insert( "A" );
-        ksession.insert( "test" );
-        ksession.insert(new Person("Mark", 42));
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-    }
-
-    @Test
-    public void testNestedGroupBy2OK() throws Exception {
-        // DROOLS-6045
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
-
-        final Variable<Object> var_$key = D.declarationOf(Object.class);
-        final Variable<Object> var_$key_from = D.declarationOf(Object.class, D.from(var_$key));
-        final Variable<Object> var_$keyOuter = D.declarationOf(Object.class);
-        final Variable<Person> var_$p = D.declarationOf(Person.class);
-        final Variable<Object> var_$accresult = D.declarationOf(Object.class);
-
-        final Rule rule1 = PatternDSL.rule("R1").build(
-                D.groupBy(
-                        D.and(
-                                D.groupBy(
-                                        // Patterns
-                                        D.pattern(var_$p),
-                                        // Grouping Function
-                                        var_$p, var_$key, Person::getAge),
-                                // Bindings
-                                D.pattern(var_$key_from)
-                                        .expr(k -> ((Integer)k) > 0)
-                        ),
-                        var_$key_from, var_$keyOuter, k -> ((Integer)k) * 2,
                         D.accFunction(CollectListAccumulateFunction::new, var_$keyOuter).as(var_$accresult)
                 ),
                 // Consequence
