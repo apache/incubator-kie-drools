@@ -88,10 +88,12 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
                 return null;
             });
         } catch (JsonProcessingException e) {
-            logger.warn("Consumer for CloudEvent type '{}', trigger '{}': ignoring payload '{}'",
-                        simpleName,
-                        trigger,
-                        payload);
+            logger.error("Failed to process JSON content for CloudEvent type: '{}', trigger: '{}': payload: '{}', error: '{}'",
+                         simpleName,
+                         trigger,
+                         payload,
+                         e.getMessage());
+            throw new IllegalStateException(e);
         }
     }
 

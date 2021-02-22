@@ -38,6 +38,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -190,5 +191,13 @@ public class EventImplTest {
         String jsonString = marshaller.marshall(dataEvent, DummyCloudEvent::new, Optional.empty());
         assertTrue(jsonString.contains("\"dummyField\":\"pepe\""));
         assertTrue(jsonString.contains("\"kogitoProcessinstanceId\":\"1\""));
+    }
+
+    @Test
+    void testCloudEventPayloadException() {
+        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.empty());
+        final String trigger = "dummyTopic";
+        final String payload = "{ a = b }";
+        assertThrows(IllegalStateException.class, () -> consumer.consume(application, process, payload, trigger));
     }
 }
