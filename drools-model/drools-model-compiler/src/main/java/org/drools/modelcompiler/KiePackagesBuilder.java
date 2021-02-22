@@ -593,7 +593,7 @@ public class KiePackagesBuilder {
             bindings.add( new SelfPatternBiding<>( sourcePattern.getPatternVariable() ) );
         }
 
-        pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), bindings ));
+        pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, usedVariableName, bindings ));
 
         if (source instanceof Pattern) {
             for (Variable v : accumulatePattern.getBoundVariables()) {
@@ -634,14 +634,17 @@ public class KiePackagesBuilder {
         } else if (c instanceof PatternImpl) {
             org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
             if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
-                allSubConditions.addChild( buildPattern( ctx, group, pattern ) );
+                RuleConditionElement rce = buildPattern( ctx, group, pattern );
+                if (rce != null) {
+                    allSubConditions.addChild( rce );
+                }
             }
         } else if (c instanceof AccumulatePattern) {
             allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
         }
     }
 
-    private RuleConditionElement buildEval(RuleContext ctx, EvalImpl eval) {
+    private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
         Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getDeclaration ).toArray( Declaration[]::new );
         EvalExpression evalExpr = new LambdaEvalExpression(declarations, eval.getExpr());
         return new EvalCondition(evalExpr, declarations);
@@ -664,7 +667,6 @@ public class KiePackagesBuilder {
     }
 
     private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions ) {
-        ctx.setSubconditions( subconditions );
         for (int i = 0; i < subconditions.size(); i++) {
             RuleConditionElement element = conditionToElement( ctx, ge, subconditions.get(i) );
             if (element != null) {
@@ -727,10 +729,18 @@ public class KiePackagesBuilder {
             // if the pattern variable is a group key and there are no bindings, the variable is already bound and it is not
             // necessary to create a proper pattern, so simply translate the filtering constraints on that key into evals
             if (modelPattern.getBindings().isEmpty()) {
-                return buildEvalsFromPatternConstraints( ctx, modelPattern.getConstraint() );
+                return buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable );
             }
             // if there are bindings it is necessary to create a new pattern variable having as from the group key
             patternVariable = new DeclarationImpl( patternVariable.getType() );
+        }
+
+        if (ctx.getAccumulateSource( patternVariable ) != null) {
+            if (!ctx.isAfterAccumulate()) {
+                return buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable );
+            }
+        } else {
+            ctx.setAfterAccumulate( false );
         }
 
         Pattern pattern = addPatternForVariable( ctx, group, patternVariable, modelPattern.getType() );
@@ -762,14 +772,18 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private RuleConditionElement buildEvalsFromPatternConstraints( RuleContext ctx, Constraint constraint ) {
+    private RuleConditionElement buildEvalsForGroupKey( RuleContext ctx, Constraint constraint, Variable groupKeyVar ) {
         if ( constraint instanceof SingleConstraint) {
-            return buildEval( ctx, new EvalImpl( ( SingleConstraint ) constraint ) );
+            EvalCondition evalCondition = buildEval( ctx, new EvalImpl( ( SingleConstraint ) constraint ) );
+            Map<String, Declaration> declarationsMap = new HashMap<>();
+            declarationsMap.put( groupKeyVar.getName(), ctx.getDeclaration( groupKeyVar ) );
+            evalCondition.setOuterDeclarations( declarationsMap );
+            return evalCondition;
         }
 
         GroupElement evals = new GroupElement(GroupElement.Type.AND);
         for ( Constraint child : (( MultipleConstraints ) constraint).getChildren() ) {
-            evals.addChild( buildEvalsFromPatternConstraints( ctx, child ) );
+            evals.addChild( buildEvalsForGroupKey( ctx, child, groupKeyVar ) );
         }
         return evals;
     }
@@ -786,13 +800,13 @@ public class KiePackagesBuilder {
 
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
                                        RuleConditionElement source, Pattern pattern,
-                                       List<String> usedVariableName, Collection<Binding> bindings) {
+                                       Set<String> usedVariableName, Collection<Binding> bindings) {
 
         boolean isGroupBy = accPattern instanceof GroupByPattern;
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
         GroupByDeclaration groupByDeclaration = null;
         if (isGroupBy) {
-            groupByDeclaration = new GroupByDeclaration(pattern);
+            groupByDeclaration = new GroupByDeclaration( (( GroupByPattern<?, ?> ) accPattern).getVarKey().getName(), pattern );
             if (accFunctions.length == 0) {
                 accFunctions = new AccumulateFunction[]{new AccumulateFunction( null, CountAccumulateFunction::new )};
             }
@@ -869,23 +883,9 @@ public class KiePackagesBuilder {
 
         for (Variable boundVar : accPattern.getBoundVariables()) {
             ctx.addAccumulateSource( boundVar, accumulate );
-            movePatternAfterAccumulate( ctx.getSubconditions(), accPattern, boundVar );
         }
 
         return accumulate;
-    }
-
-    private void movePatternAfterAccumulate( List<Condition> subconditions, AccumulatePattern accPattern, Variable boundVar ) {
-        int accPatternPos = subconditions.indexOf( accPattern );
-        if (accPatternPos >= 0) {
-            for (int i = accPatternPos+2; i < subconditions.size(); i++)  {
-                Condition condition = subconditions.get(i);
-                if (condition instanceof org.drools.model.Pattern && (( org.drools.model.Pattern ) condition).getPatternVariable() == boundVar ) {
-                    subconditions.add( accPatternPos+1, subconditions.remove( i ) );
-                    break;
-                }
-            }
-        }
     }
 
     private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {
@@ -924,9 +924,9 @@ public class KiePackagesBuilder {
             }
         }
 
-        if(accFunction.getSource() instanceof Variable) {
+        if (accFunction.getSource() instanceof Variable) {
             Pattern pattern = ctx.getPattern((Variable) accFunction.getSource());
-            return pattern == null ? new Declaration[0] : new Declaration[] { pattern.getDeclaration() };
+            return pattern == null || pattern.getDeclaration() == null ? new Declaration[0] : new Declaration[] { pattern.getDeclaration() };
         } else {
             return new Declaration[0];
         }
@@ -947,7 +947,7 @@ public class KiePackagesBuilder {
         return new BindingEvaluator( declarations, binding );
     }
 
-    private Accumulator createAccumulator(List<String> usedVariableName, BindingEvaluator binding, AccumulateFunction accFunction) {
+    private Accumulator createAccumulator(Collection<String> usedVariableName, BindingEvaluator binding, AccumulateFunction accFunction) {
         final Object functionObject = accFunction.createFunctionObject();
         if (accFunction.isFixedValue()) {
             return new LambdaAccumulator.FixedValueAcc((org.kie.api.runtime.rule.AccumulateFunction) functionObject, (( Value ) accFunction.getSource()).getValue());
@@ -961,7 +961,7 @@ public class KiePackagesBuilder {
         throw new RuntimeException("Unknown functionClass" + functionObject.getClass().getCanonicalName());
     }
 
-    private Accumulator createLambdaAccumulator(List<String> usedVariableName, BindingEvaluator binding, org.kie.api.runtime.rule.AccumulateFunction function) {
+    private Accumulator createLambdaAccumulator(Collection<String> usedVariableName, BindingEvaluator binding, org.kie.api.runtime.rule.AccumulateFunction function) {
         if (binding == null) {
             return new LambdaAccumulator.NotBindingAcc(function);
         } else {

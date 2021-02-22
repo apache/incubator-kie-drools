@@ -18,7 +18,7 @@
 package org.drools.modelcompiler.constraints;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 import org.drools.core.WorkingMemory;
@@ -105,9 +105,9 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     public static class BindingAcc extends LambdaAccumulator {
         private final BindingEvaluator binding;
-        private final List<String> sourceVariables;
+        private final Collection<String> sourceVariables;
 
-        public BindingAcc(AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
+        public BindingAcc(AccumulateFunction accumulateFunction, Collection<String> sourceVariables, BindingEvaluator binding) {
             super(accumulateFunction);
             this.binding = binding;
             this.sourceVariables = sourceVariables;
@@ -121,27 +121,20 @@ public abstract class LambdaAccumulator implements Accumulator {
                 Object[] args;
                 if (bindingDeclarations == null || bindingDeclarations.length == 0) {
                     args = new Object[ sourceVariables.size() ];
-                    for (int i = 0; i < sourceVariables.size(); i++) {
-                        String sourceVariable = sourceVariables.get(i);
+                    int i = 0;
+                    for (String sourceVariable : sourceVariables) {
                         for (Declaration d : innerDeclarations) {
                             if (d.getIdentifier().equals( sourceVariable )) {
-                                args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
+                                args[i] = d.getValue( ( SubnetworkTuple ) accumulateObject );
                                 break;
                             }
                         }
+                        i++;
                     }
                 } else { // Return values in the order required by the binding.
                     args = new Object[ bindingDeclarations.length ];
                     for (int i = 0; i < bindingDeclarations.length; i++) {
-                        Declaration d = bindingDeclarations[i];
-                        Object object = ((SubnetworkTuple) accumulateObject).getObject(d);
-                        if(d.getExtractor() instanceof LambdaReadAccessor) {
-                            LambdaReadAccessor extractor = (LambdaReadAccessor) d.getExtractor();
-                            Object value = extractor.getValue(object);
-                            args[i] = value;
-                        } else {
-                            args[i] = object;
-                        }
+                        args[i] = bindingDeclarations[i].getValue( ( SubnetworkTuple ) accumulateObject );
                     }
                 }
                 return binding.evaluate(args);
@@ -181,7 +174,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple && declarations.length > 0) {
-                return (((SubnetworkTuple) accumulateObject)).getObject(declarations[0]);
+                return declarations[0].getValue( ( SubnetworkTuple ) accumulateObject );
             } else {
                 return accumulateObject;
             }
