@@ -24,9 +24,9 @@ import org.kie.kogito.testcontainers.ExplainabilityServiceMessagingContainer;
 import org.kie.kogito.testcontainers.InfinispanContainer;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.KogitoServiceContainer;
-import org.kie.kogito.testcontainers.TrustyServiceContainer;
-import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
-import org.kie.kogito.trusty.service.responses.SalienciesResponse;
+import org.kie.kogito.testcontainers.InfinispanTrustyServiceContainer;
+import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
+import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.KafkaContainer;
@@ -114,7 +114,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                         .withNetwork(network)
                         .withNetworkAliases(EXPL_SERVICE_ALIAS);
 
-                final TrustyServiceContainer trustyService = new TrustyServiceContainer(INFINISPAN_SERVER_LIST, KAFKA_BOOTSTRAP_SERVERS, true)
+                final InfinispanTrustyServiceContainer trustyService = new InfinispanTrustyServiceContainer(INFINISPAN_SERVER_LIST, KAFKA_BOOTSTRAP_SERVERS, true)
                         .withEnv(TRUSTY_SERVICE_OIDC_AUTH_SERVER_URL_VARIABLE, TRUSTY_SERVICE_OIDC_AUTH_SERVER_URL_VALUE)
                         .withEnv(TRUSTY_SERVICE_OIDC_CLIENT_ID_VARIABLE, TRUSTY_SERVICE_OIDC_CLIENT_ID_VALUE)
                         .withLogConsumer(new Slf4jLogConsumer(LOGGER))

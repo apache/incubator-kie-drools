@@ -13,9 +13,8 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>trusty-service-api</module>
-    <module>trusty-service</module>
     <module>trusty-storage</module>
+    <module>trusty-service</module>
   </modules>
 
 </project>

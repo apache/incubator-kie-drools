@@ -7,6 +7,7 @@ It is composed by three modules:
 1) `persistence-commons-api` contains the interfaces `Storage` and `StorageService` that the consumer has to inject in his application. In addition to that, it contains the interface `Query` that the consumer has to use to query the storage. 
 2) `persistence-commons-infinispan` contains all the classes to manage infinispan as persistence layer. 
 3) `persistence-commons-protobuf` contains the `ProtobufService` that the consumer can use to manage his protobuf schemas. 
+4) `persistence-commons-redis` contains all the classes to manage redis as persistence layer. See [here](./persistence-commons-redis/README.md) for the complete list of supported operations.
 
 ## How to use it
 

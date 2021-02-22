@@ -21,6 +21,9 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
 public interface TrustyStorageService {
+    String DECISIONS_STORAGE = "decisions";
+    String EXPLAINABILITY_RESULTS_STORAGE = "explainability-results";
+    String MODELS_STORAGE = "models";
 
     /**
      * Gets the decision storage.

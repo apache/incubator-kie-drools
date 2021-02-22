@@ -40,9 +40,9 @@ import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
-import org.kie.kogito.trusty.service.responses.FeatureImportanceResponse;
-import org.kie.kogito.trusty.service.responses.SalienciesResponse;
-import org.kie.kogito.trusty.service.responses.SaliencyResponse;
+import org.kie.kogito.trusty.service.common.responses.FeatureImportanceResponse;
+import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
+import org.kie.kogito.trusty.service.common.responses.SaliencyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
