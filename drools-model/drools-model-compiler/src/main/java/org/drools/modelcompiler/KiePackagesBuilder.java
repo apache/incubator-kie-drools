@@ -667,7 +667,6 @@ public class KiePackagesBuilder {
     }
 
     private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions ) {
-        ctx.setSubconditions( subconditions );
         for (int i = 0; i < subconditions.size(); i++) {
             RuleConditionElement element = conditionToElement( ctx, ge, subconditions.get(i) );
             if (element != null) {
@@ -734,6 +733,14 @@ public class KiePackagesBuilder {
             }
             // if there are bindings it is necessary to create a new pattern variable having as from the group key
             patternVariable = new DeclarationImpl( patternVariable.getType() );
+        }
+
+        if (ctx.getAccumulateSource( patternVariable ) != null) {
+            if (!ctx.isAfterAccumulate()) {
+                return buildEvalsForGroupKey( ctx, modelPattern.getConstraint(), patternVariable );
+            }
+        } else {
+            ctx.setAfterAccumulate( false );
         }
 
         Pattern pattern = addPatternForVariable( ctx, group, patternVariable, modelPattern.getType() );
@@ -876,23 +883,9 @@ public class KiePackagesBuilder {
 
         for (Variable boundVar : accPattern.getBoundVariables()) {
             ctx.addAccumulateSource( boundVar, accumulate );
-            movePatternAfterAccumulate( ctx.getSubconditions(), accPattern, boundVar );
         }
 
         return accumulate;
-    }
-
-    private void movePatternAfterAccumulate( List<Condition> subconditions, AccumulatePattern accPattern, Variable boundVar ) {
-        int accPatternPos = subconditions.indexOf( accPattern );
-        if (accPatternPos >= 0) {
-            for (int i = accPatternPos+2; i < subconditions.size(); i++)  {
-                Condition condition = subconditions.get(i);
-                if (condition instanceof org.drools.model.Pattern && (( org.drools.model.Pattern ) condition).getPatternVariable() == boundVar ) {
-                    subconditions.add( accPatternPos+1, subconditions.remove( i ) );
-                    break;
-                }
-            }
-        }
     }
 
     private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {

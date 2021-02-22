@@ -34,7 +34,6 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
-import org.drools.model.Condition;
 import org.drools.model.Global;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
@@ -52,13 +51,12 @@ public class RuleContext {
 
     private Map<Variable, Declaration> queryDeclarations;
     private Map<Variable, Accumulate> accumulateSource;
+    private boolean afterAccumulate;
 
     private List<Rule> subRules;
 
     private int patternIndex = -1;
     private boolean needStreamMode = false;
-
-    private List<Condition> subconditions;
 
     public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.builder = builder;
@@ -167,6 +165,15 @@ public class RuleContext {
             accumulateSource = new HashMap<>();
         }
         accumulateSource.put( variable, accumulate );
+        afterAccumulate = true;
+    }
+
+    public boolean isAfterAccumulate() {
+        return afterAccumulate;
+    }
+
+    public void setAfterAccumulate( boolean afterAccumulate ) {
+        this.afterAccumulate = afterAccumulate;
     }
 
     boolean hasSubRules() {
@@ -209,13 +216,5 @@ public class RuleContext {
             }
         }
         return null;
-    }
-
-    public List<Condition> getSubconditions() {
-        return subconditions;
-    }
-
-    public void setSubconditions( List<Condition> subconditions ) {
-        this.subconditions = subconditions;
     }
 }

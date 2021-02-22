@@ -1664,4 +1664,60 @@ public class GroupByTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(results).containsOnly(Pair.create("Mark", 1L));
     }
+
+    @Test
+    public void testFilterOnAccumulateResultWithDecomposedGroupByKey() throws Exception {
+        // DROOLS-6045
+        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+
+        final Variable<Pair<String, String>> var_$key = (Variable) D.declarationOf(Pair.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+        final Variable<Integer> var_$pAge = D.declarationOf(Integer.class);
+
+        final Variable<Object> var_$subkeyA = D.declarationOf(Object.class);
+        final Variable<Object> var_$subkeyB = D.declarationOf(Object.class);
+        final Variable<Integer> var_$accresult = D.declarationOf(Integer.class);
+
+        final Rule rule1 = PatternDSL.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        PatternDSL.pattern(var_$p)
+                                .bind(var_$pAge, Person::getAge)
+                                .expr(Objects::nonNull),
+                        // Grouping Function
+                        var_$p, var_$key, person -> Pair.create(
+                                person.getName().substring(0, 1),
+                                person.getName().substring(1, 2)),
+                        D.accFunction( IntegerSumAccumulateFunction::new, var_$pAge).as(var_$accresult)),
+                // Bindings
+                D.pattern(var_$key)
+                        .bind(var_$subkeyA, Pair::getKey)
+                        .bind(var_$subkeyB, Pair::getValue),
+                D.pattern(var_$accresult)
+                        .expr("Some expr", var_$subkeyA, var_$subkeyB, (a, b, c) -> true),
+                // Consequence
+                D.on(var_$subkeyA, var_$subkeyB, var_$accresult, var_results)
+                        .execute(($a, $b, $accResult, results) -> {
+                            results.add($a);
+                            results.add($b);
+                            results.add($accResult);
+                        })
+        );
+
+        final Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        final KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        final List<Object> results = new ArrayList<>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( "A" );
+        ksession.insert( "test" );
+        ksession.insert(new Person("Mark", 42));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        Assertions.assertThat(results.size()).isEqualTo(3);
+        Assertions.assertThat(results.get(0)).isEqualTo("M");
+        Assertions.assertThat(results.get(1)).isEqualTo("a");
+        Assertions.assertThat(results.get(2)).isEqualTo(42);
+    }
 }
+
