@@ -52,7 +52,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -80,7 +80,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -117,7 +117,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -163,7 +163,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             // find maximum and minimum values
             double[] doubles = new double[values.length + 1];
             int valueIndex = 0;
@@ -181,12 +181,12 @@ public enum Type {
             double scaledOriginalValue = scaledValues.remove(valueIndex); // extract the scaled original value (it must not appear in encoded values)
 
             // kernel based clustering
-            double sigma = 1;
+            double sigma = params.getNumericTypeClusterGaussianFilterWidth();
             double threshold = DataUtils.gaussianKernel(scaledOriginalValue, scaledOriginalValue, sigma);
             List<Double> clusteredValues = scaledValues.stream()
                     .map(d -> DataUtils.gaussianKernel(d, scaledOriginalValue, sigma)).collect(Collectors.toList());
             List<Double> encodedValues = clusteredValues.stream()
-                    .map(d -> (Math.abs(d - threshold) < CLUSTER_THRESHOLD) ? 1d : 0d).collect(Collectors.toList());
+                    .map(d -> (Math.abs(d - threshold) < params.getNumericTypeClusterThreshold()) ? 1d : 0d).collect(Collectors.toList());
 
             return encodedValues.stream().map(d -> new double[]{d}).collect(Collectors.toList());
         }
@@ -209,7 +209,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -263,7 +263,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -293,7 +293,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -322,7 +322,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -363,7 +363,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -403,7 +403,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -442,13 +442,15 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             List<Feature> composite = getFeatures(target);
             int i = 0;
             List<List<double[]>> multiColumns = new LinkedList<>();
             for (Feature f : composite) {
                 int finalI = i;
-                List<double[]> subColumn = f.getType().encode(f.getValue(), Arrays.stream(values).map(v -> (List<Feature>) v.getUnderlyingObject()).map(l -> l.get(finalI).getValue()).toArray(Value<?>[]::new));
+                List<double[]> subColumn = f.getType().encode(params, f.getValue(), Arrays.stream(values)
+                        .map(v -> (List<Feature>) v.getUnderlyingObject())
+                        .map(l -> l.get(finalI).getValue()).toArray(Value<?>[]::new));
                 multiColumns.add(subColumn);
                 i++;
             }
@@ -499,7 +501,7 @@ public enum Type {
         }
 
         @Override
-        public List<double[]> encode(Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
             return encodeEquals(target, values);
         }
 
@@ -564,7 +566,7 @@ public enum Type {
      * @param values the values to be encoded
      * @return a list of vectors
      */
-    public abstract List<double[]> encode(Value<?> target, Value<?>... values);
+    public abstract List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values);
 
     /**
      * Generate a random {@code Value} (depending on the underlying {@code Type}).

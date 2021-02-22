@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
+import org.kie.kogito.explainability.model.EncodingParams;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -43,7 +44,8 @@ class DatasetEncoderTest {
         List<Output> outputs = new LinkedList<>();
         List<Feature> features = new LinkedList<>();
         Output originalOutput = new Output("foo", Type.NUMBER, new Value<>(1), 1d);
-        DatasetEncoder datasetEncoder = new DatasetEncoder(inputs, outputs, features, originalOutput);
+        EncodingParams params = new EncodingParams(1, 0.1);
+        DatasetEncoder datasetEncoder = new DatasetEncoder(inputs, outputs, features, originalOutput, params);
         Collection<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
         assertNotNull(trainingSet);
         assertTrue(trainingSet.isEmpty());
@@ -178,7 +180,9 @@ class DatasetEncoderTest {
             outputs.add(new Output("o", Type.NUMBER, new Value<>(i % 2 == 0 ? 1d : 0d), 1d));
         }
         Output originalOutput = new Output("o", Type.BOOLEAN, new Value<>(1d), 1d);
-        DatasetEncoder datasetEncoder = new DatasetEncoder(perturbedInputs, outputs, originalInput.getFeatures(), originalOutput);
+        EncodingParams params = new EncodingParams(1, 0.1);
+        DatasetEncoder datasetEncoder = new DatasetEncoder(perturbedInputs, outputs, originalInput.getFeatures(),
+                originalOutput, params);
         Collection<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
         assertNotNull(trainingSet);
         assertEquals(10, trainingSet.size());

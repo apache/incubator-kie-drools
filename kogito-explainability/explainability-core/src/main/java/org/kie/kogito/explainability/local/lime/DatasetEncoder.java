@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.kie.kogito.explainability.model.EncodingParams;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -41,13 +42,16 @@ class DatasetEncoder {
     private final List<Output> predictedOutputs;
     private final List<Feature> targetInputFeatures;
     private final Output originalOutput;
+    private final EncodingParams encodingParams;
 
     DatasetEncoder(List<PredictionInput> perturbedInputs, List<Output> perturbedOutputs,
-                   List<Feature> targetInputFeatures, Output targetOutput) {
+                   List<Feature> targetInputFeatures, Output targetOutput, 
+                   EncodingParams encodingParams) {
         this.perturbedInputs = perturbedInputs;
         this.predictedOutputs = perturbedOutputs;
         this.targetInputFeatures = targetInputFeatures;
         this.originalOutput = targetOutput;
+        this.encodingParams = encodingParams;
     }
 
     /**
@@ -60,7 +64,7 @@ class DatasetEncoder {
         List<List<double[]>> columnData;
         List<PredictionInput> flatInputs = DataUtils.linearizeInputs(perturbedInputs);
         if (!flatInputs.isEmpty() && !predictedOutputs.isEmpty() && !targetInputFeatures.isEmpty() && originalOutput != null) {
-            columnData = getColumnData(flatInputs);
+            columnData = getColumnData(flatInputs, encodingParams);
 
             int pi = 0;
             for (Output output : predictedOutputs) {
@@ -96,14 +100,14 @@ class DatasetEncoder {
         return trainingSet;
     }
 
-    private List<List<double[]>> getColumnData(List<PredictionInput> perturbedInputs) {
+    private List<List<double[]>> getColumnData(List<PredictionInput> perturbedInputs, EncodingParams params) {
         List<List<double[]>> columnData = new LinkedList<>();
 
         for (int t = 0; t < targetInputFeatures.size(); t++) {
             Feature targetFeature = targetInputFeatures.get(t);
             int finalT = t;
             // encode all inputs with respect to the target, based on their type
-            List<double[]> encode = targetFeature.getType().encode(targetFeature.getValue(), perturbedInputs
+            List<double[]> encode = targetFeature.getType().encode(params, targetFeature.getValue(), perturbedInputs
                     .stream().map(predictionInput -> predictionInput.getFeatures().get(finalT).getValue()).toArray(Value<?>[]::new));
             columnData.add(encode);
         }
