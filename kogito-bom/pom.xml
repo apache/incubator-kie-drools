@@ -818,6 +818,24 @@
         <classifier>javadoc</classifier>
       </dependency>
 
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>persistence-commons-redis</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>persistence-commons-redis</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>persistence-commons-redis</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
       <!-- JIT Service -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -826,8 +844,32 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>jitexecutor-runner</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jitexecutor-runner</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>jitexecutor-dmn</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jitexecutor-dmn</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jitexecutor-dmn</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -840,20 +882,27 @@
       <!-- Trusty Services -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>trusty-service</artifactId>
+        <artifactId>trusty-service-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>trusty-service</artifactId>
+        <artifactId>trusty-service-common</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>trusty-service</artifactId>
+        <artifactId>trusty-service-common</artifactId>
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -870,6 +919,42 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>trusty-service-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-infinispan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-infinispan</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-infinispan</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-redis</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-redis</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service-redis</artifactId>
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
@@ -910,6 +995,23 @@
         <classifier>javadoc</classifier>
       </dependency>
 
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-redis</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-redis</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-redis</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
       <!-- Security -->
       <dependency>
         <groupId>org.kie.kogito</groupId>

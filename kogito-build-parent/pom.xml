@@ -136,6 +136,7 @@
     <version.javax.xml.bind>2.3.0</version.javax.xml.bind>
 
     <version.io.cloudevents>2.0.0-milestone3</version.io.cloudevents>
+    <version.io.jredisearch>2.0.0</version.io.jredisearch>
     <version.io.fabric8.kubernetes-client>5.0.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.6.1</version.io.micrometer>
     <version.io.rest-assured>4.3.0</version.io.rest-assured>
@@ -164,6 +165,7 @@
     -->
 
     <version.org.infinispan>11.0.4.Final</version.org.infinispan>
+    <version.org.redis>2.0.4</version.org.redis>
     <version.org.infinispan.protostream>4.3.4.Final</version.org.infinispan.protostream>
     <version.org.infinispan.starter>2.3.3.Final</version.org.infinispan.starter>
     <version.org.javassist>3.20.0-GA</version.org.javassist>
@@ -767,6 +769,13 @@
         <groupId>org.infinispan.protostream</groupId>
         <artifactId>protostream</artifactId>
         <version>${version.org.infinispan.protostream}</version>
+      </dependency>
+
+      <!-- Redis -->
+      <dependency>
+        <groupId>com.redislabs</groupId>
+        <artifactId>jredisearch</artifactId>
+        <version>${version.io.jredisearch}</version>
       </dependency>
 
       <!-- spring related -->
