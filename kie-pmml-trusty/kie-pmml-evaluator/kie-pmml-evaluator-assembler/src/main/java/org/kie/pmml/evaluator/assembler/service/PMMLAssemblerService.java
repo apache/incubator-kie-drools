@@ -79,7 +79,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
+    public void addResourcesAfterRules(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
             return;
@@ -96,8 +96,8 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
-        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
+    public void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
+        logger.warn("invoked legacy addResourceAfterRules (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
             return;
