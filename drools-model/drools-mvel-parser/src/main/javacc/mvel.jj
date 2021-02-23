@@ -110,6 +110,16 @@ public final class GeneratedMvelParser extends GeneratedMvelParserBase {
 
     }
 
+    public boolean doesCrossLineBreak(Token token) {
+        if (token.specialToken == null) {
+            return false;
+        }
+        if (token.specialToken.kind == UNIX_EOL || token.specialToken.kind == WINDOWS_EOL) {
+            return true;
+        }
+        return doesCrossLineBreak(token.specialToken);
+    }
+
     /* Returns the JavaParser specific token type of the last matched token */
     JavaToken token() {
         if(token.toString() == null) {
@@ -3282,7 +3292,13 @@ Expression PointFreeExpr():
 {
     (
         (
-            left = PrimaryExpression() { begin=token(); }
+            left = PrimaryExpression()
+            {
+                if (doesCrossLineBreak(token.next)) {
+                    return left;
+                }
+                begin=token();
+            }
             (
                           <NOT>
                           { negated = true; }
