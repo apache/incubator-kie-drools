@@ -33,7 +33,6 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
-import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -261,30 +260,25 @@ public abstract class AbstractRunnerHelper {
     }
 
     protected void validateAssertion(List<ScenarioResult> scenarioResults) {
-        FactMappingValueStatus scenarioStatus = FactMappingValueStatus.SUCCESS;
-        String exceptionMessage = ScenarioSimulationServerMessages.getUnknownErrorMessage();
-        Object rawValue = "";
-        Object errorValue = "";
-
 
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
-                scenarioStatus = scenarioResult.getFactMappingValue().getStatus();
-                exceptionMessage = scenarioResult.getFactMappingValue().getExceptionMessage();
-                rawValue = scenarioResult.getFactMappingValue().getRawValue();
-                errorValue = scenarioResult.getFactMappingValue().getErrorValue();
-                break;
+                thrownScenarioException(scenarioResult.getFactMappingValue());
             }
         }
 
-        switch (scenarioStatus) {
+    }
+
+    private void thrownScenarioException(FactMappingValue factMappingValue) {
+        switch (factMappingValue.getStatus()) {
             case FAILED_WITH_ERROR: {
-                throw new AssertionError(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(errorValue.toString(),
-                                                                                                                rawValue.toString()));
+                throw new ScenarioException(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factMappingValue.getErrorValue(),
+                                                                                                                   factMappingValue.getRawValue()),
+                                            true);
             }
             case FAILED_WITH_EXCEPTION:
-                throw new ScenarioException(exceptionMessage);
-            case SUCCESS: break;
+                throw new ScenarioException(factMappingValue.getExceptionMessage());
+            default: // Nothing
         }
     }
 

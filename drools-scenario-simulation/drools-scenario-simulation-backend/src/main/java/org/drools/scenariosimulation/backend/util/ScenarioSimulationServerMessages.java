@@ -23,8 +23,8 @@ public class ScenarioSimulationServerMessages {
         // Util class - Not instantiable
     }
 
-    public final static String UNKNOWN_ERROR = "Unknown Error";
-    public final static String NULL = "null";
+    public static final String UNKNOWN_ERROR = "Unknown Error";
+    public static final String NULL = "null";
 
     public static String getUnknownErrorMessage() {
         return UNKNOWN_ERROR;
@@ -40,11 +40,11 @@ public class ScenarioSimulationServerMessages {
         return String.format("The expected value is %s but the actual one is %s", expectedValue, actualValue);
     }
 
+    public static String getAssertionFailedExceptionMessage(String expressionElement, String message) {
+        return String.format("Failed in %s: %s", expressionElement, message);
+    }
 
-
-
-
-
+    /*
     public static String getGenericScenarioExceptionMessage(String scenarioDescription) {
         return  "Scenario '" + scenarioDescription + "' failed";
     }
@@ -67,7 +67,5 @@ public class ScenarioSimulationServerMessages {
         }
         return "Following path \"" + String.join(".", pathToWrongValue) + "\" is wrong";
     }
-
-
-
+    */
 }
