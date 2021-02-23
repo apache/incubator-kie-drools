@@ -111,7 +111,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             kBuilder.buildPackagesWithoutRules(packages);
         }
         buildProcesses();
-        buildAssemblerResourcesAfterRules();
+        buildAssemblersAfterRules();
         kBuilder.postBuild();
         resourcesByType.clear();
         if (buildException != null) {
@@ -156,35 +156,16 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildAssemblerResourcesAfterRules() {
-        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+    private void buildAssemblersAfterRules() {
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                List<ResourceWithConfiguration> resources = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
-                assemblers.addResourcesAfterRules(kBuilder, resources, entry.getKey());
+                List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
+                kBuilder.addPackageForExternalType(entry.getKey(), rds);
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException( e );
-        }
-    }
-
-    private void buildAssemblerResourcesBeforeRules() {
-        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
-        try {
-            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                List<ResourceWithConfiguration> resources = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
-                assemblers.addResourcesBeforeRules(kBuilder, resources, entry.getKey());
-            }
-        } catch (RuntimeException e) {
-            if (buildException == null) {
-                buildException = e;
-            }
-        } catch (Exception e) {
-            if (buildException == null) {
-                buildException = new RuntimeException(e);
-            }
         }
     }
 
@@ -212,6 +193,28 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
         return packages.values();
     }
+
+    private void buildAssemblerResourcesBeforeRules() {
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        try {
+            for (Map.Entry<ResourceType, List<ResourceDescr>> resourceTypeListEntry : resourcesByType.entrySet()) {
+                ResourceType type = resourceTypeListEntry.getKey();
+                List<ResourceDescr> descrs = resourceTypeListEntry.getValue();
+                for (ResourceDescr descr : descrs) {
+                    assemblers.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
+                }
+            }
+        } catch (RuntimeException e) {
+            if (buildException == null) {
+                buildException = e;
+            }
+        } catch (Exception e) {
+            if (buildException == null) {
+                buildException = new RuntimeException(e);
+            }
+        }
+    }
+
 
     private void buildResource(Map<String, CompositePackageDescr> packages, ResourceType resourceType, ResourceToPkgDescrMapper mapper) {
         List<ResourceDescr> resourcesByType = this.resourcesByType.remove(resourceType);
