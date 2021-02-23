@@ -48,8 +48,7 @@ class GenericFeatureDistributionTest {
         GenericFeatureDistribution stringFeatureDistribution = new GenericFeatureDistribution(feature, values);
         assertEquals(26, stringFeatureDistribution.getAllSamples().size());
         assertEquals(3, stringFeatureDistribution.sample(3).size());
-        assertThat(stringFeatureDistribution.sample().asString()).isBetween("a","z");
+        assertThat(stringFeatureDistribution.sample().asString()).isBetween("a", "z");
         assertEquals(55, stringFeatureDistribution.sample(55).size());
     }
-
 }

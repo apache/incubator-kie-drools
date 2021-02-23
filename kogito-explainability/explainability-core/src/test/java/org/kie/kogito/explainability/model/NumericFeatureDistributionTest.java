@@ -54,5 +54,4 @@ class NumericFeatureDistributionTest {
             assertThat(sample.asNumber()).isBetween(0d, 10d);
         }
     }
-
 }

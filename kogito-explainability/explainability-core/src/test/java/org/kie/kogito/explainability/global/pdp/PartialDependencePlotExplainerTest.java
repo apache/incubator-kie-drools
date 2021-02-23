@@ -26,6 +26,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.model.DataDistribution;
@@ -76,30 +78,29 @@ class PartialDependencePlotExplainerTest {
         };
     }
 
-    @Test
-    void testPdpNumericClassifier() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
+    void testPdpNumericClassifier(int seed) throws Exception {
         Random random = new Random();
-        for (int seed = 0; seed < 5; seed++) {
-            random.setSeed(seed);
-            PredictionProvider modelInfo = TestUtils.getSumSkipModel(0);
-            PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
-            List<PartialDependenceGraph> pdps = partialDependencePlotProvider.explainFromMetadata(modelInfo, getMetadata(random));
-            assertNotNull(pdps);
-            for (PartialDependenceGraph pdp : pdps) {
-                assertNotNull(pdp.getFeature());
-                assertNotNull(pdp.getX());
-                assertNotNull(pdp.getY());
-                assertEquals(pdp.getX().size(), pdp.getY().size());
-                assertGraph(pdp);
-            }
-            // the first feature is always skipped by the model, so the predictions are not affected, hence PDP Y values are constant
-            PartialDependenceGraph fixedFeatureGraph = pdps.get(0);
-            assertEquals(1, fixedFeatureGraph.getY().stream().distinct().count());
-
-            // the other two instead vary in Y values
-            assertThat(pdps.get(1).getY().stream().distinct().count()).isGreaterThan(1);
-            assertThat(pdps.get(2).getY().stream().distinct().count()).isGreaterThan(1);
+        random.setSeed(seed);
+        PredictionProvider modelInfo = TestUtils.getSumSkipModel(0);
+        PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
+        List<PartialDependenceGraph> pdps = partialDependencePlotProvider.explainFromMetadata(modelInfo, getMetadata(random));
+        assertNotNull(pdps);
+        for (PartialDependenceGraph pdp : pdps) {
+            assertNotNull(pdp.getFeature());
+            assertNotNull(pdp.getX());
+            assertNotNull(pdp.getY());
+            assertEquals(pdp.getX().size(), pdp.getY().size());
+            assertGraph(pdp);
         }
+        // the first feature is always skipped by the model, so the predictions are not affected, hence PDP Y values are constant
+        PartialDependenceGraph fixedFeatureGraph = pdps.get(0);
+        assertEquals(1, fixedFeatureGraph.getY().stream().distinct().count());
+
+        // the other two instead vary in Y values
+        assertThat(pdps.get(1).getY().stream().distinct().count()).isGreaterThan(1);
+        assertThat(pdps.get(2).getY().stream().distinct().count()).isGreaterThan(1);
     }
 
     private void assertGraph(PartialDependenceGraph pdp) {
@@ -111,28 +112,26 @@ class PartialDependencePlotExplainerTest {
         }
     }
 
-    @Test
-    void testBrokenPredict() {
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
+    void testBrokenPredict(int seed) {
+        Random random = new Random();
+        random.setSeed(seed);
         Config.INSTANCE.setAsyncTimeout(1);
         Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
-        Random random = new Random();
-        for (int seed = 0; seed < 5; seed++) {
-            random.setSeed(seed);
-            PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
-            PredictionProvider brokenProvider = inputs -> supplyAsync(
-                    () -> {
-                        try {
-                            Thread.sleep(1000);
-                            return Collections.emptyList();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException("this is a test");
-                        }
-                    });
+        PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
+        PredictionProvider brokenProvider = inputs -> supplyAsync(
+                () -> {
+                    try {
+                        Thread.sleep(1000);
+                        return Collections.emptyList();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("this is a test");
+                    }
+                });
 
-            Assertions.assertThrows(TimeoutException.class,
-                                    () -> partialDependencePlotProvider.explainFromMetadata(brokenProvider, getMetadata(random)));
-
-        }
+        Assertions.assertThrows(TimeoutException.class,
+                                () -> partialDependencePlotProvider.explainFromMetadata(brokenProvider, getMetadata(random)));
         Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
         Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
     }

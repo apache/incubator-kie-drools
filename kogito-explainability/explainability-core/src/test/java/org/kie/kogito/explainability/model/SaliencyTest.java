@@ -130,5 +130,4 @@ class SaliencyTest {
         assertEquals(-0.3, perFeatureImportance.get(1).getScore(), 1e-3);
         assertEquals(0.02, perFeatureImportance.get(2).getScore(), 1e-3);
     }
-
 }

@@ -22,7 +22,8 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.DataDistribution;
@@ -47,69 +48,66 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AggregatedLimeExplainerTest {
 
-    @Test
-    void testExplainWithMetadata() throws ExecutionException, InterruptedException {
-        for (int seed = 0; seed < 5; seed++) {
-            Random random = new Random();
-            random.setSeed(seed);
-            PredictionProvider sumSkipModel = TestUtils.getSumSkipModel(1);
-            PredictionProviderMetadata metadata = new PredictionProviderMetadata() {
-                @Override
-                public DataDistribution getDataDistribution() {
-                    return DataUtils.generateRandomDataDistribution(3, 100, random);
-                }
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
+    void testExplainWithMetadata(int seed) throws ExecutionException, InterruptedException {
+        Random random = new Random();
+        random.setSeed(seed);
+        PredictionProvider sumSkipModel = TestUtils.getSumSkipModel(1);
+        PredictionProviderMetadata metadata = new PredictionProviderMetadata() {
+            @Override
+            public DataDistribution getDataDistribution() {
+                return DataUtils.generateRandomDataDistribution(3, 100, random);
+            }
 
-                @Override
-                public PredictionInput getInputShape() {
-                    List<Feature> features = new LinkedList<>();
-                    features.add(FeatureFactory.newNumericalFeature("f0", 0));
-                    features.add(FeatureFactory.newNumericalFeature("f1", 0));
-                    features.add(FeatureFactory.newNumericalFeature("f2", 0));
-                    return new PredictionInput(features);
-                }
+            @Override
+            public PredictionInput getInputShape() {
+                List<Feature> features = new LinkedList<>();
+                features.add(FeatureFactory.newNumericalFeature("f0", 0));
+                features.add(FeatureFactory.newNumericalFeature("f1", 0));
+                features.add(FeatureFactory.newNumericalFeature("f2", 0));
+                return new PredictionInput(features);
+            }
 
-                @Override
-                public PredictionOutput getOutputShape() {
-                    List<Output> outputs = new LinkedList<>();
-                    outputs.add(new Output("sum-but1", Type.BOOLEAN, new Value<>(false), 0d));
-                    return new PredictionOutput(outputs);
-                }
-            };
+            @Override
+            public PredictionOutput getOutputShape() {
+                List<Output> outputs = new LinkedList<>();
+                outputs.add(new Output("sum-but1", Type.BOOLEAN, new Value<>(false), 0d));
+                return new PredictionOutput(outputs);
+            }
+        };
 
-            AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer(new LimeExplainer());
-            Map<String, Saliency> explain = aggregatedLimeExplainer.explainFromMetadata(sumSkipModel, metadata).get();
-            assertNotNull(explain);
-            assertEquals(1, explain.size());
-            assertTrue(explain.containsKey("sum-but1"));
-            Saliency saliency = explain.get("sum-but1");
-            assertNotNull(saliency);
-            List<String> collect = saliency.getPositiveFeatures(2).stream()
-                    .map(FeatureImportance::getFeature).map(Feature::getName).collect(Collectors.toList());
-            assertFalse(collect.contains("f1")); // skipped feature should not appear in top two positive features
-        }
+        AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer(new LimeExplainer());
+        Map<String, Saliency> explain = aggregatedLimeExplainer.explainFromMetadata(sumSkipModel, metadata).get();
+        assertNotNull(explain);
+        assertEquals(1, explain.size());
+        assertTrue(explain.containsKey("sum-but1"));
+        Saliency saliency = explain.get("sum-but1");
+        assertNotNull(saliency);
+        List<String> collect = saliency.getPositiveFeatures(2).stream()
+                .map(FeatureImportance::getFeature).map(Feature::getName).collect(Collectors.toList());
+        assertFalse(collect.contains("f1")); // skipped feature should not appear in top two positive features
     }
 
-    @Test
-    void testExplainWithPredictions() throws ExecutionException, InterruptedException {
-        for (int seed = 0; seed < 5; seed++) {
-            Random random = new Random();
-            random.setSeed(seed);
-            PredictionProvider sumSkipModel = TestUtils.getSumSkipModel(1);
-            DataDistribution dataDistribution = DataUtils.generateRandomDataDistribution(3, 100, random);
-            List<PredictionInput> samples = dataDistribution.sample(10);
-            List<PredictionOutput> predictionOutputs = sumSkipModel.predictAsync(samples).get();
-            List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
-            AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer(new LimeExplainer());
-            Map<String, Saliency> explain = aggregatedLimeExplainer.explainFromPredictions(sumSkipModel, predictions).get();
-            assertNotNull(explain);
-            assertEquals(1, explain.size());
-            assertTrue(explain.containsKey("sum-but1"));
-            Saliency saliency = explain.get("sum-but1");
-            assertNotNull(saliency);
-            List<String> collect = saliency.getPositiveFeatures(2).stream()
-                    .map(FeatureImportance::getFeature).map(Feature::getName).collect(Collectors.toList());
-            assertFalse(collect.contains("f1")); // skipped feature should not appear in top two positive features
-        }
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
+    void testExplainWithPredictions(int seed) throws ExecutionException, InterruptedException {
+        Random random = new Random();
+        random.setSeed(seed);
+        PredictionProvider sumSkipModel = TestUtils.getSumSkipModel(1);
+        DataDistribution dataDistribution = DataUtils.generateRandomDataDistribution(3, 100, random);
+        List<PredictionInput> samples = dataDistribution.sample(10);
+        List<PredictionOutput> predictionOutputs = sumSkipModel.predictAsync(samples).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer(new LimeExplainer());
+        Map<String, Saliency> explain = aggregatedLimeExplainer.explainFromPredictions(sumSkipModel, predictions).get();
+        assertNotNull(explain);
+        assertEquals(1, explain.size());
+        assertTrue(explain.containsKey("sum-but1"));
+        Saliency saliency = explain.get("sum-but1");
+        assertNotNull(saliency);
+        List<String> collect = saliency.getPositiveFeatures(2).stream()
+                .map(FeatureImportance::getFeature).map(Feature::getName).collect(Collectors.toList());
+        assertFalse(collect.contains("f1")); // skipped feature should not appear in top two positive features
     }
-
 }

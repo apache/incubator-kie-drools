@@ -15,12 +15,22 @@
  */
 package org.kie.kogito.explainability.explainability.integrationtests.opennlp;
 
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 import opennlp.tools.langdetect.Language;
 import opennlp.tools.langdetect.LanguageDetector;
 import opennlp.tools.langdetect.LanguageDetectorME;
 import opennlp.tools.langdetect.LanguageDetectorModel;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
@@ -38,15 +48,6 @@ import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -60,62 +61,61 @@ class OpenNLPLimeExplainerTest {
         Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
     }
 
-    @Test
-    void testOpenNLPLangDetect() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
+    void testOpenNLPLangDetect(int seed) throws Exception {
         Random random = new Random();
-        for (int seed = 0; seed < 5; seed++) {
-            random.setSeed(seed);
-            LimeConfig limeConfig = new LimeConfig()
-                    .withSamples(100)
-                    .withPerturbationContext(new PerturbationContext(random, 2));
-            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
-            LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
-            LanguageDetector languageDetector = new LanguageDetectorME(languageDetectorModel);
+        random.setSeed(seed);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(100)
+                .withPerturbationContext(new PerturbationContext(random, 2));
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
+        LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
+        LanguageDetector languageDetector = new LanguageDetectorME(languageDetectorModel);
 
-            PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
-                List<PredictionOutput> results = new LinkedList<>();
-                for (PredictionInput predictionInput : inputs) {
-                    StringBuilder builder = new StringBuilder();
-                    for (Feature f : predictionInput.getFeatures()) {
-                        if (builder.length() > 0) {
-                            builder.append(' ');
-                        }
-                        builder.append(f.getValue().asString());
+        PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
+            List<PredictionOutput> results = new LinkedList<>();
+            for (PredictionInput predictionInput : inputs) {
+                StringBuilder builder = new StringBuilder();
+                for (Feature f : predictionInput.getFeatures()) {
+                    if (builder.length() > 0) {
+                        builder.append(' ');
                     }
-                    Language language = languageDetector.predictLanguage(builder.toString());
-                    PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(language.getLang()), language.getConfidence())));
-                    results.add(predictionOutput);
+                    builder.append(f.getValue().asString());
                 }
-                return results;
-            });
-
-            String inputText = "italiani,spaghetti pizza mandolino";
-            List<Feature> features = new LinkedList<>();
-            features.add(FeatureFactory.newFulltextFeature("text", inputText, s -> Arrays.asList(s.split("\\W"))));
-            PredictionInput input = new PredictionInput(features);
-
-            List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input)).get();
-            assertNotNull(predictionOutputs);
-            assertFalse(predictionOutputs.isEmpty());
-            PredictionOutput output = predictionOutputs.get(0);
-            assertNotNull(output);
-            assertNotNull(output.getOutputs());
-            assertEquals(1, output.getOutputs().size());
-            assertEquals("ita", output.getOutputs().get(0).getValue().asString());
-            assertEquals(0.03, output.getOutputs().get(0).getScore(), 1e-2);
-
-            Prediction prediction = new Prediction(input, output);
-
-            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            for (Saliency saliency : saliencyMap.values()) {
-                assertNotNull(saliency);
-                double i1 = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(3));
-                assertEquals(1d, i1);
+                Language language = languageDetector.predictLanguage(builder.toString());
+                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(language.getLang()), language.getConfidence())));
+                results.add(predictionOutput);
             }
-            assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 2,
-                                                                                    0.8, 0.8));
+            return results;
+        });
+
+        String inputText = "italiani,spaghetti pizza mandolino";
+        List<Feature> features = new LinkedList<>();
+        features.add(FeatureFactory.newFulltextFeature("text", inputText, s -> Arrays.asList(s.split("\\W"))));
+        PredictionInput input = new PredictionInput(features);
+
+        List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input)).get();
+        assertNotNull(predictionOutputs);
+        assertFalse(predictionOutputs.isEmpty());
+        PredictionOutput output = predictionOutputs.get(0);
+        assertNotNull(output);
+        assertNotNull(output.getOutputs());
+        assertEquals(1, output.getOutputs().size());
+        assertEquals("ita", output.getOutputs().get(0).getValue().asString());
+        assertEquals(0.03, output.getOutputs().get(0).getScore(), 1e-2);
+
+        Prediction prediction = new Prediction(input, output);
+
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertNotNull(saliency);
+            double i1 = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(3));
+            assertEquals(1d, i1);
         }
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 2,
+                                                                                0.8, 0.8));
     }
 }

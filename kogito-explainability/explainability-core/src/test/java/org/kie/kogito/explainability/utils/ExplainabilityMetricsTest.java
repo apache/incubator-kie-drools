@@ -32,7 +32,6 @@ import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
-import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
@@ -159,7 +158,7 @@ class ExplainabilityMetricsTest {
                 });
 
         Assertions.assertThrows(TimeoutException.class,
-                () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyList()));
+                                () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyList()));
 
         Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
         Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
