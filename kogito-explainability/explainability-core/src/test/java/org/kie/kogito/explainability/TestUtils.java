@@ -15,6 +15,12 @@
  */
 package org.kie.kogito.explainability;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
@@ -25,11 +31,6 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.ValidationUtils;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -242,5 +243,17 @@ public class TestUtils {
                                            int topK, double minimumPositiveStabilityRate, double minimumNegativeStabilityRate) {
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, topK,
                                                                                 minimumPositiveStabilityRate, minimumNegativeStabilityRate));
+    }
+
+    public static void fillBalancedDataForFiltering(int size, List<Pair<double[], Double>> trainingSet, double[] weights) {
+        for (int i = 0; i < size; i++) {
+            double[] x = new double[2];
+            for (int j = 0; j < 2; j++) {
+                x[j] = (i + j) % 2 == 0 ? 0 : 1;
+            }
+            Double y = i % 3 == 0 ? 0d : 1d;
+            trainingSet.add(Pair.of(x, y));
+            weights[i] = i % 2 == 0 ? 0.2 : 0.8;
+        }
     }
 }

@@ -15,9 +15,9 @@
  */
 package org.kie.kogito.explainability.local.lime;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -119,7 +119,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
                             int newNoOfSamples;
                             if (limeConfig.adaptDatasetVariance()) {
                                 int nextPerturbationSize = Math.max(perturbationContext.getNoOfPerturbations() + 1,
-                                        linearizedTargetInputFeatures.size() / noOfRetries);
+                                                                    linearizedTargetInputFeatures.size() / noOfRetries);
                                 // make sure to stay within the max no. of features boundaries
                                 nextPerturbationSize = Math.min(linearizedTargetInputFeatures.size() - 1, nextPerturbationSize);
                                 newPerturbationContext = new PerturbationContext(perturbationContext.getRandom(),
@@ -153,7 +153,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
                                            List<PredictionInput> perturbedInputs,
                                            List<PredictionOutput> predictionOutputs,
                                            boolean strict) {
-        List<LimeInputs> limeInputsList = new LinkedList<>();
+        List<LimeInputs> limeInputsList = new ArrayList<>();
         for (int o = 0; o < actualOutputs.size(); o++) {
             Output currentOutput = actualOutputs.get(o);
             LimeInputs limeInputs = prepareInputs(perturbedInputs, predictionOutputs, linearizedTargetInputFeatures,
@@ -175,26 +175,44 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         return result;
     }
 
-    private void getSaliency(List<Feature> linearizedTargetInputFeatures, Map<String, Saliency> result, LimeInputs limeInputs, Output originalOutput) {
-        List<FeatureImportance> featureImportanceList = new LinkedList<>();
+    private void getSaliency(List<Feature> linearizedTargetInputFeatures, Map<String, Saliency> result,
+                             LimeInputs limeInputs, Output originalOutput) {
+        List<FeatureImportance> featureImportanceList = new ArrayList<>();
 
         // encode the training data so that it can be fed into the linear model
         DatasetEncoder datasetEncoder = new DatasetEncoder(limeInputs.getPerturbedInputs(),
-                limeInputs.getPerturbedOutputs(),
-                linearizedTargetInputFeatures, originalOutput, 
-                limeConfig.getEncodingParams());
-        Collection<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
+                                                           limeInputs.getPerturbedOutputs(),
+                                                           linearizedTargetInputFeatures, originalOutput,
+                                                            limeConfig.getEncodingParams());
+        List<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
 
         // weight the training samples based on the proximity to the target input to explain
         double kernelWidth = limeConfig.getProximityKernelWidth() * Math.sqrt(linearizedTargetInputFeatures.size());
         double[] sampleWeights = SampleWeighter.getSampleWeights(linearizedTargetInputFeatures, trainingSet, kernelWidth);
+
+        int ts = linearizedTargetInputFeatures.size();
+        double[] featureWeights = new double[ts];
+        Arrays.fill(featureWeights, 1);
+        if (limeConfig.isPenalizeBalanceSparse()) {
+            IndependentSparseFeatureBalanceFilter sparseFeatureBalanceFilter = new IndependentSparseFeatureBalanceFilter();
+            sparseFeatureBalanceFilter.apply(featureWeights, linearizedTargetInputFeatures, trainingSet);
+        }
+
+        if (limeConfig.isProximityFilter()) {
+            ProximityFilter proximityFilter = new ProximityFilter(limeConfig.getProximityThreshold(),
+                    limeConfig.getProximityFilteredDatasetMinimum().doubleValue());
+            proximityFilter.apply(trainingSet, sampleWeights);
+        }
+
         LinearModel linearModel = new LinearModel(linearizedTargetInputFeatures.size(), limeInputs.isClassification());
+
         double loss = linearModel.fit(trainingSet, sampleWeights);
         if (!Double.isNaN(loss)) {
             // create the output saliency
             int i = 0;
             for (Feature linearizedFeature : linearizedTargetInputFeatures) {
-                FeatureImportance featureImportance = new FeatureImportance(linearizedFeature, linearModel.getWeights()[i]);
+                FeatureImportance featureImportance = new FeatureImportance(linearizedFeature, linearModel.getWeights()[i]
+                        * featureWeights[i]);
                 featureImportanceList.add(featureImportance);
                 i++;
             }
@@ -261,7 +279,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
     }
 
     private List<PredictionInput> getPerturbedInputs(List<Feature> features, PerturbationContext perturbationContext) {
-        List<PredictionInput> perturbedInputs = new LinkedList<>();
+        List<PredictionInput> perturbedInputs = new ArrayList<>();
         // as per LIME paper, the dataset size should be at least |features|^2
         double perturbedDataSize = Math.max(limeConfig.getNoOfSamples(), Math.pow(2, features.size()));
         for (int i = 0; i < perturbedDataSize; i++) {

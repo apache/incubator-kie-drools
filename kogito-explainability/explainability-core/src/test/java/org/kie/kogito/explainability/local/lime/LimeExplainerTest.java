@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.explainability.local.lime;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.LocalExplanationException;
@@ -34,6 +36,7 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -66,7 +69,7 @@ class LimeExplainerTest {
             LimeConfig limeConfig = new LimeConfig()
                     .withSamples(10);
             LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            List<Feature> features = new LinkedList<>();
+            List<Feature> features = new ArrayList<>();
             for (int i = 0; i < 4; i++) {
                 features.add(TestUtils.getMockedNumericFeature(i));
             }
@@ -79,6 +82,55 @@ class LimeExplainerTest {
             Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                     .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
             assertNotNull(saliencyMap);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4})
+    void testSparseBalance(int seed) throws InterruptedException, ExecutionException, TimeoutException {
+        Random random = new Random();
+        random.setSeed(seed);
+        for (int nf = 1; nf < 4; nf++) {
+            int noOfSamples = 100;
+            LimeConfig limeConfigNoPenalty = new LimeConfig()
+                    .withSamples(noOfSamples)
+                    .withPenalizeBalanceSparse(false);
+            LimeExplainer limeExplainerNoPenalty = new LimeExplainer(limeConfigNoPenalty);
+
+            List<Feature> features = new ArrayList<>();
+            for (int i = 0; i < nf; i++) {
+                features.add(TestUtils.getMockedNumericFeature(i));
+            }
+            PredictionInput input = new PredictionInput(features);
+            PredictionProvider model = TestUtils.getSumSkipModel(0);
+            PredictionOutput output = model.predictAsync(List.of(input))
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                    .get(0);
+            Prediction prediction = new Prediction(input, output);
+
+            Map<String, Saliency> saliencyMapNoPenalty = limeExplainerNoPenalty.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            assertThat(saliencyMapNoPenalty).isNotNull();
+
+            String decisionName = "sum-but0";
+            Saliency saliencyNoPenalty = saliencyMapNoPenalty.get(decisionName);
+
+            LimeConfig limeConfig = new LimeConfig()
+                    .withSamples(noOfSamples)
+                    .withPenalizeBalanceSparse(true);
+            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+
+            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            assertThat(saliencyMap).isNotNull();
+
+            Saliency saliency = saliencyMap.get(decisionName);
+
+            for (int i = 0; i < features.size(); i++) {
+                double score = saliency.getPerFeatureImportance().get(i).getScore();
+                double scoreNoPenalty = saliencyNoPenalty.getPerFeatureImportance().get(i).getScore();
+                assertThat(score).isLessThanOrEqualTo(scoreNoPenalty);
+            }
         }
     }
 }
