@@ -33,6 +33,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -45,6 +46,7 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,8 +97,7 @@ public abstract class AbstractRunnerHelper {
                          expressionEvaluatorFactory,
                          requestContext);
 
-        validateAssertion(scenarioRunnerData.getResults(),
-                          scenario);
+        validateAssertion(scenarioRunnerData.getResults());
     }
 
     protected List<InstanceGiven> extractBackgroundValues(Background background,
@@ -259,17 +260,31 @@ public abstract class AbstractRunnerHelper {
         return paramsForBean;
     }
 
-    protected void validateAssertion(List<ScenarioResult> scenarioResults, Scenario scenario) {
-        boolean scenarioFailed = false;
+    protected void validateAssertion(List<ScenarioResult> scenarioResults) {
+        FactMappingValueStatus scenarioStatus = FactMappingValueStatus.SUCCESS;
+        String exceptionMessage = ScenarioSimulationServerMessages.getUnknownErrorMessage();
+        Object rawValue = "";
+        Object errorValue = "";
+
+
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
-                scenarioFailed = true;
+                scenarioStatus = scenarioResult.getFactMappingValue().getStatus();
+                exceptionMessage = scenarioResult.getFactMappingValue().getExceptionMessage();
+                rawValue = scenarioResult.getFactMappingValue().getRawValue();
+                errorValue = scenarioResult.getFactMappingValue().getErrorValue();
                 break;
             }
         }
 
-        if (scenarioFailed) {
-            throw new ScenarioException("Scenario '" + scenario.getDescription() + "' failed");
+        switch (scenarioStatus) {
+            case FAILED_WITH_ERROR: {
+                throw new AssertionError(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(errorValue.toString(),
+                                                                                                                rawValue.toString()));
+            }
+            case FAILED_WITH_EXCEPTION:
+                throw new ScenarioException(exceptionMessage);
+            case SUCCESS: break;
         }
     }
 
