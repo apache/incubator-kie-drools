@@ -297,7 +297,8 @@ public class EvaluationUtil {
             return null;
         }
         if (mask instanceof LongBitMask ) {
-            return new org.drools.core.util.bitmask.LongBitMask( ( (LongBitMask) mask ).asLong() );
+            long maskValue = (( LongBitMask ) mask).asLong();
+            return maskValue == 0L ? org.drools.core.util.bitmask.EmptyBitMask.get() : new org.drools.core.util.bitmask.LongBitMask( maskValue );
         }
         if (mask instanceof EmptyBitMask ) {
             return org.drools.core.util.bitmask.EmptyBitMask.get();

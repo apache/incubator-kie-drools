@@ -73,7 +73,7 @@ public class FusionAfterBeforeTest {
                                                                                  kieBaseTestConfiguration, drlResource);
 
         final KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksconf.setOption(ClockTypeOption.get("pseudo"));
+        ksconf.setOption(ClockTypeOption.PSEUDO);
 
         final KieSession ksession = kieBase.newKieSession(ksconf, null);
         final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
@@ -127,7 +127,7 @@ public class FusionAfterBeforeTest {
         events.addAll(getEvents(EventB.class, 64 / 2, 5, 100, 0));
 
         final KieSessionConfiguration sessionConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConf.setOption(ClockTypeOption.get("pseudo"));
+        sessionConf.setOption(ClockTypeOption.PSEUDO);
         final KieSession kieSession =
                 new KieHelper().addContent(drlBuilder.toString(), ResourceType.DRL).build(kieBaseTestConfiguration.getKieBaseConfiguration()).newKieSession(sessionConf, null);
 

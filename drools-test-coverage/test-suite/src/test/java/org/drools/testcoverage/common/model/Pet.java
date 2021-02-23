@@ -35,6 +35,11 @@ public class Pet implements Serializable {
         this.name = name;
     }
 
+    public Pet(final String name, final int age) {
+        this.name = name;
+        this.age = age;
+    }
+
     public Pet(final PetType type) {
         this.type = type;
         age = 0;

@@ -39,7 +39,7 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DMNDecisionServicesTest extends BaseDMN1_1VariantTest {
 

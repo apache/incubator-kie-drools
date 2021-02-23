@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -51,6 +52,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -174,7 +176,7 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 3, results.size() );
-        Assertions.assertThat(results.stream().map(r -> r.getValue())).containsExactlyInAnyOrder(mario, luca, edoardo);
+        assertThat(results.stream().map(r -> r.getValue())).containsExactlyInAnyOrder(mario, luca, edoardo);
     }
 
     @Test
@@ -202,7 +204,7 @@ public class CompilerTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList( ksession, Result.class );
         assertEquals( 1, results.size() );
-        Assertions.assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(leonardo);
+        assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(leonardo);
     }
 
     @Test
@@ -611,7 +613,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 
     @Test
@@ -1094,7 +1096,7 @@ public class CompilerTest extends BaseModelTest {
                 .stream().map(Result::getValue).collect(Collectors.toList());
         assertEquals(2, results.size());
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Luca", null);
+        assertThat(results).containsExactlyInAnyOrder("Luca", null);
     }
 
     @Test
@@ -1122,7 +1124,7 @@ public class CompilerTest extends BaseModelTest {
                 .stream().map(Result::getValue).collect(Collectors.toList());
         assertEquals(1, results.size());
 
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Second");
+        assertThat(results).containsExactlyInAnyOrder("Second");
     }
 
     @Test
@@ -1715,7 +1717,6 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertEquals("Milan number has the same value of Mark age", result.getValue());
-
     }
 
     @Test
@@ -1863,6 +1864,40 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testHalfBinaryWithParenthesis() {
+        // DROOLS-6006
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(intValue (> 2 && < 5))\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexHalfBinary() {
+        // DROOLS-6006
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(intValue ((> 2 && < 4) || (> 5 && < 7)) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
     public void testMapPrimitiveComparison() {
         final String drl1 =
                 "import java.util.Map;\n" +
@@ -1948,7 +1983,7 @@ public class CompilerTest extends BaseModelTest {
         Person first = new Person("First", 40);
         first.setEmployed(true);
         ksession.insert(first);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 
     @Test
@@ -1984,7 +2019,7 @@ public class CompilerTest extends BaseModelTest {
         Person first = new Person("John", 40);
         first.setEmployed(true);
         ksession.insert(first);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 
     @Test
@@ -2004,7 +2039,7 @@ public class CompilerTest extends BaseModelTest {
         StockTick st = new StockTick("RHT");
         st.setTimeField(new Date().getTime());
         ksession.insert(st);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 
     @Test()
@@ -2100,6 +2135,32 @@ public class CompilerTest extends BaseModelTest {
         public Short getTestShort() {
             return testShort;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            IntegerToShort that = (IntegerToShort) o;
+            return testInt == that.testInt && Objects.equals(testBoolean, that.testBoolean) && Objects.equals(testShort, that.testShort);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(testBoolean, testInt, testShort);
+        }
+
+        @Override
+        public String toString() {
+            return "IntegerToShort{" +
+                    "testBoolean=" + testBoolean +
+                    ", testInt=" + testInt +
+                    ", testShort=" + testShort +
+                    '}';
+        }
     }
 
     @Test // DROOLS-5007
@@ -2127,7 +2188,6 @@ public class CompilerTest extends BaseModelTest {
     public void testCastingIntegerToShort() {
         String str =
                 "import " + IntegerToShort.class.getCanonicalName() + ";\n " +
-                        "global java.util.List list;\n" +
                         "rule \"test_rule\"\n" +
                         "dialect \"java\"\n" +
                         "when\n" +
@@ -2144,16 +2204,41 @@ public class CompilerTest extends BaseModelTest {
                         "end";
 
         KieSession ksession = getKieSession(str);
-        final List<String> list = new ArrayList<>();
-
-        ksession.setGlobal("list", list);
-
-        IntegerToShort integerToShort = new IntegerToShort(false, Integer.MAX_VALUE, Short.MAX_VALUE);
+        IntegerToShort integerToShort = new IntegerToShort(false, Short.MAX_VALUE, (short)0);
 
         ksession.insert(integerToShort);
         int rulesFired = ksession.fireAllRules();
 
         Assert.assertEquals(1, rulesFired);
+        assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, Short.MAX_VALUE));
+    }
+
+    @Test // DROOLS-5998
+    public void testCastingIntegerToShortWithNegativeNumbers() {
+        String str =
+                "import " + IntegerToShort.class.getCanonicalName() + ";\n " +
+                        "rule \"test_rule\"\n" +
+                        "dialect \"java\"\n" +
+                        "when\n" +
+                        "   $integerToShort : IntegerToShort( " +
+                        "           $testInt : testInt, " +
+                        "           testBoolean != null, " +
+                        "           testBoolean == false" +
+                        ") \n" +
+                        "then\n" +
+                        "   $integerToShort.setTestShort((short)(-12)); \n" +
+                        "   $integerToShort.setTestBoolean(true);\n" +
+                        "   update($integerToShort);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        IntegerToShort integerToShort = new IntegerToShort(false, Short.MAX_VALUE, (short)0);
+
+        ksession.insert(integerToShort);
+        int rulesFired = ksession.fireAllRules();
+
+        Assert.assertEquals(1, rulesFired);
+        assertThat(integerToShort).isEqualTo(new IntegerToShort(true, Short.MAX_VALUE, (short)-12));
     }
 
     @Test
@@ -2168,6 +2253,95 @@ public class CompilerTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         assertNotNull( ksession);
+    }
+
+    @Test // DROOLS-6034
+    public void testConsequenceInsertThenUpdate() throws Exception {
+        String str =
+                "global java.util.List children;\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"a new baby is born\" when\n" +
+                        "  " + // No pattern
+                        "then\n" +
+                        "  Person andrea = new Person();\n" +
+                        "  insert(andrea);\n" +
+                        "  andrea.setName(\"Andrea\");\n" +
+                        "  update(andrea);\n" +
+                        "  children.add(andrea.getName());\n" +
+                        "end";
+
+        KieSession kSession = getKieSession( str );
+
+        ArrayList<String> children = new ArrayList<>();
+        kSession.setGlobal("children", children);
+
+        Person luca = new Person( "Luca", 36 );
+
+        kSession.insert( luca );
+        assertEquals(1, kSession.fireAllRules());
+
+        Assertions.assertThat(children).containsOnly("Andrea");
+    }
+
+    @Test // DROOLS-6034
+    public void testConsequenceInsertThenModify() throws Exception {
+        String str =
+                "global java.util.List children;\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "dialect \"mvel\"" +
+                        "rule \"a new baby is born\" when\n" +
+                        "  " + // No pattern
+                        "then\n" +
+                        "  Person andrea = new Person();\n" +
+                        "  insert(andrea);\n" +
+                        "  modify(andrea) {" +
+                        "       name = \"Andrea\" " +
+                        "  }" +
+                        "  children.add(andrea.getName());\n" +
+                        "end";
+
+        KieSession kSession = getKieSession( str );
+
+        ArrayList<String> children = new ArrayList<>();
+        kSession.setGlobal("children", children);
+
+        Person luca = new Person( "Luca", 36 );
+
+        kSession.insert( luca );
+        assertEquals(1, kSession.fireAllRules());
+
+        Assertions.assertThat(children).containsOnly("Andrea");
+    }
+
+    @Test // DROOLS-6034
+    public void testConsequenceInsertThenUpdateWithPatternInitializer() throws Exception {
+        String str =
+                "global java.util.List result;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import static " + Person.class.getName() + ".identityFunction;\n" +
+                "no-loop true\n" +
+                "rule R1 when\n" +
+                "  $p : Person($name : name)\n" +
+                "then\n" +
+                "  Person fromMethodCall = identityFunction($p);" +
+                "  Person fromNameExpr = fromMethodCall;" +
+                "  Person fromNameExprTwice = fromNameExpr;\n" +
+                "  insert(fromNameExprTwice);\n" +
+                "  update(fromNameExprTwice);\n" +
+                "  result.add(fromNameExprTwice.getName());\n" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        ArrayList<String> children = new ArrayList<>();
+        kSession.setGlobal("result", children);
+
+        Person luca = new Person( "Luca", 36 );
+
+        kSession.insert( luca );
+        assertEquals(1, kSession.fireAllRules());
+
+        Assertions.assertThat(children).containsOnly("Luca");
     }
 
     @Test
@@ -2211,7 +2385,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(p2);
 
         assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactly("John");
+        assertThat(list).containsExactly("John");
     }
 
     @Test
@@ -2264,7 +2438,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(p3);
 
         assertEquals(2, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George");
+        assertThat(list).containsExactlyInAnyOrder("John", "George");
     }
 
     @Test
@@ -2368,7 +2542,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( p2 );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
+        assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
     }
 
     @Test()
@@ -2390,7 +2564,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(new Person("Ann"));
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactly("John");
+        assertThat(list).containsExactly("John");
     }
 
     @Rule

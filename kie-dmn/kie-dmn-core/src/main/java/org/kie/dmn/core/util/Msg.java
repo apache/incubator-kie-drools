@@ -66,6 +66,7 @@ public final class Msg {
     public static final Message2 VARIABLE_LEADING_TRAILING_SPACES                    = new Message2( DMNMessageType.INVALID_NAME, "Variable name contains leading or traling spaces '%s' on node '%s'" );
     public static final Message2 MISSING_TYPEREF_FOR_PARAMETER                       = new Message2( DMNMessageType.MISSING_TYPE_REF, "Parameter named '%s' is missing its type reference on node '%s'" );
     public static final Message2 MISSING_TYPEREF_FOR_COLUMN                          = new Message2( DMNMessageType.MISSING_TYPE_REF, "Column named '%s' is missing its type reference on node '%s'" );
+    public static final Message3 WRONG_TYPEREF_FOR_COLUMN                            = new Message3( DMNMessageType.MISSING_TYPE_REF, "Column #%s named '%s' defines a type reference '%s' which does not exists");
     public static final Message1 DUPLICATE_DRG_ELEMENT                               = new Message1( DMNMessageType.DUPLICATE_NAME, "Duplicate node name '%s' in the model" );
     public static final Message1 MISSING_NAME_FOR_DT_OUTPUT                          = new Message1( DMNMessageType.MISSING_NAME, "Decision table with multiple outputs on node '%s' requires a name for each output" );
     public static final Message1 MISSING_TYPEREF_FOR_DT_OUTPUT                       = new Message1( DMNMessageType.MISSING_TYPE_REF, "Decision table with multiple outputs on node '%s' requires a type reference for each output" );

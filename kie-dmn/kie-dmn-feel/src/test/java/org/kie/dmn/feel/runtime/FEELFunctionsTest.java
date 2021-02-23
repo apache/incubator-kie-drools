@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -153,6 +154,8 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "abs(@\"PT5H\")", Duration.parse("PT5H") , null},
                 { "abs(@\"-PT5H\")", Duration.parse("PT5H") , null},
                 { "abs(n: @\"-PT5H\")", Duration.parse("PT5H") , null},
+                { "abs(duration(\"P1Y\"))", ComparablePeriod.parse("P1Y") , null},
+                { "abs(duration(\"-P1Y\"))", ComparablePeriod.parse("P1Y"), null},
                 { "sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
                                                                                  BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ), null },
                 { "sort( [3, 1, 4, 5, 2] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
@@ -205,6 +208,25 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "median( 8, 2, 5, 3, 4 )", new BigDecimal("4") , null},
                 { "median( [6, 1, 2, 3] )", new BigDecimal("2.5") , null},
                 { "median( [ ] ) ", null, null}, // DMN spec, Table 69: Semantics of list functions
+                
+                { "0-max( 1, 2, 3 )", BigDecimal.valueOf( -3 ) , null},
+                { "-max( 1, 2, 3 )", BigDecimal.valueOf( -3 ) , null}, // DROOLS-5981
+                { "0-sum( 1, 2, 3 )", BigDecimal.valueOf( -6 ) , null},
+                { "-sum( 1, 2, 3 )", BigDecimal.valueOf( -6 ) , null},
+                { "0-abs( 10 )", new BigDecimal("-10") , null},
+                { "-abs( 10 )", new BigDecimal("-10") , null}, 
+                { "0-max( 1, abs(-2), 3 )", BigDecimal.valueOf( -3 ) , null},
+                { "-max( 1, abs(-2), 3 )", BigDecimal.valueOf( -3 ) , null}, 
+                { "0-max( 1, -abs(-2), 3 )", BigDecimal.valueOf( -3 ) , null},
+                { "-max( 1, -abs(-2), 3 )", BigDecimal.valueOf( -3 ) , null},
+                { "{a: 2, r: 0-sum( 1, a, 3 )}.r", BigDecimal.valueOf( -6 ) , null},
+                { "{a: 2, r: -sum( 1, a, 3 )}.r", BigDecimal.valueOf( -6 ) , null},
+                { "{a: 2, r: 0-sum( 1, -a, 3 )}.r", BigDecimal.valueOf( -2 ) , null},
+                { "{a: 2, r: -sum( 1, -a, 3 )}.r", BigDecimal.valueOf( -2 ) , null},
+                { "{a: -2, r: 0-sum( 1, -a, 3 )}.r", BigDecimal.valueOf( -6 ) , null},
+                { "{a: -2, r: -sum( 1, -a, 3 )}.r", BigDecimal.valueOf( -6 ) , null},
+                { "{a: -2, r: 0-sum( 1, -abs(a), 3 )}.r", BigDecimal.valueOf( -2 ) , null},
+                { "{a: -2, r: -sum( 1, -abs(a), 3 )}.r", BigDecimal.valueOf( -2 ) , null},
         };
         return addAdditionalParameters(cases, false);
     }

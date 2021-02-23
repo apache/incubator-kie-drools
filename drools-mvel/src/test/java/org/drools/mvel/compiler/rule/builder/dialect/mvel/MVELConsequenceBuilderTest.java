@@ -34,11 +34,15 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
+import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -46,8 +50,17 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ModifyPreviousTuples;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -57,7 +70,6 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
-import org.drools.mvel.CompositeObjectSinkAdapterTest;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELConsequenceBuilder;
 import org.drools.mvel.builder.MVELDialect;
@@ -133,7 +145,7 @@ public class MVELConsequenceBuilderTest {
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
                                                 pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, tuple != null ? (TerminalNode)tuple.getTupleSink() : null, null ),
-                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase )), null);
+                                                new RuleTerminalNode(0, new MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase )), null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         (( MVELConsequence ) context.getRule().getConsequence()).compile(  ( MVELDialectRuntimeData ) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
@@ -444,5 +456,101 @@ public class MVELConsequenceBuilderTest {
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
         assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
+    }
+
+    public static class MockBetaNode extends BetaNode {
+        
+        public MockBetaNode() {
+            
+        }
+
+        @Override
+        protected boolean doRemove( RuleRemovalContext context, ReteooBuilder builder) {
+            return true;
+        }
+
+        MockBetaNode(final int id,
+                     final LeftTupleSource leftInput,
+                     final ObjectSource rightInput,
+                     BuildContext buildContext) {
+            super( id,
+                   leftInput,
+                   rightInput,
+                   EmptyBetaConstraints.getInstance(),
+                   buildContext );
+        }        
+
+        MockBetaNode(final int id,
+                     final LeftTupleSource leftInput,
+                     final ObjectSource rightInput) {
+            super( id,
+                   leftInput,
+                   rightInput,
+                   EmptyBetaConstraints.getInstance(),
+                   null );
+        }
+
+        public void assertObject(final InternalFactHandle factHandle,
+                                 final PropagationContext pctx,
+                                 final InternalWorkingMemory workingMemory) {
+        }
+
+        @Override
+        public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+        }
+
+        public void retractRightTuple(final RightTuple rightTuple,
+                                      final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
+        }
+
+        public short getType() {
+            return 0;
+        }
+
+        public void modifyRightTuple(RightTuple rightTuple,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory) {
+        }
+
+        public LeftTuple createLeftTuple( InternalFactHandle factHandle,
+                                          boolean leftTupleMemoryEnabled) {
+            return new LeftTupleImpl(factHandle, this, leftTupleMemoryEnabled );
+        }    
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         Sink sink,
+                                         PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+            return new LeftTupleImpl(leftTuple,sink, pctx, leftTupleMemoryEnabled );
+        }
+
+        public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                         final LeftTuple leftTuple,
+                                         final Sink sink) {
+            return new LeftTupleImpl(factHandle,leftTuple, sink );
+        }
+
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         Sink sink) {
+            return new LeftTupleImpl(leftTuple, rightTuple, sink );
+        }   
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTuple currentLeftChild,
+                                         LeftTuple currentRightChild,
+                                         Sink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        }
+        public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+            return super.createMemory( config, wm);
+        }
+
+        @Override
+        public LeftTuple createPeer(LeftTuple original) {
+            return null;
+        }                
     }
 }

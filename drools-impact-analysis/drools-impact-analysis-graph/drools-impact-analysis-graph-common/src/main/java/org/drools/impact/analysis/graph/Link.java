@@ -20,19 +20,13 @@ public class Link {
 
     private Node source;
     private Node target;
-    private Type type;
+    private ReactivityType reactivityType;
 
-    public enum Type {
-        POSITIVE,
-        NEGATIVE,
-        UNKNOWN
-    }
-
-    public Link(Node source, Node target, Type type) {
+    public Link(Node source, Node target, ReactivityType reactivityType ) {
         super();
         this.source = source;
         this.target = target;
-        this.type = type;
+        this.reactivityType = reactivityType;
     }
 
     public Node getSource() {
@@ -51,16 +45,16 @@ public class Link {
         this.target = target;
     }
 
-    public Type getType() {
-        return type;
+    public ReactivityType getReactivityType() {
+        return reactivityType;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setReactivityType( ReactivityType reactivityType ) {
+        this.reactivityType = reactivityType;
     }
 
     @Override
     public String toString() {
-        return "Link [source=" + source.getRuleName() + ", target=" + target.getRuleName() + ", type=" + type + "]";
+        return "Link [source=" + source.getRuleName() + ", target=" + target.getRuleName() + ", type=" + reactivityType + "]";
     }
 }

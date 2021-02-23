@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.core.ClockType;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.modelcompiler.domain.DateTimeHolder;
 import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.StockTickEx;
@@ -1178,5 +1180,24 @@ public class CepTest extends BaseModelTest {
         ksession.insert(new StockTick("DROO").setTimeField(time));
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testZonedDateTime() throws Exception {
+        String str =
+                "import " + DateTimeHolder.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "    $a : DateTimeHolder(  )\n" +
+                        "    $b : DateTimeHolder( zonedDateTime after[5s,8s] $a.zonedDateTime )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new DateTimeHolder( ZonedDateTime.now() ) );
+        ksession.insert( new DateTimeHolder( ZonedDateTime.now().plusSeconds(6) ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

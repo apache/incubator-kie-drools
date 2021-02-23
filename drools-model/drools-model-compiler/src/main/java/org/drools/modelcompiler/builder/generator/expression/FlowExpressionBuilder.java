@@ -225,7 +225,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression right = drlxParseResult.getRight();
 
         Expression rightExpression = right.getExpression();
-        if (!drlxParseResult.isBetaNode() && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
+        if (!drlxParseResult.isBetaConstraint() && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
             return exprDSL;
         }
 
@@ -245,10 +245,10 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
-        if ( isAlphaIndex( usedDeclarations ) ) {
-            indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
-        } else {
+        if ( drlxParseResult.isBetaConstraint() ) {
             addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType, drlxParseResult);
+        } else {
+            indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
         }
 
         return indexedByDSL;

@@ -16,9 +16,12 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -417,4 +420,87 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
     }
 
+    @Test
+    public void testCoercionStringVsObjectIntegerWithMap() {
+        final String drl = "package org.drools.compiler.integrationtests;\n" +
+                           "import " + Map.class.getCanonicalName() + ";\n" +
+                           "import " + StringHolder.class.getCanonicalName() + ";\n" +
+                           "global java.util.List list;\n" +
+                           "rule R\n" +
+                           "    when\n" +
+                           "        $map : Map()" +
+                           "        $holder : StringHolder(value < $map.get(\"key\"))\n" +
+                           "    then\n" +
+                           "        list.add( $holder );\n" +
+                           "end";
+
+        // String is coerced to Integer (thus, Number comparison)
+
+        KieSession ksession = getKieSession(drl);
+        try {
+            final List<StringHolder> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            final StringHolder holder1 = new StringHolder("1");
+            ksession.insert(holder1);
+
+            final StringHolder holder5 = new StringHolder("5");
+            ksession.insert(holder5);
+
+            final StringHolder holder10 = new StringHolder("10");
+            ksession.insert(holder10);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("key", 5);
+            ksession.insert(map);
+
+            ksession.fireAllRules();
+
+            Assertions.assertThat(list).containsExactly(holder1); // If we do String comparison, cheese10 is also contained
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testCoercionStringVsExplicitIntegerWithMap() {
+        final String drl = "package org.drools.compiler.integrationtests;\n" +
+                           "import " + Map.class.getCanonicalName() + ";\n" +
+                           "import " + StringHolder.class.getCanonicalName() + ";\n" +
+                           "global java.util.List list;\n" +
+                           "rule R\n" +
+                           "    when\n" +
+                           "        $map : Map()" +
+                           "        $holder : StringHolder(value < $map.get(\"key\"))\n" +
+                           "    then\n" +
+                           "        list.add( $holder );\n" +
+                           "end";
+
+        // String is coerced to Integer (thus, Number comparison)
+
+        KieSession ksession = getKieSession(drl);
+        try {
+            final List<StringHolder> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            final StringHolder holder1 = new StringHolder("1");
+            ksession.insert(holder1);
+
+            final StringHolder holder5 = new StringHolder("5");
+            ksession.insert(holder5);
+
+            final StringHolder holder10 = new StringHolder("10");
+            ksession.insert(holder10);
+
+            Map<String, Integer> map = new HashMap<>();
+            map.put("key", 5);
+            ksession.insert(map);
+
+            ksession.fireAllRules();
+
+            Assertions.assertThat(list).containsExactly(holder1); // If we do String comparison, cheese10 is also contained
+        } finally {
+            ksession.dispose();
+        }
+    }
 }

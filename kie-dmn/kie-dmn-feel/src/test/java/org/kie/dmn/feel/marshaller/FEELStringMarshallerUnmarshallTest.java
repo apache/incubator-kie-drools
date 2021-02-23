@@ -20,7 +20,7 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Parameterized.class)
 public class FEELStringMarshallerUnmarshallTest {

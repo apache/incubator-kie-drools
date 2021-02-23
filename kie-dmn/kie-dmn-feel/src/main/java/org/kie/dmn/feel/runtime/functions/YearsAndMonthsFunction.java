@@ -31,6 +31,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class YearsAndMonthsFunction
         extends BaseFEELFunction {
 
+    public static final YearsAndMonthsFunction INSTANCE = new YearsAndMonthsFunction();
+
     public YearsAndMonthsFunction() {
         super(FEELConversionFunctionNames.YEARS_AND_MONTHS_DURATION);
     }

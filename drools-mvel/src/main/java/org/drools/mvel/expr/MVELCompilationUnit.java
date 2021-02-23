@@ -19,14 +19,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,14 +38,12 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.drools.mvel.ModifyInterceptor;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.integration.Interceptor;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolver;
@@ -86,8 +81,6 @@ public class MVELCompilationUnit
     private SimpleVariableSpaceModel             varModel;
 
     private int                                  allVarsLength;
-
-    public static final Map<String, Interceptor> INTERCEPTORS = new InterceptorMap();
 
     public enum Scope {
         CONSTRAINT, CONSEQUENCE, EXPRESSION;
@@ -257,10 +250,6 @@ public class MVELCompilationUnit
         parserContext.setStrictTypeEnforcement( strictMode );
         parserContext.setStrongTyping( strictMode );
         parserContext.setIndexAllocation( true );
-
-        if ( INTERCEPTORS != null ) {
-            parserContext.setInterceptors(INTERCEPTORS);
-        }
 
         parserContext.addIndexedInput( inputIdentifiers );
 
@@ -556,10 +545,6 @@ public class MVELCompilationUnit
         return strictMode;
     }
 
-    public static Map getInterceptors() {
-        return INTERCEPTORS;
-    }
-
     public static Map<String, Class< ? >> getPrimitivesmap() {
         return primitivesMap;
     }
@@ -680,72 +665,6 @@ public class MVELCompilationUnit
     public static class PropertyHandlerFactoryFixer extends PropertyHandlerFactory {
         public static  Map<Class, PropertyHandler> getPropertyHandlerClass() {
             return propertyHandlerClass;
-        }
-    }
-
-    private static class InterceptorMap implements Map<String, Interceptor>, Serializable {
-        public int size() {
-            return 1;
-        }
-
-        public boolean isEmpty() {
-            return false;
-        }
-
-        public boolean containsKey(Object key) {
-            return "Modify".equals(key);
-        }
-
-        public boolean containsValue(Object value) {
-            return false;
-        }
-
-        public Interceptor get(Object key) {
-            return new ModifyInterceptor();
-        }
-
-        public Interceptor put(String key, Interceptor value) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Interceptor remove(Object key) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void putAll(Map<? extends String, ? extends Interceptor> m) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Set<String> keySet() {
-            return new HashSet<String>() {{
-                add("Modify");
-            }};
-        }
-
-        public Collection<Interceptor> values() {
-            return new ArrayList<Interceptor>() {{
-                add(new ModifyInterceptor());
-            }};
-        }
-
-        public Set<Entry<String, Interceptor>> entrySet() {
-            return new HashSet<Entry<String, Interceptor>>() {{
-                add(new Entry<String, Interceptor>() {
-                    public String getKey() {
-                        return "Modify";
-                    }
-                    public Interceptor getValue() {
-                        return new ModifyInterceptor();
-                    }
-                    public Interceptor setValue(Interceptor value) {
-                        throw new UnsupportedOperationException();
-                    }
-                });
-            }};
         }
     }
 

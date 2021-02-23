@@ -81,8 +81,10 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
             return (T) new CoerceDecisionServiceSingletonOutputOption(properties.get(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME));
         } else if (ExecModelCompilerOption.class.equals(option)) {
             return (T) new ExecModelCompilerOption(properties.get(ExecModelCompilerOption.PROPERTY_NAME));
+        } else if (AlphaNetworkOption.class.equals(option)) {
+            return (T) new AlphaNetworkOption(properties.get(AlphaNetworkOption.PROPERTY_NAME));
         }
-        return null;
+        throw new RuntimeException("Unknown option: " + option.toString());
     }
 
     public void addDRGElementCompilers(List<DRGElementCompiler> drgElementCompilers) {
@@ -111,6 +113,10 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
     public boolean isUseExecModelCompiler() {
         return getOption(ExecModelCompilerOption.class).isUseExecModelCompiler();
+    }
+
+    public boolean isUseAlphaNetwork() {
+        return getOption(AlphaNetworkOption.class).isUseAlphaNetwork();
     }
 
     public boolean isDeferredCompilation() {

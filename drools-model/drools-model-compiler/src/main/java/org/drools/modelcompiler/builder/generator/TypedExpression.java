@@ -32,9 +32,9 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 public class TypedExpression {
 
     private Class<?> originalPatternType;
-    private Expression expression;
-    protected Type type;
-    protected String fieldName;
+    private final Expression expression;
+    private Type type;
+    private final String fieldName;
 
     protected Boolean staticExpr;
     protected TypedExpression left;

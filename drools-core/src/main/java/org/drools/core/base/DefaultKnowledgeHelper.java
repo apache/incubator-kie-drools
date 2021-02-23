@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
@@ -367,6 +368,14 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if ( handle == null ) {
             if ( object instanceof CoreWrapper ) {
                 handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );
+            }
+            if ( handle == null && workingMemory.getKnowledgeBase().getConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY ) {
+                InternalFactHandle modifiedFh = tuple.getFactHandle();
+                while (modifiedFh == null || modifiedFh.getObject() != object) {
+                    tuple = tuple.getParent();
+                    modifiedFh = tuple.getFactHandle();
+                }
+                handle = modifiedFh;
             }
             if ( handle == null ) {
                 throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );

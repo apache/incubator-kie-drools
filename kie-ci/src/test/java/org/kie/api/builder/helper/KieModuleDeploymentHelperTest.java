@@ -163,7 +163,7 @@ public class KieModuleDeploymentHelperTest {
         
         KieBaseModel kbaseModel = deploymentHelper.getKieModuleModel().newKieBaseModel("otherKieBase");
         kbaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY).setEventProcessingMode(EventProcessingOption.STREAM);
-        kbaseModel.newKieSessionModel("otherKieSession").setClockType(ClockTypeOption.get("realtime"));
+        kbaseModel.newKieSessionModel("otherKieSession").setClockType(ClockTypeOption.REALTIME);
         // META-INF/otherKieBase
         ++numDirs;
 

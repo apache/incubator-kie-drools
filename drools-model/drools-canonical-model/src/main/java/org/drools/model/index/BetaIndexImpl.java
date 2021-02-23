@@ -20,18 +20,17 @@ package org.drools.model.index;
 import org.drools.model.BetaIndex;
 import org.drools.model.functions.Function1;
 
-public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaIndex<A, B, V> {
+public class BetaIndexImpl<A, B, V> extends AbstractBetaIndex<A, V> implements BetaIndex<A, B, V> {
 
     private final Function1<B, ?> rightOperandExtractor;
 
-    public BetaIndexImpl(Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor) {
-        super( indexedClass, constraintType, indexId, leftOperandExtractor );
-        this.rightOperandExtractor = rightOperandExtractor;
+    public BetaIndexImpl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor) {
+        this(indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, null);
     }
 
-    @Override
-    public IndexType getIndexType() {
-        return IndexType.BETA;
+    public BetaIndexImpl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor, Class<?> rightReturnType) {
+        super(indexedClass, constraintType, indexId, leftOperandExtractor, rightReturnType);
+        this.rightOperandExtractor = rightOperandExtractor;
     }
 
     @Override
@@ -45,5 +44,4 @@ public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaI
                 "left: lambda " + System.identityHashCode(getLeftOperandExtractor()) + ", " +
                 "right: lambda " + System.identityHashCode(rightOperandExtractor) + ")";
     }
-
 }

@@ -10,6 +10,8 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.visitor.ASTHeuristicCheckerVisitor;
+import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.impl.CompiledExecutableExpression;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
@@ -40,7 +42,8 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         super(expression, ctx, profiles);
         this.defaultBackend = defaultBackend;
         ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
-        ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry()));
+        ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
+        ast = tree.accept(astVisitor);
         if (ast == null) {
             return; // if parsetree/ast is invalid, no need of further processing and early return.
         }
@@ -49,6 +52,9 @@ public class ProcessedExpression extends ProcessedFEELUnit {
             for (FEELEventListener listener : ctx.getListeners()) {
                 heuristicChecks.forEach(listener::onEvent);
             }
+        }
+        if (astVisitor.isVisitedTemporalCandidate()) {
+            ast.accept(new ASTTemporalConstantVisitor(ctx));
         }
     }
 
@@ -96,7 +102,8 @@ public class ProcessedExpression extends ProcessedFEELUnit {
                 TEMPLATE_CLASS,
                 expression,
                 compilerResult.getExpression(),
-                compilerResult.getFieldDeclarations());
+                compilerResult.getFieldDeclarations()
+        );
     }
 
     public InterpretedExecutableExpression getInterpreted() {

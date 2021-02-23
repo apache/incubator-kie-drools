@@ -25,6 +25,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static org.kie.dmn.feel.codegen.feel11.Expressions.compiledFeelSemanticMappingsFQN;
 
 public class FeelCtx {
 
@@ -38,7 +39,7 @@ public class FeelCtx {
     }
 
     public static MethodCallExpr getValue(String nameRef) {
-        return new MethodCallExpr(null, "getValue", new NodeList<>(FEELCTX, new StringLiteralExpr(nameRef)));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "getValue", new NodeList<>(FEELCTX, new StringLiteralExpr(nameRef)));
     }
 
     public static MethodCallExpr current() {

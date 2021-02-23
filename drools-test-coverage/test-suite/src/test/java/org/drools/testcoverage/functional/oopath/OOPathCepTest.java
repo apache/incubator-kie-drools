@@ -715,7 +715,7 @@ public class OOPathCepTest {
     }
 
     private void populateAndVerifyTimeWindowCase(final KieBase kieBase) {
-        final KieSessionConfiguration sessionConfiguration = KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.get("pseudo"), null);
+        final KieSessionConfiguration sessionConfiguration = KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.PSEUDO, null);
         this.initKieSession(kieBase, sessionConfiguration);
         final SessionPseudoClock clock = this.kieSession.getSessionClock();
 
@@ -782,7 +782,7 @@ public class OOPathCepTest {
     }
 
     private SessionPseudoClock initKieSessionWithPseudoClock(final KieBase kieBase) {
-        final KieSessionConfiguration sessionConfiguration = KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.get("pseudo"), null);
+        final KieSessionConfiguration sessionConfiguration = KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.PSEUDO, null);
         this.initKieSession(kieBase, sessionConfiguration);
         return this.kieSession.getSessionClock();
     }

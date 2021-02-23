@@ -20,30 +20,30 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.time.Duration;
 import java.time.chrono.ChronoPeriod;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.type.UnknownType;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
@@ -82,12 +82,14 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.ScopeHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
@@ -95,36 +97,7 @@ import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
 public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
 
-    private static class ScopeHelper {
-        Deque<Map<String, Type>> stack;
-
-        public ScopeHelper() {
-            this.stack = new ArrayDeque<>();
-            this.stack.push(new HashMap<>());
-        }
-
-        public void addType(String name, Type type) {
-            stack.peek().put(name,
-                             type);
-        }
-
-        public void pushScope() {
-            stack.push(new HashMap<>());
-        }
-
-        public void popScope() {
-            stack.pop();
-        }
-
-        public Optional<Type> resolveType(String name) {
-            return stack.stream()
-                    .map(scope -> Optional.ofNullable(scope.get(name)))
-                    .flatMap(o -> o.isPresent() ? Stream.of(o.get()) : Stream.empty())
-                    .findFirst();
-        }
-    }
-
-    ScopeHelper scopeHelper = new ScopeHelper();
+    ScopeHelper<Type> scopeHelper = new ScopeHelper<>();
 
     @Override
     public DirectCompilerResult visit(ASTNode n) {
@@ -215,7 +188,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
     @Override
     public DirectCompilerResult visit(NameRefNode n) {
         String nameRef = EvalHelper.normalizeVariableName(n.getText());
-        Type type = scopeHelper.resolveType(nameRef).orElse(BuiltInType.UNKNOWN);
+        Type type = scopeHelper.resolve(nameRef).orElse(BuiltInType.UNKNOWN);
         return DirectCompilerResult.of(FeelCtx.getValue(nameRef), type);
     }
 
@@ -407,7 +380,7 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                 .stream()
                 .map(e -> {
                     DirectCompilerResult r = e.accept(this);
-                    scopeHelper.addType(e.getName().getText(), r.resultType);
+                    scopeHelper.addInScope(e.getName().getText(), r.resultType);
                     return r;
                 })
                 .reduce(openContext,
@@ -497,6 +470,10 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
 
     @Override
     public DirectCompilerResult visit(FunctionInvocationNode n) {
+        TemporalConstantNode tcFolded = n.getTcFolded();
+        if (tcFolded != null) {
+            return replaceWithTemporalConstant(n, tcFolded);
+        }
         DirectCompilerResult functionName = n.getName().accept(this);
         DirectCompilerResult params = n.getParams().accept(this);
         return DirectCompilerResult.of(
@@ -504,6 +481,29 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
                 functionName.resultType)
                 .withFD(functionName)
                 .withFD(params);
+    }
+
+    public DirectCompilerResult replaceWithTemporalConstant(FunctionInvocationNode n, TemporalConstantNode tcFolded) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr(new FieldAccessExpr(new NameExpr(tcFolded.fn.getClass().getCanonicalName()),
+                                                                               "INSTANCE"),
+                                                           "invoke");
+        for (Object p : tcFolded.params) {
+            if (p instanceof String) {
+                methodCallExpr.addArgument(Expressions.stringLiteral((String) p));
+            } else if (p instanceof Number) {
+                methodCallExpr.addArgument(new IntegerLiteralExpr(p.toString()));
+            } else {
+                throw new IllegalStateException("Unexpected Temporal Constant parameter found.");
+            }
+        }
+        methodCallExpr = new MethodCallExpr(methodCallExpr, "getOrElseThrow"); // since this AST Node exists, the Fn invocation returns result.
+        methodCallExpr.addArgument(new LambdaExpr(new Parameter(new UnknownType(), "e"),
+                                                  Expressions.newIllegalState()));
+        String constantName = Constants.dtConstantName(n.getText());
+        FieldDeclaration constant = Constants.dtConstant(constantName, methodCallExpr);
+        return DirectCompilerResult.of(new NameExpr(constantName),
+                                       BuiltInType.UNKNOWN,
+                                       constant);
     }
 
     @Override

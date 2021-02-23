@@ -118,6 +118,7 @@ public class KiePMMLTreeModelFactoryTest {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
         KiePMMLTreeModelFactory.setConstructor(treeModel,
+                                               pmml.getDataDictionary(),
                                                constructorDeclaration,
                                                simpleName);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();

@@ -84,10 +84,9 @@ import static com.github.javaparser.Range.*;
 import static com.github.javaparser.Position.*;
 import static com.github.javaparser.ast.type.ArrayType.*;
 import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
+import static org.drools.mvel.parser.utils.AstUtils.*;
 
 import com.github.javaparser.JavaToken;
-
-import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
 
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
@@ -322,7 +321,9 @@ TOKEN :
 | < EXPORTS: "exports" >
 | < PROVIDES: "provides" >
 | < TRANSITIVE: "transitive" >
+| < UNIT: "unit" >
 | < RULE: "rule" >
+| < WHEN: "when" >
 | < NOT: "not" >
 | < MODIFY: "modify" >
 | < MVEL_STARTS_WITH: "str[startsWith]" >
@@ -1932,7 +1933,7 @@ Expression PrimaryPrefix():
 	  	{
 
 	  		if (hasArgs) {
-	  			ret = new MethodCallExpr(range(begin, token()), null, null, name, args);
+	  			ret = parseMethodExprOrHalfBinary(range(begin, token()), name, args);
 			} else {
 	  			ret = new DrlNameExpr(name, numberOfBackReferences );
 			}
@@ -3016,6 +3017,51 @@ NodeList<Expression> Expressions():
   { return ret; }
 }
 
+
+
+CompilationUnit DrlxCompilationUnit():
+{
+	PackageDeclaration pakage = null;
+	NodeList<ImportDeclaration> imports = emptyList();
+	ImportDeclaration in = null;
+	NodeList<TypeDeclaration<?>> types = emptyList();
+    ModifierHolder modifier;
+	TypeDeclaration<?> tn = null;
+	ModuleDeclaration module = null;
+	SimpleName unit = null;
+}
+{
+    try {
+        ( LOOKAHEAD(2)";" )*
+        [ LOOKAHEAD(PackageDeclaration()) pakage = PackageDeclaration() ]
+        (
+            in = ImportDeclaration() { imports = add(imports, in); }
+        |
+            unit = UnitDeclaration() // FIXME keep name around
+            modifier = Modifiers()
+            ( tn = RuleDeclaration(modifier) { types = add(types, tn); } )*
+        )*
+        (<EOF> | <CTRL_Z>)
+        { return new CompilationUnit(range(token_source.getHomeToken(), token()), pakage, imports, types, new ModuleDeclaration().setName(unit.getIdentifier())); }
+    } catch (ParseException e) {
+        recover(EOF, e);
+        final CompilationUnit compilationUnit = new CompilationUnit(range(token_source.getHomeToken(), token()), null, new NodeList<ImportDeclaration>(), new NodeList<TypeDeclaration<?>>(), null);
+        compilationUnit.setParsed(UNPARSABLE);
+        return compilationUnit;
+    }
+}
+
+SimpleName UnitDeclaration():
+{
+    SimpleName name;
+}
+{
+    <UNIT>
+    name = SimpleName()
+    ";"
+    { return name; }
+}
+
 RuleDeclaration RuleDeclaration(ModifierHolder modifier):
 {
     SimpleName name;
@@ -3023,7 +3069,7 @@ RuleDeclaration RuleDeclaration(ModifierHolder modifier):
     RuleBody body;
 }
 {
-  "rule"
+  <RULE>
   name = SimpleName()
   body = RuleBody()
 
@@ -3036,11 +3082,9 @@ RuleBody RuleBody():
     JavaToken begin;
 }
 {
-  "{" { begin=token(); }
+  { begin=token(); }
   items = RuleItems()
-  "}"
-
-    { return new RuleBody(range(begin, token()), items); }
+  { return new RuleBody(range(begin, token()), items); }
 }
 
 NodeList<RuleItem> RuleItems():
@@ -3051,11 +3095,14 @@ NodeList<RuleItem> RuleItems():
 }
 {
   (
+      <WHEN> "{"
+      (
     item = RulePattern() { items.add(item); }
-  |
+      )*
+      "}"
+      <DO>
     item = RuleConsequence() { items.add(item); }
-  )*
-
+  )+
     { return items; }
 }
 
@@ -3082,7 +3129,7 @@ RuleConsequence RuleConsequence():
     BlockStmt block;
 }
 {
-  "do" { begin=token(); }
+  { begin=token(); }
   block = Block()
 
     { return new RuleConsequence(range(begin, token()), block); }

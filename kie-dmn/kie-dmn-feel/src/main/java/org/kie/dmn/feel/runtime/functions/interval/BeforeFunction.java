@@ -32,53 +32,53 @@ public class BeforeFunction
         super( "before" );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value1" ) Comparable value1, @ParameterName( "value2" ) Comparable value2) {
-        if ( value1 == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value1", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "point1" ) Comparable point1, @ParameterName( "point2" ) Comparable point2) {
+        if ( point1 == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point1", "cannot be null"));
         }
-        if ( value2 == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value2", "cannot be null"));
+        if ( point2 == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point2", "cannot be null"));
         }
         try {
-            boolean result = value1.compareTo( value2 ) < 0;
+            boolean result = point1.compareTo( point2 ) < 0;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value1", "cannot be compared to value2"));
+            // points are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point1", "cannot be compared to point2"));
         }
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value" ) Comparable value, @ParameterName( "range" ) Range range) {
-        if ( value == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "point" ) Comparable point, @ParameterName( "range" ) Range range) {
+        if ( point == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be null"));
         }
         if ( range == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
         try {
-            boolean result = ( range.getLowBoundary() == Range.RangeBoundary.CLOSED && value.compareTo( range.getLowEndPoint() ) < 0 ) ||
-                    ( range.getLowBoundary() == Range.RangeBoundary.OPEN && value.compareTo( range.getLowEndPoint() ) <= 0 );
+            boolean result = ( range.getLowBoundary() == Range.RangeBoundary.CLOSED && point.compareTo( range.getLowEndPoint() ) < 0 ) ||
+                    ( range.getLowBoundary() == Range.RangeBoundary.OPEN && point.compareTo( range.getLowEndPoint() ) <= 0 );
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be compared to range"));
+            // points are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be compared to range"));
         }
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "range" ) Range range, @ParameterName( "value" ) Comparable value) {
-        if ( value == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "range" ) Range range, @ParameterName( "point" ) Comparable point) {
+        if ( point == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be null"));
         }
         if ( range == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
         try {
-            boolean result = ( range.getHighBoundary() == Range.RangeBoundary.CLOSED && range.getHighEndPoint().compareTo( value ) < 0 ) ||
-                    ( range.getHighBoundary() == Range.RangeBoundary.OPEN && range.getHighEndPoint().compareTo( value ) <= 0 );
+            boolean result = ( range.getHighBoundary() == Range.RangeBoundary.CLOSED && range.getHighEndPoint().compareTo( point ) < 0 ) ||
+                    ( range.getHighBoundary() == Range.RangeBoundary.OPEN && range.getHighEndPoint().compareTo( point ) <= 0 );
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be compared to value"));
+            // points are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be compared to point"));
         }
     }
 
@@ -95,7 +95,7 @@ public class BeforeFunction
                     ( range1.getHighEndPoint().compareTo( range2.getLowEndPoint() ) < 0 ) ;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
+            // points are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }

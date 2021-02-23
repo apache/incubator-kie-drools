@@ -37,6 +37,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class TimeFunction
         extends BaseFEELFunction {
 
+    public static final TimeFunction INSTANCE = new TimeFunction();
+
     public static final DateTimeFormatter FEEL_TIME;
     static {
         FEEL_TIME = new DateTimeFormatterBuilder().parseCaseInsensitive()

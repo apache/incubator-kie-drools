@@ -62,6 +62,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.dmn.feel.codegen.feel11.Expressions.compiledFeelSemanticMappingsFQN;
 
 public class CompiledFEELSupport {
 
@@ -495,7 +496,7 @@ public class CompiledFEELSupport {
 
         fd.setJavadocComment(" FEEL unary test: - ");
 
-        MethodCallExpr list = new MethodCallExpr(null, "list", new NodeList<>(new NameExpr(constantName)));
+        MethodCallExpr list = new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "list", new NodeList<>(new NameExpr(constantName)));
 
         DirectCompilerResult directCompilerResult = DirectCompilerResult.of(list, BuiltInType.LIST);
         directCompilerResult.addFieldDesclaration(fd);

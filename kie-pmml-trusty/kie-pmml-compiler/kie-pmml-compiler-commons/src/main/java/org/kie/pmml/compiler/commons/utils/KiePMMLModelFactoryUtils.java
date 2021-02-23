@@ -34,6 +34,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -42,6 +43,7 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -50,6 +52,7 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
 import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
@@ -83,7 +86,7 @@ public class KiePMMLModelFactoryUtils {
     }
 
     /**
-     * Set the <b>name</b> parameter on <b>super</b> invocation
+     * Set the <b>name</b> parameter on <b>super</b> invocation and populate the <b>miningFields/outputFields</b>
      * @param generatedClassName
      * @param constructorDeclaration
      * @param name
@@ -187,11 +190,54 @@ public class KiePMMLModelFactoryUtils {
                     Expression opType = oPT != null ?
                             new NameExpr(oPT.getClass().getName() + "." + oPT.name())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType));
+                    DATA_TYPE dtT = miningField.getDataType();
+                    Expression dataType = dtT != null ?
+                            new NameExpr(dtT.getClass().getName() + "." + dtT.name())
+                            : new NullLiteralExpr();
+                    Expression missingValueReplacement = miningField.getMissingValueReplacement() != null ?
+                            new StringLiteralExpr(miningField.getMissingValueReplacement())
+                            : new NullLiteralExpr();
+                    Expression allowedValues = miningField.getAllowedValues() != null ?
+                            CommonCodegenUtils.createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
+                            : new NullLiteralExpr();
+                    Expression intervals = miningField.getIntervals() != null ?
+                            createIntervalsExpression(miningField.getIntervals())
+                            : new NullLiteralExpr();
+                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType, missingValueReplacement, allowedValues, intervals));
                     return toReturn;
                 })
                 .collect(Collectors.toList());
     }
+
+    static Expression createIntervalsExpression(List<Interval> intervals) {
+        ExpressionStmt arraysAsListStmt = CommonCodegenUtils.createArraysAsListExpression();
+        MethodCallExpr arraysCallExpression = arraysAsListStmt.getExpression().asMethodCallExpr();
+        NodeList<Expression> arguments = new NodeList<>();
+        intervals.forEach(value -> arguments.add(getObjectCreationExprFromInterval(value)));
+        arraysCallExpression.setArguments(arguments);
+        arraysAsListStmt.setExpression(arraysCallExpression);
+        return arraysAsListStmt.getExpression();
+    }
+
+    static ObjectCreationExpr getObjectCreationExprFromInterval(Interval source) {
+        ObjectCreationExpr toReturn = new ObjectCreationExpr();
+        toReturn.setType(Interval.class.getCanonicalName());
+        NodeList<Expression> arguments = new NodeList<>();
+        if (source.getLeftMargin() != null) {
+            arguments.add(new NameExpr(source.getLeftMargin().toString()));
+        } else {
+            arguments.add(new NullLiteralExpr());
+        }
+        if (source.getRightMargin() != null) {
+            arguments.add(new NameExpr(source.getRightMargin().toString()));
+        } else {
+            arguments.add(new NullLiteralExpr());
+        }
+        toReturn.setArguments(arguments);
+        return toReturn;
+    }
+
+
 
     /**
      * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;OutputField&gt;</code>
@@ -221,7 +267,10 @@ public class KiePMMLModelFactoryUtils {
                     Expression resultFeature = rsltF != null ?
                             new NameExpr(rsltF.getClass().getName() + "." + rsltF.name())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature));
+                    Expression allowedValues = outputField.getAllowedValues() != null ?
+                            CommonCodegenUtils.createArraysAsListFromList(outputField.getAllowedValues()).getExpression()
+                            : new NullLiteralExpr();
+                    toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature, allowedValues));
                     return toReturn;
                 })
                 .collect(Collectors.toList());

@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Collection;
 
 import org.drools.core.WorkingMemory;
@@ -67,8 +66,8 @@ public class CollectAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#createContext()
      */
-    public Serializable createContext() {
-        return new CollectContext();
+    public Object createContext() {
+        return null; // this is always instantiated in init - for now, can we fix this? (mdp)
     }
 
     /* (non-Javadoc)
@@ -79,8 +78,7 @@ public class CollectAccumulator
                        Tuple leftTuple,
                        Declaration[] declarations,
                        WorkingMemory workingMemory) {
-        ((CollectContext) context).result = this.collect.instantiateResultObject( (InternalWorkingMemory) workingMemory );
-        return context;
+        return this.collect.instantiateResultObject( (InternalWorkingMemory) workingMemory );
     }
 
     /* (non-Javadoc)
@@ -94,7 +92,7 @@ public class CollectAccumulator
                              Declaration[] innerDeclarations,
                              WorkingMemory workingMemory) {
         Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
-        ((CollectContext) context).result.add( value );
+        ((Collection) context).add( value );
         return value;
     }
 
@@ -106,7 +104,7 @@ public class CollectAccumulator
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
                               WorkingMemory workingMemory) {
-        ((CollectContext) context).result.remove( value );
+        ((Collection) context).remove( value );
         return true;
     }
 
@@ -118,7 +116,7 @@ public class CollectAccumulator
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) {
-        return ((CollectContext) context).result;
+        return context;
     }
 
     public boolean supportsReverse() {
@@ -128,23 +126,5 @@ public class CollectAccumulator
     public Object createWorkingMemoryContext() {
         // no working memory context needed
         return null;
-    }
-
-    private static class CollectContext
-        implements
-        Externalizable {
-        public Collection<Object> result;
-        
-        public CollectContext() {}
-
-        @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            result = (Collection<Object>) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( result );
-        }
     }
 }

@@ -17,7 +17,6 @@ package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.DataDictionary;
@@ -27,8 +26,6 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.models.MiningField;
-import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -71,7 +68,7 @@ public class KiePMMLModelRetriever {
                                                                       transformationDictionary,
                                                                       model,
                                                                       hasClassloader))
-                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, model.getMiningSchema(), model.getOutput()))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
     }
 
@@ -99,24 +96,22 @@ public class KiePMMLModelRetriever {
                                                                                  dataDictionary,
                                                                                  transformationDictionary,
                                                                                  model,
-                                                                                 hasClassloader)).findFirst();
+                                                                                 hasClassloader))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
+                .findFirst();
     }
 
-    static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate, final MiningSchema miningSchema,
+    static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate,
+                                                        final DataDictionary dataDictionary,
+                                                        final MiningSchema miningSchema,
                                                         final Output output) {
         if (miningSchema != null) {
-            final List<MiningField> miningFields = miningSchema.getMiningFields()
-                    .stream()
-                    .map(ModelUtils::convertToKieMiningField)
-                    .collect(Collectors.toList());
-            toPopulate.setMiningFields(miningFields);
+            final List<org.kie.pmml.api.models.MiningField> converted = ModelUtils.convertToKieMiningFieldList(miningSchema, dataDictionary);
+            toPopulate.setMiningFields(converted);
         }
         if (output != null) {
-            final List<OutputField> outputFields = output.getOutputFields()
-                    .stream()
-                    .map(ModelUtils::convertToKieOutputField)
-                    .collect(Collectors.toList());
-            toPopulate.setOutputFields(outputFields);
+            final List<org.kie.pmml.api.models.OutputField> converted = ModelUtils.convertToKieOutputFieldList(output, dataDictionary);
+            toPopulate.setOutputFields(converted);
         }
         return toPopulate;
     }

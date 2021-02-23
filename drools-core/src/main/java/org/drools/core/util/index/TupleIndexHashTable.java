@@ -65,7 +65,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
 
         this.startResult = PRIME;
         for ( FieldIndex i : index ) {
-            this.startResult += PRIME * this.startResult + i.getExtractor().getIndex();
+            this.startResult += PRIME * this.startResult + i.getRightExtractor().getIndex();
         }
 
         switch ( index.length ) {

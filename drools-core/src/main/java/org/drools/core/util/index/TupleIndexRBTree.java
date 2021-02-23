@@ -16,6 +16,14 @@
 
 package org.drools.core.util.index;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.core.base.CoercionUtil;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable;
@@ -25,13 +33,6 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.TupleRBTree;
 import org.drools.core.util.TupleRBTree.Boundary;
 import org.drools.core.util.TupleRBTree.Node;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TupleIndexRBTree implements Externalizable, TupleMemory {
 
@@ -162,8 +163,8 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
 
     private Comparable getIndexedValue( Tuple tuple, boolean left ) {
         return left ?
-               (Comparable) index.getDeclaration().getExtractor().getValue( tuple.getObject( index.getDeclaration() ) ) :
-               (Comparable) index.getExtractor().getValue( tuple.getFactHandle().getObject() );
+               (Comparable) index.getLeftExtractor().getValue( tuple ) :
+               (Comparable) index.getRightExtractor().getValue( tuple.getFactHandle().getObject() );
     }
 
     private Tuple getNext(Comparable key, boolean first) {
@@ -171,6 +172,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     private Tuple getNextLeft(Comparable key, boolean first) {
+        key = coerceType(key);
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -192,6 +194,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     private Tuple getNextRight(Comparable key, boolean first) {
+        key = coerceType(key);
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -210,6 +213,18 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
                 throw new UnsupportedOperationException("Cannot call remove constraint of type: " + constraintType);
         }
         return firstNode == null ? null : firstNode.getFirst();
+    }
+
+    private Comparable coerceType(Comparable key) {
+        // We don't do dynamic coercion other than Numbers. See IndexUtil.areRangeIndexCompatibleOperands().
+        if (index.requiresCoercion() && key != null && tree.root != null && !key.getClass().equals(tree.root.key.getClass())) {
+            if (tree.root.key instanceof Number && key instanceof Number) {
+                key = (Comparable) CoercionUtil.coerceToNumber((Number) key, (Class<?>) tree.root.key.getClass());
+            } else {
+                throw new RuntimeException("Not possible to coerce [" + key + "] from class " + key.getClass() + " to class " + tree.root.key.getClass());
+            }
+        }
+        return key;
     }
 
     public class TupleFastIterator implements FastIterator {

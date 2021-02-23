@@ -92,7 +92,7 @@ public class KiePMMLTreeModelFactory {
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        setConstructor(model, constructorDeclaration, modelTemplate.getName());
+        setConstructor(model, dataDictionary, constructorDeclaration, modelTemplate.getName());
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
@@ -118,9 +118,9 @@ public class KiePMMLTreeModelFactory {
         return KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
     }
 
-    static void setConstructor(final TreeModel treeModel, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
-        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(treeModel.getMiningSchema());
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(treeModel.getOutput());
+    static void setConstructor(final TreeModel treeModel, final DataDictionary dataDictionary, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
+        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(treeModel.getMiningSchema(), dataDictionary);
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(treeModel.getOutput(), dataDictionary);
         setKiePMMLModelConstructor(modelName.asString(), constructorDeclaration, treeModel.getModelName(), miningFields, outputFields);
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)

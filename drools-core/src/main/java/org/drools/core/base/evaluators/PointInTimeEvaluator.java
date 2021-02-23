@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.drools.core.base.BaseEvaluator;
@@ -107,6 +108,9 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
         }
         if (obj instanceof LocalDateTime ) {
             return (( LocalDateTime ) obj).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+        if (obj instanceof ZonedDateTime ) {
+            return (( ZonedDateTime ) obj).toInstant().toEpochMilli();
         }
         if (obj instanceof Instant ) {
             return (( Instant ) obj).toEpochMilli();

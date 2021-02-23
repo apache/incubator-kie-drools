@@ -362,7 +362,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     public Object getDeclarationValue(String variableName) {
         Declaration decl = getTerminalNode().getSubRule().getOuterDeclarations().get(variableName);
         // need to double check, but the working memory reference is only used for resolving globals, right?
-        return decl.getValue(null, this);
+        return decl.getValue(this);
     }
 
     public List<String> getDeclarationIds() {
