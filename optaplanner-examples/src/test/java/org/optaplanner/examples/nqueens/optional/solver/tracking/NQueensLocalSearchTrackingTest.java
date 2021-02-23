@@ -50,8 +50,8 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
             List<NQueensStepTracking> expectedCoordinates) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
-        NQueensGenerator generator = new NQueensGenerator();
-        NQueens problem = NQueensSolutionInitializer.initialize(generator.createNQueens(N));
+        NQueens problem = new NQueensGenerator().createNQueens(N);
+        problem.getQueenList().forEach(queen -> queen.setRow(problem.getRowList().get(0)));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setAcceptorConfig(acceptorConfig);
