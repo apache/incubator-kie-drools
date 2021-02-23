@@ -91,6 +91,7 @@ import com.github.javaparser.JavaToken;
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
     private boolean optionalSemicolon = true;
+    private int nestedBlocks = 0;
     private boolean isWithOrModify = false;
 
     public void setOptionalSemicolon(boolean optionalSemicolon) {
@@ -110,14 +111,16 @@ public final class GeneratedMvelParser extends GeneratedMvelParserBase {
 
     }
 
-    public boolean doesCrossLineBreak(Token token) {
-        if (token.specialToken == null) {
-            return false;
-        }
-        if (token.specialToken.kind == UNIX_EOL || token.specialToken.kind == WINDOWS_EOL) {
-            return true;
-        }
-        return doesCrossLineBreak(token.specialToken);
+    public boolean inBlock() {
+        return nestedBlocks > 0;
+    }
+
+    public void enterBlock() {
+        this.nestedBlocks++;
+    }
+
+    public void leaveBlock() {
+        this.nestedBlocks--;
     }
 
     /* Returns the JavaParser specific token type of the last matched token */
@@ -2247,6 +2250,7 @@ BlockStmt Block():
 {
 	NodeList<Statement> stmts = emptyList();
 	JavaToken begin;
+	this.enterBlock();
 }
 {
     "{" {begin=token();}
@@ -2259,6 +2263,8 @@ BlockStmt Block():
         BlockStmt block = new BlockStmt(range(begin, token()), new NodeList<Statement>());
         block.setParsed(UNPARSABLE);
         return block;
+    } finally {
+        this.leaveBlock();
     }
 }
 
@@ -3294,7 +3300,9 @@ Expression PointFreeExpr():
         (
             left = PrimaryExpression()
             {
-                if (doesCrossLineBreak(token.next)) {
+                // if we are in a Block {} we short-circuit;
+                // a PointFreeExpr is invalid in that case
+                if (this.inBlock()) {
                     return left;
                 }
                 begin=token();
