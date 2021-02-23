@@ -9,6 +9,7 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.UnaryTestCompiledExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
@@ -27,8 +28,12 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
                               CompilerContext ctx, List<FEELProfile> profiles) {
         super(expressions, ctx, Collections.emptyList());
         ParseTree tree = getFEELParser(expression, ctx, profiles).unaryTestsRoot();
-        BaseNode initialAst = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry()));
+        ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
+        BaseNode initialAst = tree.accept(astVisitor);
         ast = initialAst.accept(new ASTUnaryTestTransform()).node();
+        if (astVisitor.isVisitedTemporalCandidate()) {
+            ast.accept(new ASTTemporalConstantVisitor(ctx));
+        }
     }
 
     private DirectCompilerResult getCompilerResult() {

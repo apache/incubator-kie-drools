@@ -44,8 +44,7 @@ public class PolymorphismTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testModifySubclass2, testModifySubclass. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class PolymorphismTest {
         String drl = "import " + A.class.getCanonicalName() + "\n;" +
                      "import " + B.class.getCanonicalName() + "\n;" +
                      "import " + C.class.getCanonicalName() + "\n;" +
-                     "import " + D.class.getCanonicalName() + "\n;" +
+                     "import " + X.class.getCanonicalName() + "\n;" +
                      "\n" +
                      "rule Ra when\n" +
                      "    $a: A(id == 3)\n" +
@@ -100,7 +99,7 @@ public class PolymorphismTest {
                      "end\n" +
                      "rule Rd when\n" +
                      "    $a: A(id == 0)\n" +
-                     "    $d: D($id : id == 0)\n" +
+                     "    $d: X($id : id == 0)\n" +
                      "then\n" +
                      "    modify($d) { setId($id+1) };\n" +
                      "end";
@@ -109,7 +108,7 @@ public class PolymorphismTest {
         final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
         final KieSession ksession = kieBase.newKieSession();
 
-        ksession.insert( new D(0) );
+        ksession.insert( new X(0) );
         ksession.fireAllRules();
         assertEquals(0, ksession.getObjects().size());
     }
@@ -120,28 +119,28 @@ public class PolymorphismTest {
         String drl = "import " + A.class.getCanonicalName() + "\n;" +
                      "import " + B.class.getCanonicalName() + "\n;" +
                      "import " + C.class.getCanonicalName() + "\n;" +
-                     "import " + D.class.getCanonicalName() + "\n;" +
+                     "import " + X.class.getCanonicalName() + "\n;" +
                      "\n" +
                      "rule Rd when\n" +
-                     "    $a: D(id == 0)\n" +
+                     "    $a: X(id == 0)\n" +
                      "    $d: C($id : id == 0)\n" +
                      "then\n" +
                      "    modify($d) { setId($id+1) };\n" +
                      "end\n" +
                      "rule Rc when\n" +
-                     "    $a: D(id == 1)\n" +
+                     "    $a: X(id == 1)\n" +
                      "    $c: B($id : id == 1)\n" +
                      "then\n" +
                      "    modify($c) { setId($id+1) };\n" +
                      "end\n" +
                      "rule Rb when\n" +
-                     "    $a: D(id == 2)\n" +
+                     "    $a: X(id == 2)\n" +
                      "    $b: A($id : id == 2)\n" +
                      "then\n" +
                      "    modify($b) { setId($id+1) };\n" +
                      "end\n" +
                      "rule Ra when\n" +
-                     "    $a: D(id == 3)\n" +
+                     "    $a: X(id == 3)\n" +
                      "then\n" +
                      "    delete($a);\n" +
                      "end";
@@ -150,7 +149,7 @@ public class PolymorphismTest {
         final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
         final KieSession ksession = kieBase.newKieSession();
 
-        FactHandle fh = ksession.insert( new D(0) );
+        FactHandle fh = ksession.insert( new X(0) );
         ksession.fireAllRules();
         assertEquals(0, ksession.getObjects().size());
         System.out.println(fh);
@@ -184,8 +183,8 @@ public class PolymorphismTest {
         }
     }
 
-    public static class D extends C {
-        public D( int id ) {
+    public static class X extends C {
+        public X( int id ) {
             super( id );
         }
     }

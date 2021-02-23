@@ -35,6 +35,8 @@ import static java.time.temporal.ChronoField.YEAR;
 public class DateFunction
         extends BaseFEELFunction {
 
+    public static final DateFunction INSTANCE = new DateFunction();
+
     public static final Pattern BEGIN_YEAR = Pattern.compile("^-?(([1-9]\\d\\d\\d+)|(0\\d\\d\\d))-"); // FEEL spec, "specified by XML Schema Part 2 Datatypes", hence: yearFrag ::= '-'? (([1-9] digit digit digit+)) | ('0' digit digit digit))
     public static final DateTimeFormatter FEEL_DATE;
     static {

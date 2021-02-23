@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.dmn.feel.codegen.feel11.DefaultedVisitor;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -31,6 +30,7 @@ import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode.Sign;
 import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.visitor.DefaultedVisitor;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 

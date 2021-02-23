@@ -21,8 +21,6 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.List;
 import java.util.Map;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -30,7 +28,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.kie.dmn.feel.lang.FunctionDefs;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;

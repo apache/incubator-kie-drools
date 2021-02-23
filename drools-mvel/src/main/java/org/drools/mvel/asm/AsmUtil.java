@@ -300,6 +300,9 @@ public final class AsmUtil {
             context.getRule().getConsequenceMetaData().addStatement(statement);
         }
         BitMask modificationMask = isPropertyReactive ? getEmptyPropertyReactiveMask(settableProperties.size()) : allSetButTraitBitMask();
+        if (isPropertyReactive) {
+            modificationMask = getModificationMask( consequence, obj, modificationMask, typeDeclaration, settableProperties, statement, false );
+        }
 
         int end = originalBlock.indexOf("{");
         if (end == -1) {
@@ -362,27 +365,32 @@ public final class AsmUtil {
             context.getRule().getConsequenceMetaData().addStatement(statement);
 
             if (isPropertyReactive) {
-                boolean parsedExprOnce = false;
-                // a late optimization to include this for-loop within this if
-                for (String expr : splitStatements(consequence)) {
-                    String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
-                    if (!updateExpr.equals(expr)) {
-                        parsedExprOnce = true;
-                        modificationMask = parseModifiedProperties(statement, settableProperties, typeDeclaration, isPropertyReactive, modificationMask, updateExpr);
-                        if ( modificationMask == allSetButTraitBitMask() ) {
-                            // opt: if we were unable to detect the property in the mask is all set, so avoid the rest of the cycle
-                            break;
-                        }
-                    }
-                }
-                if ( !parsedExprOnce ) {
-                    // never called parseModifiedProperties(), hence never had the opportunity to "miss" the property and set mask to All-set; doing so here:
-                    modificationMask = allSetButTraitBitMask();
-                }
+                modificationMask = getModificationMask( consequence, obj, modificationMask, typeDeclaration, settableProperties, statement, true );
             }
         }
 
         appendUpdateStatement(consequence, declr, obj, modificationMask, typeClass);
+    }
+
+    private static BitMask getModificationMask( StringBuilder consequence, String obj, BitMask modificationMask, TypeDeclaration typeDeclaration, List<String> settableProperties, ConsequenceMetaData.Statement statement, boolean isUpdate ) {
+        boolean parsedExprOnce = false;
+        // a late optimization to include this for-loop within this if
+        for (String expr : splitStatements( consequence )) {
+            String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
+            if (!updateExpr.equals(expr)) {
+                parsedExprOnce = true;
+                modificationMask = parseModifiedProperties( statement, settableProperties, typeDeclaration, true, modificationMask, updateExpr);
+                if ( modificationMask == allSetButTraitBitMask() ) {
+                    // opt: if we were unable to detect the property in the mask is all set, so avoid the rest of the cycle
+                    break;
+                }
+            }
+        }
+        if ( isUpdate && !parsedExprOnce ) {
+            // never called parseModifiedProperties(), hence never had the opportunity to "miss" the property and set mask to All-set; doing so here:
+            modificationMask = allSetButTraitBitMask();
+        }
+        return modificationMask;
     }
 
     private static void appendUpdateStatement(StringBuilder consequence, Declaration declr, String obj, BitMask modificationMask, Class<?> typeClass) {

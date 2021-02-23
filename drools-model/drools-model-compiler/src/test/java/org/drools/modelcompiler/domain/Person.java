@@ -273,4 +273,8 @@ public class Person extends AbstractReactiveObject {
     public static int sumAges(Person p1, Person p2) {
         return p1.getAge() + p2.getAge();
     }
+
+    public static Person identityFunction(Person p) {
+        return p;
+    }
 }
