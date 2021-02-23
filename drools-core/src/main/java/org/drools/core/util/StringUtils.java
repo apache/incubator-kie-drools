@@ -1185,6 +1185,52 @@ public class StringUtils {
         return -1;
     }
 
+    public static int findEndOfBlockIndex(CharSequence string, int startOfMethodArgsIndex) {
+        boolean isDoubleQuoted = false;
+        boolean isSingleQuoted = false;
+        int nestingLevel = 0;
+        for (int charIndex = startOfMethodArgsIndex; charIndex < string.length(); charIndex++) {
+            boolean isCurrentCharEscaped = charIndex > 0 && string.charAt(charIndex - 1) == '\\';
+            switch (string.charAt(charIndex)) {
+                case '{':
+                    if (!isDoubleQuoted && !isSingleQuoted) {
+                        nestingLevel++;
+                    }
+                    break;
+
+                case '}':
+                    if (!isDoubleQuoted && !isSingleQuoted) {
+                        nestingLevel--;
+                        if (nestingLevel == 0) {
+                            return charIndex;
+                        }
+                    }
+                    break;
+
+                case '"':
+                    if (isCurrentCharEscaped || isSingleQuoted) {
+                        // ignore escaped double quote and double quote inside single quotes (e.g 'text " text')
+                        continue;
+                    }
+                    isDoubleQuoted = !isDoubleQuoted;
+                    break;
+
+                case '\'':
+                    if (isCurrentCharEscaped || isDoubleQuoted) {
+                        // ignore escaped single quote and single quote inside double quotes (e.g. "text ' text")
+                        continue;
+                    }
+                    isSingleQuoted = !isSingleQuoted;
+                    break;
+
+                default:
+                    // nothing to do, just continue with next character
+            }
+        }
+
+        return -1;
+    }
+
     public static int indexOfOutOfQuotes(String str, String searched) {
         return indexOfOutOfQuotes(str, searched, 0);
     }
