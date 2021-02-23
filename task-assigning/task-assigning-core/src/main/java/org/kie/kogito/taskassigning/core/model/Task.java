@@ -51,7 +51,7 @@ public class Task {
     private Map<String, Object> inputData = new HashMap<>();
     private Map<String, Object> attributes = new HashMap<>();
 
-    private Task() {
+    Task() {
     }
 
     public static Builder newBuilder() {

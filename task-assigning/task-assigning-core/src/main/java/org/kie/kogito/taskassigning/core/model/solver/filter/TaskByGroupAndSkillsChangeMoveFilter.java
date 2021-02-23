@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.taskassigning.core.model.solver.filter;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.kie.kogito.taskassigning.core.model.ChainElement;
 import org.kie.kogito.taskassigning.core.model.DefaultLabels;
 import org.kie.kogito.taskassigning.core.model.ModelConstants;
@@ -33,6 +34,7 @@ import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.isPotent
  * if UserB is a potential owner for the task and has all the required skills for the task if any, or if it's the
  * planning user.
  */
+@RegisterForReflection
 public class TaskByGroupAndSkillsChangeMoveFilter
         implements SelectionFilter<TaskAssigningSolution, ChangeMove<TaskAssigningSolution>> {
 

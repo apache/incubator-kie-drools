@@ -16,6 +16,7 @@
   <modules>
     <module>task-assigning-core</module>
     <module>task-assigning-process-service-client</module>
+    <module>task-assigning-service</module>
   </modules>
 
 </project>
