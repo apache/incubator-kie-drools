@@ -28,13 +28,11 @@ import io.vertx.core.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class StaticContentTest {
-
-    @TestHTTPResource("index.html")
-    URL url;
 
     private static String readStream(InputStream in) throws IOException {
         byte[] data = new byte[1024];
@@ -48,10 +46,9 @@ public class StaticContentTest {
 
     @Test
     public void testIndexHtml() throws Exception {
-        try (InputStream in = url.openStream()) {
-            String contents = readStream(in);
-            assertTrue(contents.contains("<title>Kogito - TrustyAI</title>"));
-        }
+        given().contentType(ContentType.JSON).when().get("/").then()
+                .statusCode(200)
+                .body(containsString("<title>Kogito - TrustyAI</title>"));
     }
 
     @Test
