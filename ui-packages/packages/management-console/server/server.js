@@ -2,6 +2,7 @@
 const express = require('express');
 var cors = require('cors');
 const app = express();
+const runtimesApp = express();
 const { ApolloServer, gql } = require('apollo-server-express');
 var bodyParser = require('body-parser')
 // GraphQL - Apollo
@@ -27,9 +28,13 @@ function listen() {
       `The server is running and listening at http://localhost:${port}`
     );
   });
+  runtimesApp.listen(4002, () => {
+    console.log('Started runtimes server and running on port 4002')
+  })
 }
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
+runtimesApp.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
@@ -39,7 +44,13 @@ app.use(
     optionsSuccessStatus: 200
   })
 );
-
+runtimesApp.use(bodyParser.json())
+runtimesApp.use(
+  cors({
+    origin: config.corsDomain, // Be sure to switch to your production domain
+    optionsSuccessStatus: 200
+  })
+);
 //Rest Api's
 // http://localhost:4000/management/processes/{processId}/instances/{processInstanceId}/error
 app.post(
@@ -71,6 +82,13 @@ app.post('/management/processes/:processId/instances/:processInstanceId/nodes/:n
 app.get('/management/processes/:processId/nodes', controller.getTriggerableNodes)
 app.delete('/jobs/:jobId',controller.callJobCancel);
 app.get('/svg/processes/:processId/instances/:id', controller.dispatchSVG);
+
+//runtimesApp Api's
+runtimesApp.get('/svg/processes/:processId/instances/:id', controller.sendSVG);
+runtimesApp.post('/management/processes/:processId/instances/:processInstanceId/nodes/:nodeId',
+  controller.callNodeTrigger
+);
+runtimesApp.get('/management/processes/:processId/nodes', controller.getTriggerableNodes)
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

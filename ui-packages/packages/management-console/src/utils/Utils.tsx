@@ -439,27 +439,36 @@ export const performMultipleCancel = async (
 
 export const getSvg = async (data, setSvg, setSvgError): Promise<void> => {
   setSvg(null);
-  try {
-    await axios
-      .get(
-        `/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
-      )
-      .then(res => {
-        const temp = <SVG src={res.data} />;
-        setSvg(temp);
-      });
-  } catch (error) {
-    if (error.response && error.response.status !== 404) {
-      setSvgError(error.message);
-    }
-  }
+  await axios
+    .get(
+      `/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
+    )
+    .then(res => {
+      const temp = <SVG src={res.data} />;
+      setSvg(temp);
+    })
+    .catch(async error =>
+      axios
+        .get(
+          `${data.ProcessInstances[0].serviceUrl}/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
+        )
+        .then(res => {
+          const temp = <SVG src={res.data} />;
+          setSvg(temp);
+        })
+        .catch(err => {
+          if (err.response && err.response.status !== 404) {
+            setSvgError(err.message);
+          }
+        })
+    );
 };
 
 export const formatForBulkListProcessInstance = (
   processInstanceList: (GraphQL.ProcessInstance & { errorMessage?: string })[]
 ): BulkListItem[] => {
   const formattedItems: BulkListItem[] = [];
-  processInstanceList.map(
+  processInstanceList.forEach(
     (item: GraphQL.ProcessInstance & { errorMessage?: string }) => {
       const formattedObj: BulkListItem = {
         id: item.id,
@@ -477,7 +486,7 @@ export const formatForBulkListJob = (
   jobsList: (GraphQL.Job & { errorMessage?: string })[]
 ): BulkListItem[] => {
   const formattedItems: BulkListItem[] = [];
-  jobsList.map((item: GraphQL.Job & { errorMessage?: string }) => {
+  jobsList.forEach((item: GraphQL.Job & { errorMessage?: string }) => {
     const formattedObj: BulkListItem = {
       id: item.id,
       name: item.processId,

@@ -833,6 +833,33 @@ describe('uitility function testing', () => {
       await getSvg(data, setSvg, setSvgError);
       expect(setSvg).toHaveBeenCalledWith(null);
     });
+    it('check api response when call to management console fails ', async () => {
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.reject({
+          error: mockedAxios.get.mockResolvedValue({
+            data:
+              '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></g></g></svg>',
+            status: 200,
+            statusText: 'OK'
+          })
+        })
+      );
+      await getSvg(data, setSvg, setSvgError);
+      expect(setSvg).toHaveBeenCalled();
+    });
+    it('check api response when, call to both management console and runtimes fails ', async () => {
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.reject({
+          error: mockedAxios.get.mockRejectedValue({
+            err: {
+              response: { status: 500 }
+            }
+          })
+        })
+      );
+      await getSvg(data, setSvg, setSvgError);
+      expect(setSvg).toHaveBeenCalled();
+    });
   });
   it('test format process instance for bulklist function', () => {
     const testProcessInstance = [

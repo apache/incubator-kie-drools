@@ -490,6 +490,15 @@ const mocks3 = [
     }
   }
 ];
+
+const res = {
+  data:
+    '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></svg>'
+};
+const svgElement: JSX.Element = (
+  <InlineSVG cacheRequests={true} src={res.data} uniquifyIDs={false} />
+);
+mockedAxios.get.mockResolvedValue(res);
 describe('Process Details Page component tests', () => {
   let originalLocalStorage;
   beforeEach(() => {
@@ -597,7 +606,6 @@ describe('Process Details Page component tests', () => {
   });
   it('Test refresh and save button', async () => {
     mockedAxios.post.mockResolvedValue({});
-    jest.setTimeout(2000);
     const { location } = window;
     delete window.location;
     // @ts-ignore
@@ -717,14 +725,6 @@ describe('Process Details Page component tests', () => {
   });
 
   it('test api to get svg', async () => {
-    const res = {
-      data:
-        '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></svg>'
-    };
-    const svgElement: JSX.Element = (
-      <InlineSVG cacheRequests={true} src={res.data} uniquifyIDs={false} />
-    );
-    mockedAxios.get.mockResolvedValue(res);
     const wrapper = await getWrapperAsync(
       <MockedProvider mocks={mocks1} addTypename={false}>
         <BrowserRouter>
