@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.examples.meetingscheduling.domain.*;
+import org.optaplanner.examples.meetingscheduling.domain.Day;
+import org.optaplanner.examples.meetingscheduling.domain.Meeting;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.meetingscheduling.domain.Person;
+import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
+import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
+import org.optaplanner.examples.meetingscheduling.domain.Room;
+import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class MeetingSchedulingConstraintProviderTest {
@@ -39,8 +47,7 @@ public class MeetingSchedulingConstraintProviderTest {
         Meeting meeting1 = new Meeting();
         meeting1.setDurationInGrains(4);
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(meeting1, timeGrain1, room);
-        leftAssignment.setId(0L);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, meeting1, timeGrain1, room);
 
         TimeGrain timeGrain2 = new TimeGrain();
         timeGrain2.setGrainIndex(4);
@@ -48,8 +55,7 @@ public class MeetingSchedulingConstraintProviderTest {
         Meeting meeting2 = new Meeting();
         meeting2.setDurationInGrains(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(meeting2, timeGrain2, room);
-        rightAssignment.setId(1L);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, meeting2, timeGrain2, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::roomConflict)
                 .given(leftAssignment, rightAssignment)
@@ -66,8 +72,7 @@ public class MeetingSchedulingConstraintProviderTest {
         Meeting meeting1 = new Meeting();
         meeting1.setDurationInGrains(4);
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(meeting1, timeGrain1, room);
-        leftAssignment.setId(0L);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, meeting1, timeGrain1, room);
 
         TimeGrain timeGrain2 = new TimeGrain();
         timeGrain2.setGrainIndex(2);
@@ -75,8 +80,7 @@ public class MeetingSchedulingConstraintProviderTest {
         Meeting meeting2 = new Meeting();
         meeting2.setDurationInGrains(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(meeting2, timeGrain2, room);
-        rightAssignment.setId(1L);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, meeting2, timeGrain2, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::roomConflict)
                 .given(leftAssignment, rightAssignment)
@@ -96,7 +100,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, assignmentTimeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, assignmentTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::avoidOvertime)
                 .given(meetingAssignment, timeGrain)
@@ -113,7 +117,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, assignmentTimeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, assignmentTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::avoidOvertime)
                 .given(meetingAssignment)
@@ -136,7 +140,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         Meeting rightMeeting = new Meeting();
         rightMeeting.setDurationInGrains(4);
@@ -149,7 +153,7 @@ public class MeetingSchedulingConstraintProviderTest {
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredAttendanceConflict)
                 .given(requiredAttendance1, requiredAttendance2, leftAssignment, rightAssignment)
@@ -172,7 +176,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         Meeting rightMeeting = new Meeting();
         rightMeeting.setDurationInGrains(4);
@@ -185,7 +189,7 @@ public class MeetingSchedulingConstraintProviderTest {
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(2);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredAttendanceConflict)
                 .given(requiredAttendance1, requiredAttendance2, leftAssignment, rightAssignment)
@@ -211,7 +215,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         TimeGrain startingTimeGrain = new TimeGrain();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, startingTimeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, startingTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredRoomCapacity)
                 .given(meetingAssignment)
@@ -237,7 +241,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         TimeGrain startingTimeGrain = new TimeGrain();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, startingTimeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, startingTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredRoomCapacity)
                 .given(meetingAssignment)
@@ -258,7 +262,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, startingTimeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, startingTimeGrain, room);
 
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(3);
@@ -283,7 +287,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, startingTimeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, startingTimeGrain, room);
 
         TimeGrain timeGrain = new TimeGrain();
         timeGrain.setGrainIndex(3);
@@ -316,12 +320,12 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredAndPreferredAttendanceConflict)
                 .given(requiredAttendance, preferredAttendance, leftAssignment, rightAssignment)
@@ -351,12 +355,12 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(0);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::requiredAndPreferredAttendanceConflict)
                 .given(requiredAttendance, preferredAttendance, leftAssignment, rightAssignment)
@@ -388,12 +392,12 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::preferredAttendanceConflict)
                 .given(leftAttendance, rightAttendance, leftAssignment, rightAssignment)
@@ -425,12 +429,12 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(0);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::preferredAttendanceConflict)
                 .given(leftAttendance, rightAttendance, leftAssignment, rightAssignment)
@@ -447,7 +451,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, timeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, timeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::doMeetingsAsSoonAsPossible)
                 .given(meetingAssignment)
@@ -464,7 +468,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, timeGrain, room);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, timeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::doMeetingsAsSoonAsPossible)
                 .given(meetingAssignment)
@@ -481,12 +485,12 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(meeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, meeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(0);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(meeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, meeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::oneBreakBetweenConsecutiveMeetings)
                 .given(leftAssignment, rightAssignment)
@@ -503,12 +507,12 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(meeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, meeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(meeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, meeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::oneBreakBetweenConsecutiveMeetings)
                 .given(leftAssignment, rightAssignment)
@@ -526,7 +530,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
@@ -535,7 +539,7 @@ public class MeetingSchedulingConstraintProviderTest {
         rightMeeting.setId(0L);
         rightMeeting.setDurationInGrains(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::overlappingMeetings)
                 .given(leftAssignment, rightAssignment)
@@ -553,7 +557,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room room = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftTimeGrain, room);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftTimeGrain, room);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(0);
@@ -562,7 +566,7 @@ public class MeetingSchedulingConstraintProviderTest {
         rightMeeting.setId(0L);
         rightMeeting.setDurationInGrains(4);
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightTimeGrain, room);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::overlappingMeetings)
                 .given(leftAssignment, rightAssignment)
@@ -578,7 +582,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         TimeGrain startingTimeGrain = new TimeGrain();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, startingTimeGrain, meetingRoom);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, startingTimeGrain, meetingRoom);
         meetingAssignment.setRoom(meetingRoom);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::assignLargerRoomsFirst)
@@ -595,7 +599,7 @@ public class MeetingSchedulingConstraintProviderTest {
 
         TimeGrain startingTimeGrain = new TimeGrain();
 
-        MeetingAssignment meetingAssignment = new MeetingAssignment(meeting, startingTimeGrain, meetingRoom);
+        MeetingAssignment meetingAssignment = new MeetingAssignment(0L, meeting, startingTimeGrain, meetingRoom);
 
         Room largerRoom = new Room();
         largerRoom.setCapacity(2);
@@ -628,14 +632,14 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room leftRoom = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftStartTimeGrain, leftRoom);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftStartTimeGrain, leftRoom);
 
         TimeGrain rightStartTimeGrain = new TimeGrain();
         rightStartTimeGrain.setGrainIndex(8);
 
         Room rightRoom = new Room();
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightStartTimeGrain, rightRoom);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightStartTimeGrain, rightRoom);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::roomStability)
                 .given(leftAttendance, rightAttendance, leftAssignment, rightAssignment)
@@ -665,14 +669,14 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Room leftRoom = new Room();
 
-        MeetingAssignment leftAssignment = new MeetingAssignment(leftMeeting, leftStartTimeGrain, leftRoom);
+        MeetingAssignment leftAssignment = new MeetingAssignment(0L, leftMeeting, leftStartTimeGrain, leftRoom);
 
         TimeGrain rightStartTimeGrain = new TimeGrain();
         rightStartTimeGrain.setGrainIndex(4);
 
         Room rightRoom = new Room();
 
-        MeetingAssignment rightAssignment = new MeetingAssignment(rightMeeting, rightStartTimeGrain, rightRoom);
+        MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightStartTimeGrain, rightRoom);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::roomStability)
                 .given(leftAttendance, rightAttendance, leftAssignment, rightAssignment)

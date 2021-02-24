@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -463,7 +463,7 @@ public class ConferenceSchedulingConstraintProviderTest {
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("b"))
                 .withTimeslot(MONDAY_9_TO_10);
-        Talk talk4 = new Talk(3)
+        Talk talk4 = new Talk(4)
                 .withRoom(room)
                 .withThemeTrackTagSet(singleton("a"))
                 .withTimeslot(MONDAY_10_TO_11);

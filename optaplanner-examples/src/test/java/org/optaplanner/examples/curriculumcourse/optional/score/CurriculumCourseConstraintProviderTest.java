@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,9 +141,9 @@ public class CurriculumCourseConstraintProviderTest {
     @Test
     public void roomStability() {
         Lecture lectureOfSameCourse1 = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_1);
-        Lecture lectureOfSameCourse2 = new Lecture(0, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
-        Lecture lectureOfSameCourse3 = new Lecture(0, COURSE_1, PERIOD_2_MONDAY, ROOM_1);
-        Lecture lectureOfDifferentCourse = new Lecture(0, COURSE_2, PERIOD_2_MONDAY, ROOM_1);
+        Lecture lectureOfSameCourse2 = new Lecture(1, COURSE_1, PERIOD_1_MONDAY, ROOM_2);
+        Lecture lectureOfSameCourse3 = new Lecture(2, COURSE_1, PERIOD_2_MONDAY, ROOM_1);
+        Lecture lectureOfDifferentCourse = new Lecture(3, COURSE_2, PERIOD_2_MONDAY, ROOM_1);
         constraintVerifier.verifyThat(CurriculumCourseConstraintProvider::roomStability)
                 .given(lectureOfSameCourse1, lectureOfSameCourse2, lectureOfSameCourse3, lectureOfDifferentCourse)
                 .penalizesBy(1); // lectureOfSameCourse2 is penalized

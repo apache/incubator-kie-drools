@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,10 +52,12 @@ public class ExaminationConstraintProviderTest {
         Period period = new Period();
 
         LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
                 .withTopic(topic1)
                 .withPeriod(period)
                 .withRoom(new Room());
         LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
                 .withTopic(topic2)
                 .withPeriod(period)
                 .withRoom(new Room());
@@ -98,10 +100,12 @@ public class ExaminationConstraintProviderTest {
         Room room = new Room().withCapacity(2);
 
         LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
                 .withTopic(new Topic().withStudentList(Arrays.asList(student1, student2)))
                 .withPeriod(period)
                 .withRoom(room);
         LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
                 .withTopic(new Topic().withStudentList(Arrays.asList(student3, student4)))
                 .withPeriod(period)
                 .withRoom(room);
@@ -121,10 +125,12 @@ public class ExaminationConstraintProviderTest {
         Period period = new Period().withPeriodIndex(1);
 
         LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
                 .withTopic(topic1)
                 .withPeriod(period)
                 .withRoom(new Room());
         LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
                 .withTopic(topic2)
                 .withPeriod(period)
                 .withRoom(new Room());
@@ -169,8 +175,16 @@ public class ExaminationConstraintProviderTest {
         Room room = new Room();
         Period period = new Period();
 
-        LeadingExam exam1 = new LeadingExam().withPeriod(period).withRoom(room).withTopic(topic1);
-        LeadingExam exam2 = new LeadingExam().withPeriod(period).withRoom(room).withTopic(topic2);
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withPeriod(period)
+                .withRoom(room)
+                .withTopic(topic1);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withPeriod(period)
+                .withRoom(room)
+                .withTopic(topic2);
 
         constraintVerifier.verifyThat(ExaminationConstraintProvider::roomPenaltyExclusive)
                 .given(penalty, exam1, exam2)
@@ -184,10 +198,12 @@ public class ExaminationConstraintProviderTest {
         TopicConflict conflict = new TopicConflict(topic1, topic2, 2);
 
         LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
                 .withTopic(topic1)
                 .withPeriod(new Period().withPeriodIndex(0).withDayIndex(0))
                 .withRoom(new Room());
         LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
                 .withTopic(topic2)
                 .withPeriod(new Period().withPeriodIndex(2).withDayIndex(1))
                 .withRoom(new Room());
@@ -242,10 +258,12 @@ public class ExaminationConstraintProviderTest {
         TopicConflict topicConflict = new TopicConflict(topic1, topic2, 3);
 
         LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
                 .withTopic(topic1)
                 .withPeriod(new Period().withPeriodIndex(0))
                 .withRoom(new Room());
         LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
                 .withTopic(topic2)
                 .withPeriod(new Period().withPeriodIndex(0))
                 .withRoom(new Room());
@@ -562,14 +580,20 @@ public class ExaminationConstraintProviderTest {
     public void periodPenaltyTest() {
         Period period = new Period().withPenalty(5);
         Room room = new Room();
-        LeadingExam exam1 = new LeadingExam().withPeriod(period).withRoom(room);
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withPeriod(period)
+                .withRoom(room);
 
         constraintVerifier.verifyThat(ExaminationConstraintProvider::periodPenalty)
                 .given(period, exam1)
                 .penalizesBy(5);
 
         // Second exam in the same period. The penalty should be added for both of them.
-        LeadingExam exam2 = new LeadingExam().withPeriod(period).withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withPeriod(period)
+                .withRoom(room);
 
         constraintVerifier.verifyThat(ExaminationConstraintProvider::periodPenalty)
                 .given(period, exam1, exam2)
@@ -579,14 +603,20 @@ public class ExaminationConstraintProviderTest {
     @Test
     public void roomPenaltyTest() {
         Room room = new Room().withPenalty(5);
-        LeadingExam exam1 = new LeadingExam().withRoom(room).withPeriod(new Period());
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withRoom(room)
+                .withPeriod(new Period());
 
         constraintVerifier.verifyThat(ExaminationConstraintProvider::roomPenalty)
                 .given(room, exam1)
                 .penalizesBy(5);
 
         // Second exam in the same period. The penalty should be added for both of them.
-        LeadingExam exam2 = new LeadingExam().withRoom(room).withPeriod(new Period());
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withRoom(room)
+                .withPeriod(new Period());
 
         constraintVerifier.verifyThat(ExaminationConstraintProvider::roomPenalty)
                 .given(room, exam1, exam2)

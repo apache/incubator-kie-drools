@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -216,7 +216,7 @@ public class MachineReassignmentConstraintProviderTest {
         processAssignment2.setProcess(process);
         processAssignment2.setOriginalMachine(machine1);
 
-        MrProcessAssignment processAssignment3 = new MrProcessAssignment(0L, process, machine1, machine1);
+        MrProcessAssignment processAssignment3 = new MrProcessAssignment(1L, process, machine1, machine1);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::processMoveCost)
                 .given(globalPenaltyInfo, machine1, machine2, process, processAssignment, processAssignment2,
@@ -235,13 +235,13 @@ public class MachineReassignmentConstraintProviderTest {
         MrService service1 = new MrService(1L);
         MrService service2 = new MrService(2L);
         // service2 has only one process moving, while service1 has two processes moving => wins
-        MrProcess process1 = new MrProcess(service1);
-        MrProcess process2 = new MrProcess(service1);
-        MrProcess process3 = new MrProcess(service2);
+        MrProcess process1 = new MrProcess(0L, service1);
+        MrProcess process2 = new MrProcess(1L, service1);
+        MrProcess process3 = new MrProcess(2L, service2);
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(0L, process1, machine1, machine2);
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L, process2, machine1, machine2);
-        MrProcessAssignment processAssignment3 = new MrProcessAssignment(1L, process3, machine1, machine2);
+        MrProcessAssignment processAssignment3 = new MrProcessAssignment(2L, process3, machine1, machine2);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceMoveCost)
                 .given(globalPenaltyInfo, machine1, machine2, service1, service2, process1, process2, process3,
@@ -265,13 +265,13 @@ public class MachineReassignmentConstraintProviderTest {
         costMapFromMachine2.put(machine1, 0);
         machine2.setMachineMoveCostMap(costMapFromMachine2);
 
-        MrProcess process1 = new MrProcess();
-        MrProcess process2 = new MrProcess();
-        MrProcess process3 = new MrProcess();
+        MrProcess process1 = new MrProcess(0L);
+        MrProcess process2 = new MrProcess(1L);
+        MrProcess process3 = new MrProcess(2L);
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(0L, process1, machine1, machine2);
-        MrProcessAssignment processAssignment2 = new MrProcessAssignment(0L, process2, machine1, machine2);
-        MrProcessAssignment processAssignment3 = new MrProcessAssignment(0L, process3, machine2, machine1);
+        MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L, process2, machine1, machine2);
+        MrProcessAssignment processAssignment3 = new MrProcessAssignment(2L, process3, machine2, machine1);
 
         // 2 processes are moving from machine1 to machine2, which has a cost of 20 => 2 * 20 * 10 (global penalty) = 400.
         // The process3 moves from machine2 to machine1, which has a zero cost.

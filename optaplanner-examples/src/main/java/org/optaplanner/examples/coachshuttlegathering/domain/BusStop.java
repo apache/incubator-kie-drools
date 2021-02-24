@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,21 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
     protected Bus bus;
     protected List<Shuttle> transferShuttleList;
     protected Integer transportTimeToHub;
+
+    public BusStop() {
+
+    }
+
+    public BusStop(long id, BusOrStop previousBusOrStop, Bus bus) {
+        this(id, previousBusOrStop, bus, 0);
+    }
+
+    public BusStop(long id, BusOrStop previousBusOrStop, Bus bus, int passengerQuantity) {
+        super(id);
+        this.previousBusOrStop = previousBusOrStop;
+        this.bus = bus;
+        this.passengerQuantity = passengerQuantity;
+    }
 
     @Override
     public String getName() {
@@ -179,7 +194,7 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
 
     @Override
     public String toString() {
-        return name;
+        return getClass().getSimpleName() + " " + name;
     }
 
 }

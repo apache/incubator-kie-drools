@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,16 +31,11 @@ public class BedDesignation extends AbstractPersistable {
     private AdmissionPart admissionPart;
     private Bed bed;
 
-    public BedDesignation(long id, AdmissionPart admissionPart, Bed bed) {
-        super(id);
-        this.admissionPart = admissionPart;
-        this.bed = bed;
-    }
-
     public BedDesignation() {
     }
 
-    public BedDesignation(AdmissionPart admissionPart, Bed bed) {
+    public BedDesignation(long id, AdmissionPart admissionPart, Bed bed) {
+        super(id);
         this.admissionPart = admissionPart;
         this.bed = bed;
     }

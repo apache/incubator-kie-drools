@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ public class MeetingAssignment extends AbstractPersistable {
     public MeetingAssignment() {
     }
 
-    public MeetingAssignment(Meeting meeting, TimeGrain startingTimeGrain, Room room) {
+    public MeetingAssignment(long id, Meeting meeting, TimeGrain startingTimeGrain, Room room) {
+        super(id);
         this.meeting = meeting;
         this.startingTimeGrain = startingTimeGrain;
         this.room = room;

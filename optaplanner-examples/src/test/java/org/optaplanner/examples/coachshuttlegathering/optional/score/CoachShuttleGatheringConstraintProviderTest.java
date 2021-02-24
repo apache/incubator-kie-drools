@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,18 +40,10 @@ public class CoachShuttleGatheringConstraintProviderTest {
     public void coachStopLimit() {
         Coach coach = new Coach();
         coach.setStopLimit(2);
-        BusStop stop1 = new BusStop();
-        stop1.setPreviousBusOrStop(coach);
-        stop1.setBus(coach);
-        BusStop stop2 = new BusStop();
-        stop2.setBus(coach);
-        stop2.setPreviousBusOrStop(coach);
-        BusStop stop3 = new BusStop();
-        stop3.setBus(coach);
-        stop3.setPreviousBusOrStop(coach);
-        BusStop stop4 = new BusStop();
-        stop4.setBus(coach);
-        stop4.setPreviousBusOrStop(coach);
+        BusStop stop1 = new BusStop(0L, coach, coach);
+        BusStop stop2 = new BusStop(1L, coach, coach);
+        BusStop stop3 = new BusStop(2L, coach, coach);
+        BusStop stop4 = new BusStop(3L, coach, coach);
 
         constraintVerifier.verifyThat(CoachShuttleGatheringConstraintProvider::coachStopLimit)
                 .given(coach, stop1)
@@ -103,22 +95,11 @@ public class CoachShuttleGatheringConstraintProviderTest {
     public void coachCapacity() {
         Coach coach = new Coach();
         Shuttle shuttle = new Shuttle();
-        BusStop transferStop = new BusStop();
+        BusStop transferStop = new BusStop(0L, shuttle, coach);
         shuttle.setDestination(transferStop);
-        transferStop.setPreviousBusOrStop(shuttle);
-        transferStop.setBus(coach);
-        BusStop shuttlePickup1 = new BusStop();
-        shuttlePickup1.setPreviousBusOrStop(transferStop);
-        shuttlePickup1.setPassengerQuantity(1);
-        shuttlePickup1.setBus(shuttle);
-        BusStop shuttlePickup2 = new BusStop();
-        shuttlePickup2.setPreviousBusOrStop(transferStop);
-        shuttlePickup2.setBus(shuttle);
-        shuttlePickup2.setPassengerQuantity(2);
-        BusStop shuttlePickup3 = new BusStop();
-        shuttlePickup3.setPreviousBusOrStop(transferStop);
-        shuttlePickup3.setBus(shuttle);
-        shuttlePickup3.setPassengerQuantity(3);
+        BusStop shuttlePickup1 = new BusStop(1L, transferStop, shuttle, 1);
+        BusStop shuttlePickup2 = new BusStop(2L, transferStop, shuttle, 2);
+        BusStop shuttlePickup3 = new BusStop(3L, transferStop, shuttle, 3);
 
         coach.setCapacity(2);
         coach.setPassengerQuantityTotal(0);
@@ -156,22 +137,11 @@ public class CoachShuttleGatheringConstraintProviderTest {
     public void coachCapacityCorrection() {
         Coach coach = new Coach();
         Shuttle shuttle = new Shuttle();
-        BusStop transferStop = new BusStop();
+        BusStop transferStop = new BusStop(0L, shuttle, coach);
         shuttle.setDestination(transferStop);
-        transferStop.setPreviousBusOrStop(shuttle);
-        transferStop.setBus(coach);
-        BusStop shuttlePickup1 = new BusStop();
-        shuttlePickup1.setPreviousBusOrStop(transferStop);
-        shuttlePickup1.setPassengerQuantity(1);
-        shuttlePickup1.setBus(shuttle);
-        BusStop shuttlePickup2 = new BusStop();
-        shuttlePickup2.setPreviousBusOrStop(transferStop);
-        shuttlePickup2.setBus(shuttle);
-        shuttlePickup2.setPassengerQuantity(2);
-        BusStop shuttlePickup3 = new BusStop();
-        shuttlePickup3.setPreviousBusOrStop(transferStop);
-        shuttlePickup3.setBus(shuttle);
-        shuttlePickup3.setPassengerQuantity(3);
+        BusStop shuttlePickup1 = new BusStop(1L, transferStop, shuttle, 1);
+        BusStop shuttlePickup2 = new BusStop(2L, transferStop, shuttle, 2);
+        BusStop shuttlePickup3 = new BusStop(3L, transferStop, shuttle, 3);
 
         coach.setCapacity(2);
         coach.setPassengerQuantityTotal(0);
