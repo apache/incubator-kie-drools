@@ -1,0 +1,194 @@
+<PipeSchedule id="0">
+	<id>0</id>
+	<batchList id="1">
+		<PipeBatch id="2">
+			<id>2</id>
+			<name>Batch1</name>
+			<volume>400.00</volume>
+			<delayRangeValue>2000</delayRangeValue>
+			<routePathList id="3">
+				<PipeRoutePath id="4">
+					<id>4</id>
+					<path>S11---S12---S13---S23</path>
+					<batch reference="2"/>
+					<segmentList id="5">
+						<PipeSegment id="6">
+							<id>6</id>
+							<name>S11---S12</name>
+							<flowRate>1.00</flowRate>
+							<length>200.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="4"/>
+						</PipeSegment>
+						<PipeSegment id="7">
+							<id>7</id>
+							<name>S12---S13</name>
+							<flowRate>1.00</flowRate>
+							<length>200.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="4"/>
+						</PipeSegment>
+						<PipeSegment id="8">
+							<id>8</id>
+							<name>S13---S23</name>
+							<flowRate>1.00</flowRate>
+							<length>100.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="4"/>
+						</PipeSegment>
+					</segmentList>
+				</PipeRoutePath>
+				<PipeRoutePath id="9">
+					<id>9</id>
+					<path>S11---S12---S22---S23</path>
+					<batch reference="2"/>
+					<segmentList id="10">
+						<PipeSegment id="11">
+							<id>11</id>
+							<name>S11---S12</name>
+							<flowRate>1.00</flowRate>
+							<length>200.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="9"/>
+						</PipeSegment>
+						<PipeSegment id="12">
+							<id>12</id>
+							<name>S12---S22</name>
+							<flowRate>1.00</flowRate>
+							<length>100.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="9"/>
+						</PipeSegment>
+						<PipeSegment id="13">
+							<id>13</id>
+							<name>S22---S23</name>
+							<flowRate>1.00</flowRate>
+							<length>200.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="9"/>
+						</PipeSegment>
+					</segmentList>
+				</PipeRoutePath>
+				<PipeRoutePath id="14">
+					<id>14</id>
+					<path>S11---S21---S22---S23</path>
+					<batch reference="2"/>
+					<segmentList id="15">
+						<PipeSegment id="16">
+							<id>16</id>
+							<name>S11---S21</name>
+							<flowRate>1.00</flowRate>
+							<length>100.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="14"/>
+						</PipeSegment>
+						<PipeSegment id="17">
+							<id>17</id>
+							<name>S21---S22</name>
+							<flowRate>1.00</flowRate>
+							<length>200.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="14"/>
+						</PipeSegment>
+						<PipeSegment id="18">
+							<id>18</id>
+							<name>S22---S23</name>
+							<flowRate>1.00</flowRate>
+							<length>200.0</length>
+							<crossSectionArea>1.00</crossSectionArea>
+							<batch reference="2"/>
+							<routePath reference="14"/>
+						</PipeSegment>
+					</segmentList>
+				</PipeRoutePath>
+			</routePathList>
+		</PipeBatch>
+	</batchList>
+	<allocationList id="19">
+		<PipeAllocation id="20">
+			<id>20</id>
+			<batch reference="2"/>
+			<routePath reference="4"/>
+			<segment reference="6"/>
+			<successorAllocation id="21">
+				<id>21</id>
+				<batch reference="2"/>
+				<routePath reference="4"/>
+				<segment reference="7"/>
+				<predecessorAllocation reference="20"/>
+				<successorAllocation id="22">
+					<id>22</id>
+					<batch reference="2"/>
+					<routePath reference="4"/>
+					<segment reference="8"/>
+					<predecessorAllocation reference="21"/>
+				</successorAllocation>
+			</successorAllocation>
+		</PipeAllocation>
+		<PipeAllocation id="23">
+			<id>23</id>
+			<batch reference="2"/>
+			<routePath reference="9"/>
+			<segment reference="11"/>
+			<successorAllocation id="24">
+				<id>24</id>
+				<batch reference="2"/>
+				<routePath reference="9"/>
+				<segment reference="12"/>
+				<predecessorAllocation reference="23"/>
+				<successorAllocation id="25">
+					<id>25</id>
+					<batch reference="2"/>
+					<routePath reference="9"/>
+					<segment reference="13"/>
+					<predecessorAllocation reference="24"/>
+				</successorAllocation>
+			</successorAllocation>
+		</PipeAllocation>
+		<PipeAllocation id="26">
+			<id>26</id>
+			<batch reference="2"/>
+			<routePath reference="14"/>
+			<segment reference="16"/>
+			<successorAllocation id="27">
+				<id>27</id>
+				<batch reference="2"/>
+				<routePath reference="14"/>
+				<segment reference="17"/>
+				<predecessorAllocation reference="26"/>
+				<successorAllocation id="28">
+					<id>28</id>
+					<batch reference="2"/>
+					<routePath reference="14"/>
+					<segment reference="18"/>
+					<predecessorAllocation reference="27"/>
+				</successorAllocation>
+			</successorAllocation>
+		</PipeAllocation>
+		<PipeAllocation reference="21"/>
+		<PipeAllocation reference="22"/>
+		<PipeAllocation reference="24"/>
+		<PipeAllocation reference="25"/>
+		<PipeAllocation reference="27"/>
+		<PipeAllocation reference="28"/>
+	</allocationList>
+	<allocationPathList id="29">
+		<PipeAllocationPath id="30">
+			<id>30</id>
+			<batch reference="2"/>
+			<routePathList id="31">
+				<PipeRoutePath reference="4"/>
+				<PipeRoutePath reference="9"/>
+				<PipeRoutePath reference="14"/>
+			</routePathList>
+		</PipeAllocationPath>
+	</allocationPathList>
+</PipeSchedule>
