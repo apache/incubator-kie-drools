@@ -1,0 +1,12 @@
+---
+name: "Kogito - Rules"
+metadata:
+  keywords:
+  - "kogito"
+  - "drools"
+  - "rules"
+  - "DRL"
+  guide: "https://quarkus.io/guides/kogito"
+  categories:
+  - "business-automation"
+  status: "preview"

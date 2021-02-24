@@ -1533,9 +1533,8 @@ limitations under the License.
                               <!-- To avoid a complaint about duplicate classes as KogitoProcessInstancesFactory.class is required in every persistence addon that is mutually exclusive. -->
                               <exclude name="**/target/classes/org/kie/kogito/persistence/KogitoProcessInstancesFactory.class"/>
                               <!-- To avoid a complaint about duplicate classes created by code generation. -->
-                              <exclude name="**/target/classes/**/Application.class"/>
-                              <exclude name="**/target/classes/**/ApplicationConfig.class"/>
-                              <exclude name="**/target/classes/**/RuleUnits.class"/>
+                              <exclude name="**/target/classes/org/kie/kogito/app/**/*.class"/>
+                              <exclude name="**/target/classes/org/drools/project/model/**/*.class"/>
                               <!-- To avoid a complaint about duplicate classes created by code generation in IT tests. -->
                               <exclude name="**/it/integration-tests-springboot-it/target/classes/**/*.class"/>
                               <exclude name="**/it/integration-tests-springboot-kakfa-it/target/classes/**/*.class"/>

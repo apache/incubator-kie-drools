@@ -1,0 +1,12 @@
+---
+name: "Kogito - Predictions"
+metadata:
+  keywords:
+  - "kogito"
+  - "drools"
+  - "predictions"
+  - "PMML"
+  guide: "https://quarkus.io/guides/kogito"
+  categories:
+  - "business-automation"
+  status: "preview"

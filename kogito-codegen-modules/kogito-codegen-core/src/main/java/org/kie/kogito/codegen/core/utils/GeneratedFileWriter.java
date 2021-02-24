@@ -111,6 +111,22 @@ public class GeneratedFileWriter {
         }
     }
 
+    public Path getClassesDir() {
+        return classesDir;
+    }
+
+    public Path getSourcesDir() {
+        return sourcesDir;
+    }
+
+    public Path getResourcePath() {
+        return resourcePath;
+    }
+
+    public Path getScaffoldedSourcesDir() {
+        return scaffoldedSourcesDir;
+    }
+
     private void writeGeneratedFile(GeneratedFile f, Path location) throws IOException {
         if (location == null) {
             return;

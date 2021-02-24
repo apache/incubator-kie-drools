@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>kogito-quarkus-extension-common</artifactId>
+        <groupId>org.kie.kogito</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>kogito-quarkus-common-deployment</artifactId>
+    <name>Kogito :: Quarkus Extension Common :: Deployment</name>
+
+    <dependencies>
+
+
+        <!-- kogito -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-quarkus-common</artifactId>
+        </dependency>
+        <!--  Required because of InMemoryCompiler  -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-drools</artifactId>
+        </dependency>
+
+        <!-- Required KogitoAssetsProcessor.registerDataEventsForReflection  -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-events-api</artifactId>
+        </dependency>
+
+        <!-- quarkus -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-development-mode-spi</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-core-deployment</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc-deployment</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-deployment</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-jackson-deployment</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+        <!-- Undertow is needed so that the static resource serving can correctly locate CP resources from `META-INF/resources` of the application, as it would be normally expected.
+             See https://issues.redhat.com/browse/KOGITO-3477 -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-undertow-deployment</artifactId>
+            <version>${version.io.quarkus}</version>
+        </dependency>
+
+        <!-- codegen dependencies -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-api</artifactId>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5-internal</artifactId>
+            <version>${version.io.quarkus}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-extension-processor</artifactId>
+                            <version>${version.io.quarkus}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
