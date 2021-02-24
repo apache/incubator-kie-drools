@@ -1,9 +1,26 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.batchscheduling.swingui;
 
 import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -12,25 +29,21 @@ import javax.swing.JTable;
 import org.optaplanner.examples.batchscheduling.domain.Allocation;
 import org.optaplanner.examples.batchscheduling.domain.AllocationPath;
 import org.optaplanner.examples.batchscheduling.domain.Batch;
+import org.optaplanner.examples.batchscheduling.domain.BatchSchedule;
 import org.optaplanner.examples.batchscheduling.domain.RoutePath;
-import org.optaplanner.examples.batchscheduling.domain.Schedule;
 import org.optaplanner.examples.batchscheduling.domain.Segment;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
+public class BatchSchedulingPanel extends SolutionPanel<BatchSchedule> {
     private static final long serialVersionUID = 1L;
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/batchscheduling/swingui/cloudBalancingLogo.png";
-
-    final Logger logger = LoggerFactory.getLogger(BatchSchedulingPanel.class);
+    public static final String LOGO_PATH = "/org/optaplanner/examples/batchscheduling/swingui/batchSchedulingLogo.png";
 
     public BatchSchedulingPanel() {
         setLayout(new BorderLayout());
     }
 
-    public void resetPanel(Schedule solution) {
+    public void resetPanel(BatchSchedule solution) {
         removeAll();
         repaint();
 
@@ -43,27 +56,23 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
 
         add(tabbedPane);
-
-        return;
     }
 
-    private JScrollPane createComponentPanel1(Schedule solution) {
+    private JScrollPane createComponentPanel1(BatchSchedule solution) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
         String strDate = formatter.format(date);
 
-        Vector<String> tableHeader = new Vector<String>();
-        Vector<Vector<String>> tableData = new Vector<Vector<String>>();
+        List<String> tableHeader = new ArrayList<>();
+        List<List<String>> tableData = new ArrayList<>();
 
         tableHeader.add("Batch");
         tableHeader.add("Volume");
         tableHeader.add("DelayRangeValue");
         tableHeader.add("Time Refreshed");
 
-        Schedule schedule = (Schedule) solution;
-
-        for (Batch batch : schedule.getBatchList()) {
-            Vector<String> rowData = new Vector<String>();
+        for (Batch batch : solution.getBatchList()) {
+            List<String> rowData = new ArrayList<>();
             rowData.add(batch.getName());
             rowData.add(batch.getVolume().toString());
             rowData.add(batch.getDelayRangeValue().toString());
@@ -71,40 +80,37 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
             tableData.add(rowData);
         }
 
-        JTable table = new JTable(tableData, tableHeader);
+        JTable table = new JTable(tableToArray(tableData), tableRowToArray(tableHeader));
         table.getColumnModel().getColumn(1).setMinWidth(300);
 
         JScrollPane componentPanel = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         return componentPanel;
-
     }
 
-    private JScrollPane createComponentPanel2(Schedule solution) {
+    private JScrollPane createComponentPanel2(BatchSchedule solution) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
         String strDate = formatter.format(date);
 
-        Vector<String> tableHeader = new Vector<String>();
-        Vector<Vector<String>> tableData = new Vector<Vector<String>>();
+        List<String> tableHeader = new ArrayList<>();
+        List<List<String>> tableData = new ArrayList<>();
 
         tableHeader.add("Batch");
         tableHeader.add("RoutePath");
         tableHeader.add("Selected");
         tableHeader.add("Time Refreshed");
 
-        Schedule schedule = (Schedule) solution;
-
-        for (Batch batch : schedule.getBatchList()) {
+        for (Batch batch : solution.getBatchList()) {
             for (RoutePath routePath : batch.getRoutePathList()) {
 
-                Vector<String> rowData = new Vector<String>();
+                List<String> rowData = new ArrayList<>();
                 String strSelectedRoutePath = "";
                 rowData.add(batch.getName());
                 rowData.add(routePath.getPath());
 
-                if (schedule.getAllocationPathList() != null) {
-                    for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
+                if (solution.getAllocationPathList() != null) {
+                    for (AllocationPath allocationPath : solution.getAllocationPathList()) {
                         if ((allocationPath.getBatch() != null) && (allocationPath.getRoutePath() != null)) {
                             if ((allocationPath.getBatch().getName().equals(batch.getName()))
                                     && (allocationPath.getRoutePath().getPath().equals(routePath.getPath()))) {
@@ -121,19 +127,17 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
             }
         }
 
-        JTable table = new JTable(tableData, tableHeader);
+        JTable table = new JTable(tableToArray(tableData), tableRowToArray(tableHeader));
         table.getColumnModel().getColumn(1).setMinWidth(300);
 
         JScrollPane componentPanel = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         return componentPanel;
-
     }
 
-    private JScrollPane createComponentPanel3(Schedule solution) {
-
-        Vector<String> tableHeader = new Vector<String>();
-        Vector<Vector<String>> tableData = new Vector<Vector<String>>();
+    private JScrollPane createComponentPanel3(BatchSchedule solution) {
+        List<String> tableHeader = new ArrayList<>();
+        List<List<String>> tableData = new ArrayList<>();
 
         tableHeader.add("Batch");
         tableHeader.add("RoutePath");
@@ -147,13 +151,11 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
         tableHeader.add("End Delivery Time");
         tableHeader.add("Predecessor Start Delivery Time");
 
-        Schedule schedule = (Schedule) solution;
-
-        for (Batch batch : schedule.getBatchList()) {
+        for (Batch batch : solution.getBatchList()) {
             for (RoutePath routePath : batch.getRoutePathList()) {
                 for (Segment segment : routePath.getSegmentList()) {
 
-                    Vector<String> rowData = new Vector<String>();
+                    List<String> rowData = new ArrayList<>();
                     String strLength = "";
                     String strFlowRate = "";
                     String strDelay = "";
@@ -166,8 +168,8 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
                     rowData.add(routePath.getPath());
                     rowData.add(segment.getName());
 
-                    if (schedule.getAllocationList() != null) {
-                        for (Allocation allocation : schedule.getAllocationList()) {
+                    if (solution.getAllocationList() != null) {
+                        for (Allocation allocation : solution.getAllocationList()) {
 
                             if ((allocation.getBatch() != null) && (allocation.getRoutePath() != null)
                                     && (allocation.getSegment() != null)) {
@@ -175,8 +177,8 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
                                         && (allocation.getRoutePath().getPath().equals(routePath.getPath()))
                                         && (allocation.getSegment().getName().equals(segment.getName()))) {
                                     if (allocation.getSegment() != null) {
-                                        strLength = Float.valueOf(allocation.getSegment().getLength()).toString();
-                                        strFlowRate = Float.valueOf(allocation.getSegment().getFlowRate()).toString();
+                                        strLength = Float.toString(allocation.getSegment().getLength());
+                                        strFlowRate = Float.toString(allocation.getSegment().getFlowRate());
                                     } else {
                                         strLength = "";
                                         strFlowRate = "";
@@ -237,19 +239,17 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
             }
         }
 
-        JTable table = new JTable(tableData, tableHeader);
+        JTable table = new JTable(tableToArray(tableData), tableRowToArray(tableHeader));
         table.getColumnModel().getColumn(1).setMinWidth(300);
 
         JScrollPane componentPanel = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         return componentPanel;
-
     }
 
-    private JScrollPane createComponentPanel4(Schedule solution) {
-
-        Vector<String> tableHeader = new Vector<String>();
-        Vector<Vector<String>> tableData = new Vector<Vector<String>>();
+    private JScrollPane createComponentPanel4(BatchSchedule solution) {
+        List<String> tableHeader = new ArrayList<>();
+        List<List<String>> tableData = new ArrayList<>();
 
         tableHeader.add("Batch");
         tableHeader.add("RoutePath");
@@ -263,12 +263,10 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
         tableHeader.add("End Delivery Time");
         tableHeader.add("Predecessor Start Delivery Time");
 
-        Schedule schedule = (Schedule) solution;
-
-        for (Batch batch : schedule.getBatchList()) {
+        for (Batch batch : solution.getBatchList()) {
             for (RoutePath routePath : batch.getRoutePathList()) {
                 for (Segment segment : routePath.getSegmentList()) {
-                    Vector<String> rowData = new Vector<String>();
+                    List<String> rowData = new ArrayList<>();
                     String strLength = "";
                     String strFlowRate = "";
                     String strDelay = "";
@@ -281,16 +279,16 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
                     rowData.add(routePath.getPath());
                     rowData.add(segment.getName());
 
-                    if (schedule.getAllocationList() != null) {
-                        for (Allocation allocation : schedule.getAllocationList()) {
+                    if (solution.getAllocationList() != null) {
+                        for (Allocation allocation : solution.getAllocationList()) {
                             if ((allocation.getBatch() != null) && (allocation.getRoutePath() != null)
                                     && (allocation.getSegment() != null)) {
                                 if ((allocation.getBatch().getName().equals(batch.getName()))
                                         && (allocation.getRoutePath().getPath().equals(routePath.getPath()))
                                         && (allocation.getSegment().getName().equals(segment.getName()))) {
                                     if (allocation.getSegment() != null) {
-                                        strLength = Float.valueOf(allocation.getSegment().getLength()).toString();
-                                        strFlowRate = Float.valueOf(allocation.getSegment().getFlowRate()).toString();
+                                        strLength = Float.toString(allocation.getSegment().getLength());
+                                        strFlowRate = Float.toString(allocation.getSegment().getFlowRate());
                                     } else {
                                         strLength = "";
                                         strFlowRate = "";
@@ -337,8 +335,8 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
                         }
                     }
 
-                    if (!((strDelay.equals("") && strStartTime1.equals("") && strEndTime1.equals("")
-                            && strPEndTime.equals("")))) {
+                    if (!(strDelay.equals("") && strStartTime1.equals("") && strEndTime1.equals("")
+                            && strPEndTime.equals(""))) {
                         rowData.add(strLength);
                         rowData.add(strFlowRate);
                         rowData.add(strDelay);
@@ -354,11 +352,22 @@ public class BatchSchedulingPanel extends SolutionPanel<Schedule> {
             }
         }
 
-        JTable table = new JTable(tableData, tableHeader);
+        JTable table = new JTable(tableToArray(tableData), tableRowToArray(tableHeader));
         table.getColumnModel().getColumn(1).setMinWidth(300);
 
         JScrollPane componentPanel = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         return componentPanel;
     }
+
+    private static Object[] tableRowToArray(List<String> tableRow) {
+        return tableRow.toArray();
+    }
+
+    private static Object[][] tableToArray(List<List<String>> tableData) {
+        return tableData.stream()
+                .map(BatchSchedulingPanel::tableRowToArray)
+                .toArray(Object[][]::new);
+    }
+
 }

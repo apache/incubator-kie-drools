@@ -1,39 +1,49 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.batchscheduling.solver.score;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
 import org.optaplanner.examples.batchscheduling.domain.Allocation;
 import org.optaplanner.examples.batchscheduling.domain.AllocationPath;
+import org.optaplanner.examples.batchscheduling.domain.BatchSchedule;
 import org.optaplanner.examples.batchscheduling.domain.RoutePath;
-import org.optaplanner.examples.batchscheduling.domain.Schedule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<Schedule, BendableLongScore> {
+public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<BatchSchedule, BendableLongScore> {
 
-    final Logger logger = LoggerFactory.getLogger(BatchSchedulingEasyScoreCalculator.class);
-
-    public BendableLongScore calculateScore(Schedule schedule) {
-
-        // Refer to incremental score calculator for comments on hard and soft scores
+    public BendableLongScore calculateScore(BatchSchedule schedule) {
+        // Refer to incremental score calculator for comments on hard and soft scores.
         long hard0Score = 0;
         long hard1Score = 0;
         long hard2Score = 0;
         long soft0Score = 0;
-        long soft1Score = 0;
 
-        Map<Long, Long> batchOtherPenaltyValueMap = new HashMap<Long, Long>();
-        Map<Long, Long> batchCurrentPenaltyValueMap = new HashMap<Long, Long>();
-        Map<Long, String> batchRoutePathMap = new HashMap<Long, String>();
-        Map<String, Long> segmentOverlapMap = new HashMap<String, Long>();
+        Map<Long, Long> batchOtherPenaltyValueMap = new HashMap<>();
+        Map<Long, Long> batchCurrentPenaltyValueMap = new HashMap<>();
+        Map<Long, String> batchRoutePathMap = new HashMap<>();
+        Map<String, Long> segmentOverlapMap = new HashMap<>();
 
         for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
-
             batchOtherPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
             batchCurrentPenaltyValueMap.put(allocationPath.getBatch().getId(), 0L);
 
@@ -41,23 +51,19 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
                 continue;
             }
 
-            // update batchRoutePathMap, if RoutePath is set for the Batch
+            // Update batchRoutePathMap, if RoutePath is set for the Batch.
             batchRoutePathMap.put(allocationPath.getBatch().getId(), allocationPath.getRoutePath().getPath());
-
         }
 
         for (Allocation allocation : schedule.getAllocationList()) {
-
-            // If RoutePath is not set, then compute currentPenalty by adding all segments
-            // for the Batch
+            // If RoutePath is not set, then compute currentPenalty by adding all segments for the Batch.
             if (batchRoutePathMap.get(allocation.getBatch().getId()) == null) {
                 batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(),
                         batchCurrentPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
                 continue;
             }
 
-            // If Segment is not part of the selected RoutePath and delay value is not null,
-            // then increment otherPenalty
+            // If Segment is not part of the selected RoutePath and delay value is not null, then increment otherPenalty.
             if (!(allocation.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation.getBatch().getId())))) {
 
                 if (allocation.getDelay() != null) {
@@ -67,8 +73,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
                 continue;
             }
 
-            // If Segment is part of the selected RoutePath but delay value is null, then
-            // increment currentPenalty
+            // If Segment is part of the selected RoutePath but delay value is null, then increment currentPenalty.
             if (allocation.getDelay() == null) {
                 batchCurrentPenaltyValueMap.put(allocation.getBatch().getId(),
                         batchCurrentPenaltyValueMap.get(allocation.getBatch().getId()) + 1);
@@ -79,7 +84,6 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
         }
 
         for (Map.Entry<Long, Long> entry : batchCurrentPenaltyValueMap.entrySet()) {
-
             if ((entry.getValue() > 0) || (batchRoutePathMap.get(entry.getKey()) == null)) {
                 hard0Score -= BatchSchedulingApp.SELECTED_ROUTEPATH_NON_ALLOCATION_PENALTY;
                 hard1Score -= entry.getValue();
@@ -87,7 +91,6 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
         }
 
         for (Map.Entry<Long, Long> entry : batchOtherPenaltyValueMap.entrySet()) {
-
             if (batchRoutePathMap.get(entry.getKey()) == null) {
                 continue;
             }
@@ -103,7 +106,6 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
         }
 
         for (Allocation allocation : schedule.getAllocationList()) {
-
             if (allocation.getDelay() == null) {
                 continue;
             }
@@ -125,18 +127,14 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
             soft0Score = longEndDeliverytime;
         }
 
-        long segmentCount = 0L;
-
-        Map<String, Boolean> segmentMapCount = new HashMap<String, Boolean>();
-
+        Map<String, Boolean> segmentMapCount = new HashMap<>();
         for (Allocation allocation : schedule.getAllocationList()) {
             segmentMapCount.put(allocation.getSegment().getName(), true);
         }
 
-        segmentCount = segmentMapCount.size();
+        long segmentCount = segmentMapCount.size();
 
-        Map<String, Boolean> segmentMap = new HashMap<String, Boolean>();
-
+        Map<String, Boolean> segmentMap = new HashMap<>();
         for (AllocationPath allocationPath : schedule.getAllocationPathList()) {
             if (allocationPath.getRoutePath() == null) {
                 continue;
@@ -148,10 +146,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
         }
 
         soft0Score = -soft0Score;
-        soft1Score = segmentMap.size() - segmentCount;
-
-        logger.debug(String.format("%-" + 50 + "." + 50 + "s", "Basic") + ":: " + hard0Score + " " + hard1Score + " "
-                + hard2Score + " / " + soft0Score + " " + soft1Score);
+        long soft1Score = segmentMap.size() - segmentCount;
 
         return BendableLongScore.of(new long[] { hard0Score, hard1Score, hard2Score },
                 new long[] { soft0Score, soft1Score });
@@ -166,30 +161,29 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
         Long allocationEndDeliveryTime = allocation.getEndDeliveryTime();
 
         for (Allocation allocation2 : allocationList) {
-
-            // Continue if Segment Delay is null
+            // Continue if Segment Delay is null.
             if (allocation2.getDelay() == null) {
                 continue;
             }
 
-            // Continue if Segment Batch is not same as the Input Parameter Batch
-            if (allocation2.getBatch().getId() == allocation.getBatch().getId()) {
+            // Continue if Segment Batch is not same as the Input Parameter Batch.
+            if (Objects.equals(allocation2.getBatch().getId(), allocation.getBatch().getId())) {
                 continue;
             }
 
-            // Continue if RoutePath has not been selected for the Segment Batch
+            // Continue if RoutePath has not been selected for the Segment Batch.
             if (batchRoutePathMap.get(allocation2.getBatch().getId()) == null) {
                 continue;
             }
 
-            // Continue if Segment is not part of the selectedRoutepath
+            // Continue if Segment is not part of the selectedRoutepath.
             if (!(allocation2.getRoutePath().getPath().equals(batchRoutePathMap.get(allocation2.getBatch().getId())))) {
                 continue;
             }
 
-            // Continue if Segment Name is not same as the Input parameter Segment Name
-            // Note that comparison is made using Segment Name and not Segment Id as same
-            // Segment Name may be part of different RoutePath (hence different Segment Id)
+            // Continue if Segment Name is not same as the Input parameter Segment Name.
+            // Note that comparison is made using Segment Name and not Segment Id
+            // as same Segment Name may be part of different RoutePath (hence different Segment Id).
             if (!(allocation2.getSegment().getName().equals(allocation.getSegment().getName()))) {
                 continue;
             }
@@ -199,7 +193,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
             Long allocation2StartDeliveryTime = allocation2.getStartDeliveryTime();
             Long allocation2EndDeliveryTime = allocation2.getEndDeliveryTime();
 
-            Long newOverlapPenaltyValue = 0L;
+            long newOverlapPenaltyValue = 0L;
 
             // Check for 4 conditions for Injection:
             if ((allocation2StartInjectionTime <= allocationStartInjectionTime)
@@ -216,7 +210,7 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
                 newOverlapPenaltyValue = allocationEndInjectionTime - allocation2StartInjectionTime;
             }
 
-            // Check for 4 overlap conditions for Delivery
+            // Check for 4 overlap conditions for Delivery:
             if ((allocation2StartDeliveryTime <= allocationStartDeliveryTime)
                     && (allocation2EndDeliveryTime >= allocationEndDeliveryTime)) {
                 newOverlapPenaltyValue += allocationEndDeliveryTime - allocationStartDeliveryTime;
@@ -231,25 +225,15 @@ public class BatchSchedulingEasyScoreCalculator implements EasyScoreCalculator<S
                 newOverlapPenaltyValue += allocationEndDeliveryTime - allocation2StartDeliveryTime;
             }
 
-            // Check for overlap scenario where inner segment Injection start time is more
-            // than outer segment Injection start time and inner segment delivery end time
-            // is less than outer segment Delivery end time and
+            // Check for further overlap scenarios.
             if ((allocation2StartInjectionTime >= allocationStartInjectionTime)
                     && (allocation2EndDeliveryTime <= allocationEndDeliveryTime)) {
                 newOverlapPenaltyValue += allocationEndDeliveryTime - allocation2EndDeliveryTime;
             }
-
-            // Check for overlap scenario where inner segment Injection start time is less
-            // than outer segment Injection start time and inner segment delivery end time
-            // is more than outer segment Delivery end time and
             if ((allocation2StartInjectionTime <= allocationStartInjectionTime)
                     && (allocation2EndDeliveryTime >= allocationEndDeliveryTime)) {
                 newOverlapPenaltyValue += allocation2EndDeliveryTime - allocationEndDeliveryTime;
             }
-
-            // If overlap exists then add overlap time in the segmentOverlapMap hashmap
-            // Notice the multiplication factor of 2 because if A overlaps B, then B also
-            // overlaps A
             if (newOverlapPenaltyValue > 0L) {
                 segmentOverlapMap.put(
                         allocation.getSegment().getId().toString() + "#" + allocation2.getSegment().getId().toString(),

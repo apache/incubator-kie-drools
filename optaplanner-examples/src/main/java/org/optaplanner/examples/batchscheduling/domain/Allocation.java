@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.batchscheduling.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -98,8 +114,8 @@ public class Allocation extends AbstractPersistable {
         }
 
         // Injection Time
-        Double tempInjectionDouble = Double.valueOf(
-                (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+        Double tempInjectionDouble =
+                (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
 
         Long tempInjectionLong = tempInjectionDouble.longValue();
         int fractionalInjectionInt = (int) Math.round((tempInjectionDouble - tempInjectionLong) * 100);
@@ -119,8 +135,8 @@ public class Allocation extends AbstractPersistable {
         }
 
         // Travel Time
-        Double tempTravelDouble = Double.valueOf(((getSegment().getLength() * getSegment().getCrossSectionArea())
-                / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+        Double tempTravelDouble = (double) ((getSegment().getLength() * getSegment().getCrossSectionArea())
+                / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
         Long tempTravelLong = tempTravelDouble.longValue();
         int fractionalTravelInt = (int) Math.round((tempTravelDouble - tempTravelLong) * 100);
 
@@ -140,8 +156,8 @@ public class Allocation extends AbstractPersistable {
         }
 
         // Travel Time
-        Double tempTravelDouble = Double.valueOf(((getSegment().getLength() * getSegment().getCrossSectionArea())
-                / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+        Double tempTravelDouble = (double) ((getSegment().getLength() * getSegment().getCrossSectionArea())
+                / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
         Long tempTravelLong = tempTravelDouble.longValue();
 
         int fractionalTravelInt = (int) Math.round((tempTravelDouble - tempTravelLong) * 100);
@@ -153,8 +169,8 @@ public class Allocation extends AbstractPersistable {
         }
 
         // Injection Time
-        Double tempDeliveryDouble = Double.valueOf(
-                (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES)));
+        Double tempDeliveryDouble =
+                (getBatch().getVolume() / (getSegment().getFlowRate() * BatchSchedulingApp.PERIODINTERVAL_IN_MINUTES));
         Long tempDeliveryLong = tempDeliveryDouble.longValue();
         int fractionalDeliveryInt = (int) Math.round((tempDeliveryDouble - tempDeliveryLong) * 100);
 

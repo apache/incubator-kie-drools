@@ -2,7 +2,7 @@
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
     <!--<environmentMode>FULL_ASSERT</environmentMode>-->
-	<solutionClass>org.optaplanner.examples.batchscheduling.domain.Schedule</solutionClass>
+	<solutionClass>org.optaplanner.examples.batchscheduling.domain.BatchSchedule</solutionClass>
 	<entityClass>org.optaplanner.examples.batchscheduling.domain.Allocation</entityClass>
 	<entityClass>org.optaplanner.examples.batchscheduling.domain.AllocationPath</entityClass>
 	<scoreDirectorFactory>
