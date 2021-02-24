@@ -214,7 +214,6 @@ public class CanonicalKieModule implements InternalKieModule {
         checkStreamMode(kBaseModel, conf, kpkgs.getKiePackages());
         InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
 
-        buildNonNativeResources( kBaseModel, kieProject, messages, kieBase );
         return kieBase;
     }
 
@@ -251,23 +250,6 @@ public class CanonicalKieModule implements InternalKieModule {
                 .forEach(compositeUpdater::add);
 
         compositeUpdater.run();
-    }
-
-    private void buildNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, InternalKnowledgeBase kieBase ) {
-        KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages, NON_MODEL_RESOURCES);
-        if ( !kbuilder.hasErrors() ) {
-            for (KiePackage pk : kbuilder.getKnowledgePackages()) {
-                // Workaround to "mark" already compiled packages (as found inside the kjar and retrieved by createKiePackages(kieProject, kBaseModel, messages, kBaseConf))
-                // as "PMML" packages
-                boolean isInternalKnowldgePackage = pk instanceof InternalKnowledgePackage;
-                final InternalKnowledgePackage originalPackage = kieBase.getPackage( pk.getName() );
-                if ( originalPackage != null && isInternalKnowldgePackage && (( InternalKnowledgePackage ) pk).getResourceTypePackages().get( ResourceType.PMML ) != null ) {
-                    originalPackage.getResourceTypePackages().put( ResourceType.PMML, (( InternalKnowledgePackage ) pk).getResourceTypePackages().get( ResourceType.PMML ) );
-                } else if ( originalPackage == null ) {
-                    kieBase.addPackage( pk );
-                }
-            }
-        }
     }
 
     private CanonicalKiePackages createKiePackages(KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf) {
