@@ -1019,6 +1019,20 @@ public class DroolsMvelParserTest {
         assertFalse("Parsing should break at newline", r.isSuccessful());
     }
 
+        @Test
+        public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
+            String expr =
+                    "{  Person p2 = new Person(\"John\");\n" +
+                    "  p2.age = 30\n" + // a line break at the end of the statement without a semicolon
+                    "insert(p2);\n }";
+
+            MvelParser mvelParser = new MvelParser(new ParserConfiguration(), true);
+            ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
+            BlockStmt blockStmt = r.getResult().get();
+            assertEquals("Should parse 3 statements", 3, blockStmt.getStatements().size());
+
+        }
+
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;
         Expression expression = parseExpression(parser, expr ).getExpr();
