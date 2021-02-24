@@ -925,4 +925,28 @@ public class MvelDialectTest extends BaseModelTest {
 
         assertTrue(result.contains("R"));
     }
+
+    @Test
+    public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "\n" +
+                           "rule R\n" +
+                           "dialect \"mvel\"\n" +
+                           "when\n" +
+                           "  Person(name == \"Mario\")\n" +
+                           "then\n" +
+                           "  Person p2 = new Person(\"John\");\n" +
+                           "  p2.age = 30\n" + // a line break at the end of the statement without a semicolon
+                           "  insert(p2);\n" +
+                           "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mario", 40);
+        ksession.insert(p);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
+    }
 }

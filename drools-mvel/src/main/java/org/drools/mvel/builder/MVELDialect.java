@@ -134,8 +134,6 @@ public class MVELDialect
         initBuilder();
     }
 
-    private final Map interceptors = MVELCompilationUnit.INTERCEPTORS;
-
     protected List<KnowledgeBuilderResult> results;
     // private final JavaFunctionBuilder function = new JavaFunctionBuilder();
 
@@ -737,10 +735,6 @@ public class MVELDialect
 
     public TypeResolver getTypeResolver() {
         return this.packageRegistry.getTypeResolver();
-    }
-
-    public Map getInterceptors() {
-        return this.interceptors;
     }
 
     public String getId() {
