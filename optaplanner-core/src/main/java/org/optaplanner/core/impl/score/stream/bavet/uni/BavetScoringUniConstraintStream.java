@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                        + ") must return an int.");
+                        + ") must return an int.\n" +
+                        "Maybe switch to penalize() or reward().");
             }
         } else if (weightedScoreImpacter instanceof LongWeightedScoreImpacter) {
             LongWeightedScoreImpacter castedWeightedScoreImpacter = (LongWeightedScoreImpacter) weightedScoreImpacter;
@@ -137,7 +138,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                        + ") must return a long.");
+                        + ") must return a long.\n" +
+                        "Maybe switch to penalizeLong() or rewardLong().");
             }
         } else if (weightedScoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
             BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
@@ -154,7 +156,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
-                        + ") must return a " + BigDecimal.class.getSimpleName() + ".");
+                        + ") must return a " + BigDecimal.class.getSimpleName() + ".\n" +
+                        "Maybe switch to penalizeBigDecimal() or rewardBigDecimal().");
             }
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
