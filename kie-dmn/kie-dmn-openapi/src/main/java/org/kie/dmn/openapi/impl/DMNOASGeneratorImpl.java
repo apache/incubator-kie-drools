@@ -44,12 +44,14 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private final List<DMNModel> dmnModels;
     private final List<DMNModelIOSets> ioSets = new ArrayList<>();
     private final Set<DMNType> typesIndex = new HashSet<>();
+    private final String refPrefix;
     private NamingPolicy namingPolicy;
     private final Map<DMNType, Schema> schemas = new HashMap<>();
     private ObjectNode jsonSchema;
 
-    public DMNOASGeneratorImpl(Collection<DMNModel> models) {
+    public DMNOASGeneratorImpl(Collection<DMNModel> models, String refPrefix) {
         this.dmnModels = new ArrayList<>(models);
+        this.refPrefix = refPrefix;
     }
 
     @Override
@@ -81,11 +83,11 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     }
 
     private void determineNamingPolicy() {
-        this.namingPolicy = new DefaultNamingPolicy();
+        this.namingPolicy = new DefaultNamingPolicy(refPrefix);
         if (namingIntegrityCheck()) {
             return;
         }
-        this.namingPolicy = new NamespaceAwareNamingPolicy(dmnModels);
+        this.namingPolicy = new NamespaceAwareNamingPolicy(dmnModels, refPrefix);
         if (namingIntegrityCheck()) {
             return;
         }
