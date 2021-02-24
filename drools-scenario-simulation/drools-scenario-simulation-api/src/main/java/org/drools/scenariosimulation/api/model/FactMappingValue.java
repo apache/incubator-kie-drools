@@ -22,6 +22,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * FactMappingValue contains the identifier of a fact mapping + the raw value
+ * - collectionPathToValue: In case of an error occurred in a collection (List or Map), it contains the path which
+ *                          describes how to reach the wrong field (eg. Item #1 | field | ... ).
  */
 public class FactMappingValue {
 
@@ -98,7 +100,7 @@ public class FactMappingValue {
 
     public void setCollectionPathToValue(List<String> collectionPathToValue) {
         this.collectionPathToValue = collectionPathToValue;
-        this.status = FactMappingValueStatus.FAILED_WITH_ERROR_COLLECTION;
+        this.status = FactMappingValueStatus.FAILED_WITH_ERROR;
     }
 
     public void resetStatus() {

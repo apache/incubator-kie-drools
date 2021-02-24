@@ -74,7 +74,7 @@ public class FactMappingValueTest {
         List<String> path = Arrays.asList("Step1", "Step2");
         FactMappingValue value = new FactMappingValue();
         value.setCollectionPathToValue(path);
-        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR_COLLECTION);
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
         assertThat(value.getExceptionMessage()).isNull();
         assertThat(value.getErrorValue()).isNull();
         assertThat(value.getCollectionPathToValue()).isSameAs(path);
