@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,10 @@
 
 package org.optaplanner.core.impl.score;
 
-import java.util.Map;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
@@ -66,10 +62,8 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
                 throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
                         + ") is disabled, this method should not be called.");
             }
-            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
-            Map<Object, Indictment<Score_>> indictmentMap = scoreDirector.getIndictmentMap();
-            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(), constraintMatchTotalMap,
-                    indictmentMap);
+            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(),
+                    scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
     }
 }

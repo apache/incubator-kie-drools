@@ -19,8 +19,18 @@ package org.optaplanner.core.api.score;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.util.Collections;
+
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class ScoreManagerTest {
@@ -54,4 +64,45 @@ class ScoreManagerTest {
         });
     }
 
+    @Test
+    public void indictmentsPresentOnFreshExplanation() {
+        // Create the environment.
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setConstraintProviderClass(TestdataConstraintProvider.class);
+        SolverConfig solverConfig = new SolverConfig();
+        solverConfig.setSolutionClass(TestdataSolution.class);
+        solverConfig.setEntityClassList(Collections.singletonList(TestdataEntity.class));
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        ScoreManager<TestdataSolution, SimpleScore> scoreManager = ScoreManager.create(solverFactory);
+
+        // Prepare the solution.
+        int entityCount = 3;
+        TestdataSolution solution = TestdataSolution.generateSolution(2, entityCount);
+        ScoreExplanation<TestdataSolution, SimpleScore> scoreExplanation = scoreManager.explainScore(solution);
+
+        // Check for expected results.
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(scoreExplanation.getScore())
+                    .isEqualTo(SimpleScore.of(-entityCount));
+            softly.assertThat(scoreExplanation.getConstraintMatchTotalMap())
+                    .isNotEmpty();
+            softly.assertThat(scoreExplanation.getIndictmentMap())
+                    .isNotEmpty();
+        });
+    }
+
+    public static final class TestdataConstraintProvider implements ConstraintProvider {
+
+        @Override
+        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+            return new Constraint[] { alwaysPenalizingConstraint(constraintFactory) };
+        }
+
+        private Constraint alwaysPenalizingConstraint(ConstraintFactory constraintFactory) {
+            return constraintFactory.from(TestdataEntity.class)
+                    .penalize("Always penalize", SimpleScore.ONE);
+        }
+
+    }
 }
