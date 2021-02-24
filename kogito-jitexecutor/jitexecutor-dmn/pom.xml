@@ -22,6 +22,13 @@
     <dependency><!-- Leverage easily the best POM from: -->
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId>
+      <exclusions>
+        <!-- ANC is not used and depends on MVEL that breaks native compilation -->
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-alphanetwork-compiler</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -30,6 +37,13 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>explainability-core</artifactId>
+      <exclusions>
+        <!-- Counterfactual explaination is not supported so excluding optaplanner to avoid undesired dependencies (e.g. drools-core-dynamic) -->
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
