@@ -20,6 +20,8 @@ jobs:
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/aether/takari-local-repository/0.11.3/takari-local-repository-0.11.3.jar
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.3/takari-filemanager-0.8.3.jar
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.6.1/takari-smart-builder-0.6.1.jar
+        env:
+          M2_HOME: /usr/share/apache-maven-3.6.3
       # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
