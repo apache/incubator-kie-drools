@@ -175,23 +175,21 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             elementNumber++;
             boolean success = false;
             boolean simpleTypeNode = isSimpleTypeNode(node);
-            ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed();
 
             for (Object result : resultRaw) {
                 if (simpleTypeNode && internalUnaryEvaluation(getSimpleTypeNodeTextValue(node), result, result.getClass(), true)) {
                     success = true;
-                } else if (!simpleTypeNode) {
-                    evaluatorResult = verifyObject((ObjectNode) node, result);
-                    if (evaluatorResult.isSuccessful()) {
-                        success = true;
-                    }
+                } else if (!simpleTypeNode && verifyObject((ObjectNode) node, result).isSuccessful()) {
+                    success = true;
                 }
+
                 if (success) {
                     break;
                 }
             }
 
             if (!success) {
+                ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed();
                 if (simpleTypeNode) {
                     evaluatorResult.setWrongValue(getSimpleTypeNodeTextValue(node));
                 }
@@ -225,11 +223,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             } else if (jsonNode.isArray()) {
                 evaluatorResult = verifyList((ArrayNode) jsonNode, (List) fieldValue);
                 if (!evaluatorResult.isSuccessful()) {
-                    if (resultRaw instanceof Map) {
-                        evaluatorResult.addMapItemStepToPath(key);
-                    } else {
-                        evaluatorResult.addFieldItemStepToPath(key);
-                    }
+                    evaluatorResult.addMapItemStepToPath(key);
                     return evaluatorResult;
                 }
             } else if (jsonNode.isObject()) {
