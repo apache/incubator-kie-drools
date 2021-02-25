@@ -25,4 +25,9 @@ public interface HasSourcesMap {
     Map<String, String> getSourcesMap();
 
     void addSourceMap(String key, String value);
+
+    default Map<String, String> getRulesSourcesMap() {
+        return null;
+    }
+
 }
