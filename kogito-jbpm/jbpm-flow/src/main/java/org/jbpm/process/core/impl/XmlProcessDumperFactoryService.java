@@ -19,6 +19,6 @@ import org.kie.api.Service;
 
 public interface XmlProcessDumperFactoryService extends Service {
 
-	XmlProcessDumper newXmlProcessDumper();
-    
+    XmlProcessDumper newXmlProcessDumper();
+
 }

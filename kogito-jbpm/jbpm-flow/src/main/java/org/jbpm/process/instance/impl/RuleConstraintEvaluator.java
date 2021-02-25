@@ -32,15 +32,15 @@ import org.kie.api.definition.process.Connection;
 public class RuleConstraintEvaluator implements Constraint,
         ConstraintEvaluator, Serializable {
 
-    private static final long  serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-    private String             name;
-    private String             constraint;
-    private int                priority;
-    private String             dialect;
-    private String             type;
-    private boolean            isDefault;
-    
+    private String name;
+    private String constraint;
+    private int priority;
+    private String dialect;
+    private String type;
+    private boolean isDefault;
+
     public String getConstraint() {
         return this.constraint;
     }
@@ -84,33 +84,33 @@ public class RuleConstraintEvaluator implements Constraint,
     public void setType(String type) {
         this.type = type;
     }
-    
+
     public boolean isDefault() {
-		return isDefault;
-	}
-
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
-	}
-
-	public boolean evaluate(NodeInstance instance,
-                            Connection connection,
-                            Constraint constraint) {
-        ProcessInstance processInstance = (ProcessInstance) instance.getProcessInstance();
-        InternalAgenda agenda = (InternalAgenda) processInstance.getKnowledgeRuntime().getAgenda();
-        String rule = "RuleFlow-Split-" + processInstance.getProcessId() + "-" + 
-        	(( Node ) instance.getNode()).getUniqueId() + "-" +
-        	(( Node ) connection.getTo()).getUniqueId() + "-" + connection.getToType();
-
-        return ((KogitoInternalAgenda)agenda).isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, processInstance.getStringId() );
+        return isDefault;
     }
 
-	public Object getMetaData(String name) {
-		return null;
-	}
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 
-	public void setMetaData(String name, Object value) {
-		// Do nothing
-	}    
+    public boolean evaluate(NodeInstance instance,
+            Connection connection,
+            Constraint constraint) {
+        ProcessInstance processInstance = (ProcessInstance) instance.getProcessInstance();
+        InternalAgenda agenda = (InternalAgenda) processInstance.getKnowledgeRuntime().getAgenda();
+        String rule = "RuleFlow-Split-" + processInstance.getProcessId() + "-" +
+                ((Node) instance.getNode()).getUniqueId() + "-" +
+                ((Node) connection.getTo()).getUniqueId() + "-" + connection.getToType();
+
+        return ((KogitoInternalAgenda) agenda).isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, processInstance.getStringId());
+    }
+
+    public Object getMetaData(String name) {
+        return null;
+    }
+
+    public void setMetaData(String name, Object value) {
+        // Do nothing
+    }
 
 }

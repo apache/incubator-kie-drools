@@ -37,6 +37,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
@@ -47,26 +48,26 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
 
     private static final long serialVersionUID = 510l;
-    
+
     private Map<KogitoWorkItem, KogitoWorkItemManager> workItems = new HashMap<>();
     private JList workItemsList;
     private JButton selectButton;
-    
+
     public UIWorkItemHandler() {
         setSize(new Dimension(400, 300));
         setTitle("Work Items");
-        setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         initializeComponent();
     }
-    
+
     private void initializeComponent() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         getRootPane().setLayout(new BorderLayout());
         getRootPane().add(panel, BorderLayout.CENTER);
-        
+
         workItemsList = new JList();
-        workItemsList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
+        workItemsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         workItemsList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -86,7 +87,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(workItemsList, c);
-        
+
         selectButton = new JButton("Select");
         selectButton.setEnabled(false);
         selectButton.addActionListener(new ActionListener() {
@@ -101,7 +102,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(selectButton, c);
     }
-    
+
     private void select() {
         KogitoWorkItem workItem = getSelectedWorkItem();
         if (workItem != null) {
@@ -109,7 +110,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
             dialog.setVisible(true);
         }
     }
-    
+
     public KogitoWorkItem getSelectedWorkItem() {
         int index = workItemsList.getSelectedIndex();
         if (index != -1) {
@@ -120,7 +121,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         }
         return null;
     }
-    
+
     private void reloadWorkItemsList() {
         List<WorkItemWrapper> result = new ArrayList<WorkItemWrapper>();
         for (KogitoWorkItem workItem : workItems.keySet()) {
@@ -128,7 +129,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         }
         workItemsList.setListData(result.toArray());
     }
-    
+
     public void complete(KogitoWorkItem workItem, Map<String, Object> results) {
         KogitoWorkItemManager manager = workItems.get(workItem);
         if (manager != null) {
@@ -138,7 +139,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         }
         selectButton.setEnabled(getSelectedWorkItem() != null);
     }
-    
+
     public void abort(KogitoWorkItem workItem) {
         KogitoWorkItemManager manager = workItems.get(workItem);
         if (manager != null) {
@@ -148,7 +149,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         }
         selectButton.setEnabled(getSelectedWorkItem() != null);
     }
-    
+
     public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         workItems.remove(workItem);
         reloadWorkItemsList();
@@ -160,20 +161,20 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
     }
 
     private class WorkItemWrapper {
-        
+
         private KogitoWorkItem workItem;
-        
+
         public WorkItemWrapper(KogitoWorkItem workItem) {
             this.workItem = workItem;
         }
-        
+
         public KogitoWorkItem getWorkItem() {
             return workItem;
         }
-        
+
         public String toString() {
             return workItem.getName() + " [" + workItem.getStringId() + "]";
         }
     }
-    
+
 }

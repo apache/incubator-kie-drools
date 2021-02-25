@@ -26,7 +26,7 @@ public class PredictionOutcome {
     private boolean present;
 
     private double confidenceLevel = 0.0;
-    
+
     private double confidenceThreshold = 0.0;
 
     private Map<String, Object> data;

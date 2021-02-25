@@ -18,13 +18,14 @@ package org.kie.kogito.monitoring.core.common.integration;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import ch.obermuhlner.math.big.stream.BigDecimalStream;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.BigDecimalHandler;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
+
+import ch.obermuhlner.math.big.stream.BigDecimalStream;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

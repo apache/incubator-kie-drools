@@ -23,18 +23,18 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class CatchLinkNodeInstance extends NodeInstanceImpl {
 
-	private static final long serialVersionUID = 20110505L;
+    private static final long serialVersionUID = 20110505L;
 
-	@Override
-	public void internalTrigger( KogitoNodeInstance from, String type) {
-	    triggerTime = new Date();
-		this.triggerCompleted();
+    @Override
+    public void internalTrigger(KogitoNodeInstance from, String type) {
+        triggerTime = new Date();
+        this.triggerCompleted();
 
-	}
+    }
 
-	public void triggerCompleted() {
-		this.triggerCompleted(
-				Node.CONNECTION_DEFAULT_TYPE, true);
-	}
+    public void triggerCompleted() {
+        this.triggerCompleted(
+                Node.CONNECTION_DEFAULT_TYPE, true);
+    }
 
 }

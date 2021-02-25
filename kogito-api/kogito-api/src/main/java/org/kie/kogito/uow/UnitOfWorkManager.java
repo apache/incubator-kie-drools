@@ -32,17 +32,18 @@ public interface UnitOfWorkManager {
      * @return current unit of work
      */
     UnitOfWork currentUnitOfWork();
-    
+
     /**
      * Returns new not started UnitOfWork that is associated with the manager
-     * to manage it's life cycle. 
+     * to manage it's life cycle.
      * 
      * @return new, not started unit of work
      */
     UnitOfWork newUnitOfWork();
-    
+
     /**
      * Returns instance of the event manager configured for this unit of work manager
+     * 
      * @return event manager instance
      */
     EventManager eventManager();

@@ -23,9 +23,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 @Mojo(name = "scaffold",
-      requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
-      requiresProject = true,
-      threadSafe = true)
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+        requiresProject = true,
+        threadSafe = true)
 public class ScaffoldMojo extends GenerateModelMojo {
 
     @Parameter(property = "kogito.codegen.ondemand", defaultValue = "true")

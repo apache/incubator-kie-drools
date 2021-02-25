@@ -15,16 +15,16 @@
  */
 package org.kie.kogito.codegen.sample.generator;
 
-import com.github.javaparser.ast.body.MethodDeclaration;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.io.CollectedResource;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

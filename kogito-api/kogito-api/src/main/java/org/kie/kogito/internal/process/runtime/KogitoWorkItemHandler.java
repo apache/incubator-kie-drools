@@ -22,23 +22,25 @@ import org.kie.kogito.process.workitem.Transition;
 
 public interface KogitoWorkItemHandler extends WorkItemHandler {
 
-    default void executeWorkItem( WorkItem workItem, WorkItemManager manager) {
-        executeWorkItem( (KogitoWorkItem) workItem, (KogitoWorkItemManager) manager);
+    default void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        executeWorkItem((KogitoWorkItem) workItem, (KogitoWorkItemManager) manager);
     }
 
-    default void abortWorkItem( WorkItem workItem, WorkItemManager manager) {
-        abortWorkItem( (KogitoWorkItem) workItem, (KogitoWorkItemManager) manager);
+    default void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        abortWorkItem((KogitoWorkItem) workItem, (KogitoWorkItemManager) manager);
     }
 
     /**
      * The given work item should be executed.
+     * 
      * @param workItem the work item that should be executed
      * @param manager the manager that requested the work item to be executed
      */
-    void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager);
+    void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager);
 
     /**
      * The given work item should be aborted.
+     * 
      * @param workItem the work item that should be aborted
      * @param manager the manager that requested the work item to be aborted
      */
@@ -46,6 +48,7 @@ public interface KogitoWorkItemHandler extends WorkItemHandler {
 
     /**
      * Returns name that it should be registered with, by default simple class name;
+     * 
      * @return name that should this handler be registered with
      */
     default String getName() {

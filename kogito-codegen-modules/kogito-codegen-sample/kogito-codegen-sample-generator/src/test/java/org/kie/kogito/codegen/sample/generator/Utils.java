@@ -15,15 +15,10 @@
  */
 package org.kie.kogito.codegen.sample.generator;
 
-import org.drools.core.io.impl.FileSystemResource;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.io.CollectedResource;
-
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
+
+import org.drools.core.io.impl.FileSystemResource;
+import org.kie.kogito.codegen.api.io.CollectedResource;
 
 public class Utils {
 

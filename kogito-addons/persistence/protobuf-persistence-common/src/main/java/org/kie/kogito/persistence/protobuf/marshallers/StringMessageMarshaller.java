@@ -39,7 +39,7 @@ public class StringMessageMarshaller implements MessageMarshaller<String> {
     @Override
     public void writeTo(ProtoStreamWriter writer, String t) throws IOException {
         writer.writeString("data", t);
-        
+
     }
 
 }

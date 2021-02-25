@@ -23,7 +23,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 public interface RuleEventListenerConfig {
 
     List<AgendaEventListener> agendaListeners();
-    
+
     List<RuleRuntimeEventListener> ruleRuntimeListeners();
-        
+
 }

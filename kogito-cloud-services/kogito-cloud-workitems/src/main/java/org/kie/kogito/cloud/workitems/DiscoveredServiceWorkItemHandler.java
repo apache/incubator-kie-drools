@@ -25,15 +25,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Request.Builder;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClient;
@@ -42,6 +33,17 @@ import org.kie.kogito.cloud.workitems.service.discovery.ServiceDiscoveryFactory;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Request.Builder;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItemHandler {
 
@@ -67,17 +69,18 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
         /*
-         *  Delaying buildServiceDiscovery and buildHttpClient to avoid problems with okhttp3 dependency during GraalVM native builds. 
-         *  OKHttp3 references SSLContextFactory in static fields, which lead to errors. See: https://quarkus.io/guides/writing-native-applications-tips#delaying-class-initialization
-         *  We're trying to not use static fields that depends on unknown and uncontrolled dependencies to avoid errors like this.
-         *  That's why we're just holding the kube reference in the constructor, thus lazy building the HTTP objects. 
-         */ 
+         * Delaying buildServiceDiscovery and buildHttpClient to avoid problems with okhttp3 dependency during GraalVM native builds.
+         * OKHttp3 references SSLContextFactory in static fields, which lead to errors. See: https://quarkus.io/guides/writing-native-applications-tips#delaying-class-initialization
+         * We're trying to not use static fields that depends on unknown and uncontrolled dependencies to avoid errors like this.
+         * That's why we're just holding the kube reference in the constructor, thus lazy building the HTTP objects.
+         */
         this.kubeClient = kubeClient;
         this.serviceEndpoints = new ConcurrentHashMap<>();
     }
-    
+
     /**
      * Returns the {@link ServiceDiscovery} reference that will be used during the endpoint discovery.
+     * 
      * @return
      */
     protected ServiceDiscovery buildServiceDiscovery() {
@@ -91,9 +94,10 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
         }
         return serviceDiscovery;
     }
-    
+
     /**
      * Build a {@link ServiceDiscovery} reference with the custom {@link KogitoKubeClient}.
+     * 
      * @see #buildServiceDiscovery()
      * @param kubeClient
      * @return
@@ -107,17 +111,17 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
         if (http == null) {
             LOGGER.debug("Creating and caching a new reference of OkHttpClient");
             http = new OkHttpClient.Builder()
-                                             .connectTimeout(60, TimeUnit.SECONDS)
-                                             .writeTimeout(60, TimeUnit.SECONDS)
-                                             .readTimeout(60, TimeUnit.SECONDS)
-                                             .build();
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .build();
         }
         return http;
     }
-    
+
     /**
      * Removes a service from the registry
-     *  
+     * 
      * @param serviceName
      * @return true if removed successfully
      */
@@ -132,24 +136,25 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
      * @param service
      */
     protected void addServices(String serviceName, ServiceInfo service) {
-        if(service != null) {
+        if (service != null) {
             LOGGER.debug("Adding a new service '{}' to the registry: {}", serviceName, service);
             this.serviceEndpoints.put(serviceName, service);
         }
     }
-    
+
     /**
-     * Retrieves a immutable list of services added to this reference. 
+     * Retrieves a immutable list of services added to this reference.
      * 
      * @return
      */
     protected Map<String, ServiceInfo> getServices() {
         return Collections.unmodifiableMap(this.serviceEndpoints);
     }
-    
+
     /**
      * Looks up service's endpoint (cluster ip + port) using label selector - meaning returns services that have given label.
-     * Services are looked up only in given namespace. 
+     * Services are looked up only in given namespace.
+     * 
      * @param service label assign to a service that should be used as selector
      * @return valid endpoint (in URL form) if found or runtime exception in case of no services found
      */
@@ -159,9 +164,10 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
     }
 
     /**
-     * Discover valid service to be invoked in given namespace and serviceName. Where serviceName is 
+     * Discover valid service to be invoked in given namespace and serviceName. Where serviceName is
      * considered to be a label on the service .It uses service discovery
      * base on label selectors to find the matching service endpoint (cluster ip and port)
+     * 
      * @param workItem work item that this handler is working on
      * @param namespace namespace to look up services in
      * @param serviceName name of the service to look up by - label
@@ -241,7 +247,7 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
 
     protected Request producePostRequest(ServiceInfo endpoint, RequestBody body) {
         Builder builder = new Request.Builder().url(endpoint.getUrl())
-                                               .post(body);
+                .post(body);
         applyHeaders(endpoint, builder);
 
         return builder.build();
@@ -249,7 +255,7 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
 
     protected Request produceGetRequest(ServiceInfo endpoint) {
         Builder builder = new Request.Builder().url(endpoint.getUrl())
-                                               .get();
+                .get();
         applyHeaders(endpoint, builder);
 
         return builder.build();
@@ -257,7 +263,7 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
 
     protected Request producePutRequest(ServiceInfo endpoint, RequestBody body) {
         Builder builder = new Request.Builder().url(endpoint.getUrl())
-                                               .put(body);
+                .put(body);
         applyHeaders(endpoint, builder);
 
         return builder.build();
@@ -265,7 +271,7 @@ public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItem
 
     protected Request produceDeleteRequest(ServiceInfo endpoint, RequestBody body) {
         Builder builder = new Request.Builder().url(endpoint.getUrl())
-                                               .delete(body);
+                .delete(body);
         applyHeaders(endpoint, builder);
 
         return builder.build();

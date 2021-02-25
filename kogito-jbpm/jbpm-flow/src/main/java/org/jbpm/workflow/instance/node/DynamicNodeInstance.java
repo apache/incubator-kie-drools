@@ -51,7 +51,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
     @Override
-    public void internalTrigger( KogitoNodeInstance from, String type) {
+    public void internalTrigger(KogitoNodeInstance from, String type) {
         triggerTime = new Date();
         triggerEvent(EVENT_NODE_ENTER);
 
@@ -87,7 +87,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
     private void addActivationListener() {
-        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener( ContextAwareEventListener.using( listener -> {
+        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener(ContextAwareEventListener.using(listener -> {
             if (canActivate() && getState() == ProcessInstance.STATE_PENDING) {
                 triggerActivated();
                 getProcessInstance().getKnowledgeRuntime().getProcessRuntime().removeEventListener(listener);

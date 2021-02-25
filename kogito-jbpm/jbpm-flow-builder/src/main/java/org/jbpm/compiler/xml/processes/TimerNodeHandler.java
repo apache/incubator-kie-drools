@@ -28,8 +28,8 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         return new TimerNode();
     }
 
-    public void handleNode( final Node node, final Element element, final String uri,
-                            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         TimerNode timerNode = (TimerNode) node;
@@ -41,23 +41,23 @@ public class TimerNodeHandler extends AbstractNodeHandler {
                 timer = new Timer();
                 timerNode.setTimer(timer);
             }
-            if (delay != null && delay.length() != 0 ) {
+            if (delay != null && delay.length() != 0) {
                 timer.setDelay(delay);
             }
-            if (period != null && period.length() != 0 ) {
+            if (period != null && period.length() != 0) {
                 timer.setPeriod(period);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-	public Class generateNodeFor() {
+    public Class generateNodeFor() {
         return TimerNode.class;
     }
 
-	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
-		TimerNode timerNode = (TimerNode) node;
-		writeNode("timerNode", timerNode, xmlDump, includeMeta);
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+        TimerNode timerNode = (TimerNode) node;
+        writeNode("timerNode", timerNode, xmlDump, includeMeta);
         Timer timer = timerNode.getTimer();
         if (timer != null) {
             xmlDump.append("delay=\"" + timer.getDelay() + "\" ");
@@ -66,12 +66,12 @@ public class TimerNodeHandler extends AbstractNodeHandler {
             }
         }
         if (includeMeta && containsMetaData(timerNode)) {
-        	xmlDump.append(">" + EOL);
-        	writeMetaData(timerNode, xmlDump);
-        	endNode("timerNode", xmlDump);
+            xmlDump.append(">" + EOL);
+            writeMetaData(timerNode, xmlDump);
+            endNode("timerNode", xmlDump);
         } else {
             endNode(xmlDump);
         }
-	}
+    }
 
 }

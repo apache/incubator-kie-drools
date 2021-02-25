@@ -26,8 +26,8 @@ public class MongoDBQuarkusTestResource extends ConditionalQuarkusTestResource {
 
     public static final String MONGODB_CONNECTION_PROPERTY = "quarkus.mongodb.connection-string";
 
-    private static final  KogitoMongoDBContainer container = new KogitoMongoDBContainer();
-    
+    private static final KogitoMongoDBContainer container = new KogitoMongoDBContainer();
+
     public MongoDBQuarkusTestResource() {
         super(container);
     }

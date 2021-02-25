@@ -24,12 +24,12 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.timer.TimerInstance;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -74,7 +74,8 @@ public class InMemoryJobService implements JobsService {
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
         ScheduledFuture<?> future = null;
         if (description.expirationTime().repeatInterval() != null) {
-            future = scheduler.scheduleAtFixedRate(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), false, description.expirationTime().repeatLimit()), calculateDelay(description), description.expirationTime().repeatInterval(), TimeUnit.MILLISECONDS);
+            future = scheduler.scheduleAtFixedRate(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), false, description.expirationTime().repeatLimit()),
+                    calculateDelay(description), description.expirationTime().repeatInterval(), TimeUnit.MILLISECONDS);
         } else {
             future = scheduler.schedule(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), true, -1), calculateDelay(description), TimeUnit.MILLISECONDS);
         }

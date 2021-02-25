@@ -22,5 +22,5 @@ import org.kie.api.event.process.ProcessEventListener;
 public interface ProcessEventListenerConfig {
 
     List<ProcessEventListener> listeners();
-    
+
 }

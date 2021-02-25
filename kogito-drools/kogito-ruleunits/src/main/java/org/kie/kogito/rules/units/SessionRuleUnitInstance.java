@@ -20,11 +20,11 @@ import org.kie.kogito.rules.RuleUnit;
 
 public class SessionRuleUnitInstance extends AbstractRuleUnitInstance<SessionData> {
 
-    public SessionRuleUnitInstance( RuleUnit<SessionData> unit, SessionData memory, KieSession kieSession ) {
-        super( unit, memory, kieSession );
+    public SessionRuleUnitInstance(RuleUnit<SessionData> unit, SessionData memory, KieSession kieSession) {
+        super(unit, memory, kieSession);
     }
 
-    protected void bind( KieSession runtime, SessionData memory ) {
-        memory.getDataSource().subscribe(new EntryPointDataProcessor( runtime ));
+    protected void bind(KieSession runtime, SessionData memory) {
+        memory.getDataSource().subscribe(new EntryPointDataProcessor(runtime));
     }
 }

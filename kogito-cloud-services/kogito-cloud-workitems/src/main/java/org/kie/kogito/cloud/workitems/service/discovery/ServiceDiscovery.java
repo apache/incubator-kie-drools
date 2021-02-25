@@ -20,14 +20,14 @@ import java.util.Optional;
 import org.kie.kogito.cloud.workitems.ServiceInfo;
 
 /**
- * Service Discovery mechanism: tries to discover the desired endpoint based on the cluster infrastructure: Kubernetes, OpenShift, Istio/KNative or Operators. 
+ * Service Discovery mechanism: tries to discover the desired endpoint based on the cluster infrastructure: Kubernetes, OpenShift, Istio/KNative or Operators.
  */
 public interface ServiceDiscovery {
 
     /**
-     * Finds an endpoint based on a namespace and the specified label. 
-     * If more than one service is found, the first one is returned.  
-     * The service must reside within the namespace. 
+     * Finds an endpoint based on a namespace and the specified label.
+     * If more than one service is found, the first one is returned.
+     * The service must reside within the namespace.
      * 
      * @param namespace the namespace where to look for the namespace. Can't be null.
      * @param labelKey optional label key.
@@ -37,12 +37,12 @@ public interface ServiceDiscovery {
     public Optional<ServiceInfo> findEndpoint(final String namespace, final String labelKey, final String labelValue);
 
     /**
-     * Finds an endpoint based on a namespace with a label key equals to the name of the service. 
-     * If more than one service is found, the first one is returned. 
-     * The service must reside within the namespace.   
+     * Finds an endpoint based on a namespace with a label key equals to the name of the service.
+     * If more than one service is found, the first one is returned.
+     * The service must reside within the namespace.
      * 
      * @param namespace the namespace where to look for the namespace. Can't be null.
-     * @param service the service name that should match with any label in the Kubernetes Service.    
+     * @param service the service name that should match with any label in the Kubernetes Service.
      * @return
      */
     public Optional<ServiceInfo> findEndpoint(final String namespace, final String service);

@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.explainability;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.kie.kogito.Application;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
-
-import java.util.Collection;
-import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;

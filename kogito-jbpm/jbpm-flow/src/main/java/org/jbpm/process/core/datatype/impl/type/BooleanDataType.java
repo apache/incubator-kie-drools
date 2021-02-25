@@ -25,8 +25,8 @@ import org.jbpm.process.core.datatype.DataType;
  * Representation of a boolean datatype.
  */
 public final class BooleanDataType
-    implements
-    DataType {
+        implements
+        DataType {
 
     private static final long serialVersionUID = 510l;
 
@@ -37,7 +37,7 @@ public final class BooleanDataType
     }
 
     public boolean verifyDataType(final Object value) {
-        if ( value instanceof Boolean ) {
+        if (value instanceof Boolean) {
             return true;
         }
         return false;

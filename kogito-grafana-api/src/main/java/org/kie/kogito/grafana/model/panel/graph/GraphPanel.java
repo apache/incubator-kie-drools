@@ -17,8 +17,6 @@ package org.kie.kogito.grafana.model.panel.graph;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.grafana.model.panel.GrafanaGridPos;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.panel.GrafanaTarget;
@@ -27,6 +25,9 @@ import org.kie.kogito.grafana.model.panel.common.Options;
 import org.kie.kogito.grafana.model.panel.common.Tooltip;
 import org.kie.kogito.grafana.model.panel.common.XAxis;
 import org.kie.kogito.grafana.model.panel.common.YAxis;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GraphPanel extends GrafanaPanel {

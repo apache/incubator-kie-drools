@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.codegen.api.utils;
 
+import java.util.function.Predicate;
+
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.function.Predicate;
 
 /**
  * Utility class that performs automatic addons discovery

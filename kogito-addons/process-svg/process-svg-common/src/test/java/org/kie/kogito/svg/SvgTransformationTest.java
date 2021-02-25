@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +89,8 @@ public class SvgTransformationTest {
         List<String> active = new ArrayList<String>();
         active.add("_24FBB8D6-EF2D-4DCC-846D-D8C5E21849D2");
         String svg = SVGImageProcessor.transform(readTestFileContent(),
-                                                 completed, active, null, completedNodeColor,
-                                                 completedNodeBorderColor, activeNodeBorderColor);
+                completed, active, null, completedNodeColor,
+                completedNodeBorderColor, activeNodeBorderColor);
 
         // verify transformation
         Document svgDocument = readSVG(svg);
@@ -111,8 +110,8 @@ public class SvgTransformationTest {
         links.put("_1A708F87-11C0-42A0-A464-0B7E259C426F", "http://localhost/svg/processes/1");
 
         String svg = SVGImageProcessor.transform(readTestFileContent(),
-                                                 completed, active, links, "#888888",
-                                                 "#888887", "#888886");
+                completed, active, links, "#888888",
+                "#888887", "#888886");
 
         Document svgDocument = readSVG(svg);
         assertEquals("", ((Element) svgDocument.getFirstChild()).getAttribute("width"));

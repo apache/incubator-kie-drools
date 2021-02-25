@@ -20,12 +20,12 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class KogitoRuleFlowVariableLogEvent extends RuleFlowVariableLogEvent {
 
-    public KogitoRuleFlowVariableLogEvent( final int type,
-                                           final String variableId,
-                                           final String variableInstanceId,
-                                           final ProcessInstance processInstance,
-                                           final String objectToString) {
+    public KogitoRuleFlowVariableLogEvent(final int type,
+            final String variableId,
+            final String variableInstanceId,
+            final ProcessInstance processInstance,
+            final String objectToString) {
         super(type, variableId, variableInstanceId,
-                processInstance.getProcessId(), processInstance.getProcessName(), (( KogitoProcessInstance ) processInstance).getStringId(), objectToString);
+                processInstance.getProcessId(), processInstance.getProcessName(), ((KogitoProcessInstance) processInstance).getStringId(), objectToString);
     }
 }

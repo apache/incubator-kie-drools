@@ -15,13 +15,13 @@
  */
 package org.kie.kogito.pmml;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.kogito.prediction.PredictionModels;
 import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
-
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
 /**
  * Abstract class with common code extended with codegen. Please check codegen usages before rename/move this class.
@@ -36,7 +36,7 @@ public abstract class AbstractPredictionModels implements PredictionModels {
     private static final AtomicReference<Function<String, KieRuntimeFactory>> functionReference = new AtomicReference<>();
     public static final Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction = s -> functionReference.get().apply(s);
 
-    protected static void init(String ... pmmlFiles) {
+    protected static void init(String... pmmlFiles) {
         final java.util.Map<KieBase, KieRuntimeFactory> kieRuntimeFactories = PMMLKogito.createKieRuntimeFactories(pmmlFiles);
         final Function<String, KieRuntimeFactory> function = s -> kieRuntimeFactories.keySet().stream()
                 .filter(kieBase -> KnowledgeBaseUtils.getModel(kieBase, s).isPresent())

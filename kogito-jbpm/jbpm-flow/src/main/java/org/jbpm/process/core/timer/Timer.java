@@ -25,37 +25,37 @@ public class Timer implements Serializable {
     public static final int TIME_DURATION = 1;
     public static final int TIME_CYCLE = 2;
     public static final int TIME_DATE = 3;
-    
+
     private long id;
     private String delay;
     private String period;
     private String date;
     private int timeType;
-    
+
     public long getId() {
         return id;
     }
-    
+
     public void setId(long id) {
         this.id = id;
     }
-    
+
     public String getDelay() {
         return delay;
     }
-    
+
     public void setDelay(String delay) {
         this.delay = delay;
     }
-    
+
     public String getPeriod() {
         return period;
     }
-    
+
     public void setPeriod(String period) {
         this.period = period;
     }
-    
+
     public String getDate() {
         return date;
     }
@@ -63,26 +63,26 @@ public class Timer implements Serializable {
     public void setDate(String date) {
         this.date = date;
     }
-    
+
     public String toString() {
-    	String result =  "Timer";
-    	if (delay != null || period != null) {
-    		result += "[";
-    		if (delay != null) {
-    			result += "delay=" + delay;
-    			if (period != null) {
-    				result += ", ";
-    			}
-    		}
-    		if (period != null) {
-    			result += "period=" + period;
-    		}
-    		if (date != null) {
+        String result = "Timer";
+        if (delay != null || period != null) {
+            result += "[";
+            if (delay != null) {
+                result += "delay=" + delay;
+                if (period != null) {
+                    result += ", ";
+                }
+            }
+            if (period != null) {
+                result += "period=" + period;
+            }
+            if (date != null) {
                 result += "date=" + date;
             }
-    		result += "]";
-    	}
-    	return result;
+            result += "]";
+        }
+        return result;
     }
 
     public int getTimeType() {

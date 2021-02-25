@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,7 +57,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
 
-        assertThat(processInstance.status()).isEqualTo( KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         processInstance.abort();
 
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);

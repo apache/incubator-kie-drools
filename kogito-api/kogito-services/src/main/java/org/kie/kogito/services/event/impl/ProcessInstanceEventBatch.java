@@ -33,8 +33,8 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.kogito.Addons;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
-import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.internal.process.event.KogitoProcessVariableChangedEvent;
+import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -71,7 +71,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
         Set<VariableInstanceEventBody> variables = new LinkedHashSet<>();
 
         for (ProcessEvent event : rawEvents) {
-            ProcessInstanceEventBody body = processInstances.computeIfAbsent( ((KogitoProcessInstance) event.getProcessInstance()).getStringId(), key -> create(event));
+            ProcessInstanceEventBody body = processInstances.computeIfAbsent(((KogitoProcessInstance) event.getProcessInstance()).getStringId(), key -> create(event));
 
             if (event instanceof ProcessNodeTriggeredEvent) {
                 handleProcessNodeTriggeredEvent((ProcessNodeTriggeredEvent) event, body);
@@ -98,7 +98,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
     protected void handleProcessCompletedEvent(ProcessCompletedEvent event, ProcessInstanceEventBody body) {
         // in case this is a process complete event always updated and date and state 
         body.update()
-                .endDate((( KogitoWorkflowProcessInstance ) event.getProcessInstance()).getEndDate())
+                .endDate(((KogitoWorkflowProcessInstance) event.getProcessInstance()).getEndDate())
                 .state(event.getProcessInstance().getState());
     }
 
@@ -177,9 +177,9 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
         if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
             eventBuilder.error(ProcessErrorEventBody.create()
-                                       .nodeDefinitionId(pi.getNodeIdInError())
-                                       .errorMessage(pi.getErrorMessage())
-                                       .build());
+                    .nodeDefinitionId(pi.getNodeIdInError())
+                    .errorMessage(pi.getErrorMessage())
+                    .build());
         }
 
         String securityRoles = (String) pi.getProcess().getMetaData().get("securityRoles");
@@ -201,7 +201,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected NodeInstanceEventBody create(ProcessNodeEvent event) {
-        KogitoNodeInstance ni = ( KogitoNodeInstance ) event.getNodeInstance();
+        KogitoNodeInstance ni = (KogitoNodeInstance) event.getNodeInstance();
 
         return NodeInstanceEventBody.create()
                 .id(ni.getStringId())
@@ -239,7 +239,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
     protected String extractRuntimeSource(Map<String, String> metadata) {
         String processId = metadata.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA);
-        if(processId == null){
+        if (processId == null) {
             return null;
         } else {
             return service + "/" + (processId.contains(".") ? processId.substring(processId.lastIndexOf('.') + 1) : processId);

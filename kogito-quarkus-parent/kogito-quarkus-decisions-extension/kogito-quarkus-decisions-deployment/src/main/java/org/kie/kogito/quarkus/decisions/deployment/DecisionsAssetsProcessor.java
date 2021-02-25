@@ -15,14 +15,15 @@
  */
 package org.kie.kogito.quarkus.decisions.deployment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jboss.jandex.DotName;
+
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
-import org.jboss.jandex.DotName;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main class of the Kogito decisions extension

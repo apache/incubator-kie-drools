@@ -43,13 +43,13 @@ public class HandleEscalationAction implements Action, Serializable {
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
         ExceptionScopeInstance scopeInstance = (ExceptionScopeInstance) ((NodeInstance) context.getNodeInstance()).resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE,
-                                                                                                                                          faultName);
+                faultName);
         if (scopeInstance != null) {
 
             Object tVariable = variableName == null ? null : context.getVariable(variableName);
             org.jbpm.workflow.core.node.Transformation transformation = (org.jbpm.workflow.core.node.Transformation) context.getNodeInstance().getNode().getMetaData().get("Transformation");
             if (transformation != null) {
-                tVariable = new EventTransformerImpl(transformation).transformEvent( (( KogitoProcessInstance ) context.getProcessInstance()).getVariables());
+                tVariable = new EventTransformerImpl(transformation).transformEvent(((KogitoProcessInstance) context.getProcessInstance()).getVariables());
             }
             scopeInstance.handleException(faultName, tVariable);
         } else {

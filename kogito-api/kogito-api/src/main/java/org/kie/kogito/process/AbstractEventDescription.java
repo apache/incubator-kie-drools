@@ -32,9 +32,9 @@ public class AbstractEventDescription<T> implements EventDescription<T> {
     protected String processInstanceId;
 
     protected T dataType;
-    
+
     protected Map<String, String> properties = new HashMap<>();
-       
+
     public AbstractEventDescription(String event, String nodeId, String nodeName, String eventType, String nodeInstanceId, String processInstanceId, T dataType) {
         this.id = nodeInstanceId != null ? nodeInstanceId : nodeId;
         this.event = event;
@@ -45,7 +45,7 @@ public class AbstractEventDescription<T> implements EventDescription<T> {
         this.processInstanceId = processInstanceId;
         this.dataType = dataType;
     }
-    
+
     public AbstractEventDescription(String event, String nodeId, String nodeName, String eventType, String nodeInstanceId, String processInstanceId, T dataType, Map<String, String> properties) {
         this.id = nodeInstanceId != null ? nodeInstanceId : nodeId;
         this.event = event;
@@ -77,7 +77,7 @@ public class AbstractEventDescription<T> implements EventDescription<T> {
     public String getNodeName() {
         return nodeName;
     }
-    
+
     @Override
     public String getEventType() {
         return eventType;
@@ -97,7 +97,7 @@ public class AbstractEventDescription<T> implements EventDescription<T> {
     public T getDataType() {
         return dataType;
     }
-    
+
     @Override
     public Map<String, String> getProperties() {
         return properties;
@@ -105,8 +105,9 @@ public class AbstractEventDescription<T> implements EventDescription<T> {
 
     @Override
     public String toString() {
-        return "EventDesciption [event=" + event + ", nodeId=" + nodeId + ", nodeName=" + nodeName + ", eventType=" + eventType + ", nodeInstanceId=" + nodeInstanceId + ", processInstanceId=" + processInstanceId +
-               ", dataType=" + dataType + ", properties=" + properties + "]";
+        return "EventDesciption [event=" + event + ", nodeId=" + nodeId + ", nodeName=" + nodeName + ", eventType=" + eventType + ", nodeInstanceId=" + nodeInstanceId + ", processInstanceId="
+                + processInstanceId +
+                ", dataType=" + dataType + ", properties=" + properties + "]";
     }
 
     @Override
@@ -163,6 +164,5 @@ public class AbstractEventDescription<T> implements EventDescription<T> {
             return false;
         return true;
     }
-    
-    
+
 }

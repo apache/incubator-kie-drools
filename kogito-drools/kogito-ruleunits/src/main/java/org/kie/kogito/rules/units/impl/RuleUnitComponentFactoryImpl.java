@@ -37,12 +37,12 @@ public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
     }
 
     @Override
-    public RuleUnitDescription createRuleUnitDescription(KiePackage pkg, Class<?> ruleUnitClass ) {
-        return new ReflectiveRuleUnitDescription((InternalKnowledgePackage) pkg, (Class<? extends RuleUnitData>) ruleUnitClass );
+    public RuleUnitDescription createRuleUnitDescription(KiePackage pkg, Class<?> ruleUnitClass) {
+        return new ReflectiveRuleUnitDescription((InternalKnowledgePackage) pkg, (Class<? extends RuleUnitData>) ruleUnitClass);
     }
 
     @Override
-    public RuleUnitDescription createRuleUnitDescription(KiePackage pkg, String ruleUnitSimpleName ) {
+    public RuleUnitDescription createRuleUnitDescription(KiePackage pkg, String ruleUnitSimpleName) {
         return generatedRuleUnitDescriptions.get(pkg.getName() + '.' + ruleUnitSimpleName);
     }
 
@@ -52,12 +52,12 @@ public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
     }
 
     @Override
-    public boolean isRuleUnitClass( Class<?> ruleUnitClass ) {
+    public boolean isRuleUnitClass(Class<?> ruleUnitClass) {
         return RuleUnitData.class.isAssignableFrom(ruleUnitClass);
     }
 
     @Override
-    public boolean isDataSourceClass( Class<?> ruleUnitClass ) {
+    public boolean isDataSourceClass(Class<?> ruleUnitClass) {
         return DataSource.class.isAssignableFrom(ruleUnitClass);
     }
 

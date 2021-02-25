@@ -24,11 +24,11 @@ import org.kie.api.runtime.EnvironmentName;
 public class EnvironmentFactory {
 
     public static Environment newEnvironment() {
-            Environment env = new EnvironmentImpl();
-            env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, 
-                    new ObjectMarshallingStrategy [] {
+        Environment env = new EnvironmentImpl();
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES,
+                new ObjectMarshallingStrategy[] {
                         new KogitoSerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)
-                    });
+                });
         return env;
     }
 

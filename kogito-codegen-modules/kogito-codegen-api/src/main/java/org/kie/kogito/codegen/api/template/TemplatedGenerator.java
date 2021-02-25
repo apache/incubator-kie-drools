@@ -20,21 +20,22 @@ import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
 /**
  * Utility class to handle multi platform template generation.
  * Template naming convention is the following:
- *    templateName + context.name() + "Template.java"
+ * templateName + context.name() + "Template.java"
  *
  * e.g.:
- *    ApplicationConfigQuarkusTemplate.java
- *    PredictionModelsSpringTemplate.java
- *    ApplicationJavaTemplate.java
+ * ApplicationConfigQuarkusTemplate.java
+ * PredictionModelsSpringTemplate.java
+ * ApplicationJavaTemplate.java
  *
  * By default targetTypeName value is ''templateName''
  * By default templateBasePath value is ''/class-templates/''
@@ -114,13 +115,14 @@ public final class TemplatedGenerator {
 
     /**
      * Returns the valid template path if exists or null
+     * 
      * @return
      */
     public String templatePath() {
         String resourcePath = uncheckedTemplatePath();
         String fallbackPath = createTemplatePath(templateBasePath, templateName, fallbackContext);
 
-        if(getResource(resourcePath) != null) {
+        if (getResource(resourcePath) != null) {
             return resourcePath;
         }
 
@@ -133,6 +135,7 @@ public final class TemplatedGenerator {
 
     /**
      * Returns template path applying naming convention without verifying if exist
+     * 
      * @return
      */
     public String uncheckedTemplatePath() {
@@ -161,7 +164,7 @@ public final class TemplatedGenerator {
             Objects.requireNonNull(templateBasePath, "templateBasePath cannot be null");
             String prefix = !templateBasePath.startsWith("/") ? "/" : "";
             String postfix = !templateBasePath.endsWith("/") ? "/" : "";
-            this.templateBasePath =  prefix + templateBasePath + postfix;
+            this.templateBasePath = prefix + templateBasePath + postfix;
             return this;
         }
 

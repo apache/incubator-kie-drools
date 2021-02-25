@@ -28,114 +28,113 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 public class XPATHActionBuilder
-    implements
-    ActionBuilder {
+        implements
+        ActionBuilder {
 
-    private static final Map macros = new HashMap( 5 );
+    private static final Map macros = new HashMap(5);
     static {
-        macros.put( "insert",
-                    new Macro() {
-                        public String doMacro() {
-                            return "kcontext.getKieRuntime().insert";
-                        }
-                    } );
+        macros.put("insert",
+                new Macro() {
+                    public String doMacro() {
+                        return "kcontext.getKieRuntime().insert";
+                    }
+                });
 
-//        macros.put( "insertLogical",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "kcontext.getKnowledgeRuntime()..insertLogical";
-//                        }
-//                    } );
+        //        macros.put( "insertLogical",
+        //                    new Macro() {
+        //                        public String doMacro() {
+        //                            return "kcontext.getKnowledgeRuntime()..insertLogical";
+        //                        }
+        //                    } );
 
+        //        macros.put( "update",
+        //                    new Macro() {
+        //                        public String doMacro() {
+        //                            return "kcontext.getKnowledgeRuntime().update";
+        //                        }
+        //                    } );
 
-//        macros.put( "update",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "kcontext.getKnowledgeRuntime().update";
-//                        }
-//                    } );
-
-//        macros.put( "retract",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "kcontext.getKnowledgeRuntime().retract";
-//                        }
-//                    } );;
+        //        macros.put( "retract",
+        //                    new Macro() {
+        //                        public String doMacro() {
+        //                            return "kcontext.getKnowledgeRuntime().retract";
+        //                        }
+        //                    } );;
     }
-    
+
     public XPATHActionBuilder() {
 
     }
 
     public void build(final PackageBuildContext context,
-                      final DroolsAction action,
-                      final ActionDescr actionDescr,
-                      final ContextResolver contextResolver) {
+            final DroolsAction action,
+            final ActionDescr actionDescr,
+            final ContextResolver contextResolver) {
 
-        String text = processMacros( actionDescr.getText() );
+        String text = processMacros(actionDescr.getText());
 
         try {
-//            XPATHDialect dialect = (XPATHDialect) context.getDialect( "XPath" );
-//
-//            Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
-//            variables.put("kcontext", ProcessContext.class);
-//            variables.put("context", ProcessContext.class);
-//            Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-//                                                                    actionDescr,
-//                                                                    dialect.getInterceptors(),
-//                                                                    text,
-//                                                                    new Map[]{variables, context.getPackageBuilder().getGlobals()},
-//                                                                    null );                       
-//
-//
-//            List<String> variableNames = analysis.getNotBoundedIdentifiers();
-//            if (contextResolver != null) {
-//	            for (String variableName: variableNames) {
-//	            	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
-//	            	if (variableScope == null) {
-//	            		context.getErrors().add(
-//	        				new DescrBuildError(
-//	    						context.getParentDescr(),
-//	                            actionDescr,
-//	                            null,
-//	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
-//	            	} else {
-//	            		variables.put(variableName,
-//            				context.getDialect().getTypeResolver().resolveType(
-//        						variableScope.findVariable(variableName).getType().getStringType()));
-//	            	}
-//	            }
-//            }
-//
-//            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
-//                                                                       analysis,
-//                                                                       null,
-//                                                                       null,
-//                                                                       variables,
-//                                                                       context );              
-//            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
-//            expr.setVariableNames(variableNames);
-//            
-//            
-//            action.setMetaData("Action",  expr );
-//            
-//            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );            
-//            data.addCompileable( action,
-//                                  expr );  
-//            
-//            expr.compile( context.getPackageBuilder().getRootClassLoader() );
-        } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          actionDescr,
-                                                          null,
-                                                          "Unable to build expression for action '" + actionDescr.getText() + "' :" + e ) );
+            //            XPATHDialect dialect = (XPATHDialect) context.getDialect( "XPath" );
+            //
+            //            Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
+            //            variables.put("kcontext", ProcessContext.class);
+            //            variables.put("context", ProcessContext.class);
+            //            Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
+            //                                                                    actionDescr,
+            //                                                                    dialect.getInterceptors(),
+            //                                                                    text,
+            //                                                                    new Map[]{variables, context.getPackageBuilder().getGlobals()},
+            //                                                                    null );                       
+            //
+            //
+            //            List<String> variableNames = analysis.getNotBoundedIdentifiers();
+            //            if (contextResolver != null) {
+            //	            for (String variableName: variableNames) {
+            //	            	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
+            //	            	if (variableScope == null) {
+            //	            		context.getErrors().add(
+            //	        				new DescrBuildError(
+            //	    						context.getParentDescr(),
+            //	                            actionDescr,
+            //	                            null,
+            //	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
+            //	            	} else {
+            //	            		variables.put(variableName,
+            //            				context.getDialect().getTypeResolver().resolveType(
+            //        						variableScope.findVariable(variableName).getType().getStringType()));
+            //	            	}
+            //	            }
+            //            }
+            //
+            //            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
+            //                                                                       analysis,
+            //                                                                       null,
+            //                                                                       null,
+            //                                                                       variables,
+            //                                                                       context );              
+            //            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
+            //            expr.setVariableNames(variableNames);
+            //            
+            //            
+            //            action.setMetaData("Action",  expr );
+            //            
+            //            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );            
+            //            data.addCompileable( action,
+            //                                  expr );  
+            //            
+            //            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+        } catch (final Exception e) {
+            context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+                    actionDescr,
+                    null,
+                    "Unable to build expression for action '" + actionDescr.getText() + "' :" + e));
         }
     }
 
     public static String processMacros(String consequence) {
         MacroProcessor macroProcessor = new MacroProcessor();
-        macroProcessor.setMacros( macros );
-        return macroProcessor.parse( delimitExpressions( consequence ) );
+        macroProcessor.setMacros(macros);
+        return macroProcessor.parse(delimitExpressions(consequence));
     }
 
     /**
@@ -153,39 +152,39 @@ public class XPATHActionBuilder
         int sqre = 0;
         int crly = 0;
         char lastNonWhite = ';';
-        for ( int i = 0; i < cs.length; i++ ) {
+        for (int i = 0; i < cs.length; i++) {
             char c = cs[i];
-            switch ( c ) {
-                case '(' :
+            switch (c) {
+                case '(':
                     brace++;
                     break;
-                case '{' :
+                case '{':
                     crly++;
                     break;
-                case '[' :
+                case '[':
                     sqre++;
                     break;
-                case ')' :
+                case ')':
                     brace--;
                     break;
-                case '}' :
+                case '}':
                     crly--;
                     break;
-                case ']' :
+                case ']':
                     sqre--;
                     break;
-                default :
+                default:
                     break;
             }
-            if ( (brace == 0 && sqre == 0 && crly == 0) && (c == '\n' || c == '\r') ) {
-                if ( lastNonWhite != ';' ) {
-                    result.append( ';' );
+            if ((brace == 0 && sqre == 0 && crly == 0) && (c == '\n' || c == '\r')) {
+                if (lastNonWhite != ';') {
+                    result.append(';');
                     lastNonWhite = ';';
                 }
-            } else if ( !Character.isWhitespace( c ) ) {
+            } else if (!Character.isWhitespace(c)) {
                 lastNonWhite = c;
             }
-            result.append( c );
+            result.append(c);
 
         }
         return result.toString();

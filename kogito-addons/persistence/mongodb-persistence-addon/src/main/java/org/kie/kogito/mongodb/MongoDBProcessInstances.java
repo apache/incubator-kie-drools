@@ -20,10 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Filters;
 import org.kie.kogito.Model;
 import org.kie.kogito.mongodb.marshalling.DocumentMarshallingStrategy;
 import org.kie.kogito.mongodb.marshalling.DocumentProcessInstanceMarshaller;
@@ -35,6 +31,11 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 
 import static org.kie.kogito.mongodb.utils.DocumentConstants.DOCUMENT_ID;
 import static org.kie.kogito.mongodb.utils.DocumentUtils.getCollection;

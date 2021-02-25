@@ -28,26 +28,26 @@ import org.kie.api.io.Resource;
 public class ProcessValidatorRegistry {
 
     private static ProcessValidatorRegistry instance;
-    
-    private Map<String, ProcessValidator> defaultValidators = new ConcurrentHashMap<String, ProcessValidator>();    
+
+    private Map<String, ProcessValidator> defaultValidators = new ConcurrentHashMap<String, ProcessValidator>();
     private Set<ProcessValidator> additionalValidators = new CopyOnWriteArraySet<ProcessValidator>();
-    
+
     private ProcessValidatorRegistry() {
         defaultValidators.put(RuleFlowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
     }
-    
+
     public static ProcessValidatorRegistry getInstance() {
         if (instance == null) {
             instance = new ProcessValidatorRegistry();
         }
-        
+
         return instance;
     }
-    
+
     public void registerAdditonalValidator(ProcessValidator validator) {
         this.additionalValidators.add(validator);
     }
-    
+
     public ProcessValidator getValidator(Process process, Resource resource) {
         if (!additionalValidators.isEmpty()) {
             for (ProcessValidator validator : additionalValidators) {
@@ -57,7 +57,7 @@ public class ProcessValidatorRegistry {
                 }
             }
         }
-        
+
         return defaultValidators.get(process.getType());
     }
 }

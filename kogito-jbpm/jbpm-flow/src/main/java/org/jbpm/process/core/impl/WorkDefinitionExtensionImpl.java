@@ -18,18 +18,18 @@ package org.jbpm.process.core.impl;
 import org.jbpm.process.core.WorkDefinitionExtension;
 
 public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements WorkDefinitionExtension {
-    
+
     private static final long serialVersionUID = 510l;
-    
+
     private String displayName;
     private String explanationText;
     private String icon;
     private String editor;
-    
+
     public String getDisplayName() {
         return displayName;
     }
-    
+
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -37,7 +37,7 @@ public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements W
     public String getExplanationText() {
         return explanationText;
     }
-    
+
     public void setExplanationText(String explanationText) {
         this.explanationText = explanationText;
     }
@@ -45,7 +45,7 @@ public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements W
     public String getIcon() {
         return icon;
     }
-    
+
     public void setIcon(String icon) {
         this.icon = icon;
     }
@@ -53,9 +53,9 @@ public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements W
     public String getCustomEditor() {
         return editor;
     }
-    
+
     public void setCustomEditor(String editor) {
         this.editor = editor;
     }
-    
+
 }

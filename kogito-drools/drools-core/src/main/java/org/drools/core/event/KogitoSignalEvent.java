@@ -28,7 +28,7 @@ public class KogitoSignalEvent extends ProcessEvent implements SignalEvent {
     private Object signalObject;
 
     public KogitoSignalEvent(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
-                             String signalName, Object signalObject) {
+            String signalName, Object signalObject) {
         super(instance, kruntime);
         this.nodeInstance = nodeInstance;
         this.signalName = signalName;

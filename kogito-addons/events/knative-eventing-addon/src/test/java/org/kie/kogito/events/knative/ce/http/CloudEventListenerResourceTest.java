@@ -19,15 +19,17 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,7 +111,6 @@ class CloudEventListenerResourceTest {
                 .header("ce-source", source)
                 .header("ce-kogitoReferenceId", "12345!")
                 .extract().body().as(Message.class);
-
 
     }
 

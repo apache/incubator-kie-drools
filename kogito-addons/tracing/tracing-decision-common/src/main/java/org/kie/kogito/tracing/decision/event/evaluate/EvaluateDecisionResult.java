@@ -76,7 +76,6 @@ public class EvaluateDecisionResult {
                 dr.getEvaluationStatus(),
                 dr.getResult(),
                 map(dr.getMessages(), EventUtils::messageFrom),
-                dr.hasErrors()
-        );
+                dr.hasErrors());
     }
 }

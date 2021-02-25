@@ -19,16 +19,17 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
-import io.quarkus.bootstrap.model.AppDependency;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.modelcompiler.builder.JavaParserCompiler;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.modelcompiler.builder.JavaParserCompiler;
-import org.kie.memorycompiler.CompilationProblem;
-import org.kie.kogito.codegen.api.GeneratedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.quarkus.bootstrap.model.AppDependency;
 
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.toClassName;
 
@@ -39,7 +40,6 @@ import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtil
 public class InMemoryCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(InMemoryCompiler.class);
-
 
     private final JavaCompiler javaCompiler;
     private final JavaCompilerSettings compilerSettings;

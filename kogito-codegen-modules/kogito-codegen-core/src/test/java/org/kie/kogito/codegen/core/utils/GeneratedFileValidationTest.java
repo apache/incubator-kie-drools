@@ -15,16 +15,15 @@
  */
 package org.kie.kogito.codegen.core.utils;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.codegen.core.utils.GeneratedFileValidation;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 
 class GeneratedFileValidationTest {
 
@@ -33,8 +32,7 @@ class GeneratedFileValidationTest {
         List<GeneratedFile> generatedFiles = Arrays.asList(
                 new GeneratedFile(GeneratedFileType.SOURCE, "myPath1", ""),
                 new GeneratedFile(GeneratedFileType.RESOURCE, "myPath2", ""),
-                new GeneratedFile(GeneratedFileType.COMPILED_CLASS, "myPath3", "")
-        );
+                new GeneratedFile(GeneratedFileType.COMPILED_CLASS, "myPath3", ""));
 
         GeneratedFileValidation.validateGeneratedFileTypes(generatedFiles, Arrays.asList(
                 GeneratedFileType.Category.SOURCE,

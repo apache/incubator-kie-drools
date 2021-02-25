@@ -52,8 +52,8 @@ public class ActionNodeFactory extends ExtendedNodeFactory {
     }
 
     public ActionNodeFactory action(String dialect,
-                                    String action,
-                                    boolean isDroolsAction) {
+            String action,
+            boolean isDroolsAction) {
         if (isDroolsAction) {
             DroolsAction droolsAction = new DroolsAction();
             droolsAction.setMetaData(ACTION, action);

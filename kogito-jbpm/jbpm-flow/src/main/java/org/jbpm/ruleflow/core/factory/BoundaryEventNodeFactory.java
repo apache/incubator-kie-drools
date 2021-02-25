@@ -102,12 +102,12 @@ public class BoundaryEventNodeFactory extends EventNodeFactory {
     }
 
     public BoundaryEventNodeFactory addCompensationHandler(String compensationHandlerId) {
-        if(!(nodeContainer instanceof ContextContainer)) {
+        if (!(nodeContainer instanceof ContextContainer)) {
             return this;
         }
         ContextContainer contextContainer = (ContextContainer) nodeContainer;
         Context compensationScope = contextContainer.getDefaultContext(CompensationScope.COMPENSATION_SCOPE);
-        if(compensationScope instanceof CompensationScope) {
+        if (compensationScope instanceof CompensationScope) {
             CompensationHandler handler = new CompensationHandler();
             handler.setNode(getBoundaryEventNode());
             ((CompensationScope) compensationScope).setExceptionHandler(compensationHandlerId, handler);
@@ -117,7 +117,7 @@ public class BoundaryEventNodeFactory extends EventNodeFactory {
 
     @Override
     public BoundaryEventNodeFactory eventType(String eventType) {
-        if(Metadata.EVENT_TYPE_COMPENSATION.equalsIgnoreCase(eventType)) {
+        if (Metadata.EVENT_TYPE_COMPENSATION.equalsIgnoreCase(eventType)) {
             EventTypeFilter eventFilter = new NonAcceptingEventTypeFilter();
             eventFilter.setType(eventType);
             eventFilter(eventFilter);

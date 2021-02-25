@@ -49,52 +49,50 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testSimpleAction() throws Exception {
-        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl("pkg1");
 
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( "list.add( \"hello world\" );" );       
+        actionDescr.setText("list.add( \"hello world\" );");
 
-        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        JavaDialect javaDialect = ( JavaDialect ) dialectRegistry.getDialect( "java" );
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl(pkg);
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
+        JavaDialect javaDialect = (JavaDialect) dialectRegistry.getDialect("java");
 
         ProcessDescr processDescr = new ProcessDescr();
-        processDescr.setClassName( "Process1" );
-        processDescr.setName( "Process1" );
-        
+        processDescr.setClassName("Process1");
+        processDescr.setName("Process1");
+
         WorkflowProcessImpl process = new WorkflowProcessImpl();
-        process.setName( "Process1" );
-        process.setPackageName( "pkg1" );
+        process.setName("Process1");
+        process.setPackageName("pkg1");
 
         ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage("pkg1"), null, processDescr, dialectRegistry, javaDialect);
-        
-        context.init( pkgBuilder, pkg, null, dialectRegistry, javaDialect, null);
-        
-        pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
-        
+
+        context.init(pkgBuilder, pkg, null, dialectRegistry, javaDialect, null);
+
+        pkgBuilder.addPackageFromDrl(new StringReader("package pkg1;\nglobal java.util.List list;\n"));
+
         ActionNode actionNode = new ActionNode();
         DroolsAction action = new DroolsConsequenceAction("java", null);
         actionNode.setAction(action);
-        
-        ProcessDialect dialect = ProcessDialectRegistry.getDialect( "java" );            
-        dialect.getActionBuilder().build( context, action, actionDescr, actionNode );
-        dialect.addProcess( context );
-        javaDialect.compileAll();            
-        assertEquals( 0, javaDialect.getResults().size() );
+
+        ProcessDialect dialect = ProcessDialectRegistry.getDialect("java");
+        dialect.getActionBuilder().build(context, action, actionDescr, actionNode);
+        dialect.addProcess(context);
+        javaDialect.compileAll();
+        assertEquals(0, javaDialect.getResults().size());
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( Arrays.asList(pkgBuilder.getPackages()) );
+        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
         final KieSession wm = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
-        wm.setGlobal( "list", list );        
-        
-        KogitoProcessContext processContext = new KogitoProcessContextImpl( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
-        ((Action) actionNode.getAction().getMetaData("Action")).execute( processContext );
-       
-        assertEquals("hello world", list.get(0) );
-    }    
-    
+        wm.setGlobal("list", list);
+
+        KogitoProcessContext processContext = new KogitoProcessContextImpl(((InternalWorkingMemory) wm).getKnowledgeRuntime());
+        ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
+
+        assertEquals("hello world", list.get(0));
+    }
 
 }
-

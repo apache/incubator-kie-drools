@@ -23,8 +23,8 @@ import org.kie.api.definition.process.WorkflowProcess;
 
 public class UserTasksModelClassGenerator {
 
-    private final WorkflowProcess workFlowProcess;    
-    private  List<UserTaskModelMetaData> modelMetaData;    
+    private final WorkflowProcess workFlowProcess;
+    private List<UserTaskModelMetaData> modelMetaData;
 
     public UserTasksModelClassGenerator(WorkflowProcess workFlowProcess) {
         this.workFlowProcess = workFlowProcess;
@@ -39,5 +39,5 @@ public class UserTasksModelClassGenerator {
     public static String generatedFilePath(String classname) {
         return classname.replace('.', '/') + ".java";
     }
-    
+
 }

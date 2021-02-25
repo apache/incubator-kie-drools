@@ -23,17 +23,17 @@ import java.util.StringJoiner;
  * Job describes the actual entity that should be scheduled and executed
  * upon given expiration time. The job requires following information
  * <ul>
- *  <li>id - unique UUID based identifier</li>
- *  <li>expirationTime - the time when this job should be executed</li>
- *  <li>callbackEndpoint - the callback endpoint (http/https) that will be invoked upon expiration</li>
+ * <li>id - unique UUID based identifier</li>
+ * <li>expirationTime - the time when this job should be executed</li>
+ * <li>callbackEndpoint - the callback endpoint (http/https) that will be invoked upon expiration</li>
  * </ul>
  *
  * On top of that there are additional meta data that points the job to the owner - such as process instance.
  * <ul>
- *  <li>processInstanceId - process instance that owns the job</li>
- *  <li>rootProcessInstanceId - root process instance that the job is part of - is owned as one of the subprocesses of the root process instance</li>
- *  <li>processId - process id of the process instance owning the job</li>
- *  <li>rootProcessId - root process id of the process instance that owns the job</li>
+ * <li>processInstanceId - process instance that owns the job</li>
+ * <li>rootProcessInstanceId - root process instance that the job is part of - is owned as one of the subprocesses of the root process instance</li>
+ * <li>processId - process id of the process instance owning the job</li>
+ * <li>rootProcessId - root process id of the process instance that owns the job</li>
  * </ul>
  */
 public class Job {
@@ -55,8 +55,8 @@ public class Job {
 
     @SuppressWarnings("squid:S00107")
     public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint,
-               String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId,
-               Long repeatInterval, Integer repeatLimit, String nodeInstanceId) {
+            String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId,
+            Long repeatInterval, Integer repeatLimit, String nodeInstanceId) {
         this.id = id;
         this.expirationTime = expirationTime;
         this.priority = priority;
@@ -179,8 +179,8 @@ public class Job {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getExpirationTime(), getPriority(), getCallbackEndpoint(), getProcessInstanceId(),
-                            getRootProcessInstanceId(), getProcessId(), getRootProcessId(), getRepeatLimit(),
-                            getRepeatInterval(), getNodeInstanceId());
+                getRootProcessInstanceId(), getProcessId(), getRootProcessId(), getRepeatLimit(),
+                getRepeatInterval(), getNodeInstanceId());
     }
 
     @Override

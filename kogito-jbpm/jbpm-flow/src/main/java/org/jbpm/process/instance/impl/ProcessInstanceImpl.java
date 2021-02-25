@@ -37,7 +37,7 @@ import org.kie.api.runtime.rule.Agenda;
  * Default implementation of a process instance.
  */
 public abstract class ProcessInstanceImpl implements ProcessInstance,
-                                                     Serializable {
+        Serializable {
 
     private static final long serialVersionUID = 510l;
 

@@ -23,10 +23,10 @@ import com.github.javaparser.ast.CompilationUnit;
  * and the corresponding class.
  *
  * This is to allow the pattern:
- *    app.$sectionname().$method()
+ * app.$sectionname().$method()
  *
  * e.g.:
- *    app.get(Processes.class).createMyProcess()
+ * app.get(Processes.class).createMyProcess()
  */
 public interface ApplicationSection {
 

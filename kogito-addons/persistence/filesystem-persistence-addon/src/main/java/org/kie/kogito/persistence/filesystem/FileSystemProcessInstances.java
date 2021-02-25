@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public class FileSystemProcessInstances implements MutableProcessInstances {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemProcessInstances.class);
@@ -86,10 +86,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             return Optional.empty();
         }
         byte[] data = readBytesFromFile(processInstanceStorage);
-        return Optional.of(mode == MUTABLE ?
-                                   marshaller.unmarshallProcessInstance(data, process) :
-                                   marshaller.unmarshallReadOnlyProcessInstance(data, process)
-        );
+        return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process));
     }
 
     @Override
@@ -98,9 +95,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             return stream
                     .filter(file -> !Files.isDirectory(file))
                     .map(this::readBytesFromFile)
-                    .map(b -> mode == MUTABLE ?
-                            marshaller.unmarshallProcessInstance(b, process) :
-                            marshaller.unmarshallReadOnlyProcessInstance(b, process))
+                    .map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process) : marshaller.unmarshallReadOnlyProcessInstance(b, process))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException("Unable to read process instances ", e);

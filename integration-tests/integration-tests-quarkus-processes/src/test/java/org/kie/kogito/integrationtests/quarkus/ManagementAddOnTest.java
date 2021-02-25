@@ -18,12 +18,13 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,10 +62,10 @@ class ManagementAddOnTest {
         String pid = givenGreetingsProcess();
 
         given().contentType(ContentType.JSON)
-               .when()
-               .delete("/management/processes/{processId}/instances/{processInstanceId}", GREETINGS, pid)
-               .then()
-               .statusCode(200);
+                .when()
+                .delete("/management/processes/{processId}/instances/{processInstanceId}", GREETINGS, pid)
+                .then()
+                .statusCode(200);
     }
 
     @Test
@@ -85,9 +86,9 @@ class ManagementAddOnTest {
     @Test
     void testGetProcessNodes() {
         given().contentType(ContentType.JSON)
-            .when()
+                .when()
                 .get("/management/processes/{processId}/nodes", GREETINGS)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("$.size", is(10))
                 .body("[0].id", is(1))
@@ -114,10 +115,10 @@ class ManagementAddOnTest {
 
         // then trigger new node instance via management interface
         given().contentType(ContentType.JSON)
-               .when()
-               .post("/management/processes/{processId}/instances/{processInstanceId}/nodes/{node}", GREETINGS, pid, HELLO1_NODE)
-               .then()
-               .statusCode(200);
+                .when()
+                .post("/management/processes/{processId}/instances/{processInstanceId}/nodes/{node}", GREETINGS, pid, HELLO1_NODE)
+                .then()
+                .statusCode(200);
 
         // since node instance was retriggered it must have different ids
         List<String> newNodeInstanceIds = whenGetNodeInstances(pid);
@@ -127,29 +128,29 @@ class ManagementAddOnTest {
 
     private String givenGreetingsProcess() {
         return given().contentType(ContentType.JSON)
-                      .when()
-                      .post("/greetings")
-                      .then()
-                      .statusCode(201)
-                      .body("id", not(emptyOrNullString()))
-                      .body("test", emptyOrNullString())
-                      .extract().path("id");
+                .when()
+                .post("/greetings")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .body("test", emptyOrNullString())
+                .extract().path("id");
     }
 
     private void whenCancelNodeInstance(String pid, String nodeInstanceId) {
         given().contentType(ContentType.JSON)
-               .when()
-               .delete("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", GREETINGS, pid, nodeInstanceId)
-               .then()
-               .statusCode(200);
+                .when()
+                .delete("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", GREETINGS, pid, nodeInstanceId)
+                .then()
+                .statusCode(200);
     }
 
     private List<String> whenGetNodeInstances(String pid) {
         return given().contentType(ContentType.JSON)
-                      .when()
-                      .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, pid)
-                      .then()
-                      .statusCode(200)
-                      .extract().response().jsonPath().getList("nodeInstanceId");
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, pid)
+                .then()
+                .statusCode(200)
+                .extract().response().jsonPath().getList("nodeInstanceId");
     }
 }

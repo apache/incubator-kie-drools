@@ -22,10 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SendTaskHandler implements KogitoWorkItemHandler {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(SendTaskHandler.class);
 
-    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         String message = (String) workItem.getParameter("Message");
         logger.debug("Sending message: {}", message);
         manager.completeWorkItem(workItem.getStringId(), null);

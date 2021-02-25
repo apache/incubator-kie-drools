@@ -22,7 +22,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 public class InputModelClassGenerator {
-    
+
     private final KogitoBuildContext context;
     private final WorkflowProcess workFlowProcess;
     private String className;
@@ -43,7 +43,7 @@ public class InputModelClassGenerator {
         // create model class for all variables
         modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateInputModel(workFlowProcess);
         modelMetaData.setSupportsValidation(context.isValidationSupported());
-                
+
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
         return modelMetaData;
     }

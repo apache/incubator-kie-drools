@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.codegen.process.persistence.proto;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
+
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 
 public interface ProtoGenerator {
 
@@ -32,9 +32,10 @@ public interface ProtoGenerator {
     Collection<GeneratedFile> generateProtoFiles();
 
     Set<String> getProcessIds();
-    
+
     /**
      * Returns params of first constructor of persistence class
+     * 
      * @return
      */
     Collection<String> getPersistenceClassParams();

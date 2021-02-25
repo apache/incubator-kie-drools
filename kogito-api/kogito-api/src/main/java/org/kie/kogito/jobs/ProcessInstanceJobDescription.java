@@ -36,13 +36,13 @@ public class ProcessInstanceJobDescription implements JobDescription {
     private final String nodeInstanceId;
 
     private ProcessInstanceJobDescription(long timerId,
-                                          ExpirationTime expirationTime,
-                                          Integer priority,
-                                          String processInstanceId,
-                                          String rootProcessInstanceId,
-                                          String processId,
-                                          String rootProcessId,
-                                          String nodeInstanceId) {
+            ExpirationTime expirationTime,
+            Integer priority,
+            String processInstanceId,
+            String rootProcessInstanceId,
+            String processId,
+            String rootProcessId,
+            String nodeInstanceId) {
         this.id = UUID.randomUUID().toString() + "_" + timerId;
         this.expirationTime = requireNonNull(expirationTime);
         this.priority = requireNonNull(priority);
@@ -54,34 +54,34 @@ public class ProcessInstanceJobDescription implements JobDescription {
     }
 
     public static ProcessInstanceJobDescription of(long timerId,
-                                                   ExpirationTime expirationTime,
-                                                   String processInstanceId,
-                                                   String processId) {
+            ExpirationTime expirationTime,
+            String processInstanceId,
+            String processId) {
         return of(timerId, expirationTime, processInstanceId, null, processId, null, null);
     }
 
     public static ProcessInstanceJobDescription of(long timerId,
-                                                   ExpirationTime expirationTime,
-                                                   String processInstanceId,
-                                                   String rootProcessInstanceId,
-                                                   String processId,
-                                                   String rootProcessId,
-                                                   String nodeInstanceId) {
+            ExpirationTime expirationTime,
+            String processInstanceId,
+            String rootProcessInstanceId,
+            String processId,
+            String rootProcessId,
+            String nodeInstanceId) {
         return of(timerId, expirationTime, DEFAULT_PRIORITY, processInstanceId, rootProcessInstanceId, processId,
-                  rootProcessId, nodeInstanceId);
+                rootProcessId, nodeInstanceId);
     }
 
     public static ProcessInstanceJobDescription of(long timerId,
-                                                   ExpirationTime expirationTime,
-                                                   Integer priority,
-                                                   String processInstanceId,
-                                                   String rootProcessInstanceId,
-                                                   String processId,
-                                                   String rootProcessId,
-                                                   String nodeInstanceId) {
+            ExpirationTime expirationTime,
+            Integer priority,
+            String processInstanceId,
+            String rootProcessInstanceId,
+            String processId,
+            String rootProcessId,
+            String nodeInstanceId) {
 
         return new ProcessInstanceJobDescription(timerId, expirationTime, priority, processInstanceId,
-                                                 rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
+                rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
     }
 
     @Override

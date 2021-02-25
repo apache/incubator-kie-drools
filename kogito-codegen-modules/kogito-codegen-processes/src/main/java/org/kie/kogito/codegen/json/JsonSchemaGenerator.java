@@ -27,6 +27,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jbpm.util.JsonSchemaUtil;
+import org.kie.kogito.UserTask;
+import org.kie.kogito.UserTaskParam;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,13 +46,6 @@ import com.github.victools.jsonschema.generator.SchemaGenerationContext;
 import com.github.victools.jsonschema.generator.SchemaGenerator;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
-import org.jbpm.util.JsonSchemaUtil;
-import org.kie.kogito.UserTask;
-import org.kie.kogito.UserTaskParam;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JsonSchemaGenerator {
 
@@ -77,9 +78,7 @@ public class JsonSchemaGenerator {
         }
 
         public ClassBuilder withSchemaVersion(String schemaVersion) {
-            this.schemaVersion = schemaVersion == null?
-                    DEFAULT_SCHEMA_VERSION :
-                    SchemaVersion.valueOf(schemaVersion.trim().toUpperCase());
+            this.schemaVersion = schemaVersion == null ? DEFAULT_SCHEMA_VERSION : SchemaVersion.valueOf(schemaVersion.trim().toUpperCase());
             return this;
         }
 
@@ -97,7 +96,7 @@ public class JsonSchemaGenerator {
             boolean isNull = userTask == null;
             if (isNull) {
                 logger.warn("Could not retrieve UserTask annotation from class {} but was expected. " +
-                                    "This may be a class loader bug. If JsonSchemas have been generated you may ignore this message.", c);
+                        "This may be a class loader bug. If JsonSchemas have been generated you may ignore this message.", c);
             }
             return !isNull;
         }

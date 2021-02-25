@@ -29,57 +29,57 @@ import org.xml.sax.SAXException;
 
 public class ImportHandler extends BaseAbstractHandler implements Handler {
 
-	public ImportHandler() {
-		if ((this.validParents == null) && (this.validPeers == null)) {
-			this.validParents = new HashSet();
-			this.validParents.add(Process.class);
+    public ImportHandler() {
+        if ((this.validParents == null) && (this.validPeers == null)) {
+            this.validParents = new HashSet();
+            this.validParents.add(Process.class);
 
-			this.validPeers = new HashSet();
-			this.validPeers.add(null);
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
 
-			this.allowNesting = false;
-		}
-	}
+            this.allowNesting = false;
+        }
+    }
 
-	public Object start(final String uri, final String localName,
-			final Attributes attrs, final ExtensibleXmlParser parser)
-			throws SAXException {
-		parser.startElementBuilder(localName, attrs);
-		WorkflowProcessImpl process = (WorkflowProcessImpl) parser.getParent();
+    public Object start(final String uri, final String localName,
+            final Attributes attrs, final ExtensibleXmlParser parser)
+            throws SAXException {
+        parser.startElementBuilder(localName, attrs);
+        WorkflowProcessImpl process = (WorkflowProcessImpl) parser.getParent();
 
-		final String name = attrs.getValue("name");
-		final String type = attrs.getValue("importType");
-		final String location = attrs.getValue("location");
-		final String namespace = attrs.getValue("namespace");
-		emptyAttributeCheck(localName, "name", name, parser);
+        final String name = attrs.getValue("name");
+        final String type = attrs.getValue("importType");
+        final String location = attrs.getValue("location");
+        final String namespace = attrs.getValue("namespace");
+        emptyAttributeCheck(localName, "name", name, parser);
 
-		if (type != null && location != null && namespace != null) {
-    		Map<String, String> typedImports = (Map<String, String>) process.getMetaData(type);
-    		if (typedImports == null) {
-    		    typedImports = new HashMap<String, String>();
-    		    process.setMetaData(type, typedImports);
-    		}
-    		typedImports.put(namespace, location);
-		} else {
-		
-    		java.util.Set<String> list = process.getImports();
-    		if (list == null) {
-    			list = new HashSet<String>();
-    			process.setImports(list);
-    		}
-    		list.add(name);
-		}
-		return null;
-	}
+        if (type != null && location != null && namespace != null) {
+            Map<String, String> typedImports = (Map<String, String>) process.getMetaData(type);
+            if (typedImports == null) {
+                typedImports = new HashMap<String, String>();
+                process.setMetaData(type, typedImports);
+            }
+            typedImports.put(namespace, location);
+        } else {
 
-	public Object end(final String uri, final String localName,
-			final ExtensibleXmlParser parser) throws SAXException {
-		parser.endElementBuilder();
-		return null;
-	}
+            java.util.Set<String> list = process.getImports();
+            if (list == null) {
+                list = new HashSet<String>();
+                process.setImports(list);
+            }
+            list.add(name);
+        }
+        return null;
+    }
 
-	public Class generateNodeFor() {
-		return null;
-	}
+    public Object end(final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.endElementBuilder();
+        return null;
+    }
+
+    public Class generateNodeFor() {
+        return null;
+    }
 
 }

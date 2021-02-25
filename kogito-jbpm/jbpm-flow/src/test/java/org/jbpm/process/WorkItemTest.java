@@ -55,237 +55,237 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class WorkItemTest extends AbstractBaseTest {
 
-    public void addLogger() { 
+    public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
     }
-    
-	@Test
+
+    @Test
     public void testReachNonRegisteredWorkItemHandler() {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
-        RuleFlowProcess process = getWorkItemProcess( processId,
-                                                      workName );
-        KieSession ksession = createKieSession(process); 
+        RuleFlowProcess process = getWorkItemProcess(processId,
+                workName);
+        KieSession ksession = createKieSession(process);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put( "UserName",
-                        "John Doe" );
-        parameters.put( "Person",
-                        new Person( "John Doe" ) );
+        parameters.put("UserName",
+                "John Doe");
+        parameters.put("Person",
+                new Person("John Doe"));
 
         ProcessInstance processInstance = null;
         try {
-            processInstance = ksession.startProcess( "org.drools.actions",
-                                                                 parameters );
-            fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
-        } catch ( Throwable e ) {
+            processInstance = ksession.startProcess("org.drools.actions",
+                    parameters);
+            fail("should fail if WorkItemHandler for" + workName + "is not registered");
+        } catch (Throwable e) {
 
         }
-        assertEquals( KogitoProcessInstance.STATE_ERROR,
-                      processInstance.getState() );
+        assertEquals(KogitoProcessInstance.STATE_ERROR,
+                processInstance.getState());
     }
 
-	@Test
+    @Test
     public void testCancelNonRegisteredWorkItemHandler() {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
-        RuleFlowProcess process = getWorkItemProcess( processId,
-                                                      workName );
+        RuleFlowProcess process = getWorkItemProcess(processId,
+                workName);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(process) );
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(process));
 
-        kruntime.getWorkItemManager().registerWorkItemHandler( workName,
-                                                               new DoNothingWorkItemHandler() );
+        kruntime.getWorkItemManager().registerWorkItemHandler(workName,
+                new DoNothingWorkItemHandler());
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put( "UserName",
-                        "John Doe" );
-        parameters.put( "Person",
-                        new Person( "John Doe" ) );
+        parameters.put("UserName",
+                "John Doe");
+        parameters.put("Person",
+                new Person("John Doe"));
 
-        KogitoProcessInstance processInstance = kruntime.startProcess( "org.drools.actions", parameters );
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.actions", parameters);
         String processInstanceId = processInstance.getStringId();
-        assertEquals( ProcessInstance.STATE_ACTIVE,
-                           processInstance.getState() );
-        kruntime.getWorkItemManager().registerWorkItemHandler( workName,
-                                                               null );
+        assertEquals(ProcessInstance.STATE_ACTIVE,
+                processInstance.getState());
+        kruntime.getWorkItemManager().registerWorkItemHandler(workName,
+                null);
 
         try {
-            kruntime.abortProcessInstance( processInstanceId );
-            fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
-        } catch ( KogitoWorkItemHandlerNotFoundException wihnfe ) {
+            kruntime.abortProcessInstance(processInstanceId);
+            fail("should fail if WorkItemHandler for" + workName + "is not registered");
+        } catch (KogitoWorkItemHandlerNotFoundException wihnfe) {
 
         }
 
-        assertEquals( ProcessInstance.STATE_ABORTED,
-                             processInstance.getState() );
+        assertEquals(ProcessInstance.STATE_ABORTED,
+                processInstance.getState());
     }
-	
-	@Test
+
+    @Test
     public void testMockDataWorkItemHandler() {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
-        RuleFlowProcess process = getWorkItemProcess( processId,
-                                                      workName );
-        KieSession ksession = createKieSession(process); 
-        
+        RuleFlowProcess process = getWorkItemProcess(processId,
+                workName);
+        KieSession ksession = createKieSession(process);
+
         Map<String, Object> output = new HashMap<String, Object>();
         output.put("Result", "test");
-        
-        ksession.getWorkItemManager().registerWorkItemHandler( workName,
-                                                               new MockDataWorkItemHandler(output) );
+
+        ksession.getWorkItemManager().registerWorkItemHandler(workName,
+                new MockDataWorkItemHandler(output));
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put( "UserName",
-                        "John Doe" );
-        parameters.put( "Person",
-                        new Person( "John Doe" ) );
+        parameters.put("UserName",
+                "John Doe");
+        parameters.put("Person",
+                new Person("John Doe"));
 
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
-                                                                  parameters );
-        
-        Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.actions",
+                parameters);
+
+        Object numberVariable = ((WorkflowProcessInstance) processInstance).getVariable("MyObject");
         assertNotNull(numberVariable);
         assertEquals("test", numberVariable);
 
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                             processInstance.getState() );
+        assertEquals(ProcessInstance.STATE_COMPLETED,
+                processInstance.getState());
     }
-	
+
     @Test
     public void testMockDataWorkItemHandlerCustomFunction() {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
-        RuleFlowProcess process = getWorkItemProcess( processId,
-                                                      workName );
+        RuleFlowProcess process = getWorkItemProcess(processId,
+                workName);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(process) );
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(process));
 
-        kruntime.getWorkItemManager().registerWorkItemHandler( workName,
-                                                               new MockDataWorkItemHandler((input) ->  {
-            Map<String, Object> output = new HashMap<String, Object>();
-            if ("John Doe".equals(input.get("Comment"))) {
-                output.put("Result", "one");                
-            } else {
-                output.put("Result", "two");
-                
-            }
-            return output;
-        } ));
+        kruntime.getWorkItemManager().registerWorkItemHandler(workName,
+                new MockDataWorkItemHandler((input) -> {
+                    Map<String, Object> output = new HashMap<String, Object>();
+                    if ("John Doe".equals(input.get("Comment"))) {
+                        output.put("Result", "one");
+                    } else {
+                        output.put("Result", "two");
+
+                    }
+                    return output;
+                }));
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put( "UserName",
-                        "John Doe" );
-        parameters.put( "Person",
-                        new Person( "John Doe" ) );
+        parameters.put("UserName",
+                "John Doe");
+        parameters.put("Person",
+                new Person("John Doe"));
 
-        ProcessInstance processInstance = kruntime.startProcess( "org.drools.actions",
-                                                                  parameters );
-        
-        Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
+        ProcessInstance processInstance = kruntime.startProcess("org.drools.actions",
+                parameters);
+
+        Object numberVariable = ((WorkflowProcessInstance) processInstance).getVariable("MyObject");
         assertNotNull(numberVariable);
         assertEquals("one", numberVariable);
 
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                             processInstance.getState() );
-        
-        parameters = new HashMap<String, Object>();
-        parameters.put( "UserName",
-                        "John Doe" );
-        parameters.put( "Person",
-                        new Person( "John Deen" ) );
+        assertEquals(ProcessInstance.STATE_COMPLETED,
+                processInstance.getState());
 
-        processInstance = kruntime.startProcess( "org.drools.actions",
-                                                                  parameters );
-        
-        numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
+        parameters = new HashMap<String, Object>();
+        parameters.put("UserName",
+                "John Doe");
+        parameters.put("Person",
+                new Person("John Deen"));
+
+        processInstance = kruntime.startProcess("org.drools.actions",
+                parameters);
+
+        numberVariable = ((WorkflowProcessInstance) processInstance).getVariable("MyObject");
         assertNotNull(numberVariable);
         assertEquals("two", numberVariable);
 
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                             processInstance.getState() );
+        assertEquals(ProcessInstance.STATE_COMPLETED,
+                processInstance.getState());
     }
 
     private RuleFlowProcess getWorkItemProcess(String processId,
-                                               String workName) {
+            String workName) {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId( processId );
+        process.setId(processId);
 
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
-        variable.setName( "UserName" );
-        variable.setType( new StringDataType() );
-        variables.add( variable );
+        variable.setName("UserName");
+        variable.setType(new StringDataType());
+        variables.add(variable);
         variable = new Variable();
-        variable.setName( "Person" );
-        variable.setType( new ObjectDataType( Person.class.getName() ) );
-        variables.add( variable );
+        variable.setName("Person");
+        variable.setType(new ObjectDataType(Person.class.getName()));
+        variables.add(variable);
         variable = new Variable();
-        variable.setName( "MyObject" );
-        variable.setType( new ObjectDataType() );
-        variables.add( variable );
+        variable.setName("MyObject");
+        variable.setType(new ObjectDataType());
+        variables.add(variable);
         variable = new Variable();
-        variable.setName( "Number" );
-        variable.setType( new IntegerDataType() );
-        variables.add( variable );
-        process.getVariableScope().setVariables( variables );
+        variable.setName("Number");
+        variable.setType(new IntegerDataType());
+        variables.add(variable);
+        process.getVariableScope().setVariables(variables);
 
         StartNode startNode = new StartNode();
-        startNode.setName( "Start" );
-        startNode.setId( 1 );
+        startNode.setName("Start");
+        startNode.setId(1);
 
         WorkItemNode workItemNode = new WorkItemNode();
-        workItemNode.setName( "workItemNode" );
-        workItemNode.setId( 2 );
-        workItemNode.addInMapping( "Comment",
-                                   "Person.name" );
-        workItemNode.addInMapping( "Attachment",
-                                   "MyObject" );
-        workItemNode.addOutMapping( "Result",
-                                    "MyObject" );
-        workItemNode.addOutMapping( "Result.length()",
-                                    "Number" );
+        workItemNode.setName("workItemNode");
+        workItemNode.setId(2);
+        workItemNode.addInMapping("Comment",
+                "Person.name");
+        workItemNode.addInMapping("Attachment",
+                "MyObject");
+        workItemNode.addOutMapping("Result",
+                "MyObject");
+        workItemNode.addOutMapping("Result.length()",
+                "Number");
         Work work = new WorkImpl();
-        work.setName( workName );
+        work.setName(workName);
         Set<ParameterDefinition> parameterDefinitions = new HashSet<ParameterDefinition>();
-        ParameterDefinition parameterDefinition = new ParameterDefinitionImpl( "ActorId",
-                                                                               new StringDataType() );
-        parameterDefinitions.add( parameterDefinition );
-        parameterDefinition = new ParameterDefinitionImpl( "Content",
-                                                           new StringDataType() );
-        parameterDefinitions.add( parameterDefinition );
-        parameterDefinition = new ParameterDefinitionImpl( "Comment",
-                                                           new StringDataType() );
-        parameterDefinitions.add( parameterDefinition );
-        work.setParameterDefinitions( parameterDefinitions );
-        work.setParameter( "ActorId",
-                           "#{UserName}" );
-        work.setParameter( "Content",
-                           "#{Person.name}" );
-        workItemNode.setWork( work );
+        ParameterDefinition parameterDefinition = new ParameterDefinitionImpl("ActorId",
+                new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        parameterDefinition = new ParameterDefinitionImpl("Content",
+                new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        parameterDefinition = new ParameterDefinitionImpl("Comment",
+                new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        work.setParameterDefinitions(parameterDefinitions);
+        work.setParameter("ActorId",
+                "#{UserName}");
+        work.setParameter("Content",
+                "#{Person.name}");
+        workItemNode.setWork(work);
 
         EndNode endNode = new EndNode();
-        endNode.setName( "End" );
-        endNode.setId( 3 );
+        endNode.setName("End");
+        endNode.setId(3);
 
-        connect( startNode,
-                 workItemNode );
-        connect( workItemNode,
-                 endNode );
+        connect(startNode,
+                workItemNode);
+        connect(workItemNode,
+                endNode);
 
-        process.addNode( startNode );
-        process.addNode( workItemNode );
-        process.addNode( endNode );
+        process.addNode(startNode);
+        process.addNode(workItemNode);
+        process.addNode(endNode);
 
         return process;
     }
 
-    private void connect( Node sourceNode,
-                          Node targetNode) {
-        new ConnectionImpl( sourceNode,
-                             Node.CONNECTION_DEFAULT_TYPE,
-                             targetNode,
-                             Node.CONNECTION_DEFAULT_TYPE );
+    private void connect(Node sourceNode,
+            Node targetNode) {
+        new ConnectionImpl(sourceNode,
+                Node.CONNECTION_DEFAULT_TYPE,
+                targetNode,
+                Node.CONNECTION_DEFAULT_TYPE);
     }
 
 }

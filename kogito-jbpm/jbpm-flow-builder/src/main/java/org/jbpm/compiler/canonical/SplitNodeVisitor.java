@@ -15,6 +15,15 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Map.Entry;
+
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.factory.SplitFactory;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.node.Split;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -23,14 +32,6 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.SplitFactory;
-import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.core.impl.ConnectionRef;
-import org.jbpm.workflow.core.node.Split;
-
-import java.util.Map.Entry;
 
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_CONSTRAINT;
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_TYPE;
@@ -56,8 +57,7 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                     BlockStmt actionBody = new BlockStmt();
                     LambdaExpr lambda = new LambdaExpr(
                             new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
-                            actionBody
-                    );
+                            actionBody);
 
                     for (Variable v : variableScope.getVariables()) {
                         actionBody.addStatement(makeAssignment(v));

@@ -31,7 +31,8 @@ public class Person {
 
     private transient List<Address> addresses = new ArrayList<>();
 
-    public Person() { }
+    public Person() {
+    }
 
     public Person(String name, int age) {
         this.name = name;
@@ -93,10 +94,10 @@ public class Person {
     @Override
     public String toString() {
         return "Person{" +
-               "name='" + name + '\'' +
-               ", age=" + age +
-               ", adult=" + adult +
-               '}';
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", adult=" + adult +
+                '}';
     }
 
     @Override
@@ -109,8 +110,8 @@ public class Person {
         }
         Person person = (Person) o;
         return age == person.age &&
-               adult == person.adult &&
-               Objects.equals(name, person.name);
+                adult == person.adult &&
+                Objects.equals(name, person.name);
     }
 
     @Override

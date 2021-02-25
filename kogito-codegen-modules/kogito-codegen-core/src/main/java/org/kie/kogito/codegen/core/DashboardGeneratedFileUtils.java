@@ -21,10 +21,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DashboardGeneratedFileUtils {
     public static final GeneratedFileType DASHBOARD_TYPE = GeneratedFileType.of("DASHBOARD", GeneratedFileType.Category.RESOURCE);
@@ -38,7 +39,7 @@ public class DashboardGeneratedFileUtils {
         // utility class
     }
 
-    public static List<GeneratedFile> operational(String operationalDashboard, String name){
+    public static List<GeneratedFile> operational(String operationalDashboard, String name) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedFiles.add(new GeneratedFile(DASHBOARD_TYPE,
                 STATIC_RESOURCE_PATH + OPERATIONAL_DASHBOARD_PREFIX + name,
@@ -46,7 +47,7 @@ public class DashboardGeneratedFileUtils {
         return generatedFiles;
     }
 
-    public static List<GeneratedFile> domain(String domainDashboard, String name){
+    public static List<GeneratedFile> domain(String domainDashboard, String name) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedFiles.add(new GeneratedFile(DASHBOARD_TYPE,
                 STATIC_RESOURCE_PATH + DOMAIN_DASHBOARD_PREFIX + name,
@@ -54,13 +55,13 @@ public class DashboardGeneratedFileUtils {
         return generatedFiles;
     }
 
-    public static Optional<GeneratedFile> list(Collection<GeneratedFile> generatedFiles){
+    public static Optional<GeneratedFile> list(Collection<GeneratedFile> generatedFiles) {
         List<String> fileNames = generatedFiles.stream()
                 .filter(x -> x.type().equals(DASHBOARD_TYPE))
                 .map(x -> x.relativePath().substring(x.relativePath().lastIndexOf("/") + 1))
                 .collect(Collectors.toList());
 
-        if (!fileNames.isEmpty()){
+        if (!fileNames.isEmpty()) {
             try {
                 return Optional.of(new GeneratedFile(DASHBOARD_TYPE,
                         STATIC_RESOURCE_PATH + LIST_FILENAME,

@@ -44,84 +44,83 @@ public class AbstractMVELBuilder {
         int sqre = 0;
         int crly = 0;
         char lastNonWhite = ';';
-        for ( int i = 0; i < cs.length; i++ ) {
+        for (int i = 0; i < cs.length; i++) {
             char c = cs[i];
-            switch ( c ) {
-                case '(' :
+            switch (c) {
+                case '(':
                     brace++;
                     break;
-                case '{' :
+                case '{':
                     crly++;
                     break;
-                case '[' :
+                case '[':
                     sqre++;
                     break;
-                case ')' :
+                case ')':
                     brace--;
                     break;
-                case '}' :
+                case '}':
                     crly--;
                     break;
-                case ']' :
+                case ']':
                     sqre--;
                     break;
-                default :
+                default:
                     break;
             }
-            if ( (brace == 0 && sqre == 0 && crly == 0) && (c == '\n' || c == '\r') ) {
-                if ( lastNonWhite != ';' ) {
-                    result.append( ';' );
+            if ((brace == 0 && sqre == 0 && crly == 0) && (c == '\n' || c == '\r')) {
+                if (lastNonWhite != ';') {
+                    result.append(';');
                     lastNonWhite = ';';
                 }
-            } else if ( !Character.isWhitespace( c ) ) {
+            } else if (!Character.isWhitespace(c)) {
                 lastNonWhite = c;
             }
-            result.append( c );
+            result.append(c);
 
         }
         return result.toString();
     }
-   
 
-    protected MVELAnalysisResult getAnalysis( final PackageBuildContext context,
-                                              final BaseDescr descr,
-                                              MVELDialect dialect,
-                                              final String text,
-                                              Map<String,Class<?>> variables) {
-       
+    protected MVELAnalysisResult getAnalysis(final PackageBuildContext context,
+            final BaseDescr descr,
+            MVELDialect dialect,
+            final String text,
+            Map<String, Class<?>> variables) {
+
         boolean typeSafe = context.isTypesafe();
-        
+
         // we can't know all the types ahead of time with processes, but we don't need return types, so it's ok
-        context.setTypesafe( false ); 
-        
+        context.setTypesafe(false);
+
         MVELAnalysisResult analysis = null;
-        try { 
+        try {
             BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context);
-            analysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
-                                                                    text,
-                                                                    boundIdentifiers,
-                                                                    null,
-                                                                    "context",
-                                                                    org.kie.api.runtime.process.ProcessContext.class );
-        } finally { 
-            context.setTypesafe( typeSafe );
+            analysis = (MVELAnalysisResult) dialect.analyzeBlock(context,
+                    text,
+                    boundIdentifiers,
+                    null,
+                    "context",
+                    org.kie.api.runtime.process.ProcessContext.class);
+        } finally {
+            context.setTypesafe(typeSafe);
         }
-        
+
         return analysis;
     }
-    
+
     protected void collectTypes(String key, AnalysisResult analysis, ProcessBuildContext context) {
         if (context.getProcess() != null) {
             Set<String> referencedTypes = new HashSet<String>();
-            
+
             MVELAnalysisResult mvelAnalysis = (MVELAnalysisResult) analysis;
-            
-            for( Class<?> varClass : mvelAnalysis.getMvelVariables().values() ) { 
+
+            for (Class<?> varClass : mvelAnalysis.getMvelVariables().values()) {
                 referencedTypes.add(varClass.getCanonicalName());
             }
-            
+
             context.getProcess().getMetaData().put(key + "ReferencedTypes", referencedTypes);
         }
-        
+
     }
 }

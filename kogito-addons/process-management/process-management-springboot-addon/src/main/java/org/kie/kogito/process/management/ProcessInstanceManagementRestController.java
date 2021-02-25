@@ -62,7 +62,7 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     @Override
     @GetMapping(value = "{processId}/instances/{processInstanceId}/error", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getInstanceInError(@PathVariable("processId") String processId,
-                                             @PathVariable("processInstanceId") String processInstanceId) {
+            @PathVariable("processInstanceId") String processInstanceId) {
         return doGetInstanceInError(processId, processInstanceId);
     }
 
@@ -74,8 +74,7 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
 
     @Override
     @PostMapping(value = "{processId}/instances/{processInstanceId}/retrigger", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity retriggerInstanceInError(@PathVariable("processId") String processId, @PathVariable(
-            "processInstanceId") String processInstanceId) {
+    public ResponseEntity retriggerInstanceInError(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId) {
         return doRetriggerInstanceInError(processId, processInstanceId);
     }
 
@@ -92,16 +91,16 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     }
 
     @Override
-    @PostMapping(value = "{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", produces =
-            APPLICATION_JSON_VALUE)
-    public ResponseEntity retriggerNodeInstanceId(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId, @PathVariable("nodeInstanceId") String nodeInstanceId) {
+    @PostMapping(value = "{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity retriggerNodeInstanceId(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId,
+            @PathVariable("nodeInstanceId") String nodeInstanceId) {
         return doRetriggerNodeInstanceId(processId, processInstanceId, nodeInstanceId);
     }
 
     @Override
-    @DeleteMapping(value = "{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", produces =
-            APPLICATION_JSON_VALUE)
-    public ResponseEntity cancelNodeInstanceId(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId, @PathVariable("nodeInstanceId") String nodeInstanceId) {
+    @DeleteMapping(value = "{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity cancelNodeInstanceId(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId,
+            @PathVariable("nodeInstanceId") String nodeInstanceId) {
         return doCancelNodeInstanceId(processId, processInstanceId, nodeInstanceId);
     }
 

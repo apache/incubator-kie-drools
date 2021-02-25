@@ -15,13 +15,13 @@
  */
 package org.kogito.scenariosimulation.runner;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.drools.scenariosimulation.backend.runner.AbstractRunnerHelper;
 import org.drools.scenariosimulation.backend.runner.DMNScenarioRunner;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.kie.api.runtime.KieContainer;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 
 public class KogitoDMNScenarioRunner extends DMNScenarioRunner {
 
@@ -38,6 +38,7 @@ public class KogitoDMNScenarioRunner extends DMNScenarioRunner {
 
     /**
      * Temporary hack, it is needed because AbstractScenarioRunner invokes kieContainer.getClassLoader() in the constructor
+     * 
      * @return
      */
     private static KieContainer mockKieContainer() {

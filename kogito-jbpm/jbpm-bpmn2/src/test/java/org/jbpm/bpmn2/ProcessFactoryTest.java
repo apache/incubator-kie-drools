@@ -45,16 +45,16 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .packageName("org.jbpm")
                 // nodes
                 .startNode(1)
-                    .name("Start")
-                    .done()
+                .name("Start")
+                .done()
                 .actionNode(2)
-                    .name("Action")
-                    .action("java",
-                            "System.out.println(\"Action\");")
-                    .done()
+                .name("Action")
+                .action("java",
+                        "System.out.println(\"Action\");")
+                .done()
                 .endNode(3)
-                    .name("End")
-                    .done()
+                .name("End")
+                .done()
                 // connections
                 .connection(1, 2)
                 .connection(2, 3);
@@ -74,35 +74,35 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .packageName("org.jbpm")
                 // nodes
                 .startNode(1)
-                    .name("Start")
-                    .done()
+                .name("Start")
+                .done()
                 .compositeContextNode(2)
-                    .name("SubProcess")
-                    .startNode(1)
-                        .name("SubProcess Start")
-                        .done()
-                    .actionNode(2)
-                        .name("SubProcess Action")
-                        .action("java",
-                                "System.out.println(\"SubProcess Action\");")
-                        .done()
-                    .endNode(3)
-                        .name("SubProcess End")
-                        .terminate(true)
-                        .done()
-                    .connection(1, 2)
-                    .connection(2, 3)
-                    .done()
+                .name("SubProcess")
+                .startNode(1)
+                .name("SubProcess Start")
+                .done()
+                .actionNode(2)
+                .name("SubProcess Action")
+                .action("java",
+                        "System.out.println(\"SubProcess Action\");")
+                .done()
                 .endNode(3)
-                    .name("End")
-                    .done()
+                .name("SubProcess End")
+                .terminate(true)
+                .done()
+                .connection(1, 2)
+                .connection(2, 3)
+                .done()
+                .endNode(3)
+                .name("End")
+                .done()
                 // connections
                 .connection(1, 2)
                 .connection(2, 3);
         RuleFlowProcess process = factory.validate().getProcess();
 
         assertEquals("SubProcess",
-                     process.getNode(2).getName());
+                process.getNode(2).getName());
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
@@ -110,7 +110,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance pi = kruntime.startProcess("org.jbpm.process");
 
         assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                     pi.getState());
+                pi.getState());
 
     }
 
@@ -118,7 +118,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testBoundaryTimerTimeCycle() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("BoundaryTimerEvent",
-                                                                                                            1);
+                1);
         String timeCycle = "1s###5s";
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
@@ -127,28 +127,28 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .packageName("org.jbpm")
                 // nodes
                 .startNode(1)
-                    .name("Start")
-                    .done()
+                .name("Start")
+                .done()
                 .humanTaskNode(2)
-                    .name("Task")
-                    .actorId("john")
-                    .taskName("MyTask")
-                    .done()
+                .name("Task")
+                .actorId("john")
+                .taskName("MyTask")
+                .done()
                 .endNode(3)
-                    .name("End1")
-                    .terminate(false)
-                    .done()
+                .name("End1")
+                .terminate(false)
+                .done()
                 .boundaryEventNode(4)
-                    .name("BoundaryTimerEvent")
-                    .attachedTo(2)
-                    .metaData(TIME_CYCLE, timeCycle)
-                    .metaData(CANCEL_ACTIVITY, false)
-                    .eventType(EVENT_TYPE_TIMER, timeCycle)
-                    .done()
+                .name("BoundaryTimerEvent")
+                .attachedTo(2)
+                .metaData(TIME_CYCLE, timeCycle)
+                .metaData(CANCEL_ACTIVITY, false)
+                .eventType(EVENT_TYPE_TIMER, timeCycle)
+                .done()
                 .endNode(5)
-                    .name("End2")
-                    .terminate(false)
-                    .done()
+                .name("End2")
+                .terminate(false)
+                .done()
                 // connections
                 .connection(1, 2)
                 .connection(2, 3)
@@ -160,7 +160,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime(res);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
-                                                              testHandler);
+                testHandler);
         kruntime.getProcessEventManager().addEventListener(countDownListener);
 
         KogitoProcessInstance pi = kruntime.startProcess("org.jbpm.process");
@@ -169,11 +169,11 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         countDownListener.waitTillCompleted(); // wait for boundary timer firing
 
         assertNodeTriggered(pi.getStringId(),
-                            "End2");
+                "End2");
         assertProcessInstanceActive(pi); // still active because CancelActivity = false
 
         kruntime.getWorkItemManager().completeWorkItem(testHandler.getWorkItem().getStringId(),
-                                                       null);
+                null);
         assertProcessInstanceCompleted(pi);
 
     }
@@ -182,7 +182,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testBoundaryTimerTimeDuration() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("BoundaryTimerEvent",
-                                                                                                            1);
+                1);
         String timeDuration = "1s";
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
@@ -191,28 +191,28 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .packageName("org.jbpm")
                 // nodes
                 .startNode(1)
-                    .name("Start")
-                    .done()
+                .name("Start")
+                .done()
                 .humanTaskNode(2)
-                    .name("Task")
-                    .actorId("john")
-                    .taskName("MyTask")
-                    .done()
+                .name("Task")
+                .actorId("john")
+                .taskName("MyTask")
+                .done()
                 .endNode(3)
-                    .name("End1")
-                    .terminate(false)
-                    .done()
+                .name("End1")
+                .terminate(false)
+                .done()
                 .boundaryEventNode(4)
-                    .name("BoundaryTimerEvent")
-                    .attachedTo(2)
-                    .metaData(TIME_DURATION, timeDuration)
-                    .metaData(CANCEL_ACTIVITY, false)
-                    .eventType(EVENT_TYPE_TIMER, timeDuration)
-                    .done()
+                .name("BoundaryTimerEvent")
+                .attachedTo(2)
+                .metaData(TIME_DURATION, timeDuration)
+                .metaData(CANCEL_ACTIVITY, false)
+                .eventType(EVENT_TYPE_TIMER, timeDuration)
+                .done()
                 .endNode(5)
-                    .name("End2")
-                    .terminate(false)
-                    .done()
+                .name("End2")
+                .terminate(false)
+                .done()
                 // connections
                 .connection(1, 2)
                 .connection(2, 3)
@@ -224,7 +224,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime(res);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
-                                                              testHandler);
+                testHandler);
         kruntime.getProcessEventManager().addEventListener(countDownListener);
 
         KogitoProcessInstance pi = kruntime.startProcess("org.jbpm.process");
@@ -233,11 +233,11 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         countDownListener.waitTillCompleted(); // wait for boundary timer firing
 
         assertNodeTriggered(pi.getStringId(),
-                            "End2");
+                "End2");
         assertProcessInstanceActive(pi); // still active because CancelActivity = false
 
         kruntime.getWorkItemManager().completeWorkItem(testHandler.getWorkItem().getStringId(),
-                                                       null);
+                null);
         assertProcessInstanceCompleted(pi);
 
     }
@@ -265,23 +265,23 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .version("1")
                 .packageName("org.jbpm")
                 .variable("eventData",
-                          new org.jbpm.process.core.datatype.impl.type.StringDataType())
+                        new org.jbpm.process.core.datatype.impl.type.StringDataType())
                 .startNode(1)
-                    .name("Start")
-                    .done()
+                .name("Start")
+                .done()
                 .eventNode(2)
-                    .name("Event1")
-                    .eventType("testEvent")
-                    .variableName("eventData")
-                    .done()
+                .name("Event1")
+                .eventType("testEvent")
+                .variableName("eventData")
+                .done()
                 .actionNode(3)
-                    .name("simpleActionNode")
-                    .action("java",
-                            "System.out.println(\"test event action\");")
-                    .done()
+                .name("simpleActionNode")
+                .action("java",
+                        "System.out.println(\"test event action\");")
+                .done()
                 .endNode(4)
-                    .name("End")
-                    .done()
+                .name("End")
+                .done()
                 .connection(1, 2)
                 .connection(2, 3)
                 .connection(3, 4);
@@ -298,13 +298,13 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         assertNotNull(pi);
 
         assertEquals(KogitoProcessInstance.STATE_ACTIVE,
-                     pi.getState());
+                pi.getState());
 
         pi.signalEvent("testEvent",
-                       null);
+                null);
 
         assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                     pi.getState());
+                pi.getState());
 
     }
 
@@ -316,17 +316,17 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .name("ActionNodeActionProcess")
                 .version("1")
                 .startNode(1)
-                    .name("Start")
-                    .done()
+                .name("Start")
+                .done()
                 .endNode(3)
-                    .name("End")
-                    .done()
+                .name("End")
+                .done()
                 .actionNode(2)
-                    .name("printTextActionNode")
-                    .action("java",
-                            "System.out.println(\"test print\");",
-                            true)
-                    .done()
+                .name("printTextActionNode")
+                .action("java",
+                        "System.out.println(\"test print\");",
+                        true)
+                .done()
                 .connection(1, 2)
                 .connection(2, 3);
         RuleFlowProcess process = factory.validate().getProcess();
@@ -342,7 +342,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         assertNotNull(pi);
 
         assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                     pi.getState());
+                pi.getState());
 
     }
 }

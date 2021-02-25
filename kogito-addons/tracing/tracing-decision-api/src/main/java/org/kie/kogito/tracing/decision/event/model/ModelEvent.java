@@ -15,10 +15,11 @@
  */
 package org.kie.kogito.tracing.decision.event.model;
 
+import org.kie.kogito.decision.DecisionModelType;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.kie.kogito.decision.DecisionModelType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelEvent {
@@ -41,8 +42,8 @@ public class ModelEvent {
 
         @JsonCreator
         public GAV(final @JsonProperty("groupId") String groupId,
-                   final @JsonProperty("artifactId") String artifactId,
-                   final @JsonProperty("version") String version) {
+                final @JsonProperty("artifactId") String artifactId,
+                final @JsonProperty("version") String version) {
             this.groupId = groupId;
             this.artifactId = artifactId;
             this.version = version;
@@ -50,8 +51,8 @@ public class ModelEvent {
 
         public static GAV from(final org.kie.api.management.GAV gav) {
             return new GAV(gav.getGroupId(),
-                           gav.getArtifactId(),
-                           gav.getVersion());
+                    gav.getArtifactId(),
+                    gav.getVersion());
         }
 
         public String getGroupId() {
@@ -69,10 +70,10 @@ public class ModelEvent {
 
     @JsonCreator
     public ModelEvent(final @JsonProperty("gav") GAV gav,
-                      final @JsonProperty("name") String name,
-                      final @JsonProperty("namespace") String namespace,
-                      final @JsonProperty("type") DecisionModelType type,
-                      final @JsonProperty("definition") String definition) {
+            final @JsonProperty("name") String name,
+            final @JsonProperty("namespace") String namespace,
+            final @JsonProperty("type") DecisionModelType type,
+            final @JsonProperty("definition") String definition) {
         this.gav = gav;
         this.name = name;
         this.namespace = namespace;

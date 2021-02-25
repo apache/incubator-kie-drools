@@ -40,14 +40,15 @@ public class KafkaPersistenceUtils {
     public static String topicName(String processId) {
         return format(TOPIC, processId);
     }
+
     public static String storeName(String processId) {
         return format(STORE, processId);
     }
-    
-    public static Topology createTopologyForProcesses(List<String> processes){
+
+    public static Topology createTopologyForProcesses(List<String> processes) {
         StreamsBuilder builder = new StreamsBuilder();
         processes.forEach(p -> {
-            builder.globalTable(topicName(p), Materialized.<String, byte[], KeyValueStore<Bytes, byte[]>>as(storeName(p))
+            builder.globalTable(topicName(p), Materialized.<String, byte[], KeyValueStore<Bytes, byte[]>> as(storeName(p))
                     .withKeySerde(Serdes.String())
                     .withValueSerde(Serdes.ByteArray()));
             LOGGER.info("Created Kafka Stream GlobalTable for process {}", p);

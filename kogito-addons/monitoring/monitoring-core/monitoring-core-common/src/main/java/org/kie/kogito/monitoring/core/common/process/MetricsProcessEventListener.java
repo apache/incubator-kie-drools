@@ -20,10 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.DistributionSummary;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.Tag;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -31,10 +27,15 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Tag;
 
 public class MetricsProcessEventListener extends DefaultKogitoProcessEventListener {
 

@@ -52,12 +52,12 @@ public abstract class AbstractMessageConsumer<M extends Model, D, T extends Abst
             EventConsumerFactory eventConsumerFactory,
             Optional<Boolean> useCloudEvents) {
         setParams(application,
-                  process,
-                  dataEventClass,
-                  cloudEventClass,
-                  trigger,
-                  eventConsumerFactory,
-                  useCloudEvents);
+                process,
+                dataEventClass,
+                cloudEventClass,
+                trigger,
+                eventConsumerFactory,
+                useCloudEvents);
     }
 
     public void setParams(

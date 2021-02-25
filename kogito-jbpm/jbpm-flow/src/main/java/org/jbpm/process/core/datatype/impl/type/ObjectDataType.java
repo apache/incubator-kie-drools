@@ -32,7 +32,7 @@ public class ObjectDataType implements DataType {
     private String className;
 
     private ClassLoader classLoader;
-    
+
     public ObjectDataType() {
     }
 
@@ -80,7 +80,7 @@ public class ObjectDataType implements DataType {
             }
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(
-                "Could not find data type " + className);
+                    "Could not find data type " + className);
         }
         return false;
     }
@@ -92,7 +92,6 @@ public class ObjectDataType implements DataType {
     public String writeValue(Object value) {
         return value.toString();
     }
-
 
     public String getStringType() {
         return className == null ? "java.lang.Object" : className;

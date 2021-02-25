@@ -15,10 +15,7 @@
  */
 package org.kie.kogito.explainability;
 
-import org.kie.kogito.Application;
-import org.kie.kogito.explainability.model.PredictInput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -27,7 +24,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+
+import org.kie.kogito.Application;
+import org.kie.kogito.explainability.model.PredictInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/predict")
 public class QuarkusExplainableResource {
@@ -43,8 +44,8 @@ public class QuarkusExplainableResource {
     }
 
     @POST
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
     public Response predict(List<PredictInput> inputs) {
         try {
             return Response.ok(explainabilityService.processRequest(application, inputs)).build();

@@ -20,10 +20,10 @@ import org.kie.api.runtime.rule.FactHandle;
 public interface DataProcessor<T> {
 
     default void insert(T object) {
-        insert( null, object );
+        insert(null, object);
     }
 
-    FactHandle insert( DataHandle handle, T object);
+    FactHandle insert(DataHandle handle, T object);
 
     void update(DataHandle handle, T object);
 

@@ -18,13 +18,14 @@ package org.kie.kogito.grafana.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.templating.GrafanaTemplating;
 import org.kie.kogito.grafana.model.time.GrafanaTime;
 import org.kie.kogito.grafana.model.time.GrafanaTimePicker;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GrafanaDashboard {

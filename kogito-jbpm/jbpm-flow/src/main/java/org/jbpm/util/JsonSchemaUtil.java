@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Application;
@@ -36,9 +34,13 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Policy;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class JsonSchemaUtil {
 
-    private JsonSchemaUtil() {}
+    private JsonSchemaUtil() {
+    }
 
     private static ObjectMapper mapper = new ObjectMapper();
     private static Path jsonDir = Paths.get("META-INF", "jsonSchema");
@@ -73,18 +75,18 @@ public class JsonSchemaUtil {
     }
 
     public static <T> Map<String, Object> addPhases(Process<T> process,
-                                                    Application application,
-                                                    String processInstanceId,
-                                                    String workItemId,
-                                                    Policy<?>[] policies,
-                                                    Map<String, Object> jsonSchema) {
+            Application application,
+            String processInstanceId,
+            String workItemId,
+            Policy<?>[] policies,
+            Map<String, Object> jsonSchema) {
         return process.instances().findById(processInstanceId, ProcessInstanceReadMode.READ_ONLY).map(pi -> {
             jsonSchema
-                .put(
-                    "phases",
-                    allowedPhases(
-                        application.config().get(ProcessConfig.class).workItemHandlers().forName("Human Task"),
-                        pi.workItem(workItemId, policies)));
+                    .put(
+                            "phases",
+                            allowedPhases(
+                                    application.config().get(ProcessConfig.class).workItemHandlers().forName("Human Task"),
+                                    pi.workItem(workItemId, policies)));
             return jsonSchema;
         }).orElseThrow(() -> new ProcessInstanceNotFoundException(processInstanceId));
     }

@@ -27,18 +27,15 @@ public class KogitoDefaultAgendaFactory implements AgendaFactory, Serializable {
         return INSTANCE;
     }
 
-    private KogitoDefaultAgendaFactory() { }
+    private KogitoDefaultAgendaFactory() {
+    }
 
     public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
-        return kBase.getConfiguration().isMultithreadEvaluation() ?
-               new CompositeDefaultAgenda(kBase, initMain ) :
-               new KogitoDefaultAgenda(kBase, initMain );
+        return kBase.getConfiguration().isMultithreadEvaluation() ? new CompositeDefaultAgenda(kBase, initMain) : new KogitoDefaultAgenda(kBase, initMain);
     }
 
     public InternalAgenda createAgenda(InternalKnowledgeBase kBase) {
-        return kBase.getConfiguration().isMultithreadEvaluation() ?
-               new CompositeDefaultAgenda(kBase ) :
-               new KogitoDefaultAgenda(kBase );
+        return kBase.getConfiguration().isMultithreadEvaluation() ? new CompositeDefaultAgenda(kBase) : new KogitoDefaultAgenda(kBase);
     }
 
 }

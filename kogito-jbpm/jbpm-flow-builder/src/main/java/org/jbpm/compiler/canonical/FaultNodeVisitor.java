@@ -15,12 +15,13 @@
  */
 package org.jbpm.compiler.canonical;
 
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.FaultNodeFactory;
 import org.jbpm.workflow.core.node.FaultNode;
+
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static org.jbpm.ruleflow.core.factory.FaultNodeFactory.METHOD_FAULT_NAME;
 import static org.jbpm.ruleflow.core.factory.FaultNodeFactory.METHOD_FAULT_VARIABLE;

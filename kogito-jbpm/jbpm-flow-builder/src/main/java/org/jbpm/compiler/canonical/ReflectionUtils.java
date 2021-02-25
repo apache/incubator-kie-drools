@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 
 public class ReflectionUtils {
 
-    private ReflectionUtils() {}
+    private ReflectionUtils() {
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -50,18 +51,18 @@ public class ReflectionUtils {
     public static Class<?> getPrimitive(Class<?> clazz) {
         return wrappers2Primitive.get(clazz);
     }
-    
+
     public static Method
-        getMethod(ClassLoader cl,
-                  Class<?> clazz,
-                  String methodName,
-                  Collection<String> parameterTypes) throws ReflectiveOperationException {
-        
+            getMethod(ClassLoader cl,
+                    Class<?> clazz,
+                    String methodName,
+                    Collection<String> parameterTypes) throws ReflectiveOperationException {
+
         boolean hasPrimitive = false;
-        Class<?>[] methodParameters = new Class<?> [parameterTypes.size()];
-        Class<?>[] primitiveParameters = new Class<?> [parameterTypes.size()];
-        
-        Iterator<String> iter = parameterTypes.iterator(); 
+        Class<?>[] methodParameters = new Class<?>[parameterTypes.size()];
+        Class<?>[] primitiveParameters = new Class<?>[parameterTypes.size()];
+
+        Iterator<String> iter = parameterTypes.iterator();
         int i = 0;
         while (iter.hasNext()) {
             String parameter = iter.next();
@@ -81,17 +82,15 @@ public class ReflectionUtils {
         }
         try {
             return clazz.getMethod(methodName, methodParameters);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             if (hasPrimitive) {
-               try {
-                   return clazz.getMethod(methodName,primitiveParameters);
-               }
-               catch (NoSuchMethodException ex2) {
-                   logger.warn("Unable to find method {} with primitive arguments {}", methodName, primitiveParameters);
-               }
-           }
-           throw ex;
-       }
+                try {
+                    return clazz.getMethod(methodName, primitiveParameters);
+                } catch (NoSuchMethodException ex2) {
+                    logger.warn("Unable to find method {} with primitive arguments {}", methodName, primitiveParameters);
+                }
+            }
+            throw ex;
+        }
     }
 }

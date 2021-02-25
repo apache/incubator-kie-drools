@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.ws.rs.Path;
+
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 import org.jbpm.process.instance.impl.humantask.phases.Claim;
 import org.jbpm.process.instance.impl.humantask.phases.Release;
@@ -39,16 +40,16 @@ import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
@@ -73,7 +74,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultKogitoProcessEventListener() {
 
             @Override
-            public void beforeWorkItemTransition( ProcessWorkItemTransitionEvent event) {
+            public void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
                 workItemTransitionEvents.add("BEFORE:: " + event);
             }
 
@@ -92,7 +93,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        assertThat(processInstance.status()).isEqualTo( KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
@@ -138,8 +139,6 @@ public class UserTaskTest extends AbstractCodegenTest {
         String workItemId = workItems.get(0).getId();
         processInstance.transitionWorkItem(workItemId, new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
-        
 
         workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
@@ -232,8 +231,7 @@ public class UserTaskTest extends AbstractCodegenTest {
 
         final String wiId = wi.getId();
 
-        assertThrows(InvalidTransitionException.class, () ->
-                processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Release.ID, null, securityPolicy)));
+        assertThrows(InvalidTransitionException.class, () -> processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Release.ID, null, securityPolicy)));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
@@ -359,13 +357,11 @@ public class UserTaskTest extends AbstractCodegenTest {
         // if user that is not authorized to work on work item both listing and getting by id should apply it
         List<WorkItem> securedWorkItems = processInstance.workItems(SecurityPolicy.of(identity));
         assertEquals(0, securedWorkItems.size());
-        assertThrows( WorkItemNotFoundException.class, () -> processInstance.workItem(wiId, SecurityPolicy.of(identity)));
+        assertThrows(WorkItemNotFoundException.class, () -> processInstance.workItem(wiId, SecurityPolicy.of(identity)));
 
-        assertThrows(NotAuthorizedException.class, () ->
-                processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Claim.ID, null, identity)));
+        assertThrows(NotAuthorizedException.class, () -> processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Claim.ID, null, identity)));
 
-        assertThrows(NotAuthorizedException.class, () ->
-                processInstance.completeWorkItem(wiId, null, SecurityPolicy.of(identity)));
+        assertThrows(NotAuthorizedException.class, () -> processInstance.completeWorkItem(wiId, null, SecurityPolicy.of(identity)));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
@@ -697,7 +693,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testApprovalWithReadonlyVariableTags() throws Exception {
 

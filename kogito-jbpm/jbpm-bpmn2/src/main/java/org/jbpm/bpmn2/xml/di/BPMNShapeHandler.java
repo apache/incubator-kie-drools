@@ -33,21 +33,21 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
         initValidPeers();
         this.allowNesting = true;
     }
-    
+
     protected void initValidParents() {
         this.validParents = new HashSet<Class<?>>();
         this.validParents.add(ProcessInfo.class);
     }
-    
+
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
         this.validPeers.add(NodeInfo.class);
         this.validPeers.add(ConnectionInfo.class);
     }
-    
+
     public Object start(final String uri, final String localName,
-                        final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final ExtensibleXmlParser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
         final String elementRef = attrs.getValue("bpmnElement");
@@ -56,9 +56,9 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
         processInfo.addNodeInfo(nodeInfo);
         return nodeInfo;
     }
-    
+
     public Object end(final String uri, final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final ExtensibleXmlParser parser) throws SAXException {
         Element element = parser.endElementBuilder();
         NodeInfo nodeInfo = (NodeInfo) parser.getCurrent();
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -73,19 +73,19 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
                 try {
                     int xValue = 0;
                     if (x != null && x.trim().length() != 0) {
-                    	xValue = new Float(x).intValue();
+                        xValue = new Float(x).intValue();
                     }
                     int yValue = 0;
                     if (y != null && y.trim().length() != 0) {
-                    	yValue = new Float(y).intValue();
+                        yValue = new Float(y).intValue();
                     }
                     int widthValue = 20;
                     if (width != null && width.trim().length() != 0) {
-                    	widthValue = new Float(width).intValue();
+                        widthValue = new Float(width).intValue();
                     }
                     int heightValue = 20;
                     if (height != null && height.trim().length() != 0) {
-                    	heightValue = new Float(height).intValue();
+                        heightValue = new Float(height).intValue();
                     }
                     nodeInfo.setX(xValue);
                     nodeInfo.setY(yValue);
@@ -103,9 +103,9 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
     public Class<?> generateNodeFor() {
         return NodeInfo.class;
     }
-    
+
     public static class NodeInfo {
-        
+
         private String nodeRef;
         private Integer x;
         private Integer y;
@@ -115,11 +115,11 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
         public NodeInfo(String nodeRef) {
             this.nodeRef = nodeRef;
         }
-        
+
         public String getNodeRef() {
             return nodeRef;
         }
-        
+
         public Integer getX() {
             return x;
         }
@@ -151,7 +151,7 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
         public void setHeight(Integer height) {
             this.height = height;
         }
-        
+
     }
 
 }

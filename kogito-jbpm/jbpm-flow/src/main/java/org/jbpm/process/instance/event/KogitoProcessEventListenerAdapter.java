@@ -30,77 +30,77 @@ public class KogitoProcessEventListenerAdapter implements KogitoProcessEventList
 
     private final ProcessEventListener delegate;
 
-    public KogitoProcessEventListenerAdapter( ProcessEventListener delegate ) {
+    public KogitoProcessEventListenerAdapter(ProcessEventListener delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public void beforeProcessStarted( ProcessStartedEvent processStartedEvent ) {
-        delegate.beforeProcessStarted( processStartedEvent );
+    public void beforeProcessStarted(ProcessStartedEvent processStartedEvent) {
+        delegate.beforeProcessStarted(processStartedEvent);
     }
 
     @Override
-    public void afterProcessStarted( ProcessStartedEvent processStartedEvent ) {
-        delegate.afterProcessStarted( processStartedEvent );
+    public void afterProcessStarted(ProcessStartedEvent processStartedEvent) {
+        delegate.afterProcessStarted(processStartedEvent);
     }
 
     @Override
-    public void beforeProcessCompleted( ProcessCompletedEvent processCompletedEvent ) {
-        delegate.beforeProcessCompleted( processCompletedEvent );
+    public void beforeProcessCompleted(ProcessCompletedEvent processCompletedEvent) {
+        delegate.beforeProcessCompleted(processCompletedEvent);
     }
 
     @Override
-    public void afterProcessCompleted( ProcessCompletedEvent processCompletedEvent ) {
-        delegate.afterProcessCompleted( processCompletedEvent );
+    public void afterProcessCompleted(ProcessCompletedEvent processCompletedEvent) {
+        delegate.afterProcessCompleted(processCompletedEvent);
     }
 
     @Override
-    public void beforeNodeTriggered( ProcessNodeTriggeredEvent processNodeTriggeredEvent ) {
-        delegate.beforeNodeTriggered( processNodeTriggeredEvent );
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent processNodeTriggeredEvent) {
+        delegate.beforeNodeTriggered(processNodeTriggeredEvent);
     }
 
     @Override
-    public void afterNodeTriggered( ProcessNodeTriggeredEvent processNodeTriggeredEvent ) {
-        delegate.afterNodeTriggered( processNodeTriggeredEvent );
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent processNodeTriggeredEvent) {
+        delegate.afterNodeTriggered(processNodeTriggeredEvent);
     }
 
     @Override
-    public void beforeNodeLeft( ProcessNodeLeftEvent processNodeLeftEvent ) {
-        delegate.beforeNodeLeft( processNodeLeftEvent );
+    public void beforeNodeLeft(ProcessNodeLeftEvent processNodeLeftEvent) {
+        delegate.beforeNodeLeft(processNodeLeftEvent);
     }
 
     @Override
-    public void afterNodeLeft( ProcessNodeLeftEvent processNodeLeftEvent ) {
-        delegate.afterNodeLeft( processNodeLeftEvent );
+    public void afterNodeLeft(ProcessNodeLeftEvent processNodeLeftEvent) {
+        delegate.afterNodeLeft(processNodeLeftEvent);
     }
 
     @Override
-    public void beforeVariableChanged( ProcessVariableChangedEvent processVariableChangedEvent ) {
-        delegate.beforeVariableChanged( processVariableChangedEvent );
+    public void beforeVariableChanged(ProcessVariableChangedEvent processVariableChangedEvent) {
+        delegate.beforeVariableChanged(processVariableChangedEvent);
     }
 
     @Override
-    public void afterVariableChanged( ProcessVariableChangedEvent processVariableChangedEvent ) {
-        delegate.afterVariableChanged( processVariableChangedEvent );
+    public void afterVariableChanged(ProcessVariableChangedEvent processVariableChangedEvent) {
+        delegate.afterVariableChanged(processVariableChangedEvent);
     }
 
     @Override
-    public void beforeSLAViolated( SLAViolatedEvent event ) {
-        delegate.beforeSLAViolated( event );
+    public void beforeSLAViolated(SLAViolatedEvent event) {
+        delegate.beforeSLAViolated(event);
     }
 
     @Override
-    public void afterSLAViolated( SLAViolatedEvent event ) {
-        delegate.afterSLAViolated( event );
+    public void afterSLAViolated(SLAViolatedEvent event) {
+        delegate.afterSLAViolated(event);
     }
 
     @Override
-    public void onSignal( SignalEvent event ) {
-        delegate.onSignal( event );
+    public void onSignal(SignalEvent event) {
+        delegate.onSignal(event);
     }
 
     @Override
-    public void onMessage( MessageEvent event ) {
-        delegate.onMessage( event );
+    public void onMessage(MessageEvent event) {
+        delegate.onMessage(event);
     }
 }

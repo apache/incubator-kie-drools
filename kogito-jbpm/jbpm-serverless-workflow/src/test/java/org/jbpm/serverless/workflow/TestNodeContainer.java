@@ -50,7 +50,7 @@ public class TestNodeContainer implements NodeContainer {
     }
 
     @Override
-    public Node getNodeByUniqueId( String nodeId ) {
+    public Node getNodeByUniqueId(String nodeId) {
         return null;
     }
 }

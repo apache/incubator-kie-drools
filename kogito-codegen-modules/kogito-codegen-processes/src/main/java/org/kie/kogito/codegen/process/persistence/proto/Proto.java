@@ -70,7 +70,7 @@ public class Proto {
     }
 
     public void addEnum(ProtoEnum protoEnum) {
-        if(!enums.contains(protoEnum)) {
+        if (!enums.contains(protoEnum)) {
             this.enums.add(protoEnum);
             this.enums.sort(Comparator.comparing(ProtoEnum::getName));
         }
@@ -79,22 +79,22 @@ public class Proto {
     @Override
     public String toString() {
         StringBuilder headersAsString = new StringBuilder();
-        
+
         for (String header : headers) {
             headersAsString.append(header + "\n");
         }
         StringBuilder messagesAsString = new StringBuilder();
-        
+
         messages.forEach(m -> messagesAsString.append(m.toString()));
         enums.forEach(e -> messagesAsString.append(e.toString()));
-        
+
         StringBuilder builder = new StringBuilder();
         builder.append("syntax = \"" + syntax + "\"; \n");
         if (packageName != null) {
             builder.append("package " + packageName + "; \n");
         }
         builder.append(headersAsString.toString() + "\n" + messagesAsString.toString());
-        
-        return  builder.toString();
+
+        return builder.toString();
     }
 }

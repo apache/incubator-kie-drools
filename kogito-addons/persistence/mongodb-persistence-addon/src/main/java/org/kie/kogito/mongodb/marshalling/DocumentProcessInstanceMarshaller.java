@@ -23,11 +23,11 @@ import java.util.Collections;
 
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.jbpm.marshalling.impl.KogitoMarshallerReaderContext;
-import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.JBPMMessages;
+import org.jbpm.marshalling.impl.KogitoMarshallerReaderContext;
+import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -51,7 +51,7 @@ public class DocumentProcessInstanceMarshaller {
     public DocumentProcessInstanceMarshaller(ObjectMarshallingStrategy... strategies) {
         ObjectMarshallingStrategy[] strats = null;
         if (strategies == null) {
-            strats = new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)};
+            strats = new ObjectMarshallingStrategy[] { new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) };
         } else {
             strats = new ObjectMarshallingStrategy[strategies.length + 1];
             int i = 0;
@@ -84,10 +84,10 @@ public class DocumentProcessInstanceMarshaller {
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(getDummyByteArray())) {
             MarshallerReaderContext context = new KogitoMarshallerReaderContext(bais,
-                                                                                Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
-                                                                                null, null, null, env);
+                    Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
+                    null, null, null, env);
             JBPMMessages.ProcessInstance instance = new ProcessInstanceMessageMapper().apply(context, doc);
-            context.setParameterObject( instance );
+            context.setParameterObject(instance);
             org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(instance.getProcessType());
             return (WorkflowProcessInstance) marshaller.readProcessInstance(context);
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public class DocumentProcessInstanceMarshaller {
     private byte[] getDummyByteArray() {
         String dummy = "";
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeUTF(dummy);
             oos.flush();
             return baos.toByteArray();

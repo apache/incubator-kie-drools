@@ -19,6 +19,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
+import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
+import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
+
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.end.End;
 import io.serverlessworkflow.api.events.EventDefinition;
@@ -26,9 +30,6 @@ import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState;
 import io.serverlessworkflow.api.states.InjectState;
 import io.serverlessworkflow.api.workflow.Events;
-import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
-import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -37,16 +38,13 @@ public abstract class BaseServerlessTest {
 
     protected static final Workflow singleInjectStateWorkflow = new Workflow().withStates(singletonList(
             new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start())
-                    .withEnd(new End())
-    ));
+                    .withEnd(new End())));
     protected static final Workflow multiInjectStateWorkflow = new Workflow().withStates(asList(
             new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start())
                     .withEnd(new End()),
-            new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End())
-    ));
+            new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End())));
     protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(
-            new Events(singletonList(new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType")))
-    );
+            new Events(singletonList(new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType"))));
     protected static ServerlessWorkflowFactory testFactory = new ServerlessWorkflowFactory(WorkflowAppContext.ofProperties(testWorkflowProperties()));
 
     protected static Properties testWorkflowProperties() {

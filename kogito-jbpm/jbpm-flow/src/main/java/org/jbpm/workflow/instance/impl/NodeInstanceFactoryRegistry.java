@@ -91,7 +91,7 @@ public class NodeInstanceFactoryRegistry {
     }
 
     public void register(Class<? extends Node> cls,
-                         NodeInstanceFactory factory) {
+            NodeInstanceFactory factory) {
         this.registry.put(cls, factory);
     }
 
@@ -182,8 +182,7 @@ public class NodeInstanceFactoryRegistry {
 
     protected NodeInstanceFactory factoryOnce(Supplier<NodeInstanceImpl> supplier) {
         return (node, processInstance, nodeInstanceContainer) -> {
-            NodeInstance result = ((org.jbpm.workflow.instance.NodeInstanceContainer)
-                    nodeInstanceContainer).getFirstNodeInstance(node.getId());
+            NodeInstance result = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getFirstNodeInstance(node.getId());
             if (result != null) {
                 return result;
             } else {
@@ -193,8 +192,7 @@ public class NodeInstanceFactoryRegistry {
     }
 
     protected NodeInstanceFactory factory(Supplier<NodeInstanceImpl> supplier) {
-        return (node, processInstance, nodeInstanceContainer) ->
-                createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
+        return (node, processInstance, nodeInstanceContainer) -> createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
     }
 
     private static NodeInstance createInstance(NodeInstanceImpl nodeInstance, Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {

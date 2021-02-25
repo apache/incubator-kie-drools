@@ -25,9 +25,9 @@ public class LightProcessRuntimeServiceProvider extends AbstractProcessRuntimeSe
 
     public LightProcessRuntimeServiceProvider() {
         super(null,
-              new DefaultWorkItemHandlerConfig(),
-              new DefaultProcessEventListenerConfig(),
-              new DefaultSignalManagerHub(),
-              new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+                new DefaultWorkItemHandlerConfig(),
+                new DefaultProcessEventListenerConfig(),
+                new DefaultSignalManagerHub(),
+                new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
     }
 }

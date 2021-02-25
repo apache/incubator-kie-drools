@@ -15,8 +15,9 @@
  */
 package org.kie.kogito.monitoring.prometheus.common.rest;
 
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.kie.kogito.monitoring.prometheus.common.PrometheusRegistryProvider;
+
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 
 public abstract class MetricsResource {
 

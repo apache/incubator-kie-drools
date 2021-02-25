@@ -15,20 +15,21 @@
  */
 package org.kie.kogito.quarkus.deployment;
 
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.bootstrap.model.AppDependency;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
-import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
-import io.quarkus.deployment.builditem.LiveReloadBuildItem;
-import io.quarkus.deployment.builditem.RunTimeConfigurationDefaultBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
-import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -44,19 +45,20 @@ import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedClassesBuildItem;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.model.AppDependency;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
+import io.quarkus.deployment.builditem.CapabilityBuildItem;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
+import io.quarkus.deployment.builditem.LiveReloadBuildItem;
+import io.quarkus.deployment.builditem.RunTimeConfigurationDefaultBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
+import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -108,8 +110,7 @@ public class ProcessesAssetsProcessor {
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             BuildProducer<GeneratedResourceBuildItem> genResBI,
-            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration
-    ) throws IOException {
+            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration) throws IOException {
 
         if (liveReload.isLiveReload()) {
             return;
@@ -167,9 +168,9 @@ public class ProcessesAssetsProcessor {
     }
 
     private Collection<GeneratedFile> getGeneratedPersistenceFiles(IndexView index,
-                                                                   KogitoBuildContext context,
-                                                                   BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-                                                                   BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration) {
+            KogitoBuildContext context,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration) {
         ClassInfo persistenceClass = index
                 .getClassByName(persistenceFactoryClass);
 
@@ -225,7 +226,7 @@ public class ProcessesAssetsProcessor {
     private Collection<GeneratedFile> generateJsonSchema(KogitoBuildContext context, IndexView index) throws IOException {
         Path targetClasses = getTargetClassesPath(context.getAppPaths());
 
-        URL[] urls = {targetClasses.toUri().toURL()};
+        URL[] urls = { targetClasses.toUri().toURL() };
 
         try (URLClassLoader cl = new URLClassLoader(urls, context.getClassLoader())) {
 

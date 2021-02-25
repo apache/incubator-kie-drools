@@ -17,19 +17,18 @@ package org.jbpm.test.util;
 
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 
-
 public class NodeLeftCountDownProcessEventListener extends NodeCountDownProcessEventListener {
-    
+
     private boolean reactOnBeforeNodeLeft = false;
-    
+
     public NodeLeftCountDownProcessEventListener() {
-        
+
     }
-    
+
     public NodeLeftCountDownProcessEventListener(String nodeName, int threads) {
         super(nodeName, threads);
     }
-    
+
     public NodeLeftCountDownProcessEventListener(String nodeName, int threads, boolean reactOnBeforeNodeLeft) {
         super(nodeName, threads);
         this.reactOnBeforeNodeLeft = reactOnBeforeNodeLeft;
@@ -41,7 +40,7 @@ public class NodeLeftCountDownProcessEventListener extends NodeCountDownProcessE
             countDown();
         }
     }
-    
+
     @Override
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
         if (reactOnBeforeNodeLeft && nodeName.equals(event.getNodeInstance().getNodeName())) {

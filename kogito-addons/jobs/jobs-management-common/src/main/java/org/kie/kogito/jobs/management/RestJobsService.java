@@ -39,12 +39,12 @@ public abstract class RestJobsService implements JobsService {
 
     public String getCallbackEndpoint(ProcessInstanceJobDescription description) {
         return URIBuilder.toURI(callbackEndpoint
-                                        + "/management/jobs/"
-                                        + description.processId()
-                                        + "/instances/"
-                                        + description.processInstanceId()
-                                        + "/timers/"
-                                        + description.id())
+                + "/management/jobs/"
+                + description.processId()
+                + "/instances/"
+                + description.processInstanceId()
+                + "/timers/"
+                + description.id())
                 .toString();
     }
 

@@ -31,13 +31,13 @@ public class EventSubProcessNode extends CompositeContextNode {
     private List<String> events = new ArrayList<String>();
     private List<EventTypeFilter> eventTypeFilters = new ArrayList<EventTypeFilter>();
     private boolean keepActive = true;
-    
+
     public void addEvent(EventTypeFilter filter) {
         String type = filter.getType();
         this.events.add(type);
         this.eventTypeFilters.add(filter);
     }
-    
+
     public List<String> getEvents() {
         return events;
     }
@@ -49,12 +49,12 @@ public class EventSubProcessNode extends CompositeContextNode {
     public void setKeepActive(boolean triggerOnActivation) {
         this.keepActive = triggerOnActivation;
     }
-    
+
     public StartNode findStartNode() {
-        for (Node node: getNodes()) {
+        for (Node node : getNodes()) {
             if (node instanceof StartNode) {
-                StartNode startNode = (StartNode) node;                                    
-                return startNode;                           
+                StartNode startNode = (StartNode) node;
+                return startNode;
             }
         }
         return null;
@@ -69,9 +69,9 @@ public class EventSubProcessNode extends CompositeContextNode {
     }
 
     @Override
-    public boolean acceptsEvent(String type, Object event) { 
-        for( EventTypeFilter filter : this.eventTypeFilters ) { 
-            if( filter.acceptsEvent(type, event) ) { 
+    public boolean acceptsEvent(String type, Object event) {
+        for (EventTypeFilter filter : this.eventTypeFilters) {
+            if (filter.acceptsEvent(type, event)) {
                 return true;
             }
         }
@@ -83,24 +83,23 @@ public class EventSubProcessNode extends CompositeContextNode {
         if (resolver == null) {
             return acceptsEvent(type, event);
         }
-        
-        for( EventTypeFilter filter : this.eventTypeFilters ) { 
-            if( filter.acceptsEvent(type, event, resolver) ) { 
+
+        for (EventTypeFilter filter : this.eventTypeFilters) {
+            if (filter.acceptsEvent(type, event, resolver)) {
                 return true;
             }
         }
         return super.acceptsEvent(type, event);
     }
-    
+
     @Override
     public String getVariableName() {
         StartNode startNode = findStartNode();
         if (startNode != null) {
             return (String) startNode.getMetaData("TriggerMapping");
         }
-        
+
         return super.getVariableName();
     }
-    
-}
 
+}

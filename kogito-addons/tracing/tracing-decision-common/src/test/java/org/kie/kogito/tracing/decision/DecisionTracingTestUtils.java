@@ -18,9 +18,10 @@ package org.kie.kogito.tracing.decision;
 import java.io.IOException;
 import java.util.List;
 
+import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 
 public class DecisionTracingTestUtils {
 
@@ -34,7 +35,6 @@ public class DecisionTracingTestUtils {
 
     public static List<EvaluateEvent> readEvaluateEventsFromJsonResource(String resourceName) throws IOException {
         return MAPPER.readValue(DecisionTracingTestUtils.class.getResourceAsStream(resourceName),
-                EVALUATE_EVENT_LIST_TYPE
-        );
+                EVALUATE_EVENT_LIST_TYPE);
     }
 }

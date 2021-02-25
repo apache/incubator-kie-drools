@@ -29,12 +29,14 @@ public interface CloudEventReceiver {
 
     /**
      * Helper method to subscribe to the events.
+     * 
      * @param consumer the consumer that will receive the events.
      */
     void subscribe(Consumer<String> consumer);
 
     /**
      * Give access to the underlying event {@link Publisher} for more advanced needs.
+     * 
      * @return the event Publisher
      */
     Publisher<String> getEventPublisher();

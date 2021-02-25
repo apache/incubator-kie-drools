@@ -39,24 +39,28 @@ public interface KogitoWorkItem extends WorkItem {
 
     /**
      * Returns optional life cycle phase id associated with this work item
+     * 
      * @return optional life cycle phase id
      */
     String getPhaseId();
 
     /**
      * Returns optional life cycle phase status associated with this work item
+     * 
      * @return optional life cycle phase status
      */
     String getPhaseStatus();
 
     /**
      * Returns timestamp indicating the start date of this work item
+     * 
      * @return start date
      */
     Date getStartDate();
 
     /**
      * Returns timestamp indicating the completion date of this work item
+     * 
      * @return completion date
      */
     Date getCompleteDate();
@@ -80,10 +84,11 @@ public interface KogitoWorkItem extends WorkItem {
     /**
      * Enforces given policies on this work item. It must false in case of any policy
      * violations.
+     * 
      * @param policies optional policies to be enforced
      * @return return true if this work item can enforce all policies otherwise false
      */
-    default boolean enforce( Policy<?>...policies) {
+    default boolean enforce(Policy<?>... policies) {
         return true;
     }
 }

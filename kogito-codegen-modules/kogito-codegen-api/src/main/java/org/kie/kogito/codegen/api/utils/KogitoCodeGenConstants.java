@@ -15,11 +15,10 @@
  */
 package org.kie.kogito.codegen.api.utils;
 
-
 public class KogitoCodeGenConstants {
-    
+
     private KogitoCodeGenConstants() {
-        
+
     }
 
     public static final String VALIDATION_CLASS = "javax.validation.constraints.NotNull";

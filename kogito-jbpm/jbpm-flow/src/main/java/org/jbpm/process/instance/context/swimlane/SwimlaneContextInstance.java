@@ -24,13 +24,13 @@ import org.jbpm.process.instance.context.AbstractContextInstance;
 public class SwimlaneContextInstance extends AbstractContextInstance {
 
     private static final long serialVersionUID = 510l;
-    
+
     private Map<String, String> swimlaneActors = new HashMap<String, String>();
 
     public String getContextType() {
         return SwimlaneContext.SWIMLANE_SCOPE;
     }
-    
+
     public SwimlaneContext getSwimlaneContext() {
         return (SwimlaneContext) getContext();
     }
@@ -42,9 +42,9 @@ public class SwimlaneContextInstance extends AbstractContextInstance {
     public void setActorId(String swimlane, String actorId) {
         swimlaneActors.put(swimlane, actorId);
     }
-    
+
     public Map<String, String> getSwimlaneActors() {
-    	return swimlaneActors;
+        return swimlaneActors;
     }
-    
+
 }

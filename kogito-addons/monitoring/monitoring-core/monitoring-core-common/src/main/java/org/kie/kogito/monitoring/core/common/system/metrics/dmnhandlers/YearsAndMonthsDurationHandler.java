@@ -17,8 +17,9 @@ package org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers;
 
 import java.time.Period;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 public class YearsAndMonthsDurationHandler extends TypeHandlerWithSummary<Period> {
 

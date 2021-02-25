@@ -22,20 +22,21 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
+import org.kie.kogito.event.EventKind;
+import org.kie.kogito.services.event.DataEventAttrBuilder;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
-import org.kie.kogito.event.EventKind;
-import org.kie.kogito.services.event.DataEventAttrBuilder;
 
 public class TopicsInformationResourceGenerator extends AbstractEventResourceGenerator {
 
@@ -45,7 +46,7 @@ public class TopicsInformationResourceGenerator extends AbstractEventResourceGen
     private final Map<String, List<TriggerMetaData>> triggers;
 
     public TopicsInformationResourceGenerator(final KogitoBuildContext context,
-                                              final List<ProcessExecutableModelGenerator> generators) {
+            final List<ProcessExecutableModelGenerator> generators) {
         super(TemplatedGenerator.builder()
                 .withTemplateBasePath(TEMPLATE_EVENT_FOLDER)
                 .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME)
@@ -109,9 +110,9 @@ public class TopicsInformationResourceGenerator extends AbstractEventResourceGen
                     .stream()
                     .filter(m -> m.generate().getTriggers() != null && !m.generate().getTriggers().isEmpty())
                     .forEach(m -> filteredTriggers.put(m.getProcessId(),
-                                                   m.generate().getTriggers().stream()
-                                                 .filter(t -> !TriggerMetaData.TriggerType.Signal.equals(t.getType()))
-                                                 .collect(Collectors.toList())));
+                            m.generate().getTriggers().stream()
+                                    .filter(t -> !TriggerMetaData.TriggerType.Signal.equals(t.getType()))
+                                    .collect(Collectors.toList())));
             return filteredTriggers;
         }
         return Collections.emptyMap();

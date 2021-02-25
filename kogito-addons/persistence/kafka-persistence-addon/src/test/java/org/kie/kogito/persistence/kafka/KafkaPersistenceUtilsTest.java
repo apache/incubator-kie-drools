@@ -29,20 +29,20 @@ import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
 public class KafkaPersistenceUtilsTest {
 
     @Test
-    public void testTopicName(){
+    public void testTopicName() {
         assertThat(topicName("aProcessId")).isEqualTo("kogito.process.aProcessId");
     }
 
     @Test
-    public void testStoreName(){
+    public void testStoreName() {
         assertThat(storeName("aProcessId")).isEqualTo("kogito-aProcessId-store");
     }
 
     @Test
-    public void testTopology(){
+    public void testTopology() {
         Topology topology = createTopologyForProcesses(emptyList());
         assertThat(topology.describe().globalStores()).isEmpty();
-        
+
         topology = createTopologyForProcesses(singletonList("aProcess"));
         assertThat(topology.describe().globalStores()).hasSize(1);
     }

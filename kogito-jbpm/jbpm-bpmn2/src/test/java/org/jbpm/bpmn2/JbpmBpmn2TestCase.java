@@ -93,6 +93,7 @@ public abstract class JbpmBpmn2TestCase {
             kruntime = null;
         }
     }
+
     @BeforeEach
     protected void logTestStartAndSetup(TestInfo testInfo) {
         logger.info(" >>> {} <<<", testInfo.getDisplayName());
@@ -126,8 +127,8 @@ public abstract class JbpmBpmn2TestCase {
             resources[i] = (ResourceFactory.newClassPathResource(p));
         }
         return createKnowledgeBaseFromResources(resources);
-    }   
-    
+    }
+
     private KieBase createKnowledgeBaseFromResources(Resource... process)
             throws Exception {
 
@@ -170,7 +171,7 @@ public abstract class JbpmBpmn2TestCase {
         conf.setOption(ForceEagerActivationOption.YES);
         result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
         workingMemoryLogger = new KogitoWorkingMemoryInMemoryLogger(result);
-        
+
         return result;
     }
 
@@ -182,24 +183,24 @@ public abstract class JbpmBpmn2TestCase {
 
     public void assertProcessInstanceCompleted(KogitoProcessInstance processInstance) {
         assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_COMPLETED, processInstance),
-                   "Process instance has not been completed.");
+                "Process instance has not been completed.");
     }
 
     public void assertProcessInstanceAborted(KogitoProcessInstance processInstance) {
         assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_ABORTED, processInstance),
-                   "Process instance has not been aborted.");
+                "Process instance has not been aborted.");
     }
 
     public void assertProcessInstanceActive(KogitoProcessInstance processInstance) {
         assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_ACTIVE, processInstance)
                 || assertProcessInstanceState(KogitoProcessInstance.STATE_PENDING, processInstance),
-                   "Process instance is not active.");
+                "Process instance is not active.");
     }
 
     public void assertProcessInstanceFinished(KogitoProcessInstance processInstance,
             KogitoProcessRuntime kruntime) {
-        assertNull(kruntime.getProcessInstance( processInstance.getStringId()),
-                   "Process instance has not been finished.");
+        assertNull(kruntime.getProcessInstance(processInstance.getStringId()),
+                "Process instance has not been finished.");
     }
 
     public void assertNodeActive(String processInstanceId, KogitoProcessRuntime kruntime,
@@ -210,8 +211,8 @@ public abstract class JbpmBpmn2TestCase {
         }
         KogitoProcessInstance processInstance = kruntime
                 .getProcessInstance(processInstanceId);
-        if (processInstance instanceof WorkflowProcessInstance) {            
-            assertNodeActive((WorkflowProcessInstance) processInstance, names);            
+        if (processInstance instanceof WorkflowProcessInstance) {
+            assertNodeActive((WorkflowProcessInstance) processInstance, names);
         }
         if (!names.isEmpty()) {
             String s = names.get(0);
@@ -239,7 +240,7 @@ public abstract class JbpmBpmn2TestCase {
         List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
         if (!names.isEmpty()) {
             String s = names.get(0);
-            for(int i = 1; i < names.size(); i++) {
+            for (int i = 1; i < names.size(); i++) {
                 s += ", " + names.get(i);
             }
             fail("Node(s) not executed: " + s);
@@ -253,22 +254,22 @@ public abstract class JbpmBpmn2TestCase {
     }
 
     public int getNumberOfProcessInstances(String processId) {
-        int counter = 0;      
-        LogEvent [] events = workingMemoryLogger.getLogEvents().toArray(new LogEvent[0]);
-        for (LogEvent event : events ) { 
+        int counter = 0;
+        LogEvent[] events = workingMemoryLogger.getLogEvents().toArray(new LogEvent[0]);
+        for (LogEvent event : events) {
             if (event.getType() == LogEvent.BEFORE_RULEFLOW_CREATED) {
-                if((( KogitoRuleFlowLogEvent ) event).getProcessId().equals(processId)) {
-                    counter++;                    
+                if (((KogitoRuleFlowLogEvent) event).getProcessId().equals(processId)) {
+                    counter++;
                 }
             }
         }
-        
+
         return counter;
     }
-    
+
     protected boolean assertProcessInstanceState(int state, KogitoProcessInstance processInstance) {
-        
-        return processInstance.getState() == state;         
+
+        return processInstance.getState() == state;
     }
 
     private List<String> getNotTriggeredNodes(String processInstanceId,
@@ -277,26 +278,26 @@ public abstract class JbpmBpmn2TestCase {
         for (String nodeName : nodeNames) {
             names.add(nodeName);
         }
-        
+
         for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof KogitoRuleFlowNodeLogEvent ) {
-                String nodeName = (( KogitoRuleFlowNodeLogEvent ) event)
+            if (event instanceof KogitoRuleFlowNodeLogEvent) {
+                String nodeName = ((KogitoRuleFlowNodeLogEvent) event)
                         .getNodeName();
                 if (names.contains(nodeName)) {
                     names.remove(nodeName);
                 }
             }
         }
-        
+
         return names;
     }
 
     protected void clearHistory() {
-        
+
         if (workingMemoryLogger != null) {
             workingMemoryLogger.clear();
         }
-    
+
     }
 
     public void assertProcessVarExists(KogitoProcessInstance process,
@@ -322,17 +323,17 @@ public abstract class JbpmBpmn2TestCase {
         }
 
     }
-    
+
     public String getProcessVarValue(KogitoProcessInstance processInstance, String varName) {
-        String actualValue = null;        
+        String actualValue = null;
         Object value = ((WorkflowProcessInstanceImpl) processInstance).getVariable(varName);
         if (value != null) {
             actualValue = value.toString();
         }
-    
+
         return actualValue;
     }
-    
+
     public void assertProcessVarValue(KogitoProcessInstance processInstance, String varName, Object varValue) {
         String actualValue = getProcessVarValue(processInstance, varName);
         assertEquals(varValue, actualValue, "Variable " + varName + " value misatch!");
@@ -447,7 +448,7 @@ public abstract class JbpmBpmn2TestCase {
         return MVELSafeHelper.getEvaluator().executeExpression(MVEL.compileExpression(str, context),
                 vars);
     }
-    
+
     protected void assertProcessInstanceCompleted(String processInstanceId, KogitoProcessRuntime kruntime) {
         KogitoProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
         assertNull(processInstance, "Process instance has not completed.");

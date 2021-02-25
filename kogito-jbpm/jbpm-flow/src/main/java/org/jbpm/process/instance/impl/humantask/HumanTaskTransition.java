@@ -36,7 +36,7 @@ public class HumanTaskTransition implements Transition<Map<String, Object>> {
     private String phase;
     private Map<String, Object> data;
     private List<Policy<?>> policies = new ArrayList<>();
-    
+
     public static HumanTaskTransition withModel(String phase, MapOutput data, Policy<?>... policies) {
         return new HumanTaskTransition(phase, data.toMap(), policies);
     }
@@ -48,11 +48,11 @@ public class HumanTaskTransition implements Transition<Map<String, Object>> {
     public HumanTaskTransition(String phase) {
         this(phase, Collections.emptyMap());
     }
-    
+
     public HumanTaskTransition(String phase, Map<String, Object> data, IdentityProvider identity) {
         this(phase, data, SecurityPolicy.of(identity));
     }
-    
+
     public HumanTaskTransition(String phase, Map<String, Object> data, Policy<?>... policies) {
         this.phase = phase;
         this.data = data;

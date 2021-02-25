@@ -19,21 +19,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.kogito.workitem.rest.RestWorkItemHandlerParamResolver;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-import org.kogito.workitem.rest.RestWorkItemHandlerParamResolver;
 
 public class JsonPathResolver implements RestWorkItemHandlerParamResolver {
 
     private static final Configuration jsonPathConfig = Configuration
-        .builder()
-        .mappingProvider(new JacksonMappingProvider())
-        .jsonProvider(new JacksonJsonNodeJsonProvider())
-        .build();
+            .builder()
+            .mappingProvider(new JacksonMappingProvider())
+            .jsonProvider(new JacksonJsonNodeJsonProvider())
+            .build();
 
     private String jsonPathExpr;
 
@@ -44,9 +45,9 @@ public class JsonPathResolver implements RestWorkItemHandlerParamResolver {
     @Override
     public Object apply(Object context) {
         JsonNode node = JsonPath
-            .using(jsonPathConfig)
-            .parse(context)
-            .read(jsonPathExpr, JsonNode.class);
+                .using(jsonPathConfig)
+                .parse(context)
+                .read(jsonPathExpr, JsonNode.class);
         return readValue(node);
     }
 

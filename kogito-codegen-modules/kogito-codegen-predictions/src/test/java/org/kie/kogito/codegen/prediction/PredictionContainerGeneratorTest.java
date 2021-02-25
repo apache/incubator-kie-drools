@@ -31,11 +31,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
+
+import com.github.javaparser.ast.CompilationUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -183,7 +184,7 @@ class PredictionContainerGeneratorTest {
 
             @Override
             public WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events,
-                                     WatchEvent.Modifier... modifiers) throws IOException {
+                    WatchEvent.Modifier... modifiers) throws IOException {
                 return null;
             }
 

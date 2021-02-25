@@ -15,12 +15,12 @@
  */
 package org.kie.kogito;
 
-import org.kie.kogito.process.ProcessConfig;
-import org.kie.kogito.uow.UnitOfWorkManager;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.uow.UnitOfWorkManager;
 
 public class StaticApplication implements Application {
 
@@ -33,7 +33,7 @@ public class StaticApplication implements Application {
 
     public StaticApplication(
             Config config,
-            KogitoEngine ... engines) {
+            KogitoEngine... engines) {
         this(config, Arrays.asList(engines));
     }
 
@@ -59,12 +59,12 @@ public class StaticApplication implements Application {
                 .orElse(null);
     }
 
-    protected void loadEngines(KogitoEngine ... engines) {
+    protected void loadEngines(KogitoEngine... engines) {
         Arrays.stream(engines).forEach(this::loadEngine);
     }
 
     protected void loadEngine(KogitoEngine engine) {
-        if(engine != null) {
+        if (engine != null) {
             engineMap.put(engine.getClass(), engine);
         }
     }

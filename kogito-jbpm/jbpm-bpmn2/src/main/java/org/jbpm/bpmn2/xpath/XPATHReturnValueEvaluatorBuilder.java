@@ -24,31 +24,31 @@ import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.process.instance.impl.XPATHReturnValueEvaluator;
 
 public class XPATHReturnValueEvaluatorBuilder
-    implements
-    ReturnValueEvaluatorBuilder {
+        implements
+        ReturnValueEvaluatorBuilder {
 
     public XPATHReturnValueEvaluatorBuilder() {
 
     }
 
     public void build(final PackageBuildContext context,
-                      final ReturnValueConstraintEvaluator constraintNode,
-                      final ReturnValueDescr descr,
-                      final ContextResolver contextResolver) {
+            final ReturnValueConstraintEvaluator constraintNode,
+            final ReturnValueDescr descr,
+            final ContextResolver contextResolver) {
 
         String text = descr.getText();
 
         try {
-            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text,
-                                                                          null );
+            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator(text,
+                    null);
 
-            constraintNode.setEvaluator( expr );
-            
-        } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          null,
-                                                          "Unable to build expression for 'constraint' " + descr.getText() + "': " + e ) );
+            constraintNode.setEvaluator(expr);
+
+        } catch (final Exception e) {
+            context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+                    descr,
+                    null,
+                    "Unable to build expression for 'constraint' " + descr.getText() + "': " + e));
         }
     }
 

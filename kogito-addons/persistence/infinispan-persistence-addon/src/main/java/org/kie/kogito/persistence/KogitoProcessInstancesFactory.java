@@ -29,26 +29,26 @@ import org.kie.kogito.process.ProcessInstancesFactory;
  *
  */
 public abstract class KogitoProcessInstancesFactory implements ProcessInstancesFactory {
-   
-    protected RemoteCacheManager cacheManager; 
+
+    protected RemoteCacheManager cacheManager;
 
     public KogitoProcessInstancesFactory(RemoteCacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
-    
+
     public CacheProcessInstances createProcessInstances(Process<?> process) {
         List<BaseMarshaller<?>> marshallers = marshallers();
         return new CacheProcessInstances(process, cacheManager, template(), proto(), marshallers.toArray(new BaseMarshaller<?>[0]));
     }
-    
+
     public String proto() {
         return null;
     }
-    
+
     public List<BaseMarshaller<?>> marshallers() {
         return Collections.emptyList();
     }
-    
+
     public String template() {
         return null;
     }

@@ -15,15 +15,16 @@
  */
 package org.kie.kogito.tracing.decision.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.kogito.tracing.decision.event.message.InternalMessageType;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +37,7 @@ class EventUtilsTest {
 
     @Test
     void testDoesNotThrowOnNullValues() {
-        assertDoesNotThrow(() -> EventUtils.<Integer,String>map(null, null));
+        assertDoesNotThrow(() -> EventUtils.<Integer, String> map(null, null));
         assertDoesNotThrow(() -> EventUtils.messageFrom((DMNMessage) null));
         assertDoesNotThrow(() -> EventUtils.messageFrom((InternalMessageType) null));
         assertDoesNotThrow(() -> EventUtils.messageFrom(null, null));
@@ -88,7 +89,7 @@ class EventUtilsTest {
     void testTypedVariableFromJsonNodeWithDMNType() throws JsonProcessingException {
         ObjectReader reader = new ObjectMapper().reader();
 
-        TypedValue value = EventUtils.typedValueFromJsonNode(mockDMNType("Any"),null, null);
+        TypedValue value = EventUtils.typedValueFromJsonNode(mockDMNType("Any"), null, null);
         assertNotNull(value);
         assertSame(TypedValue.Kind.UNIT, value.getKind());
         assertEquals(BuiltInType.UNKNOWN.getName(), value.getType());

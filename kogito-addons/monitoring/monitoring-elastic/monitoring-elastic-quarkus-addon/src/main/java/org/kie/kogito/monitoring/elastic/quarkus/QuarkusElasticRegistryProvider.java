@@ -20,11 +20,12 @@ import java.util.Optional;
 import javax.enterprise.event.Observes;
 import javax.inject.Singleton;
 
-import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.monitoring.elastic.common.ElasticConfigFactory;
 import org.kie.kogito.monitoring.elastic.common.ElasticRegistry;
 import org.kie.kogito.monitoring.elastic.common.KogitoElasticConfig;
+
+import io.quarkus.runtime.StartupEvent;
 
 @Singleton
 public class QuarkusElasticRegistryProvider extends ElasticRegistry {

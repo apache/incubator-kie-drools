@@ -29,16 +29,16 @@ import org.kie.kogito.process.workitem.Transition;
  *
  * It can transition from
  * <ul>
- *  <li>Claim</li>
+ * <li>Claim</li>
  * </ul>
  */
 public class Release implements LifeCyclePhase {
 
     public static final String ID = "release";
     public static final String STATUS = "Ready";
-    
+
     private List<String> allowedTransitions = Arrays.asList(Claim.ID);
-    
+
     @Override
     public String id() {
         return ID;
@@ -53,16 +53,16 @@ public class Release implements LifeCyclePhase {
     public boolean isTerminating() {
         return false;
     }
-    
+
     @Override
     public boolean canTransition(LifeCyclePhase phase) {
-        return allowedTransitions.contains(phase.id());        
+        return allowedTransitions.contains(phase.id());
     }
 
     @Override
     public void apply(WorkItem workitem, Transition<?> transition) {
-        
-        ((HumanTaskWorkItemImpl) workitem).setActualOwner(null);     
-        
+
+        ((HumanTaskWorkItemImpl) workitem).setActualOwner(null);
+
     }
 }

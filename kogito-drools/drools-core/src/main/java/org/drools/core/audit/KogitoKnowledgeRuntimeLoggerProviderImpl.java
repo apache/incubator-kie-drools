@@ -23,18 +23,18 @@ public class KogitoKnowledgeRuntimeLoggerProviderImpl extends KnowledgeRuntimeLo
 
     @Override
     public KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
-                                          String fileName,
-                                          int maxEventsInMemory) {
-        KogitoWorkingMemoryFileLogger logger = new KogitoWorkingMemoryFileLogger( session );
-        logger.setMaxEventsInMemory( maxEventsInMemory );
-        if ( fileName != null ) {
+            String fileName,
+            int maxEventsInMemory) {
+        KogitoWorkingMemoryFileLogger logger = new KogitoWorkingMemoryFileLogger(session);
+        logger.setMaxEventsInMemory(maxEventsInMemory);
+        if (fileName != null) {
             logger.setFileName(fileName);
         }
         return registerRuntimeLogger(session, logger);
     }
 
     private KieRuntimeLogger registerRuntimeLogger(KieRuntimeEventManager session, KieRuntimeLogger logger) {
-        if (session instanceof AbstractRuntime ) {
+        if (session instanceof AbstractRuntime) {
             ((AbstractRuntime) session).setLogger(logger);
         }
         return logger;

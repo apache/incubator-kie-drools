@@ -33,9 +33,9 @@ import org.kie.kogito.process.workitem.Transition;
  *
  * It can transition from
  * <ul>
- *  <li>Active</li>
- *  <li>Claim</li>
- *  <li>Release</li>
+ * <li>Active</li>
+ * <li>Claim</li>
+ * <li>Release</li>
  * </ul>
  * 
  * This is a terminating (final) phase.
@@ -44,9 +44,9 @@ public class Skip implements LifeCyclePhase {
 
     public static final String ID = "skip";
     public static final String STATUS = "Skipped";
-    
+
     private List<String> allowedTransitions = Arrays.asList(Active.ID, Claim.ID, Release.ID);
-    
+
     @Override
     public String id() {
         return ID;
@@ -61,23 +61,23 @@ public class Skip implements LifeCyclePhase {
     public boolean isTerminating() {
         return true;
     }
-    
+
     @Override
     public boolean canTransition(LifeCyclePhase phase) {
-        return allowedTransitions.contains(phase.id());        
+        return allowedTransitions.contains(phase.id());
     }
-    
+
     @Override
     public void apply(WorkItem workitem, Transition<?> transition) {
-        
+
         if (transition.policies() != null) {
             for (Policy<?> policy : transition.policies()) {
                 if (policy instanceof SecurityPolicy) {
-                    ((HumanTaskWorkItemImpl) workitem).setActualOwner(((SecurityPolicy)policy).value().getName());
+                    ((HumanTaskWorkItemImpl) workitem).setActualOwner(((SecurityPolicy) policy).value().getName());
                     break;
                 }
             }
         }
-        workitem.getResults().put("ActorId", (( HumanTaskWorkItem ) workitem).getActualOwner());
+        workitem.getResults().put("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
     }
 }

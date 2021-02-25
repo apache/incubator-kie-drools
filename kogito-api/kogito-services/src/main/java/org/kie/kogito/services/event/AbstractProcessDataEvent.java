@@ -15,8 +15,9 @@
  */
 package org.kie.kogito.services.event;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kie.kogito.event.AbstractDataEvent;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
 
@@ -29,72 +30,73 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoStartFromNode;
 
-    public AbstractProcessDataEvent() {}
+    public AbstractProcessDataEvent() {
+    }
 
     public AbstractProcessDataEvent(String source,
-                                    T body,
-                                    String kogitoProcessinstanceId,
-                                    String kogitoParentProcessinstanceId,
-                                    String kogitoRootProcessinstanceId,
-                                    String kogitoProcessId,
-                                    String kogitoRootProcessId,
-                                    String kogitoProcessinstanceState,
-                                    String kogitoAddons) {
+            T body,
+            String kogitoProcessinstanceId,
+            String kogitoParentProcessinstanceId,
+            String kogitoRootProcessinstanceId,
+            String kogitoProcessId,
+            String kogitoRootProcessId,
+            String kogitoProcessinstanceState,
+            String kogitoAddons) {
         this(null,
-             source,
-             body,
-             kogitoProcessinstanceId,
-             kogitoParentProcessinstanceId,
-             kogitoRootProcessinstanceId,
-             kogitoProcessId,
-             kogitoRootProcessId,
-             kogitoProcessinstanceState,
-             kogitoAddons);
+                source,
+                body,
+                kogitoProcessinstanceId,
+                kogitoParentProcessinstanceId,
+                kogitoRootProcessinstanceId,
+                kogitoProcessId,
+                kogitoRootProcessId,
+                kogitoProcessinstanceState,
+                kogitoAddons);
     }
 
     public AbstractProcessDataEvent(String type,
-                                    String source,
-                                    T body,
-                                    String kogitoProcessinstanceId,
-                                    String kogitoParentProcessinstanceId,
-                                    String kogitoRootProcessinstanceId,
-                                    String kogitoProcessId,
-                                    String kogitoRootProcessId,
-                                    String kogitoProcessinstanceState,
-                                    String kogitoAddons) {
+            String source,
+            T body,
+            String kogitoProcessinstanceId,
+            String kogitoParentProcessinstanceId,
+            String kogitoRootProcessinstanceId,
+            String kogitoProcessId,
+            String kogitoRootProcessId,
+            String kogitoProcessinstanceState,
+            String kogitoAddons) {
         this(
-            type,
-            source,
-            body,
-            kogitoProcessinstanceId,
-            kogitoParentProcessinstanceId,
-            kogitoRootProcessinstanceId,
-            kogitoProcessId,
-            kogitoRootProcessId,
-            kogitoProcessinstanceState,
-            kogitoAddons,
-            null);
+                type,
+                source,
+                body,
+                kogitoProcessinstanceId,
+                kogitoParentProcessinstanceId,
+                kogitoRootProcessinstanceId,
+                kogitoProcessId,
+                kogitoRootProcessId,
+                kogitoProcessinstanceState,
+                kogitoAddons,
+                null);
     }
 
     public AbstractProcessDataEvent(String type,
-                                    String source,
-                                    T body,
-                                    String kogitoProcessinstanceId,
-                                    String kogitoParentProcessinstanceId,
-                                    String kogitoRootProcessinstanceId,
-                                    String kogitoProcessId,
-                                    String kogitoRootProcessId,
-                                    String kogitoProcessinstanceState,
-                                    String kogitoAddons,
-                                    String kogitoReferenceId) {
+            String source,
+            T body,
+            String kogitoProcessinstanceId,
+            String kogitoParentProcessinstanceId,
+            String kogitoRootProcessinstanceId,
+            String kogitoProcessId,
+            String kogitoRootProcessId,
+            String kogitoProcessinstanceState,
+            String kogitoAddons,
+            String kogitoReferenceId) {
         super(type,
-              source,
-              body,
-              kogitoProcessinstanceId,
-              kogitoRootProcessinstanceId,
-              kogitoProcessId,
-              kogitoRootProcessId,
-              kogitoAddons);
+                source,
+                body,
+                kogitoProcessinstanceId,
+                kogitoRootProcessinstanceId,
+                kogitoProcessId,
+                kogitoRootProcessId,
+                kogitoAddons);
         this.kogitoParentProcessinstanceId = kogitoParentProcessinstanceId;
         this.kogitoProcessinstanceState = kogitoProcessinstanceState;
         this.kogitoReferenceId = kogitoReferenceId;

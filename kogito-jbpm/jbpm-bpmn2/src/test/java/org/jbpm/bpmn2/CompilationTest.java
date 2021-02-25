@@ -48,14 +48,14 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime(filename);
 
         assertFalse(javaProcessDialect.getActionDescrs().isEmpty(),
-                    "No " + ActionDescr.class.getSimpleName() + " instances caught for testing!");
-        for( BaseDescr descr : javaProcessDialect.getActionDescrs() ) {
-            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() +" has a null resource field");
+                "No " + ActionDescr.class.getSimpleName() + " instances caught for testing!");
+        for (BaseDescr descr : javaProcessDialect.getActionDescrs()) {
+            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() + " has a null resource field");
         }
 
         assertFalse(javaProcessDialect.getReturnValueDescrs().isEmpty(),
-                    "No " + ReturnValueDescr.class.getSimpleName() + " instances caught for testing!");
-        for( BaseDescr descr : javaProcessDialect.getReturnValueDescrs() ) {
+                "No " + ReturnValueDescr.class.getSimpleName() + " instances caught for testing!");
+        for (BaseDescr descr : javaProcessDialect.getReturnValueDescrs()) {
             assertNotNull(descr.getResource(), descr.getClass().getSimpleName() + " has a null resource field");
         }
     }
@@ -89,8 +89,8 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         List<ActionDescr> actionDescrs = new ArrayList<ActionDescr>();
 
         @Override
-        protected void buildAction( PackageBuildContext context, DroolsAction action, ActionDescr actionDescr,
-                ContextResolver contextResolver, String className, AnalysisResult analysis ) {
+        protected void buildAction(PackageBuildContext context, DroolsAction action, ActionDescr actionDescr,
+                ContextResolver contextResolver, String className, AnalysisResult analysis) {
             actionDescrs.add(actionDescr);
             super.buildAction(context, action, actionDescr, contextResolver, className, analysis);
         }
@@ -101,8 +101,8 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         List<ReturnValueDescr> returnValueDescrs = new ArrayList<ReturnValueDescr>();
 
         @Override
-        protected void buildReturnValueEvaluator( PackageBuildContext context, ReturnValueConstraintEvaluator constraintNode,
-                ReturnValueDescr descr, ContextResolver contextResolver, String className, AnalysisResult analysis ) {
+        protected void buildReturnValueEvaluator(PackageBuildContext context, ReturnValueConstraintEvaluator constraintNode,
+                ReturnValueDescr descr, ContextResolver contextResolver, String className, AnalysisResult analysis) {
             returnValueDescrs.add(descr);
             super.buildReturnValueEvaluator(context, constraintNode, descr, contextResolver, className, analysis);
         }

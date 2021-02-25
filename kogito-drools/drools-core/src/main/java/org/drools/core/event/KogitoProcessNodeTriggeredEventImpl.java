@@ -26,18 +26,17 @@ public class KogitoProcessNodeTriggeredEventImpl extends ProcessEvent implements
 
     private NodeInstance nodeInstance;
 
-    public KogitoProcessNodeTriggeredEventImpl( final NodeInstance nodeInstance, KieRuntime kruntime ) {
-        super( nodeInstance.getProcessInstance(), kruntime );
+    public KogitoProcessNodeTriggeredEventImpl(final NodeInstance nodeInstance, KieRuntime kruntime) {
+        super(nodeInstance.getProcessInstance(), kruntime);
         this.nodeInstance = nodeInstance;
     }
-    
+
     public NodeInstance getNodeInstance() {
         return nodeInstance;
     }
 
     public String toString() {
-        return "==>[ProcessNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + (( KogitoNodeInstance ) nodeInstance).getStringId()
-            + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
+        return "==>[ProcessNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + ((KogitoNodeInstance) nodeInstance).getStringId()
+                + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }
-

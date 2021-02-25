@@ -15,11 +15,9 @@
  */
 package org.kie.kogito.quarkus.predictions.deployment;
 
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinder;
@@ -27,8 +25,11 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.CapabilityBuildItem;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
 /**
  * Main class of the Kogito predictions extension
@@ -56,8 +57,7 @@ public class PredictionsAssetsProcessor {
         logger.debug("pmmlEvaluators {}", pmmlEvaluators.size());
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
         toReturn.add(new ReflectiveClassBuildItem(true, true, PMML4Result.class));
-        pmmlEvaluators.
-                forEach(pmmlModelEvaluator -> toReturn.add(new ReflectiveClassBuildItem(true, true, pmmlModelEvaluator.getClass())));
+        pmmlEvaluators.forEach(pmmlModelEvaluator -> toReturn.add(new ReflectiveClassBuildItem(true, true, pmmlModelEvaluator.getClass())));
         logger.debug("toReturn {}", toReturn.size());
         return toReturn;
     }

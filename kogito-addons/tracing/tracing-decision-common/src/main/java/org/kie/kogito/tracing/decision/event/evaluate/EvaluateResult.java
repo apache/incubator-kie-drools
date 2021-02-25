@@ -47,7 +47,6 @@ public class EvaluateResult {
     public static EvaluateResult from(DMNResult result) {
         return new EvaluateResult(
                 map(result.getDecisionResults(), EvaluateDecisionResult::from),
-                map(result.getMessages(), EventUtils::messageFrom)
-        );
+                map(result.getMessages(), EventUtils::messageFrom));
     }
 }

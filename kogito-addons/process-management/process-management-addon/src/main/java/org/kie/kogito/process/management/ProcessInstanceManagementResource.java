@@ -43,7 +43,7 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     }
 
     @Override
-    protected  <R> Response buildOkResponse(R body) {
+    protected <R> Response buildOkResponse(R body) {
         return Response
                 .status(Response.Status.OK)
                 .entity(body)

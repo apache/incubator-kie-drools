@@ -23,66 +23,66 @@ import org.kie.kogito.timer.Calendars;
 import org.kie.kogito.timer.Trigger;
 
 public class CronTrigger
-    implements
-    Trigger {
+        implements
+        Trigger {
 
     protected static final int YEAR_TO_GIVEUP_SCHEDULING_AT = 2299;
     private static final long serialVersionUID = -332085070627193383L;
 
-    private CronExpression     cronEx                       = null;
-    private Date               startTime                    = null;
-    private Date               endTime                      = null;
-    private int                repeatLimit;
-    private int                repeatCount;
-    private Date               nextFireTime                 = null;
-    private Date               previousFireTime             = null;
-    private transient TimeZone timeZone                     = null;
-    private String[]           calendarNames;
+    private CronExpression cronEx = null;
+    private Date startTime = null;
+    private Date endTime = null;
+    private int repeatLimit;
+    private int repeatCount;
+    private Date nextFireTime = null;
+    private Date previousFireTime = null;
+    private transient TimeZone timeZone = null;
+    private String[] calendarNames;
     private Calendars calendars;
 
     public CronTrigger() {
-        
-    }
-    
-    public CronTrigger(long timestamp,
-                       Date startTime,
-                       Date endTime,
-                       int repeatLimit,
-                       String cronExpression,
-                       String[] calendarNames,
-                       Calendars calendars) {
-        this( timestamp,
-              startTime,
-              endTime,
-              repeatLimit,
-              determineCronExpression( cronExpression ),
-              calendarNames,
-              calendars );
+
     }
 
     public CronTrigger(long timestamp,
-                       Date startTime,
-                       Date endTime,
-                       int repeatLimit,
-                       CronExpression cronExpression,
-                       String[] calendarNames,
-                       Calendars calendars) {
-        setCronExpression( cronExpression );
-        
+            Date startTime,
+            Date endTime,
+            int repeatLimit,
+            String cronExpression,
+            String[] calendarNames,
+            Calendars calendars) {
+        this(timestamp,
+                startTime,
+                endTime,
+                repeatLimit,
+                determineCronExpression(cronExpression),
+                calendarNames,
+                calendars);
+    }
+
+    public CronTrigger(long timestamp,
+            Date startTime,
+            Date endTime,
+            int repeatLimit,
+            CronExpression cronExpression,
+            String[] calendarNames,
+            Calendars calendars) {
+        setCronExpression(cronExpression);
+
         this.repeatLimit = repeatLimit;
 
-        if ( startTime == null ) {
-            startTime = new Date( timestamp );
+        if (startTime == null) {
+            startTime = new Date(timestamp);
         }
-        setStartTime( startTime );
+        setStartTime(startTime);
 
-        if ( endTime != null ) {
-            setEndTime( endTime );
+        if (endTime != null) {
+            setEndTime(endTime);
         }
-        setTimeZone( TimeZone.getDefault() );
+        setTimeZone(TimeZone.getDefault());
 
         // Set the first FireTime, this is sensitive to StartTime
-        this.nextFireTime = new Date( timestamp );
+        this.nextFireTime = new Date(timestamp);
         setFirstFireTimeAfter();
 
         this.calendarNames = calendarNames;
@@ -97,13 +97,13 @@ public class CronTrigger
     }
 
     public void setStartTime(Date startTime) {
-        if ( startTime == null ) {
-            throw new IllegalArgumentException( "Start time cannot be null" );
+        if (startTime == null) {
+            throw new IllegalArgumentException("Start time cannot be null");
         }
 
         Date eTime = getEndTime();
-        if ( eTime != null && eTime.before( startTime ) ) {
-            throw new IllegalArgumentException( "End time cannot be before start time" );
+        if (eTime != null && eTime.before(startTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time");
         }
 
         // round off millisecond...
@@ -111,9 +111,9 @@ public class CronTrigger
         // Calendar.getInstance(),
         // since time zone is implicit when using a Date in the setTime method.
         Calendar cl = Calendar.getInstance();
-        cl.setTime( startTime );
-        cl.set( Calendar.MILLISECOND,
-                0 );
+        cl.setTime(startTime);
+        cl.set(Calendar.MILLISECOND,
+                0);
 
         this.startTime = cl.getTime();
     }
@@ -130,8 +130,8 @@ public class CronTrigger
 
     public void setEndTime(Date endTime) {
         Date sTime = getStartTime();
-        if ( sTime != null && endTime != null && sTime.after( endTime ) ) {
-            throw new IllegalArgumentException( "End time cannot be before start time" );
+        if (sTime != null && endTime != null && sTime.after(endTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time");
         }
 
         this.endTime = endTime;
@@ -140,14 +140,15 @@ public class CronTrigger
     /**
      * <p>
      * Returns the next time at which the <code>Trigger</code> is scheduled to fire. If
-     * the trigger will not fire again, <code>null</code> will be returned.  Note that
+     * the trigger will not fire again, <code>null</code> will be returned. Note that
      * the time returned can possibly be in the past, if the time that was computed
      * for the trigger to next fire has already arrived, but the scheduler has not yet
      * been able to fire the trigger (which would likely be due to lack of resources
      * e.g. threads).
      * </p>
      *
-     * <p>The value returned is not guaranteed to be valid until after the <code>Trigger</code>
+     * <p>
+     * The value returned is not guaranteed to be valid until after the <code>Trigger</code>
      * has been added to the scheduler.
      * </p>
      */
@@ -157,7 +158,7 @@ public class CronTrigger
 
     /**
      * <p>
-     * Returns the previous time at which the <code>CronTrigger</code> 
+     * Returns the previous time at which the <code>CronTrigger</code>
      * fired. If the trigger has not yet fired, <code>null</code> will be
      * returned.
      */
@@ -195,11 +196,11 @@ public class CronTrigger
      * </p>
      */
     public TimeZone getTimeZone() {
-        if ( this.cronEx != null ) {
+        if (this.cronEx != null) {
             return this.cronEx.getTimeZone();
         }
 
-        if ( this.timeZone == null ) {
+        if (this.timeZone == null) {
             this.timeZone = TimeZone.getDefault();
         }
         return this.timeZone;
@@ -211,30 +212,29 @@ public class CronTrigger
      * <code>CronTrigger</code> will be resolved.
      * </p>
      * 
-     * <p>If {@link #setCronExpression(CronExpression)} is called after this
-     * method, the TimeZon setting on the CronExpression will "win".  However
+     * <p>
+     * If {@link #setCronExpression(CronExpression)} is called after this
+     * method, the TimeZon setting on the CronExpression will "win". However
      * if {@link #setCronExpression(String)} is called after this method, the
-     * time zone applied by this method will remain in effect, since the 
+     * time zone applied by this method will remain in effect, since the
      * String cron expression does not carry a time zone!
      */
     public void setTimeZone(TimeZone timeZone) {
-        if ( this.cronEx != null ) {
-            this.cronEx.setTimeZone( timeZone );
+        if (this.cronEx != null) {
+            this.cronEx.setTimeZone(timeZone);
         }
         this.timeZone = timeZone;
     }
 
     public void setCronExpression(String cronExpression) {
-        setCronExpression( determineCronExpression( cronExpression ) );
+        setCronExpression(determineCronExpression(cronExpression));
     }
 
     public void setCronExpression(CronExpression cronExpression) {
         TimeZone origTz = getTimeZone();
         this.cronEx = cronExpression;
-        this.cronEx.setTimeZone( origTz );
+        this.cronEx.setTimeZone(origTz);
     }
-    
-    
 
     public CronExpression getCronEx() {
         return cronEx;
@@ -278,10 +278,10 @@ public class CronTrigger
 
     public static CronExpression determineCronExpression(String cronExpression) {
         try {
-            return new CronExpression( cronExpression );
-        } catch ( Exception e ) {
-            throw new RuntimeException( "Unable to parse cron expression '" + cronExpression + "'",
-                                        e );
+            return new CronExpression(cronExpression);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to parse cron expression '" + cronExpression + "'",
+                    e);
         }
     }
 
@@ -290,15 +290,15 @@ public class CronTrigger
     }
 
     public synchronized Date nextFireTime() {
-        if ( this.nextFireTime == null ) {
+        if (this.nextFireTime == null) {
             return null;
-        }        
-        Date date = new Date( this.nextFireTime.getTime() - 1000L );
-        this.nextFireTime = getTimeAfter( this.nextFireTime );
+        }
+        Date date = new Date(this.nextFireTime.getTime() - 1000L);
+        this.nextFireTime = getTimeAfter(this.nextFireTime);
         updateToNextIncludeDate();
-        if ( this.endTime != null && this.nextFireTime.after( this.endTime ) ) {
+        if (this.endTime != null && this.nextFireTime.after(this.endTime)) {
             this.nextFireTime = null;
-        } else if (  repeatLimit != -1 && repeatCount >= repeatLimit ) {
+        } else if (repeatLimit != -1 && repeatCount >= repeatLimit) {
             this.nextFireTime = null;
         }
         return date;
@@ -317,16 +317,16 @@ public class CronTrigger
      * </p>
      */
     public void setFirstFireTimeAfter() {
-        if ( getStartTime().after( this.nextFireTime ) ) {
-            this.nextFireTime = new Date( getStartTime().getTime() - 1000l );
+        if (getStartTime().after(this.nextFireTime)) {
+            this.nextFireTime = new Date(getStartTime().getTime() - 1000l);
         }
 
-        if ( getEndTime() != null && (this.nextFireTime.compareTo( getEndTime() ) >= 0) ) {
+        if (getEndTime() != null && (this.nextFireTime.compareTo(getEndTime()) >= 0)) {
             this.nextFireTime = null;
         }
 
-        Date pot = getTimeAfter( this.nextFireTime );
-        if ( getEndTime() != null && pot != null && pot.after( getEndTime() ) ) {
+        Date pot = getTimeAfter(this.nextFireTime);
+        if (getEndTime() != null && pot != null && pot.after(getEndTime())) {
             this.nextFireTime = null;
         } else {
             this.nextFireTime = pot;
@@ -335,34 +335,34 @@ public class CronTrigger
 
     protected Date getTimeAfter(Date afterTime) {
         this.repeatCount++;
-        return (this.cronEx == null) ? null : this.cronEx.getTimeAfter( afterTime );
+        return (this.cronEx == null) ? null : this.cronEx.getTimeAfter(afterTime);
     }
 
     public void updateToNextIncludeDate() {
-        if ( this.calendars == null || calendarNames == null || calendarNames.length == 0 ) {
+        if (this.calendars == null || calendarNames == null || calendarNames.length == 0) {
             // There are no assigned calendars
             return;
         }
 
         // If we have calendars, check we can fire, or get next time until we can fire.
-        while ( this.nextFireTime != null && (this.endTime == null || this.nextFireTime.before( this.endTime )) ) {
+        while (this.nextFireTime != null && (this.endTime == null || this.nextFireTime.before(this.endTime))) {
             // this will loop forever if the trigger repeats forever and
             // included calendar position cannot be found
             boolean included = true;
-            for ( String calName : this.calendarNames ) {
+            for (String calName : this.calendarNames) {
                 // all calendars must not block, as soon as one blocks break, so we can check next time slot
-                org.kie.kogito.timer.Calendar cal = this.calendars.get(calName );
-                if ( cal != null && !cal.isTimeIncluded( this.nextFireTime.getTime() ) ) {
+                org.kie.kogito.timer.Calendar cal = this.calendars.get(calName);
+                if (cal != null && !cal.isTimeIncluded(this.nextFireTime.getTime())) {
                     included = false;
                     break;
                 }
             }
-            if ( included ) {
+            if (included) {
                 // if no calendars blocked, break
                 break;
             } else {
                 // otherwise increase the time and try again
-                this.nextFireTime = getTimeAfter( this.nextFireTime );
+                this.nextFireTime = getTimeAfter(this.nextFireTime);
             }
         }
     }

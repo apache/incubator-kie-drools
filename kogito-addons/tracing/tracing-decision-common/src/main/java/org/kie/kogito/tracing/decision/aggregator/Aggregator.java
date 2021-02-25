@@ -18,10 +18,11 @@ package org.kie.kogito.tracing.decision.aggregator;
 import java.util.List;
 import java.util.Optional;
 
-import io.cloudevents.CloudEvent;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
+
+import io.cloudevents.CloudEvent;
 
 @FunctionalInterface
 public interface Aggregator {

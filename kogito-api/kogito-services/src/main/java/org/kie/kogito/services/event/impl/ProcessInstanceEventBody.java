@@ -133,10 +133,12 @@ public class ProcessInstanceEventBody {
         metadata.put(STATE_META_DATA, String.valueOf(state));
         return metadata;
     }
+
     @Override
     public String toString() {
-        return "ProcessInstanceEventBody [id=" + id + ", parentInstanceId=" + parentInstanceId + ", rootInstanceId=" + rootInstanceId + ", processId=" + processId + ", rootProcessId=" + rootProcessId + ", processName=" +
-               processName + ", startDate=" + startDate + ", endDate=" + endDate + ", state=" + state + "]";
+        return "ProcessInstanceEventBody [id=" + id + ", parentInstanceId=" + parentInstanceId + ", rootInstanceId=" + rootInstanceId + ", processId=" + processId + ", rootProcessId=" + rootProcessId
+                + ", processName=" +
+                processName + ", startDate=" + startDate + ", endDate=" + endDate + ", state=" + state + "]";
     }
 
     @Override
@@ -241,7 +243,7 @@ public class ProcessInstanceEventBody {
             return this;
         }
 
-        public Builder roles(String...roles) {
+        public Builder roles(String... roles) {
             instance.roles = Arrays.asList(roles);
             return this;
         }

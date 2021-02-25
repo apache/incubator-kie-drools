@@ -18,8 +18,6 @@ package org.kie.kogito.event.impl;
 import java.util.Optional;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
@@ -29,6 +27,9 @@ import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDataEvent<D>> extends JacksonEventConsumer<M> {
 
@@ -54,30 +55,30 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
             // currently we filter out messages on the receiving end; for strategy see https://issues.redhat.com/browse/KOGITO-3591
             if (ignoredMessageType(cloudEvent, simpleName) && ignoredMessageType(cloudEvent, trigger)) {
                 logger.warn("Consumer for CloudEvent type '{}', trigger '{}': ignoring message with type '{}',  source '{}'",
-                             simpleName,
-                             trigger,
-                             cloudEvent.getType(),
-                             cloudEvent.getSource());
+                        simpleName,
+                        trigger,
+                        cloudEvent.getType(),
+                        cloudEvent.getSource());
                 return;
             }
             UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 if (cloudEvent.getKogitoReferenceId() != null && !cloudEvent.getKogitoReferenceId().isEmpty()) {
                     logger.debug("Received message with reference id '{}' going to use it to send signal '{}'",
-                                 cloudEvent.getKogitoReferenceId(),
-                                 trigger);
+                            cloudEvent.getKogitoReferenceId(),
+                            trigger);
                     Optional<ProcessInstance<M>> instance = process.instances().findById(cloudEvent.getKogitoReferenceId());
-                    if(instance.isPresent()){
+                    if (instance.isPresent()) {
                         instance.get().send(Sig.of("Message-" + trigger,
-                                                   cloudEvent.getData(),
-                                                   cloudEvent.getKogitoProcessinstanceId()));
+                                cloudEvent.getData(),
+                                cloudEvent.getKogitoProcessinstanceId()));
                     } else {
                         logger.warn("Process instance with id '{}' not found for triggering signal '{}'",
-                                    cloudEvent.getKogitoReferenceId(),
-                                    trigger);
+                                cloudEvent.getKogitoReferenceId(),
+                                trigger);
                     }
                 } else {
                     logger.debug("Received message without reference id, starting new process instance with trigger '{}'",
-                                 trigger);
+                            trigger);
                     ProcessInstance<M> pi = process.createInstance(model);
                     if (cloudEvent.getKogitoStartFromNode() != null && !cloudEvent.getKogitoStartFromNode().isEmpty()) {
                         pi.startFrom(cloudEvent.getKogitoStartFromNode(), cloudEvent.getKogitoProcessinstanceId());
@@ -89,10 +90,10 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
             });
         } catch (JsonProcessingException e) {
             logger.error("Failed to process JSON content for CloudEvent type: '{}', trigger: '{}': payload: '{}', error: '{}'",
-                         simpleName,
-                         trigger,
-                         payload,
-                         e.getMessage());
+                    simpleName,
+                    trigger,
+                    payload,
+                    e.getMessage());
             throw new IllegalStateException(e);
         }
     }

@@ -22,7 +22,6 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-
 public class BodyDeclarationComparator implements Comparator<BodyDeclaration<?>> {
 
     @Override
@@ -33,7 +32,7 @@ public class BodyDeclarationComparator implements Comparator<BodyDeclaration<?>>
         if (o1 instanceof FieldDeclaration && !(o2 instanceof FieldDeclaration)) {
             return -1;
         }
-        
+
         if (o1 instanceof ConstructorDeclaration && o2 instanceof ConstructorDeclaration) {
             return 0;
         }

@@ -146,10 +146,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
             return Optional.empty();
         }
 
-        return Optional.of(mode == MUTABLE ?
-                                   marshaller.unmarshallProcessInstance(data, process) :
-                                   marshaller.unmarshallReadOnlyProcessInstance(data, process)
-        );
+        return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process));
     }
 
     @Override
@@ -157,10 +154,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
         final List<ProcessInstance> instances = new ArrayList<>();
         try (final KeyValueIterator<String, byte[]> iterator = getStore().all()) {
             while (iterator.hasNext()) {
-                instances.add(mode == MUTABLE ?
-                                      marshaller.unmarshallProcessInstance(iterator.next().value, process) :
-                                      marshaller.unmarshallReadOnlyProcessInstance(iterator.next().value, process)
-                );
+                instances.add(mode == MUTABLE ? marshaller.unmarshallProcessInstance(iterator.next().value, process) : marshaller.unmarshallReadOnlyProcessInstance(iterator.next().value, process));
             }
             return instances;
         } catch (Exception e) {

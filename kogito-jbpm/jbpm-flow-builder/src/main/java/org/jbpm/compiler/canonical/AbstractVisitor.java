@@ -15,6 +15,8 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -24,12 +26,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.utils.StringEscapeUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_METADATA;
 

@@ -181,9 +181,7 @@ public class KafkaProcessInstancesIT {
     KafkaStreams createStreams(Process process) {
         Topology topology = createTopologyForProcesses(Arrays.asList(process.id()));
         KafkaStreams streams = new KafkaStreams(topology, getStreamsConfig());
-        streams.setUncaughtExceptionHandler((Thread thread, Throwable throwable) ->
-                                                    LOGGER.error("Kafka persistence error: " + throwable.getMessage(), throwable)
-        );
+        streams.setUncaughtExceptionHandler((Thread thread, Throwable throwable) -> LOGGER.error("Kafka persistence error: " + throwable.getMessage(), throwable));
         streams.cleanUp();
         return streams;
     }

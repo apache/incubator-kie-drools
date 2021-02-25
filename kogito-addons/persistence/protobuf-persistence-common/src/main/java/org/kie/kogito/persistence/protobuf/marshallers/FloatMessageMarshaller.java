@@ -39,7 +39,7 @@ public class FloatMessageMarshaller implements MessageMarshaller<Float> {
     @Override
     public void writeTo(ProtoStreamWriter writer, Float t) throws IOException {
         writer.writeFloat("data", t);
-        
+
     }
 
 }

@@ -16,12 +16,13 @@
 
 package org.kie.kogito.integrationtests.quarkus;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -41,45 +42,45 @@ class SignalProcessTest {
     void testProcessSignals() {
         String pid = given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/greetings")
-            .then()
+                .then()
                 .statusCode(201)
                 .body("id", not(emptyOrNullString()))
                 .body("test", nullValue())
-            .extract()
+                .extract()
                 .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body("testvalue")
                 .post("/greetings/{pid}/signalwithdata", pid)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("id", not(emptyOrNullString()))
                 .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .get("/greetings/{pid}", pid)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/greetings/{pid}/signalwithoutdata", pid)
-            .then()
+                .then()
                 .statusCode(200);
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .get("/greetings/{pid}", pid)
-            .then()
+                .then()
                 .statusCode(404);
     }
 }

@@ -21,7 +21,7 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 public interface WorkflowContextInstance extends ContextInstance {
 
     NodeInstanceContainer getNodeInstanceContainer();
-    
+
     void setNodeInstanceContainer(NodeInstanceContainer nodeInstanceContainer);
-    
+
 }

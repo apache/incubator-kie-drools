@@ -29,34 +29,33 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class InMessageRefHandler extends BaseAbstractHandler implements Handler {
-	
-	@SuppressWarnings("unchecked")
-	public InMessageRefHandler() {
-		if ((this.validParents == null) && (this.validPeers == null)) {
-			this.validParents = new HashSet();
-			this.validParents.add(Operation.class);
 
-			this.validPeers = new HashSet();
-			this.validPeers.add(null);
+    @SuppressWarnings("unchecked")
+    public InMessageRefHandler() {
+        if ((this.validParents == null) && (this.validPeers == null)) {
+            this.validParents = new HashSet();
+            this.validParents.add(Operation.class);
 
-			this.allowNesting = false;
-		}
-	}
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
+
+            this.allowNesting = false;
+        }
+    }
 
     public Object start(final String uri, final String localName,
-			            final Attributes attrs, final ExtensibleXmlParser parser)
-			throws SAXException {
-		parser.startElementBuilder(localName, attrs);
-		return null;
-	}
+            final Attributes attrs, final ExtensibleXmlParser parser)
+            throws SAXException {
+        parser.startElementBuilder(localName, attrs);
+        return null;
+    }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public Object end(final String uri, final String localName,
-			          final ExtensibleXmlParser parser) throws SAXException {
-		Element element = parser.endElementBuilder();
-		String messageId = element.getTextContent();
-		Map<String, Message> messages = (Map<String, Message>)
-            ((ProcessBuildData) parser.getData()).getMetaData("Messages");
+            final ExtensibleXmlParser parser) throws SAXException {
+        Element element = parser.endElementBuilder();
+        String messageId = element.getTextContent();
+        Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
         if (messages == null) {
             throw new IllegalArgumentException("No messages found");
         }
@@ -65,13 +64,12 @@ public class InMessageRefHandler extends BaseAbstractHandler implements Handler 
         if (message != null) {
             operation.setMessage(message);
         }
-        
-        
-		return parser.getCurrent();
-	}
 
-	public Class<?> generateNodeFor() {
-		return Message.class;
-	}
+        return parser.getCurrent();
+    }
+
+    public Class<?> generateNodeFor() {
+        return Message.class;
+    }
 
 }

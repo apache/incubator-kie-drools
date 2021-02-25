@@ -15,8 +15,10 @@
  */
 package org.kie.kogito.cloud.workitems;
 
-
 public enum HttpMethods {
 
-    GET, POST, PUT, DELETE;
+    GET,
+    POST,
+    PUT,
+    DELETE;
 }

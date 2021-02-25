@@ -21,17 +21,17 @@ import java.io.ObjectInputStream;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 
 public interface KogitoObjectMarshallingStrategy extends ObjectMarshallingStrategy {
-    Object unmarshal( String dataType,
-                      Context context,
-                      ObjectInputStream is,
-                      byte[] object,
-                      ClassLoader classloader ) throws IOException, ClassNotFoundException;
+    Object unmarshal(String dataType,
+            Context context,
+            ObjectInputStream is,
+            byte[] object,
+            ClassLoader classloader) throws IOException, ClassNotFoundException;
 
-    default Object unmarshal( Context context,
-                              ObjectInputStream is,
-                              byte[] object,
-                              ClassLoader classloader ) throws IOException, ClassNotFoundException {
-        return unmarshal( null, context, is, object, classloader );
+    default Object unmarshal(Context context,
+            ObjectInputStream is,
+            byte[] object,
+            ClassLoader classloader) throws IOException, ClassNotFoundException {
+        return unmarshal(null, context, is, object, classloader);
     }
 
     default String getType(Class<?> clazz) {

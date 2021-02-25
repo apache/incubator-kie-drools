@@ -15,10 +15,17 @@
  */
 package org.kie.kogito.codegen.sample.generator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import org.kie.api.io.Resource;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.ConfigGenerator;
@@ -30,16 +37,9 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.sample.generator.config.SampleConfigGenerator;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 import static java.util.stream.Collectors.toList;
 
@@ -125,8 +125,8 @@ public class SampleCodegen implements Generator {
         try {
             return new BufferedReader(new InputStreamReader(
                     resource.getInputStream(), StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.joining("\n"));
+                            .lines()
+                            .collect(Collectors.joining("\n"));
         } catch (IOException e) {
             throw new UncheckedIOException("Impossible to read resource " + resource.getSourcePath(), e);
         }

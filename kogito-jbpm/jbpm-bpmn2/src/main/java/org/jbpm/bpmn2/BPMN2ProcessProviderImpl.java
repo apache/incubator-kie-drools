@@ -27,16 +27,16 @@ import org.kie.internal.builder.KnowledgeBuilder;
 
 public class BPMN2ProcessProviderImpl implements BPMN2ProcessProvider {
 
-	static {
+    static {
         ProcessDialectRegistry.setDialect("XPath", new XPATHProcessDialect());
-	}
-	
+    }
+
     public void configurePackageBuilder(KnowledgeBuilder knowledgeBuilder) {
         KnowledgeBuilderConfigurationImpl conf = ((KnowledgeBuilderImpl) knowledgeBuilder).getBuilderConfiguration();
         if (conf.getSemanticModules().getSemanticModule(BPMNSemanticModule.BPMN2_URI) == null) {
-        	conf.addSemanticModule(new BPMNSemanticModule());
-        	conf.addSemanticModule(new BPMNDISemanticModule());
-        	conf.addSemanticModule(new BPMNExtensionsSemanticModule());
+            conf.addSemanticModule(new BPMNSemanticModule());
+            conf.addSemanticModule(new BPMNDISemanticModule());
+            conf.addSemanticModule(new BPMNExtensionsSemanticModule());
         }
     }
 

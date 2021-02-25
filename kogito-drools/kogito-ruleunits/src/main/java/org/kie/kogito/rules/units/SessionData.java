@@ -28,14 +28,14 @@ public class SessionData implements RuleUnitData {
     }
 
     public DataHandle add(Object obj) {
-        return dataSource.add( obj );
+        return dataSource.add(obj);
     }
 
     public void remove(DataHandle dh) {
-        dataSource.remove( dh );
+        dataSource.remove(dh);
     }
 
     public void update(DataHandle dh, Object obj) {
-        dataSource.update( dh, obj );
+        dataSource.update(dh, obj);
     }
 }

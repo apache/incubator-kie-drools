@@ -58,9 +58,9 @@ public class RestJobsServiceTest {
     @Test
     void testGetCallbackEndpoint() {
         ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(123,
-                                                                                     ExactExpirationTime.now(),
-                                                                                     "processInstanceId",
-                                                                                     "processId");
+                ExactExpirationTime.now(),
+                "processInstanceId",
+                "processId");
         String callbackEndpoint = tested.getCallbackEndpoint(description);
         assertThat(callbackEndpoint)
                 .isEqualTo("http://localhost:80/management/jobs/processId/instances/processInstanceId/timers/" + description.id());

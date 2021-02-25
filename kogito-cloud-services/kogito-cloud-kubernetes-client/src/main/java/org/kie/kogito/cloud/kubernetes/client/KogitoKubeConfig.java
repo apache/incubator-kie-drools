@@ -26,7 +26,7 @@ import io.fabric8.kubernetes.client.dsl.base.OperationSupport;
 import okhttp3.OkHttpClient;
 
 /**
- * Wraps the Kubernetes Client setup and configuration, exposing infrastructure components to connect to a Kubernetes cluster reliably. 
+ * Wraps the Kubernetes Client setup and configuration, exposing infrastructure components to connect to a Kubernetes cluster reliably.
  * Most used when there's a need to customize the Fabric8 Kubernetes Client.
  */
 public final class KogitoKubeConfig {

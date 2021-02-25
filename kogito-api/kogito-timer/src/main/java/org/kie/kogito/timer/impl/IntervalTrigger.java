@@ -26,59 +26,58 @@ import org.kie.kogito.timer.Calendars;
 import org.kie.kogito.timer.Trigger;
 
 public class IntervalTrigger
-    implements
-    Trigger {
-    private Date      startTime;
-    private Date      endTime;
-    private int       repeatLimit;
-    private int       repeatCount;
-    private Date      nextFireTime;
-    private Date      lastFireTime;
-    private Date      createdTime;
-    private long      delay;
-    private long      period;
-    private String[]  calendarNames;
+        implements
+        Trigger {
+    private Date startTime;
+    private Date endTime;
+    private int repeatLimit;
+    private int repeatCount;
+    private Date nextFireTime;
+    private Date lastFireTime;
+    private Date createdTime;
+    private long delay;
+    private long period;
+    private String[] calendarNames;
     private Calendars calendars;
-
 
     public IntervalTrigger() {
 
     }
 
     public IntervalTrigger(long timestamp,
-                           Date startTime,
-                           Date endTime,
-                           int repeatLimit,
-                           long delay,
-                           long period,
-                           String[] calendarNames,
-                           Calendars calendars) {
+            Date startTime,
+            Date endTime,
+            int repeatLimit,
+            long delay,
+            long period,
+            String[] calendarNames,
+            Calendars calendars) {
         this(timestamp, startTime, endTime, repeatLimit, delay, period, calendarNames, calendars, null, null);
     }
 
     public IntervalTrigger(long timestamp,
-                           Date startTime,
-                           Date endTime,
-                           int repeatLimit,
-                           long delay,
-                           long period,
-                           String[] calendarNames,
-                           Calendars calendars,
-                           Date createdTime,
-                           Date lastFireTime) {
+            Date startTime,
+            Date endTime,
+            int repeatLimit,
+            long delay,
+            long period,
+            String[] calendarNames,
+            Calendars calendars,
+            Date createdTime,
+            Date lastFireTime) {
         this.delay = delay;
         this.period = period;
         this.createdTime = createdTime == null ? new Date(timestamp) : createdTime;
         this.lastFireTime = lastFireTime;
 
-        if ( startTime == null ) {
-            this.nextFireTime = new Date( timestamp + delay );
-            startTime = new Date( timestamp );
+        if (startTime == null) {
+            this.nextFireTime = new Date(timestamp + delay);
+            startTime = new Date(timestamp);
         }
-        setStartTime( startTime );
+        setStartTime(startTime);
 
-        if ( endTime != null ) {
-            setEndTime( endTime );
+        if (endTime != null) {
+            setEndTime(endTime);
         }
 
         this.repeatLimit = repeatLimit;
@@ -121,13 +120,13 @@ public class IntervalTrigger
     }
 
     public void setStartTime(Date startTime) {
-        if ( startTime == null ) {
-            throw new IllegalArgumentException( "Start time cannot be null" );
+        if (startTime == null) {
+            throw new IllegalArgumentException("Start time cannot be null");
         }
 
         Date eTime = getEndTime();
-        if ( eTime != null && eTime.before( startTime ) ) {
-            throw new IllegalArgumentException( "End time cannot be before start time" );
+        if (eTime != null && eTime.before(startTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time");
         }
 
         // round off millisecond...
@@ -135,7 +134,7 @@ public class IntervalTrigger
         // Calendar.getInstance(),
         // since time zone is implicit when using a Date in the setTime method.
         Calendar cl = Calendar.getInstance();
-        cl.setTime( startTime );
+        cl.setTime(startTime);
 
         this.startTime = cl.getTime();
     }
@@ -152,8 +151,8 @@ public class IntervalTrigger
 
     public void setEndTime(Date endTime) {
         Date sTime = getStartTime();
-        if ( sTime != null && endTime != null && sTime.after( endTime ) ) {
-            throw new IllegalArgumentException( "End time cannot be before start time" );
+        if (sTime != null && endTime != null && sTime.after(endTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time");
         }
 
         this.endTime = endTime;
@@ -168,27 +167,27 @@ public class IntervalTrigger
     }
 
     private void setFirstFireTime(long timestamp) {
-        if ( this.nextFireTime == null ) {
+        if (this.nextFireTime == null) {
             long start = this.startTime.getTime() + delay;
-            if ( timestamp > start ) {
-                long distanceFromLastPhase = ( timestamp - start ) % period;
-                if ( distanceFromLastPhase == 0) {
-                    this.nextFireTime = new Date( timestamp );
+            if (timestamp > start) {
+                long distanceFromLastPhase = (timestamp - start) % period;
+                if (distanceFromLastPhase == 0) {
+                    this.nextFireTime = new Date(timestamp);
                 } else {
                     long phase = period - distanceFromLastPhase;
-                    this.nextFireTime = new Date( timestamp + phase );
+                    this.nextFireTime = new Date(timestamp + phase);
                 }
             } else {
-                this.nextFireTime = new Date( start );
+                this.nextFireTime = new Date(start);
             }
         }
 
-        if ( getEndTime() != null && this.nextFireTime.after( getEndTime() ) ) {
+        if (getEndTime() != null && this.nextFireTime.after(getEndTime())) {
             this.nextFireTime = null;
         }
 
         Date pot = getTimeAfter();
-        if ( getEndTime() != null && pot != null && pot.after( getEndTime() ) ) {
+        if (getEndTime() != null && pot != null && pot.after(getEndTime())) {
             this.nextFireTime = null;
         }
     }
@@ -198,16 +197,16 @@ public class IntervalTrigger
     }
 
     public synchronized Date nextFireTime() {
-        if ( this.nextFireTime == null ) {
+        if (this.nextFireTime == null) {
             return null;
         }
         Date date = this.nextFireTime;
         // FIXME: this is not safe for serialization
         this.nextFireTime = getTimeAfter();
         updateToNextIncludeDate();
-        if ( this.endTime != null && this.nextFireTime.after( this.endTime ) ) {
+        if (this.endTime != null && this.nextFireTime.after(this.endTime)) {
             this.nextFireTime = null;
-        } else if (  repeatLimit != -1 && repeatCount >= repeatLimit ) {
+        } else if (repeatLimit != -1 && repeatCount >= repeatLimit) {
             this.nextFireTime = null;
         }
         lastFireTime = date;
@@ -218,9 +217,9 @@ public class IntervalTrigger
         this.repeatCount++;
 
         Date date;
-        if ( this.period != 0 ) {
+        if (this.period != 0) {
             // repeated fires for the given period
-            date = new Date( nextFireTime.getTime() + this.period );
+            date = new Date(nextFireTime.getTime() + this.period);
         } else {
             date = null;
         }
@@ -228,38 +227,38 @@ public class IntervalTrigger
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         this.nextFireTime = (Date) in.readObject();
         this.period = in.readLong();
         this.delay = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( this.nextFireTime );
-        out.writeLong( this.period );
-        out.writeLong( this.delay );
+        out.writeObject(this.nextFireTime);
+        out.writeLong(this.period);
+        out.writeLong(this.delay);
     }
 
     public void updateToNextIncludeDate() {
-        if ( this.calendars == null || calendarNames == null || calendarNames.length == 0 ) {
+        if (this.calendars == null || calendarNames == null || calendarNames.length == 0) {
             // There are no assigned calendars
             return;
         }
 
         // If we have calendars, check we can fire, or get next time until we can fire.
-        while ( this.nextFireTime != null && (this.endTime == null || this.nextFireTime.before( this.endTime )) ) {
+        while (this.nextFireTime != null && (this.endTime == null || this.nextFireTime.before(this.endTime))) {
             // this will loop forever if the trigger repeats forever and
             // included calendar position cannot be found
             boolean included = true;
-            for ( String calName : this.calendarNames ) {
+            for (String calName : this.calendarNames) {
                 // all calendars must not block, as soon as one blocks break
-                org.kie.kogito.timer.Calendar cal = this.calendars.get(calName );
-                if ( cal != null && !cal.isTimeIncluded( this.nextFireTime.getTime() ) ) {
+                org.kie.kogito.timer.Calendar cal = this.calendars.get(calName);
+                if (cal != null && !cal.isTimeIncluded(this.nextFireTime.getTime())) {
                     included = false;
                     break;
                 }
             }
-            if ( included ) {
+            if (included) {
                 // if no calendars blocked, break
                 break;
             } else {
@@ -295,6 +294,7 @@ public class IntervalTrigger
 
     @Override
     public String toString() {
-        return "IntervalTrigger [startTime=" + startTime + ", endTime=" + endTime + ", repeatLimit=" + repeatLimit + ", repeatCount=" + repeatCount + ", nextFireTime=" + nextFireTime + ", delay=" + delay + ", period=" + period + ", calendarNames=" + Arrays.toString( calendarNames ) + ", calendars=" + calendars + "]";
+        return "IntervalTrigger [startTime=" + startTime + ", endTime=" + endTime + ", repeatLimit=" + repeatLimit + ", repeatCount=" + repeatCount + ", nextFireTime=" + nextFireTime + ", delay="
+                + delay + ", period=" + period + ", calendarNames=" + Arrays.toString(calendarNames) + ", calendars=" + calendars + "]";
     }
 }

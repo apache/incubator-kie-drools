@@ -41,25 +41,16 @@ public class DefaultSVGProcessor extends AbstractSVGProcessor {
 
     @Override
     public void defaultCompletedTransformation(String nodeId, String completedNodeColor, String completeBorderColor) {
-        transform(summary ->
-            Optional.ofNullable(summary.getNode(nodeId)).ifPresent(node ->
-                Optional.ofNullable(node.getBackground()).ifPresent(background -> {
-                    background.setAttribute("fill", completedNodeColor);
-                    setNodeBorderColor(node.getRenderType(), node.getBorder(), completeBorderColor);
-                })
-            )
-        );
+        transform(summary -> Optional.ofNullable(summary.getNode(nodeId)).ifPresent(node -> Optional.ofNullable(node.getBackground()).ifPresent(background -> {
+            background.setAttribute("fill", completedNodeColor);
+            setNodeBorderColor(node.getRenderType(), node.getBorder(), completeBorderColor);
+        })));
     }
 
     @Override
     public void defaultActiveTransformation(String nodeId, String activeNodeBorderColor) {
-        transform(summary ->
-            Optional.ofNullable(summary.getNode(nodeId)).ifPresent(node ->
-                Optional.ofNullable(node.getBorder()).ifPresent(border ->
-                    setNodeBorderColor(node.getRenderType(), border, activeNodeBorderColor)
-                )
-            )
-        );
+        transform(summary -> Optional.ofNullable(summary.getNode(nodeId))
+                .ifPresent(node -> Optional.ofNullable(node.getBorder()).ifPresent(border -> setNodeBorderColor(node.getRenderType(), border, activeNodeBorderColor))));
     }
 
     private void setNodeBorderColor(Optional<RenderType> renderType, Element border, String color) {

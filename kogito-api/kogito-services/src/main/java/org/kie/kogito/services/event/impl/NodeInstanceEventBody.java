@@ -26,18 +26,18 @@ public class NodeInstanceEventBody {
     private String nodeType;
     private Date triggerTime;
     private Date leaveTime;
-    
+
     private NodeInstanceEventBody() {
     }
 
     public String getId() {
         return id;
     }
-    
+
     public String getNodeId() {
         return nodeId;
-    }    
-    
+    }
+
     public String getNodeDefinitionId() {
         return nodeDefinitionId;
     }
@@ -45,15 +45,15 @@ public class NodeInstanceEventBody {
     public String getNodeName() {
         return nodeName;
     }
-    
+
     public String getNodeType() {
         return nodeType;
     }
-    
+
     public Date getTriggerTime() {
         return triggerTime;
     }
-    
+
     public Date getLeaveTime() {
         return leaveTime;
     }
@@ -62,7 +62,7 @@ public class NodeInstanceEventBody {
     public String toString() {
         return "NodeInstance [id=" + id + ", nodeId=" + nodeId + ", nodeName=" + nodeName + ", nodeType=" + nodeType + ", triggerTime=" + triggerTime + ", leaveTime=" + leaveTime + "]";
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -91,44 +91,44 @@ public class NodeInstanceEventBody {
     public Builder update() {
         return new Builder(this);
     }
-    
+
     public static Builder create() {
         return new Builder(new NodeInstanceEventBody());
     }
 
     static class Builder {
-        
+
         private NodeInstanceEventBody instance;
-                
+
         private Builder(NodeInstanceEventBody instance) {
             this.instance = instance;
         }
-        
+
         public Builder id(String id) {
             instance.id = id;
             return this;
         }
-        
+
         public Builder nodeId(String nodeId) {
             instance.nodeId = nodeId;
             return this;
         }
-        
+
         public Builder nodeDefinitionId(String nodeDefinitionId) {
             instance.nodeDefinitionId = nodeDefinitionId;
             return this;
         }
-        
+
         public Builder nodeName(String nodeName) {
             instance.nodeName = nodeName;
             return this;
         }
-        
+
         public Builder nodeType(String nodeType) {
             instance.nodeType = nodeType;
             return this;
         }
-        
+
         public Builder triggerTime(Date triggerTime) {
             instance.triggerTime = triggerTime;
             return this;
@@ -138,7 +138,7 @@ public class NodeInstanceEventBody {
             instance.leaveTime = leaveTime;
             return this;
         }
-        
+
         public NodeInstanceEventBody build() {
             return instance;
         }

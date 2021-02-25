@@ -42,6 +42,7 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-runtimes')
+                        .withProperty('validate-formatting')
                         .withProfiles(['run-code-coverage'])
                         .run('clean install')
                     

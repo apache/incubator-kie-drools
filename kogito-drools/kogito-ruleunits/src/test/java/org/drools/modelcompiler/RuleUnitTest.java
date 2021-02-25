@@ -15,7 +15,6 @@
  */
 package org.drools.modelcompiler;
 
-import org.kie.kogito.rules.units.ListDataStream;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.ruleunit.AdultUnit;
 import org.drools.modelcompiler.ruleunit.AdultUnitInstance;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.units.ListDataStream;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,33 +30,33 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Disabled
 public class RuleUnitTest {
 
-//    public RuleUnitTest( RUN_TYPE testRunType ) {
-//        super( testRunType );
-//    }
+    //    public RuleUnitTest( RUN_TYPE testRunType ) {
+    //        super( testRunType );
+    //    }
 
     @Test
     public void testRuleUnit() {
         String str =
-            "package org.drools.modelcompiler.ruleunit;\n" +
-            "unit AdultUnit\n" +
-            "import " + Person.class.getCanonicalName() + "\n" +
-            "rule Adult when\n" +
-            "    $p: /persons[ age >= adultAge ]" +
-            "then\n" +
-            "    results.add($p.getName());" +
-            "end ";
+                "package org.drools.modelcompiler.ruleunit;\n" +
+                        "unit AdultUnit\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule Adult when\n" +
+                        "    $p: /persons[ age >= adultAge ]" +
+                        "then\n" +
+                        "    results.add($p.getName());" +
+                        "end ";
 
         DataSource<Person> persons = ListDataStream.create(
-                new Person( "Mario", 45 ),
-                new Person( "Marilena", 47 ),
-                new Person( "Sofia", 7 ) );
+                new Person("Mario", 45),
+                new Person("Marilena", 47),
+                new Person("Sofia", 7));
 
-        AdultUnit unit = new AdultUnit( persons, 21 );
-        AdultUnitInstance unitInstance = new AdultUnitInstance( unit, getKieSession(str) );
+        AdultUnit unit = new AdultUnit(persons, 21);
+        AdultUnitInstance unitInstance = new AdultUnitInstance(unit, getKieSession(str));
 
         unitInstance.fire();
 
-        assertTrue(unit.getResults().containsAll(asList("Mario", "Marilena") ) );
+        assertTrue(unit.getResults().containsAll(asList("Mario", "Marilena")));
     }
 
     private KieSession getKieSession(String str) {

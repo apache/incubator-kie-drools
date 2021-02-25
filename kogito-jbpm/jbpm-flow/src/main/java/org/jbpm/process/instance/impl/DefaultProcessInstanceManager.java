@@ -59,7 +59,7 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     }
 
     public void clearProcessInstances() {
-    	processInstances.clear();
+        processInstances.clear();
     }
 
     public void clearProcessInstancesState() {

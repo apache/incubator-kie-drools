@@ -25,8 +25,8 @@ import org.jbpm.process.core.datatype.DataType;
  * Representation of a float datatype.
  */
 public final class FloatDataType
-    implements
-    DataType {
+        implements
+        DataType {
 
     private static final long serialVersionUID = 510l;
 
@@ -37,9 +37,9 @@ public final class FloatDataType
     }
 
     public boolean verifyDataType(final Object value) {
-        if ( value instanceof Float ) {
+        if (value instanceof Float) {
             return true;
-        } else if ( value == null ) {
+        } else if (value == null) {
             return true;
         } else {
             return false;

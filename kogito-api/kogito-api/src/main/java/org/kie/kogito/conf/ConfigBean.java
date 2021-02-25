@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.conf;
 
-import org.kie.kogito.KogitoConfig;
-
 import java.util.Optional;
+
+import org.kie.kogito.KogitoConfig;
 
 public interface ConfigBean extends KogitoConfig {
 
     Optional<Boolean> useCloudEvents();
+
     String getServiceUrl();
 }

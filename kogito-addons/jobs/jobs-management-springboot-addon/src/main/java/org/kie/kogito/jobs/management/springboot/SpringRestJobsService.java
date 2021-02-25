@@ -74,8 +74,8 @@ public class SpringRestJobsService extends RestJobsService {
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
         final Job job = buildJob(description, callback);
         ResponseEntity<String> result = restTemplate.postForEntity(getJobsServiceUri(),
-                                                                   job,
-                                                                   String.class);
+                job,
+                String.class);
         if (result.getStatusCode().ordinal() == 200) {
             LOGGER.debug("Creating of the job {} done with status code {} ", job, result.getStatusCode());
         }

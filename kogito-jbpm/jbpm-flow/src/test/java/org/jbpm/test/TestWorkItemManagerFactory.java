@@ -24,7 +24,7 @@ import org.kie.kogito.process.workitems.impl.KogitoDefaultWorkItemManager;
 public class TestWorkItemManagerFactory implements WorkItemManagerFactory {
 
     public KogitoWorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime) {
-        return new KogitoDefaultWorkItemManager( KogitoProcessRuntime.asKogitoProcessRuntime(kruntime) );
+        return new KogitoDefaultWorkItemManager(KogitoProcessRuntime.asKogitoProcessRuntime(kruntime));
     }
 
 }

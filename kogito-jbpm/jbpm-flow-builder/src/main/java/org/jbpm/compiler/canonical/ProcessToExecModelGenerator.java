@@ -21,6 +21,16 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.drools.core.util.StringUtils;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -35,15 +45,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
-import org.jbpm.process.core.ContextContainer;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -52,7 +53,7 @@ import static org.drools.core.util.StringUtils.ucFirst;
 public class ProcessToExecModelGenerator {
 
     public static final ProcessToExecModelGenerator INSTANCE = new ProcessToExecModelGenerator(
-                                                                                               ProcessToExecModelGenerator.class.getClassLoader());
+            ProcessToExecModelGenerator.class.getClassLoader());
 
     private static final String PROCESS_CLASS_SUFFIX = "Process";
     private static final String MODEL_CLASS_SUFFIX = "Model";
@@ -68,8 +69,8 @@ public class ProcessToExecModelGenerator {
         CompilationUnit parsedClazzFile = parse(this.getClass().getResourceAsStream(PROCESS_TEMPLATE_FILE));
         parsedClazzFile.setPackageDeclaration(process.getPackageName());
         Optional<ClassOrInterfaceDeclaration> processClazzOptional = parsedClazzFile.findFirst(
-                                                                                               ClassOrInterfaceDeclaration.class,
-                                                                                               sl -> true);
+                ClassOrInterfaceDeclaration.class,
+                sl -> true);
 
         String extractedProcessId = extractProcessId(process.getId());
 
@@ -81,12 +82,12 @@ public class ProcessToExecModelGenerator {
         String packageName = parsedClazzFile.getPackageDeclaration().map(NodeWithName::getNameAsString).orElse(null);
         ProcessMetaData metadata =
                 new ProcessMetaData(process.getId(), extractedProcessId, process.getName(), process.getVersion(),
-                                    packageName, processClazz.getNameAsString());
+                        packageName, processClazz.getNameAsString());
 
         Optional<MethodDeclaration> processMethod = parsedClazzFile.findFirst(MethodDeclaration.class, sl -> sl
-                                                                                                               .getName()
-                                                                                                               .asString()
-                                                                                                               .equals("process"));
+                .getName()
+                .asString()
+                .equals("process"));
 
         processVisitor.visitProcess(process, processMethod.get(), metadata);
 
@@ -104,7 +105,7 @@ public class ProcessToExecModelGenerator {
         String packageName = clazz.getPackageDeclaration().map(NodeWithName::getNameAsString).orElse(null);
         ProcessMetaData metadata =
                 new ProcessMetaData(process.getId(), extractedProcessId, process.getName(), process.getVersion(),
-                                    packageName, "process");
+                        packageName, "process");
         MethodDeclaration processMethod = new MethodDeclaration();
         processVisitor.visitProcess(process, processMethod, metadata);
 
@@ -116,14 +117,14 @@ public class ProcessToExecModelGenerator {
         String name = extractModelClassName(process.getId());
         VariableScope variableScope = getVariableScope(process);
         return new ModelMetaData(process.getId(),
-                                 packageName,
-                                 name,
-                                 (( KogitoWorkflowProcess )process).getVisibility(),
-                                 VariableDeclarations.of(variableScope),
-                                 false,
-                                 "/class-templates/ModelTemplate.java",
-                                 new AddMethodConsumer("toOutput", extractModelClassName(process.getId()) + "Output",
-                                                       VariableDeclarations.ofOutput(variableScope), true));
+                packageName,
+                name,
+                ((KogitoWorkflowProcess) process).getVisibility(),
+                VariableDeclarations.of(variableScope),
+                false,
+                "/class-templates/ModelTemplate.java",
+                new AddMethodConsumer("toOutput", extractModelClassName(process.getId()) + "Output",
+                        VariableDeclarations.ofOutput(variableScope), true));
     }
 
     public ModelMetaData generateInputModel(WorkflowProcess process) {
@@ -132,22 +133,22 @@ public class ProcessToExecModelGenerator {
         String name = modelName + "Input";
         VariableDeclarations inputVars = VariableDeclarations.ofInput(getVariableScope(process));
         return new ModelMetaData(process.getId(),
-                                 packageName, name,
-                                 (( KogitoWorkflowProcess )process).getVisibility(),
-                                 inputVars,
-                                 true,
-                                 "/class-templates/ModelNoIDTemplate.java",
-                                 new AddMethodConsumer("toModel", modelName, inputVars, false));
+                packageName, name,
+                ((KogitoWorkflowProcess) process).getVisibility(),
+                inputVars,
+                true,
+                "/class-templates/ModelNoIDTemplate.java",
+                new AddMethodConsumer("toModel", modelName, inputVars, false));
     }
 
     public ModelMetaData generateOutputModel(WorkflowProcess process) {
         String packageName = process.getPackageName();
         String name = extractModelClassName(process.getId()) + "Output";
         return new ModelMetaData(process.getId(),
-                                 packageName,
-                                 name,
-                                 (( KogitoWorkflowProcess )process).getVisibility(),
-                                 VariableDeclarations.ofOutput(getVariableScope(process)), true);
+                packageName,
+                name,
+                ((KogitoWorkflowProcess) process).getVisibility(),
+                VariableDeclarations.ofOutput(getVariableScope(process)), true);
     }
 
     private static VariableScope getVariableScope(WorkflowProcess process) {
@@ -162,7 +163,7 @@ public class ProcessToExecModelGenerator {
         private boolean includeId;
 
         public AddMethodConsumer(String methodName, String returnClassName, VariableDeclarations vars,
-                                 boolean includeId) {
+                boolean includeId) {
             this.methodName = methodName;
             this.returnClassName = returnClassName;
             this.vars = vars;
@@ -181,18 +182,18 @@ public class ProcessToExecModelGenerator {
             BlockStmt body = new BlockStmt();
             VariableDeclarationExpr returnVar = new VariableDeclarationExpr(type, resultVarName);
             body.addStatement(new AssignExpr(returnVar, new ObjectCreationExpr(null, type, NodeList.nodeList()),
-                                             AssignExpr.Operator.ASSIGN));
+                    AssignExpr.Operator.ASSIGN));
             NameExpr returnName = new NameExpr(resultVarName);
             // fill id
             if (includeId) {
                 body.addStatement(new MethodCallExpr(returnName, "setId").addArgument(new MethodCallExpr(null,
-                                                                                                         "getId")));
+                        "getId")));
             }
             for (Variable var : vars.getTypes().values()) {
                 final String fieldName = StringUtils.ucFirst(var.getSanitizedName());
                 body.addStatement(new MethodCallExpr(returnName, "set" + fieldName).addArgument(new MethodCallExpr(null,
-                                                                                                                   "get" +
-                                                                                                                         fieldName)));
+                        "get" +
+                                fieldName)));
             }
             body.addStatement(new ReturnStmt(returnName));
             method.setBody(body);
@@ -208,18 +209,18 @@ public class ProcessToExecModelGenerator {
         List<UserTaskModelMetaData> usertaskModels = new ArrayList<>();
 
         VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(
-                                                                                                                  VariableScope.VARIABLE_SCOPE);
+                VariableScope.VARIABLE_SCOPE);
 
         for (Node node : ((WorkflowProcessImpl) process).getNodesRecursively()) {
             if (node instanceof HumanTaskNode) {
                 HumanTaskNode humanTaskNode = (HumanTaskNode) node;
                 VariableScope nodeVariableScope = (VariableScope) ((ContextContainer) humanTaskNode
-                                                                                                   .getParentContainer()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                        .getParentContainer()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
                 if (nodeVariableScope == null) {
                     nodeVariableScope = variableScope;
                 }
                 usertaskModels.add(new UserTaskModelMetaData(packageName, variableScope, nodeVariableScope,
-                                                             humanTaskNode, process.getId()));
+                        humanTaskNode, process.getId()));
             }
         }
 

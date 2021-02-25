@@ -94,7 +94,7 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
         if (returnClass.isArray()) {
             return returnClass.getComponentType();
         }
-        if ( assignableChecker.isAssignableFrom(DataSource.class, returnClass)) {
+        if (assignableChecker.isAssignableFrom(DataSource.class, returnClass)) {
             return getParametricType(m);
         }
         if (Iterable.class.isAssignableFrom(returnClass)) {
@@ -107,11 +107,9 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
         return assignableChecker;
     }
 
-    private Class<?> getParametricType( Method m) {
+    private Class<?> getParametricType(Method m) {
         Type returnType = m.getGenericReturnType();
-        return returnType instanceof ParameterizedType ?
-                (Class<?>) ((ParameterizedType) returnType).getActualTypeArguments()[0] :
-                Object.class;
+        return returnType instanceof ParameterizedType ? (Class<?>) ((ParameterizedType) returnType).getActualTypeArguments()[0] : Object.class;
     }
 
     private static RuleUnitConfig loadConfig(Class<? extends RuleUnitData> ruleUnitClass) {

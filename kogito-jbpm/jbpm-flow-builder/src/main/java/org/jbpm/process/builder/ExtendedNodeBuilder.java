@@ -17,8 +17,6 @@ package org.jbpm.process.builder;
 
 import java.util.List;
 
-import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.Process;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
@@ -27,34 +25,36 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.Process;
 
 public class ExtendedNodeBuilder
-    implements
-    ProcessNodeBuilder {
+        implements
+        ProcessNodeBuilder {
 
     public void build(Process process,
-                      ProcessDescr processDescr,
-                      ProcessBuildContext context,
-                      Node node) {
-        ExtendedNodeImpl extendedNode = ( ExtendedNodeImpl ) node;
-        for (String type: extendedNode.getActionTypes()) {
-        	List<DroolsAction> actions = extendedNode.getActions(type);
-        	if (actions != null) {
-	        	for (DroolsAction droolsAction: actions) {
-	                buildAction(droolsAction, context, (NodeImpl) node);
-	        	}
-        	}
+            ProcessDescr processDescr,
+            ProcessBuildContext context,
+            Node node) {
+        ExtendedNodeImpl extendedNode = (ExtendedNodeImpl) node;
+        for (String type : extendedNode.getActionTypes()) {
+            List<DroolsAction> actions = extendedNode.getActions(type);
+            if (actions != null) {
+                for (DroolsAction droolsAction : actions) {
+                    buildAction(droolsAction, context, (NodeImpl) node);
+                }
+            }
         }
     }
 
     protected void buildAction(DroolsAction droolsAction, ProcessBuildContext context, NodeImpl node) {
-    	DroolsConsequenceAction action = (DroolsConsequenceAction) droolsAction;
+        DroolsConsequenceAction action = (DroolsConsequenceAction) droolsAction;
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( action.getConsequence() );
+        actionDescr.setText(action.getConsequence());
         actionDescr.setResource(context.getProcessDescr().getResource());
 
-        ProcessDialect dialect = ProcessDialectRegistry.getDialect( action.getDialect() );
-    	dialect.getActionBuilder().build( context, action, actionDescr, node);
+        ProcessDialect dialect = ProcessDialectRegistry.getDialect(action.getDialect());
+        dialect.getActionBuilder().build(context, action, actionDescr, node);
     }
 
 }

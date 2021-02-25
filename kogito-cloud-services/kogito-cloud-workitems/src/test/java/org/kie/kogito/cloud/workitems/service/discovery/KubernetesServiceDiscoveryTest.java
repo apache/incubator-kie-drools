@@ -19,17 +19,18 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import io.fabric8.kubernetes.api.model.IntOrString;
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.ServiceBuilder;
-import io.fabric8.kubernetes.api.model.ServicePort;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeConfig;
 import org.kie.kogito.cloud.workitems.ServiceInfo;
+
+import io.fabric8.kubernetes.api.model.IntOrString;
+import io.fabric8.kubernetes.api.model.Service;
+import io.fabric8.kubernetes.api.model.ServiceBuilder;
+import io.fabric8.kubernetes.api.model.ServicePort;
+import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -140,19 +141,19 @@ public class KubernetesServiceDiscoveryTest {
         assertThat(endpoint).isEmpty();
     }
 
-    private void createServiceInMockServer(String name, String serviceIp, Map<String,String> labels) {
+    private void createServiceInMockServer(String name, String serviceIp, Map<String, String> labels) {
         final ServicePort port = new ServicePort(SERVICE_PROTOCOL, name, 0, SERVICE_PORT, SERVICE_PROTOCOL, new IntOrString(SERVICE_PORT));
         final Service service = new ServiceBuilder().withNewMetadata()
-                                                        .withName(name)
-                                                        .withLabels(labels)
-                                                    .endMetadata()
-                                                    .withNewSpec()
-                                                        .withClusterIP(serviceIp)
-                                                        .withType("ClusterIP")
-                                                        .withSessionAffinity("ClientIP")
-                                                        .withPorts(port)
-                                                    .endSpec()
-                                                    .build();
+                .withName(name)
+                .withLabels(labels)
+                .endMetadata()
+                .withNewSpec()
+                .withClusterIP(serviceIp)
+                .withType("ClusterIP")
+                .withSessionAffinity("ClientIP")
+                .withPorts(port)
+                .endSpec()
+                .build();
         server.getClient().services().inNamespace(NAMESPACE).create(service);
     }
 

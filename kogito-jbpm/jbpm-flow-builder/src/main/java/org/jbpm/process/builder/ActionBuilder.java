@@ -23,8 +23,8 @@ import org.jbpm.workflow.core.DroolsAction;
 public interface ActionBuilder {
 
     public void build(final PackageBuildContext context,
-                      final DroolsAction action,
-                      final ActionDescr actionDescr,
-                      final ContextResolver contextResolver);
+            final DroolsAction action,
+            final ActionDescr actionDescr,
+            final ContextResolver contextResolver);
 
 }

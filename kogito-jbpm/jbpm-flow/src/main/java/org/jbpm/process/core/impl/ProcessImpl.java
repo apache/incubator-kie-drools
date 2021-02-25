@@ -39,7 +39,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
  * 
  */
 public class ProcessImpl implements Process, Serializable, ContextResolver {
-    
+
     private static final long serialVersionUID = 510l;
 
     private String id;
@@ -56,7 +56,6 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private Map<String, String> globals;
     private List<String> functionImports = new ArrayList<>();
 
-    
     public void setId(final String id) {
         this.id = id;
     }
@@ -89,18 +88,18 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
         this.type = type;
     }
 
-	public String getPackageName() {
-		return packageName;
-	}
+    public String getPackageName() {
+        return packageName;
+    }
 
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
-	}
-	
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     public String getVisibility() {
         return visibility;
     }
-    
+
     public void setVisibility(String visibility) {
         if (KogitoWorkflowProcess.NONE_VISIBILITY.equals(visibility)) {
             // since None is default visibility (process type in bpmn) then treat it
@@ -111,14 +110,14 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     }
 
     public List<Context> getContexts(String contextType) {
-	    return this.contextContainer.getContexts(contextType);
-	}
-    
+        return this.contextContainer.getContexts(contextType);
+    }
+
     public void addContext(Context context) {
         this.contextContainer.addContext(context);
         ((AbstractContext) context).setContextContainer(this);
     }
-    
+
     public Context getContext(String contextType, long id) {
         return this.contextContainer.getContext(contextType, id);
     }
@@ -127,21 +126,21 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
         this.contextContainer.setDefaultContext(context);
         ((AbstractContext) context).setContextContainer(this);
     }
-    
+
     public Context getDefaultContext(String contextType) {
         return this.contextContainer.getDefaultContext(contextType);
     }
 
     public boolean equals(final Object o) {
-        if ( o instanceof ProcessImpl ) {
-        	if (this.id == null) {
-        		return ((ProcessImpl) o).getId() == null;
-        	}
-        	return this.id.equals(((ProcessImpl) o).getId());
+        if (o instanceof ProcessImpl) {
+            if (this.id == null) {
+                return ((ProcessImpl) o).getId() == null;
+            }
+            return this.id.equals(((ProcessImpl) o).getId());
         }
         return false;
     }
-    
+
     public int hashCode() {
         return this.id == null ? 0 : 3 * this.id.hashCode();
     }
@@ -156,15 +155,15 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
         }
         return null;
     }
-    
-	public Map<String, Object> getMetaData() {
-		return this.metaData;
-	}
+
+    public Map<String, Object> getMetaData() {
+        return this.metaData;
+    }
 
     public void setMetaData(String name, Object data) {
         this.metaData.put(name, data);
     }
-    
+
     public Object getMetaData(String name) {
         return this.metaData.get(name);
     }
@@ -174,9 +173,9 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     }
 
     public void setResource(Resource resource) {
-        this.resource = resource;        
+        this.resource = resource;
     }
-    
+
     public Set<String> getImports() {
         return imports;
     }
@@ -188,7 +187,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     public void addImports(Collection<String> imports) {
         this.imports.addAll(imports);
     }
-    
+
     public List<String> getFunctionImports() {
         return functionImports;
     }
@@ -200,7 +199,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     public void addFunctionImports(Collection<String> functionImports) {
         this.functionImports.addAll(functionImports);
     }
-    
+
     public Map<String, String> getGlobals() {
         return globals;
     }
@@ -212,7 +211,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     public String[] getGlobalNames() {
         final List<String> result = new ArrayList<String>();
         if (this.globals != null) {
-            for ( Iterator<String> iterator = this.globals.keySet().iterator(); iterator.hasNext(); ) {
+            for (Iterator<String> iterator = this.globals.keySet().iterator(); iterator.hasNext();) {
                 result.add(iterator.next());
             }
         }
@@ -234,7 +233,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     public void setRuntimeMetaData(Map<String, Object> runtimeMetaData) {
         this.runtimeMetaData = runtimeMetaData;
     }
-    
+
     /*
      * Special handling for serialization to initialize transient (runtime related) meta data
      */

@@ -19,15 +19,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.process.WorkItem;
@@ -37,66 +28,75 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.mockito.Mockito;
 
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DiscoveredServiceWorkItemHandlerTest {
-    
-    
+
     private OkHttpClient httpClient;
 
     @BeforeEach
     public void setup() {
         httpClient = mock(OkHttpClient.class);
     }
-    
+
     @Test
     public void testGivenEndpoint() throws IOException {
-        DiscoveredServiceWorkItemHandler handler = new TestDiscoveredServiceWorkItemHandler("test", "http://testhost:9000"); 
-        
+        DiscoveredServiceWorkItemHandler handler = new TestDiscoveredServiceWorkItemHandler("test", "http://testhost:9000");
+
         WorkItem workItem = Mockito.mock(WorkItem.class);
         when(workItem.getParameters()).thenReturn(Collections.singletonMap("service", "test"));
-        
+
         Call call = mock(Call.class);
         ResponseBody body = new ResponseBody() {
             private String content = "{\"test\" : \"fake\"}";
+
             @Override
             public BufferedSource source() {
                 Buffer b = new Buffer();
                 b.write(content.getBytes());
                 return b;
             }
-            
+
             @Override
             public MediaType contentType() {
                 return MediaType.parse("application/json");
             }
-            
+
             @Override
             public long contentLength() {
                 return content.length();
             }
         };
         Response response = new Response.Builder().body(body).protocol(Protocol.HTTP_1_1).message("test").request(new Request.Builder().url("http://localhost:9000").build()).code(200).build();
-                
-     
+
         when(call.execute()).thenReturn(response);
         when(httpClient.newCall(any())).thenReturn(call);
-        
+
         Map<String, Object> results = handler.discoverAndCall(workItem, "", "service", HttpMethods.POST);
-        
+
         assertThat(results).isNotNull().containsKey("test").containsValue("fake");
     }
-    
+
     private class TestDiscoveredServiceWorkItemHandler extends DiscoveredServiceWorkItemHandler {
 
         public TestDiscoveredServiceWorkItemHandler(String service, String endpoint) {
             super();
             this.addServices(service, new ServiceInfo(endpoint, null));
         }
-        
+
         @Override
         public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         }
@@ -109,7 +109,7 @@ public class DiscoveredServiceWorkItemHandlerTest {
         protected OkHttpClient buildHttpClient() {
             return httpClient;
         }
-        
+
         @Override
         protected ServiceDiscovery buildServiceDiscovery(KogitoKubeClient kubeClient) {
             return mock(ServiceDiscovery.class);

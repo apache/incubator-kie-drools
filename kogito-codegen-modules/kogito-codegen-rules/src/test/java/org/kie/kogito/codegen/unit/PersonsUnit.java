@@ -25,7 +25,7 @@ public class PersonsUnit implements RuleUnitData {
     @DefaultEntryPoint
     private DataStore<Person> persons;
 
-    public PersonsUnit( DataStore<Person> persons ) {
+    public PersonsUnit(DataStore<Person> persons) {
         this.persons = persons;
     }
 

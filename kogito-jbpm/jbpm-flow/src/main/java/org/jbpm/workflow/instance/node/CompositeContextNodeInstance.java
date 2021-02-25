@@ -32,23 +32,23 @@ import org.jbpm.workflow.core.node.CompositeContextNode;
 
 public class CompositeContextNodeInstance extends CompositeNodeInstance implements ContextInstanceContainer, ContextableInstance {
 
-	private static final long serialVersionUID = 510l;
-	
-	private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
+    private static final long serialVersionUID = 510l;
+
+    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
 
     protected CompositeContextNode getCompositeContextNode() {
         return (CompositeContextNode) getNode();
     }
-    
+
     public ContextContainer getContextContainer() {
         return getCompositeContextNode();
     }
-    
+
     public void setContextInstance(String contextId, ContextInstance contextInstance) {
         this.contextInstances.put(contextId, contextInstance);
     }
-    
+
     public ContextInstance getContextInstance(String contextId) {
         ContextInstance contextInstance = this.contextInstances.get(contextId);
         if (contextInstance != null) {
@@ -61,11 +61,11 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
         }
         return null;
     }
-    
+
     public List<ContextInstance> getContextInstances(String contextId) {
         return this.subContextInstances.get(contextId);
     }
-    
+
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
         List<ContextInstance> list = this.subContextInstances.get(contextId);
         if (list == null) {
@@ -74,7 +74,7 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
         }
         list.add(contextInstance);
     }
-    
+
     public void removeContextInstance(String contextId, ContextInstance contextInstance) {
         List<ContextInstance> list = this.subContextInstances.get(contextId);
         if (list != null) {
@@ -85,7 +85,7 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
     public ContextInstance getContextInstance(String contextId, long id) {
         List<ContextInstance> contextInstances = subContextInstances.get(contextId);
         if (contextInstances != null) {
-            for (ContextInstance contextInstance: contextInstances) {
+            for (ContextInstance contextInstance : contextInstances) {
                 if (contextInstance.getContextId() == id) {
                     return contextInstance;
                 }

@@ -15,15 +15,6 @@
  */
 package org.kie.kogito.codegen.api.context.impl;
 
-import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
-import org.kie.kogito.codegen.api.utils.AppPaths;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,11 +25,20 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
 
+import javax.lang.model.SourceVersion;
+
+import org.kie.kogito.codegen.api.AddonsConfig;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
+import org.kie.kogito.codegen.api.utils.AppPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
 
     public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractKogitoBuildContext.class);
-
 
     protected final Predicate<String> classAvailabilityResolver;
     protected final Properties applicationProperties;
@@ -51,8 +51,8 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
 
     protected AbstractKogitoBuildContext(AbstractBuilder builder,
-                                         DependencyInjectionAnnotator dependencyInjectionAnnotator,
-                                         String contextName) {
+            DependencyInjectionAnnotator dependencyInjectionAnnotator,
+            String contextName) {
         this.packageName = builder.packageName;
         this.classAvailabilityResolver = builder.classAvailabilityResolver;
         this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
@@ -122,10 +122,10 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         Properties applicationProperties = new Properties();
 
         for (File resourcePath : resourcePaths) {
-            try (FileReader fileReader = new FileReader( new File( resourcePath, APPLICATION_PROPERTIES_FILE_NAME ) )) {
-                applicationProperties.load( fileReader );
+            try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
+                applicationProperties.load(fileReader);
             } catch (IOException ioe) {
-                LOGGER.debug( "Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'." );
+                LOGGER.debug("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
             }
         }
 
@@ -156,8 +156,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
             // safe guard to not generate application classes that would clash with interfaces
             if (!packageName.equals(DEFAULT_GROUP_ID)) {
                 this.packageName = packageName;
-            }
-            else {
+            } else {
                 LOGGER.warn("Skipping the package provided because invalid: '{}' (current value '{}')", packageName, this.packageName);
             }
             return this;
@@ -171,7 +170,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         }
 
         @Override
-        public Builder withApplicationProperties(File ... files) {
+        public Builder withApplicationProperties(File... files) {
             this.applicationProperties = load(files);
             return this;
         }

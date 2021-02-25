@@ -19,6 +19,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.template.InvalidTemplateException;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.conf.ClockType;
+import org.kie.kogito.conf.EventProcessingType;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnitConfig;
+import org.kie.kogito.rules.units.AbstractRuleUnitDescription;
+import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
+import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -31,24 +45,10 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
-import org.drools.modelcompiler.builder.QueryModel;
-import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.template.InvalidTemplateException;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.conf.ClockType;
-import org.kie.kogito.conf.EventProcessingType;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitConfig;
-import org.kie.kogito.rules.units.AbstractRuleUnitDescription;
-import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
-import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
-
-import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
 
 public class RuleUnitGenerator implements RuleFileGenerator {
@@ -64,7 +64,7 @@ public class RuleUnitGenerator implements RuleFileGenerator {
     private RuleUnitConfig config;
     private Collection<QueryModel> queries;
 
-    public RuleUnitGenerator( KogitoBuildContext context, RuleUnitDescription ruleUnit, String generatedSourceFile) {
+    public RuleUnitGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
         this.ruleUnitPackageName = ruleUnit.getPackageName();
         this.typeName = ruleUnit.getSimpleName();
@@ -74,7 +74,7 @@ public class RuleUnitGenerator implements RuleFileGenerator {
         this.targetCanonicalName = ruleUnitPackageName + "." + targetTypeName;
         // merge config from the descriptor with configs from application.conf
         // application.conf overrides any other config
-        this.config = (( AbstractRuleUnitDescription ) ruleUnit).getConfig();
+        this.config = ((AbstractRuleUnitDescription) ruleUnit).getConfig();
         this.generator = TemplatedGenerator.builder()
                 .withPackageName(ruleUnitPackageName)
                 .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
@@ -191,17 +191,14 @@ public class RuleUnitGenerator implements RuleFileGenerator {
 
     private Expression eventProcessingConfigExpression(EventProcessingType eventProcessingType) {
         Expression replacement =
-                (eventProcessingType == EventProcessingType.STREAM) ?
-                        parseExpression("org.kie.api.conf.EventProcessingOption.STREAM") :
-                        parseExpression("org.kie.api.conf.EventProcessingOption.CLOUD");
+                (eventProcessingType == EventProcessingType.STREAM) ? parseExpression("org.kie.api.conf.EventProcessingOption.STREAM")
+                        : parseExpression("org.kie.api.conf.EventProcessingOption.CLOUD");
         return replacement;
     }
 
     private Expression clockConfigExpression(ClockType clockType) {
         Expression replacement =
-                (clockType == ClockType.PSEUDO) ?
-                        parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") :
-                        parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
+                (clockType == ClockType.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
         return replacement;
     }
 

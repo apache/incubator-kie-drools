@@ -22,15 +22,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -96,7 +97,7 @@ class PMMLOASResultImplTest {
         assertNotNull(outputSetPropertiesNode.get(RESULT_VARIABLES));
         ObjectNode resultVariablesNode = (ObjectNode) outputSetPropertiesNode.get(RESULT_VARIABLES);
         assertNotNull(resultVariablesNode.get(PROPERTIES));
-        ObjectNode resultVariablesPropertiesNode =  (ObjectNode) resultVariablesNode.get(PROPERTIES);
+        ObjectNode resultVariablesPropertiesNode = (ObjectNode) resultVariablesNode.get(PROPERTIES);
         assertEquals(toAdd.size(), resultVariablesPropertiesNode.size());
         List<JsonNode> nodeList = StreamSupport
                 .stream(resultVariablesPropertiesNode.spliterator(), false)

@@ -150,7 +150,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         }
 
         List<Node> nodes = Arrays.stream(getNodes())
-                .filter(n -> n.getIncomingConnections().isEmpty() && "true".equalsIgnoreCase((String)n.getMetaData().get("customAutoStart")))
+                .filter(n -> n.getIncomingConnections().isEmpty() && "true".equalsIgnoreCase((String) n.getMetaData().get("customAutoStart")))
                 .collect(Collectors.toList());
 
         return nodes;

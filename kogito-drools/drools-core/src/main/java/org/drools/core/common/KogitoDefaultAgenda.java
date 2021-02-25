@@ -36,8 +36,8 @@ public class KogitoDefaultAgenda extends DefaultAgenda implements KogitoInternal
 
     @Override
     public void activateRuleFlowGroup(String name, String processInstanceId, String nodeInstanceId) {
-        InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
-        activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
+        InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup(name);
+        activateRuleFlowGroup(ruleFlowGroup, processInstanceId, nodeInstanceId);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class KogitoDefaultAgenda extends DefaultAgenda implements KogitoInternal
     }
 
     @Override
-    protected boolean sameProcessInstance( Object processInstanceId, ProcessInstance value ) {
-        return processInstanceId.equals( (( KogitoProcessInstance ) value).getStringId());
+    protected boolean sameProcessInstance(Object processInstanceId, ProcessInstance value) {
+        return processInstanceId.equals(((KogitoProcessInstance) value).getStringId());
     }
 }

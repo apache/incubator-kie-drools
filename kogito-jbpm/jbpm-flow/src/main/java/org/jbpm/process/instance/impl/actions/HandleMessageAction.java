@@ -48,7 +48,7 @@ public class HandleMessageAction implements Action, Serializable {
     }
 
     @Override
-    public void execute( KogitoProcessContext context) throws Exception {
+    public void execute(KogitoProcessContext context) throws Exception {
         Object variable = VariableUtil.resolveVariable(variableName, context.getNodeInstance());
 
         if (transformation != null) {
@@ -57,15 +57,15 @@ public class HandleMessageAction implements Action, Serializable {
 
         KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setName("Send Task");
-        workItem.setNodeInstanceId( (( KogitoNodeInstance ) context.getNodeInstance()).getStringId());
-        workItem.setProcessInstanceId( (( KogitoProcessInstance ) context.getProcessInstance()).getStringId());
+        workItem.setNodeInstanceId(((KogitoNodeInstance) context.getNodeInstance()).getStringId());
+        workItem.setProcessInstanceId(((KogitoProcessInstance) context.getProcessInstance()).getStringId());
         workItem.setNodeId(context.getNodeInstance().getNodeId());
         workItem.setParameter("MessageType", messageType);
         if (variable != null) {
             workItem.setParameter("Message", variable);
         }
 
-        (( KogitoWorkItemManager ) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
+        ((KogitoWorkItemManager) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
     }
 
 }

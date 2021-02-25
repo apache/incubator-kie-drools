@@ -32,19 +32,19 @@ public class ListDataType extends ObjectDataType implements TypeObject {
     private static final long serialVersionUID = 510l;
 
     private DataType dataType;
-    
+
     public ListDataType() {
         setClassName("java.util.List");
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        dataType    = (DataType)in.readObject();
+        dataType = (DataType) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(dataType);
     }
-    
+
     public ListDataType(DataType dataType) {
         setType(dataType);
     }
@@ -62,7 +62,7 @@ public class ListDataType extends ObjectDataType implements TypeObject {
             return true;
         }
         if (value instanceof List) {
-            for (Object o: (List<?>) value) {
+            for (Object o : (List<?>) value) {
                 if (dataType != null && !dataType.verifyDataType(o)) {
                     return false;
                 }

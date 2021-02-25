@@ -15,21 +15,21 @@
  */
 package org.kie.kogito.codegen.core.utils;
 
-import org.kie.kogito.codegen.api.GeneratorFactory;
-import org.kie.kogito.codegen.core.ApplicationGenerator;
-import org.kie.kogito.codegen.api.Generator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.io.CollectedResource;
-import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.api.GeneratorFactory;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.kie.kogito.codegen.core.ApplicationGenerator;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class that performs automatic ApplicationGenerator discovery

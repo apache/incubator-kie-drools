@@ -25,13 +25,13 @@ import org.kie.kogito.timer.Trigger;
 
 public interface TimerJobFactoryManager {
     TimerJobInstance createTimerJobInstance(Job job,
-                                            JobContext ctx,
-                                            Trigger trigger,
-                                            JobHandle handle,
-                                            InternalSchedulerService scheduler);
-    
+            JobContext ctx,
+            Trigger trigger,
+            JobHandle handle,
+            InternalSchedulerService scheduler);
+
     void addTimerJobInstance(TimerJobInstance instance);
-    
+
     void removeTimerJobInstance(TimerJobInstance instance);
 
     Collection<TimerJobInstance> getTimerJobInstances();

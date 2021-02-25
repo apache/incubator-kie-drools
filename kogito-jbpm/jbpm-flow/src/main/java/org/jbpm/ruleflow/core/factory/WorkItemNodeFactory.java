@@ -15,6 +15,8 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.Set;
+
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Mappable;
@@ -25,8 +27,6 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.WorkItemNode;
-
-import java.util.Set;
 
 public class WorkItemNodeFactory extends StateBasedNodeFactory implements MappableNodeFactory {
 

@@ -111,7 +111,7 @@ public class AbstractProcessInstanceTest {
     private NodeInstance givenExistingNode(String nodeId) {
         RuleFlowProcess process = mock(RuleFlowProcess.class);
         when(wpi.getProcess()).thenReturn(process);
-        org.kie.api.definition.process.Node node = mock( org.kie.api.definition.process.Node.class);
+        org.kie.api.definition.process.Node node = mock(org.kie.api.definition.process.Node.class);
         when(node.getMetaData()).thenReturn(Collections.singletonMap("UniqueId", nodeId));
         when(process.getNodesRecursively()).thenReturn(Arrays.asList(node));
 

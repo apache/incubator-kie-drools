@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
 
 public class KogitoDMNDecisionResult implements Serializable,
-                                                DMNDecisionResult {
+        DMNDecisionResult {
 
     private String decisionId;
 

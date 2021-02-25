@@ -20,6 +20,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.kie.api.definition.process.Node;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
@@ -29,12 +36,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.kie.api.definition.process.Node;
 
 import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_VARIABLE;
 

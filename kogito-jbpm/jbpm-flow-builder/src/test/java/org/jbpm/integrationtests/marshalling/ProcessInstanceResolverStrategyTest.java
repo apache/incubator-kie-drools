@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
     private final static String PROCESS_NAME = "simpleProcess.xml";
-    
+
     @Test
     public void testAccept() {
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -69,12 +69,11 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) ksession);
 
         ProcessInstanceResolverStrategy strategy = new ProcessInstanceResolverStrategy();
-        
-        assertTrue( strategy.accept(processInstance) );
+
+        assertTrue(strategy.accept(processInstance));
         Object object = new Object();
-        assertTrue( ! strategy.accept(object) );
+        assertTrue(!strategy.accept(object));
     }
-    
 
     @Test
     public void testProcessInstanceResolverStrategy() throws Exception {
@@ -83,28 +82,26 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         kbuilder.add(new ClassPathResource(PROCESS_NAME, this.getClass()), ResourceType.DRF);
         KieBase kbase = kbuilder.newKieBase();
         KieSession ksession = kbase.newKieSession();
-        KogitoProcessInstance processInstance = ( KogitoProcessInstance ) ksession.createProcessInstance("process name", new HashMap<String, Object>());
+        KogitoProcessInstance processInstance = (KogitoProcessInstance) ksession.createProcessInstance("process name", new HashMap<String, Object>());
         ksession.insert(processInstance);
 
         // strategy setup
         ProcessInstanceResolverStrategy strategy = new ProcessInstanceResolverStrategy();
-        ObjectMarshallingStrategy[] strategies = { 
+        ObjectMarshallingStrategy[] strategies = {
                 strategy,
-                MarshallerFactory.newSerializeMarshallingStrategy() 
+                MarshallerFactory.newSerializeMarshallingStrategy()
         };
 
-        
         // Test strategy.write
         org.kie.api.marshalling.MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ProtobufMarshallerWriteContext writerContext
-            = new ProtobufMarshallerWriteContext(baos,
-                                         ((InternalKnowledgeBase) kbase),
-										 (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession),
-										 RuleBaseNodes.getNodeMap(((InternalKnowledgeBase) kbase)),
-										 marshallingConfig.getObjectMarshallingStrategyStore(), 
-										 marshallingConfig.isMarshallProcessInstances(),
-										 marshallingConfig.isMarshallWorkItems(), ksession.getEnvironment());
+        ProtobufMarshallerWriteContext writerContext = new ProtobufMarshallerWriteContext(baos,
+                ((InternalKnowledgeBase) kbase),
+                (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession),
+                RuleBaseNodes.getNodeMap(((InternalKnowledgeBase) kbase)),
+                marshallingConfig.getObjectMarshallingStrategyStore(),
+                marshallingConfig.isMarshallProcessInstances(),
+                marshallingConfig.isMarshallWorkItems(), ksession.getEnvironment());
 
         strategy.write(writerContext, processInstance);
         baos.close();
@@ -118,7 +115,7 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         String serializedProcessInstanceId = ois.readUTF();
         ois.close();
         assertTrue(processInstance.getStringId().equals(serializedProcessInstanceId),
-                   "Expected " + processInstance.getStringId() + ", not " + serializedProcessInstanceId);
+                "Expected " + processInstance.getStringId() + ", not " + serializedProcessInstanceId);
 
         // Test other strategy stuff
         ProcessInstanceManager pim = ProcessInstanceResolverStrategy.retrieveProcessInstanceManager(writerContext);
@@ -129,17 +126,17 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         // Test strategy.read
         bais = new ByteArrayInputStream(bytes);
         ProtobufMarshallerReaderContext readerContext = new ProtobufMarshallerReaderContext(bais,
-                                                                            ((KnowledgeBaseImpl) kbase),
-                                                                            RuleBaseNodes.getNodeMap( ((KnowledgeBaseImpl) kbase)),
-                                                                            marshallingConfig.getObjectMarshallingStrategyStore(),
-                                                                            ProtobufMarshaller.TIMER_READERS,
-                                                                            marshallingConfig.isMarshallProcessInstances(),
-                                                                            marshallingConfig.isMarshallWorkItems() ,
-                                                                            EnvironmentFactory.newEnvironment());
+                ((KnowledgeBaseImpl) kbase),
+                RuleBaseNodes.getNodeMap(((KnowledgeBaseImpl) kbase)),
+                marshallingConfig.getObjectMarshallingStrategyStore(),
+                ProtobufMarshaller.TIMER_READERS,
+                marshallingConfig.isMarshallProcessInstances(),
+                marshallingConfig.isMarshallWorkItems(),
+                EnvironmentFactory.newEnvironment());
         bais.close();
-        readerContext.setWorkingMemory( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory() );
-        Object procInstObject = strategy.read(readerContext); 
-        assertTrue(procInstObject != null && procInstObject instanceof ProcessInstance );
+        readerContext.setWorkingMemory(((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory());
+        Object procInstObject = strategy.read(readerContext);
+        assertTrue(procInstObject != null && procInstObject instanceof ProcessInstance);
         assertTrue(processInstance == procInstObject);
     }
 

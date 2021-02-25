@@ -29,7 +29,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class EventFilterHandler extends BaseAbstractHandler implements Handler {
-    
+
     public EventFilterHandler() {
         if ((this.validParents == null) && (this.validPeers == null)) {
             this.validParents = new HashSet<Class<?>>();
@@ -42,19 +42,19 @@ public class EventFilterHandler extends BaseAbstractHandler implements Handler {
             this.allowNesting = false;
         }
     }
-    
+
     public Object start(final String uri,
-                        final String localName,
-                        final Attributes attrs,
-                        final ExtensibleXmlParser parser) throws SAXException {
-        parser.startElementBuilder( localName,
-                                    attrs );
+            final String localName,
+            final Attributes attrs,
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.startElementBuilder(localName,
+                attrs);
         return null;
-    }    
-    
+    }
+
     public Object end(final String uri,
-                      final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Object parent = parser.getParent();
         final String type = element.getAttribute("type");
@@ -65,20 +65,20 @@ public class EventFilterHandler extends BaseAbstractHandler implements Handler {
             EventTypeFilter eventTypeFilter = new EventTypeFilter();
             eventTypeFilter.setType(eventType);
             if (parent instanceof EventNode) {
-            	((EventNode) parent).addEventFilter(eventTypeFilter);
+                ((EventNode) parent).addEventFilter(eventTypeFilter);
             } else if (parent instanceof EventTrigger) {
-            	((EventTrigger) parent).addEventFilter(eventTypeFilter);
+                ((EventTrigger) parent).addEventFilter(eventTypeFilter);
             }
         } else {
-        	throw new IllegalArgumentException(
-    			"Unknown event filter type: " + type);
+            throw new IllegalArgumentException(
+                    "Unknown event filter type: " + type);
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-	public Class generateNodeFor() {
+    public Class generateNodeFor() {
         return EventFilter.class;
-    }    
+    }
 
 }

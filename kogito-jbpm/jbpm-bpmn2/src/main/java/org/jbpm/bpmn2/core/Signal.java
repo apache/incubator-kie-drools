@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 public class Signal implements Serializable {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     private String id;
     private String name;
@@ -43,8 +43,8 @@ public class Signal implements Serializable {
         return structureRef;
     }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
 }

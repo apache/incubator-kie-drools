@@ -21,6 +21,7 @@ import java.util.Map;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.kogito.factory.KogitoInternalFactHandle;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
@@ -28,50 +29,49 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataProcessor;
-import org.drools.core.kogito.factory.KogitoInternalFactHandle;
 
 public class EntryPointDataProcessor implements DataProcessor {
     private final EntryPoint entryPoint;
 
     private final Map<DataHandle, InternalFactHandle> handles = new HashMap<>();
 
-    public EntryPointDataProcessor( EntryPoint entryPoint ) {
+    public EntryPointDataProcessor(EntryPoint entryPoint) {
         this.entryPoint = entryPoint;
     }
 
     @Override
     public FactHandle insert(DataHandle handle, Object object) {
-        InternalFactHandle fh = (InternalFactHandle)entryPoint.insert( object );
+        InternalFactHandle fh = (InternalFactHandle) entryPoint.insert(object);
         if (handle != null) {
-            handles.put( handle, fh );
+            handles.put(handle, fh);
         }
         return fh;
     }
 
-    public void update( DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        update( handles.get(dh), obj, mask, modifiedClass, activation );
+    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        update(handles.get(dh), obj, mask, modifiedClass, activation);
     }
 
-    public void update( InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        (( WorkingMemoryEntryPoint ) entryPoint).update( fh, obj, mask, modifiedClass, activation );
+    public void update(InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        ((WorkingMemoryEntryPoint) entryPoint).update(fh, obj, mask, modifiedClass, activation);
     }
 
     @Override
     public void update(DataHandle handle, Object object) {
-        entryPoint.update( handles.get(handle), object );
+        entryPoint.update(handles.get(handle), object);
     }
 
     @Override
     public void delete(DataHandle handle) {
-        entryPoint.delete( handles.remove(handle) );
+        entryPoint.delete(handles.remove(handle));
     }
 
     public void delete(DataHandle dh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        delete( (KogitoInternalFactHandle) handles.get(dh), rule, terminalNode, fhState );
+        delete((KogitoInternalFactHandle) handles.get(dh), rule, terminalNode, fhState);
     }
 
     public void delete(KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        (( WorkingMemoryEntryPoint ) entryPoint).delete( fh, rule, terminalNode, fhState );
-        handles.remove( fh.getDataHandle() );
+        ((WorkingMemoryEntryPoint) entryPoint).delete(fh, rule, terminalNode, fhState);
+        handles.remove(fh.getDataHandle());
     }
 }

@@ -43,30 +43,36 @@ import org.slf4j.LoggerFactory;
  * Base life cycle definition for human tasks. It comes with following phases
  * 
  * <ul>
- *  <li>Active</li>
- *  <li>Claim</li>
- *  <li>Release</li>
- *  <li>Complete</li>
- *  <li>Skip</li>
- *  <li>Abort</li>
+ * <li>Active</li>
+ * <li>Claim</li>
+ * <li>Release</li>
+ * <li>Complete</li>
+ * <li>Skip</li>
+ * <li>Abort</li>
  * </ul>
- * At the beginning human task enters <pre>Active</pre> phase. From there it can go to
+ * At the beginning human task enters
+ * 
+ * <pre>
+ * Active
+ * </pre>
+ * 
+ * phase. From there it can go to
  * 
  * <ul>
- *  <li>Claim</li>
- *  <li>Complete</li>
- *  <li>Skip</li>
- *  <li>Abort</li>
+ * <li>Claim</li>
+ * <li>Complete</li>
+ * <li>Skip</li>
+ * <li>Abort</li>
  * </ul>
  * 
  * at any time. At each phase data can be associated and by that set on work item.
  */
 public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(BaseHumanTaskLifeCycle.class);
-    
+
     private Map<String, LifeCyclePhase> phases = new LinkedHashMap<>();
-        
+
     public BaseHumanTaskLifeCycle() {
         phases.put(Claim.ID, new Claim());
         phases.put(Release.ID, new Release());
@@ -77,10 +83,10 @@ public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
     }
 
     @Override
-    public LifeCyclePhase phaseById(String phaseId) {        
+    public LifeCyclePhase phaseById(String phaseId) {
         return phases.get(phaseId);
     }
-    
+
     @Override
     public Collection<LifeCyclePhase> phases() {
         return phases.values();
@@ -88,49 +94,50 @@ public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
 
     @Override
     public Map<String, Object> transitionTo(KogitoWorkItem workItem, WorkItemManager manager, Transition<Map<String, Object>> transition) {
-        logger.debug("Transition method invoked for work item {} to transition to {}, currently in phase {} and status {}", workItem.getStringId(), transition.phase(), workItem.getPhaseId(), workItem.getPhaseStatus());
-        
+        logger.debug("Transition method invoked for work item {} to transition to {}, currently in phase {} and status {}", workItem.getStringId(), transition.phase(), workItem.getPhaseId(),
+                workItem.getPhaseStatus());
+
         HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
-        
+
         LifeCyclePhase targetPhase = phases.get(transition.phase());
         if (targetPhase == null) {
             logger.debug("Target life cycle phase '{}' does not exist in {}", transition.phase(), this.getClass().getSimpleName());
             throw new InvalidLifeCyclePhaseException(transition.phase());
         }
-        
+
         LifeCyclePhase currentPhase = phases.get(humanTaskWorkItem.getPhaseId());
-        
+
         if (!targetPhase.canTransition(currentPhase)) {
             logger.debug("Target life cycle phase '{}' cannot transition from current state '{}'", targetPhase.id(), currentPhase.id());
-            throw new InvalidTransitionException("Cannot transition from " + humanTaskWorkItem.getPhaseId() + " to " + targetPhase.id()); 
+            throw new InvalidTransitionException("Cannot transition from " + humanTaskWorkItem.getPhaseId() + " to " + targetPhase.id());
         }
 
         if (!targetPhase.id().equals(Active.ID) && !targetPhase.id().equals(Abort.ID) && !humanTaskWorkItem.enforce(transition.policies().toArray(new Policy[transition.policies().size()]))) {
             throw new NotAuthorizedException("User is not authorized to access task instance with id " + humanTaskWorkItem.getStringId());
         }
-        
+
         humanTaskWorkItem.setPhaseId(targetPhase.id());
         humanTaskWorkItem.setPhaseStatus(targetPhase.status());
-        
+
         targetPhase.apply(humanTaskWorkItem, transition);
         if (transition.data() != null) {
             logger.debug("Updating data for work item {}", targetPhase.id(), humanTaskWorkItem.getStringId());
             humanTaskWorkItem.getResults().putAll(transition.data());
         }
         logger.debug("Transition for work item {} to {} done, currently in phase {} and status {}", workItem.getStringId(), transition.phase(), workItem.getPhaseId(), workItem.getPhaseStatus());
-        
+
         if (targetPhase.isTerminating()) {
             logger.debug("Target life cycle phase '{}' is terminiating, completing work item {}", targetPhase.id(), humanTaskWorkItem.getStringId());
             // since target life cycle phase is terminating completing work item
-            ((KogitoWorkItemManager)manager).internalCompleteWorkItem(humanTaskWorkItem);
+            ((KogitoWorkItemManager) manager).internalCompleteWorkItem(humanTaskWorkItem);
         }
-        
+
         return data(humanTaskWorkItem);
     }
 
     @Override
     public Map<String, Object> data(WorkItem workItem) {
-        
+
         return ((HumanTaskWorkItemImpl) workItem).getResults();
     }
 

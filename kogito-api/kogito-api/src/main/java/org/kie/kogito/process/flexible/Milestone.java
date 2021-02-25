@@ -25,8 +25,8 @@ public class Milestone extends ItemDescription {
     public String toString() {
         return "Milestone{" + super.toString() + "}";
     }
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder();
     }
 

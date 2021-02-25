@@ -71,8 +71,8 @@ public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEv
 
     protected String marshall(KogitoProcessInstance pi, D eventData) {
         return marshaller.marshall(eventData,
-                                   e -> dataEventTypeConstructor(e, pi, trigger),
-                                   useCloudEvents);
+                e -> dataEventTypeConstructor(e, pi, trigger),
+                useCloudEvents);
     }
 
     protected abstract T dataEventTypeConstructor(D e, KogitoProcessInstance pi, String trigger);

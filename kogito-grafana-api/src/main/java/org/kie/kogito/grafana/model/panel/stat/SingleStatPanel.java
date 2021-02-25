@@ -17,11 +17,12 @@ package org.kie.kogito.grafana.model.panel.stat;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.grafana.model.panel.GrafanaGridPos;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.panel.GrafanaTarget;
 import org.kie.kogito.grafana.model.panel.common.Options;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SingleStatPanel extends GrafanaPanel {
 

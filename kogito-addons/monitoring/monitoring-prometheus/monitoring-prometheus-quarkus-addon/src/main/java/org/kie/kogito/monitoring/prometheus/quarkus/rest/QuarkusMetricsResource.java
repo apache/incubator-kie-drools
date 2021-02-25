@@ -27,7 +27,7 @@ import org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource;
 public class QuarkusMetricsResource extends MetricsResource {
 
     @GET
-    @Produces({MediaType.TEXT_PLAIN})
+    @Produces({ MediaType.TEXT_PLAIN })
     public Response getMetrics() {
         return Response.ok(scrape()).build();
     }

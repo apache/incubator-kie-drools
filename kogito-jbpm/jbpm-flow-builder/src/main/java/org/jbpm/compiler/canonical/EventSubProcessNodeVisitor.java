@@ -15,19 +15,20 @@
  */
 package org.jbpm.compiler.canonical;
 
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.kie.api.definition.process.Node;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Stream;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_EVENT;
 import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_KEEP_ACTIVE;

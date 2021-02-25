@@ -38,46 +38,46 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class StartNodeInstanceTest extends AbstractBaseTest {
-    
-    public void addLogger() { 
+
+    public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
     }
-    
+
     @Test
     public void testStartNode() {
-        
+
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KieSession ksession = kbase.newKieSession();        
-        
+        KieSession ksession = kbase.newKieSession();
+
         MockNode mockNode = new MockNode();
-        MockNodeInstanceFactory mockNodeFactory = new MockNodeInstanceFactory( new MockNodeInstance( mockNode ) );
-        NodeInstanceFactoryRegistry.getInstance(ksession.getEnvironment()).register( mockNode.getClass(), mockNodeFactory );
-        
-        RuleFlowProcess process = new RuleFlowProcess(); 
-        
-        StartNode startNode = new StartNode();  
-        startNode.setId( 1 );
-        startNode.setName( "start node" );                
-        
-        mockNode.setId( 2 );
+        MockNodeInstanceFactory mockNodeFactory = new MockNodeInstanceFactory(new MockNodeInstance(mockNode));
+        NodeInstanceFactoryRegistry.getInstance(ksession.getEnvironment()).register(mockNode.getClass(), mockNodeFactory);
+
+        RuleFlowProcess process = new RuleFlowProcess();
+
+        StartNode startNode = new StartNode();
+        startNode.setId(1);
+        startNode.setName("start node");
+
+        mockNode.setId(2);
         new ConnectionImpl(
-    		startNode, Node.CONNECTION_DEFAULT_TYPE,
-    		mockNode, Node.CONNECTION_DEFAULT_TYPE);
-        
-        process.addNode( startNode );
-        process.addNode( mockNode );
-                
-        RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();   
-        processInstance.setProcess( process );
-        processInstance.setKnowledgeRuntime( (InternalKnowledgeRuntime) ksession );              
-        
-        assertEquals(  ProcessInstance.STATE_PENDING, processInstance.getState() );
-        processInstance.start();        
-        assertEquals(  ProcessInstance.STATE_ACTIVE, processInstance.getState() );
-        
+                startNode, Node.CONNECTION_DEFAULT_TYPE,
+                mockNode, Node.CONNECTION_DEFAULT_TYPE);
+
+        process.addNode(startNode);
+        process.addNode(mockNode);
+
+        RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
+        processInstance.setProcess(process);
+        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) ksession);
+
+        assertEquals(ProcessInstance.STATE_PENDING, processInstance.getState());
+        processInstance.start();
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+
         MockNodeInstance mockNodeInstance = mockNodeFactory.getMockNodeInstance();
         List<NodeInstance> triggeredBy =
-        	mockNodeInstance.getTriggers().get( Node.CONNECTION_DEFAULT_TYPE);
+                mockNodeInstance.getTriggers().get(Node.CONNECTION_DEFAULT_TYPE);
         assertNotNull(triggeredBy);
         assertEquals(1, triggeredBy.size());
         assertSame(startNode.getId(), triggeredBy.get(0).getNodeId());

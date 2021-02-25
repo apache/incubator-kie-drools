@@ -31,31 +31,31 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.kie.kogito.Application;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
+import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
+import org.kie.kogito.codegen.decision.DecisionCodegen;
+import org.kie.kogito.codegen.prediction.PredictionCodegen;
+import org.kie.kogito.codegen.process.ProcessCodegen;
+import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.kie.kogito.Application;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.decision.DecisionCodegen;
-import org.kie.kogito.codegen.api.io.CollectedResource;
-import org.kie.kogito.codegen.prediction.PredictionCodegen;
-import org.kie.kogito.codegen.process.ProcessCodegen;
-import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractCodegenTest {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCodegenTest.class);
 
     /**
@@ -70,10 +70,11 @@ public class AbstractCodegenTest {
         JAVA,
         PREDICTION
     }
+
     private TestClassLoader classloader;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "11");
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler(JavaConfiguration.CompilerType.NATIVE, "11");
     private static final String TEST_JAVA = "src/test/java/";
     private static final String TEST_RESOURCES = "src/test/resources";
 
@@ -81,43 +82,43 @@ public class AbstractCodegenTest {
 
     private static final String DUMMY_PROCESS_RUNTIME =
             "package org.drools.project.model;\n" +
-            "\n" +
-            "import org.kie.api.KieBase;\n" +
-            "import org.kie.api.builder.model.KieBaseModel;\n" +
-            "import org.kie.api.runtime.KieSession;\n" +
-            "import org.drools.modelcompiler.builder.KieBaseBuilder;\n" +
-            "\n" +
-            "\n" +
-            "public class ProjectRuntime implements org.kie.kogito.rules.KieRuntimeBuilder {\n" +
-            "\n" +
-            "    public static final ProjectRuntime INSTANCE = new ProjectRuntime();\n" +
-            "\n" +
-            "    @Override\n" +
-            "    public KieBase getKieBase() {\n" +
-            "        return null;\n" +
-            "    }\n" +
-            "\n" +
-            "    @Override\n" +
-            "    public KieBase getKieBase(String name) {\n" +
-            "        return null;\n" +
-            "    }\n" +
-            "\n" +
-            "    @Override\n" +
-            "    public KieSession newKieSession() {\n" +
-            "        return null;\n" +
-            "    }\n" +
-            "\n" +
-            "    @Override\n" +
-            "    public KieSession newKieSession(String sessionName) {\n" +
-            "        return null;\n" +
-            "    }\n" +
-            "\n" +
-            "    @Override\n" +
-            "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
-            "        return null;\n" +
-            "    }\n" +
-            "\n" +
-            "}";
+                    "\n" +
+                    "import org.kie.api.KieBase;\n" +
+                    "import org.kie.api.builder.model.KieBaseModel;\n" +
+                    "import org.kie.api.runtime.KieSession;\n" +
+                    "import org.drools.modelcompiler.builder.KieBaseBuilder;\n" +
+                    "\n" +
+                    "\n" +
+                    "public class ProjectRuntime implements org.kie.kogito.rules.KieRuntimeBuilder {\n" +
+                    "\n" +
+                    "    public static final ProjectRuntime INSTANCE = new ProjectRuntime();\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public KieBase getKieBase() {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public KieBase getKieBase(String name) {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public KieSession newKieSession() {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public KieSession newKieSession(String sessionName) {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "}";
 
     static {
         generatorTypeMap.put(TYPE.PROCESS, (context, strings) -> ProcessCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
@@ -136,14 +137,12 @@ public class AbstractCodegenTest {
         return CollectedResourceProducer.fromFiles(Paths.get(basePath), files);
     }
 
-
     private static List<File> toFiles(List<String> strings, String path) {
         return strings
                 .stream()
                 .map(resource -> new File(path, resource))
                 .collect(Collectors.toList());
     }
-
 
     public void withSpringContext() {
         throw new UnsupportedOperationException("To be fixed KOGITO-4000");
@@ -189,7 +188,7 @@ public class AbstractCodegenTest {
         ApplicationGenerator appGen =
                 new ApplicationGenerator(context);
 
-        for (TYPE type :  TYPE.values()) {
+        for (TYPE type : TYPE.values()) {
             if (resourcesTypeMap.containsKey(type) && !resourcesTypeMap.get(type).isEmpty()) {
                 appGen.registerGeneratorIfEnabled(generatorTypeMap.get(type).apply(context, resourcesTypeMap.get(type)));
             }
@@ -203,17 +202,17 @@ public class AbstractCodegenTest {
         List<String> sources = new ArrayList<>();
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
-            if (!fileName.endsWith( ".java" )) {
+            if (!fileName.endsWith(".java")) {
                 continue;
             }
-            sources.add( fileName );
+            sources.add(fileName);
             srcMfs.write(fileName, entry.contents());
             log(new String(entry.contents()));
         }
 
         if (resourcesTypeMap.size() == 1 && resourcesTypeMap.containsKey(TYPE.PROCESS)) {
-            sources.add( "org/drools/project/model/ProjectRuntime.java" );
-            srcMfs.write( "org/drools/project/model/ProjectRuntime.java", DUMMY_PROCESS_RUNTIME.getBytes() );
+            sources.add("org/drools/project/model/ProjectRuntime.java");
+            srcMfs.write("org/drools/project/model/ProjectRuntime.java", DUMMY_PROCESS_RUNTIME.getBytes());
         }
 
         if (LOGGER.isDebugEnabled()) {
@@ -226,7 +225,7 @@ public class AbstractCodegenTest {
             }
         }
 
-        CompilationResult result = JAVA_COMPILER.compile(sources.toArray( new String[sources.size()] ), srcMfs, trgMfs, this.getClass().getClassLoader());
+        CompilationResult result = JAVA_COMPILER.compile(sources.toArray(new String[sources.size()]), srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).describedAs(String.join("\n\n", Arrays.toString(result.getErrors()))).hasSize(0);
 
@@ -238,11 +237,11 @@ public class AbstractCodegenTest {
         Application application = app.getDeclaredConstructor().newInstance();
         return application;
     }
-    
+
     protected ClassLoader testClassLoader() {
         return classloader;
     }
-    
+
     protected void log(String content) {
         LOGGER.debug(content);
     }
@@ -250,6 +249,7 @@ public class AbstractCodegenTest {
     /**
      * Use this setter to override AddonsConfig used during the generation
      * NOTE: this setter has only effect if invoked before any of the generate*() methods
+     * 
      * @param addonsConfig
      */
     protected void setAddonsConfig(AddonsConfig addonsConfig) {

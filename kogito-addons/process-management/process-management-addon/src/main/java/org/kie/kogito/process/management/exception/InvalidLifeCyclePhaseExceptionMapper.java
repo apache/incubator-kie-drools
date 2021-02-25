@@ -25,6 +25,6 @@ public class InvalidLifeCyclePhaseExceptionMapper extends BaseExceptionMapper<In
 
     @Override
     public Response toResponse(InvalidLifeCyclePhaseException exception) {
-       return exceptionsHandler.mapException(exception);
+        return exceptionsHandler.mapException(exception);
     }
 }

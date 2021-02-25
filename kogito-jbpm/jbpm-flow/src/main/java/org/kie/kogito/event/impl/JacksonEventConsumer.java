@@ -15,9 +15,10 @@
  */
 package org.kie.kogito.event.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Model;
 import org.kie.kogito.services.event.EventConsumer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class JacksonEventConsumer<M extends Model> implements EventConsumer<M> {
 

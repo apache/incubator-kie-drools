@@ -18,6 +18,13 @@ package org.kie.kogito.codegen.rules;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -34,12 +41,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.drools.modelcompiler.builder.QueryModel;
-import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
@@ -54,7 +55,7 @@ public class QueryGenerator implements RuleFileGenerator {
 
     private final String targetClassName;
 
-    public QueryGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, QueryModel query, String name ) {
+    public QueryGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, QueryModel query, String name) {
         this.ruleUnit = ruleUnit;
         this.query = query;
 
@@ -94,7 +95,7 @@ public class QueryGenerator implements RuleFileGenerator {
         setGeneric(ruleUnitDeclaration.getElementType(), ruleUnit);
 
         String returnType = getReturnType(clazz);
-        setGeneric( clazz.getImplementedTypes( 0 ).getTypeArguments().get().get(0), returnType );
+        setGeneric(clazz.getImplementedTypes(0).getTypeArguments().get().get(0), returnType);
         generateConstructors(clazz);
         generateQueryMethod(cu, clazz, returnType);
         clazz.getMembers().sort(new BodyDeclarationComparator());

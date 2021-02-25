@@ -31,7 +31,7 @@ import org.kie.api.runtime.Environment;
  * information to marshaller strategies, such as process instance id, task it, state
  */
 public class KogitoProcessMarshallerWriteContext extends ProtobufMarshallerWriteContext {
-    
+
     public static final int STATE_ACTIVE = 1;
     public static final int STATE_COMPLETED = 2;
 
@@ -39,45 +39,44 @@ public class KogitoProcessMarshallerWriteContext extends ProtobufMarshallerWrite
     private String taskId;
     private String workItemId;
     private int state;
-    
 
     public KogitoProcessMarshallerWriteContext(OutputStream stream,
-                                         InternalKnowledgeBase kBase,
-                                         InternalWorkingMemory wm,
-                                         Map<Integer, BaseNode> sinks,
-                                         ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                         Environment env) throws IOException {
+            InternalKnowledgeBase kBase,
+            InternalWorkingMemory wm,
+            Map<Integer, BaseNode> sinks,
+            ObjectMarshallingStrategyStore resolverStrategyFactory,
+            Environment env) throws IOException {
         super(stream, kBase, wm, sinks, resolverStrategyFactory, env);
     }
-    
+
     public String getProcessInstanceId() {
         return processInstanceId;
     }
-    
+
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
-    
+
     public String getTaskId() {
         return taskId;
     }
-    
+
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
-    
+
     public String getWorkItemId() {
         return workItemId;
     }
-    
+
     public void setWorkItemId(String workItemId) {
         this.workItemId = workItemId;
     }
-    
+
     public int getState() {
         return state;
     }
-    
+
     public void setState(int state) {
         this.state = state;
     }

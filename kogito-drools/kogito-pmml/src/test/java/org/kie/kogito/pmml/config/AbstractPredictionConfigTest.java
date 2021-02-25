@@ -36,7 +36,7 @@ class AbstractPredictionConfigTest {
     @Test
     void predictionEventListenersWithPredictionEventListenerConfigs() {
         final List<PredictionEventListenerConfig> predictionEventListenerConfigs = IntStream
-                .range(0,3)
+                .range(0, 3)
                 .mapToObj(i -> getPredictionEventListenerConfig())
                 .collect(Collectors.toList());
         AbstractPredictionConfig abstractPredictionConfig = getAbstractPredictionConfig(predictionEventListenerConfigs);

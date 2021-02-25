@@ -19,12 +19,13 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
 import org.kie.kogito.Model;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 public class DefaultEventConsumerFactory implements EventConsumerFactory {
 
@@ -35,7 +36,7 @@ public class DefaultEventConsumerFactory implements EventConsumerFactory {
     }
 
     public DefaultEventConsumerFactory(ObjectMapper mapper) {
-        if(mapper == null) {
+        if (mapper == null) {
             this.mapper = new ObjectMapper().setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
         } else {
             this.mapper = mapper;

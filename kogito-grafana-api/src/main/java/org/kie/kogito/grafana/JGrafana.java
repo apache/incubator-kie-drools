@@ -23,9 +23,6 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.grafana.factories.GridPosFactory;
 import org.kie.kogito.grafana.factories.PanelFactory;
 import org.kie.kogito.grafana.model.GrafanaDashboard;
@@ -35,6 +32,10 @@ import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.panel.PanelType;
 import org.kie.kogito.grafana.model.panel.common.YAxis;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Java configurator to create standard grafana dashboards
@@ -56,7 +57,7 @@ public class JGrafana {
      * Create a new JGrafana instance.
      *
      * @param title: The title of your dashboard.
-     * @param uuid:  The uuid of your dashboard.
+     * @param uuid: The uuid of your dashboard.
      */
     public JGrafana(String title, String uuid) {
         this.dashboard = new GrafanaDashboard(null, uuid, title);
@@ -102,9 +103,9 @@ public class JGrafana {
     /**
      * Adds a panel of a type to the dashboard.
      *
-     * @param type:  The type of the panel to be added.
+     * @param type: The type of the panel to be added.
      * @param title: Title of the panel.
-     * @param expr:  Prompql expression of the panel.
+     * @param expr: Prompql expression of the panel.
      * @return: The grafana panel added to the dashboard.
      */
     public GrafanaPanel addPanel(PanelType type, String title, String expr) {
@@ -124,11 +125,11 @@ public class JGrafana {
     /**
      * Adds a panel of a type to the dashboard.
      *
-     * @param type:      The type of the panel to be added.
-     * @param title:     Title of the panel.
-     * @param expr:      Prompql expression of the panel.
+     * @param type: The type of the panel to be added.
+     * @param title: Title of the panel.
+     * @param expr: Prompql expression of the panel.
      * @param functions: The Grafana functions to be applied to the PrompQL query.
-     * @param yaxes:     The YAxis of the panel.
+     * @param yaxes: The YAxis of the panel.
      * @return: The grafana panel added to the dashboard.
      */
     public GrafanaPanel addPanel(PanelType type, String title, String expr, SortedMap<Integer, GrafanaFunction> functions, List<YAxis> yaxes) {
@@ -170,7 +171,7 @@ public class JGrafana {
      * Adds an external link to the dashboard.
      *
      * @param title: The title of the link.
-     * @param url:   The url of the link.
+     * @param url: The url of the link.
      * @return: The updated object.
      */
     public JGrafana addLink(String title, String url) {

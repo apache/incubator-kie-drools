@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -38,7 +40,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
 
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
@@ -86,7 +87,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withOptionalInjection(T node) {
-        node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"), NodeList.nodeList(new MemberValuePair("required", new BooleanLiteralExpr(false)))));
+        node.addAnnotation(
+                new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"), NodeList.nodeList(new MemberValuePair("required", new BooleanLiteralExpr(false)))));
         return node;
     }
 
@@ -128,8 +130,7 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         return new ConditionalExpr(
                 new BinaryExpr(new NameExpr(fieldName), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS),
                 new NameExpr(fieldName),
-                new MethodCallExpr(new TypeExpr(new ClassOrInterfaceType(null, Collections.class.getCanonicalName())), "emptyList")
-        );
+                new MethodCallExpr(new TypeExpr(new ClassOrInterfaceType(null, Collections.class.getCanonicalName())), "emptyList"));
     }
 
     @Override

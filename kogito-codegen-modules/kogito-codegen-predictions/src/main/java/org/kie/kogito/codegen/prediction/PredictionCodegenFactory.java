@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.codegen.prediction;
 
+import java.util.Collection;
+
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.GeneratorFactory;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
-
-import java.util.Collection;
 
 public class PredictionCodegenFactory implements GeneratorFactory {
 

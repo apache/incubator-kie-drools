@@ -27,13 +27,13 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return new EndNode();
     }
 
-    public void handleNode( final Node node, final Element element, final String uri,
-                            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EndNode endNode = (EndNode) node;
         String terminate = element.getAttribute("terminate");
-        if (terminate != null && "false".equals(terminate) ) {
+        if (terminate != null && "false".equals(terminate)) {
             endNode.setTerminate(false);
         }
     }
@@ -42,20 +42,20 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return EndNode.class;
     }
 
-	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
-		EndNode endNode = (EndNode) node;
-		writeNode("end", endNode, xmlDump, includeMeta);
-		boolean terminate = endNode.isTerminate();
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+        EndNode endNode = (EndNode) node;
+        writeNode("end", endNode, xmlDump, includeMeta);
+        boolean terminate = endNode.isTerminate();
         if (!terminate) {
             xmlDump.append("terminate=\"false\" ");
         }
         if (includeMeta && containsMetaData(endNode)) {
-        	xmlDump.append(">" + EOL);
-        	writeMetaData(endNode, xmlDump);
-        	endNode("end", xmlDump);
+            xmlDump.append(">" + EOL);
+            writeMetaData(endNode, xmlDump);
+            endNode("end", xmlDump);
         } else {
             endNode(xmlDump);
         }
-	}
+    }
 
 }

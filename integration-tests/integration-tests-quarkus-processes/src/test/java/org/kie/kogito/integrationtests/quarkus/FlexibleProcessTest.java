@@ -19,12 +19,13 @@ package org.kie.kogito.integrationtests.quarkus;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -47,23 +48,23 @@ class FlexibleProcessTest {
 
         String pid = given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body(params)
                 .post("/AdHocProcess")
-            .then()
+                .then()
                 .statusCode(201)
                 .header("Location", not(emptyOrNullString()))
                 .body("id", not(emptyOrNullString()))
                 .body("var1", equalTo("Hello first! Script"))
                 .body("var2", equalTo("second Script 2"))
-            .extract()
+                .extract()
                 .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .get("/AdHocProcess/{pid}", pid)
-            .then()
+                .then()
                 .statusCode(200);
     }
 
@@ -74,11 +75,11 @@ class FlexibleProcessTest {
         params.put("var2", "second");
 
         given()
-            .contentType(ContentType.JSON)
-            .when()
-            .body(params)
-            .post("/AdHocProcess")
-            .then()
-            .statusCode(500);
+                .contentType(ContentType.JSON)
+                .when()
+                .body(params)
+                .post("/AdHocProcess")
+                .then()
+                .statusCode(500);
     }
 }

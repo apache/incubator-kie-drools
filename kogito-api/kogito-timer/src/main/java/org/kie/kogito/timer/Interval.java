@@ -16,7 +16,7 @@
 package org.kie.kogito.timer;
 
 /**
- * A class to represent a time interval. Specially useful to 
+ * A class to represent a time interval. Specially useful to
  * calculate time distance between events constrained by
  * temporal constraints.
  * 
@@ -27,7 +27,7 @@ package org.kie.kogito.timer;
 public class Interval implements Cloneable {
     public static final long MIN = Long.MIN_VALUE;
     public static final long MAX = Long.MAX_VALUE;
-    
+
     private long lowerBound;
     private long upperBound;
 
@@ -35,7 +35,7 @@ public class Interval implements Cloneable {
         this.lowerBound = MIN;
         this.upperBound = MAX;
     }
-    
+
     public Interval(long lowerBound, long upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
@@ -51,9 +51,9 @@ public class Interval implements Cloneable {
      * 
      * @param another the other interval to calculate the intersection with.
      */
-    public void intersect( Interval another ) {
-        this.lowerBound = Math.max( this.lowerBound, another.lowerBound );
-        this.upperBound = Math.min( this.upperBound, another.upperBound );
+    public void intersect(Interval another) {
+        this.lowerBound = Math.max(this.lowerBound, another.lowerBound);
+        this.upperBound = Math.min(this.upperBound, another.upperBound);
     }
 
     /**
@@ -65,9 +65,9 @@ public class Interval implements Cloneable {
      * 
      * @param another the other interval to add into this interval
      */
-    public void add( Interval another ) {
-        this.lowerBound = ( this.lowerBound == MIN || another.lowerBound == MIN ) ? MIN : this.lowerBound+another.lowerBound;
-        this.upperBound = ( this.upperBound == MAX || another.upperBound == MAX ) ? MAX : this.upperBound+another.upperBound;
+    public void add(Interval another) {
+        this.lowerBound = (this.lowerBound == MIN || another.lowerBound == MIN) ? MIN : this.lowerBound + another.lowerBound;
+        this.upperBound = (this.upperBound == MAX || another.upperBound == MAX) ? MAX : this.upperBound + another.upperBound;
     }
 
     public long getLowerBound() {
@@ -85,17 +85,17 @@ public class Interval implements Cloneable {
     public void setUpperBound(long upperBound) {
         this.upperBound = upperBound;
     }
-    
+
     public Interval clone() {
-        return new Interval( this.lowerBound, this.upperBound );
+        return new Interval(this.lowerBound, this.upperBound);
     }
 
     /**
      * @inheritDoc
      */
     public String toString() {
-        String result = "[ " + (( this.lowerBound == MIN ) ? "-NA" : this.lowerBound ) + ", "+
-                (( this.upperBound == MAX ) ? " NA" : this.upperBound ) + " ]";
+        String result = "[ " + ((this.lowerBound == MIN) ? "-NA" : this.lowerBound) + ", " +
+                ((this.upperBound == MAX) ? " NA" : this.upperBound) + " ]";
         return result;
     }
 
@@ -110,14 +110,18 @@ public class Interval implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         Interval other = (Interval) obj;
-        if ( lowerBound != other.lowerBound ) return false;
-        if ( upperBound != other.upperBound ) return false;
+        if (lowerBound != other.lowerBound)
+            return false;
+        if (upperBound != other.upperBound)
+            return false;
         return true;
     }
-    
-    
+
 }

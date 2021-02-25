@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngineManager;
+
 import org.assertj.core.api.Assumptions;
-import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -41,7 +41,6 @@ import org.jbpm.process.builder.ProcessClassBuilder;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
-import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
@@ -58,7 +57,6 @@ import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -137,54 +135,53 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
 
             @Override
-			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-				logger.debug("before node");
-				Map<String, Object> metaData = event.getNodeInstance().getNode().getMetaData();
-				for (Map.Entry<String, Object> entry: metaData.entrySet()) {
-					logger.debug(entry.getKey() + " " + entry.getValue());
-				}
-				String customTag = (String) metaData.get("customTag");
-				if (customTag != null) {
-					list1.add(customTag);
-				}
-				String customTag2 = (String) metaData.get("customTag2");
-				if (customTag2 != null) {
-					list2.add(customTag2);
-				}
-			}
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                logger.debug("before node");
+                Map<String, Object> metaData = event.getNodeInstance().getNode().getMetaData();
+                for (Map.Entry<String, Object> entry : metaData.entrySet()) {
+                    logger.debug(entry.getKey() + " " + entry.getValue());
+                }
+                String customTag = (String) metaData.get("customTag");
+                if (customTag != null) {
+                    list1.add(customTag);
+                }
+                String customTag2 = (String) metaData.get("customTag2");
+                if (customTag2 != null) {
+                    list2.add(customTag2);
+                }
+            }
 
             @Override
             public void afterVariableChanged(ProcessVariableChangedEvent event) {
-				logger.debug("after variable");
-				VariableScope variableScope = (VariableScope)
-					((org.jbpm.process.core.impl.ProcessImpl) event.getProcessInstance().getProcess())
-						.resolveContext(VariableScope.VARIABLE_SCOPE, event.getVariableId());
-	        	if (variableScope == null) {
-	        		return;
-	        	}
-	        	Map<String, Object> metaData = variableScope.findVariable(event.getVariableId()).getMetaData();
-	        	for (Map.Entry<String, Object> entry: metaData.entrySet()) {
-					logger.debug(entry.getKey() + " " + entry.getValue());
-				}
-				String customTag = (String) metaData.get("customTagVar");
-				if (customTag != null) {
-					list3.add(customTag);
-				}
-			}
+                logger.debug("after variable");
+                VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.impl.ProcessImpl) event.getProcessInstance().getProcess())
+                        .resolveContext(VariableScope.VARIABLE_SCOPE, event.getVariableId());
+                if (variableScope == null) {
+                    return;
+                }
+                Map<String, Object> metaData = variableScope.findVariable(event.getVariableId()).getMetaData();
+                for (Map.Entry<String, Object> entry : metaData.entrySet()) {
+                    logger.debug(entry.getKey() + " " + entry.getValue());
+                }
+                String customTag = (String) metaData.get("customTagVar");
+                if (customTag != null) {
+                    list3.add(customTag);
+                }
+            }
 
             @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
-				logger.debug("after process");
-	        	Map<String, Object> metaData = event.getProcessInstance().getProcess().getMetaData();
-	        	for (Map.Entry<String, Object> entry: metaData.entrySet()) {
-					logger.debug(entry.getKey() + " " + entry.getValue());
-				}
-				String customTag = (String) metaData.get("customTagProcess");
-				if (customTag != null) {
-					list4.add(customTag);
-				}
-			}
-		});
+                logger.debug("after process");
+                Map<String, Object> metaData = event.getProcessInstance().getProcess().getMetaData();
+                for (Map.Entry<String, Object> entry : metaData.entrySet()) {
+                    logger.debug(entry.getKey() + " " + entry.getValue());
+                }
+                String customTag = (String) metaData.get("customTagProcess");
+                if (customTag != null) {
+                    list4.add(customTag);
+                }
+            }
+        });
         Map<String, Object> params = new HashMap<>();
         params.put("x", "krisv");
         KogitoProcessInstance processInstance = kruntime.startProcess("Minimal", params);
@@ -417,11 +414,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         kruntime.getKieSession().execute((ExecutableCommand<Void>) context -> {
 
-            KogitoProcessRuntime kruntimeLocal = KogitoProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup( KieSession.class ));
+            KogitoProcessRuntime kruntimeLocal = KogitoProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
             KogitoProcessInstance processInstance1 = kruntimeLocal.getProcessInstance(pId);
             assertNotNull(processInstance1);
-            NodeInstance nodeInstance = (( KogitoNodeInstanceContainer ) processInstance1)
-                    .getNodeInstance((( KogitoWorkItem ) workItem).getNodeInstanceStringId());
+            NodeInstance nodeInstance = ((KogitoNodeInstanceContainer) processInstance1)
+                    .getNodeInstance(((KogitoWorkItem) workItem).getNodeInstanceStringId());
 
             assertNotNull(nodeInstance);
             assertTrue(nodeInstance instanceof WorkItemNodeInstance);
@@ -429,19 +426,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             String nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceStringId();
             long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
 
-            assertEquals((( KogitoWorkItem ) workItem).getDeploymentId(), deploymentId);
-            assertEquals((( KogitoWorkItem ) workItem).getNodeId(), nodeId);
-            assertEquals((( KogitoWorkItem ) workItem).getNodeInstanceStringId(), nodeInstanceId);
+            assertEquals(((KogitoWorkItem) workItem).getDeploymentId(), deploymentId);
+            assertEquals(((KogitoWorkItem) workItem).getNodeId(), nodeId);
+            assertEquals(((KogitoWorkItem) workItem).getNodeInstanceStringId(), nodeInstanceId);
 
             return null;
         });
 
-
-
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
     }
-
 
     @Test
     public void testCallActivityWithContantsAssignment() throws Exception {
@@ -496,7 +490,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertNotNull(var5);
         assertEquals("50", var5.toString());
 
-
         org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
 
@@ -528,7 +521,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 if (event.getProcessInstance().getProcessId().equals("SubProcess")) {
-                    subprocessStarted.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
+                    subprocessStarted.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
                 }
             }
 
@@ -548,7 +541,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance);
 
         assertEquals(2, subprocessStarted.size());
-        listOut = (List)((KogitoWorkflowProcessInstance) processInstance).getVariable("listOut");
+        listOut = (List) ((KogitoWorkflowProcessInstance) processInstance).getVariable("listOut");
         assertNotNull(listOut);
         assertEquals(2, listOut.size());
 
@@ -556,28 +549,28 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("new value", listOut.get(1));
     }
 
-	@Test
-	public void testCallActivity2() throws Exception {
+    @Test
+    public void testCallActivity2() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-CallActivity2.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
-		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 
-		kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-		Map<String, Object> params = new HashMap<>();
-		params.put("x", "oldValue");
-		KogitoProcessInstance processInstance = kruntime.startProcess(
-				"ParentProcess", params);
-		assertProcessInstanceActive(processInstance);
-		assertEquals("new value",
-				((KogitoWorkflowProcessInstance) processInstance).getVariable("y"));
+        Map<String, Object> params = new HashMap<>();
+        params.put("x", "oldValue");
+        KogitoProcessInstance processInstance = kruntime.startProcess(
+                "ParentProcess", params);
+        assertProcessInstanceActive(processInstance);
+        assertEquals("new value",
+                ((KogitoWorkflowProcessInstance) processInstance).getVariable("y"));
 
-		org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
-		assertNotNull(workItem);
-		assertEquals("krisv", workItem.getParameter("ActorId"));
-		kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("krisv", workItem.getParameter("ActorId"));
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
-		assertProcessInstanceFinished(processInstance, kruntime);
-	}
+        assertProcessInstanceFinished(processInstance, kruntime);
+    }
 
     @Test
     public void testCallActivityByName() throws Exception {
@@ -621,12 +614,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInvalidSubProcess() throws Exception {
-    	try {
-    	    kruntime = createKogitoProcessRuntime("BPMN2-SubProcessInvalid.bpmn2");
-    		fail("Process should be invalid, there should be build errors");
-    	} catch (RuntimeException e) {
-    		// there should be build errors
-    	}
+        try {
+            kruntime = createKogitoProcessRuntime("BPMN2-SubProcessInvalid.bpmn2");
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            // there should be build errors
+        }
     }
 
     @Test
@@ -778,16 +771,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcess.bpmn2");
 
         kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
-                                                              new ServiceTaskHandler() {
+                new ServiceTaskHandler() {
 
-                                                                  @Override
-                                                                  public void executeWorkItem( org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-                                                                      assertThat( workItem.getProcessInstance()).isNotNull();
-                                                                      assertThat( workItem.getNodeInstance()).isNotNull();
-                                                                      super.executeWorkItem(workItem, manager);
-                                                                  }
+                    @Override
+                    public void executeWorkItem(org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+                        assertThat(workItem.getProcessInstance()).isNotNull();
+                        assertThat(workItem.getNodeInstance()).isNotNull();
+                        super.executeWorkItem(workItem, manager);
+                    }
 
-                                                              });
+                });
         Map<String, Object> params = new HashMap<>();
         params.put("s", "john");
         KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ServiceProcess", params);
@@ -825,36 +818,36 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testServiceTaskWithCustomTransformation() throws Exception {
-    	DataTransformerRegistry.get().register("http://custom/transformer", new DataTransformer() {
+        DataTransformerRegistry.get().register("http://custom/transformer", new DataTransformer() {
 
-			@Override
-			public Object transform(Object expression, Map<String, Object> parameters) {
-				// support only single object
-				String value = parameters.values().iterator().next().toString();
-				Object result = null;
-				if ("caplitalizeFirst".equals(expression)) {
-					String first = value.substring(0, 1);
-					String main = value.substring(1, value.length());
+            @Override
+            public Object transform(Object expression, Map<String, Object> parameters) {
+                // support only single object
+                String value = parameters.values().iterator().next().toString();
+                Object result = null;
+                if ("caplitalizeFirst".equals(expression)) {
+                    String first = value.substring(0, 1);
+                    String main = value.substring(1, value.length());
 
-					result = first.toUpperCase() + main;
-				} else if ("caplitalizeLast".equals(expression)) {
-					String last = value.substring(value.length()-1);
-					String main = value.substring(0, value.length()-1);
+                    result = first.toUpperCase() + main;
+                } else if ("caplitalizeLast".equals(expression)) {
+                    String last = value.substring(value.length() - 1);
+                    String main = value.substring(0, value.length() - 1);
 
-					result = main + last.toUpperCase();
-				} else {
-					throw new IllegalArgumentException("Unknown expression " + expression);
-				}
-				return result;
-			}
+                    result = main + last.toUpperCase();
+                } else {
+                    throw new IllegalArgumentException("Unknown expression " + expression);
+                }
+                return result;
+            }
 
-			@Override
-			public Object compile(String expression, Map<String, Object> parameters) {
-				// compilation not supported
-				return expression;
-			}
-		});
-    	kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcessWithCustomTransformation.bpmn2");
+            @Override
+            public Object compile(String expression, Map<String, Object> parameters) {
+                // compilation not supported
+                return expression;
+            }
+        });
+        kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcessWithCustomTransformation.bpmn2");
 
         kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
@@ -997,7 +990,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("john");
         kruntime.getKieSession().insert(person);
-        
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
         assertEquals(1, list.size());
@@ -1164,7 +1156,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @SuppressWarnings("unchecked")
-	@Test
+    @Test
     @Disabled("Transfomer has been disabled")
     public void testBusinessRuleTaskWithTransformation() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-RuleTaskWithTransformation.bpmn2",
@@ -1206,7 +1198,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         });
 
-
         Map<String, Object> params = new HashMap<>();
         params.put("x", "oldValue");
         KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
@@ -1214,11 +1205,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         assertEquals(2, instances.size());
         // assert variables of parent process, first in start (input transformation, then on end output transformation)
-        assertEquals("oldValue",((KogitoWorkflowProcessInstance) instances.get(0)).getVariable("x"));
-        assertEquals("NEW VALUE",((KogitoWorkflowProcessInstance) instances.get(0)).getVariable("y"));
+        assertEquals("oldValue", ((KogitoWorkflowProcessInstance) instances.get(0)).getVariable("x"));
+        assertEquals("NEW VALUE", ((KogitoWorkflowProcessInstance) instances.get(0)).getVariable("y"));
         // assert variables of subprocess, first in start (input transformation, then on end output transformation)
         assertEquals("OLDVALUE", ((KogitoWorkflowProcessInstance) instances.get(1)).getVariable("subX"));
-        assertEquals("new value",((KogitoWorkflowProcessInstance) instances.get(1)).getVariable("subY"));
+        assertEquals("new value", ((KogitoWorkflowProcessInstance) instances.get(1)).getVariable("subY"));
     }
 
     @Test
@@ -1233,7 +1224,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 .startProcess("ServiceProcess", params);
         assertProcessInstanceFinished(processInstance, kruntime);
         @SuppressWarnings("unchecked")
-		List<String> result = (List<String>)processInstance.getVariable("list");
+        List<String> result = (List<String>) processInstance.getVariable("list");
         assertEquals(3, result.size());
     }
 
@@ -1260,7 +1251,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @Test
     public void testErrorBetweenProcessesProcess() throws Exception {
         kruntime = createKogitoProcessRuntime("subprocess/ErrorsBetweenProcess-Process.bpmn2",
-        		"subprocess/ErrorsBetweenProcess-SubProcess.bpmn2");
+                "subprocess/ErrorsBetweenProcess-SubProcess.bpmn2");
 
         Map<String, Object> variables = new HashMap<>();
 
@@ -1269,7 +1260,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance = kruntime.startProcess("Principal", variables);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertProcessInstanceAborted(processInstance.getStringId()+1, kruntime);
+        assertProcessInstanceAborted(processInstance.getStringId() + 1, kruntime);
 
         assertProcessVarValue(processInstance, "event", "error desde Subproceso");
     }
@@ -1304,22 +1295,22 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInvalidSubProcessNoOutgoingSF() throws Exception {
-    	try {
-    	    createKogitoProcessRuntime("subprocess/BPMN2-InvalidEmdeddedSubProcess.bpmn2");
-    		fail("Process should be invalid, there should be build errors");
-    	} catch (RuntimeException e) {
-    		// there should be build errors
-    	}
+        try {
+            createKogitoProcessRuntime("subprocess/BPMN2-InvalidEmdeddedSubProcess.bpmn2");
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            // there should be build errors
+        }
     }
 
     @Test
     public void testAdHocSubProcessEmptyCompleteExpression() throws Exception {
         try {
-        	createKogitoProcessRuntime("BPMN2-AdHocSubProcessEmptyCompleteExpression.bpmn2");
-        	fail("Process should be invalid, there should be build errors");
-    	} catch (RuntimeException e) {
-    		// there should be build errors
-    	}
+            createKogitoProcessRuntime("BPMN2-AdHocSubProcessEmptyCompleteExpression.bpmn2");
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            // there should be build errors
+        }
     }
 
     @Test
@@ -1407,7 +1398,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
     }
-    
+
     @Test
     public void testCallActivityWithDataAssignment() throws Exception {
         kruntime = createKogitoProcessRuntime("subprocess/AssignmentProcess.bpmn2", "subprocess/AssignmentSubProcess.bpmn2");
@@ -1418,9 +1409,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance);
         assertEquals("Hello Genworth welcome to jBPMS!", ((KogitoWorkflowProcessInstance) processInstance).getVariable("message"));
     }
-    
+
     @Test
-    public void testDMNBusinessRuleTask()throws Exception {
+    public void testDMNBusinessRuleTask() throws Exception {
         kruntime = createKogitoProcessRuntime(
                 "dmn/BPMN2-BusinessRuleTaskDMN.bpmn2", "dmn/0020-vacation-days.dmn");
 
@@ -1433,7 +1424,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         BigDecimal vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(27), vacationDays);
-        
+
         // second run 44, 20 and expected days is 24
         params = new HashMap<>();
         params.put("age", 44);
@@ -1443,7 +1434,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(24), vacationDays);
-        
+
         // second run 50, 30 and expected days is 30
         params = new HashMap<>();
         params.put("age", 50);
@@ -1457,7 +1448,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Disabled
     @Test
-    public void testDMNBusinessRuleTaskByDecisionName()throws Exception {
+    public void testDMNBusinessRuleTaskByDecisionName() throws Exception {
         kruntime = createKogitoProcessRuntime(
                 "dmn/BPMN2-BusinessRuleTaskDMNByDecisionName.bpmn2", "dmn/0020-vacation-days.dmn");
 
@@ -1474,7 +1465,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Disabled
     @Test
-    public void testDMNBusinessRuleTaskMultipleDecisionsOutput()throws Exception {
+    public void testDMNBusinessRuleTaskMultipleDecisionsOutput() throws Exception {
         kruntime = createKogitoProcessRuntime(
                 "dmn/BPMN2-BusinessRuleTaskDMNMultipleDecisionsOutput.bpmn2", "dmn/0020-vacation-days.dmn");
 
@@ -1493,12 +1484,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Disabled
     @Test
-    public void testDMNBusinessRuleTaskInvalidExecution()throws Exception {
+    public void testDMNBusinessRuleTaskInvalidExecution() throws Exception {
         kruntime = createKogitoProcessRuntime(
                 "dmn/BPMN2-BusinessRuleTaskDMNByDecisionName.bpmn2", "dmn/0020-vacation-days.dmn");
         Map<String, Object> params = new HashMap<>();
-        params.put("age", 16);        
-        
+        params.put("age", 16);
+
         try {
             kruntime.startProcess("BPMN2-BusinessRuleTask", params);
         } catch (Exception e) {
@@ -1510,7 +1501,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Disabled
     @Test
-    public void testDMNBusinessRuleTaskModelById()throws Exception {
+    public void testDMNBusinessRuleTaskModelById() throws Exception {
         kruntime = createKogitoProcessRuntime(
                 "dmn/BPMN2-BusinessRuleTaskDMNModelById.bpmn2", "dmn/0020-vacation-days.dmn");
 
@@ -1523,7 +1514,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         BigDecimal vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(27), vacationDays);
-        
+
         // second run 44, 20 and expected days is 24
         params = new HashMap<>();
         params.put("age", 44);
@@ -1533,7 +1524,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(24), vacationDays);
-        
+
         // second run 50, 30 and expected days is 30
         params = new HashMap<>();
         params.put("age", 50);
@@ -1544,7 +1535,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(30), vacationDays);
     }
-    
+
     @Test
     public void testBusinessRuleTaskFireLimit() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BusinessRuleTaskLoop.bpmn2",
@@ -1552,23 +1543,23 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         kruntime.getKieSession().insert(new Person());
         KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask");
-        
+
         assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
-        assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("Fire rule limit reached 10000");
+        assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage()).contains("Fire rule limit reached 10000");
     }
-    
+
     @Test
     public void testBusinessRuleTaskFireLimitAsParameter() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BusinessRuleTaskWithDataInputLoop.bpmn2",
                 "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
 
         kruntime.getKieSession().insert(new Person());
-        
+
         Map<String, Object> parameters = Collections.singletonMap("limit", 5);
-        
+
         KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", parameters);
         assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
-        assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("Fire rule limit reached 5");        
+        assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage()).contains("Fire rule limit reached 5");
     }
 
     @Disabled
@@ -1586,16 +1577,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params.put("person", person);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask", params);
-        assertEquals("Entry", (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariable("x"));
-        assertNull((( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariable("y"));
+        assertEquals("Entry", ((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance).getVariable("x"));
+        assertNull(((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance).getVariable("y"));
 
         kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals("Exit", getProcessVarValue(processInstance, "y"));
-        assertEquals("tester", (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariable("surname"));
-        
+        assertEquals("tester", ((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance).getVariable("surname"));
+
         assertNodeTriggered(processInstance.getStringId(), "Script1");
     }
-    
+
     @Test
     public void testBusinessRuleTaskException() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BusinessRuleTask.bpmn2",
@@ -1603,12 +1594,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         kruntime.getKieSession().insert(new Person());
         KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask");
-               
+
         assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
-        assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("On purpose");
+        assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage()).contains("On purpose");
     }
 
-    
     @Test
     public void testXORWithSameTargetProcess() throws Exception {
         kruntime = createKogitoProcessRuntime("build/XORSameTarget.bpmn2");
@@ -1617,37 +1607,37 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params.put("choice", 1);
         KogitoProcessInstance processInstance = kruntime.startProcess("XORTest.XOR2", params);
         assertProcessInstanceCompleted(processInstance);
-        
+
         params = new HashMap<>();
         params.put("choice", 2);
         processInstance = kruntime.startProcess("XORTest.XOR2", params);
         assertProcessInstanceCompleted(processInstance);
     }
-    
+
     @Test
     public void testUserTaskWithExpressionsForIO() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-UserTaskWithIOexpression.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("person", new Person("john"));
-        
+
         KogitoProcessInstance processInstance = kruntime.startProcess("UserTask", parameters);
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         assertEquals("john", workItem.getParameter("personName"));
-        
+
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("personAge", 50));
-        
+
         Person person = (Person) processInstance.getVariables().get("person");
         assertEquals(50, person.getAge());
         assertProcessInstanceFinished(processInstance, kruntime);
     }
-    
+
     @Test
     public void testCallActivitykWithExpressionsForIO() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-CallActivityWithIOexpression.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
@@ -1658,7 +1648,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params.put("person", new Person("john"));
         KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
         assertProcessInstanceActive(processInstance);
-        
+
         Person person = (Person) processInstance.getVariables().get("person");
         assertEquals("new value", person.getName());
 
@@ -1669,14 +1659,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         assertProcessInstanceFinished(processInstance, kruntime);
     }
-    
+
     @Test
     @RequirePersistence(false)
     public void testBusinessRuleTaskWithExpressionsForIO() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BusinessRuleTaskWithDataInputIOExpression.bpmn2",
                 "BPMN2-BusinessRuleTaskWithDataInput.drl");
         kruntime.getProcessEventManager().addEventListener(new RuleAwareProcessEventListener());
-        
+
         Map<String, Object> params = new HashMap<>();
         params.put("person", new Person(null));
         params.put("account", new Account());
@@ -1685,11 +1675,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         Person person = (Person) processInstance.getVariables().get("person");
         assertEquals("john", person.getName());
-        
+
         Account account = (Account) processInstance.getVariables().get("account");
         assertNotNull(account.getPerson());
     }
-    
+
     @Test
     public void testUserTaskWithAssignment() throws Exception {
         ProcessDialectRegistry.setDialect("custom", new ProcessDialect() {

@@ -21,7 +21,7 @@ public class ProtoField {
     private String type;
     private String name;
     private int index;
-    
+
     private String comment;
 
     public ProtoField(String applicability, String type, String name, int index) {
@@ -63,6 +63,7 @@ public class ProtoField {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
     @Override
     public String toString() {
         StringBuilder tostring = new StringBuilder();

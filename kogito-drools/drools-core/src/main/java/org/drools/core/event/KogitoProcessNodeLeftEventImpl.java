@@ -26,17 +26,17 @@ public class KogitoProcessNodeLeftEventImpl extends ProcessEvent implements Proc
 
     private NodeInstance nodeInstance;
 
-    public KogitoProcessNodeLeftEventImpl( final NodeInstance nodeInstance, KieRuntime kruntime ) {
-        super( nodeInstance.getProcessInstance(), kruntime );
+    public KogitoProcessNodeLeftEventImpl(final NodeInstance nodeInstance, KieRuntime kruntime) {
+        super(nodeInstance.getProcessInstance(), kruntime);
         this.nodeInstance = nodeInstance;
     }
-    
+
     public NodeInstance getNodeInstance() {
         return nodeInstance;
     }
 
     public String toString() {
-        return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + (( KogitoNodeInstance ) nodeInstance).getStringId()
-            + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
+        return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + ((KogitoNodeInstance) nodeInstance).getStringId()
+                + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }

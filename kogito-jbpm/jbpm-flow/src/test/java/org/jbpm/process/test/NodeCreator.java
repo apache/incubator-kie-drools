@@ -41,8 +41,8 @@ public class NodeCreator<T extends NodeImpl> {
         result.setId(idGen++);
         result.setName(name);
         this.nodeContainer.addNode(result);
-        
-        if( result instanceof WorkItemNode ) { 
+
+        if (result instanceof WorkItemNode) {
             Work work = new WorkImpl();
             ((WorkItemNode) result).setWork(work);
         }
@@ -53,10 +53,9 @@ public class NodeCreator<T extends NodeImpl> {
         this.nodeContainer = newNodeContainer;
     }
 
-    public static void connect( Node nodeOne, Node nodeTwo ) {
+    public static void connect(Node nodeOne, Node nodeTwo) {
         new ConnectionImpl(
                 nodeOne, Node.CONNECTION_DEFAULT_TYPE,
-                nodeTwo, Node.CONNECTION_DEFAULT_TYPE
-        );
+                nodeTwo, Node.CONNECTION_DEFAULT_TYPE);
     }
 }

@@ -25,8 +25,8 @@ import org.jbpm.process.core.datatype.DataType;
  * Representation of an integer datatype.
  */
 public class IntegerDataType
-    implements
-    DataType {
+        implements
+        DataType {
 
     private static final long serialVersionUID = 510l;
 
@@ -37,9 +37,9 @@ public class IntegerDataType
     }
 
     public boolean verifyDataType(final Object value) {
-        if ( value instanceof Integer ) {
+        if (value instanceof Integer) {
             return true;
-        } else if ( value == null ) {
+        } else if (value == null) {
             return true;
         } else {
             return false;

@@ -26,6 +26,7 @@ import org.kie.api.event.process.SignalEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.GroupedNamedDataType;
 import org.kie.kogito.process.Process;
@@ -33,7 +34,6 @@ import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.uow.UnitOfWork;
 import org.mockito.ArgumentCaptor;
@@ -43,12 +43,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class SignalEventTest extends AbstractCodegenTest {
-    
+
     @Test
     public void testIntermediateThrowSignal() throws Exception {
         Application app = generateCode(Collections.singletonMap(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateThrowEventSignal.bpmn2")));
         KogitoProcessEventListener listener = mock(KogitoProcessEventListener.class);
-        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);    
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         assertThat(app).isNotNull();
         Process<? extends Model> p = app.get(Processes.class).processById("SignalIntermediateEvent");
         Model m = p.createModel();
@@ -60,14 +60,14 @@ public class SignalEventTest extends AbstractCodegenTest {
         verify(listener).onSignal(signalEvent.capture());
         assertThat(signalEvent.getValue().getSignalName()).isEqualTo("MySignal");
         assertThat(signalEvent.getValue().getSignal()).isEqualTo("Javierito");
-        
+
     }
-    
+
     @Test
     public void testIntermediateEndSignal() throws Exception {
         Application app = generateCode(Collections.singletonMap(TYPE.PROCESS, Collections.singletonList("signalevent/EndEventSignalWithData.bpmn2")));
-        KogitoProcessEventListener listener = mock( KogitoProcessEventListener.class);
-        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);    
+        KogitoProcessEventListener listener = mock(KogitoProcessEventListener.class);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         assertThat(app).isNotNull();
         Process<? extends Model> p = app.get(Processes.class).processById("src.simpleEndSignal");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
@@ -78,7 +78,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(signalEvent.getValue().getSignalName()).isEqualTo("Signal1");
         assertThat(signalEvent.getValue().getSignal()).isEqualTo("\"Some value\"");
     }
-    
+
     @Test
     public void testIntermediateSignalEventWithData() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
@@ -86,51 +86,51 @@ public class SignalEventTest extends AbstractCodegenTest {
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
-                
+
         Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
-        
+
         Model m = p.createModel();
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
+
         Set<EventDescription<?>> eventDescriptions = processInstance.events();
         assertThat(eventDescriptions)
-            .hasSize(1)
-            .extracting("event").contains("workItemCompleted");
+                .hasSize(1)
+                .extracting("event").contains("workItemCompleted");
         assertThat(eventDescriptions)
-            .extracting("eventType").contains("workItem");
-        assertThat(eventDescriptions)            
-            .extracting("processInstanceId").contains(processInstance.id());
-        
+                .extracting("eventType").contains("workItem");
+        assertThat(eventDescriptions)
+                .extracting("processInstanceId").contains(processInstance.id());
+
         List<WorkItem> workItems = processInstance.workItems();
         assertThat(workItems).hasSize(1);
-        
+
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
+
         eventDescriptions = processInstance.events();
         assertThat(eventDescriptions)
-            .hasSize(1)
-            .extracting("event").contains("MyMessage");
+                .hasSize(1)
+                .extracting("event").contains("MyMessage");
         assertThat(eventDescriptions)
-            .extracting("eventType").contains("signal");
-        assertThat(eventDescriptions)            
-            .extracting("processInstanceId").contains(processInstance.id());
-        
+                .extracting("eventType").contains("signal");
+        assertThat(eventDescriptions)
+                .extracting("processInstanceId").contains(processInstance.id());
+
         processInstance.send(Sig.of("MyMessage", "test"));
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        
-        Model result = (Model)processInstance.variables();
+
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
-                
+
         assertThat(p.instances().size()).isZero();
     }
-    
+
     @Test
     public void testBoundarySignalEventWithData() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
@@ -138,38 +138,38 @@ public class SignalEventTest extends AbstractCodegenTest {
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
-                
+
         Process<? extends Model> p = app.get(Processes.class).processById("BoundarySignalOnTask");
-        
+
         Model m = p.createModel();
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-   
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
+
         Set<EventDescription<?>> eventDescriptions = processInstance.events();
         assertThat(eventDescriptions)
-            .hasSize(2)
-            .extracting("event").contains("MySignal", "workItemCompleted");
+                .hasSize(2)
+                .extracting("event").contains("MySignal", "workItemCompleted");
         assertThat(eventDescriptions)
-            .extracting("eventType").contains("signal", "workItem");
+                .extracting("eventType").contains("signal", "workItem");
         assertThat(eventDescriptions)
-            .extracting("dataType").hasAtLeastOneElementOfType(GroupedNamedDataType.class);
-        assertThat(eventDescriptions)            
-            .extracting("processInstanceId").contains(processInstance.id());
-        
+                .extracting("dataType").hasAtLeastOneElementOfType(GroupedNamedDataType.class);
+        assertThat(eventDescriptions)
+                .extracting("processInstanceId").contains(processInstance.id());
+
         processInstance.send(Sig.of("MySignal", "test"));
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        
-        Model result = (Model)processInstance.variables();
+
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
-        
+
         assertThat(p.instances().size()).isZero();
     }
-    
+
     @Test
     public void testBoundaryInterruptingSignalEventWithData() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
@@ -177,27 +177,27 @@ public class SignalEventTest extends AbstractCodegenTest {
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
-                
+
         Process<? extends Model> p = app.get(Processes.class).processById("BoundarySignalOnTask");
-        
+
         Model m = p.createModel();
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-   
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
+
         processInstance.send(Sig.of("MySignal", "test"));
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        
-        Model result = (Model)processInstance.variables();
+
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
-        
+
         assertThat(p.instances().size()).isZero();
     }
-    
+
     @Test
     public void testIntermediateSignalEventWithDataControlledByUnitOfWork() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
@@ -206,44 +206,44 @@ public class SignalEventTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         // create first unit of work
-        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
-                
+
         Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
-        
+
         Model m = p.createModel();
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
+
         // since unit of work is not ended yet there are no instance added
         assertThat(p.instances().size()).isZero();
         uow.end();
         // after the unit of work is ended process instance shows up in the list
         assertThat(p.instances().size()).isEqualTo(1);
-        
-        uow = app.unitOfWorkManager().newUnitOfWork();                        
+
+        uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
         List<WorkItem> workItems = processInstance.workItems();
         assertThat(workItems).hasSize(1);
-        
+
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
+
         uow.end();
-        
-        uow = app.unitOfWorkManager().newUnitOfWork();                        
+
+        uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
         processInstance.send(Sig.of("MyMessage", "test"));
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        
-        Model result = (Model)processInstance.variables();
+
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
-                
+
         // since the unit of work is not ended yet there is still instance visible
         assertThat(p.instances().size()).isEqualTo(1);
         uow.end();

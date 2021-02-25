@@ -19,6 +19,7 @@ public final class OperationsUtils {
 
     public static final String LABEL_SELECTOR_PARAM = "labelSelector";
 
-    private OperationsUtils() {}
+    private OperationsUtils() {
+    }
 
 }

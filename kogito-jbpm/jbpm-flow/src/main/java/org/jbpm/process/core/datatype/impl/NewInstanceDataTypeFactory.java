@@ -24,7 +24,7 @@ import org.jbpm.process.core.datatype.DataTypeFactory;
 public class NewInstanceDataTypeFactory implements DataTypeFactory {
 
     private static final long serialVersionUID = 510l;
-    
+
     private Class<? extends DataType> dataTypeClass;
 
     public NewInstanceDataTypeFactory(final Class<? extends DataType> dataTypeClass) {

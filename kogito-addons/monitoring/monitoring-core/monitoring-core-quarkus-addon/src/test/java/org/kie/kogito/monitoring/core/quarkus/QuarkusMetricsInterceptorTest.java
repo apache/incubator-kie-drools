@@ -15,19 +15,20 @@
  */
 package org.kie.kogito.monitoring.core.quarkus;
 
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
-import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;

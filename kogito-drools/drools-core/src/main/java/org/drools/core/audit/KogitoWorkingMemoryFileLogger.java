@@ -25,7 +25,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.XStream;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.util.IoUtils;
@@ -33,6 +32,8 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 
@@ -53,13 +54,13 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
 
     public static final int DEFAULT_MAX_EVENTS_IN_MEMORY = 1000;
 
-    private List<LogEvent> events            = new ArrayList<>();
-    private String         fileName          = "event";
-    private int            maxEventsInMemory = DEFAULT_MAX_EVENTS_IN_MEMORY;
-    private int            nbOfFile          = 0;
-    private boolean        split             = true;
-    private boolean        initialized       = false;
-    protected boolean      terminate         = false;
+    private List<LogEvent> events = new ArrayList<>();
+    private String fileName = "event";
+    private int maxEventsInMemory = DEFAULT_MAX_EVENTS_IN_MEMORY;
+    private int nbOfFile = 0;
+    private boolean split = true;
+    private boolean initialized = false;
+    protected boolean terminate = false;
 
     public KogitoWorkingMemoryFileLogger() {
     }
@@ -68,17 +69,17 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
      * Creates a new WorkingMemoryFileLogger for the given working memory.
      */
     public KogitoWorkingMemoryFileLogger(final WorkingMemory workingMemory) {
-        super( workingMemory );
+        super(workingMemory);
     }
 
     public KogitoWorkingMemoryFileLogger(final KieRuntimeEventManager session) {
-        super( session );
+        super(session);
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal( ObjectInput in) throws IOException,
+    public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        super.readExternal( in );
+        super.readExternal(in);
         events = (List<LogEvent>) in.readObject();
         fileName = (String) in.readObject();
         maxEventsInMemory = in.readInt();
@@ -88,15 +89,15 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
         terminate = in.readBoolean();
     }
 
-    public void writeExternal( ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( events );
-        out.writeObject( fileName );
-        out.writeInt( maxEventsInMemory );
-        out.writeInt( nbOfFile );
-        out.writeBoolean( split );
-        out.writeBoolean( initialized );
-        out.writeBoolean( terminate );
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(events);
+        out.writeObject(fileName);
+        out.writeInt(maxEventsInMemory);
+        out.writeInt(nbOfFile);
+        out.writeBoolean(split);
+        out.writeBoolean(initialized);
+        out.writeBoolean(terminate);
     }
 
     /**
@@ -107,7 +108,7 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
      * "mydir/subDir/myLogFile"), or an absolute path (e.g. "C:/myLogFile").
      *
      * @param fileName
-     *            The name of the file the events should be logged in.
+     *        The name of the file the events should be logged in.
      */
     public void setFileName(final String fileName) {
         this.fileName = fileName;
@@ -118,28 +119,28 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
      * cleared afterwards.
      */
     public void writeToDisk() {
-        if ( !initialized ) {
+        if (!initialized) {
             initializeLog();
         }
-        try (FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log" ), true );
-             Writer writer = new OutputStreamWriter( fileOut, IoUtils.UTF8_CHARSET )) {
+        try (FileOutputStream fileOut = new FileOutputStream(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
+                Writer writer = new OutputStreamWriter(fileOut, IoUtils.UTF8_CHARSET)) {
             final XStream xstream = createTrustingXStream();
 
             WorkingMemoryLog log;
-            synchronized ( this.events ) {
+            synchronized (this.events) {
                 log = new WorkingMemoryLog(new ArrayList<>(this.events));
                 clear();
             }
-            writer.write( xstream.toXML( log ) + "\n" );
-        } catch ( final FileNotFoundException exc ) {
-            throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
-        } catch ( final Throwable t ) {
+            writer.write(xstream.toXML(log) + "\n");
+        } catch (final FileNotFoundException exc) {
+            throw new RuntimeException("Could not create the log file.  Please make sure that directory that the log file should be placed in does exist.");
+        } catch (final Throwable t) {
             logger.error("error", t);
         }
-        if ( terminate ) {
+        if (terminate) {
             closeLog();
             terminate = true;
-        } else if ( split ) {
+        } else if (split) {
             closeLog();
             this.nbOfFile++;
             initialized = false;
@@ -147,24 +148,24 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
     }
 
     private void initializeLog() {
-        try (FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), false );
-             Writer writer = new OutputStreamWriter( fileOut, IoUtils.UTF8_CHARSET )) {
-            writer.append( "<object-stream>\n" );
+        try (FileOutputStream fileOut = new FileOutputStream(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), false);
+                Writer writer = new OutputStreamWriter(fileOut, IoUtils.UTF8_CHARSET)) {
+            writer.append("<object-stream>\n");
             initialized = true;
-        } catch ( final FileNotFoundException exc ) {
-            throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
-        } catch ( final Throwable t ) {
+        } catch (final FileNotFoundException exc) {
+            throw new RuntimeException("Could not create the log file.  Please make sure that directory that the log file should be placed in does exist.");
+        } catch (final Throwable t) {
             logger.error("error", t);
         }
     }
 
     private void closeLog() {
-        try (FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
-             Writer writer = new OutputStreamWriter( fileOut, IoUtils.UTF8_CHARSET)) {
-            writer.append( "</object-stream>\n" );
-        } catch ( final FileNotFoundException exc ) {
-            throw new RuntimeException( "Could not close the log file.  Please make sure that directory that the log file should be placed in does exist." );
-        } catch ( final Throwable t ) {
+        try (FileOutputStream fileOut = new FileOutputStream(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
+                Writer writer = new OutputStreamWriter(fileOut, IoUtils.UTF8_CHARSET)) {
+            writer.append("</object-stream>\n");
+        } catch (final FileNotFoundException exc) {
+            throw new RuntimeException("Could not close the log file.  Please make sure that directory that the log file should be placed in does exist.");
+        } catch (final Throwable t) {
             logger.error("error", t);
         }
     }
@@ -173,7 +174,7 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
      * Clears all the events in the log.
      */
     private void clear() {
-        synchronized ( this.events ) {
+        synchronized (this.events) {
             this.events.clear();
         }
     }
@@ -183,16 +184,16 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
      * number is reached, all events are written to file. The default is 1000.
      *
      * @param maxEventsInMemory
-     *            The maximum number of events in memory.
+     *        The maximum number of events in memory.
      */
     public void setMaxEventsInMemory(final int maxEventsInMemory) {
         this.maxEventsInMemory = maxEventsInMemory;
     }
 
     public void logEventCreated(final LogEvent logEvent) {
-        synchronized ( this.events ) {
-            this.events.add( logEvent );
-            if ( this.events.size() > this.maxEventsInMemory ) {
+        synchronized (this.events) {
+            this.events.add(logEvent);
+            if (this.events.size() > this.maxEventsInMemory) {
                 writeToDisk();
             }
         }
@@ -203,7 +204,7 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
     }
 
     public void stop() {
-        if ( !terminate ) {
+        if (!terminate) {
             terminate = true;
             writeToDisk();
         }

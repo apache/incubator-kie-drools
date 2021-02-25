@@ -35,7 +35,7 @@ class PMMLUtilsTest {
         final Map<String, Object> parameters = getParameters();
         final PMMLRequestData retrieved = PMMLUtils.getPMMLRequestData(modelName, parameters);
         assertNotNull(retrieved);
-        assertEquals(modelName,  retrieved.getModelName());
+        assertEquals(modelName, retrieved.getModelName());
         final Map<String, ParameterInfo> parameterInfos = retrieved.getMappedRequestParams();
         assertEquals(parameters.size(), parameterInfos.size());
         parameters.forEach((key, value) -> {

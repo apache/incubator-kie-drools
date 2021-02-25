@@ -17,13 +17,14 @@ package io.quarkus.it.kogito.jbpm;
 
 import java.util.Map;
 
-import io.quarkus.test.QuarkusDevModeTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import io.quarkus.test.QuarkusDevModeTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
@@ -44,13 +45,13 @@ public class HotReloadTest {
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest()
-        .setArchiveProducer(
-            () -> ShrinkWrap
-                .create(JavaArchive.class)
-                .addClass(CalculationService.class)
-                .addClass(Order.class)
-                .addAsResource("text-process.txt", RESOURCE_FILE)
-                .addClass(JbpmHotReloadTestHelper.class));
+            .setArchiveProducer(
+                    () -> ShrinkWrap
+                            .create(JavaArchive.class)
+                            .addClass(CalculationService.class)
+                            .addClass(Order.class)
+                            .addAsResource("text-process.txt", RESOURCE_FILE)
+                            .addClass(JbpmHotReloadTestHelper.class));
 
     @Test
     @SuppressWarnings("unchecked")
@@ -59,58 +60,58 @@ public class HotReloadTest {
         String payload = "{\"mytext\": \"HeLlO\"}";
 
         String id =
-            given()
-                    .baseUri("http://localhost:" + HTTP_TEST_PORT)
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body(payload)
-                .when()
-                    .post("/" + PROCESS_NAME)
-                .then()
-                    .statusCode(201)
-                    .header("Location", notNullValue())
-                    .body("id", notNullValue())
-                .extract()
-                    .path("id");
+                given()
+                        .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .body(payload)
+                        .when()
+                        .post("/" + PROCESS_NAME)
+                        .then()
+                        .statusCode(201)
+                        .header("Location", notNullValue())
+                        .body("id", notNullValue())
+                        .extract()
+                        .path("id");
 
         Map<String, String> result = given()
-                    .baseUri("http://localhost:" + HTTP_TEST_PORT)
-                    .accept(ContentType.JSON)
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .accept(ContentType.JSON)
                 .when()
-                    .get("/" + PROCESS_NAME + "/{id}", id)
+                .get("/" + PROCESS_NAME + "/{id}", id)
                 .then()
-                    .statusCode(200)
+                .statusCode(200)
                 .extract()
-                    .as(Map.class);
+                .as(Map.class);
 
         assertEquals(2, result.size());
         assertEquals("HELLO", result.get("mytext"));
-        
+
         test.modifySourceFile(JbpmHotReloadTestHelper.class, s -> s.replace("toUpperCase", "toLowerCase"));
 
         id = given()
-                    .baseUri("http://localhost:" + HTTP_TEST_PORT)
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body(payload)
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(payload)
                 .when()
-                    .post("/" + PROCESS_NAME)
+                .post("/" + PROCESS_NAME)
                 .then()
-                    .statusCode(201)
-                    .body("id", notNullValue())
-                    .header("Location", notNullValue())
+                .statusCode(201)
+                .body("id", notNullValue())
+                .header("Location", notNullValue())
                 .extract()
-                    .path("id");
+                .path("id");
 
         result = given()
-                    .baseUri("http://localhost:" + HTTP_TEST_PORT)
-                    .accept(ContentType.JSON)
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .accept(ContentType.JSON)
                 .when()
-                    .get("/" + PROCESS_NAME + "/{id}", id)
+                .get("/" + PROCESS_NAME + "/{id}", id)
                 .then()
-                    .statusCode(200)
+                .statusCode(200)
                 .extract()
-                    .as(Map.class);
+                .as(Map.class);
 
         assertEquals(2, result.size());
         assertEquals("hello", result.get("mytext"));

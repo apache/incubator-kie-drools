@@ -60,13 +60,13 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessJobDescription;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
@@ -81,7 +81,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     private JobsService jobService;
     private UnitOfWorkManager unitOfWorkManager;
 
-    private final KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl( this );
+    private final KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl(this);
 
     public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
@@ -187,19 +187,19 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance startProcessFromNodeIds( String s, Map<String, Object> map, String... strings ) {
-        throw new UnsupportedOperationException( "org.jbpm.process.instance.ProcessRuntimeImpl.startProcessFromNodeIds -> TODO" );
+    public ProcessInstance startProcessFromNodeIds(String s, Map<String, Object> map, String... strings) {
+        throw new UnsupportedOperationException("org.jbpm.process.instance.ProcessRuntimeImpl.startProcessFromNodeIds -> TODO");
 
     }
 
     @Override
     public KogitoProcessInstance createProcessInstance(String processId,
-                                                 Map<String, Object> parameters) {
+            Map<String, Object> parameters) {
         return createProcessInstance(processId, null, parameters);
     }
 
     @Override
-    public ProcessInstance startProcessInstance( long l ) {
+    public ProcessInstance startProcessInstance(long l) {
         throw new UnsupportedOperationException();
 
     }
@@ -214,7 +214,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public KogitoProcessInstance createProcessInstance( String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
+    public KogitoProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
         try {
             kruntime.startOperation();
 
@@ -229,14 +229,14 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance startProcessFromNodeIds( String s, CorrelationKey correlationKey, Map<String, Object> map, String... strings ) {
-        throw new UnsupportedOperationException( "org.jbpm.process.instance.ProcessRuntimeImpl.startProcessFromNodeIds -> TODO" );
+    public ProcessInstance startProcessFromNodeIds(String s, CorrelationKey correlationKey, Map<String, Object> map, String... strings) {
+        throw new UnsupportedOperationException("org.jbpm.process.instance.ProcessRuntimeImpl.startProcessFromNodeIds -> TODO");
 
     }
 
     @Override
-    public ProcessInstance getProcessInstance( CorrelationKey correlationKey ) {
-        throw new UnsupportedOperationException( "org.jbpm.process.instance.ProcessRuntimeImpl.getProcessInstance -> TODO" );
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+        throw new UnsupportedOperationException("org.jbpm.process.instance.ProcessRuntimeImpl.getProcessInstance -> TODO");
 
     }
 
@@ -246,9 +246,9 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
             throw new IllegalArgumentException("Illegal process type: " + process.getClass());
         }
         return conf.createProcessInstance(process,
-                                          correlationKey,
-                                          kruntime,
-                                          parameters);
+                correlationKey,
+                kruntime,
+                parameters);
     }
 
     public ProcessInstanceManager getProcessInstanceManager() {
@@ -269,17 +269,17 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance getProcessInstance( long l ) {
+    public ProcessInstance getProcessInstance(long l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance getProcessInstance( long l, boolean b ) {
+    public ProcessInstance getProcessInstance(long l, boolean b) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void abortProcessInstance( long l ) {
+    public void abortProcessInstance(long l) {
         throw new UnsupportedOperationException();
     }
 
@@ -335,9 +335,9 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                                         }
                                     }
                                     StartProcessEventListener listener = new StartProcessEventListener(process.getId(),
-                                                                                                       filters,
-                                                                                                       trigger.getInMappings(),
-                                                                                                       startNode.getEventTransformer());
+                                            filters,
+                                            trigger.getInMappings(),
+                                            startNode.getEventTransformer());
                                     signalManager.addEventListener(type, listener);
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventType", type);
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventListener", listener);
@@ -360,11 +360,11 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                     String ruleName = event.getMatch().getRule().getName();
                     if (ruleName.startsWith("RuleFlowStateNode-")) {
                         int index = ruleName.indexOf('-',
-                                                     18);
+                                18);
                         index = ruleName.indexOf('-',
-                                                 index + 1);
+                                index + 1);
                         String eventType = ruleName.substring(0,
-                                                              index);
+                                index);
 
                         kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(eventType, event));
                     } else if (ruleName.startsWith("RuleFlowStateEventSubProcess-")
@@ -389,7 +389,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
             public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event) {
                 if (kruntime instanceof StatefulKnowledgeSession) {
                     signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName() + "_" + ((StatefulKnowledgeSession) kruntime).getIdentifier(),
-                                              null);
+                            null);
                 } else {
                     signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName(), null);
                 }
@@ -416,7 +416,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     @Override
-    public void signalEvent( String s, Object o, long l ) {
+    public void signalEvent(String s, Object o, long l) {
         throw new UnsupportedOperationException();
     }
 
@@ -509,9 +509,9 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         private EventTransformer eventTransformer;
 
         public StartProcessEventListener(String processId,
-                                         List<EventFilter> eventFilters,
-                                         Map<String, String> inMappings,
-                                         EventTransformer eventTransformer) {
+                List<EventFilter> eventFilters,
+                Map<String, String> inMappings,
+                EventTransformer eventTransformer) {
             this.processId = processId;
             this.eventFilters = eventFilters;
             this.inMappings = inMappings;
@@ -523,10 +523,10 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         }
 
         public void signalEvent(final String type,
-                                Object event) {
+                Object event) {
             for (EventFilter filter : eventFilters) {
                 if (!filter.acceptsEvent(type,
-                                         event)) {
+                        event)) {
                     return;
                 }
             }
@@ -543,10 +543,10 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                     for (Map.Entry<String, String> entry : inMappings.entrySet()) {
                         if ("event".equals(entry.getValue())) {
                             params.put(entry.getKey(),
-                                       event);
+                                    event);
                         } else {
                             params.put(entry.getKey(),
-                                       entry.getValue());
+                                    entry.getValue());
                         }
                     }
                 }
@@ -573,7 +573,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         public Void execute(Context context) {
             KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
             ((ProcessRuntimeImpl) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).startProcess(processId,
-                                                                                                          params, type);
+                    params, type);
 
             return null;
         }

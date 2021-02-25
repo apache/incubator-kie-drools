@@ -17,12 +17,13 @@ package org.kie.kogito.monitoring.core.common.integration;
 
 import java.time.Period;
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.YearsAndMonthsDurationHandler;
+
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -43,14 +44,13 @@ public class YearsAndMonthsDurationHandlerTest extends AbstractQuantilesTest<Yea
     public void givenYearsAndMonthsMetricsWhenMetricsAreStoredThenTheQuantilesAreCorrect() {
         // Arrange
         Period period = Period.ofMonths(12);
-        Double[] quantiles = new Double[]{0.1, 0.25, 0.5, 0.75, 0.9, 0.99};
+        Double[] quantiles = new Double[] { 0.1, 0.25, 0.5, 0.75, 0.9, 0.99 };
 
         // Act
         handler.record("decision", ENDPOINT_NAME, period);
 
         // Assert
         assertTrue(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX)
-                           .summary().mean() >= 5);
+                .summary().mean() >= 5);
     }
 }
-

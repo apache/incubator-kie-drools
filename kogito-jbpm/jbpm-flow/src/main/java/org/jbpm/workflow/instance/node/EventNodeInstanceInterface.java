@@ -17,6 +17,6 @@ package org.jbpm.workflow.instance.node;
 
 public interface EventNodeInstanceInterface {
 
-	void signalEvent(String type, Object event);
-	
+    void signalEvent(String type, Object event);
+
 }

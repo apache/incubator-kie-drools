@@ -32,10 +32,10 @@ public class AnnotatedRuleUnitCompilerTest extends AbstractCodegenTest {
 
         AnnotatedRules adults = new AnnotatedRules();
 
-        adults.getPersons().add(new Person( "Mario", 45 ));
-        adults.getPersons().add(new Person( "Marilena", 47 ));
+        adults.getPersons().add(new Person("Mario", 45));
+        adults.getPersons().add(new Person("Marilena", 47));
 
-        Person sofia = new Person( "Sofia", 7 );
+        Person sofia = new Person("Sofia", 7);
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
         RuleUnit<AnnotatedRules> unit = application.get(RuleUnits.class).create(AnnotatedRules.class);

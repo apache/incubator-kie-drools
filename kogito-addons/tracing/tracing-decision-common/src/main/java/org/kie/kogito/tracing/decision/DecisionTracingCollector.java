@@ -56,8 +56,7 @@ public class DecisionTracingCollector {
             Consumer<String> payloadConsumer,
             BiFunction<String, String, DMNModel> modelSupplier,
             Supplier<TerminationDetector> terminationDetectorSupplier,
-            ConfigBean configBean
-    ) {
+            ConfigBean configBean) {
         this.cacheMap = new ConcurrentHashMap<>();
         this.terminationDetectorMap = new ConcurrentHashMap<>();
         this.aggregator = aggregator;

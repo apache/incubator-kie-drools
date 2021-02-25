@@ -20,7 +20,7 @@ public class PersonWithAddress {
     private String name;
     private int age;
     private boolean adult;
-    
+
     private Address address;
 
     public PersonWithAddress(String name, int age) {

@@ -33,36 +33,36 @@ import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.units.impl.DataHandleImpl;
 
 public class ListDataStore<T> implements DataStore<T>,
-                                         InternalStoreCallback {
+        InternalStoreCallback {
     private final Map<Object, DataHandle> store = new IdentityHashMap<>();
 
     private final List<EntryPointDataProcessor> entryPointSubscribers = new ArrayList<>();
     private final List<DataProcessor<T>> subscribers = new ArrayList<>();
 
     public DataHandle add(T t) {
-        DataHandle dh = new DataHandleImpl( t );
+        DataHandle dh = new DataHandleImpl(t);
         store.put(t, dh);
-        entryPointSubscribers.forEach( s -> internalInsert( dh, s ) );
-        subscribers.forEach( s -> internalInsert( dh, s ) );
+        entryPointSubscribers.forEach(s -> internalInsert(dh, s));
+        subscribers.forEach(s -> internalInsert(dh, s));
         return dh;
     }
 
     @Override
     public void update(DataHandle handle, T object) {
-        entryPointSubscribers.forEach( s -> s.update( handle, handle.getObject() ) );
-        subscribers.forEach( s -> s.update( handle, object ) );
+        entryPointSubscribers.forEach(s -> s.update(handle, handle.getObject()));
+        subscribers.forEach(s -> s.update(handle, object));
     }
 
     @Override
     public void remove(Object object) {
-        remove( store.get(object) );
+        remove(store.get(object));
     }
 
     @Override
     public void remove(DataHandle handle) {
-        entryPointSubscribers.forEach( s -> s.delete( handle ) );
-        subscribers.forEach( s -> s.delete( handle ) );
-        store.remove( handle.getObject() );
+        entryPointSubscribers.forEach(s -> s.delete(handle));
+        subscribers.forEach(s -> s.delete(handle));
+        store.remove(handle.getObject());
     }
 
     @Override
@@ -73,29 +73,29 @@ public class ListDataStore<T> implements DataStore<T>,
         } else {
             subscribers.add(processor);
         }
-        store.values().forEach( dh -> internalInsert( dh, processor ) );
+        store.values().forEach(dh -> internalInsert(dh, processor));
     }
 
     @Override
-    public void update( KogitoInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        DataHandle dh = ((KogitoInternalFactHandle)fh).getDataHandle();
-        entryPointSubscribers.forEach( s -> s.update( dh, obj, mask, modifiedClass, activation ) );
-        subscribers.forEach( s -> s.update(dh, (T) obj) );
+    public void update(KogitoInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        DataHandle dh = ((KogitoInternalFactHandle) fh).getDataHandle();
+        entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
+        subscribers.forEach(s -> s.update(dh, (T) obj));
     }
 
     @Override
-    public void delete( KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        DataHandle dh = ((KogitoInternalFactHandle)fh).getDataHandle();
-        entryPointSubscribers.forEach( s -> s.delete( dh, rule, terminalNode, fhState ) );
-        subscribers.forEach( s -> s.delete(dh) );
-        store.remove( fh.getObject() );
+    public void delete(KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
+        DataHandle dh = ((KogitoInternalFactHandle) fh).getDataHandle();
+        entryPointSubscribers.forEach(s -> s.delete(dh, rule, terminalNode, fhState));
+        subscribers.forEach(s -> s.delete(dh));
+        store.remove(fh.getObject());
     }
 
-    private void internalInsert( DataHandle dh, DataProcessor s ) {
-        FactHandle fh = s.insert( dh, dh.getObject() );
+    private void internalInsert(DataHandle dh, DataProcessor s) {
+        FactHandle fh = s.insert(dh, dh.getObject());
         if (fh != null) {
-            (( KogitoInternalFactHandle ) fh).setDataStore( this );
-            (( KogitoInternalFactHandle ) fh).setDataHandle( dh );
+            ((KogitoInternalFactHandle) fh).setDataStore(this);
+            ((KogitoInternalFactHandle) fh).setDataHandle(dh);
         }
     }
 }

@@ -60,6 +60,9 @@
     <quarkus.logging.manager>org.jboss.logmanager.LogManager</quarkus.logging.manager>
     <tests.surefire.include>**/*Test.java</tests.surefire.include>
     <tests.failsafe.include>**/*IT.java</tests.failsafe.include>
+    <formatter.skip>false</formatter.skip>
+    <formatter.goal>format</formatter.goal>
+    <impsort.goal>sort</impsort.goal>
     <version.jdk>11</version.jdk>
 
     <!-- plugin versions -->
@@ -86,6 +89,8 @@
     <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
     <version.javancss.plugin>2.0</version.javancss.plugin>
     <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
+    <version.formatter.plugin>2.13.0</version.formatter.plugin>
+    <version.impsort.plugin>1.5.0</version.impsort.plugin>
     <version.license.plugin>4.0.rc2</version.license.plugin>
     <version.archetype.plugin>3.0.1</version.archetype.plugin>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
@@ -1284,6 +1289,51 @@ limitations under the License.
           </dependencies>
         </plugin>
         <plugin>
+          <groupId>net.revelc.code.formatter</groupId>
+          <artifactId>formatter-maven-plugin</artifactId>
+          <version>${version.formatter.plugin}</version>
+          <dependencies>
+            <dependency>
+              <artifactId>kogito-ide-config</artifactId>
+              <groupId>org.kie.kogito</groupId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <configFile>eclipse-format.xml</configFile>
+            <lineEnding>LF</lineEnding>
+            <skip>${formatter.skip}</skip>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>${formatter.goal}</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>net.revelc.code</groupId>
+          <artifactId>impsort-maven-plugin</artifactId>
+          <version>${version.impsort.plugin}</version>
+          <configuration>
+            <!-- keep in sync with kogito-ide-config/src/main/resources/eclipse.importorder -->
+            <groups>java.,javax.,org.,com.</groups>
+            <staticGroups>*</staticGroups>
+            <staticAfter>true</staticAfter>
+            <!-- keep in sync with the formatter-maven-plugin -->
+            <skip>${formatter.skip}</skip>
+            <removeUnused>true</removeUnused>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>${impsort.goal}</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${version.javadoc.plugin}</version>
@@ -1381,6 +1431,14 @@ limitations under the License.
 
     <plugins>
       <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>net.revelc.code</groupId>
+        <artifactId>impsort-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
         <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -1466,6 +1524,20 @@ limitations under the License.
       </build>
     </profile>
 
+    <profile>
+      <!-- Fail the build if code does not follow the standards. -->
+      <id>validate-formatting</id>
+      <activation>
+        <property>
+          <name>validate-formatting</name>
+        </property>
+      </activation>
+      <properties>
+        <formatter.skip>false</formatter.skip>
+        <formatter.goal>validate</formatter.goal>
+        <impsort.goal>check</impsort.goal>
+      </properties>
+    </profile>
     <!--
       Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
     -->

@@ -41,7 +41,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
     }
 
     @Override
-    public void internalTrigger( KogitoNodeInstance from, String type) {
+    public void internalTrigger(KogitoNodeInstance from, String type) {
         super.internalTrigger(from, type);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(

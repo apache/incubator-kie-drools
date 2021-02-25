@@ -20,6 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.template.InvalidTemplateException;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.core.AbstractApplicationSection;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -36,10 +41,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.UnknownType;
-import org.kie.kogito.codegen.core.AbstractApplicationSection;
-import org.kie.kogito.codegen.api.template.InvalidTemplateException;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -75,11 +76,11 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
                 .addArgument("application");
         MethodCallExpr expr = new MethodCallExpr(newProcess, "configure");
         MethodCallExpr method = new MethodCallExpr(new NameExpr("mappedProcesses"), "computeIfAbsent",
-                                                   nodeList(new StringLiteralExpr(r.processId()), 
-                                                            new LambdaExpr(new Parameter(new UnknownType(), "k"), expr)));
+                nodeList(new StringLiteralExpr(r.processId()),
+                        new LambdaExpr(new Parameter(new UnknownType(), "k"), expr)));
         IfStmt byProcessId = new IfStmt(new MethodCallExpr(new StringLiteralExpr(r.processId()), "equals", nodeList(new NameExpr("processId"))),
-                                        new ReturnStmt(method),
-                                        null);
+                new ReturnStmt(method),
+                null);
 
         byProcessIdBody.addStatement(byProcessId);
     }

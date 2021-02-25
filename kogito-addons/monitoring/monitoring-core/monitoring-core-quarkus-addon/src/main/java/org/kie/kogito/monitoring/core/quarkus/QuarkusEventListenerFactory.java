@@ -17,17 +17,16 @@ package org.kie.kogito.monitoring.core.quarkus;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
-import javax.ws.rs.ext.Provider;
 
-import io.quarkus.arc.properties.IfBuildProperty;
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.kogito.monitoring.core.common.Constants;
 import org.kie.kogito.monitoring.core.common.process.MonitoringProcessEventListenerConfig;
 import org.kie.kogito.monitoring.core.common.rule.RuleMetricsListenerConfig;
-import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.quarkus.arc.properties.IfBuildProperty;
 
 @Dependent
 public class QuarkusEventListenerFactory {

@@ -26,10 +26,10 @@ public class KogitoProcessVariableChangedEventImpl extends ProcessVariableChange
 
     private KogitoNodeInstance nodeInstance;
 
-    public KogitoProcessVariableChangedEventImpl( final String id, final String instanceId,
-                                                  final Object oldValue, final Object newValue, List<String> tags,
-                                                  final ProcessInstance processInstance, KogitoNodeInstance nodeInstance, KieRuntime kruntime ) {
-        super( id, instanceId, oldValue, newValue, tags, processInstance, kruntime );
+    public KogitoProcessVariableChangedEventImpl(final String id, final String instanceId,
+            final Object oldValue, final Object newValue, List<String> tags,
+            final ProcessInstance processInstance, KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
+        super(id, instanceId, oldValue, newValue, tags, processInstance, kruntime);
         this.nodeInstance = nodeInstance;
     }
 

@@ -21,12 +21,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import org.drools.core.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -37,6 +31,13 @@ import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.api.di.impl.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.pmml.commons.model.KiePMMLModel;
+
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -92,7 +93,7 @@ class PMMLRestResourceGeneratorTest {
         return clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface " +
-                                                                      "declaration!"));
+                        "declaration!"));
     }
 
     @Test
@@ -167,7 +168,7 @@ class PMMLRestResourceGeneratorTest {
         pmmlRestResourceGenerator.setPredictionModelName(TEMPLATE);
         assertTrue(modelName.getVariable(0).getInitializer().isPresent());
         assertEquals(KIE_PMML_MODEL.getName(),
-                     modelName.getVariable(0).getInitializer().get().asStringLiteralExpr().asString());
+                modelName.getVariable(0).getInitializer().get().asStringLiteralExpr().asString());
     }
 
     @Test
@@ -176,31 +177,31 @@ class PMMLRestResourceGeneratorTest {
                 getClassOrInterfaceDeclaration(QuarkusKogitoBuildContext.builder().build());
         KogitoBuildContext quarkusContext = QuarkusKogitoBuildContext.builder().build();
         PMMLRestResourceGenerator quarkusPMMLRestResourceGenerator = new PMMLRestResourceGenerator(quarkusContext,
-                                                                                                   KIE_PMML_MODEL,
-                                                                                                   APP_CANONICAL_NAME);
+                KIE_PMML_MODEL,
+                APP_CANONICAL_NAME);
         NodeList<AnnotationExpr> annotations = quarkusTemplate.getMethodsByName("result").get(0)
                 .getAnnotations();
         quarkusPMMLRestResourceGenerator.setQuarkusOASAnnotations(annotations, INPUT_REF, RESULT_REF);
         String retrieved = quarkusTemplate.toString();
         String expected = String.format("@%1$s(%2$s = @org.eclipse.microprofile.openapi.annotations.media.Content" +
-                                                "(mediaType = \"application/json\", " +
-                                                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
-                                        QUARKUS_REQUEST_BODY,
-                                        CONTENT,
-                                        SCHEMA,
-                                        QUARKUS_SCHEMA,
-                                        REF,
-                                        INPUT_REF);
+                "(mediaType = \"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
+                QUARKUS_REQUEST_BODY,
+                CONTENT,
+                SCHEMA,
+                QUARKUS_SCHEMA,
+                REF,
+                INPUT_REF);
         assertTrue(retrieved.contains(expected));
         expected = String.format("@%1$s(%2$s = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType " +
-                                         "= \"application/json\", " +
-                                         "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML result\")",
-                                 QUARKUS_API_RESPONSE,
-                                 CONTENT,
-                                 SCHEMA,
-                                 QUARKUS_SCHEMA,
-                                 REF,
-                                 RESULT_REF);
+                "= \"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML result\")",
+                QUARKUS_API_RESPONSE,
+                CONTENT,
+                SCHEMA,
+                QUARKUS_SCHEMA,
+                REF,
+                RESULT_REF);
         assertTrue(retrieved.contains(expected));
     }
 
@@ -210,31 +211,31 @@ class PMMLRestResourceGeneratorTest {
                 getClassOrInterfaceDeclaration(QuarkusKogitoBuildContext.builder().build());
         KogitoBuildContext quarkusContext = QuarkusKogitoBuildContext.builder().build();
         PMMLRestResourceGenerator quarkusPMMLRestResourceGenerator = new PMMLRestResourceGenerator(quarkusContext,
-                                                                                                   KIE_PMML_MODEL,
-                                                                                                   APP_CANONICAL_NAME);
+                KIE_PMML_MODEL,
+                APP_CANONICAL_NAME);
         NodeList<AnnotationExpr> annotations = quarkusTemplate.getMethodsByName("descriptive").get(0)
                 .getAnnotations();
         quarkusPMMLRestResourceGenerator.setQuarkusOASAnnotations(annotations, INPUT_REF, OUTPUT_REF);
         String retrieved = quarkusTemplate.toString();
         String expected = String.format("@%1$s(%2$s = @org.eclipse.microprofile.openapi.annotations.media.Content" +
-                                                "(mediaType = \"application/json\", " +
-                                                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
-                                        QUARKUS_REQUEST_BODY,
-                                        CONTENT,
-                                        SCHEMA,
-                                        QUARKUS_SCHEMA,
-                                        REF,
-                                        INPUT_REF);
+                "(mediaType = \"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
+                QUARKUS_REQUEST_BODY,
+                CONTENT,
+                SCHEMA,
+                QUARKUS_SCHEMA,
+                REF,
+                INPUT_REF);
         assertTrue(retrieved.contains(expected));
         expected = String.format("@%1$s(%2$s = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType " +
-                                         "= \"application/json\", " +
-                                         "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML full output\")",
-                                 QUARKUS_API_RESPONSE,
-                                 CONTENT,
-                                 SCHEMA,
-                                 QUARKUS_SCHEMA,
-                                 REF,
-                                 OUTPUT_REF);
+                "= \"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML full output\")",
+                QUARKUS_API_RESPONSE,
+                CONTENT,
+                SCHEMA,
+                QUARKUS_SCHEMA,
+                REF,
+                OUTPUT_REF);
         assertTrue(retrieved.contains(expected));
     }
 
@@ -244,31 +245,31 @@ class PMMLRestResourceGeneratorTest {
                 getClassOrInterfaceDeclaration(SpringBootKogitoBuildContext.builder().build());
         KogitoBuildContext springContext = SpringBootKogitoBuildContext.builder().build();
         PMMLRestResourceGenerator springPMMLRestResourceGenerator = new PMMLRestResourceGenerator(springContext,
-                                                                                                  KIE_PMML_MODEL,
-                                                                                                  APP_CANONICAL_NAME);
+                KIE_PMML_MODEL,
+                APP_CANONICAL_NAME);
         NodeList<AnnotationExpr> annotations = springTemplate.getMethodsByName("result").get(0)
                 .getAnnotations();
         springPMMLRestResourceGenerator.setSpringOASAnnotations(annotations, INPUT_REF, RESULT_REF);
         String retrieved = springTemplate.toString();
         String expected = String.format("@%1$s(%2$s = @io.swagger.v3.oas.annotations.media.Content(mediaType = " +
-                                                "\"application/json\", " +
-                                                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
-                                        SPRING_REQUEST_BODY,
-                                        CONTENT,
-                                        SCHEMA,
-                                        SPRING_SCHEMA,
-                                        REF,
-                                        INPUT_REF);
+                "\"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
+                SPRING_REQUEST_BODY,
+                CONTENT,
+                SCHEMA,
+                SPRING_SCHEMA,
+                REF,
+                INPUT_REF);
         assertTrue(retrieved.contains(expected));
         expected = String.format("@%1$s(%2$s = @io.swagger.v3.oas.annotations.media.Content(mediaType = " +
-                                         "\"application/json\", " +
-                                         "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML result\")",
-                                 SPRING_API_RESPONSE,
-                                 CONTENT,
-                                 SCHEMA,
-                                 SPRING_SCHEMA,
-                                 REF,
-                                 RESULT_REF);
+                "\"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML result\")",
+                SPRING_API_RESPONSE,
+                CONTENT,
+                SCHEMA,
+                SPRING_SCHEMA,
+                REF,
+                RESULT_REF);
         assertTrue(retrieved.contains(expected));
     }
 
@@ -278,31 +279,31 @@ class PMMLRestResourceGeneratorTest {
                 getClassOrInterfaceDeclaration(SpringBootKogitoBuildContext.builder().build());
         KogitoBuildContext springContext = SpringBootKogitoBuildContext.builder().build();
         PMMLRestResourceGenerator springPMMLRestResourceGenerator = new PMMLRestResourceGenerator(springContext,
-                                                                                                  KIE_PMML_MODEL,
-                                                                                                  APP_CANONICAL_NAME);
+                KIE_PMML_MODEL,
+                APP_CANONICAL_NAME);
         NodeList<AnnotationExpr> annotations = springTemplate.getMethodsByName("descriptive").get(0)
                 .getAnnotations();
         springPMMLRestResourceGenerator.setSpringOASAnnotations(annotations, INPUT_REF, OUTPUT_REF);
         String retrieved = springTemplate.toString();
         String expected = String.format("@%1$s(%2$s = @io.swagger.v3.oas.annotations.media.Content(mediaType = " +
-                                                "\"application/json\", " +
-                                                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
-                                        SPRING_REQUEST_BODY,
-                                        CONTENT,
-                                        SCHEMA,
-                                        SPRING_SCHEMA,
-                                        REF,
-                                        INPUT_REF);
+                "\"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML input\")",
+                SPRING_REQUEST_BODY,
+                CONTENT,
+                SCHEMA,
+                SPRING_SCHEMA,
+                REF,
+                INPUT_REF);
         assertTrue(retrieved.contains(expected));
         expected = String.format("@%1$s(%2$s = @io.swagger.v3.oas.annotations.media.Content(mediaType = " +
-                                         "\"application/json\", " +
-                                         "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML full output\")",
-                                 SPRING_API_RESPONSE,
-                                 CONTENT,
-                                 SCHEMA,
-                                 SPRING_SCHEMA,
-                                 REF,
-                                 OUTPUT_REF);
+                "\"application/json\", " +
+                "%3$s = @%4$s(%5$s = \"%6$s\")), description = \"PMML full output\")",
+                SPRING_API_RESPONSE,
+                CONTENT,
+                SCHEMA,
+                SPRING_SCHEMA,
+                REF,
+                OUTPUT_REF);
         assertTrue(retrieved.contains(expected));
     }
 

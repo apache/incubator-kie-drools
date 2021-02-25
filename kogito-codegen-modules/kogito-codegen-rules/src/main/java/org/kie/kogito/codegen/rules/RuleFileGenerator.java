@@ -26,11 +26,15 @@ public interface RuleFileGenerator {
 
     default GeneratedFile generateFile(GeneratedFileType fileType) {
         return new GeneratedFile(fileType,
-                                 generatedFilePath(),
-                                 generate());
+                generatedFilePath(),
+                generate());
     }
 
-    default boolean validate() { return true; }
+    default boolean validate() {
+        return true;
+    }
 
-    default DroolsError getError() { return null; }
+    default DroolsError getError() {
+        return null;
+    }
 }

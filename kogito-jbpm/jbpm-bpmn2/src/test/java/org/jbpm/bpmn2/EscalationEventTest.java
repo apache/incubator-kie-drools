@@ -59,7 +59,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         }
 
     };
-    
+
     @Test
     public void testEventSubprocessEscalation() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EventSubprocessEscalation.bpmn2");
@@ -70,7 +70,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName()
                         .equals("Script Task 1")) {
-                    executednodes.add( (( KogitoNodeInstance ) event.getNodeInstance()).getStringId());
+                    executednodes.add(((KogitoNodeInstance) event.getNodeInstance()).getStringId());
                 }
             }
 
@@ -101,7 +101,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance = kruntime.startProcess("EscalationBoundaryEvent");
         assertProcessInstanceCompleted(processInstance);
     }
-    
+
     @Test
     public void testEscalationBoundaryEventInterrupting() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
@@ -110,9 +110,9 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance = kruntime.startProcess("EscalationBoundaryEvent");
         assertProcessInstanceCompleted(processInstance);
     }
-    
+
     @Test
-    @Disabled( "Escalation does not cancel work items yet.")
+    @Disabled("Escalation does not cancel work items yet.")
     // TODO: make escalation interrupt tasks -- or look more closely at the spec to make sure that's the case? 
     public void testEscalationBoundaryEventInterruptsTask() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
@@ -120,7 +120,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().registerWorkItemHandler("MyTask", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("EscalationBoundaryEvent");
         assertProcessInstanceCompleted(processInstance);
-        
+
         // Check for cancellation of task
         assertEquals(KogitoWorkItem.ABORTED, handler.getWorkItem().getState(), "WorkItem was not cancelled!");
     }
@@ -130,8 +130,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-IntermediateThrowEventEscalation.bpmn2");
         KogitoProcessInstance processInstance = kruntime.startProcess("EscalationIntermediateThrowEvent");
         assertProcessInstanceAborted(processInstance);
-    } 
-    
+    }
 
     @Test
     @Disabled("General escalation is not yet supported.")
@@ -142,7 +141,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        
+
         Map<String, Object> params = new HashMap<>();
         params.put("x", "0");
         KogitoProcessInstance processInstance = kruntime.startProcess("non-interrupting-escalation", params);
@@ -152,7 +151,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         // Did escalation fire? 
         assertProcessVarValue(processInstance, "x", "1");
     }
-    
+
     @Test
     public void testInterruptingEscalationBoundaryEventOnTask() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationBoundaryEventOnTaskInterrupting.bpmn2");
@@ -173,7 +172,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
     }
-    
+
     @Test
     @Disabled("Non interrupting escalation has not yet been implemented.")
     // TODO: implement non-interrupting escalation
@@ -196,21 +195,21 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
 
         // end event after task triggers escalation 
         kruntime.getWorkItemManager().completeWorkItem(johnsWork.getStringId(), null);
-        
+
         // escalation should have run.. 
-        
+
         // should finish process
         kruntime.getWorkItemManager().completeWorkItem(marysWork.getStringId(), null);
         assertProcessInstanceCompleted(processInstance);
     }
-    
+
     @Test
     public void testEscalationEndEventProcess() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationEndEvent.bpmn2");
         KogitoProcessInstance processInstance = kruntime.startProcess("EscalationEndEvent");
         assertProcessInstanceAborted(processInstance.getStringId(), kruntime);
     }
-    
+
     @Test
     public void testEscalationBoundaryEventAndIntermediate() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationWithDataMapping.bpmn2");
@@ -220,7 +219,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance);
         assertProcessVarValue(processInstance, "Property_3", "java.lang.RuntimeException");
     }
-    
+
     @Test
     public void testHandledEscalationEndEventProcess() throws Exception {
         kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationEndEventHandling.bpmn2");

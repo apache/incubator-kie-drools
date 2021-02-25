@@ -39,19 +39,19 @@ public class WidMVELEvaluator {
 
     public static Object eval(final String expression) {
         ExpressionCompiler compiler = new ExpressionCompiler(getRevisedExpression(expression),
-                                                             WID_PARSER_CONTEXT);
+                WID_PARSER_CONTEXT);
 
-        if(KiePolicyHelper.isPolicyEnabled()) {
+        if (KiePolicyHelper.isPolicyEnabled()) {
             return AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
                 public Object run() {
                     return MVEL.executeExpression(compiler.compile(),
-                                                  new HashMap());
+                            new HashMap());
                 }
             }, KiePolicyHelper.getAccessContext());
         } else {
             return MVEL.executeExpression(compiler.compile(),
-                                          new HashMap());
+                    new HashMap());
         }
     }
 
@@ -60,9 +60,7 @@ public class WidMVELEvaluator {
             return expression;
         }
         return expression.replaceAll("import org\\.drools\\.core\\.process\\.core\\.datatype\\.impl\\.type\\.*([^;])*;",
-                                     "").
-                replaceAll("import org\\.jbpm\\.process\\.core\\.datatype\\.impl\\.type\\.*([^;])*;",
-                           "");
+                "").replaceAll("import org\\.jbpm\\.process\\.core\\.datatype\\.impl\\.type\\.*([^;])*;",
+                        "");
     }
 }
-

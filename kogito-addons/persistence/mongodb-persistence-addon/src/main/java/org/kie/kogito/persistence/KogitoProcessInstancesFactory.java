@@ -15,10 +15,11 @@
  */
 package org.kie.kogito.persistence;
 
-import com.mongodb.client.MongoClient;
 import org.kie.kogito.mongodb.MongoDBProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
+
+import com.mongodb.client.MongoClient;
 
 /**
  * This class must always have exact FQCN as

@@ -17,8 +17,9 @@ package org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers;
 
 import java.time.Duration;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 public class DaysAndTimeDurationHandler extends TypeHandlerWithSummary<Duration> {
 

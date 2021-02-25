@@ -28,7 +28,7 @@ public abstract class AbstractRuleUnits implements RuleUnits {
     private Map<String, RuleUnitInstance<?>> unitRegistry = new HashMap<>();
 
     @Override
-    public <T extends RuleUnitData> RuleUnit<T> create( Class<T> clazz) {
+    public <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz) {
         return (RuleUnit<T>) create(clazz.getCanonicalName());
     }
 
@@ -36,11 +36,11 @@ public abstract class AbstractRuleUnits implements RuleUnits {
 
     @Override
     public void register(String name, RuleUnitInstance<?> unitInstance) {
-        unitRegistry.put( name, unitInstance );
+        unitRegistry.put(name, unitInstance);
     }
 
     @Override
-    public RuleUnitInstance<?> getRegisteredInstance( String name ) {
+    public RuleUnitInstance<?> getRegisteredInstance(String name) {
         return unitRegistry.get(name);
     }
 }

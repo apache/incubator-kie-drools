@@ -33,21 +33,21 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.kie.kogito.Model;
+import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
+import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
+import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.kie.kogito.Model;
-import org.kie.kogito.UserTask;
-import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
-import org.kie.kogito.process.ProcessInstancesFactory;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 
@@ -55,15 +55,15 @@ import static java.util.Arrays.asList;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
 
 @Mojo(name = "process-model-classes",
-      requiresDependencyResolution = ResolutionScope.RUNTIME,
-      requiresProject = true,
-      defaultPhase = LifecyclePhase.PROCESS_CLASSES,
-      threadSafe = true)
+        requiresDependencyResolution = ResolutionScope.RUNTIME,
+        requiresProject = true,
+        defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+        threadSafe = true)
 public class ProcessClassesMojo extends AbstractKieMojo {
-        
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8");
 
-    @Parameter(property = "kogito.jsonSchema.version", required=false)
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler(JavaConfiguration.CompilerType.NATIVE, "1.8");
+
+    @Parameter(property = "kogito.jsonSchema.version", required = false)
     private String schemaVersion;
 
     @Override
@@ -71,7 +71,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
         try {
             JavaCompilerSettings settings = new JavaCompilerSettings();
             List<URL> pathUrls = new ArrayList<>();
-            for(String path: project.getRuntimeClasspathElements()) {
+            for (String path : project.getRuntimeClasspathElements()) {
                 pathUrls.add(new File(path).toURI().toURL());
                 settings.addClasspath(path);
             }
@@ -85,7 +85,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 builder.addClassLoader(cl);
 
                 Reflections reflections = new Reflections(builder);
-                @SuppressWarnings({"rawtype", "unchecked"})
+                @SuppressWarnings({ "rawtype", "unchecked" })
                 Set<Class<?>> modelClasses = (Set) reflections.getSubTypesOf(Model.class);
 
                 // collect constructor parameters so the generated class can create constructor with injection
@@ -94,7 +94,6 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder()
                         .withPersistenceClass(persistenceClass)
                         .build(modelClasses);
-
 
                 KogitoBuildContext context = discoverKogitoRuntimeContext(cl);
 

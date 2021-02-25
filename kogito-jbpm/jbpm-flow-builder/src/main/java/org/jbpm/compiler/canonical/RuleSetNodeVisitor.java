@@ -17,19 +17,6 @@ package org.jbpm.compiler.canonical;
 
 import java.text.MessageFormat;
 
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.UnknownType;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
@@ -46,6 +33,20 @@ import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.UnknownType;
 
 import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_DECISION;
 import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_PARAMETER;
@@ -111,8 +112,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
         StringLiteralExpr namespace = new StringLiteralExpr(ruleType.getNamespace());
         StringLiteralExpr model = new StringLiteralExpr(ruleType.getModel());
-        Expression decision = ruleType.getDecision() == null ?
-                new NullLiteralExpr() : new StringLiteralExpr(ruleType.getDecision());
+        Expression decision = ruleType.getDecision() == null ? new NullLiteralExpr() : new StringLiteralExpr(ruleType.getDecision());
 
         // app.get(org.kie.kogito.decision.DecisionModels.class).getDecisionModel(namespace, model)
         MethodCallExpr decisionModels =
@@ -176,7 +176,6 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         // build supplier for rule runtime
         BlockStmt actionBody = new BlockStmt();
         LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
-
 
         // app.config().get(org.kie.kogito.rules.RuleConfig.class)
         MethodCallExpr ruleConfig = new MethodCallExpr(

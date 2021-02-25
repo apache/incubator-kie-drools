@@ -21,43 +21,43 @@ import org.jbpm.process.core.datatype.DataType;
 
 public class DataStore implements Serializable {
 
-	private static final long serialVersionUID = 4L;
-	
-	private String id;
-	private String name;
-	private DataType type;
-	private String itemSubjectRef;
-	
-	public void setId(String id) {
-		this.id = id;
-	}
+    private static final long serialVersionUID = 4L;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private String id;
+    private String name;
+    private DataType type;
+    private String itemSubjectRef;
 
-	public void setType(DataType dataType) {
-		this.type = dataType;
-	}
-	
-	public String getId() {
-		return this.id;
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public DataType getType() {
-		return this.type;
-	}
-	
-	public void setItemSubjectRef(String itemSubjectRef) {
-		this.itemSubjectRef = itemSubjectRef;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getItemSubjectRef() {
-		return this.itemSubjectRef;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(DataType dataType) {
+        this.type = dataType;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public DataType getType() {
+        return this.type;
+    }
+
+    public void setItemSubjectRef(String itemSubjectRef) {
+        this.itemSubjectRef = itemSubjectRef;
+    }
+
+    public String getItemSubjectRef() {
+        return this.itemSubjectRef;
+    }
 
 }

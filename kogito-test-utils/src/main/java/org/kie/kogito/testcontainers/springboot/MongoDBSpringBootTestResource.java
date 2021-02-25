@@ -26,8 +26,8 @@ public class MongoDBSpringBootTestResource extends ConditionalSpringBootTestReso
 
     public static final String MONGODB_CONNECTION_PROPERTY = "spring.data.mongodb.uri";
 
-    private static final  KogitoMongoDBContainer container = new KogitoMongoDBContainer();
-    
+    private static final KogitoMongoDBContainer container = new KogitoMongoDBContainer();
+
     public MongoDBSpringBootTestResource() {
         super(container);
     }

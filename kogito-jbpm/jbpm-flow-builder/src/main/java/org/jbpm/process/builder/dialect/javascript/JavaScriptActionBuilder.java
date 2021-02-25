@@ -28,12 +28,12 @@ public class JavaScriptActionBuilder implements ActionBuilder {
     }
 
     public void build(final PackageBuildContext context,
-                      final DroolsAction action,
-                      final ActionDescr actionDescr,
-                      final ContextResolver contextResolver) {
+            final DroolsAction action,
+            final ActionDescr actionDescr,
+            final ContextResolver contextResolver) {
         String text = actionDescr.getText();
         JavaScriptAction expr = new JavaScriptAction(text);
-        action.setMetaData("Action",  expr );
+        action.setMetaData("Action", expr);
     }
 
 }

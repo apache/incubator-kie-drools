@@ -27,17 +27,17 @@ public class JoinNodeHandler extends AbstractNodeHandler {
         return new Join();
     }
 
-    public void handleNode( final Node node, final Element element, final String uri,
-                            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         Join joinNode = (Join) node;
         String type = element.getAttribute("type");
-        if (type != null && type.length() != 0 ) {
+        if (type != null && type.length() != 0) {
             joinNode.setType(new Integer(type));
         }
         String n = element.getAttribute("n");
-        if (n != null && n.length() != 0 ) {
+        if (n != null && n.length() != 0) {
             joinNode.setN(n);
         }
     }
@@ -46,26 +46,26 @@ public class JoinNodeHandler extends AbstractNodeHandler {
         return Join.class;
     }
 
-	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
-		Join joinNode = (Join) node;
-		writeNode("join", joinNode, xmlDump, includeMeta);
+    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+        Join joinNode = (Join) node;
+        writeNode("join", joinNode, xmlDump, includeMeta);
         int type = joinNode.getType();
         if (type != 0) {
             xmlDump.append("type=\"" + type + "\" ");
         }
         if (type == Join.TYPE_N_OF_M) {
-        	String n = joinNode.getN();
-	        if (n != null && n.length() != 0) {
-	            xmlDump.append("n=\"" + n + "\" ");
-	        }
+            String n = joinNode.getN();
+            if (n != null && n.length() != 0) {
+                xmlDump.append("n=\"" + n + "\" ");
+            }
         }
         if (includeMeta && containsMetaData(joinNode)) {
-        	xmlDump.append(">" + EOL);
-        	writeMetaData(joinNode, xmlDump);
-        	endNode("join", xmlDump);
+            xmlDump.append(">" + EOL);
+            writeMetaData(joinNode, xmlDump);
+            endNode("join", xmlDump);
         } else {
             endNode(xmlDump);
         }
-	}
+    }
 
 }

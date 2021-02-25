@@ -68,7 +68,6 @@ public class SplitFactory extends NodeFactory {
         return this;
     }
 
-
     public SplitFactory constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
         ReturnValueConstraintEvaluator constraintImpl = new ReturnValueConstraintEvaluator();
         constraintImpl.setName(name);

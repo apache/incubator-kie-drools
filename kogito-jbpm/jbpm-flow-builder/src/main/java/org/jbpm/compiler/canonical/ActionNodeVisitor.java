@@ -17,12 +17,6 @@ package org.jbpm.compiler.canonical;
 
 import java.util.List;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.UnknownType;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -32,6 +26,13 @@ import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
+
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.UnknownType;
 
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_SCOPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
@@ -67,8 +68,8 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
             LambdaExpr lambda = TriggerMetaData.buildLambdaExpr(node, metadata);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, TriggerMetaData.buildAction((String)node.getMetaData(REF),
-                (String)node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, TriggerMetaData.buildAction((String) node.getMetaData(REF),
+                    (String) node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
         } else {
             String consequence = getActionConsequence(node.getAction());
             if (consequence == null || consequence.trim().isEmpty()) {
@@ -86,8 +87,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
 
             LambdaExpr lambda = new LambdaExpr(
                     new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
-                    actionBody
-            );
+                    actionBody);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         }
         visitMetaData(node.getMetaData(), body, getNodeId(node));

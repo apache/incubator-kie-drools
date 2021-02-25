@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -31,8 +32,8 @@ import org.kie.api.runtime.Globals;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Externalizable {
-    
-    private static final long   serialVersionUID = 630l;
+
+    private static final long serialVersionUID = 630l;
 
     private String expr;
 
@@ -48,16 +49,16 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF( expr );
+        out.writeUTF(expr);
     }
 
     public Object evaluate(KogitoProcessContext context) throws Exception {
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
-        
+
         // insert globals into context
         Globals globals = context.getKieRuntime().getGlobals();
-        
+
         if (globals != null && globals.getGlobalKeys() != null) {
             for (String gKey : globals.getGlobalKeys()) {
                 engine.put(gKey, globals.get(gKey));
@@ -67,11 +68,11 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
         engine.put("kcontext", context);
         if (context.getProcessInstance() != null && context.getProcessInstance().getProcess() != null) {
             // insert process variables
-            VariableScopeInstance variableScope = (VariableScopeInstance) ((WorkflowProcessInstance)context.getProcessInstance())
+            VariableScopeInstance variableScope = (VariableScopeInstance) ((WorkflowProcessInstance) context.getProcessInstance())
                     .getContextInstance(VariableScope.VARIABLE_SCOPE);
-    
+
             Map<String, Object> variables = variableScope.getVariables();
-            if (variables != null ) {
+            if (variables != null) {
                 for (Entry<String, Object> variable : variables.entrySet()) {
                     engine.put(variable.getKey(), variable.getValue());
                 }
@@ -80,17 +81,17 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
 
         Object value = engine.eval(expr);
 
-        if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException( "Constraints must return boolean values: " + 
-        		expr + " returns " + value + 
-        		(value == null? "" : " (type=" + value.getClass()));
+        if (!(value instanceof Boolean)) {
+            throw new RuntimeException("Constraints must return boolean values: " +
+                    expr + " returns " + value +
+                    (value == null ? "" : " (type=" + value.getClass()));
         }
-        
+
         return ((Boolean) value).booleanValue();
     }
 
     public String toString() {
         return this.expr;
-    }    
+    }
 
 }

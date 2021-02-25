@@ -31,48 +31,50 @@ import org.kie.api.runtime.rule.RuleRuntime;
 
 public class StaticComponentsSupplier implements ComponentsSupplier {
 
-    public ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider) {
+    public ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         return StaticProjectClassLoader.create(parent, resourceProvider);
     }
 
     @Override
-    public ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
+    public ByteArrayClassLoader createByteArrayClassLoader(ClassLoader parent) {
         return new DummyByteArrayClassLoader();
     }
 
     public static class DummyByteArrayClassLoader implements ByteArrayClassLoader {
         @Override
-        public Class< ? > defineClass(final String name,
-                                      final byte[] bytes,
-                                      final ProtectionDomain domain) {
+        public Class<?> defineClass(final String name,
+                final byte[] bytes,
+                final ProtectionDomain domain) {
             throw new UnsupportedOperationException(
                     "The artifact drools-core-static does not support this operation, try using drools-core-dynamic instead.");
         }
     }
 
     @Override
-    public Object createConsequenceExceptionHandler( String className, ClassLoader classLoader ) {
+    public Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
         return new StaticConsequenceExceptionHandler();
     }
 
     @Override
-    public Object createTimerService( String className ) {
-        return StaticServiceRegistry.INSTANCE.newInstance( "TimerService" );
+    public Object createTimerService(String className) {
+        return StaticServiceRegistry.INSTANCE.newInstance("TimerService");
     }
 
     public static class StaticConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {
 
         @Override
-        public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException { }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        }
 
         @Override
-        public void writeExternal( ObjectOutput out) throws IOException { }
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
 
         @Override
-        public void handleException( Match activation,
-                                     RuleRuntime workingMemory,
-                                     Exception exception) {
-            throw new org.kie.api.runtime.rule.ConsequenceException(exception, workingMemory, activation );
+        public void handleException(Match activation,
+                RuleRuntime workingMemory,
+                Exception exception) {
+            throw new org.kie.api.runtime.rule.ConsequenceException(exception, workingMemory, activation);
         }
     }
 }

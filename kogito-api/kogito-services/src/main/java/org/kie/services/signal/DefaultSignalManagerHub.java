@@ -24,9 +24,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 
-
 public class DefaultSignalManagerHub implements SignalManagerHub {
-    
+
     private ConcurrentHashMap<String, Set<SignalManager>> signalManagers = new ConcurrentHashMap<>();
 
     @Override
@@ -35,10 +34,10 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
         for (SignalManager sm : list) {
             sm.signalEvent(type, signalData);
         }
-        
+
         if (signalData instanceof ProcessInstance) {
             list = signalManagers.getOrDefault(((ProcessInstance) signalData).getProcessId(), Collections.emptySet());
-            
+
             for (SignalManager sm : list) {
                 sm.signalEvent(type, signalData);
             }
@@ -48,7 +47,7 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
     @Override
     public void publishTargeting(String id, String type, Object signalData) {
         signalManagers.getOrDefault(type, Collections.emptySet())
-            .forEach(e -> e.signalEvent(id, type, signalData));
+                .forEach(e -> e.signalEvent(id, type, signalData));
     }
 
     @Override

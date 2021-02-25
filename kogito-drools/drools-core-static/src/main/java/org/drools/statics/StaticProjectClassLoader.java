@@ -29,8 +29,8 @@ public class StaticProjectClassLoader extends ProjectClassLoader {
 
     private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
 
-    protected StaticProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider) {
-        super( parent, resourceProvider );
+    protected StaticProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
+        super(parent, resourceProvider);
     }
 
     @Override
@@ -48,7 +48,8 @@ public class StaticProjectClassLoader extends ProjectClassLoader {
             Method m = null;
             try {
                 m = parent.getClass().getMethod("findResources", String.class);
-            } catch (NoSuchMethodException e) { }
+            } catch (NoSuchMethodException e) {
+            }
             parentImplementsFindResources = m != null && m.getDeclaringClass() == parent.getClass();
         }
 
@@ -60,7 +61,7 @@ public class StaticProjectClassLoader extends ProjectClassLoader {
         }
     }
 
-    public static StaticProjectClassLoader create( ClassLoader parent, ResourceProvider resourceProvider) {
+    public static StaticProjectClassLoader create(ClassLoader parent, ResourceProvider resourceProvider) {
         return isIBM_JVM ? new IBMStaticClassLoader(parent, resourceProvider) : new StaticProjectClassLoader(parent, resourceProvider);
     }
 
@@ -73,40 +74,40 @@ public class StaticProjectClassLoader extends ProjectClassLoader {
 
         private final ProjectClassLoader projectClassLoader;
 
-        private DummyInternalTypesClassLoader( ProjectClassLoader projectClassLoader ) {
-            super( projectClassLoader.getParent() );
+        private DummyInternalTypesClassLoader(ProjectClassLoader projectClassLoader) {
+            super(projectClassLoader.getParent());
             this.projectClassLoader = projectClassLoader;
         }
 
-        public Class<?> defineClass( String name, byte[] bytecode ) {
+        public Class<?> defineClass(String name, byte[] bytecode) {
             throw new UnsupportedOperationException();
         }
 
-        protected Class<?> loadClass( String name, boolean resolve ) throws ClassNotFoundException {
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             try {
-                return loadType( name, resolve );
+                return loadType(name, resolve);
             } catch (ClassNotFoundException cnfe) {
-                return projectClassLoader.internalLoadClass( name, resolve );
+                return projectClassLoader.internalLoadClass(name, resolve);
             }
         }
 
-        public Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException {
-            return super.loadClass( name, resolve );
+        public Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
+            return super.loadClass(name, resolve);
         }
 
         @Override
-        public URL getResource( String name ) {
-            return projectClassLoader.getResource( name );
+        public URL getResource(String name) {
+            return projectClassLoader.getResource(name);
         }
 
         @Override
-        public InputStream getResourceAsStream( String name) {
-            return projectClassLoader.getResourceAsStream( name );
+        public InputStream getResourceAsStream(String name) {
+            return projectClassLoader.getResourceAsStream(name);
         }
 
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
-            return projectClassLoader.getResources( name );
+            return projectClassLoader.getResources(name);
         }
     }
 }

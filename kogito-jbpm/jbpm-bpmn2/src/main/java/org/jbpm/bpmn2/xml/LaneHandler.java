@@ -34,56 +34,55 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class LaneHandler extends BaseAbstractHandler implements Handler {
-	
+
     public static final String LANES = "BPMN.Lanes";
 
-	@SuppressWarnings("unchecked")
-	public LaneHandler() {
-		if ((this.validParents == null) && (this.validPeers == null)) {
-			this.validParents = new HashSet();
-			this.validParents.add(RuleFlowProcess.class);
+    @SuppressWarnings("unchecked")
+    public LaneHandler() {
+        if ((this.validParents == null) && (this.validPeers == null)) {
+            this.validParents = new HashSet();
+            this.validParents.add(RuleFlowProcess.class);
 
-			this.validPeers = new HashSet();
-	        this.validPeers.add(null);
-	        this.validPeers.add(Lane.class);
-	        this.validPeers.add(Variable.class);
-	        this.validPeers.add( Node.class);
-	        this.validPeers.add(SequenceFlow.class);
-	        this.validPeers.add(Lane.class);
-	        this.validPeers.add(Association.class);
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
+            this.validPeers.add(Lane.class);
+            this.validPeers.add(Variable.class);
+            this.validPeers.add(Node.class);
+            this.validPeers.add(SequenceFlow.class);
+            this.validPeers.add(Lane.class);
+            this.validPeers.add(Association.class);
 
-			this.allowNesting = false;
-		}
-	}
+            this.allowNesting = false;
+        }
+    }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public Object start(final String uri, final String localName,
-			            final Attributes attrs, final ExtensibleXmlParser parser)
-			throws SAXException {
-		parser.startElementBuilder(localName, attrs);
+            final Attributes attrs, final ExtensibleXmlParser parser)
+            throws SAXException {
+        parser.startElementBuilder(localName, attrs);
 
-		String id = attrs.getValue("id");
-		String name = attrs.getValue("name");
-		
-		WorkflowProcess process = (WorkflowProcess) parser.getParent();
-        
-		List<Lane> lanes = (List<Lane>)
-            ((RuleFlowProcess) process).getMetaData(LaneHandler.LANES);          
+        String id = attrs.getValue("id");
+        String name = attrs.getValue("name");
+
+        WorkflowProcess process = (WorkflowProcess) parser.getParent();
+
+        List<Lane> lanes = (List<Lane>) ((RuleFlowProcess) process).getMetaData(LaneHandler.LANES);
         if (lanes == null) {
             lanes = new ArrayList<Lane>();
             ((RuleFlowProcess) process).setMetaData(LaneHandler.LANES, lanes);
         }
-        Lane lane = new Lane(id); 
+        Lane lane = new Lane(id);
         lane.setName(name);
         lanes.add(lane);
-		return lane;
-	}
+        return lane;
+    }
 
-	public Object end(final String uri, final String localName,
-			          final ExtensibleXmlParser parser) throws SAXException {
+    public Object end(final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Lane lane = (Lane) parser.getCurrent();
-        
+
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -96,8 +95,8 @@ public class LaneHandler extends BaseAbstractHandler implements Handler {
         return lane;
     }
 
-	public Class<?> generateNodeFor() {
-		return Lane.class;
-	}
+    public Class<?> generateNodeFor() {
+        return Lane.class;
+    }
 
 }

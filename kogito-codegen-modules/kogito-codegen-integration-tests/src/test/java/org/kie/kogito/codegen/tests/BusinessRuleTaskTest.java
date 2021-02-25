@@ -32,12 +32,12 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Account;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.rules.RuleConfig;
 import org.kie.kogito.uow.UnitOfWork;
 
@@ -62,7 +62,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
     }
@@ -92,7 +92,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
 
@@ -112,7 +112,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                startedProcesses.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
+                startedProcesses.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
 
         });
@@ -128,7 +128,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
 
@@ -206,7 +206,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
                     .isEqualTo(BigDecimal.valueOf(30));
         }
     }
-    
+
     @Test
     public void testBusinessRuleTaskWithIOExpression() throws Exception {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
@@ -227,10 +227,10 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKeys("person", "account");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
         assertThat(result.toMap().get("account")).isNotNull();
-        assertThat(((Account)result.toMap().get("account")).getPerson()).isNotNull();
+        assertThat(((Account) result.toMap().get("account")).getPerson()).isNotNull();
     }
 }

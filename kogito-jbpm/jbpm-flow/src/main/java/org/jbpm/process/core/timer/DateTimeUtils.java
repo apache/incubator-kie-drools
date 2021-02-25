@@ -127,11 +127,11 @@ public class DateTimeUtils extends TimeUtils {
             if (index != -1) {
                 String period = dateTimeStr.substring(index + 3);
                 String delay = dateTimeStr.substring(0, index);
-                result = new long[]{TimeUtils.parseTimeString(delay), TimeUtils.parseTimeString(period)};
+                result = new long[] { TimeUtils.parseTimeString(delay), TimeUtils.parseTimeString(period) };
 
                 return result;
             }
-            result = new long[]{TimeUtils.parseTimeString(dateTimeStr)};
+            result = new long[] { TimeUtils.parseTimeString(dateTimeStr) };
             return result;
         }
     }

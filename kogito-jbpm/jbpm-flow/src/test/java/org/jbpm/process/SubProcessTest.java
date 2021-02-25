@@ -30,15 +30,15 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SubProcessTest extends AbstractBaseTest  {
-    
-    public void addLogger() { 
+public class SubProcessTest extends AbstractBaseTest {
+
+    public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
     }
-  
-	@Test
+
+    @Test
     public void testNonExistentSubProcess() {
-	    String nonExistentSubProcessName = "nonexistent.process";
+        String nonExistentSubProcessName = "nonexistent.process";
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.process");
         process.setName("Process");
@@ -52,23 +52,23 @@ public class SubProcessTest extends AbstractBaseTest  {
         EndNode endNode = new EndNode();
         endNode.setName("End");
         endNode.setId(3);
-        
+
         connect(startNode, subProcessNode);
         connect(subProcessNode, endNode);
-        
-        process.addNode( startNode );
-        process.addNode( subProcessNode );
-        process.addNode( endNode );
+
+        process.addNode(startNode);
+        process.addNode(subProcessNode);
+        process.addNode(endNode);
 
         KieSession ksession = createKieSession(process);
-        
+
         ProcessInstance pi = ksession.startProcess("org.drools.core.process.process");
-        assertEquals( KogitoProcessInstance.STATE_ERROR, pi.getState());
+        assertEquals(KogitoProcessInstance.STATE_ERROR, pi.getState());
     }
-    
-	private void connect( Node sourceNode, Node targetNode) {
-		new ConnectionImpl(sourceNode, Node.CONNECTION_DEFAULT_TYPE,
-				           targetNode, Node.CONNECTION_DEFAULT_TYPE);
-	}
+
+    private void connect(Node sourceNode, Node targetNode) {
+        new ConnectionImpl(sourceNode, Node.CONNECTION_DEFAULT_TYPE,
+                targetNode, Node.CONNECTION_DEFAULT_TYPE);
+    }
 
 }

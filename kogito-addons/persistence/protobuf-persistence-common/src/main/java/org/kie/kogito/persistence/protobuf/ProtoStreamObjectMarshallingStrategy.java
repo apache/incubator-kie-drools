@@ -39,33 +39,33 @@ import org.kie.kogito.persistence.protobuf.marshallers.LongMessageMarshaller;
 import org.kie.kogito.persistence.protobuf.marshallers.StringMessageMarshaller;
 
 public class ProtoStreamObjectMarshallingStrategy implements KogitoObjectMarshallingStrategy {
-    
+
     private SerializationContext serializationContext;
     private Map<String, Class<?>> typeToClassMapping = new ConcurrentHashMap<>();
-    
-    public ProtoStreamObjectMarshallingStrategy(String proto, BaseMarshaller<?>...marshallers) {
-        serializationContext = new SerializationContextImpl(Configuration.builder().build());        
-        
+
+    public ProtoStreamObjectMarshallingStrategy(String proto, BaseMarshaller<?>... marshallers) {
+        serializationContext = new SerializationContextImpl(Configuration.builder().build());
+
         try {
             serializationContext.registerProtoFiles(FileDescriptorSource.fromResources("kogito-types.proto"));
             registerMarshaller(new StringMessageMarshaller(),
-                                new IntegerMessageMarshaller(),
-                                new LongMessageMarshaller(),
-                                new DoubleMessageMarshaller(),
-                                new FloatMessageMarshaller(),
-                                new BooleanMessageMarshaller(),
-                                new DateMessageMarshaller());
-            
+                    new IntegerMessageMarshaller(),
+                    new LongMessageMarshaller(),
+                    new DoubleMessageMarshaller(),
+                    new FloatMessageMarshaller(),
+                    new BooleanMessageMarshaller(),
+                    new DateMessageMarshaller());
+
             if (proto != null) {
                 serializationContext.registerProtoFiles(FileDescriptorSource.fromString(UUID.randomUUID().toString(), proto));
-                                
+
                 registerMarshaller(marshallers);
-                
+
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
     }
 
     @Override
@@ -76,16 +76,15 @@ public class ProtoStreamObjectMarshallingStrategy implements KogitoObjectMarshal
         return serializationContext.canMarshall(object.getClass());
     }
 
-
     @Override
-    public byte[] marshal( Context context, ObjectOutputStream os, Object object) throws IOException {
+    public byte[] marshal(Context context, ObjectOutputStream os, Object object) throws IOException {
         return ProtobufUtil.toByteArray(serializationContext, object);
-                
+
     }
 
     @Override
     public Object unmarshal(String dataType, Context context, ObjectInputStream is, byte[] object, ClassLoader classloader) throws IOException, ClassNotFoundException {
-        
+
         return ProtobufUtil.fromByteArray(serializationContext, object, serializationContext.getMarshaller(dataType).getJavaClass());
     }
 
@@ -97,19 +96,18 @@ public class ProtoStreamObjectMarshallingStrategy implements KogitoObjectMarshal
         }
         return marshaller.getTypeName();
     }
-    
+
     public void registerMarshaller(BaseMarshaller<?>... marshallers) {
         for (BaseMarshaller<?> marshaller : marshallers) {
             serializationContext.registerMarshaller(marshaller);
-            
+
             typeToClassMapping.putIfAbsent(marshaller.getTypeName(), marshaller.getJavaClass());
         }
     }
 
     /*
      * Not used methods
-     */    
-
+     */
 
     @Override
     public Context createContext() {

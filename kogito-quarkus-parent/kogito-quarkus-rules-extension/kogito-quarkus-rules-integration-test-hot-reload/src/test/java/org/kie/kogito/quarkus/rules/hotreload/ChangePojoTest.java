@@ -18,14 +18,15 @@ package org.kie.kogito.quarkus.rules.hotreload;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.kogito.quarkus.rules.hotreload.newunit.Person;
-import io.quarkus.test.QuarkusDevModeTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kie.kogito.quarkus.rules.hotreload.newunit.Person;
+
+import io.quarkus.test.QuarkusDevModeTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,13 +39,13 @@ public class ChangePojoTest {
     }
 
     private static final String PACKAGE = "org.kie.kogito.quarkus.rules.hotreload";
-    private static final String RESOURCE_FILE = PACKAGE.replace( '.', '/' ) + "/adult.drl";
+    private static final String RESOURCE_FILE = PACKAGE.replace('.', '/') + "/adult.drl";
     private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
             () -> ShrinkWrap.create(JavaArchive.class)
-                    .addClass( Person.class )
+                    .addClass(Person.class)
                     .addAsResource("drl1.txt", RESOURCE_FILE));
 
     @Test
@@ -63,7 +64,7 @@ public class ChangePojoTest {
 
         List<Map> persons = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)
-                .contentType( ContentType.JSON)
+                .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(personsPayload1)
                 .when()
@@ -76,26 +77,26 @@ public class ChangePojoTest {
         assertEquals(1, persons.size());
         assertEquals("Mario", persons.get(0).get("name"));
 
-        test.modifySourceFile( Person.class, s -> POJO2 );
+        test.modifySourceFile(Person.class, s -> POJO2);
 
         if (!allChangesAtOnce) {
             persons = given()
-                    .baseUri( "http://localhost:" + HTTP_TEST_PORT )
-                    .contentType( ContentType.JSON )
-                    .accept( ContentType.JSON )
-                    .body( personsPayload2 )
+                    .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                    .contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .body(personsPayload2)
                     .when()
-                    .post( "/find-adults" )
+                    .post("/find-adults")
                     .then()
-                    .statusCode( 200 )
+                    .statusCode(200)
                     .extract()
-                    .as( List.class );
+                    .as(List.class);
 
-            assertEquals( 1, persons.size() );
-            assertEquals( "Mario", persons.get( 0 ).get( "name" ) );
+            assertEquals(1, persons.size());
+            assertEquals("Mario", persons.get(0).get("name"));
         }
 
-        test.modifyResourceFile( RESOURCE_FILE, s -> DRL2 );
+        test.modifyResourceFile(RESOURCE_FILE, s -> DRL2);
 
         persons = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -105,91 +106,90 @@ public class ChangePojoTest {
                 .post("/find-adults")
                 .then()
                 .statusCode(200)
-                .extract().
-                        as(List.class);
+                .extract().as(List.class);
 
         assertEquals(2, persons.size());
-        assertTrue( persons.stream().map(p -> p.get("name")).allMatch( n -> n.equals( "Mario" ) || n.equals( "Sofia" ) ) );
+        assertTrue(persons.stream().map(p -> p.get("name")).allMatch(n -> n.equals("Mario") || n.equals("Sofia")));
     }
 
     private static String POJO2 =
             "package org.kie.kogito.quarkus.rules.hotreload.newunit;\n" +
-            "\n" +
-            "public class Person {\n" +
-            "\n" +
-            "    private String name;\n" +
-            "    private String surname;\n" +
-            "\n" +
-            "    private int age;\n" +
-            "\n" +
-            "    private boolean adult;\n" +
-            "\n" +
-            "    public Person() {\n" +
-            "    }\n" +
-            "\n" +
-            "    public String getName() {\n" +
-            "        return name;\n" +
-            "    }\n" +
-            "\n" +
-            "    public void setName(String name) {\n" +
-            "        this.name = name;\n" +
-            "    }\n" +
-            "\n" +
-            "    public String getSurname() {\n" +
-            "        return surname;\n" +
-            "    }\n" +
-            "\n" +
-            "    public void setSurname( String surname ) {\n" +
-            "        this.surname = surname;\n" +
-            "    }\n" +
-            "\n" +
-            "    public int getAge() {\n" +
-            "        return age;\n" +
-            "    }\n" +
-            "\n" +
-            "    public void setAge(int age) {\n" +
-            "        this.age = age;\n" +
-            "    }\n" +
-            "\n" +
-            "    public boolean isAdult() {\n" +
-            "        return adult;\n" +
-            "    }\n" +
-            "\n" +
-            "    public void setAdult(boolean adult) {\n" +
-            "        this.adult = adult;\n" +
-            "    }\n" +
-            "\n" +
-            "}\n";
+                    "\n" +
+                    "public class Person {\n" +
+                    "\n" +
+                    "    private String name;\n" +
+                    "    private String surname;\n" +
+                    "\n" +
+                    "    private int age;\n" +
+                    "\n" +
+                    "    private boolean adult;\n" +
+                    "\n" +
+                    "    public Person() {\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public String getName() {\n" +
+                    "        return name;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void setName(String name) {\n" +
+                    "        this.name = name;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public String getSurname() {\n" +
+                    "        return surname;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void setSurname( String surname ) {\n" +
+                    "        this.surname = surname;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public int getAge() {\n" +
+                    "        return age;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void setAge(int age) {\n" +
+                    "        this.age = age;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public boolean isAdult() {\n" +
+                    "        return adult;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    public void setAdult(boolean adult) {\n" +
+                    "        this.adult = adult;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "}\n";
 
     private static String DRL2 =
             "package io.quarkus.it.kogito.drools;\n" +
-            "unit AdultUnit;\n" +
-            "\n" +
-            "import org.kie.kogito.quarkus.rules.hotreload.newunit.Person;\n" +
-            "\n" +
-            "import org.kie.kogito.rules.DataStore;\n" +
-            "import org.kie.kogito.rules.RuleUnitData;\n" +
-            "\n" +
-            "declare AdultUnit extends RuleUnitData\n" +
-            "   persons: DataStore<Person>\n" +
-            "end\n" +
-            "\n" +
-            "rule CheckAdult when\n" +
-            "    $p: /persons[ age >= 16, surname == \"Fusco\" ]\n" +
-            "then\n" +
-            "    modify($p) { setAdult(true) };\n" +
-            "end\n" +
-            "\n" +
-            "rule CheckNotAdult when\n" +
-            "    $p: /persons[ age < 16, surname == \"Fusco\" ]\n" +
-            "then\n" +
-            "    modify($p) { setAdult(false) };\n" +
-            "end\n" +
-            "\n" +
-            "query FindAdultNames\n" +
-            "    /persons[ adult, $name : name ]\n" +
-            "end\n" +
-            "query FindAdults\n" +
-            "    $p: /persons[ adult ]\n" +
-            "end\n";
+                    "unit AdultUnit;\n" +
+                    "\n" +
+                    "import org.kie.kogito.quarkus.rules.hotreload.newunit.Person;\n" +
+                    "\n" +
+                    "import org.kie.kogito.rules.DataStore;\n" +
+                    "import org.kie.kogito.rules.RuleUnitData;\n" +
+                    "\n" +
+                    "declare AdultUnit extends RuleUnitData\n" +
+                    "   persons: DataStore<Person>\n" +
+                    "end\n" +
+                    "\n" +
+                    "rule CheckAdult when\n" +
+                    "    $p: /persons[ age >= 16, surname == \"Fusco\" ]\n" +
+                    "then\n" +
+                    "    modify($p) { setAdult(true) };\n" +
+                    "end\n" +
+                    "\n" +
+                    "rule CheckNotAdult when\n" +
+                    "    $p: /persons[ age < 16, surname == \"Fusco\" ]\n" +
+                    "then\n" +
+                    "    modify($p) { setAdult(false) };\n" +
+                    "end\n" +
+                    "\n" +
+                    "query FindAdultNames\n" +
+                    "    /persons[ adult, $name : name ]\n" +
+                    "end\n" +
+                    "query FindAdults\n" +
+                    "    $p: /persons[ adult ]\n" +
+                    "end\n";
 }

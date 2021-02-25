@@ -20,10 +20,10 @@ import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 
 public interface WorkflowProcessInstance extends ProcessInstance,
-                                                 KogitoWorkflowProcessInstance,
-                                                 NodeInstanceContainer {
+        KogitoWorkflowProcessInstance,
+        NodeInstanceContainer {
 
-    void addEventListener( String type, KogitoEventListener eventListener, boolean external);
+    void addEventListener(String type, KogitoEventListener eventListener, boolean external);
 
     void removeEventListener(String type, KogitoEventListener eventListener, boolean external);
 }

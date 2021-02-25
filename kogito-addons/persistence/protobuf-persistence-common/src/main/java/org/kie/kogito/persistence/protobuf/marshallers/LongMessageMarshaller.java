@@ -39,7 +39,7 @@ public class LongMessageMarshaller implements MessageMarshaller<Long> {
     @Override
     public void writeTo(ProtoStreamWriter writer, Long t) throws IOException {
         writer.writeLong("data", t);
-        
+
     }
 
 }

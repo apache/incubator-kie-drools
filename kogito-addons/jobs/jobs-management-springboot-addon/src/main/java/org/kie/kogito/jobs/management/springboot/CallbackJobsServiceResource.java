@@ -47,9 +47,9 @@ public class CallbackJobsServiceResource {
 
     @PostMapping(value = "{processId}/instances/{processInstanceId}/timers/{timerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity triggerTimer(@PathVariable("processId") String processId,
-                                       @PathVariable("processInstanceId") String processInstanceId,
-                                       @PathVariable("timerId") String timerId,
-                                       @RequestParam(value = "limit", defaultValue = "0", required = false) Integer limit) {
+            @PathVariable("processInstanceId") String processInstanceId,
+            @PathVariable("timerId") String timerId,
+            @RequestParam(value = "limit", defaultValue = "0", required = false) Integer limit) {
         if (processId == null || processInstanceId == null) {
             return ResponseEntity.badRequest().body("Process id and Process instance id must be  given");
         }

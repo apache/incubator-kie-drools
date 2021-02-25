@@ -25,7 +25,8 @@ public class PersonWithAddresses {
 
     private List<Address> addresses;
 
-    public PersonWithAddresses() {}
+    public PersonWithAddresses() {
+    }
 
     public PersonWithAddresses(String name, int age) {
         this.name = name;

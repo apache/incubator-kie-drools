@@ -26,11 +26,11 @@ public interface ProcessInstances<T> {
 
     Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode);
 
-    default Collection<ProcessInstance<T>> values(){
+    default Collection<ProcessInstance<T>> values() {
         return values(ProcessInstanceReadMode.READ_ONLY);
     }
-    
+
     Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode);
-    
+
     Integer size();
 }

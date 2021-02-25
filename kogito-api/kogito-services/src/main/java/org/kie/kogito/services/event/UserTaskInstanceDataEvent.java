@@ -17,10 +17,11 @@ package org.kie.kogito.services.event;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanceEventBody> {
 
@@ -32,14 +33,13 @@ public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanc
     public UserTaskInstanceDataEvent(String source, String addons, Map<String, String> metaData, UserTaskInstanceEventBody body) {
 
         super("UserTaskInstanceEvent",
-              source,
-              body,
-              metaData.get(ProcessInstanceEventBody.ID_META_DATA),
-              metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
-              metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
-              metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
-              addons
-        );
+                source,
+                body,
+                metaData.get(ProcessInstanceEventBody.ID_META_DATA),
+                metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
+                metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
+                metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
+                addons);
 
         this.kogitoUserTaskinstanceState = metaData.get(UserTaskInstanceEventBody.UT_STATE_META_DATA);
         this.kogitoUserTaskinstanceId = metaData.get(UserTaskInstanceEventBody.UT_ID_META_DATA);

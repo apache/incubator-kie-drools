@@ -18,12 +18,12 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.workflow.core.Node;
-import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
@@ -36,9 +36,9 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
  * 
  */
 public class ForEachNode extends CompositeContextNode {
-    
+
     private static final long serialVersionUID = 510l;
-    
+
     private String variableName;
     private String outputVariableName;
     private String collectionExpression;
@@ -54,8 +54,8 @@ public class ForEachNode extends CompositeContextNode {
         split.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:split");
         super.addNode(split);
         super.linkIncomingConnections(
-            Node.CONNECTION_DEFAULT_TYPE,
-            new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
+                Node.CONNECTION_DEFAULT_TYPE,
+                new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
         // Composite node
         CompositeContextNode compositeNode = new CompositeContextNode();
         compositeNode.setName("ForEachComposite");
@@ -72,125 +72,123 @@ public class ForEachNode extends CompositeContextNode {
         join.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:join");
         super.addNode(join);
         super.linkOutgoingConnections(
-            new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
-            Node.CONNECTION_DEFAULT_TYPE);
+                new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
+                Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
-            super.getNode(1), Node.CONNECTION_DEFAULT_TYPE,
-            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE
-        );
+                super.getNode(1), Node.CONNECTION_DEFAULT_TYPE,
+                getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
-            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
-            super.getNode(3), Node.CONNECTION_DEFAULT_TYPE
-        );
+                getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
+                super.getNode(3), Node.CONNECTION_DEFAULT_TYPE);
     }
-    
+
     public String getVariableName() {
         return variableName;
     }
-    
+
     public DataType getVariableType() {
-    	if (variableName == null) {
-    		return null;
-    	}
-    	for (Variable variable: ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables()) {
-    		if (variableName.equals(variable.getName())) {
-    			return variable.getType();
-    		}
-    	}
-    	return null;
+        if (variableName == null) {
+            return null;
+        }
+        for (Variable variable : ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables()) {
+            if (variableName.equals(variable.getName())) {
+                return variable.getType();
+            }
+        }
+        return null;
     }
-    
+
     public String getOutputVariableName() {
         return outputVariableName;
     }
-    
+
     public DataType getOutputVariableType() {
         if (outputVariableName == null) {
             return null;
         }
-        for (Variable variable: ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables()) {
+        for (Variable variable : ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables()) {
             if (outputVariableName.equals(variable.getName())) {
                 return variable.getType();
             }
         }
         return null;
     }
-    
+
     public CompositeContextNode getCompositeNode() {
-        return (CompositeContextNode) super.getNode(2); 
+        return (CompositeContextNode) super.getNode(2);
     }
-    
+
     public ForEachSplitNode getForEachSplitNode() {
-        return (ForEachSplitNode) super.getNode(1); 
+        return (ForEachSplitNode) super.getNode(1);
     }
-    
+
     public ForEachJoinNode getForEachJoinNode() {
-        return (ForEachJoinNode) super.getNode(3); 
+        return (ForEachJoinNode) super.getNode(3);
     }
-    
-    public void addNode( org.kie.api.definition.process.Node node) {
-    	getCompositeNode().addNode(node);
+
+    public void addNode(org.kie.api.definition.process.Node node) {
+        getCompositeNode().addNode(node);
     }
-    
-    protected void internalAddNode( org.kie.api.definition.process.Node node) {
-    	super.addNode(node);
+
+    protected void internalAddNode(org.kie.api.definition.process.Node node) {
+        super.addNode(node);
     }
-    
-    public org.kie.api.definition.process.Node getNode( long id) {
-    	return getCompositeNode().getNode(id);
+
+    public org.kie.api.definition.process.Node getNode(long id) {
+        return getCompositeNode().getNode(id);
     }
-    
-    public org.kie.api.definition.process.Node internalGetNode( long id) {
-    	return super.getNode(id);
+
+    public org.kie.api.definition.process.Node internalGetNode(long id) {
+        return super.getNode(id);
     }
-    
+
     public org.kie.api.definition.process.Node[] getNodes() {
-		return getCompositeNode().getNodes();
+        return getCompositeNode().getNodes();
     }
-    
+
     public org.kie.api.definition.process.Node[] internalGetNodes() {
-    	return super.getNodes();
+        return super.getNodes();
     }
-    
-    public void removeNode( org.kie.api.definition.process.Node node) {
-    	getCompositeNode().removeNode(node);
+
+    public void removeNode(org.kie.api.definition.process.Node node) {
+        getCompositeNode().removeNode(node);
     }
-    
-    protected void internalRemoveNode( org.kie.api.definition.process.Node node) {
-    	super.removeNode(node);
+
+    protected void internalRemoveNode(org.kie.api.definition.process.Node node) {
+        super.removeNode(node);
     }
-    
+
     public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
-    	getCompositeNode().linkIncomingConnections(inType, inNodeId, inNodeType);
+        getCompositeNode().linkIncomingConnections(inType, inNodeId, inNodeType);
     }
 
     public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
-    	getCompositeNode().linkOutgoingConnections(outNodeId, outNodeType, outType);
-	}
-    
+        getCompositeNode().linkOutgoingConnections(outNodeId, outNodeType, outType);
+    }
+
     public CompositeNode.NodeAndType getLinkedIncomingNode(String inType) {
-    	return getCompositeNode().getLinkedIncomingNode(inType);
+        return getCompositeNode().getLinkedIncomingNode(inType);
     }
 
     public CompositeNode.NodeAndType internalGetLinkedIncomingNode(String inType) {
         return super.getLinkedIncomingNode(inType);
     }
-    
+
     public CompositeNode.NodeAndType getLinkedOutgoingNode(String inType) {
-    	return getCompositeNode().getLinkedOutgoingNode(inType);
+        return getCompositeNode().getLinkedOutgoingNode(inType);
     }
 
     public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String inType) {
         return super.getLinkedOutgoingNode(inType);
     }
-     
+
     public void setVariable(String variableName, DataType type) {
         this.variableName = variableName;
         VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
         List<Variable> variables = variableScope.getVariables();
         if (variables == null) {
-        	variables = new ArrayList<Variable>();
-        	variableScope.setVariables(variables);
+            variables = new ArrayList<Variable>();
+            variableScope.setVariables(variables);
         }
         Variable variable = new Variable();
         variable.setId(variableName);
@@ -198,7 +196,7 @@ public class ForEachNode extends CompositeContextNode {
         variable.setType(type);
         variables.add(variable);
     }
-    
+
     public void setOutputVariable(String variableName, DataType type) {
         this.outputVariableName = variableName;
         VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
@@ -212,7 +210,7 @@ public class ForEachNode extends CompositeContextNode {
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
-        
+
         Variable tmpvariable = new Variable();
         variable.setId("foreach_output");
         tmpvariable.setName("foreach_output");
@@ -227,7 +225,7 @@ public class ForEachNode extends CompositeContextNode {
     public void setCollectionExpression(String collectionExpression) {
         this.collectionExpression = collectionExpression;
     }
-    
+
     public String getOutputCollectionExpression() {
         return outputCollectionExpression;
     }
@@ -244,7 +242,7 @@ public class ForEachNode extends CompositeContextNode {
         this.waitForCompletion = waitForCompletion;
     }
 
-   public static class ForEachSplitNode extends ExtendedNodeImpl {
+    public static class ForEachSplitNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
     }
 
@@ -260,45 +258,45 @@ public class ForEachNode extends CompositeContextNode {
         }
         return super.getContext(contextType);
     }
-    
+
     @Override
     public void addContext(Context context) {
-    	getCompositeNode().addContext(context);
+        getCompositeNode().addContext(context);
         ((AbstractContext) context).setContextContainer(getCompositeNode());
     }
 
     @Override
     public void setDefaultContext(Context context) {
-    	getCompositeNode().setDefaultContext(context);
+        getCompositeNode().setDefaultContext(context);
         ((AbstractContext) context).setContextContainer(getCompositeNode());
     }
-    
+
     @Override
     public List<Context> getContexts(String contextType) {
-    	List<Context> contexts = super.getContexts(contextType);
-    	if (contexts == null) {
-    		contexts = getCompositeNode().getContexts(contextType);        
+        List<Context> contexts = super.getContexts(contextType);
+        if (contexts == null) {
+            contexts = getCompositeNode().getContexts(contextType);
         }
-        
+
         return contexts;
     }
-    
+
     @Override
     public Context getContext(String contextType, long id) {
-        Context ctx =  super.getContext(contextType, id);
+        Context ctx = super.getContext(contextType, id);
         if (ctx == null) {
-        	ctx = getCompositeNode().getContext(contextType, id);        
+            ctx = getCompositeNode().getContext(contextType, id);
         }
-        
+
         return ctx;
     }
 
-	public String getCompletionConditionExpression() {
-		return completionConditionExpression;
-	}
+    public String getCompletionConditionExpression() {
+        return completionConditionExpression;
+    }
 
-	public void setCompletionConditionExpression(
-			String completionConditionExpression) {
-		this.completionConditionExpression = completionConditionExpression;
-	}
+    public void setCompletionConditionExpression(
+            String completionConditionExpression) {
+        this.completionConditionExpression = completionConditionExpression;
+    }
 }

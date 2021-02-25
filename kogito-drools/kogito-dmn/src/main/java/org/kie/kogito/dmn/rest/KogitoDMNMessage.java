@@ -17,11 +17,12 @@ package org.kie.kogito.dmn.rest;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.internal.builder.InternalMessage;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class KogitoDMNMessage implements Serializable, DMNMessage {
 

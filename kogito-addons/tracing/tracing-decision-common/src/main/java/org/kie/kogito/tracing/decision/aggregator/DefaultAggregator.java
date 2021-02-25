@@ -31,8 +31,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.CloudEvent;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -59,6 +57,10 @@ import org.kie.kogito.tracing.decision.event.trace.TraceOutputValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.cloudevents.CloudEvent;
 
 import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE;
 import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE;
@@ -91,9 +93,7 @@ public class DefaultAggregator implements Aggregator {
                 EventUtils.traceResourceIdFrom(configBean.getServiceUrl(), model),
                 Stream.of(
                         EventUtils.messageFrom(InternalMessageType.NOT_ENOUGH_DATA),
-                        model == null ? EventUtils.messageFrom(InternalMessageType.DMN_MODEL_NOT_FOUND) : null
-                ).filter(Objects::nonNull).collect(Collectors.toList())
-        );
+                        model == null ? EventUtils.messageFrom(InternalMessageType.DMN_MODEL_NOT_FOUND) : null).filter(Objects::nonNull).collect(Collectors.toList()));
 
         TraceEvent event = new TraceEvent(header, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         return CloudEventUtils
@@ -118,12 +118,11 @@ public class DefaultAggregator implements Aggregator {
                 computeDurationMillis(firstEvent, lastEvent),
                 firstEvent.toTraceResourceId(configBean.getServiceUrl()),
                 Stream.of(
-                        model == null ? Stream.of(EventUtils.messageFrom(InternalMessageType.DMN_MODEL_NOT_FOUND)) : Stream.<Message>empty(),
+                        model == null ? Stream.of(EventUtils.messageFrom(InternalMessageType.DMN_MODEL_NOT_FOUND)) : Stream.<Message> empty(),
                         executionStepsPair.getRight().stream(),
                         lastEvent.getResult().getMessages().stream()
-                                .filter(m -> m.getSourceId() == null || m.getSourceId().isEmpty())
-                ).flatMap(Function.identity()).collect(Collectors.toList())
-        );
+                                .filter(m -> m.getSourceId() == null || m.getSourceId().isEmpty()))
+                        .flatMap(Function.identity()).collect(Collectors.toList()));
 
         // complete event
         TraceEvent event = new TraceEvent(header, inputs, outputs, executionStepsPair.getLeft());
@@ -150,8 +149,7 @@ public class DefaultAggregator implements Aggregator {
 
         return Stream.concat(
                 streamInputsFromInitialContext(firstEvent, inputNodesMap),
-                streamKnownInputsNotInInitialContext(firstEvent, inputNodesMap)
-        ).collect(Collectors.toList());
+                streamKnownInputsNotInInitialContext(firstEvent, inputNodesMap)).collect(Collectors.toList());
     }
 
     private static Collection<InputDataNode> inputDataNodesFromFirstEvent(DMNModel model, EvaluateEvent firstEvent) {
@@ -305,7 +303,8 @@ public class DefaultAggregator implements Aggregator {
             additionalData.put(NODE_NAME_KEY, afterEvent.getNodeName());
         }
 
-        return new TraceExecutionStep(TraceExecutionStepType.DMN_CONTEXT_ENTRY, duration, afterEvent.getContextEntryResult().getVariableName(), result, Collections.emptyList(), additionalData, children);
+        return new TraceExecutionStep(TraceExecutionStepType.DMN_CONTEXT_ENTRY, duration, afterEvent.getContextEntryResult().getVariableName(), result, Collections.emptyList(), additionalData,
+                children);
     }
 
     private static TraceExecutionStep buildDmnDecisionTraceExecutionStep(long duration, EvaluateEvent afterEvent, List<TraceExecutionStep> children) {
@@ -317,7 +316,7 @@ public class DefaultAggregator implements Aggregator {
                 .filter(dr -> dr.getDecisionId().equals(afterEvent.getNodeId()))
                 .findFirst()
                 .map(EvaluateDecisionResult::getResult)
-                .<JsonNode>map(EventUtils::jsonNodeFrom)
+                .<JsonNode> map(EventUtils::jsonNodeFrom)
                 .orElse(null);
 
         Map<String, String> additionalData = new HashMap<>();
@@ -341,7 +340,8 @@ public class DefaultAggregator implements Aggregator {
             additionalData.put(NODE_NAME_KEY, afterEvent.getNodeName());
         }
 
-        return new TraceExecutionStep(TraceExecutionStepType.DMN_DECISION_TABLE, duration, afterEvent.getDecisionTableResult().getDecisionTableName(), null, Collections.emptyList(), additionalData, children);
+        return new TraceExecutionStep(TraceExecutionStepType.DMN_DECISION_TABLE, duration, afterEvent.getDecisionTableResult().getDecisionTableName(), null, Collections.emptyList(), additionalData,
+                children);
     }
 
     private static long computeDurationMillis(EvaluateEvent beginEvent, EvaluateEvent endEvent) {
@@ -357,8 +357,7 @@ public class DefaultAggregator implements Aggregator {
                 node.getId(),
                 node.getName(),
                 EventUtils.typedValueFrom(node.getType(), value),
-                Collections.emptyList()
-        );
+                Collections.emptyList());
     }
 
     private static TraceOutputValue traceOutputFrom(EvaluateDecisionResult decisionResult, DMNModel model, Map<String, Object> context) {
@@ -377,8 +376,7 @@ public class DefaultAggregator implements Aggregator {
                 .map(ids -> ids.stream()
                         .map(id -> typeAndNameOf(id, model))
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toMap(Pair::getRight, Pair::getLeft))
-                )
+                        .collect(Collectors.toMap(Pair::getRight, Pair::getLeft)))
                 .orElseGet(HashMap::new);
 
         Map<String, TypedValue> decisionInputs = decisionInputTypes.entrySet().stream()
@@ -390,8 +388,7 @@ public class DefaultAggregator implements Aggregator {
                 decisionResult.getEvaluationStatus().name(),
                 EventUtils.typedValueFrom(type, decisionResult.getResult()),
                 decisionInputs,
-                decisionResult.getMessages()
-        );
+                decisionResult.getMessages());
     }
 
     private static Pair<DMNType, String> typeAndNameOf(String nodeId, DMNModel model) {

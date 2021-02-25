@@ -43,7 +43,7 @@ public class RuleUnitDescriptionRegistryTest {
 
     @Test
     public void getDescriptionForUnit() {
-        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{}, BigDecimal.ZERO);
+        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[] {}, BigDecimal.ZERO);
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> registry.getDescription(testRuleUnit));
 
         loadDescriptionIntoRegistry(testRuleUnit.getClass());

@@ -18,19 +18,19 @@ package org.drools.statics;
 import java.lang.reflect.Constructor;
 
 public class SimpleInstanceCreator {
-    static Constructor<?> constructor( String className ) {
+    static Constructor<?> constructor(String className) {
         try {
             return Class.forName(className).getConstructor();
         } catch (Exception e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
     }
 
-    static Object instance( String className ) {
+    static Object instance(String className) {
         try {
             return Class.forName(className).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
     }
 }

@@ -16,7 +16,7 @@
 package org.jbpm.process.core.event;
 
 public interface EventTransformer {
-	
-	Object transformEvent(Object event);
+
+    Object transformEvent(Object event);
 
 }

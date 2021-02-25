@@ -15,9 +15,10 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.decorators;
 
-import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
+
+import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

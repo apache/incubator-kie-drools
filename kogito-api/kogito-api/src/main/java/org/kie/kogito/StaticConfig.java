@@ -25,12 +25,12 @@ public class StaticConfig implements Config {
     private final Map<Class<? extends KogitoConfig>, KogitoConfig> configMap = new HashMap<>();
 
     public StaticConfig(Addons addons,
-                        KogitoConfig ... configs) {
+            KogitoConfig... configs) {
         this(addons, Arrays.asList(configs));
     }
 
     protected StaticConfig(Addons addons,
-                           Iterable<KogitoConfig> configs) {
+            Iterable<KogitoConfig> configs) {
         this.addons = addons;
         configs.forEach(this::loadConfig);
     }
@@ -51,7 +51,7 @@ public class StaticConfig implements Config {
     }
 
     private void loadConfig(KogitoConfig config) {
-        if(config != null) {
+        if (config != null) {
             configMap.put(config.getClass(), config);
         }
     }

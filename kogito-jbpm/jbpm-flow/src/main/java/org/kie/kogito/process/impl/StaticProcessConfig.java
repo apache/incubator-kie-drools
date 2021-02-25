@@ -47,9 +47,9 @@ public class StaticProcessConfig implements ProcessConfig {
 
     public StaticProcessConfig() {
         this(new DefaultWorkItemHandlerConfig(),
-             new DefaultProcessEventListenerConfig(),
-             new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
-             null);
+                new DefaultProcessEventListenerConfig(),
+                new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
+                null);
     }
 
     @Override

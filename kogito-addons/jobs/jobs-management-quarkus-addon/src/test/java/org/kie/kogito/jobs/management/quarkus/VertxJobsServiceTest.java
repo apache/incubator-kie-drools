@@ -15,18 +15,6 @@
  */
 package org.kie.kogito.jobs.management.quarkus;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.ZonedDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,6 +44,18 @@ import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 public class VertxJobsServiceTest {
@@ -64,7 +64,7 @@ public class VertxJobsServiceTest {
     public static final String JOB_SERVICE_URL = "http://localhost:8085";
 
     private VertxJobsService tested;
-    
+
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Mock
@@ -84,7 +84,7 @@ public class VertxJobsServiceTest {
         tested = new VertxJobsService(JOB_SERVICE_URL, CALLBACK_URL, vertx, instance);
         tested.initialize();
     }
-    
+
     @AfterAll
     public void cleanup() {
         executor.shutdownNow();
@@ -102,8 +102,8 @@ public class VertxJobsServiceTest {
     @Test
     void testScheduleProcessJob() {
         ProcessJobDescription processJobDescription = ProcessJobDescription.of(ExactExpirationTime.now(),
-                                                                               1,
-                                                                               "processId");
+                1,
+                "processId");
         assertThatThrownBy(() -> tested.scheduleProcessJob(processJobDescription))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
@@ -113,9 +113,9 @@ public class VertxJobsServiceTest {
         when(webClient.post(anyString())).thenReturn(request);
 
         ProcessInstanceJobDescription processInstanceJobDescription = ProcessInstanceJobDescription.of(123,
-                                                                                                       ExactExpirationTime.now(),
-                                                                                                       "processInstanceId",
-                                                                                                       "processId");
+                ExactExpirationTime.now(),
+                "processInstanceId",
+                "processId");
         tested.scheduleProcessInstanceJob(processInstanceJobDescription);
         verify(webClient).post("/jobs");
         ArgumentCaptor<Job> jobArgumentCaptor = forClass(Job.class);
@@ -133,7 +133,7 @@ public class VertxJobsServiceTest {
         tested.cancelJob("123");
         verify(webClient).delete("/jobs/123");
     }
-    
+
     @Test
     void testGetScheduleTime(@Mock HttpRequest<Buffer> request, @Mock HttpResponse<Buffer> response) {
         when(webClient.get(anyString())).thenReturn(request);
@@ -145,18 +145,18 @@ public class VertxJobsServiceTest {
         when(asyncResult.result()).thenReturn(response);
         when(response.statusCode()).thenReturn(200);
         when(response.bodyAsJson(any())).thenReturn(job);
-        
+
         doAnswer(invocationOnMock -> {
             Handler<AsyncResult<HttpResponse<Buffer>>> handler = invocationOnMock.getArgument(0);
             executor.submit(() -> handler.handle(asyncResult));
             return null;
         }).when(request).send(any());
-        
+
         ZonedDateTime scheduledTime = tested.getScheduledTime("123");
         assertThat(scheduledTime).isEqualTo(job.getExpirationTime());
         verify(webClient).get("/jobs/123");
     }
-    
+
     @Test
     void testGetScheduleTimeJobNotFound(@Mock HttpRequest<Buffer> request, @Mock HttpResponse<Buffer> response) {
         when(webClient.get(anyString())).thenReturn(request);
@@ -164,16 +164,16 @@ public class VertxJobsServiceTest {
         when(asyncResult.succeeded()).thenReturn(true);
         when(asyncResult.result()).thenReturn(response);
         when(response.statusCode()).thenReturn(404);
-        
+
         doAnswer(invocationOnMock -> {
             Handler<AsyncResult<HttpResponse<Buffer>>> handler = invocationOnMock.getArgument(0);
             executor.submit(() -> handler.handle(asyncResult));
             return null;
         }).when(request).send(any());
-        
+
         assertThatThrownBy(() -> tested.getScheduledTime("123"))
-            .hasCauseExactlyInstanceOf(JobNotFoundException.class);
-        
+                .hasCauseExactlyInstanceOf(JobNotFoundException.class);
+
         verify(webClient).get("/jobs/123");
     }
 }

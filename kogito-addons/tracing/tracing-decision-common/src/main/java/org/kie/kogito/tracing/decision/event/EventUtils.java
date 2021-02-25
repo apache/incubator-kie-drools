@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -45,12 +43,15 @@ import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class EventUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static JsonNode jsonNodeFrom(Object object) {
-        return Optional.ofNullable(object).<JsonNode>map(OBJECT_MAPPER::valueToTree).orElse(null);
+        return Optional.ofNullable(object).<JsonNode> map(OBJECT_MAPPER::valueToTree).orElse(null);
     }
 
     public static <I, O> List<O> map(List<I> input, Function<I, O> mapper) {
@@ -70,8 +71,7 @@ public class EventUtils {
                 message.getSourceId(),
                 message.getText(),
                 messageFEELEventFrom(message.getFeelEvent()),
-                messageExceptionFieldFrom(message.getException())
-        );
+                messageExceptionFieldFrom(message.getException()));
     }
 
     public static Message messageFrom(InternalMessageType message) {
@@ -85,8 +85,7 @@ public class EventUtils {
                 null,
                 message.getText(),
                 null,
-                null
-        );
+                null);
     }
 
     public static Message messageFrom(InternalMessageType message, Throwable throwable) {
@@ -100,8 +99,7 @@ public class EventUtils {
                 null,
                 message.getText(),
                 null,
-                messageExceptionFieldFrom(throwable)
-        );
+                messageExceptionFieldFrom(throwable));
     }
 
     public static MessageExceptionField messageExceptionFieldFrom(Throwable throwable) {
@@ -120,8 +118,7 @@ public class EventUtils {
                 feelEvent.getMessage(),
                 feelEvent.getLine(),
                 feelEvent.getColumn(),
-                messageExceptionFieldFrom(feelEvent.getSourceException())
-        );
+                messageExceptionFieldFrom(feelEvent.getSourceException()));
     }
 
     public static MessageFEELEventSeverity messageFEELEventSeverityFrom(FEELEvent.Severity severity) {
@@ -183,14 +180,12 @@ public class EventUtils {
             return new StructureValue(
                     typeOf(value).getName(),
                     streamFrom(value.fields())
-                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedValueFromJsonNode(entry.getValue(), null)), HashMap::putAll)
-            );
+                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedValueFromJsonNode(entry.getValue(), null)), HashMap::putAll));
         }
         if (value != null && value.isArray()) {
             return new CollectionValue(
                     typeOf(value).getName(),
-                    streamFrom(value.elements()).map(v -> typedValueFromJsonNode(v, null)).collect(Collectors.toList())
-            );
+                    streamFrom(value.elements()).map(v -> typedValueFromJsonNode(v, null)).collect(Collectors.toList()));
         }
         Type finalType = Optional.ofNullable(suggestedType).orElseGet(() -> typeOf(value));
         return new UnitValue(finalType.getName(), value);
@@ -204,14 +199,12 @@ public class EventUtils {
             return new StructureValue(
                     type.getName(),
                     streamFrom(value.fields())
-                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedValueFromJsonNode(type.getFields().get(entry.getKey()), entry.getValue(), null)), HashMap::putAll)
-            );
+                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedValueFromJsonNode(type.getFields().get(entry.getKey()), entry.getValue(), null)), HashMap::putAll));
         }
         if (value != null && value.isArray()) {
             return new CollectionValue(
                     type.getName(),
-                    streamFrom(value.elements()).map(element -> typedValueFromJsonNode(type, element, null)).collect(Collectors.toList())
-            );
+                    streamFrom(value.elements()).map(element -> typedValueFromJsonNode(type, element, null)).collect(Collectors.toList()));
         }
         return new UnitValue(type.getName(), baseTypeOf(type), value);
     }

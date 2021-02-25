@@ -40,24 +40,24 @@ public class BigRuleSetCodegenTest {
                 JavaKogitoBuildContext.builder().build(), resources);
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
-        System.out.println( generatedFiles.size() );
+        System.out.println(generatedFiles.size());
     }
 
     private Collection<Resource> generateResourcesToBeCompiled(int numberOfResources, int rulesPerResource) {
         Collection<Resource> resources = new ArrayList<>();
         for (int i = 0; i < numberOfResources; i++) {
-            Resource resource = new ByteArrayResource( generateRules( "org.kie.kogito.codegen.test" + i, rulesPerResource ).getBytes() );
-            resource.setResourceType( ResourceType.DRL );
-            resource.setSourcePath( "org/kie/kogito/codegen/test" + i + "/rules.drl" );
+            Resource resource = new ByteArrayResource(generateRules("org.kie.kogito.codegen.test" + i, rulesPerResource).getBytes());
+            resource.setResourceType(ResourceType.DRL);
+            resource.setSourcePath("org/kie/kogito/codegen/test" + i + "/rules.drl");
             resources.add(resource);
         }
         return resources;
     }
 
     private String generateRules(String packageName, int n) {
-        StringBuilder sb = new StringBuilder( "package " + packageName + "\n" );
+        StringBuilder sb = new StringBuilder("package " + packageName + "\n");
         for (int i = 0; i < n; i++) {
-            sb.append( generateRule( i ) );
+            sb.append(generateRule(i));
         }
         return sb.toString();
     }

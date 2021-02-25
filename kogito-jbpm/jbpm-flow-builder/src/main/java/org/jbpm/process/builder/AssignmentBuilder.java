@@ -22,10 +22,10 @@ import org.jbpm.workflow.core.node.Assignment;
 public interface AssignmentBuilder {
 
     public void build(final PackageBuildContext context,
-                      final Assignment assignment,
-                      final String sourceExpr,
-                      final String targetExpr,
-                      final ContextResolver contextResolver,
-                      boolean isInput);
+            final Assignment assignment,
+            final String sourceExpr,
+            final String targetExpr,
+            final ContextResolver contextResolver,
+            boolean isInput);
 
 }

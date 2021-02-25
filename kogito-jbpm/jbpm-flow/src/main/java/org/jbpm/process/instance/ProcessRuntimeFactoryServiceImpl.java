@@ -20,8 +20,8 @@ import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 
 public class ProcessRuntimeFactoryServiceImpl implements ProcessRuntimeFactoryService {
 
-	public InternalProcessRuntime newProcessRuntime(InternalWorkingMemory workingMemory) {
-		return new ProcessRuntimeImpl(workingMemory);
-	}
-	
+    public InternalProcessRuntime newProcessRuntime(InternalWorkingMemory workingMemory) {
+        return new ProcessRuntimeImpl(workingMemory);
+    }
+
 }

@@ -27,7 +27,7 @@ public class QuarkusMetricsInterceptor implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext,
-                       ContainerResponseContext responseContext) {
+            ContainerResponseContext responseContext) {
         List<String> matchedUris = requestContext.getUriInfo().getMatchedURIs();
         String matchedUrl = matchedUris.isEmpty() ? null : matchedUris.get(0);
         MetricsInterceptor.filter(matchedUrl, responseContext.getStatusInfo().getStatusCode());

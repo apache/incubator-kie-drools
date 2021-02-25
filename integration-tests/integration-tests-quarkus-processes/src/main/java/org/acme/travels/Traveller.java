@@ -25,7 +25,8 @@ public class Traveller {
 
     private boolean processed;
 
-    public Traveller() {}
+    public Traveller() {
+    }
 
     public Traveller(String firstName, String lastName, String email, String nationality) {
         this(firstName, lastName, email, nationality, null);
@@ -90,7 +91,7 @@ public class Traveller {
     @Override
     public String toString() {
         return "Traveller [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", nationality=" +
-               nationality + ", address=" + address + ", processed=" + processed + "]";
+                nationality + ", address=" + address + ", processed=" + processed + "]";
     }
 
 }

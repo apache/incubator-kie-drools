@@ -20,9 +20,8 @@ import java.util.function.Consumer;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.uow.WorkUnit;
 
-
 public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> {
-    
+
     private ProcessInstance<T> data;
     private Consumer<Object> action;
     private Consumer<Object> compensation;
@@ -31,7 +30,7 @@ public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> 
         this.data = data;
         this.action = action;
     }
-    
+
     public ProcessInstanceWorkUnit(ProcessInstance<T> data, Consumer<Object> action, Consumer<Object> compensation) {
         this.data = data;
         this.action = action;
@@ -54,7 +53,7 @@ public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> 
             compensation.accept(data());
         }
     }
-    
+
     @Override
     public Integer priority() {
         return 10;
@@ -85,5 +84,4 @@ public class ProcessInstanceWorkUnit<T> implements WorkUnit<ProcessInstance<T>> 
         return true;
     }
 
-    
 }

@@ -21,7 +21,7 @@ import java.util.Date;
 /**
  *
  */
-public class TimerInstance implements Serializable{
+public class TimerInstance implements Serializable {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = 9161292833931227195L;
@@ -101,7 +101,8 @@ public class TimerInstance implements Serializable{
 
     @Override
     public String toString() {
-        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
+        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId="
+                + processInstanceId
                 + "]";
     }
 

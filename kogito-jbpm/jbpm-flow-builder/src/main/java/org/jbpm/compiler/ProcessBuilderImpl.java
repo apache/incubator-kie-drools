@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.FactoryConfigurationError;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -214,8 +215,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 ExceptionScope exceptionScope = (ExceptionScope) context;
                 for (ExceptionHandler exceptionHandler : exceptionScope.getExceptionHandlers().values()) {
                     if (exceptionHandler instanceof ActionExceptionHandler) {
-                        DroolsConsequenceAction action = (DroolsConsequenceAction)
-                                ((ActionExceptionHandler) exceptionHandler).getAction();
+                        DroolsConsequenceAction action = (DroolsConsequenceAction) ((ActionExceptionHandler) exceptionHandler).getAction();
                         ActionDescr actionDescr = new ActionDescr();
                         actionDescr.setText(action.getConsequence());
                         actionDescr.setResource(buildContext.getProcessDescr().getResource());
@@ -233,7 +233,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         if (!context.getErrors().isEmpty()) {
             this.errors.addAll(context.getErrors());
         }
-        ProcessDialectRegistry.getDialect( JavaDialect.ID).addProcess(context);
+        ProcessDialectRegistry.getDialect(JavaDialect.ID).addProcess(context);
     }
 
     private void processNodes(
@@ -311,8 +311,9 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     /*************************************************************************
      * Converts a drools version 4 .rf or .rfm ruleflow to a version 5 .rf.
      * Version 5 .rf ruleflows are allowed, but are not migrated.
+     * 
      * @param reader containing any drools 4 .rf or .rfm ruleflow, or a
-     * version 5 .rf
+     *        version 5 .rf
      * @return reader containing the input reader in the latest (5) .rf format
      * @throws Exception
      ************************************************************************/
@@ -334,7 +335,6 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         //
         return new StringReader(xml);
     }
-
 
     private String generateRules(final Process process) {
         StringBuffer builder = new StringBuffer();
@@ -367,7 +367,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         return builder.toString();
     }
 
-    private void generateRules( org.kie.api.definition.process.Node[] nodes, Process process, StringBuffer builder) {
+    private void generateRules(org.kie.api.definition.process.Node[] nodes, Process process, StringBuffer builder) {
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof Split) {
                 Split split = (Split) nodes[i];
@@ -406,18 +406,17 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     }
 
     private String createSplitRule(Process process,
-                                   Connection connection,
-                                   String constraint) {
-        return
-                "rule \"RuleFlow-Split-" + process.getId() + "-" +
-                        (( Node ) connection.getFrom()).getUniqueId() + "-" +
-                        (( Node ) connection.getTo()).getUniqueId() + "-" +
-                        connection.getToType() + "\"  @Propagation(EAGER) \n" +
-                        "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
-                        "    when \n" +
-                        "      " + constraint + "\n" +
-                        "    then \n" +
-                        "end \n\n";
+            Connection connection,
+            String constraint) {
+        return "rule \"RuleFlow-Split-" + process.getId() + "-" +
+                ((Node) connection.getFrom()).getUniqueId() + "-" +
+                ((Node) connection.getTo()).getUniqueId() + "-" +
+                connection.getToType() + "\"  @Propagation(EAGER) \n" +
+                "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
+                "    when \n" +
+                "      " + constraint + "\n" +
+                "    then \n" +
+                "end \n\n";
     }
 
     private String createStateRule(Process process, StateNode state, ConnectionRef key, Constraint constraint) {
@@ -425,14 +424,13 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 || constraint.getConstraint().trim().length() == 0) {
             return "";
         } else {
-            return
-                    "rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" +
-                            key.getNodeId() + "-" + key.getToType() + "\" @Propagation(EAGER) \n" +
-                            "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
-                            "    when \n" +
-                            "      " + state.getConstraints().get(key).getConstraint() + "\n" +
-                            "    then \n" +
-                            "end \n\n";
+            return "rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" +
+                    key.getNodeId() + "-" + key.getToType() + "\" @Propagation(EAGER) \n" +
+                    "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
+                    "    when \n" +
+                    "      " + state.getConstraints().get(key).getConstraint() + "\n" +
+                    "    then \n" +
+                    "end \n\n";
         }
     }
 
@@ -443,31 +441,29 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 || condition.trim().length() == 0) {
             return "";
         } else {
-            return
-                    "rule \"RuleFlowStateEvent-" + process.getId() + "-" + event.getUniqueId() + "-" +
-                            attachedTo + "\" @Propagation(EAGER) \n" +
-                            "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
-                            "    when \n" +
-                            "      " + condition + "\n" +
-                            "    then \n" +
-                            "end \n\n";
+            return "rule \"RuleFlowStateEvent-" + process.getId() + "-" + event.getUniqueId() + "-" +
+                    attachedTo + "\" @Propagation(EAGER) \n" +
+                    "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
+                    "    when \n" +
+                    "      " + condition + "\n" +
+                    "    then \n" +
+                    "end \n\n";
         }
     }
 
     private String createEventSubprocessStateRule(Process process, CompositeNode compositeNode,
-                                                  ConstraintTrigger trigger) {
+            ConstraintTrigger trigger) {
         String condition = trigger.getConstraint();
         if (condition == null
                 || condition.trim().length() == 0) {
             return "";
         } else {
-            return
-                    "rule \"RuleFlowStateEventSubProcess-Event-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
-                            "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
-                            "    when \n" +
-                            "      " + condition + "\n" +
-                            "    then \n" +
-                            "end \n\n";
+            return "rule \"RuleFlowStateEventSubProcess-Event-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
+                    "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
+                    "    when \n" +
+                    "      " + condition + "\n" +
+                    "    then \n" +
+                    "end \n\n";
         }
     }
 
@@ -480,7 +476,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     }
 
     private String createStartConstraintRule(Process process, NodeContainer nodeContainer,
-                                             ConstraintTrigger trigger) {
+            ConstraintTrigger trigger) {
         if (nodeContainer instanceof EventSubProcessNode) {
             return createEventSubprocessStateRule(process, (EventSubProcessNode) nodeContainer, trigger);
         }
@@ -497,9 +493,11 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             for (Map.Entry<String, String> entry : inMappings.entrySet()) {
                 result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
             }
-            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\"" + process.getId() + "\", params, \"conditional\");\n" + "end\n\n";
+            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\""
+                    + process.getId() + "\", params, \"conditional\");\n" + "end\n\n";
         } else {
-            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\"" + process.getId() + "\", null, \"conditional\");\n" + "end\n\n";
+            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\""
+                    + process.getId() + "\", null, \"conditional\");\n" + "end\n\n";
         }
         return result;
     }

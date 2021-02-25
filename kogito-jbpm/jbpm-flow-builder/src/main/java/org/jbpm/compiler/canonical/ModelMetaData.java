@@ -23,6 +23,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.jbpm.process.core.context.variable.Variable;
+import org.kie.kogito.codegen.Generated;
+import org.kie.kogito.codegen.VariableInfo;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -50,10 +55,6 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.jbpm.process.core.context.variable.Variable;
-import org.kie.kogito.codegen.Generated;
-import org.kie.kogito.codegen.VariableInfo;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -83,7 +84,7 @@ public class ModelMetaData {
     }
 
     public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden, String templateName,
-                         Consumer<CompilationUnit> customGenerator) {
+            Consumer<CompilationUnit> customGenerator) {
         this.processId = processId;
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
@@ -166,18 +167,20 @@ public class ModelMetaData {
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
 
         if (!KogitoWorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
-            modelClass.addAnnotation(new NormalAnnotationExpr(new Name( Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
-                                                                                                                              new MemberValuePair("reference", new StringLiteralExpr(processId)),
-                                                                                                                              new MemberValuePair("name", new StringLiteralExpr(ucFirst(ProcessToExecModelGenerator.extractProcessId(processId)))),
-                                                                                                                              new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
+            modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
+                    new MemberValuePair("reference", new StringLiteralExpr(processId)),
+                    new MemberValuePair("name", new StringLiteralExpr(ucFirst(ProcessToExecModelGenerator.extractProcessId(processId)))),
+                    new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
         }
         modelClass.setName(modelClassSimpleName);
 
         // setup of the toMap method body
         BlockStmt toMapBody = new BlockStmt();
-        ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(null, Object.class.getSimpleName())));
+        ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()),
+                NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(null, Object.class.getSimpleName())));
         VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, "params");
-        toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
+        toMapBody.addStatement(
+                new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
         // setup of static fromMap method body        
         BlockStmt staticFromMap = new BlockStmt();
@@ -195,10 +198,11 @@ public class ModelMetaData {
             modelClass.addMember(fd);
 
             List<String> tags = variable.getValue().getTags();
-            fd.addAnnotation(new NormalAnnotationExpr(new Name( VariableInfo.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
+            fd.addAnnotation(new NormalAnnotationExpr(new Name(VariableInfo.class.getCanonicalName()),
+                    NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
             fd.addAnnotation(new NormalAnnotationExpr(new Name(JsonProperty.class.getCanonicalName()),
-                                                      NodeList.nodeList(new MemberValuePair("value",
-                                                                                            new StringLiteralExpr(varName)))));
+                    NodeList.nodeList(new MemberValuePair("value",
+                            new StringLiteralExpr(varName)))));
 
             applyValidation(fd, tags);
 
@@ -220,7 +224,8 @@ public class ModelMetaData {
                     new MethodCallExpr(
                             new NameExpr("params"),
                             "get")
-                            .addArgument(new StringLiteralExpr(varName))), AssignExpr.Operator.ASSIGN));
+                                    .addArgument(new StringLiteralExpr(varName))),
+                    AssignExpr.Operator.ASSIGN));
         }
 
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));

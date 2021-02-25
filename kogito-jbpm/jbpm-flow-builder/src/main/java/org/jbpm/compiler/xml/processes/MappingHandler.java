@@ -26,28 +26,26 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class MappingHandler extends BaseAbstractHandler
-    implements
-    Handler {
+        implements
+        Handler {
     public MappingHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
+        if ((this.validParents == null) && (this.validPeers == null)) {
             this.validParents = new HashSet();
-            this.validParents.add( Mappable.class );
+            this.validParents.add(Mappable.class);
 
-            this.validPeers = new HashSet();         
-            this.validPeers.add( null );            
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
 
             this.allowNesting = false;
         }
     }
-    
 
-    
     public Object start(final String uri,
-                        final String localName,
-                        final Attributes attrs,
-                        final ExtensibleXmlParser parser) throws SAXException {
-        parser.startElementBuilder( localName,
-                                    attrs );
+            final String localName,
+            final Attributes attrs,
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.startElementBuilder(localName,
+                attrs);
         Mappable mappable = (Mappable) parser.getParent();
         final String type = attrs.getValue("type");
         emptyAttributeCheck(localName, "type", type, parser);
@@ -61,20 +59,20 @@ public class MappingHandler extends BaseAbstractHandler
             mappable.addOutMapping(fromName, toName);
         } else {
             throw new SAXParseException(
-                "Unknown mapping type " + type, parser.getLocator());
+                    "Unknown mapping type " + type, parser.getLocator());
         }
         return null;
-    }    
-    
+    }
+
     public Object end(final String uri,
-                      final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         parser.endElementBuilder();
         return null;
     }
 
     public Class generateNodeFor() {
         return null;
-    }    
+    }
 
 }

@@ -27,11 +27,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
-    
+
     @Test
     public void testLimitExceptionInfoList() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
-        
+
         LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
         kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
@@ -45,11 +45,11 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
         int size = loggingTaskHandlerWrapper.getWorkItemExceptionInfoList().size();
         assertEquals(2, size, "WorkItemExceptionInfoList is too large: " + size);
     }
-    
+
     @Test
     public void testFormatLoggingError() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
-        
+
         LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setLoggedMessageFormat("{0} - {1} - {2} - {3}");
         List<InputParameter> inputParameters = new ArrayList<LoggingTaskHandlerDecorator.InputParameter>();
@@ -57,9 +57,9 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
         inputParameters.add(InputParameter.WORK_ITEM_ID);
         inputParameters.add(InputParameter.WORK_ITEM_NAME);
         inputParameters.add(InputParameter.PROCESS_INSTANCE_ID);
-        
+
         loggingTaskHandlerWrapper.setLoggedMessageInput(inputParameters);
-        
+
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
         kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
 

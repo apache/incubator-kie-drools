@@ -41,29 +41,29 @@ import org.xml.sax.SAXParseException;
 
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
-    protected final static String EOL = System.getProperty( "line.separator" );
+    protected final static String EOL = System.getProperty("line.separator");
 
     public AbstractNodeHandler() {
         initValidParents();
         initValidPeers();
         this.allowNesting = false;
     }
-    
+
     protected void initValidParents() {
         this.validParents = new HashSet<Class<?>>();
         this.validParents.add(NodeContainer.class);
     }
-    
+
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
-        this.validPeers.add( Node.class);
+        this.validPeers.add(Node.class);
     }
 
     public Object start(final String uri, final String localName, final Attributes attrs,
-                        final ExtensibleXmlParser parser) throws SAXException {
-        parser.startElementBuilder( localName,
-                                    attrs );
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.startElementBuilder(localName,
+                attrs);
 
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 
@@ -83,15 +83,15 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected abstract Node createNode();
 
     public Object end(final String uri, final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        Node node = ( Node ) parser.getCurrent();
+        Node node = (Node) parser.getCurrent();
         handleNode(node, element, uri, localName, parser);
         return node;
     }
-    
-    protected void handleNode( final Node node, final Element element, final String uri,
-                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
+
+    protected void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
         final String x = element.getAttribute("x");
         if (x != null && x.length() != 0) {
             try {
@@ -133,42 +133,42 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
     }
-    
+
     protected void handleAction(final ExtendedNodeImpl node, final Element element, String type) {
         NodeList nodeList = element.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
-        	org.w3c.dom.Node xmlNode = nodeList.item(i);
-        	String nodeName = xmlNode.getNodeName();
-        	if (nodeName.equals(type)) {
-        		List<DroolsAction> actions = new ArrayList<DroolsAction>();
-        		NodeList subNodeList = xmlNode.getChildNodes();
+            org.w3c.dom.Node xmlNode = nodeList.item(i);
+            String nodeName = xmlNode.getNodeName();
+            if (nodeName.equals(type)) {
+                List<DroolsAction> actions = new ArrayList<DroolsAction>();
+                NodeList subNodeList = xmlNode.getChildNodes();
                 for (int j = 0; j < subNodeList.getLength(); j++) {
-                	Element subXmlNode = (Element) subNodeList.item(j);
-                	DroolsAction action = extractAction(subXmlNode);
-                	actions.add(action);
+                    Element subXmlNode = (Element) subNodeList.item(j);
+                    DroolsAction action = extractAction(subXmlNode);
+                    actions.add(action);
                 }
-            	node.setActions(type, actions);
-        		return;
-        	}
+                node.setActions(type, actions);
+                return;
+            }
         }
     }
-    
+
     public static DroolsAction extractAction(Element xmlNode) {
-    	String actionType = xmlNode.getAttribute("type");
-    	if ("expression".equals(actionType)) {
-    		String consequence = xmlNode.getTextContent();
-    		DroolsConsequenceAction action = new DroolsConsequenceAction(xmlNode.getAttribute("dialect"), consequence);
-    		return action;
-    	} else {
-    		throw new IllegalArgumentException(
-				"Unknown action type " + actionType);
-    	}
+        String actionType = xmlNode.getAttribute("type");
+        if ("expression".equals(actionType)) {
+            String consequence = xmlNode.getTextContent();
+            DroolsConsequenceAction action = new DroolsConsequenceAction(xmlNode.getAttribute("dialect"), consequence);
+            return action;
+        } else {
+            throw new IllegalArgumentException(
+                    "Unknown action type " + actionType);
+        }
     }
-    
-    public abstract void writeNode( final Node node, final StringBuilder xmlDump, final boolean includeMeta);
-    
-    protected void writeNode( final String name, final Node node, final StringBuilder xmlDump, final boolean includeMeta) {
-    	xmlDump.append("    <" + name + " id=\"" + node.getId() + "\" "); 
+
+    public abstract void writeNode(final Node node, final StringBuilder xmlDump, final boolean includeMeta);
+
+    protected void writeNode(final String name, final Node node, final StringBuilder xmlDump, final boolean includeMeta) {
+        xmlDump.append("    <" + name + " id=\"" + node.getId() + "\" ");
         if (node.getName() != null) {
             xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
         }
@@ -195,53 +195,53 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
     }
-    
+
     protected boolean containsMetaData(final Node node) {
-        for (Map.Entry<String, Object> entry: ((NodeImpl) node).getMetaData().entrySet()) {
-        	String name = entry.getKey();
-        	if (!"x".equals(name)
-        			 && !"y".equals(name)
-        			 && !"width".equals(name)
-        			 && !"height".equals(name)
-        			 && !"color".equals(name)
-        			 && !"UniqueId".equals(name)
-        			 && entry.getValue() instanceof String) {
-        		return true;
-        	}
+        for (Map.Entry<String, Object> entry : ((NodeImpl) node).getMetaData().entrySet()) {
+            String name = entry.getKey();
+            if (!"x".equals(name)
+                    && !"y".equals(name)
+                    && !"width".equals(name)
+                    && !"height".equals(name)
+                    && !"color".equals(name)
+                    && !"UniqueId".equals(name)
+                    && entry.getValue() instanceof String) {
+                return true;
+            }
         }
         return false;
     }
-    
-    protected void writeMetaData( final Node node, final StringBuilder xmlDump) {
-        for (Map.Entry<String, Object> entry: ((NodeImpl) node).getMetaData().entrySet()) {
-        	String name = entry.getKey();
-        	if (!"x".equals(name)
-        			 && !"y".equals(name)
-        			 && !"width".equals(name)
-        			 && !"height".equals(name)
-        			 && !"color".equals(name)
-        			 && entry.getValue() instanceof String) {
-        		xmlDump.append("      <metaData name=\"" + name + "\">" + EOL);
-        		xmlDump.append("        <value>" + entry.getValue() + "</value>" + EOL);
-        		xmlDump.append("      </metaData>" + EOL);
-        	}
+
+    protected void writeMetaData(final Node node, final StringBuilder xmlDump) {
+        for (Map.Entry<String, Object> entry : ((NodeImpl) node).getMetaData().entrySet()) {
+            String name = entry.getKey();
+            if (!"x".equals(name)
+                    && !"y".equals(name)
+                    && !"width".equals(name)
+                    && !"height".equals(name)
+                    && !"color".equals(name)
+                    && entry.getValue() instanceof String) {
+                xmlDump.append("      <metaData name=\"" + name + "\">" + EOL);
+                xmlDump.append("        <value>" + entry.getValue() + "</value>" + EOL);
+                xmlDump.append("      </metaData>" + EOL);
+            }
         }
     }
-    
+
     protected void writeActions(final String type, List<DroolsAction> actions, final StringBuilder xmlDump) {
-    	if (actions != null && actions.size() > 0) {
-    		xmlDump.append("      <" + type + ">" + EOL);
-	    	for (DroolsAction action: actions) {
-	    		writeAction(action, xmlDump);
-	    	}
-    		xmlDump.append("      </" + type + ">" + EOL);
-    	}
+        if (actions != null && actions.size() > 0) {
+            xmlDump.append("      <" + type + ">" + EOL);
+            for (DroolsAction action : actions) {
+                writeAction(action, xmlDump);
+            }
+            xmlDump.append("      </" + type + ">" + EOL);
+        }
     }
-    
+
     public static void writeAction(final DroolsAction action, final StringBuilder xmlDump) {
-    	if (action instanceof DroolsConsequenceAction) {
-    		DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
-    		xmlDump.append("        <action type=\"expression\" ");
+        if (action instanceof DroolsConsequenceAction) {
+            DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
+            xmlDump.append("        <action type=\"expression\" ");
             String name = consequenceAction.getName();
             if (name != null) {
                 xmlDump.append("name=\"" + name + "\" ");
@@ -252,41 +252,41 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
             String consequence = consequenceAction.getConsequence();
             if (consequence == null) {
-            	xmlDump.append("/>" + EOL);
+                xmlDump.append("/>" + EOL);
             } else {
                 xmlDump.append(">" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</action>" + EOL);
             }
-    	} else {
-    		throw new IllegalArgumentException(
-				"Unknown action " + action);
-    	}
+        } else {
+            throw new IllegalArgumentException(
+                    "Unknown action " + action);
+        }
     }
-    
+
     public void writeTimers(final Map<Timer, DroolsAction> timers, final StringBuilder xmlDump) {
-    	if (timers != null && !timers.isEmpty()) {
-    		xmlDump.append("      <timers>" + EOL);
-    		List<Timer> timerList = new ArrayList<Timer>(timers.keySet());
-    		Collections.sort(timerList, new Comparator<Timer>() {
-				public int compare(Timer o1, Timer o2) {
-					return (int) (o2.getId() - o1.getId());
-				}
-    		});
-    		for (Timer timer: timerList) {
-    			xmlDump.append("        <timer id=\"" + timer.getId() + "\" ");
-				if (timer.getDelay() != null) {
-					xmlDump.append("delay=\"" + timer.getDelay() + "\" ");
-				}
-    			if (timer.getPeriod() != null) {
+        if (timers != null && !timers.isEmpty()) {
+            xmlDump.append("      <timers>" + EOL);
+            List<Timer> timerList = new ArrayList<Timer>(timers.keySet());
+            Collections.sort(timerList, new Comparator<Timer>() {
+                public int compare(Timer o1, Timer o2) {
+                    return (int) (o2.getId() - o1.getId());
+                }
+            });
+            for (Timer timer : timerList) {
+                xmlDump.append("        <timer id=\"" + timer.getId() + "\" ");
+                if (timer.getDelay() != null) {
+                    xmlDump.append("delay=\"" + timer.getDelay() + "\" ");
+                }
+                if (timer.getPeriod() != null) {
                     xmlDump.append("period=\"" + timer.getPeriod() + "\" ");
                 }
                 xmlDump.append(">" + EOL);
                 writeAction(timers.get(timer), xmlDump);
                 xmlDump.append("        </timer>" + EOL);
-    		}
-    		xmlDump.append("      </timers>" + EOL);
-    	}
+            }
+            xmlDump.append("      </timers>" + EOL);
+        }
     }
-    
+
     protected void endNode(final StringBuilder xmlDump) {
         xmlDump.append("/>" + EOL);
     }
@@ -294,5 +294,5 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void endNode(final String name, final StringBuilder xmlDump) {
         xmlDump.append("    </" + name + ">" + EOL);
     }
-    
+
 }

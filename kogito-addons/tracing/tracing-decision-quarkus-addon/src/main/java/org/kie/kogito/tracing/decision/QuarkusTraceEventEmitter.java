@@ -17,10 +17,11 @@ package org.kie.kogito.tracing.decision;
 
 import javax.inject.Singleton;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.reactivestreams.Publisher;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.subjects.PublishSubject;
 
 @Singleton
 public class QuarkusTraceEventEmitter implements EventEmitter {

@@ -123,6 +123,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
+        <module>kogito-ide-config</module>
         <module>kogito-build-parent</module>
         <module>kogito-bom</module>
         <module>kogito-test-utils</module>
@@ -160,5 +161,6 @@
       </modules>
     </profile>
   </profiles>
+
 
 </project>

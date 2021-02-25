@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsError;
@@ -37,15 +36,15 @@ import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.codegen.rules.KogitoPackageSources;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.kogito.codegen.rules.KogitoPackageSources;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
 import org.kie.kogito.pmml.openapi.api.PMMLOASResult;
 import org.kie.kogito.pmml.openapi.factories.PMMLOASResultFactory;
@@ -57,6 +56,8 @@ import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static java.util.stream.Collectors.toList;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
@@ -65,7 +66,7 @@ public class PredictionCodegen extends AbstractGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
     private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
-    public static final String DMN_JPMML_CLASS =  "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
+    public static final String DMN_JPMML_CLASS = "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
     private final List<PMMLResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
@@ -75,7 +76,7 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     public static PredictionCodegen ofCollectedResources(KogitoBuildContext context,
-                                                         Collection<CollectedResource> resources) {
+            Collection<CollectedResource> resources) {
         if (context.hasClassAvailable(DMN_JPMML_CLASS)) {
             LOGGER.info("jpmml libraries available on classpath, skipping kogito-pmml parsing and compilation");
             return ofPredictions(context, Collections.emptyList());
@@ -117,8 +118,8 @@ public class PredictionCodegen extends AbstractGenerator {
         for (PMMLResource resource : resources) {
             ModelBuilderImpl<KogitoPackageSources> modelBuilder =
                     new ModelBuilderImpl<>(KogitoPackageSources::dumpSources,
-                                           new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()),
-                                           new ReleaseIdImpl("dummy:dummy:0.0.0"), true, false);
+                            new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()),
+                            new ReleaseIdImpl("dummy:dummy:0.0.0"), true, false);
             CompositeKnowledgeBuilder batch = modelBuilder.batch();
             List<KiePMMLModel> kiepmmlModels = resource.getKiePmmlModels();
             addModels(kiepmmlModels, resource, batch);
@@ -128,39 +129,39 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     private void addModels(final List<KiePMMLModel> kiepmmlModels, final PMMLResource resource,
-                           final CompositeKnowledgeBuilder batch) {
+            final CompositeKnowledgeBuilder batch) {
         for (KiePMMLModel model : kiepmmlModels) {
             if (model.getName() == null || model.getName().isEmpty()) {
-                    String errorMessage = String.format("Model name should not be empty inside %s", resource.getModelPath());
-                    throw new RuntimeException(errorMessage);
+                String errorMessage = String.format("Model name should not be empty inside %s", resource.getModelPath());
+                throw new RuntimeException(errorMessage);
+            }
+            if (!(model instanceof HasSourcesMap)) {
+                String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
+                        model.getClass().getName(),
+                        resource.getModelPath());
+                throw new RuntimeException(errorMessage);
+            }
+            Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
+            for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
+                String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
+                storeFile(PMML_TYPE, path, sourceMapEntry.getValue());
+            }
+            if (model instanceof KiePMMLDroolsModelWithSources) {
+                PackageDescr packageDescr = ((KiePMMLDroolsModelWithSources) model).getPackageDescr();
+                batch.add(new DescrResource(packageDescr), ResourceType.DESCR);
+            }
+            if (!(model instanceof KiePMMLFactoryModel)) {
+                PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model, applicationCanonicalName());
+                storeFile(PMML_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+                final PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
+                try {
+                    String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());
+                    String jsonFile = String.format("%s.json", getSanitizedClassName(model.getName()));
+                    String jsonFilePath = String.format("META-INF/resources/%s", jsonFile);
+                    storeFile(GeneratedFileType.RESOURCE, jsonFilePath, jsonContent);
+                } catch (Exception e) {
+                    LOGGER.warn("Failed to write OAS schema");
                 }
-                if (!(model instanceof HasSourcesMap)) {
-                    String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
-                                                        model.getClass().getName(),
-                                                        resource.getModelPath());
-                    throw new RuntimeException(errorMessage);
-                }
-                Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
-                for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
-                    String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                    storeFile(PMML_TYPE, path, sourceMapEntry.getValue());
-                }
-                if (model instanceof KiePMMLDroolsModelWithSources) {
-                    PackageDescr packageDescr = ((KiePMMLDroolsModelWithSources)model).getPackageDescr();
-                    batch.add( new DescrResource( packageDescr ), ResourceType.DESCR );
-                }
-                if (!(model instanceof KiePMMLFactoryModel)) {
-                    PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model, applicationCanonicalName());
-                    storeFile(PMML_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
-                    final PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
-                    try {
-                        String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());
-                        String jsonFile = String.format("%s.json", getSanitizedClassName(model.getName()));
-                        String jsonFilePath = String.format("META-INF/resources/%s", jsonFile);
-                        storeFile(GeneratedFileType.RESOURCE, jsonFilePath, jsonContent);
-                    } catch (Exception e) {
-                        LOGGER.warn("Failed to write OAS schema");
-                    }
             }
             if (model instanceof HasNestedModels) {
                 addModels(((HasNestedModels) model).getNestedModels(), resource, batch);
@@ -169,7 +170,7 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     private List<GeneratedFile> generateRules(ModelBuilderImpl<KogitoPackageSources> modelBuilder,
-                                              CompositeKnowledgeBuilder batch) {
+            CompositeKnowledgeBuilder batch) {
         try {
             batch.build();
         } catch (RuntimeException e) {

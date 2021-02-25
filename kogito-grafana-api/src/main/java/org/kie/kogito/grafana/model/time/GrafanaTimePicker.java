@@ -26,26 +26,26 @@ public class GrafanaTimePicker {
 
     @JsonProperty("time_options")
     public List<String> timeOptions = Arrays.asList("5m",
-                                                    "15m",
-                                                    "1h",
-                                                    "6h",
-                                                    "12h",
-                                                    "24h",
-                                                    "2d",
-                                                    "7d",
-                                                    "30d");
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d");
 
     @JsonProperty("refresh_intervals")
     public List<String> refreshIntervals = Arrays.asList("5s",
-                                                         "10s",
-                                                         "30s",
-                                                         "1m",
-                                                         "5m",
-                                                         "15m",
-                                                         "30m",
-                                                         "1h",
-                                                         "2h",
-                                                         "1d");
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d");
 
     @JsonProperty("type")
     public String type;

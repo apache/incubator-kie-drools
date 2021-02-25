@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.mongodb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.client.MongoCollection;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.mongodb.marshalling.DocumentUnmarshallingException;
 import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
 import org.kie.kogito.mongodb.utils.DocumentUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mongodb.client.MongoCollection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

@@ -19,11 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.DoubleNode;
-import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
@@ -43,8 +44,7 @@ class TypedValueTest {
         List<TypedValue> variables = Arrays.asList(
                 new UnitValue("number", "baseType", new DoubleNode(1d)),
                 new CollectionValue("list", singleton(new UnitValue("string"))),
-                new StructureValue("tStruct", singletonMap("key", new UnitValue("value")))
-        );
+                new StructureValue("tStruct", singletonMap("key", new UnitValue("value"))));
 
         String serializedJson = mapper.writeValueAsString(variables);
 

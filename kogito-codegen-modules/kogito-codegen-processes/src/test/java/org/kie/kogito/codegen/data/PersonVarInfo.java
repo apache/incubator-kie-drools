@@ -15,13 +15,13 @@
  */
 package org.kie.kogito.codegen.data;
 
-import org.kie.kogito.codegen.VariableInfo;
-
 import java.util.Objects;
+
+import org.kie.kogito.codegen.VariableInfo;
 
 public class PersonVarInfo {
 
-    @VariableInfo(tags="test")
+    @VariableInfo(tags = "test")
     private String name;
     private int age;
     private boolean adult;
@@ -78,10 +78,10 @@ public class PersonVarInfo {
     @Override
     public String toString() {
         return "Person{" +
-               "name='" + name + '\'' +
-               ", age=" + age +
-               ", adult=" + adult +
-               '}';
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", adult=" + adult +
+                '}';
     }
 
     @Override
@@ -94,8 +94,8 @@ public class PersonVarInfo {
         }
         PersonVarInfo person = (PersonVarInfo) o;
         return age == person.age &&
-               adult == person.adult &&
-               Objects.equals(name, person.name);
+                adult == person.adult &&
+                Objects.equals(name, person.name);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class DoubleMessageMarshaller implements MessageMarshaller<Double> {
     @Override
     public void writeTo(ProtoStreamWriter writer, Double t) throws IOException {
         writer.writeDouble("data", t);
-        
+
     }
 
 }

@@ -28,9 +28,9 @@ import org.kie.kogito.process.workitem.LifeCyclePhase;
  *
  * It can transition from
  * <ul>
- *  <li>Active</li>
- *  <li>Claim</li>
- *  <li>Release</li>
+ * <li>Active</li>
+ * <li>Claim</li>
+ * <li>Release</li>
  * </ul>
  * 
  */
@@ -38,9 +38,9 @@ public class Abort implements LifeCyclePhase {
 
     public static final String ID = "abort";
     public static final String STATUS = "Aborted";
-    
+
     private List<String> allowedTransitions = Arrays.asList(Active.ID, Claim.ID, Release.ID);
-    
+
     @Override
     public String id() {
         return ID;
@@ -55,10 +55,10 @@ public class Abort implements LifeCyclePhase {
     public boolean isTerminating() {
         return false;
     }
-    
+
     @Override
     public boolean canTransition(LifeCyclePhase phase) {
-        return allowedTransitions.contains(phase.id());        
+        return allowedTransitions.contains(phase.id());
     }
 
 }

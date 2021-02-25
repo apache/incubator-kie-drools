@@ -22,9 +22,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
+
 import io.cloudevents.CloudEventExtensions;
 import io.cloudevents.Extension;
-import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 
 // The size of this extension could be reevaluated since we could make use of `type`, `source` and `subject` for processId, referenceId and instanceState
 
@@ -189,7 +190,8 @@ public class KogitoProcessExtension implements Extension {
 
     @Override
     public int hashCode() {
-        return Objects.hash(kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoParentProcessinstanceId, kogitoProcessInstanceState, kogitoReferenceId);
+        return Objects.hash(kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoParentProcessinstanceId, kogitoProcessInstanceState,
+                kogitoReferenceId);
     }
 
     @Override

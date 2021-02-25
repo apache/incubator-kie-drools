@@ -53,7 +53,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
         this.validPeers.add(null);
         this.validPeers.add(Lane.class);
         this.validPeers.add(Variable.class);
-        this.validPeers.add( Node.class);
+        this.validPeers.add(Node.class);
         this.validPeers.add(SequenceFlow.class);
         this.validPeers.add(Lane.class);
         this.validPeers.add(Association.class);
@@ -63,7 +63,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 
     @SuppressWarnings("unchecked")
     public Object start(final String uri, final String localName,
-                        final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final ExtensibleXmlParser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
@@ -73,7 +73,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
         final String bendpoints = attrs.getValue("g:bendpoints");
         final String name = attrs.getValue("name");
         final String priority = attrs.getValue("http://www.jboss.org/drools",
-                                               "priority");
+                "priority");
 
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 
@@ -94,7 +94,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
             if (connections == null) {
                 connections = new ArrayList<>();
                 compositeNode.setMetaData(ProcessHandler.CONNECTIONS,
-                                          connections);
+                        connections);
             }
         }
 
@@ -113,7 +113,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
     }
 
     public Object end(final String uri, final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         SequenceFlow sequenceFlow = (SequenceFlow) parser.getCurrent();
 

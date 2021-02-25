@@ -15,13 +15,15 @@
  */
 package org.kogito.workitem.rest.jsonpath.functions;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import org.kogito.workitem.rest.RestWorkItemHandlerResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 public class JSonPathResultHandler implements RestWorkItemHandlerResult {
 

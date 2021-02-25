@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
@@ -52,7 +51,6 @@ public class RuleUnitDescriptionTest {
         Assertions.assertThat(ruleUnitDescr.getVar("number")).isNotNull();
         Assertions.assertThatThrownBy(() -> ruleUnitDescr.getVar("undefinedField")).isInstanceOf(UndefinedRuleUnitVariable.class);
     }
-
 
     @Test
     public void getEntryPointId() {

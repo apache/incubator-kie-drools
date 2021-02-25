@@ -19,11 +19,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HelloService {
-	
+
     public String hello(String name) {
         System.out.println("Service invoked with " + name.toString() + " on service " + this.toString());
         return "Hello " + name + "!";
     }
+
     public JsonNode jsonHello(JsonNode person) {
         System.out.println("Service invoked with " + person + " on service " + this.toString());
 
@@ -31,26 +32,26 @@ public class HelloService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readTree(retJsonStr);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
-    
+
     public String goodbye(String name) {
         System.out.println("Service invoked with " + name.toString() + " on service " + this.toString());
         return "Goodbye " + name + "!";
     }
-    
+
     public String helloMulti(String name, String lastName) {
         System.out.println("Service invoked with " + name + " and " + lastName + " on service " + this.toString());
         return "Hello (first and lastname) " + name.toString() + " " + lastName + "!";
     }
-    
+
     public void helloNoOutput(String name, Integer age) {
         System.out.println("Service invoked with " + name.toString() + " " + age + " on service " + this.toString());
-        
+
     }
-    
+
     public String helloOutput(String name, Integer age) {
         System.out.println("Service invoked with " + name.toString() + " " + age + " on service " + this.toString());
         return "Hello " + name + " " + age + "!";

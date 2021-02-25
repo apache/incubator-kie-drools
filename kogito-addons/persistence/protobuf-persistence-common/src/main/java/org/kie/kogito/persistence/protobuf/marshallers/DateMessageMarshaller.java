@@ -40,7 +40,7 @@ public class DateMessageMarshaller implements MessageMarshaller<Date> {
     @Override
     public void writeTo(ProtoStreamWriter writer, Date t) throws IOException {
         writer.writeLong("data", t.getTime());
-        
+
     }
 
 }

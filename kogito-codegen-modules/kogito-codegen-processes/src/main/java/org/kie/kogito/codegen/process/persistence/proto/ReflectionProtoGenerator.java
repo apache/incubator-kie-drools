@@ -201,23 +201,24 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
     }
 
     @Override
-    protected Optional<GeneratedFile> generateModelClassProto( Class<?> modelClazz) {
+    protected Optional<GeneratedFile> generateModelClassProto(Class<?> modelClazz) {
 
         Generated generatedData = modelClazz.getAnnotation(Generated.class);
         if (generatedData != null) {
 
             String processId = generatedData.reference();
             Proto modelProto = generate("@Indexed",
-                                        INDEX_COMMENT,
-                                        modelClazz.getPackage().getName() + "." + processId, modelClazz, "import \"kogito-index.proto\";",
-                                        "import \"kogito-types.proto\";",
-                                        "option kogito_model = \"" + generatedData.name() + "\";",
-                                        "option kogito_id = \"" + processId + "\";");
+                    INDEX_COMMENT,
+                    modelClazz.getPackage().getName() + "." + processId, modelClazz, "import \"kogito-index.proto\";",
+                    "import \"kogito-types.proto\";",
+                    "option kogito_model = \"" + generatedData.name() + "\";",
+                    "option kogito_id = \"" + processId + "\";");
             if (modelProto.getMessages().isEmpty()) {
                 // no messages, nothing to do
                 return Optional.empty();
             }
-            ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
+            ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Unable to find model message"));
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata").setComment(INDEX_COMMENT);
 
             return Optional.of(generateProtoFiles(processId, modelProto));
@@ -238,7 +239,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
 
         @Override
         protected Collection<Class<?>> extractDataClasses(Collection<Class<?>> modelClasses) {
-            if(dataClasses != null || modelClasses == null) {
+            if (dataClasses != null || modelClasses == null) {
                 LOGGER.info("Using provided dataClasses instead of extracting from modelClasses");
                 return dataClasses;
             }

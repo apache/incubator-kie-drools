@@ -19,7 +19,7 @@ public class SampleConfigImpl implements SampleConfig {
 
     private int numberOfCopy = 1;
 
-    public  SampleConfigImpl() {
+    public SampleConfigImpl() {
 
     }
 

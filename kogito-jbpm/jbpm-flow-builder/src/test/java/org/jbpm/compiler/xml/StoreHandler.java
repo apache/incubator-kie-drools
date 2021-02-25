@@ -17,7 +17,6 @@ package org.jbpm.compiler.xml;
 
 import java.util.HashSet;
 
-import org.kie.api.definition.process.Process;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
@@ -25,71 +24,70 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class StoreHandler extends BaseAbstractHandler
-    implements
-    Handler {
+        implements
+        Handler {
     public StoreHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
+        if ((this.validParents == null) && (this.validPeers == null)) {
             this.validParents = new HashSet<Class<?>>();
-            this.validParents.add( Process.class );
+            this.validParents.add(Process.class);
 
-            this.validPeers = new HashSet<Class<?>>();            
-            this.validPeers.add( StartNode.class );
-            this.validPeers.add( ActionNode.class );            
+            this.validPeers = new HashSet<Class<?>>();
+            this.validPeers.add(StartNode.class);
+            this.validPeers.add(ActionNode.class);
 
             this.allowNesting = false;
         }
     }
-    
 
-    
     public Object start(final String uri,
-                        final String localName,
-                        final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startElementBuilder( localName,
-                                                  attrs );
-        
-        WorkflowProcessImpl  process = ( WorkflowProcessImpl ) xmlPackageReader.getParent();
-        
+            final String localName,
+            final Attributes attrs,
+            final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+        xmlPackageReader.startElementBuilder(localName,
+                attrs);
+
+        WorkflowProcessImpl process = (WorkflowProcessImpl) xmlPackageReader.getParent();
+
         ActionNode actionNode = new ActionNode();
-        
-        final String name = attrs.getValue( "name" );        
-        emptyAttributeCheck( localName, "name", name, xmlPackageReader );        
-        actionNode.setName( name );
-        
-        final String id = attrs.getValue( "id" );        
-        emptyAttributeCheck( localName, "id", name, xmlPackageReader );        
-        actionNode.setId( new Long(id) );
-        
-        process.addNode( actionNode );
-        ((ProcessBuildData)xmlPackageReader.getData()).addNode( actionNode );
-        
+
+        final String name = attrs.getValue("name");
+        emptyAttributeCheck(localName, "name", name, xmlPackageReader);
+        actionNode.setName(name);
+
+        final String id = attrs.getValue("id");
+        emptyAttributeCheck(localName, "id", name, xmlPackageReader);
+        actionNode.setId(new Long(id));
+
+        process.addNode(actionNode);
+        ((ProcessBuildData) xmlPackageReader.getData()).addNode(actionNode);
+
         return actionNode;
-    }    
-    
+    }
+
     public Object end(final String uri,
-                      final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+            final String localName,
+            final ExtensibleXmlParser xmlPackageReader) throws SAXException {
         final Element element = xmlPackageReader.endElementBuilder();
 
-        ActionNode actionNode = ( ActionNode ) xmlPackageReader.getCurrent();
-        
-        String text = ((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
-        
-        DroolsConsequenceAction actionText = new DroolsConsequenceAction( "mvel", "list.add(\"" + text + "\")" );
-        
-        actionNode.setAction( actionText );
-        
+        ActionNode actionNode = (ActionNode) xmlPackageReader.getCurrent();
+
+        String text = ((org.w3c.dom.Text) element.getChildNodes().item(0)).getWholeText();
+
+        DroolsConsequenceAction actionText = new DroolsConsequenceAction("mvel", "list.add(\"" + text + "\")");
+
+        actionNode.setAction(actionText);
+
         return actionNode;
     }
 
     public Class<?> generateNodeFor() {
         return ActionNode.class;
-    }    
+    }
 
 }

@@ -29,11 +29,10 @@ public class QuarkusProcessSvgService extends AbstractProcessSvgService {
 
     @Inject
     public QuarkusProcessSvgService(DataIndexClient dataIndexClient,
-                                    @ConfigProperty(name = "kogito.svg.folder.path") Optional<String> svgResourcesPath,
-                                    @ConfigProperty(name = "kogito.svg.color.completed", defaultValue = "#C0C0C0") String completedColor,
-                                    @ConfigProperty(name = "kogito.svg.color.completed.border", defaultValue = "#030303") String completedBorderColor,
-                                    @ConfigProperty(name = "kogito.svg.color.active.border", defaultValue = "#FF0000") String activeBorderColor
-    ) {
+            @ConfigProperty(name = "kogito.svg.folder.path") Optional<String> svgResourcesPath,
+            @ConfigProperty(name = "kogito.svg.color.completed", defaultValue = "#C0C0C0") String completedColor,
+            @ConfigProperty(name = "kogito.svg.color.completed.border", defaultValue = "#030303") String completedBorderColor,
+            @ConfigProperty(name = "kogito.svg.color.active.border", defaultValue = "#FF0000") String activeBorderColor) {
         super(dataIndexClient, svgResourcesPath, completedColor, completedBorderColor, activeBorderColor);
     }
 }

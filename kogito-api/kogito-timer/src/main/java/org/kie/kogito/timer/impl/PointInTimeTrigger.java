@@ -25,31 +25,31 @@ import org.kie.kogito.timer.Calendars;
 import org.kie.kogito.timer.Trigger;
 
 public class PointInTimeTrigger
-    implements
-    Trigger {
+        implements
+        Trigger {
     private Date timestamp;
 
     public PointInTimeTrigger() {
     }
 
     public PointInTimeTrigger(long timestamp,
-                              String[] calendarNames,
-                              Calendars calendars) {
+            String[] calendarNames,
+            Calendars calendars) {
         boolean included = true;
 
-        if ( calendars != null && calendarNames != null && calendarNames.length > 0 ) {
-            for ( String calName : calendarNames ) {
+        if (calendars != null && calendarNames != null && calendarNames.length > 0) {
+            for (String calName : calendarNames) {
                 // all calendars must not block, as soon as one blocks break
-                Calendar cal = calendars.get(calName );
-                if ( cal != null && !cal.isTimeIncluded( timestamp ) ) {
+                Calendar cal = calendars.get(calName);
+                if (cal != null && !cal.isTimeIncluded(timestamp)) {
                     included = false;
                     break;
                 }
             }
         }
 
-        if ( included ) {
-            this.timestamp = new Date( timestamp );
+        if (included) {
+            this.timestamp = new Date(timestamp);
         }
 
     }
@@ -65,12 +65,12 @@ public class PointInTimeTrigger
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         this.timestamp = (Date) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( this.timestamp );
+        out.writeObject(this.timestamp);
     }
 
     @Override

@@ -25,13 +25,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.AbstractProcess;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.Mock;
@@ -39,7 +39,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,10 +78,10 @@ class BaseProcessInstanceManagementResourceTest {
 
     @Mock
     private AbstractProcess process;
-    
+
     @Mock
     private KogitoWorkflowProcess wp;
-    
+
     @Mock
     private Node node;
 
@@ -206,7 +205,7 @@ class BaseProcessInstanceManagementResourceTest {
         when(processInstance.workItems(any(SecurityPolicy.class))).thenReturn(singletonList(workItem));
         Object response = tested.doGetWorkItemsInProcessInstance(PROCESS_ID, PROCESS_INSTANCE_ID);
         assertThat(response).isInstanceOf(List.class);
-        assertThat(((List)response).get(0)).isEqualTo(workItem);
+        assertThat(((List) response).get(0)).isEqualTo(workItem);
     }
 
     @Test

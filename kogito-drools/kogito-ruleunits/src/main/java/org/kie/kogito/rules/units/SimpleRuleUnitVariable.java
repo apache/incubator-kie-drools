@@ -32,7 +32,7 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
     public SimpleRuleUnitVariable(String name, Class<?> type, Class<?> dataSourceParameterType, boolean writable) {
         this.name = name;
         this.getter = "get" + capitalize(name);
-        this.setter = writable? "set" + capitalize(name) : null;
+        this.setter = writable ? "set" + capitalize(name) : null;
         this.type = type;
         this.dataSourceParameterType = dataSourceParameterType;
         this.boxedVarType = convertFromPrimitiveType(type);

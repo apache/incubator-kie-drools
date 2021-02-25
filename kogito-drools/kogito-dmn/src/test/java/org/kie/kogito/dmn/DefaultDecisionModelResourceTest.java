@@ -34,10 +34,10 @@ public class DefaultDecisionModelResourceTest {
     @Test
     public void testGetters() {
         final DecisionModelResource resource = new DefaultDecisionModelResource(GAV,
-                                                                                "namespace",
-                                                                                "name",
-                                                                                DecisionModelType.DMN,
-                                                                                new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
+                "namespace",
+                "name",
+                DecisionModelType.DMN,
+                new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
 
         assertEquals(GAV, resource.getGav());
         assertEquals("name", resource.getModelName());
@@ -48,10 +48,10 @@ public class DefaultDecisionModelResourceTest {
     @Test
     public void testLoad() {
         final DecisionModelResource resource = new DefaultDecisionModelResource(GAV,
-                                                                                "namespace",
-                                                                                "name",
-                                                                                DecisionModelType.DMN,
-                                                                                new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
+                "namespace",
+                "name",
+                DecisionModelType.DMN,
+                new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
 
         assertEquals(CONTENT, resource.get().trim());
     }

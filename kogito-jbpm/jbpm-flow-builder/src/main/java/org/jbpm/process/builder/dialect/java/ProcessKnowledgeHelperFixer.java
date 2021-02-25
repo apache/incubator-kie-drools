@@ -23,46 +23,46 @@ import org.mvel2.MacroProcessor;
 
 public class ProcessKnowledgeHelperFixer {
     private static final Map macros;
-    
+
     static {
         macros = new HashMap(5);
-        
-        macros.put( "insert",
-                    new Macro() {
-                        public String doMacro() {
-                            return "kcontext.getKieRuntime().insert";
-                        }
-                    } ); 
-        
-//        macros.put( "insertLogical",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "drools.insertLogical";
-//                        }
-//                    } );         
-                
-//        macros.put( "update",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "drools.update";
-//                        }
-//                    } );
-        
-//        macros.put( "retract",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "drools.retract";
-//                        }
-//                    } );          
+
+        macros.put("insert",
+                new Macro() {
+                    public String doMacro() {
+                        return "kcontext.getKieRuntime().insert";
+                    }
+                });
+
+        //        macros.put( "insertLogical",
+        //                    new Macro() {
+        //                        public String doMacro() {
+        //                            return "drools.insertLogical";
+        //                        }
+        //                    } );         
+
+        //        macros.put( "update",
+        //                    new Macro() {
+        //                        public String doMacro() {
+        //                            return "drools.update";
+        //                        }
+        //                    } );
+
+        //        macros.put( "retract",
+        //                    new Macro() {
+        //                        public String doMacro() {
+        //                            return "drools.retract";
+        //                        }
+        //                    } );          
     }
 
     public static String fix(final String raw) {
-        if  ( raw == null || "".equals( raw.trim() )) {
+        if (raw == null || "".equals(raw.trim())) {
             return raw;
         }
-        
+
         MacroProcessor macroProcessor = new MacroProcessor();
-        macroProcessor.setMacros( macros );
-        return macroProcessor.parse( raw );
+        macroProcessor.setMacros(macros);
+        return macroProcessor.parse(raw);
     }
 }

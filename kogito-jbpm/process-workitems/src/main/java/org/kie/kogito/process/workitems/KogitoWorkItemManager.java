@@ -22,49 +22,49 @@ import org.drools.core.process.instance.WorkItem;
 
 public interface KogitoWorkItemManager extends org.drools.core.process.instance.WorkItemManager, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager {
 
-    void internalExecuteWorkItem( KogitoWorkItem workItem);
+    void internalExecuteWorkItem(KogitoWorkItem workItem);
 
-    void internalAddWorkItem( KogitoWorkItem workItem);
+    void internalAddWorkItem(KogitoWorkItem workItem);
 
     void internalAbortWorkItem(String id);
-    
-    void internalCompleteWorkItem( KogitoWorkItem workItem);
-    
-    KogitoWorkItem getWorkItem( String id);
+
+    void internalCompleteWorkItem(KogitoWorkItem workItem);
+
+    KogitoWorkItem getWorkItem(String id);
 
     void signalEvent(String type, Object event, String processInstanceId);
 
-    void retryWorkItem( String workItemID, Map<String, Object> params ) ;
+    void retryWorkItem(String workItemID, Map<String, Object> params);
 
     Set<WorkItem> getWorkItems();
 
     @Override
-    default void internalExecuteWorkItem( org.drools.core.process.instance.WorkItem workItem ) {
+    default void internalExecuteWorkItem(org.drools.core.process.instance.WorkItem workItem) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    default void internalAddWorkItem( org.drools.core.process.instance.WorkItem workItem ) {
+    default void internalAddWorkItem(org.drools.core.process.instance.WorkItem workItem) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    default void internalAbortWorkItem( long l ) {
+    default void internalAbortWorkItem(long l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    default WorkItem getWorkItem( long l ) {
+    default WorkItem getWorkItem(long l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    default void signalEvent( String s, Object o, long l ) {
+    default void signalEvent(String s, Object o, long l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    default void retryWorkItem( Long aLong, Map<String, Object> map ) {
+    default void retryWorkItem(Long aLong, Map<String, Object> map) {
         throw new UnsupportedOperationException();
     }
 

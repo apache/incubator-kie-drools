@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.monitoring.core.quarkus;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import java.util.List;
 
 import javax.ws.rs.core.FeatureContext;
 
-import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
@@ -46,7 +46,7 @@ class QuarkusMetricsFilterRegisterTest {
 
         verify(contextMock, times(numberOfTimes)).register(registerCaptor.capture());
 
-        if(httpInterceptorUseDefault) {
+        if (httpInterceptorUseDefault) {
             List<Object> values = registerCaptor.getAllValues();
             assertThat(values.isEmpty()).isFalse();
             assertThat(values.size()).isEqualTo(1);

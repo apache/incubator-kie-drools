@@ -27,14 +27,14 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RuleFlowProcessInstanceTest extends AbstractBaseTest  {
+public class RuleFlowProcessInstanceTest extends AbstractBaseTest {
 
     private static String PROCESS_ID = "process.test";
     static {
         ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
     }
 
-    public void addLogger() { 
+    public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
     }
 
@@ -47,7 +47,7 @@ public class RuleFlowProcessInstanceTest extends AbstractBaseTest  {
 
         KieSession workingMemory = createKieSession(process);
         assertThatThrownBy(() -> workingMemory.startProcess(PROCESS_ID))
-                           .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

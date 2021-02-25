@@ -22,11 +22,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.cloudevents.CloudEvent;
-import io.cloudevents.jackson.JsonFormat;
 import org.kie.kogito.events.knative.ce.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 
 @Path("/")
 public class CloudEventListenerResource {
@@ -34,7 +35,7 @@ public class CloudEventListenerResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudEventListenerResource.class);
 
     @POST
-    @Consumes({MediaType.APPLICATION_JSON, JsonFormat.CONTENT_TYPE})
+    @Consumes({ MediaType.APPLICATION_JSON, JsonFormat.CONTENT_TYPE })
     @Produces(MediaType.APPLICATION_JSON)
     public Response cloudEventListener(CloudEvent event) {
         try {

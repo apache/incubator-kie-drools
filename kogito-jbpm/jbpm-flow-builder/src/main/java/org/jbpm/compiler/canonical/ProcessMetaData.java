@@ -42,14 +42,14 @@ public class ProcessMetaData {
 
     private Set<String> workItems = new HashSet<>();
     private Map<String, String> subProcesses = new HashMap<>();
-    
+
     private Map<String, String> signals = new HashMap<>();
-    
+
     private List<TriggerMetaData> triggers = new ArrayList<>();
-    
+
     private boolean startable;
     private boolean dynamic;
- 
+
     private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
     private Set<CompilationUnit> generatedListeners = new HashSet<>();
 
@@ -60,9 +60,7 @@ public class ProcessMetaData {
         this.processName = processName;
         this.processVersion = processVersion;
         this.processPackageName = processPackageName;
-        this.processClassName = processPackageName == null ?
-                processClassName :
-                processPackageName + "." + processClassName;
+        this.processClassName = processPackageName == null ? processClassName : processPackageName + "." + processClassName;
         this.processBaseClassName = processClassName;
     }
 
@@ -128,8 +126,8 @@ public class ProcessMetaData {
 
     public void setWorkItems(Set<String> workItems) {
         this.workItems = workItems;
-    }    
-    
+    }
+
     public Map<String, String> getSubProcesses() {
         return subProcesses;
     }
@@ -142,16 +140,16 @@ public class ProcessMetaData {
     public Map<String, CompilationUnit> getGeneratedHandlers() {
         return generatedHandlers;
     }
-    
+
     public ProcessMetaData addGeneratedHandler(String workName, CompilationUnit handlerClass) {
         generatedHandlers.put(workName, handlerClass);
         return this;
     }
-    
+
     public Set<CompilationUnit> getGeneratedListeners() {
         return generatedListeners;
     }
-    
+
     public void setGeneratedListeners(Set<CompilationUnit> generatedListeners) {
         this.generatedListeners = generatedListeners;
     }
@@ -168,12 +166,12 @@ public class ProcessMetaData {
     public List<TriggerMetaData> getTriggers() {
         return triggers;
     }
-    
+
     public ProcessMetaData addTrigger(TriggerMetaData trigger) {
         triggers.add(trigger);
         return this;
     }
-    
+
     public boolean isStartable() {
         return startable;
     }

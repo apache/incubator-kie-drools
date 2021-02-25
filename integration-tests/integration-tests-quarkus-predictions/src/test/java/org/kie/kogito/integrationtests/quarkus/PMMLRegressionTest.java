@@ -18,9 +18,10 @@ package org.kie.kogito.integrationtests.quarkus;
 import java.util.Collections;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.Test;
 
 import static org.kie.kogito.integrationtests.quarkus.CommonTestUtils.testDescriptive;
 import static org.kie.kogito.integrationtests.quarkus.CommonTestUtils.testResult;

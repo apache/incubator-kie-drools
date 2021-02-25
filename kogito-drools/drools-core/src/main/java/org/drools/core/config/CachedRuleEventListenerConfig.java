@@ -46,14 +46,14 @@ public class CachedRuleEventListenerConfig implements RuleEventListenerConfig {
         ruleRuntimeListeners.add(listener);
         return this;
     }
-    
+
     @Override
     public List<AgendaEventListener> agendaListeners() {
         return agendaListeners;
     }
 
     @Override
-    public List<RuleRuntimeEventListener> ruleRuntimeListeners() {        
+    public List<RuleRuntimeEventListener> ruleRuntimeListeners() {
         return ruleRuntimeListeners;
     }
 

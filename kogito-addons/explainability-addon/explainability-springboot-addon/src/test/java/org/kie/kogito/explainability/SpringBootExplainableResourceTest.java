@@ -64,8 +64,8 @@ class SpringBootExplainableResourceTest {
         Map<String, Object> expectedFine = new HashMap<>();
         expectedFine.put("Points", BigDecimal.valueOf(7));
         expectedFine.put("Amount", BigDecimal.valueOf(1000));
-        assertEquals(expectedFine.get("Points"), ((Map<String, Object>)result.get("Fine")).get("Points"));
-        assertEquals(expectedFine.get("Amount"), ((Map<String, Object>)result.get("Fine")).get("Amount"));
+        assertEquals(expectedFine.get("Points"), ((Map<String, Object>) result.get("Fine")).get("Points"));
+        assertEquals(expectedFine.get("Amount"), ((Map<String, Object>) result.get("Fine")).get("Amount"));
     }
 
     @Test

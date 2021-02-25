@@ -18,32 +18,32 @@ package org.jbpm.workflow.core.impl;
 import java.io.Serializable;
 
 public class ConnectionRef implements Serializable {
-    
+
     private static final long serialVersionUID = 510l;
-	
+
     private String connectionId;
-	private String toType;
+    private String toType;
     private long nodeId;
-    
+
     public ConnectionRef(long nodeId, String toType) {
         this.nodeId = nodeId;
         this.toType = toType;
     }
-    
+
     public ConnectionRef(String connectionId, long nodeId, String toType) {
         this.connectionId = connectionId;
         this.nodeId = nodeId;
         this.toType = toType;
     }
-    
+
     public String getToType() {
         return toType;
     }
-    
+
     public long getNodeId() {
         return nodeId;
-    }    
-    
+    }
+
     public String getConnectionId() {
         return connectionId;
     }
@@ -81,5 +81,5 @@ public class ConnectionRef implements Serializable {
             return false;
         return true;
     }
-    
+
 }

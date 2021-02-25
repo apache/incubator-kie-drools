@@ -20,12 +20,12 @@ import java.util.Optional;
 import org.drools.core.event.KogitoProcessEventSupportImpl;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
-import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.process.ProcessEventListenerConfig;
-import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.process.ProcessEventListenerConfig;
+import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -41,10 +41,10 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final UnitOfWorkManager unitOfWorkManager;
 
     public AbstractProcessRuntimeServiceProvider(JobsService jobsService,
-                                                 WorkItemHandlerConfig workItemHandlerProvider,
-                                                 ProcessEventListenerConfig processEventListenerProvider,
-                                                 SignalManagerHub compositeSignalManager,
-                                                 UnitOfWorkManager unitOfWorkManager) {
+            WorkItemHandlerConfig workItemHandlerProvider,
+            ProcessEventListenerConfig processEventListenerProvider,
+            SignalManagerHub compositeSignalManager,
+            UnitOfWorkManager unitOfWorkManager) {
         this.unitOfWorkManager = unitOfWorkManager;
         processInstanceManager = new DefaultProcessInstanceManager();
         signalManager = new LightSignalManager(
@@ -61,7 +61,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
         }
 
         for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
-            this.eventSupport.addEventListener(( KogitoProcessEventListener ) listener);
+            this.eventSupport.addEventListener((KogitoProcessEventListener) listener);
         }
     }
 

@@ -24,8 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DateStyle.class, name = "date"),
         @JsonSubTypes.Type(value = NumberStyle.class, name = "number")
-}
-)
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseStyle {
 

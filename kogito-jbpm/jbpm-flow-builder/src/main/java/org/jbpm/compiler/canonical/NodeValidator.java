@@ -46,9 +46,9 @@ public class NodeValidator {
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(
                     MessageFormat.format("Invalid parameters for {0} \"{1}\": {2}",
-                                         nodeType,
-                                         nodeId,
-                                         String.join(", ", errors)));
+                            nodeType,
+                            nodeId,
+                            String.join(", ", errors)));
         }
     }
 }

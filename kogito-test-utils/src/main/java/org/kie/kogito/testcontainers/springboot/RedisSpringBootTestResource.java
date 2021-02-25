@@ -32,7 +32,7 @@ public class RedisSpringBootTestResource extends ConditionalSpringBootTestResour
     }
 
     @Override
-    protected String getKogitoPropertyValue(){
+    protected String getKogitoPropertyValue() {
         return "http://localhost:" + getTestResource().getMappedPort();
     }
 

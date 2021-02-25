@@ -24,7 +24,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
  */
 public class SystemOutWorkItemHandler implements KogitoWorkItemHandler {
 
-    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         System.out.println("Executing work item " + workItem);
         manager.completeWorkItem(workItem.getStringId(), null);
     }

@@ -15,9 +15,11 @@
  */
 package org.kie.kogito.codegen.process.persistence;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.GeneratedFile;
@@ -27,10 +29,9 @@ import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.assertj.core.api.Assertions.assertThat;

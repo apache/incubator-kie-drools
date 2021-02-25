@@ -25,6 +25,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.core.io.impl.ByteArrayResource;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.PackageDeclaration;
@@ -33,9 +37,6 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 
 import static java.util.stream.Collectors.joining;
 

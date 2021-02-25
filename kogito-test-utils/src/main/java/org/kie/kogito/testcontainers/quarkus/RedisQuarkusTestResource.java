@@ -32,7 +32,7 @@ public class RedisQuarkusTestResource extends ConditionalQuarkusTestResource {
     }
 
     @Override
-    protected String getKogitoPropertyValue(){
+    protected String getKogitoPropertyValue() {
         return "http://localhost:" + getTestResource().getMappedPort();
     }
 

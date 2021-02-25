@@ -22,7 +22,6 @@ import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class DefaultCountDownProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCountDownProcessEventListener.class);
@@ -63,8 +62,8 @@ public class DefaultCountDownProcessEventListener extends DefaultKogitoProcessEv
     }
 
     protected void countDown() {
-        
+
         latch.countDown();
-        
+
     }
 }

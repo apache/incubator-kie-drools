@@ -30,8 +30,8 @@ public class KogitoProcessWorkItemTransitionEventImpl extends ProcessEvent imple
 
     private boolean transitioned;
 
-    public KogitoProcessWorkItemTransitionEventImpl( final ProcessInstance instance, KogitoWorkItem workItem, Transition<?> transition, KieRuntime kruntime, boolean transitioned) {
-        super( instance, kruntime );
+    public KogitoProcessWorkItemTransitionEventImpl(final ProcessInstance instance, KogitoWorkItem workItem, Transition<?> transition, KieRuntime kruntime, boolean transitioned) {
+        super(instance, kruntime);
         this.workItem = workItem;
         this.transition = transition;
         this.transitioned = transitioned;

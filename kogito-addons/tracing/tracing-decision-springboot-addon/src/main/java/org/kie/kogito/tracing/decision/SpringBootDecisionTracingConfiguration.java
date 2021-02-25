@@ -49,8 +49,7 @@ public class SpringBootDecisionTracingConfiguration {
             @Value(value = "${kogito.addon.tracing.decision.kafka.bootstrapAddress}") String kafkaBootstrapAddress,
             @Value(value = "${kogito.addon.tracing.decision.kafka.topic.name:kogito-tracing-decision}") String kafkaTopicName,
             @Value(value = "${kogito.addon.tracing.decision.kafka.topic.partitions:1}") int kafkaTopicPartitions,
-            @Value(value = "${kogito.addon.tracing.decision.kafka.topic.replicationFactor:1}") short kafkaTopicReplicationFactor
-    ) {
+            @Value(value = "${kogito.addon.tracing.decision.kafka.topic.replicationFactor:1}") short kafkaTopicReplicationFactor) {
         this.kafkaBootstrapAddress = kafkaBootstrapAddress;
         this.kafkaTopicName = kafkaTopicName;
         this.kafkaTopicPartitions = kafkaTopicPartitions;
@@ -62,8 +61,7 @@ public class SpringBootDecisionTracingConfiguration {
             final SpringBootTraceEventEmitter eventEmitter,
             final ConfigBean configBean,
             final Application application,
-            @Value(value = "${kogito.addon.tracing.decision.asyncEnabled:true}") final boolean asyncEnabled
-    ) {
+            @Value(value = "${kogito.addon.tracing.decision.asyncEnabled:true}") final boolean asyncEnabled) {
         if (asyncEnabled) {
             return new SpringBootDecisionTracingCollectorAsync(eventEmitter, configBean, application);
         } else {

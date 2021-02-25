@@ -20,7 +20,8 @@ public class ProcessErrorEventBody {
     private String nodeDefinitionId;
     private String errorMessage;
 
-    private ProcessErrorEventBody() {}
+    private ProcessErrorEventBody() {
+    }
 
     public String getNodeDefinitionId() {
         return nodeDefinitionId;

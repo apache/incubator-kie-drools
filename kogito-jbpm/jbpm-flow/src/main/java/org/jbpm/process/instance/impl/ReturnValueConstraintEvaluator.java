@@ -33,20 +33,20 @@ import org.kie.api.definition.process.Connection;
  * 
  */
 public class ReturnValueConstraintEvaluator
-    implements
-    Constraint,
-    ConstraintEvaluator,
-    Wireable,
-    Externalizable {
+        implements
+        Constraint,
+        ConstraintEvaluator,
+        Wireable,
+        Externalizable {
 
     private static final long serialVersionUID = 510l;
 
-    private String            name;
-    private String            constraint;
-    private int               priority;
-    private String            dialect;
-    private String            type;
-    private boolean           isDefault = false;
+    private String name;
+    private String constraint;
+    private int priority;
+    private String dialect;
+    private String type;
+    private boolean isDefault = false;
 
     public ReturnValueConstraintEvaluator() {
     }
@@ -98,15 +98,15 @@ public class ReturnValueConstraintEvaluator
     }
 
     public boolean isDefault() {
-		return isDefault;
-	}
+        return isDefault;
+    }
 
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
-	}
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 
-	public void wire(Object object) {
-        setEvaluator( (ReturnValueEvaluator) object );
+    public void wire(Object object) {
+        setEvaluator((ReturnValueEvaluator) object);
     }
 
     public void setEvaluator(ReturnValueEvaluator evaluator) {
@@ -118,25 +118,25 @@ public class ReturnValueConstraintEvaluator
     }
 
     public boolean evaluate(NodeInstance instance,
-                            Connection connection,
-                            Constraint constraint) {
+            Connection connection,
+            Constraint constraint) {
         Object value;
         try {
-            KogitoProcessContextImpl context = new KogitoProcessContextImpl(((ProcessInstance)instance.getProcessInstance()).getKnowledgeRuntime());
-            context.setNodeInstance( instance );
-            value = this.evaluator.evaluate( context );
-        } catch ( Exception e ) {
-            throw new RuntimeException( "unable to execute ReturnValueEvaluator: ",
-                                        e );
+            KogitoProcessContextImpl context = new KogitoProcessContextImpl(((ProcessInstance) instance.getProcessInstance()).getKnowledgeRuntime());
+            context.setNodeInstance(instance);
+            value = this.evaluator.evaluate(context);
+        } catch (Exception e) {
+            throw new RuntimeException("unable to execute ReturnValueEvaluator: ",
+                    e);
         }
-        if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException( "Constraints must return boolean values: " + value + " for expression " + constraint);
+        if (!(value instanceof Boolean)) {
+            throw new RuntimeException("Constraints must return boolean values: " + value + " for expression " + constraint);
         }
         return ((Boolean) value).booleanValue();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         this.evaluator = (ReturnValueEvaluator) in.readObject();
         this.name = in.readUTF();
         this.constraint = (String) in.readObject();
@@ -147,24 +147,24 @@ public class ReturnValueConstraintEvaluator
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        if ( this.evaluator instanceof CompiledInvoker ) {
-            out.writeObject( null );
+        if (this.evaluator instanceof CompiledInvoker) {
+            out.writeObject(null);
         } else {
-            out.writeObject( this.evaluator );
+            out.writeObject(this.evaluator);
         }
-        out.writeUTF( this.name );
-        out.writeObject( this.constraint );
-        out.writeInt( this.priority );
-        out.writeUTF( dialect );
-        out.writeObject( type );
+        out.writeUTF(this.name);
+        out.writeObject(this.constraint);
+        out.writeInt(this.priority);
+        out.writeUTF(dialect);
+        out.writeObject(type);
     }
 
     public void setMetaData(String name, Object value) {
-    	// Do nothing
+        // Do nothing
     }
-    
+
     public Object getMetaData(String name) {
         return null;
     }
-    
+
 }

@@ -25,8 +25,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
@@ -36,6 +34,9 @@ import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.KiePMMLModel;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class CommonTestUtility {
 
@@ -81,7 +82,7 @@ public class CommonTestUtility {
         OP_TYPE opType = OP_TYPE.values()[random.nextInt(OP_TYPE.values().length)];
         DATA_TYPE dataType = DATA_TYPE.values()[random.nextInt(DATA_TYPE.values().length)];
         List<Interval> intervals = IntStream.range(0, 3)
-                .mapToObj(i -> new Interval(i*2+3, i*3+4))
+                .mapToObj(i -> new Interval(i * 2 + 3, i * 3 + 4))
                 .collect(Collectors.toList());
         return new MiningField(fieldName, fieldUsageType, opType, dataType, null, null, intervals);
     }

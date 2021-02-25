@@ -18,13 +18,14 @@ package org.kie.kogito.quarkus.runtime.graal.graal;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.oracle.svm.core.annotate.Substitute;
-import com.oracle.svm.core.annotate.TargetClass;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.Accessor;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.impl.asm.ASMAccessorOptimizer;
+
+import com.oracle.svm.core.annotate.Substitute;
+import com.oracle.svm.core.annotate.TargetClass;
 
 final class MvelSubstitutions {
 
@@ -68,19 +69,19 @@ final class MVEL_Target {
 final class ASMAccessorOptimizer_Target {
 
     @Substitute
-    public Accessor optimizeAccessor( ParserContext pCtx, char[] property, int start, int offset, Object ctx, Object thisRef,
-                                      VariableResolverFactory factory, boolean rootThisRef, Class ingressType) {
+    public Accessor optimizeAccessor(ParserContext pCtx, char[] property, int start, int offset, Object ctx, Object thisRef,
+            VariableResolverFactory factory, boolean rootThisRef, Class ingressType) {
         throw new UnsupportedOperationException();
     }
 
     @Substitute
     public Accessor optimizeSetAccessor(ParserContext pCtx, char[] property, int start, int offset, Object ctx, Object thisRef,
-                                        VariableResolverFactory factory, boolean rootThisRef, Object value, Class ingressType) {
+            VariableResolverFactory factory, boolean rootThisRef, Object value, Class ingressType) {
         throw new UnsupportedOperationException();
     }
 
     @Substitute
-    public Accessor optimizeCollection(ParserContext pCtx, Object collectionGraph, Class type, char[] property, int start, int offset, Object ctx, Object thisRef, VariableResolverFactory factory){
+    public Accessor optimizeCollection(ParserContext pCtx, Object collectionGraph, Class type, char[] property, int start, int offset, Object ctx, Object thisRef, VariableResolverFactory factory) {
         throw new UnsupportedOperationException();
     }
 

@@ -57,105 +57,106 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         super(id, kBase, initInitFactHandle, config, environment);
     }
 
-    public KogitoStatefulKnowledgeSessionImpl(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+    public KogitoStatefulKnowledgeSessionImpl(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda,
+            Environment environment) {
         super(id, kBase, handleFactory, propagationContext, config, agenda, environment);
     }
 
     @Override
     public KogitoProcessRuntime getKogitoProcessRuntime() {
-        return (( KogitoProcessRuntime.Provider ) getProcessRuntime()).getKogitoProcessRuntime();
+        return ((KogitoProcessRuntime.Provider) getProcessRuntime()).getKogitoProcessRuntime();
     }
 
     @Override
     protected TimerService createTimerService() {
-        return KogitoTimerServiceFactory.getTimerService( this.config );
+        return KogitoTimerServiceFactory.getTimerService(this.config);
     }
 
     @Override
     public ProcessInstance getProcessInstance(Object processInstanceId) {
-        return getProcessInstance( (String) processInstanceId );
+        return getProcessInstance((String) processInstanceId);
     }
 
     @Override
-    public KogitoProcessInstance getProcessInstance( String processInstanceId) {
-        return getKogitoProcessRuntime().getProcessInstance( processInstanceId );
+    public KogitoProcessInstance getProcessInstance(String processInstanceId) {
+        return getKogitoProcessRuntime().getProcessInstance(processInstanceId);
     }
 
     @Override
-    public KogitoProcessInstance getProcessInstance( String processInstanceId, boolean readonly ) {
+    public KogitoProcessInstance getProcessInstance(String processInstanceId, boolean readonly) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public KnowledgeHelper createKnowledgeHelper() {
-        return new RuleUnitKnowledgeHelper( this );
+        return new RuleUnitKnowledgeHelper(this);
     }
 
     public Application getApplication() {
         return application;
     }
 
-    public void setApplication( Application application ) {
+    public void setApplication(Application application) {
         this.application = application;
     }
 
-    public Object startProcessInstance( String subProcessInstanceId ) {
-        throw new UnsupportedOperationException( "org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl.startProcessInstance -> TODO" );
+    public Object startProcessInstance(String subProcessInstanceId) {
+        throw new UnsupportedOperationException("org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl.startProcessInstance -> TODO");
     }
 
     public static class RuleUnitKnowledgeHelper extends DefaultKnowledgeHelper {
 
         private final KogitoStatefulKnowledgeSessionImpl kogitoSession;
 
-        public RuleUnitKnowledgeHelper( KogitoStatefulKnowledgeSessionImpl workingMemory ) {
+        public RuleUnitKnowledgeHelper(KogitoStatefulKnowledgeSessionImpl workingMemory) {
             super(workingMemory);
             this.kogitoSession = workingMemory;
         }
 
         @Override
         public void run(String ruleUnitName) {
-            kogitoSession.getApplication().get(RuleUnits.class).getRegisteredInstance( ruleUnitName ).fire();
+            kogitoSession.getApplication().get(RuleUnits.class).getRegisteredInstance(ruleUnitName).fire();
         }
 
         @Override
-        public void update( final FactHandle handle, BitMask mask, Class modifiedClass ) {
+        public void update(final FactHandle handle, BitMask mask, Class modifiedClass) {
             InternalFactHandle h = (InternalFactHandle) handle;
 
-            if (h instanceof KogitoDefaultFactHandle && (( KogitoDefaultFactHandle ) h).getDataStore() != null) {
+            if (h instanceof KogitoDefaultFactHandle && ((KogitoDefaultFactHandle) h).getDataStore() != null) {
                 // This handle has been insert from a datasource, so update it
-                (( KogitoDefaultFactHandle ) h).getDataStore().update( (KogitoDefaultFactHandle) h,
+                ((KogitoDefaultFactHandle) h).getDataStore().update((KogitoDefaultFactHandle) h,
                         h.getObject(),
                         mask,
                         modifiedClass,
-                        this.activation );
+                        this.activation);
                 return;
             }
 
-            (( InternalWorkingMemoryEntryPoint ) h.getEntryPoint(kogitoSession)).update( h,
-                    ((InternalFactHandle)handle).getObject(),
+            ((InternalWorkingMemoryEntryPoint) h.getEntryPoint(kogitoSession)).update(h,
+                    ((InternalFactHandle) handle).getObject(),
                     mask,
                     modifiedClass,
-                    this.activation );
-            if ( h.isTraitOrTraitable() ) {
-                workingMemory.updateTraits( h, mask, modifiedClass, this.activation );
+                    this.activation);
+            if (h.isTraitOrTraitable()) {
+                workingMemory.updateTraits(h, mask, modifiedClass, this.activation);
             }
         }
 
         @Override
-        public void delete(FactHandle handle, FactHandle.State fhState ) {
+        public void delete(FactHandle handle, FactHandle.State fhState) {
             InternalFactHandle h = (InternalFactHandle) handle;
 
-            if (h instanceof KogitoDefaultFactHandle && (( KogitoDefaultFactHandle ) h).getDataStore() != null) {
+            if (h instanceof KogitoDefaultFactHandle && ((KogitoDefaultFactHandle) h).getDataStore() != null) {
                 // This handle has been insert from a datasource, so remove from it
-                (( KogitoDefaultFactHandle ) h).getDataStore().delete( (KogitoDefaultFactHandle) h,
+                ((KogitoDefaultFactHandle) h).getDataStore().delete((KogitoDefaultFactHandle) h,
                         this.activation.getRule(),
                         this.activation.getTuple().getTupleSink(),
                         fhState);
                 return;
             }
 
-            if ( h.isTraiting() ) {
-                delete( (( Thing ) h.getObject()).getCore() );
+            if (h.isTraiting()) {
+                delete(((Thing) h.getObject()).getCore());
                 return;
             }
 
@@ -166,8 +167,8 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         }
 
         @Override
-        protected boolean sameNodeInstance( NodeInstance subNodeInstance, String nodeInstanceId ) {
-            return (( KogitoNodeInstance ) subNodeInstance).getStringId().equals( nodeInstanceId );
+        protected boolean sameNodeInstance(NodeInstance subNodeInstance, String nodeInstanceId) {
+            return ((KogitoNodeInstance) subNodeInstance).getStringId().equals(nodeInstanceId);
         }
 
         @Override
@@ -176,14 +177,14 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         }
 
         @Override
-        protected WrappedStatefulKnowledgeSessionForRHS createWrappedSession( WorkingMemory workingMemory ) {
-            return new KogitoWrappedStatefulKnowledgeSessionForRHS( (KogitoStatefulKnowledgeSessionImpl) workingMemory );
+        protected WrappedStatefulKnowledgeSessionForRHS createWrappedSession(WorkingMemory workingMemory) {
+            return new KogitoWrappedStatefulKnowledgeSessionForRHS((KogitoStatefulKnowledgeSessionImpl) workingMemory);
         }
     }
 
     public static class KogitoWrappedStatefulKnowledgeSessionForRHS extends WrappedStatefulKnowledgeSessionForRHS implements KogitoProcessRuntime.Provider {
 
-        public KogitoWrappedStatefulKnowledgeSessionForRHS( KogitoStatefulKnowledgeSessionImpl delegate ) {
+        public KogitoWrappedStatefulKnowledgeSessionForRHS(KogitoStatefulKnowledgeSessionImpl delegate) {
             super(delegate);
         }
 
@@ -193,12 +194,12 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         }
 
         public ProcessInstance getProcessInstance(String id) {
-            return ((KogitoStatefulKnowledgeSessionImpl)delegate).getProcessInstance(id);
+            return ((KogitoStatefulKnowledgeSessionImpl) delegate).getProcessInstance(id);
         }
 
         @Override
         public KogitoProcessRuntime getKogitoProcessRuntime() {
-            return (( KogitoProcessRuntime.Provider) delegate).getKogitoProcessRuntime();
+            return ((KogitoProcessRuntime.Provider) delegate).getKogitoProcessRuntime();
         }
     }
 }

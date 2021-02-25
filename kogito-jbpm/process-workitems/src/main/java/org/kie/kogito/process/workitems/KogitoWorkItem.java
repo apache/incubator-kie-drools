@@ -29,11 +29,11 @@ public interface KogitoWorkItem extends org.drools.core.process.instance.WorkIte
     String getNodeInstanceStringId();
 
     void setPhaseId(String phaseId);
-    
+
     void setPhaseStatus(String phaseStatus);
 
     void setStartDate(Date date);
-    
+
     void setCompleteDate(Date date);
 
     void setNodeInstance(NodeInstance nodeInstance);

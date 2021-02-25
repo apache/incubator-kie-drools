@@ -28,56 +28,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultTimerJobInstance
-    implements
-    Callable<Void>,
-    Comparable<DefaultTimerJobInstance>,
-    TimerJobInstance, Serializable {
+        implements
+        Callable<Void>,
+        Comparable<DefaultTimerJobInstance>,
+        TimerJobInstance, Serializable {
 
     private static final long serialVersionUID = -4441139572159254264L;
 
     protected static final transient Logger logger = LoggerFactory.getLogger(DefaultTimerJobInstance.class);
-    
-    private final Job                         job;
+
+    private final Job job;
     private final Trigger trigger;
     private final JobContext ctx;
     protected transient InternalSchedulerService scheduler;
     private final JobHandle handle;
 
     public DefaultTimerJobInstance(Job job,
-                          JobContext ctx,
-                          Trigger trigger,
-                          JobHandle handle,
-                          InternalSchedulerService scheduler) {
+            JobContext ctx,
+            Trigger trigger,
+            JobHandle handle,
+            InternalSchedulerService scheduler) {
         this.job = job;
         this.ctx = ctx;
         this.trigger = trigger;
         this.handle = handle;
         this.scheduler = scheduler;
     }
-    
 
     public int compareTo(DefaultTimerJobInstance o) {
-        return this.trigger.hasNextFireTime().compareTo( o.getTrigger().hasNextFireTime() );
-    }    
+        return this.trigger.hasNextFireTime().compareTo(o.getTrigger().hasNextFireTime());
+    }
 
     public Void call() throws Exception {
-        try { 
+        try {
             this.trigger.nextFireTime(); // need to pop
-            if ( handle.isCancel() ) {
+            if (handle.isCancel()) {
                 return null;
             }
-            this.job.execute( this.ctx );
-            if ( handle.isCancel() ) {
+            this.job.execute(this.ctx);
+            if (handle.isCancel()) {
                 return null;
             }
 
             // our triggers allow for flexible rescheduling
             Date date = this.trigger.hasNextFireTime();
-            if ( date != null ) {
-                scheduler.internalSchedule( this );
+            if (date != null) {
+                scheduler.internalSchedule(this);
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             logger.warn("Unable to execute timer job!", e);
             throw e;
         }

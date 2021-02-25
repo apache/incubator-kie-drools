@@ -20,12 +20,13 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 
-import io.quarkus.test.Mock;
 import org.kie.api.management.GAV;
 import org.kie.kogito.decision.DecisionModelResource;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;
+
+import io.quarkus.test.Mock;
 
 import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.TEST_MODEL_NAME;
 import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.TEST_MODEL_NAMESPACE;

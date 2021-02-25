@@ -15,16 +15,17 @@
  */
 package org.kie.kogito.cloud.workitems;
 
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.ServiceResource;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeConfig;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+
+import io.fabric8.kubernetes.api.model.Service;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.ServiceResource;
+import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 
 /**
  * Base class for tests with Kubernetes API. In this scenario, nor Istio or KNative is available.
@@ -73,12 +74,12 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
     private void createsIstioIngressGateway() {
         final ServiceResource<Service> serviceResource =
                 this.server.getClient()
-                           .inNamespace(KogitoKubeConfig.KNATIVE_ISTIO_NAMESPACE)
-                           .services()
-                           .load(this.getClass().getResource("/mock/responses/ocp4.x/istio/services-istio-ingressgateway.json"));
+                        .inNamespace(KogitoKubeConfig.KNATIVE_ISTIO_NAMESPACE)
+                        .services()
+                        .load(this.getClass().getResource("/mock/responses/ocp4.x/istio/services-istio-ingressgateway.json"));
         this.server.getClient()
-                   .inNamespace(KogitoKubeConfig.KNATIVE_ISTIO_NAMESPACE)
-                   .services().create(serviceResource.get());
+                .inNamespace(KogitoKubeConfig.KNATIVE_ISTIO_NAMESPACE)
+                .services().create(serviceResource.get());
         this.istioEnabled = true;
     }
 
@@ -89,10 +90,12 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
         }
 
         @Override
-        public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {}
+        public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        }
 
         @Override
-        public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {}
+        public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        }
 
     }
 

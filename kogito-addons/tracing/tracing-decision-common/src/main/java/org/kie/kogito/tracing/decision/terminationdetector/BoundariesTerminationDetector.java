@@ -51,8 +51,7 @@ public class BoundariesTerminationDetector implements TerminationDetector {
     }
 
     private boolean isValidLastEventType(EvaluateEventType type) {
-        return firstEvent != null && (
-                firstEvent.getType() == EvaluateEventType.BEFORE_EVALUATE_ALL && type == EvaluateEventType.AFTER_EVALUATE_ALL || firstEvent.getType() == EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE && type == EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE
-        );
+        return firstEvent != null && (firstEvent.getType() == EvaluateEventType.BEFORE_EVALUATE_ALL && type == EvaluateEventType.AFTER_EVALUATE_ALL
+                || firstEvent.getType() == EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE && type == EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE);
     }
 }

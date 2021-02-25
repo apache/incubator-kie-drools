@@ -33,7 +33,7 @@ public class EnumDataType implements DataType {
 
     private String className;
     private transient Map<String, Object> valueMap;
-    
+
     public EnumDataType() {
     }
 
@@ -63,7 +63,7 @@ public class EnumDataType implements DataType {
         }
         return getValueMap(null).containsValue(value);
     }
-    
+
     public Object readValue(String value) {
         return getValueMap(null).get(value);
     }
@@ -93,7 +93,7 @@ public class EnumDataType implements DataType {
     }
 
     public Map<String, Object> getValueMap() {
-        return getValueMap( null );
+        return getValueMap(null);
     }
 
     public Map<String, Object> getValueMap(ClassLoader classLoader) {
@@ -103,26 +103,26 @@ public class EnumDataType implements DataType {
                 if (className == null) {
                     return null;
                 }
-                Class<?> clazz = classLoader == null ? Class.forName(className):Class.forName(className,true,classLoader);
+                Class<?> clazz = classLoader == null ? Class.forName(className) : Class.forName(className, true, classLoader);
                 if (!clazz.isEnum()) {
                     return null;
                 }
                 Object[] values = (Object[]) clazz.getMethod("values", null).invoke(clazz, null);
-                for (Object value: values) {
+                for (Object value : values) {
                     this.valueMap.put(value.toString(), value);
                 }
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(
-                    "Could not find data type " + className);
+                        "Could not find data type " + className);
             } catch (IllegalAccessException e) {
                 throw new IllegalArgumentException(
-                    "IllegalAccessException " + e);
+                        "IllegalAccessException " + e);
             } catch (InvocationTargetException e) {
                 throw new IllegalArgumentException(
-                    "InvocationTargetException " + e);
+                        "InvocationTargetException " + e);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(
-                    "NoSuchMethodException " + e);
+                        "NoSuchMethodException " + e);
             }
 
         }

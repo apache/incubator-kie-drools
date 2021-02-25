@@ -18,7 +18,6 @@ package org.kie.kogito.mongodb;
 import java.util.Collections;
 import java.util.Optional;
 
-import com.mongodb.client.MongoClient;
 import org.drools.core.io.impl.ClassPathResource;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
@@ -27,6 +26,8 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+
+import com.mongodb.client.MongoClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;

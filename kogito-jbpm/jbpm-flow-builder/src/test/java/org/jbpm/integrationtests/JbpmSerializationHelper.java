@@ -20,9 +20,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.impl.EnvironmentFactory;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSession;
@@ -35,64 +35,64 @@ import org.slf4j.LoggerFactory;
  * Marshalling helper class to perform serialize/de-serialize a given object
  */
 public class JbpmSerializationHelper extends SerializationHelper {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JbpmSerializationHelper.class);
-    
+
     public static <T> T serializeObject(T obj) throws IOException,
-                                              ClassNotFoundException {
-        return serializeObject( obj,
-                                null );
+            ClassNotFoundException {
+        return serializeObject(obj,
+                null);
     }
 
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession) throws Exception { 
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession) throws Exception {
         return SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
     }
-    
+
     @SuppressWarnings("unchecked")
-	public static <T> T serializeObject(T obj,
-                                        ClassLoader classLoader) throws IOException,
-                                                                ClassNotFoundException {
-        return (T) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( obj ),
-                                               classLoader );
+    public static <T> T serializeObject(T obj,
+            ClassLoader classLoader) throws IOException,
+            ClassNotFoundException {
+        return (T) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(obj),
+                classLoader);
     }
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                                 boolean dispose) throws Exception {
+            boolean dispose) throws Exception {
 
-        return getSerialisedStatefulKnowledgeSession( ksession,
-                                                      MarshallerFactory.newSerializeMarshallingStrategy(),
-                                                      dispose );
+        return getSerialisedStatefulKnowledgeSession(ksession,
+                MarshallerFactory.newSerializeMarshallingStrategy(),
+                dispose);
     }
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                                 ObjectMarshallingStrategy strategy,
-                                                                                 boolean dispose) throws Exception {
+            ObjectMarshallingStrategy strategy,
+            boolean dispose) throws Exception {
 
-        ObjectMarshallingStrategy [] strategies = new ObjectMarshallingStrategy[] { strategy }; 
-        
+        ObjectMarshallingStrategy[] strategies = new ObjectMarshallingStrategy[] { strategy };
+
         return getSerialisedStatefulKnowledgeSession(ksession, strategies, dispose);
     }
-    
+
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                                 ObjectMarshallingStrategy [] strategies,
-                                                                                 boolean dispose) throws Exception {
-       
-        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase(), strategies );
-        
-        final byte [] b1 = serializeKnowledgeSession(marshaller, ksession);
+            ObjectMarshallingStrategy[] strategies,
+            boolean dispose) throws Exception {
+
+        Marshaller marshaller = MarshallerFactory.newMarshaller(ksession.getKieBase(), strategies);
+
+        final byte[] b1 = serializeKnowledgeSession(marshaller, ksession);
         StatefulKnowledgeSession ksession2 = deserializeKnowledgeSession(marshaller, b1);
-       
+
         final byte[] b2 = serializeKnowledgeSession(marshaller, ksession2);
 
         // bytes should be the same.
-        if ( !areByteArraysEqual( b1,
-                                  b2 ) ) {
-//            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
+        if (!areByteArraysEqual(b1,
+                b2)) {
+            //            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
-        ((StatefulKnowledgeSessionImpl) ksession2).setGlobalResolver( ((StatefulKnowledgeSessionImpl) ksession).getGlobalResolver() );
+        ((StatefulKnowledgeSessionImpl) ksession2).setGlobalResolver(((StatefulKnowledgeSessionImpl) ksession).getGlobalResolver());
 
-        if ( dispose ) {
+        if (dispose) {
             ksession.dispose();
         }
 
@@ -100,7 +100,7 @@ public class JbpmSerializationHelper extends SerializationHelper {
     }
 
     public static byte[] serializeKnowledgeSession(Marshaller marshaller,
-                                                   StatefulKnowledgeSession ksession) throws Exception {
+            StatefulKnowledgeSession ksession) throws Exception {
 
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             marshaller.marshall(bos, ksession);
@@ -109,33 +109,32 @@ public class JbpmSerializationHelper extends SerializationHelper {
     }
 
     public static StatefulKnowledgeSession deserializeKnowledgeSession(Marshaller marshaller,
-                                                                       byte[] serializedKsession) throws Exception {
+            byte[] serializedKsession) throws Exception {
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(serializedKsession)) {
 
-            StatefulKnowledgeSession deserializedKsession = (StatefulKnowledgeSession)
-                    marshaller.unmarshall(bais,
-                                          SessionConfiguration.newInstance(),
-                                          EnvironmentFactory.newEnvironment());
+            StatefulKnowledgeSession deserializedKsession = (StatefulKnowledgeSession) marshaller.unmarshall(bais,
+                    SessionConfiguration.newInstance(),
+                    EnvironmentFactory.newEnvironment());
             return deserializedKsession;
         }
     }
 
     public static boolean areByteArraysEqual(byte[] b1,
-                                             byte[] b2) {
-        if ( b1.length != b2.length ) {
-            logger.info( "Different length: b1={} b2={}", b1.length, b2.length );
+            byte[] b2) {
+        if (b1.length != b2.length) {
+            logger.info("Different length: b1={} b2={}", b1.length, b2.length);
             return false;
         }
 
-        for ( int i = 0, length = b1.length; i < length; i++ ) {
-            if ( b1[i] != b2[i] ) {
-                logger.info( "Difference at {} : [{}] != [{}]", i, b1[i], b2[i]);
+        for (int i = 0, length = b1.length; i < length; i++) {
+            if (b1[i] != b2[i]) {
+                logger.info("Difference at {} : [{}] != [{}]", i, b1[i], b2[i]);
                 return false;
             }
         }
 
         return true;
     }
-    
+
 }

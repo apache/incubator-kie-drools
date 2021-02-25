@@ -31,46 +31,44 @@ public class TestWorkItemHandler implements KogitoWorkItemHandler {
 
     private List<KogitoWorkItem> workItems = new ArrayList<>();
 
-    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager ) {
-        workItems.add( workItem );
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        workItems.add(workItem);
 
-        if ( workItem instanceof HumanTaskWorkItem ) {
-            HumanTaskWorkItemImpl humanTaskWorkItem = ( HumanTaskWorkItemImpl ) workItem;
+        if (workItem instanceof HumanTaskWorkItem) {
+            HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
 
-            humanTaskWorkItem.setPhaseId( Active.ID );
-            humanTaskWorkItem.setPhaseStatus( Active.STATUS );
+            humanTaskWorkItem.setPhaseId(Active.ID);
+            humanTaskWorkItem.setPhaseStatus(Active.STATUS);
         }
     }
 
-    public void abortWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager ) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
     }
 
     public KogitoWorkItem getWorkItem() {
-        if ( workItems.size() == 0 ) {
+        if (workItems.size() == 0) {
             return null;
         }
-        if ( workItems.size() == 1 ) {
-            KogitoWorkItem result = workItems.get( 0 );
+        if (workItems.size() == 1) {
+            KogitoWorkItem result = workItems.get(0);
             this.workItems.clear();
             return result;
         } else {
-            throw new IllegalArgumentException( "More than one work item active" );
+            throw new IllegalArgumentException("More than one work item active");
         }
     }
 
     public List<KogitoWorkItem> getWorkItems() {
-        List<KogitoWorkItem> result = new ArrayList<>( workItems );
+        List<KogitoWorkItem> result = new ArrayList<>(workItems);
         workItems.clear();
         return result;
     }
 
     @Override
-    public void transitionToPhase( KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition ) {
+    public void transitionToPhase(KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
 
-
-        if ( transition.phase().equals( Complete.ID ) ) {
-            (( org.kie.kogito.process.workitems.KogitoWorkItemManager ) manager).internalCompleteWorkItem( ( org.kie.kogito.process.workitems.KogitoWorkItem ) workItem );
+        if (transition.phase().equals(Complete.ID)) {
+            ((org.kie.kogito.process.workitems.KogitoWorkItemManager) manager).internalCompleteWorkItem((org.kie.kogito.process.workitems.KogitoWorkItem) workItem);
         }
     }
 }
-

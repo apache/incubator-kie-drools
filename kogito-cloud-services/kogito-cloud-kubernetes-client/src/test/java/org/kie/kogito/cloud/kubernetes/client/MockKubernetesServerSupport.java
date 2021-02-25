@@ -19,6 +19,9 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import io.fabric8.kubernetes.api.model.IntOrString;
 import io.fabric8.kubernetes.api.model.KubernetesList;
 import io.fabric8.kubernetes.api.model.LoadBalancerStatus;
@@ -30,8 +33,6 @@ import io.fabric8.kubernetes.api.model.ServiceStatus;
 import io.fabric8.kubernetes.client.dsl.RecreateFromServerGettable;
 import io.fabric8.kubernetes.client.dsl.ServiceResource;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base class to test use cases that need to query the API
@@ -84,7 +85,8 @@ public abstract class MockKubernetesServerSupport {
     }
 
     /**
-     * Same as {@link #createMockService()}, but let you choose the namespace. 
+     * Same as {@link #createMockService()}, but let you choose the namespace.
+     * 
      * @param namespace null to not specify where.
      */
     protected void createMockService(final String namespace) {

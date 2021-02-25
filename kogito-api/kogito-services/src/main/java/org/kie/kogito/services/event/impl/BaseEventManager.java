@@ -30,7 +30,7 @@ public class BaseEventManager implements EventManager {
     private String service;
     private Addons addons;
     private Set<EventPublisher> publishers = new LinkedHashSet<>();
-    
+
     @Override
     public EventBatch newBatch() {
         return new ProcessInstanceEventBatch(service, addons);
@@ -43,7 +43,7 @@ public class BaseEventManager implements EventManager {
             return;
         }
         Collection<DataEvent<?>> events = batch.events();
-        
+
         publishers.forEach(p -> p.publish(events));
     }
 

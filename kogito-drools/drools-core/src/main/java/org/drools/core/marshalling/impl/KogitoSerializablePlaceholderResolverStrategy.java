@@ -30,7 +30,7 @@ public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObje
 
     private ObjectMarshallingStrategyAcceptor acceptor;
 
-    public KogitoSerializablePlaceholderResolverStrategy( ObjectMarshallingStrategyAcceptor acceptor) {
+    public KogitoSerializablePlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
         this.acceptor = acceptor;
     }
 
@@ -44,35 +44,35 @@ public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObje
 
     public Object read(ObjectInputStream os) throws IOException,
             ClassNotFoundException {
-        return  os.readObject();
+        return os.readObject();
     }
 
     public void write(ObjectOutputStream os,
-                      Object object) throws IOException {
-        os.writeObject( object );
+            Object object) throws IOException {
+        os.writeObject(object);
     }
 
     public boolean accept(Object object) {
-        return acceptor.accept( object );
+        return acceptor.accept(object);
     }
 
     public byte[] marshal(Context context,
-                          ObjectOutputStream os,
-                          Object object) throws IOException {
+            ObjectOutputStream os,
+            Object object) throws IOException {
 
-        SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
+        SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext) context;
         int index = ctx.data.size();
-        ctx.data.add( object );
-        return MarshallingHelper.intToByteArray( index );
+        ctx.data.add(object);
+        return MarshallingHelper.intToByteArray(index);
     }
 
     public Object unmarshal(String dataType,
-                            Context context,
-                            ObjectInputStream is,
-                            byte[] object,
-                            ClassLoader classloader) throws IOException, ClassNotFoundException {
-        SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
-        return ctx.data.get( MarshallingHelper.byteArrayToInt( object ) );
+            Context context,
+            ObjectInputStream is,
+            byte[] object,
+            ClassLoader classloader) throws IOException, ClassNotFoundException {
+        SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext) context;
+        return ctx.data.get(MarshallingHelper.byteArrayToInt(object));
     }
 
     public Context createContext() {
@@ -91,8 +91,8 @@ public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObje
             this.data = (List<Object>) ois.readObject();
         }
 
-        public void write( ObjectOutputStream oos) throws IOException {
-            oos.writeObject( this.data );
+        public void write(ObjectOutputStream oos) throws IOException {
+            oos.writeObject(this.data);
         }
     }
 

@@ -15,6 +15,23 @@
  */
 package org.kie.kogito.quarkus.common.deployment;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
+import org.jboss.jandex.Indexer;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
+
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -27,21 +44,6 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
-import org.jboss.jandex.DotName;
-import org.jboss.jandex.IndexView;
-import org.jboss.jandex.Indexer;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.compileGeneratedSources;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.dumpFilesToDisk;
@@ -70,8 +72,7 @@ public class KogitoAssetsProcessor {
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<GeneratedResourceBuildItem> genResBI
-    ) throws IOException {
+            BuildProducer<GeneratedResourceBuildItem> genResBI) throws IOException {
 
         if (liveReload.isLiveReload()) {
             return Collections.emptyList();
@@ -161,8 +162,8 @@ public class KogitoAssetsProcessor {
     }
 
     private void addChildrenClasses(IndexView index,
-                                    String superClass,
-                                    BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+            String superClass,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
         index.getAllKnownSubclasses(DotName.createSimple(superClass))
                 .forEach(c -> reflectiveClass.produce(
                         new ReflectiveClassBuildItem(true, true, c.name().toString())));

@@ -37,7 +37,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 
 public class ProcessInstanceGenerator {
-    
+
     private static final String PROCESS = "process";
     private static final String VALUE = "value";
     private static final String PROCESS_RUNTIME = "processRuntime";
@@ -69,7 +69,7 @@ public class ProcessInstanceGenerator {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(completePath, generate().getBytes( StandardCharsets.UTF_8 ));
+        srcMfs.write(completePath, generate().getBytes(StandardCharsets.UTF_8));
     }
 
     public String generate() {
@@ -109,9 +109,9 @@ public class ProcessInstanceGenerator {
                 .setName("bind")
                 .addParameter(modelName, "variables")
                 .setType(new ClassOrInterfaceType()
-                                 .setName("java.util.Map")
-                                 .setTypeArguments(new ClassOrInterfaceType().setName("String"),
-                                                   new ClassOrInterfaceType().setName("Object")))
+                        .setName("java.util.Map")
+                        .setTypeArguments(new ClassOrInterfaceType().setName("String"),
+                                new ClassOrInterfaceType().setName("Object")))
                 .setBody(body);
 
     }
@@ -127,10 +127,10 @@ public class ProcessInstanceGenerator {
                 .setType(new VoidType())
                 .addParameter(modelName, "variables")
                 .addParameter(new ClassOrInterfaceType()
-                                      .setName("java.util.Map")
-                                      .setTypeArguments(new ClassOrInterfaceType().setName("String"),
-                                                        new ClassOrInterfaceType().setName("Object")),
-                              "vmap")
+                        .setName("java.util.Map")
+                        .setTypeArguments(new ClassOrInterfaceType().setName("String"),
+                                new ClassOrInterfaceType().setName("Object")),
+                        "vmap")
                 .setBody(body);
     }
 
@@ -147,7 +147,7 @@ public class ProcessInstanceGenerator {
                         new NameExpr(VALUE),
                         new NameExpr(PROCESS_RUNTIME))));
     }
-    
+
     private ConstructorDeclaration constructorWithBusinessKeyDecl() {
         return new ConstructorDeclaration()
                 .setName(targetTypeName)

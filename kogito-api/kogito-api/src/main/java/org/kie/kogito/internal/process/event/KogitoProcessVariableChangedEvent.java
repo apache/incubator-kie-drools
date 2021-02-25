@@ -22,6 +22,7 @@ public interface KogitoProcessVariableChangedEvent extends ProcessVariableChange
 
     /**
      * Returns node instance associated with this variable change, if available
+     * 
      * @return node instance that changed the variable or null of not available
      */
     KogitoNodeInstance getNodeInstance();

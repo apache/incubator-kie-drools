@@ -36,14 +36,14 @@ import org.kie.api.definition.process.Connection;
  */
 public class SubProcessNode extends StateBasedNode implements Mappable, ContextContainer {
 
-	private static final long serialVersionUID = 510l;
-	
-	// NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    private static final long serialVersionUID = 510l;
+
+    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private ContextContainer contextContainer = new ContextContainerImpl();
-	
-	private String processId;
-	private String processName;
-	private boolean waitForCompletion = true;
+
+    private String processId;
+    private String processName;
+    private boolean waitForCompletion = true;
 
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
@@ -68,22 +68,22 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     }
 
     public void addInMapping(String parameterName, String variableName) {
-    	inMapping.add(new DataAssociation(variableName, parameterName, null, null));
+        inMapping.add(new DataAssociation(variableName, parameterName, null, null));
     }
-    
+
     public void addInMapping(String parameterName, String variableName, Transformation transformation) {
-    	inMapping.add(new DataAssociation(variableName, parameterName, null, transformation));
+        inMapping.add(new DataAssociation(variableName, parameterName, null, transformation));
     }
 
     public void setInMappings(Map<String, String> inMapping) {
-    	this.inMapping = new LinkedList<DataAssociation>();
-    	for(Map.Entry<String, String> entry : inMapping.entrySet()) {
-    		addInMapping(entry.getKey(), entry.getValue());
-    	}
+        this.inMapping = new LinkedList<DataAssociation>();
+        for (Map.Entry<String, String> entry : inMapping.entrySet()) {
+            addInMapping(entry.getKey(), entry.getValue());
+        }
     }
 
     public String getInMapping(String parameterName) {
-    	return getInMappings().get(parameterName);
+        return getInMappings().get(parameterName);
     }
 
     public Map<String, String> getInMappings() {
@@ -103,36 +103,36 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public List<DataAssociation> getInAssociations() {
         return Collections.unmodifiableList(inMapping);
     }
-    
+
     public void addOutMapping(String parameterName, String variableName) {
-    	outMapping.add(new DataAssociation(parameterName, variableName, null, null));
+        outMapping.add(new DataAssociation(parameterName, variableName, null, null));
     }
-    
+
     public void addOutMapping(String parameterName, String variableName, Transformation transformation) {
-    	outMapping.add(new DataAssociation(parameterName, variableName, null, transformation));
+        outMapping.add(new DataAssociation(parameterName, variableName, null, transformation));
     }
 
     public void setOutMappings(Map<String, String> outMapping) {
-    	this.outMapping = new LinkedList<DataAssociation>();
-    	for(Map.Entry<String, String> entry : outMapping.entrySet()) {
-    		addOutMapping(entry.getKey(), entry.getValue());
-    	}
+        this.outMapping = new LinkedList<DataAssociation>();
+        for (Map.Entry<String, String> entry : outMapping.entrySet()) {
+            addOutMapping(entry.getKey(), entry.getValue());
+        }
     }
 
     public String getOutMapping(String parameterName) {
-    	return getOutMappings().get(parameterName);
+        return getOutMappings().get(parameterName);
     }
-    
+
     public Map<String, String> getOutMappings() {
-    	Map<String,String> out = new HashMap<String, String>(); 
-    	for(DataAssociation a : outMapping) {
-    		if(a.getSources().size() ==1 && (a.getAssignments() == null || a.getAssignments().size()==0) && a.getTransformation() == null) {
-    			out.put(a.getSources().get(0), a.getTarget());
-    		}
-    	}
-    	return out;
+        Map<String, String> out = new HashMap<String, String>();
+        for (DataAssociation a : outMapping) {
+            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().size() == 0) && a.getTransformation() == null) {
+                out.put(a.getSources().get(0), a.getTarget());
+            }
+        }
+        return out;
     }
-    
+
     public void adjustOutMapping(String forEachOutVariable) {
         if (forEachOutVariable == null) {
             return;
@@ -145,7 +145,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
             }
         }
     }
-    
+
     public void addOutAssociation(DataAssociation dataAssociation) {
         outMapping.add(dataAssociation);
     }
@@ -153,6 +153,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public List<DataAssociation> getOutAssociations() {
         return Collections.unmodifiableList(outMapping);
     }
+
     public boolean isIndependent() {
         return independent;
     }
@@ -164,28 +165,28 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
-                    + "] only accepts default incoming connection type!");
+            throw new IllegalArgumentException(
+                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName()
+                            + "] only accepts default incoming connection type!");
         }
         if (getFrom() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
-                    + "] cannot have more than one incoming connection!");
+            throw new IllegalArgumentException(
+                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName()
+                            + "] cannot have more than one incoming connection!");
         }
     }
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
-                    + "] only accepts default outgoing connection type!");
+            throw new IllegalArgumentException(
+                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName()
+                            + "] only accepts default outgoing connection type!");
         }
         if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
-                    + "] cannot have more than one outgoing connection!");
+            throw new IllegalArgumentException(
+                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName()
+                            + "] cannot have more than one outgoing connection!");
         }
     }
 
@@ -200,12 +201,12 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public List<Context> getContexts(String contextType) {
         return contextContainer.getContexts(contextType);
     }
-    
+
     public void addContext(Context context) {
         ((AbstractContext) context).setContextContainer(this);
         contextContainer.addContext(context);
     }
-    
+
     public Context getContext(String contextType, long id) {
         return contextContainer.getContext(contextType, id);
     }
@@ -214,7 +215,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
         ((AbstractContext) context).setContextContainer(this);
         contextContainer.setDefaultContext(context);
     }
-    
+
     public Context getDefaultContext(String contextType) {
         return contextContainer.getDefaultContext(contextType);
     }
@@ -229,7 +230,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     }
 
     public boolean isAbortParent() {
-        
+
         String abortParent = (String) getMetaData("customAbortParent");
         if (abortParent == null) {
             return true;

@@ -35,7 +35,7 @@ public class TestWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     @Override
-    public void abortWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         this.workItems.add(workItem);
     }
 

@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionAwareHumanTaskLifeCycle.class);
-    
+
     private PredictionService predictionService;
-    
-    public PredictionAwareHumanTaskLifeCycle(PredictionService predictionService) { 
+
+    public PredictionAwareHumanTaskLifeCycle(PredictionService predictionService) {
         this.predictionService = Objects.requireNonNull(predictionService);
     }
 
@@ -48,35 +48,34 @@ public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
             logger.debug("Target life cycle phase '{}' does not exist in {}", transition.phase(), this.getClass().getSimpleName());
             throw new InvalidLifeCyclePhaseException(transition.phase());
         }
-        
+
         HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
         if (targetPhase.id().equals(Active.ID)) {
-            
-            
+
             PredictionOutcome outcome = predictionService.predict(workItem, workItem.getParameters());
             logger.debug("Prediction service returned confidence level {} for work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
-            
+
             if (outcome.isCertain()) {
                 humanTaskWorkItem.getResults().putAll(outcome.getData());
                 logger.debug("Prediction service is certain (confidence level {}) on the outputs, completing work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
-                (( KogitoWorkItemManager )manager).internalCompleteWorkItem(humanTaskWorkItem);
-                
+                ((KogitoWorkItemManager) manager).internalCompleteWorkItem(humanTaskWorkItem);
+
                 return outcome.getData();
             } else if (outcome.isPresent()) {
-                logger.debug("Prediction service is NOT certain (confidence level {}) on the outputs, setting recommended outputs on work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
+                logger.debug("Prediction service is NOT certain (confidence level {}) on the outputs, setting recommended outputs on work item {}", outcome.getConfidenceLevel(),
+                        humanTaskWorkItem.getStringId());
                 humanTaskWorkItem.getResults().putAll(outcome.getData());
-                
+
             }
         }
-        
+
         // prediction service does work only on activating tasks
-        Map<String, Object>  data = super.transitionTo(workItem, manager, transition);
+        Map<String, Object> data = super.transitionTo(workItem, manager, transition);
         if (targetPhase.id().equals(Complete.ID)) {
             // upon actual transition train the data if it's completion phase
             predictionService.train(humanTaskWorkItem, workItem.getParameters(), data);
         }
         return data;
     }
-    
-    
+
 }

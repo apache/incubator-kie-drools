@@ -51,43 +51,43 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         SUPPORTED_SCRIPT_FORMATS.put(language, dialect);
     }
 
-	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
-    
-    protected Node createNode( Attributes attrs) {
+    private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
+
+    protected Node createNode(Attributes attrs) {
         ActionNode result = new ActionNode();
         result.setAction(new DroolsConsequenceAction());
         return result;
     }
-    
+
     @SuppressWarnings("unchecked")
-	public Class generateNodeFor() {
+    public Class generateNodeFor() {
         return Node.class;
     }
 
-    protected void handleNode( final Node node, final Element element, final String uri,
-                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
-    	super.handleNode(node, element, uri, localName, parser);
+    protected void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
         ActionNode actionNode = (ActionNode) node;
         node.setMetaData("NodeType", "ScriptTask");
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         if (action == null) {
-        	action = new DroolsConsequenceAction();
-        	actionNode.setAction(action);
+            action = new DroolsConsequenceAction();
+            actionNode.setAction(action);
         }
         String language = element.getAttribute("scriptFormat");
         action.setDialect(SUPPORTED_SCRIPT_FORMATS.getOrDefault(language, "mvel"));
         action.setConsequence("");
-	    
+
         dataInputs.clear();
         dataOutputs.clear();
-        
+
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
-        	
-        	String nodeName = xmlNode.getNodeName();
-        	if (xmlNode instanceof Element && "script".equals(nodeName)) {
-        		action.setConsequence(xmlNode.getTextContent());
-        	} else if ("ioSpecification".equals(nodeName)) {
+
+            String nodeName = xmlNode.getNodeName();
+            if (xmlNode instanceof Element && "script".equals(nodeName)) {
+                action.setConsequence(xmlNode.getTextContent());
+            } else if ("ioSpecification".equals(nodeName)) {
                 readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes);
             } else if ("dataInputAssociation".equals(nodeName)) {
                 readDataInputAssociation(xmlNode, actionNode, dataInputs);
@@ -96,23 +96,22 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
-    
 
         actionNode.setMetaData("DataInputs", new HashMap<String, String>(dataInputs));
         actionNode.setMetaData("DataOutputs", new HashMap<String, String>(dataOutputs));
-        
+
         String compensation = element.getAttribute("isForCompensation");
-        if( compensation != null ) {
+        if (compensation != null) {
             boolean isForCompensation = Boolean.parseBoolean(compensation);
-            if( isForCompensation ) { 
-                actionNode.setMetaData("isForCompensation", isForCompensation );
+            if (isForCompensation) {
+                actionNode.setMetaData("isForCompensation", isForCompensation);
             }
         }
-	}
+    }
 
-	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
-	    throw new IllegalArgumentException("Writing out should be handled by action node handler");
-	}
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+        throw new IllegalArgumentException("Writing out should be handled by action node handler");
+    }
 
     protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, ActionNode actionNode, Map<String, String> dataInputs) {
         // sourceRef
@@ -158,8 +157,8 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
                 subNode = subNode.getNextSibling();
             }
             actionNode.addInAssociation(new DataAssociation(
-                                                            sources,
-                                                            dataInputs.get(target), assignments, transformation));
+                    sources,
+                    dataInputs.get(target), assignments, transformation));
         }
     }
 

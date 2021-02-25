@@ -37,7 +37,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
             "getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0", AUTOCOMPLETE_COMPLETION_CONDITION);
 
     @Override
-    protected Node createNode( Attributes attrs) {
+    protected Node createNode(Attributes attrs) {
         DynamicNode result = new DynamicNode();
         VariableScope variableScope = new VariableScope();
         result.addContext(variableScope);
@@ -52,8 +52,8 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void handleNode( final Node node, final Element element, final String uri,
-                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         DynamicNode dynamicNode = (DynamicNode) node;
         String cancelRemainingInstances = element.getAttribute("cancelRemainingInstances");
@@ -75,8 +75,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
-        List<SequenceFlow> connections = (List<SequenceFlow>)
-                dynamicNode.getMetaData(ProcessHandler.CONNECTIONS);
+        List<SequenceFlow> connections = (List<SequenceFlow>) dynamicNode.getMetaData(ProcessHandler.CONNECTIONS);
         ProcessHandler.linkConnections(dynamicNode, connections);
         ProcessHandler.linkBoundaryEvents(dynamicNode);
 
@@ -85,7 +84,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     }
 
     @Override
-    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         DynamicNode dynamicNode = (DynamicNode) node;
         writeNode("adHocSubProcess", dynamicNode, xmlDump, metaDataType);
         if (!dynamicNode.isCancelRemainingInstances()) {

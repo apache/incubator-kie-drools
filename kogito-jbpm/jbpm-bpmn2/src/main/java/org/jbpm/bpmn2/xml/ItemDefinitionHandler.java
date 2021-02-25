@@ -30,15 +30,15 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class ItemDefinitionHandler extends BaseAbstractHandler implements Handler {
-	
-	@SuppressWarnings("unchecked")
-	public ItemDefinitionHandler() {
-		if ((this.validParents == null) && (this.validPeers == null)) {
-			this.validParents = new HashSet();
-			this.validParents.add(Definitions.class);
 
-			this.validPeers = new HashSet();
-			this.validPeers.add(null);
+    @SuppressWarnings("unchecked")
+    public ItemDefinitionHandler() {
+        if ((this.validParents == null) && (this.validPeers == null)) {
+            this.validParents = new HashSet();
+            this.validParents.add(Definitions.class);
+
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
             this.validPeers.add(ItemDefinition.class);
             this.validPeers.add(Message.class);
             this.validPeers.add(Interface.class);
@@ -48,40 +48,39 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
             this.validPeers.add(DataStore.class);
             this.validPeers.add(RuleFlowProcess.class);
 
-			this.allowNesting = false;
-		}
-	}
+            this.allowNesting = false;
+        }
+    }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public Object start(final String uri, final String localName,
-			            final Attributes attrs, final ExtensibleXmlParser parser)
-			throws SAXException {
-		parser.startElementBuilder(localName, attrs);
+            final Attributes attrs, final ExtensibleXmlParser parser)
+            throws SAXException {
+        parser.startElementBuilder(localName, attrs);
 
-		String id = attrs.getValue("id");
-		String type = attrs.getValue("structureRef");
+        String id = attrs.getValue("id");
+        String type = attrs.getValue("structureRef");
 
-		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-            buildData.getMetaData("ItemDefinitions");
+        ProcessBuildData buildData = (ProcessBuildData) parser.getData();
+        Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) buildData.getMetaData("ItemDefinitions");
         if (itemDefinitions == null) {
             itemDefinitions = new HashMap<String, ItemDefinition>();
             buildData.setMetaData("ItemDefinitions", itemDefinitions);
         }
-        ItemDefinition itemDefinition = new ItemDefinition(id); 
+        ItemDefinition itemDefinition = new ItemDefinition(id);
         itemDefinition.setStructureRef(type);
         itemDefinitions.put(id, itemDefinition);
-		return itemDefinition;
-	}
+        return itemDefinition;
+    }
 
-	public Object end(final String uri, final String localName,
-			          final ExtensibleXmlParser parser) throws SAXException {
-		parser.endElementBuilder();
-		return parser.getCurrent();
-	}
+    public Object end(final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.endElementBuilder();
+        return parser.getCurrent();
+    }
 
-	public Class<?> generateNodeFor() {
-		return ItemDefinition.class;
-	}
+    public Class<?> generateNodeFor() {
+        return ItemDefinition.class;
+    }
 
 }

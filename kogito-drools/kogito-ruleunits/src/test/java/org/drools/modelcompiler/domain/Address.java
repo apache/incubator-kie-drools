@@ -92,7 +92,7 @@ public class Address {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Address other = ( Address ) obj;
+        final Address other = (Address) obj;
         if (city == null) {
             if (other.city != null) {
                 return false;

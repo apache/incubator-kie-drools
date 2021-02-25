@@ -26,7 +26,7 @@ public class Example implements RuleUnitData {
 
     String singleValue;
     DataStream<Person> persons = DataSource.createStream();
-        private AtomicInteger counter = new AtomicInteger(0);
+    private AtomicInteger counter = new AtomicInteger(0);
 
     public DataStream<Person> getPersons() {
         return persons;

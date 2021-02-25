@@ -26,7 +26,7 @@ public interface MessageDecorator {
      * Decorates the given reactive message
      *
      * @param payload payload to decorate
-     * @param <T>     payload type
+     * @param <T> payload type
      * @return payload in Message format decorated
      */
     <T> Message<T> decorate(T payload);

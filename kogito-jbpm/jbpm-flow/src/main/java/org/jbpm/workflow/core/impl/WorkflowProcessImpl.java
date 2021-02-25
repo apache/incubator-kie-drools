@@ -47,10 +47,9 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     private boolean autoComplete = false;
     private boolean dynamic = false;
     private org.jbpm.workflow.core.NodeContainer nodeContainer;
-    
-    
+
     private transient BiFunction<String, ProcessInstance, String> expressionEvaluator = (expression, p) -> {
-        
+
         String evaluatedValue = expression;
         Map<String, String> replacements = new HashMap<String, String>();
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(evaluatedValue);
@@ -59,19 +58,19 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
             if (replacements.get(paramName) == null) {
                 try {
                     String value = (String) MVELProcessHelper.evaluator()
-                            .eval(paramName,new ProcessInstanceResolverFactory(((WorkflowProcessInstance) p)));
+                            .eval(paramName, new ProcessInstanceResolverFactory(((WorkflowProcessInstance) p)));
                     replacements.put(paramName, value);
                 } catch (Throwable t) {
-                    logger.error("Could not resolve, parameter {} while evaluating expression {}",paramName, expression, t);                    
+                    logger.error("Could not resolve, parameter {} while evaluating expression {}", paramName, expression, t);
                 }
             }
         }
         for (Map.Entry<String, String> replacement : replacements.entrySet()) {
             evaluatedValue = evaluatedValue.replace("#{" + replacement.getKey() + "}", replacement.getValue());
         }
-        
+
         return evaluatedValue;
-        
+
     };
 
     public WorkflowProcessImpl() {
@@ -86,35 +85,35 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return nodeContainer.getNodes();
     }
 
-    public org.kie.api.definition.process.Node getNode( final long id) {
+    public org.kie.api.definition.process.Node getNode(final long id) {
         return nodeContainer.getNode(id);
     }
 
     @Override
-    public org.kie.api.definition.process.Node getNodeByUniqueId( String s ) {
+    public org.kie.api.definition.process.Node getNodeByUniqueId(String s) {
         throw new UnsupportedOperationException();
     }
 
-    public org.kie.api.definition.process.Node internalGetNode( long id) {
-    	try {
-    		return getNode(id);
-    	} catch (IllegalArgumentException e) {
-    		if (dynamic) {
-    			return null;
-    		} else {
-    			throw e;
-    		}
-    	}
+    public org.kie.api.definition.process.Node internalGetNode(long id) {
+        try {
+            return getNode(id);
+        } catch (IllegalArgumentException e) {
+            if (dynamic) {
+                return null;
+            } else {
+                throw e;
+            }
+        }
     }
 
     public void removeNode(final org.kie.api.definition.process.Node node) {
         nodeContainer.removeNode(node);
-        (( Node ) node).setParentContainer(null);
+        ((Node) node).setParentContainer(null);
     }
 
     public void addNode(final org.kie.api.definition.process.Node node) {
         nodeContainer.addNode(node);
-        (( Node ) node).setParentContainer(this);
+        ((Node) node).setParentContainer(this);
     }
 
     public boolean isAutoComplete() {
@@ -125,13 +124,13 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         this.autoComplete = autoComplete;
     }
 
-	public boolean isDynamic() {
-		return dynamic;
-	}
+    public boolean isDynamic() {
+        return dynamic;
+    }
 
-	public void setDynamic(boolean dynamic) {
-		this.dynamic = dynamic;
-	}
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
+    }
 
     @Override
     public Integer getProcessType() {
@@ -152,7 +151,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
 
     protected void processNodeContainer(org.jbpm.workflow.core.NodeContainer nodeContainer, List<org.kie.api.definition.process.Node> nodes) {
 
-        for (org.kie.api.definition.process.Node node : nodeContainer.getNodes()){
+        for (org.kie.api.definition.process.Node node : nodeContainer.getNodes()) {
             nodes.add(node);
             if (node instanceof org.jbpm.workflow.core.NodeContainer) {
                 processNodeContainer((org.jbpm.workflow.core.NodeContainer) node, nodes);
@@ -160,7 +159,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         }
     }
 
-    protected org.kie.api.definition.process.Node getContainerNode( org.kie.api.definition.process.Node currentNode, org.jbpm.workflow.core.NodeContainer nodeContainer, long nodeId) {
+    protected org.kie.api.definition.process.Node getContainerNode(org.kie.api.definition.process.Node currentNode, org.jbpm.workflow.core.NodeContainer nodeContainer, long nodeId) {
         for (org.kie.api.definition.process.Node node : nodeContainer.getNodes()) {
             if (nodeId == node.getId()) {
                 return currentNode;
@@ -173,7 +172,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return null;
     }
 
-    public org.kie.api.definition.process.Node getParentNode( long nodeId) {
+    public org.kie.api.definition.process.Node getParentNode(long nodeId) {
         return getContainerNode(null, nodeContainer, nodeId);
     }
 
@@ -183,18 +182,17 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         List<StartNode> timerStartNodes = new ArrayList<StartNode>();
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof StartNode && ((StartNode) nodes[i]).getTimer() != null) {
-                timerStartNodes.add((StartNode) nodes[i]);                
+                timerStartNodes.add((StartNode) nodes[i]);
             }
         }
 
         return timerStartNodes;
     }
-    
-    
+
     public void setExpressionEvaluator(BiFunction<String, ProcessInstance, String> expressionEvaluator) {
         this.expressionEvaluator = expressionEvaluator;
     }
-    
+
     public String evaluateExpression(String metaData, ProcessInstance processInstance) {
         return this.expressionEvaluator.apply(metaData, processInstance);
     }

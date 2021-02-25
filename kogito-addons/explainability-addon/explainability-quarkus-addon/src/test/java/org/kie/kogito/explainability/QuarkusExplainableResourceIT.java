@@ -15,20 +15,22 @@
  */
 package org.kie.kogito.explainability;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.http.ContentType;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Singleton;
+import javax.ws.rs.core.Response;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.conf.StaticConfigBean;
 import org.kie.kogito.explainability.model.PredictOutput;
 
-import javax.inject.Singleton;
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +53,7 @@ public class QuarkusExplainableResourceIT {
         String resourceId = String.format("%s:%s", MODEL_NAMESPACE, MODEL_NAME);
         String body = String.format(
                 "[{\"request\" : {\"Driver\": {\"Age\": 25, \"Points\": 100}, \"Violation\": {\"Type\" : \"speed\", \"Actual Speed\": 120, \"Speed Limit\": 40}}," +
-                "\"modelIdentifier\": {\"resourceType\": \"dmn\",\"resourceId\": \"%s\"}}]",
+                        "\"modelIdentifier\": {\"resourceType\": \"dmn\",\"resourceId\": \"%s\"}}]",
                 resourceId);
 
         List<PredictOutput> outputs = given()
@@ -59,7 +61,8 @@ public class QuarkusExplainableResourceIT {
                 .when()
                 .body(body)
                 .post("/predict")
-                .as(new TypeRef<List<PredictOutput>>() { });
+                .as(new TypeRef<List<PredictOutput>>() {
+                });
 
         assertEquals(1, outputs.size());
 
@@ -86,7 +89,7 @@ public class QuarkusExplainableResourceIT {
                 "[{\"request\" : {\"Driver\": {\"Age\": 25, \"Points\": 100}, \"Violation\": {\"Type\" : \"speed\", \"Actual Speed\": 120, \"Speed Limit\": 40}}," +
                         "\"modelIdentifier\": {\"resourceType\": \"dmn\",\"resourceId\": \"%s\"}}, " +
                         "{\"request\" : {\"Driver\": {\"Age\": 25, \"Points\": 100}, \"Violation\": {\"Type\" : \"speed\", \"Actual Speed\": 120, \"Speed Limit\": 120}}," +
-                "\"modelIdentifier\": {\"resourceType\": \"dmn\",\"resourceId\": \"%s\"}}]",
+                        "\"modelIdentifier\": {\"resourceType\": \"dmn\",\"resourceId\": \"%s\"}}]",
                 resourceId, resourceId);
 
         List<PredictOutput> outputs = given()
@@ -94,8 +97,8 @@ public class QuarkusExplainableResourceIT {
                 .when()
                 .body(body)
                 .post("/predict")
-                .as(new TypeRef<List<PredictOutput>>() { });
-
+                .as(new TypeRef<List<PredictOutput>>() {
+                });
 
         assertEquals(2, outputs.size());
 
@@ -120,7 +123,8 @@ public class QuarkusExplainableResourceIT {
                 .when()
                 .body(body)
                 .post("/predict")
-                .as(new TypeRef<List<PredictOutput>>() { });
+                .as(new TypeRef<List<PredictOutput>>() {
+                });
 
         assertEquals(0, outputs.size());
     }

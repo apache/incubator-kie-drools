@@ -19,11 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.serverlessworkflow.api.end.End;
-import io.serverlessworkflow.api.events.EventDefinition;
-import io.serverlessworkflow.api.functions.FunctionDefinition;
-import io.serverlessworkflow.api.produce.ProduceEvent;
 import org.jbpm.process.core.Work;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -42,6 +37,13 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.serverlessworkflow.api.end.End;
+import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.produce.ProduceEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -103,8 +105,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
 
         End endDef = new End().withProduceEvents(
                 Arrays.asList(
-                        new ProduceEvent().withEventRef("sampleEvent").withData("sampleData"))
-        );
+                        new ProduceEvent().withEventRef("sampleEvent").withData("sampleData")));
 
         EndNode endNode = testFactory.messageEndNode(1L, "End", eventDefOnlyWorkflow, endDef, nodeContainer);
 
@@ -183,13 +184,14 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         TestNodeContainer nodeContainer = new TestNodeContainer();
         FunctionDefinition function = new FunctionDefinition().withName("testFunction")
                 .withOperation("testResource").withMetadata(
-                        new HashMap<String, String>() {{
-                            put("interface", "testInterface");
-                            put("operation", "testOperation");
-                            put("implementation", "testImplementation");
-                            put("type", "testType");
-                        }}
-                );
+                        new HashMap<String, String>() {
+                            {
+                                put("interface", "testInterface");
+                                put("operation", "testOperation");
+                                put("implementation", "testImplementation");
+                                put("type", "testType");
+                            }
+                        });
         WorkItemNode workItemNode = testFactory.serviceNode(1L, "testService", function, nodeContainer);
         assertThat(workItemNode).isNotNull();
         assertThat(workItemNode.getName()).isEqualTo("testService");

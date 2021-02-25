@@ -22,9 +22,9 @@ import org.jbpm.workflow.core.node.Assignment;
 
 public class XPATHAssignmentBuilder implements AssignmentBuilder {
 
-	public void build(PackageBuildContext context, Assignment assignment, String sourceExpr, String targetExpr,
-					  ContextResolver contextResolver, boolean isInput) {
-		assignment.setMetaData("Action", new XPATHAssignmentAction(assignment, sourceExpr, targetExpr, isInput));
-	}
+    public void build(PackageBuildContext context, Assignment assignment, String sourceExpr, String targetExpr,
+            ContextResolver contextResolver, boolean isInput) {
+        assignment.setMetaData("Action", new XPATHAssignmentAction(assignment, sourceExpr, targetExpr, isInput));
+    }
 
 }

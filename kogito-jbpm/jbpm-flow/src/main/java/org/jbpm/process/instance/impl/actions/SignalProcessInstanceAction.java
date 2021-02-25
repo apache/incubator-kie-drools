@@ -33,7 +33,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
     public static final String DEFAULT_SCOPE = "default";
     public static final String PROCESS_INSTANCE_SCOPE = "processInstance";
     public static final String EXTERNAL_SCOPE = "external";
-    
+
     public static final String UNSET_SCOPE = System.getProperty("org.jbpm.signals.defaultscope", PROCESS_INSTANCE_SCOPE);
 
     private static final long serialVersionUID = 1L;
@@ -82,11 +82,11 @@ public class SignalProcessInstanceAction implements Action, Serializable {
     }
 
     @Override
-    public void execute( KogitoProcessContext context) throws Exception {
+    public void execute(KogitoProcessContext context) throws Exception {
         String variableName = VariableUtil.resolveVariable(this.variableName, context.getNodeInstance());
         Object signal = variableName == null ? eventDataSupplier.apply(context) : context.getVariable(variableName);
         if (transformation != null) {
-            signal = new org.jbpm.process.core.event.EventTransformerImpl(transformation).transformEvent((( KogitoProcessInstance ) context.getProcessInstance()).getVariables());
+            signal = new org.jbpm.process.core.event.EventTransformerImpl(transformation).transformEvent(((KogitoProcessInstance) context.getProcessInstance()).getVariables());
         }
         if (signal == null) {
             signal = variableName;
@@ -95,7 +95,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         KogitoProcessRuntime.asKogitoProcessRuntime(context.getKieRuntime())
                 .getProcessEventSupport().fireOnSignal(context.getProcessInstance(), context
                         .getNodeInstance(), context.getKieRuntime(), signalName, signal);
-        
+
         if (DEFAULT_SCOPE.equals(scope)) {
             context.getKieRuntime().signalEvent(signalName, signal);
         } else if (PROCESS_INSTANCE_SCOPE.equals(scope)) {
@@ -103,8 +103,8 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         } else if (EXTERNAL_SCOPE.equals(scope)) {
             KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
             workItem.setName("External Send Task");
-            workItem.setNodeInstanceId( (( KogitoNodeInstance ) context.getNodeInstance()).getStringId());
-            workItem.setProcessInstanceId( (( KogitoProcessInstance ) context.getProcessInstance()).getStringId());
+            workItem.setNodeInstanceId(((KogitoNodeInstance) context.getNodeInstance()).getStringId());
+            workItem.setProcessInstanceId(((KogitoProcessInstance) context.getProcessInstance()).getStringId());
             workItem.setNodeId(context.getNodeInstance().getNodeId());
             workItem.setParameter("Signal", signalName);
             workItem.setParameter("SignalProcessInstanceId", context.getVariable("SignalProcessInstanceId"));
@@ -113,7 +113,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
             if (signal == null) {
                 workItem.setParameter("Data", signal);
             }
-            (( KogitoWorkItemManager ) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
+            ((KogitoWorkItemManager) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
         }
     }
 

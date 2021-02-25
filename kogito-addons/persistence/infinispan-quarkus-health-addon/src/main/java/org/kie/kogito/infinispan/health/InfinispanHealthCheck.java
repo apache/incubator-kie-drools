@@ -57,28 +57,28 @@ public class InfinispanHealthCheck implements HealthCheck {
             final Codec codec = cacheManager.getCodec();
             final Configuration configuration = cacheManager.getConfiguration();
             final ClientListenerNotifier listenerNotifier = new ClientListenerNotifier(codec,
-                                                                                       cacheManager.getMarshaller(),
-                                                                                       channelFactory,
-                                                                                       configuration);
+                    cacheManager.getMarshaller(),
+                    channelFactory,
+                    configuration);
             final OperationsFactory operationsFactory = new OperationsFactory(channelFactory,
-                                                                              codec,
-                                                                              listenerNotifier,
-                                                                              configuration);
+                    codec,
+                    listenerNotifier,
+                    configuration);
 
             return Optional.of(channelFactory
-                                       .getServers()
-                                       .stream()
-                                       .map(server -> invokePingOperation(channelFactory, operationsFactory, server)
-                                               .thenApply(PingResponse::isSuccess)
-                                               .exceptionally(ex -> false))
-                                       .map(op -> {
-                                           try {
-                                               return op.get(500, TimeUnit.MILLISECONDS);
-                                           } catch (Exception e) {
-                                               return false;
-                                           }
-                                       })
-                                       .allMatch(Boolean.FALSE::equals))
+                    .getServers()
+                    .stream()
+                    .map(server -> invokePingOperation(channelFactory, operationsFactory, server)
+                            .thenApply(PingResponse::isSuccess)
+                            .exceptionally(ex -> false))
+                    .map(op -> {
+                        try {
+                            return op.get(500, TimeUnit.MILLISECONDS);
+                        } catch (Exception e) {
+                            return false;
+                        }
+                    })
+                    .allMatch(Boolean.FALSE::equals))
                     .map(allDown -> buildResponse(channelFactory, !allDown))
                     .orElse(buildResponse(channelFactory, false));
         }).orElse(null);

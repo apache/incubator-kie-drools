@@ -27,23 +27,23 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 public class ExclusiveGroupInstance extends AbstractContextInstance {
 
     private static final long serialVersionUID = 510l;
-    
+
     private Map<String, KogitoNodeInstance> nodeInstances = new HashMap<>();
-    
+
     public String getContextType() {
         return ExclusiveGroup.EXCLUSIVE_GROUP;
     }
-    
+
     public boolean containsNodeInstance(NodeInstance nodeInstance) {
-    	return nodeInstances.containsKey( (( KogitoNodeInstance ) nodeInstance).getStringId());
+        return nodeInstances.containsKey(((KogitoNodeInstance) nodeInstance).getStringId());
     }
-    
+
     public void addNodeInstance(KogitoNodeInstance nodeInstance) {
-    	nodeInstances.put(nodeInstance.getStringId(), nodeInstance);
+        nodeInstances.put(nodeInstance.getStringId(), nodeInstance);
     }
-    
+
     public Collection<KogitoNodeInstance> getNodeInstances() {
-    	return nodeInstances.values();
+        return nodeInstances.values();
     }
-    
+
 }

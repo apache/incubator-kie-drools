@@ -27,16 +27,16 @@ import org.jbpm.workflow.core.Constraint;
  */
 public class ConstraintImpl implements Constraint, Serializable {
 
-    private static final long  serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     private Map<String, Object> metaData = new HashMap<String, Object>();
 
-    private String             name;
-    private String             constraint;
-    private int                priority;
-    private String             dialect = "mvel";
-    private String             type = "rule";
-    private boolean            isDefault = false;
+    private String name;
+    private String constraint;
+    private int priority;
+    private String dialect = "mvel";
+    private String type = "rule";
+    private boolean isDefault = false;
 
     public String getConstraint() {
         return this.constraint;
@@ -83,19 +83,19 @@ public class ConstraintImpl implements Constraint, Serializable {
     }
 
     public boolean isDefault() {
-		return isDefault;
-	}
+        return isDefault;
+    }
 
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
-	}
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 
-	public void setMetaData(String name, Object value) {
+    public void setMetaData(String name, Object value) {
         this.metaData.put(name, value);
     }
-    
+
     public Object getMetaData(String name) {
         return this.metaData.get(name);
     }
-    
+
 }

@@ -28,14 +28,14 @@ public class SpringBootDecisionTracingCollector {
     private final DecisionTracingCollector collector;
 
     public SpringBootDecisionTracingCollector(final SpringBootTraceEventEmitter eventEmitter,
-                                              final ConfigBean configBean,
-                                              final BiFunction<String, String, DMNModel> modelSupplier) {
+            final ConfigBean configBean,
+            final BiFunction<String, String, DMNModel> modelSupplier) {
         this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier, configBean);
     }
 
     public SpringBootDecisionTracingCollector(final SpringBootTraceEventEmitter eventEmitter,
-                                              final ConfigBean configBean,
-                                              final Application application) {
+            final ConfigBean configBean,
+            final Application application) {
         this(eventEmitter, configBean, new ApplicationModelSupplier(application));
     }
 

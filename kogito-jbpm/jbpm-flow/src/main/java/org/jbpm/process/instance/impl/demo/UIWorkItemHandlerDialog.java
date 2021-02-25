@@ -32,15 +32,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 /**
  * 
  */
 public class UIWorkItemHandlerDialog extends JDialog {
-    
+
     private static final long serialVersionUID = 510l;
-    
+
     private Map<String, Object> results = new HashMap<String, Object>();
     private UIWorkItemHandler handler;
     private KogitoWorkItem workItem;
@@ -49,7 +50,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
     private JButton addResultButton;
     private JButton completeButton;
     private JButton abortButton;
-    
+
     public UIWorkItemHandlerDialog(UIWorkItemHandler handler, KogitoWorkItem workItem) {
         super(handler, "Execute Work Item", true);
         this.handler = handler;
@@ -63,7 +64,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
         panel.setLayout(new GridBagLayout());
         getRootPane().setLayout(new BorderLayout());
         getRootPane().add(panel, BorderLayout.CENTER);
-        
+
         JTextArea params = new JTextArea();
         params.setText(getParameters());
         params.setEditable(false);
@@ -74,7 +75,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(params, c);
-        
+
         JLabel resultName = new JLabel("Result");
         c = new GridBagConstraints();
         c.gridy = 1;
@@ -88,7 +89,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(resultNameTextField, c);
-        
+
         JLabel resultValue = new JLabel("Value");
         c = new GridBagConstraints();
         c.gridx = 2;
@@ -103,7 +104,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(resultValueTextField, c);
-        
+
         addResultButton = new JButton("Add");
         addResultButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -115,7 +116,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
         c.gridy = 1;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(addResultButton, c);
-        
+
         completeButton = new JButton("Complete");
         completeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -142,29 +143,29 @@ public class UIWorkItemHandlerDialog extends JDialog {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(abortButton, c);
     }
-    
+
     private String getParameters() {
         String result = "";
         if (workItem.getParameters() != null) {
-            for (Iterator<Map.Entry<String, Object>> iterator = workItem.getParameters().entrySet().iterator(); iterator.hasNext(); ) {
+            for (Iterator<Map.Entry<String, Object>> iterator = workItem.getParameters().entrySet().iterator(); iterator.hasNext();) {
                 Map.Entry<String, Object> entry = iterator.next();
                 result += entry.getKey() + " = " + entry.getValue() + "\n";
             }
         }
         return result;
     }
-    
+
     private void addResult() {
         results.put(resultNameTextField.getText(), resultValueTextField.getText());
         resultNameTextField.setText("");
         resultValueTextField.setText("");
     }
-    
+
     private void complete() {
         handler.complete(workItem, results);
         dispose();
     }
-    
+
     private void abort() {
         handler.abort(workItem);
         dispose();

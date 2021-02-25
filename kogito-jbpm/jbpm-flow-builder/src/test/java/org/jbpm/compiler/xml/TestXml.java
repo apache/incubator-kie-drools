@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestXml extends AbstractBaseTest {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(TestXml.class);
 
     @Test

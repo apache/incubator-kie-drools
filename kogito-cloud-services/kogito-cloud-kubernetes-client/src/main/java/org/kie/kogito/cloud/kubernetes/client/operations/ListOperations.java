@@ -32,7 +32,7 @@ public interface ListOperations extends Operations {
     OperationsResponseParser listNamespaced(final String namespace, final Map<String, String> labels);
 
     /**
-     * Queries for a list of services in the entire cluster. A service account with permissions to query the cluster might be needed. 
+     * Queries for a list of services in the entire cluster. A service account with permissions to query the cluster might be needed.
      * 
      * @param labels
      * @return A JSON Document reference of the Service API response

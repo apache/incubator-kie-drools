@@ -22,13 +22,14 @@ import java.net.URL;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import okhttp3.Request;
-import okhttp3.Response;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClientException;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeConfig;
 import org.kie.kogito.cloud.kubernetes.client.OperationsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Base class for all operations
@@ -64,9 +65,9 @@ public abstract class BaseOperations implements Operations {
     private String buildLabelSelectorParam(final Map<String, String> labels) {
         if (labels != null) {
             return labels.entrySet()
-                         .stream()
-                         .map(label -> String.format(label.getValue() == null || label.getValue().isEmpty() ? "%s" : "%s=%s", label.getKey(), label.getValue()))
-                         .collect(Collectors.joining(","));
+                    .stream()
+                    .map(label -> String.format(label.getValue() == null || label.getValue().isEmpty() ? "%s" : "%s=%s", label.getKey(), label.getValue()))
+                    .collect(Collectors.joining(","));
         }
         return "";
     }
@@ -93,8 +94,9 @@ public abstract class BaseOperations implements Operations {
                 return new OperationsResponseParser(EMPTY_JSON);
             }
             if (response.code() == HttpURLConnection.HTTP_FORBIDDEN || response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                throw new KogitoKubeClientException(String.format("Tried to fetch for resources, got unauthorized/forbidden response: %s. Make sure to correctly set a Service Account with permissions to fetch the resource.",
-                                                                  response));
+                throw new KogitoKubeClientException(
+                        String.format("Tried to fetch for resources, got unauthorized/forbidden response: %s. Make sure to correctly set a Service Account with permissions to fetch the resource.",
+                                response));
             }
             throw new KogitoKubeClientException(String.format("Error trying to fetch the Kubernetes API. Response is: %s", response));
         } catch (KogitoKubeClientException e) {

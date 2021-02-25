@@ -45,26 +45,25 @@ public class CallbackJobsServiceResource {
 
     @Inject
     Application application;
-    
+
     @POST
     @Path("{processId}/instances/{processInstanceId}/timers/{timerId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response triggerTimer(@PathParam("processId") String processId, 
-                                             @PathParam("processInstanceId") String processInstanceId, 
-                                             @PathParam("timerId") String timerId,
-                                             @QueryParam("limit") @DefaultValue("0") Integer limit) {
+    public Response triggerTimer(@PathParam("processId") String processId,
+            @PathParam("processInstanceId") String processInstanceId,
+            @PathParam("timerId") String timerId,
+            @QueryParam("limit") @DefaultValue("0") Integer limit) {
         if (processId == null || processInstanceId == null) {
             return Response.status(Status.BAD_REQUEST).entity("Process id and Process instance id must be given").build();
         }
-        
-        
-        Process<?> process = processes.processById(processId);        
+
+        Process<?> process = processes.processById(processId);
         if (process == null) {
             return Response.status(Status.NOT_FOUND).entity("Process with id " + processId + " not found").build();
         }
-    
-       return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);        
+
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);
             if (processInstanceFound.isPresent()) {
                 ProcessInstance<?> processInstance = processInstanceFound.get();
                 String[] ids = timerId.split("_");
@@ -72,13 +71,11 @@ public class CallbackJobsServiceResource {
             } else {
                 return Response.status(Status.NOT_FOUND).entity("Process instance with id " + processInstanceId + " not found").build();
             }
-            
-            return Response.status(Status.OK).build();
-        
-        });
 
+            return Response.status(Status.OK).build();
+
+        });
 
     }
 
-    
 }

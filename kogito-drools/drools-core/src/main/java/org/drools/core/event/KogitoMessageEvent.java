@@ -28,7 +28,7 @@ public class KogitoMessageEvent extends ProcessEvent implements MessageEvent {
     private Object messageObject;
 
     public KogitoMessageEvent(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
-                              String messageName, Object messageObject) {
+            String messageName, Object messageObject) {
         super(instance, kruntime);
         this.nodeInstance = nodeInstance;
         this.messageName = messageName;

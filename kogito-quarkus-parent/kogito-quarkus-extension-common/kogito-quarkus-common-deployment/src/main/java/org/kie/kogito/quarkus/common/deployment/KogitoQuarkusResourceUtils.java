@@ -15,11 +15,16 @@
  */
 package org.kie.kogito.quarkus.common.deployment;
 
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.bootstrap.model.AppDependency;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -32,15 +37,11 @@ import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.model.AppDependency;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 
 import static java.util.stream.Collectors.toList;
 
@@ -100,8 +101,8 @@ public class KogitoQuarkusResourceUtils {
     }
 
     public static void registerResources(Collection<GeneratedFile> generatedFiles,
-                                   BuildProducer<NativeImageResourceBuildItem> resource,
-                                   BuildProducer<GeneratedResourceBuildItem> genResBI) {
+            BuildProducer<NativeImageResourceBuildItem> resource,
+            BuildProducer<GeneratedResourceBuildItem> genResBI) {
         for (GeneratedFile f : generatedFiles) {
             if (f.category() == GeneratedFileType.Category.RESOURCE) {
                 genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents()));
@@ -110,7 +111,8 @@ public class KogitoQuarkusResourceUtils {
         }
     }
 
-    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(KogitoBuildContext context, List<AppDependency> dependencies, Collection<GeneratedFile> generatedFiles) throws IOException {
+    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(KogitoBuildContext context, List<AppDependency> dependencies, Collection<GeneratedFile> generatedFiles)
+            throws IOException {
         Collection<GeneratedFile> javaFiles =
                 generatedFiles.stream()
                         .filter(f -> f.category() == GeneratedFileType.Category.SOURCE)
@@ -147,7 +149,8 @@ public class KogitoQuarkusResourceUtils {
     private static Collection<GeneratedBeanBuildItem> makeBuildItems(AppPaths appPaths, ResourceReader resources) throws IOException {
 
         Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
-        Path location = generatedFileWriterBuilder.build(appPaths.getFirstProjectPath()).getClassesDir();;
+        Path location = generatedFileWriterBuilder.build(appPaths.getFirstProjectPath()).getClassesDir();
+        ;
         for (String fileName : resources.getFileNames()) {
             byte[] data = resources.getBytes(fileName);
             String className = toClassName(fileName);

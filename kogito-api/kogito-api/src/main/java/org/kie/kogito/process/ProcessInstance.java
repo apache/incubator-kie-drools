@@ -51,8 +51,8 @@ public interface ProcessInstance<T> {
     /**
      * Starts process instance with trigger
      *
-     * @param trigger     name of the trigger that will indicate what start node to trigger
-     * @param referenceId optional reference id that points to a another  component triggering this instance
+     * @param trigger name of the trigger that will indicate what start node to trigger
+     * @param referenceId optional reference id that points to a another component triggering this instance
      */
     void start(String trigger, String referenceId);
 
@@ -66,8 +66,8 @@ public interface ProcessInstance<T> {
     /**
      * Starts process instance from given node
      *
-     * @param nodeId      node id that should be used as the first node
-     * @param referenceId optional reference id that points to a another  component triggering this instance
+     * @param nodeId node id that should be used as the first node
+     * @param referenceId optional reference id that points to a another component triggering this instance
      */
     void startFrom(String nodeId, String referenceId);
 
@@ -105,26 +105,25 @@ public interface ProcessInstance<T> {
     /**
      * Completes work item belonging to this process instance with given variables
      *
-     * @param id        id of the work item to complete
+     * @param id id of the work item to complete
      * @param variables optional variables
-     * @param policies  optional list of policies to be enforced
+     * @param policies optional list of policies to be enforced
      */
     void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
-    
-    
+
     /**
      * Update work item output model without changing phase
      *
-     * @param id        id of the work item to complete
+     * @param id id of the work item to complete
      * @param variables information that will replace existing output model
-     * @param policies  optional list of policies to be enforced
+     * @param policies optional list of policies to be enforced
      */
     Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
 
     /**
      * Aborts work item belonging to this process instance
      *
-     * @param id       id of the work item to complete
+     * @param id id of the work item to complete
      * @param policies optional list of policies to be enforced
      */
     void abortWorkItem(String id, Policy<?>... policies);
@@ -132,15 +131,16 @@ public interface ProcessInstance<T> {
     /**
      * Transition work item belonging to this process instance not another life cycle phase
      *
-     * @param id         id of the work item to complete
+     * @param id id of the work item to complete
      * @param transition target transition including phase, identity and data
      */
     void transitionWorkItem(String id, Transition<?> transition);
+
     /**
      * Returns work item identified by given id if found
      *
      * @param workItemId id of the work item
-     * @param policies   optional list of policies to be enforced
+     * @param policies optional list of policies to be enforced
      * @return work item with its parameters if found
      */
     WorkItem workItem(String workItemId, Policy<?>... policies);
@@ -176,6 +176,7 @@ public interface ProcessInstance<T> {
 
     /**
      * Returns startDate of this process instance
+     * 
      * @return
      */
     Date startDate();

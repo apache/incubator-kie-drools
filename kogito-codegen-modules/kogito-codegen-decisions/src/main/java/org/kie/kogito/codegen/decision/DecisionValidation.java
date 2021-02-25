@@ -76,12 +76,12 @@ public class DecisionValidation {
             return;
         }
         List<DMNMessage> schemaModelValidations = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()))
-                                                                     .validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA,
-                                                                                    DMNValidator.Validation.VALIDATE_MODEL)
-                                                                     .theseModels(resources.stream()
-                                                                                           .map(DecisionValidation::resourceToReader)
-                                                                                           .collect(Collectors.toList())
-                                                                                           .toArray(new Reader[]{}));
+                .validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA,
+                        DMNValidator.Validation.VALIDATE_MODEL)
+                .theseModels(resources.stream()
+                        .map(DecisionValidation::resourceToReader)
+                        .collect(Collectors.toList())
+                        .toArray(new Reader[] {}));
         logValidationMessages(schemaModelValidations, DecisionValidation::extractMsgPrefix, DMNMessage::getText);
         processMessagesHandleErrors(validateOption, schemaModelValidations);
     }
@@ -109,8 +109,8 @@ public class DecisionValidation {
             return ValidationOption.ENABLED; // the default;
         }
         Optional<ValidationOption> configOption = Arrays.stream(ValidationOption.values())
-                                                        .filter(e -> e.name().equalsIgnoreCase(applicationProperty.get()))
-                                                        .findAny();
+                .filter(e -> e.name().equalsIgnoreCase(applicationProperty.get()))
+                .findAny();
         if (!configOption.isPresent()) {
             LOG.warn("Validation configuration value {} does not correspond to any valid option, will assume {}=ENABLED", applicationProperty.get(), DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
             return ValidationOption.ENABLED;
@@ -127,8 +127,8 @@ public class DecisionValidation {
     }
 
     private static void logValidationMessages(List<DMNMessage> validation,
-                                              Function<DMNMessage, String> prefixer,
-                                              Function<DMNMessage, String> computeMessage) {
+            Function<DMNMessage, String> prefixer,
+            Function<DMNMessage, String> computeMessage) {
         for (DMNMessage msg : validation) {
             Consumer<String> logFn = null;
             switch (msg.getLevel()) {
@@ -223,4 +223,3 @@ public class DecisionValidation {
         }
     }
 }
-

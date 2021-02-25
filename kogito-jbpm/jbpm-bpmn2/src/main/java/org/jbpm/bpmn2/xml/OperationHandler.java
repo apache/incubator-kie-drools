@@ -26,46 +26,46 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class OperationHandler extends BaseAbstractHandler implements Handler {
-	
-	@SuppressWarnings("unchecked")
-	public OperationHandler() {
-		if ((this.validParents == null) && (this.validPeers == null)) {
-			this.validParents = new HashSet();
-			this.validParents.add(Interface.class);
 
-			this.validPeers = new HashSet();
-			this.validPeers.add(null);
-			this.validPeers.add(Operation.class);
+    @SuppressWarnings("unchecked")
+    public OperationHandler() {
+        if ((this.validParents == null) && (this.validPeers == null)) {
+            this.validParents = new HashSet();
+            this.validParents.add(Interface.class);
 
-			this.allowNesting = false;
-		}
-	}
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
+            this.validPeers.add(Operation.class);
+
+            this.allowNesting = false;
+        }
+    }
 
     public Object start(final String uri, final String localName,
-			            final Attributes attrs, final ExtensibleXmlParser parser)
-			throws SAXException {
-		parser.startElementBuilder(localName, attrs);
+            final Attributes attrs, final ExtensibleXmlParser parser)
+            throws SAXException {
+        parser.startElementBuilder(localName, attrs);
 
-		String id = attrs.getValue("id");
-		String name = attrs.getValue("name");
-		String implRef = attrs.getValue("implementationRef");
-		
-		Interface i = (Interface) parser.getParent();
+        String id = attrs.getValue("id");
+        String name = attrs.getValue("name");
+        String implRef = attrs.getValue("implementationRef");
+
+        Interface i = (Interface) parser.getParent();
         Operation operation = i.addOperation(id, name);
         if (implRef != null) {
             operation.setImplementationRef(implRef);
         }
-		return operation;
-	}
+        return operation;
+    }
 
-	public Object end(final String uri, final String localName,
-			          final ExtensibleXmlParser parser) throws SAXException {
-		parser.endElementBuilder();
-		return parser.getCurrent();
-	}
+    public Object end(final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.endElementBuilder();
+        return parser.getCurrent();
+    }
 
-	public Class<?> generateNodeFor() {
-		return Operation.class;
-	}
+    public Class<?> generateNodeFor() {
+        return Operation.class;
+    }
 
 }

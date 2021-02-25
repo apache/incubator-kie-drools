@@ -19,12 +19,13 @@ package org.kie.kogito.integrationtests.quarkus;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -46,33 +47,33 @@ class AdHocFragmentsTest {
 
         String id = given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body(params)
                 .post("/AdHocFragments")
-            .then()
+                .then()
                 .statusCode(201)
                 .header("Location", not(emptyOrNullString()))
-            .extract()
+                .extract()
                 .path("id");
 
         String taskId = extractID(given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/AdHocFragments/{pid}/AdHocTask1", id)
-            .then()
+                .then()
                 .statusCode(201)
                 .header("Location", not(emptyOrNullString()))
-            .extract()
+                .extract()
                 .header("Location"));
 
         params = new HashMap<>();
         params.put("newVar1", "Gonzo");
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body(params)
                 .post("/AdHocFragments/{id}/AdHocTask1/{taskId}", id, taskId)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("var1", equalTo("Gonzo"));
     }
@@ -84,19 +85,19 @@ class AdHocFragmentsTest {
 
         String pid = given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body(params)
                 .post("/AdHocFragments")
-            .then()
+                .then()
                 .statusCode(201)
-            .extract()
+                .extract()
                 .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/AdHocFragments/{pid}/Service_Task", pid)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("var1", equalTo("Hello Kermit 5!"));
     }
@@ -108,19 +109,19 @@ class AdHocFragmentsTest {
 
         String pid = given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body(params)
                 .post("/AdHocFragments")
-            .then()
+                .then()
                 .statusCode(201)
-            .extract()
+                .extract()
                 .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/AdHocFragments/{pid}/Task", pid)
-            .then()
+                .then()
                 .statusCode(404);
     }
 

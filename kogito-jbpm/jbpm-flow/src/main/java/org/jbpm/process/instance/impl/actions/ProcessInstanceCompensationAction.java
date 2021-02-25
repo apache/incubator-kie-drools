@@ -31,7 +31,7 @@ public class ProcessInstanceCompensationAction implements Action, Serializable {
     }
 
     @Override
-    public void execute( KogitoProcessContext context) throws Exception {
+    public void execute(KogitoProcessContext context) throws Exception {
         context.getProcessInstance().signalEvent("Compensation", activityRef);
     }
 

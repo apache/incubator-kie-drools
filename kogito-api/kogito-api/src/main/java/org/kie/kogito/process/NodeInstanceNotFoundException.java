@@ -21,7 +21,7 @@ public class NodeInstanceNotFoundException extends RuntimeException {
 
     private final String processInstanceId;
     private final String nodeInstanceId;
-    
+
     public NodeInstanceNotFoundException(String processInstanceId, String nodeInstanceId) {
         super("Node instance with id " + nodeInstanceId + " not found within process instance " + processInstanceId);
         this.processInstanceId = processInstanceId;
@@ -37,7 +37,7 @@ public class NodeInstanceNotFoundException extends RuntimeException {
     public String getProcessInstanceId() {
         return processInstanceId;
     }
-    
+
     public String getNodeInstanceId() {
         return nodeInstanceId;
     }

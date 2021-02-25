@@ -19,13 +19,14 @@ package org.kie.kogito.integrationtests.quarkus;
 import java.io.InputStream;
 import java.util.Collections;
 
+import org.acme.travels.Traveller;
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.acme.travels.Traveller;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
@@ -64,7 +65,7 @@ class TaskTest {
         String processId = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(Collections.singletonMap("traveller",traveller))
+                .body(Collections.singletonMap("traveller", traveller))
                 .post("/approvals")
                 .then()
                 .statusCode(201)

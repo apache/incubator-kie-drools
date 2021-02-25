@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.integrationtests.quarkus;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 
@@ -36,19 +37,19 @@ class LinkTest {
     void testLink() {
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/SimpleLinkTest")
-            .then()
+                .then()
                 .statusCode(201);
     }
-    
+
     @Test
     void testMultipleLink() {
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .post("/MultipleThrowLinkProcess")
-            .then()
+                .then()
                 .statusCode(201);
     }
 

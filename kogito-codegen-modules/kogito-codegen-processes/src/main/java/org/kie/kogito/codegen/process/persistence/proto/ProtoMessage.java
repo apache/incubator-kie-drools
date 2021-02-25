@@ -70,7 +70,7 @@ public class ProtoMessage {
         if (!fields.contains(field)) {
             fields.add(field);
         }
-        
+
         return field;
     }
 

@@ -43,10 +43,12 @@ public interface GeneratedFileType {
          * Represent a Java source file
          */
         SOURCE,
-        /** Represent a cp resource automatically generated during codegen, so after generate-resources maven phase.
+        /**
+         * Represent a cp resource automatically generated during codegen, so after generate-resources maven phase.
          * This means to add it to target/classes both for Quarkus or using kogito-maven-plugin (SB). For additional
          * information see {@link org.kie.kogito.codegen.utils.GeneratedFileWriter#write(GeneratedFile)}
-         * For Quarkus it will be subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem too */
+         * For Quarkus it will be subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem too
+         */
         RESOURCE,
         /**
          * Represent a class file (Java compiled file)
@@ -109,8 +111,10 @@ public interface GeneratedFileType {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof GeneratedFileType)) return false;
+            if (this == o)
+                return true;
+            if (!(o instanceof GeneratedFileType))
+                return false;
             GeneratedFileType that = (GeneratedFileType) o;
             return canHotReload == that.canHotReload() && name.equals(that.name()) && category == that.category() && customizable == that.isCustomizable();
         }

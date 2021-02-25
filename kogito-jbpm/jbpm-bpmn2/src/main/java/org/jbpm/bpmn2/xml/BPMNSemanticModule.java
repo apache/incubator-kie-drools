@@ -31,16 +31,16 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 
 public class BPMNSemanticModule extends DefaultSemanticModule {
-	
-	public static final String BPMN2_URI = "http://www.omg.org/spec/BPMN/20100524/MODEL";
-	
-	public BPMNSemanticModule() {
-		super(BPMN2_URI);
-		
+
+    public static final String BPMN2_URI = "http://www.omg.org/spec/BPMN/20100524/MODEL";
+
+    public BPMNSemanticModule() {
+        super(BPMN2_URI);
+
         addHandler("definitions", new DefinitionsHandler());
         addHandler("import", new Bpmn2ImportHandler());
         addHandler("process", new ProcessHandler());
-        
+
         addHandler("property", new PropertyHandler());
         addHandler("lane", new LaneHandler());
 
@@ -49,7 +49,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("exclusiveGateway", new ExclusiveGatewayHandler());
         addHandler("inclusiveGateway", new InclusiveGatewayHandler());
         addHandler("parallelGateway", new ParallelGatewayHandler());
-		addHandler("eventBasedGateway", new EventBasedGatewayHandler());
+        addHandler("eventBasedGateway", new EventBasedGatewayHandler());
         addHandler("complexGateway", new ComplexGatewayHandler());
         addHandler("scriptTask", new ScriptTaskHandler());
         addHandler("task", new TaskHandler());
@@ -81,7 +81,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("dataStore", new DataStoreHandler());
         addHandler("association", new AssociationHandler());
         addHandler("documentation", new DocumentationHandler());
-        
+
         handlersByClass.put(Split.class, new SplitHandler());
         handlersByClass.put(Join.class, new JoinHandler());
         handlersByClass.put(EventNode.class, new EventNodeHandler());
@@ -96,6 +96,6 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         handlersByClass.put(ThrowLinkNode.class, new ThrowLinkNodeHandler());
         handlersByClass.put(CatchLinkNode.class, new CatchLinkNodeHandler());
 
-	}
+    }
 
 }

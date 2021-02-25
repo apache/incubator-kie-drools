@@ -17,7 +17,7 @@ package org.kie.kogito.rules;
 
 public interface DataStore<T> extends DataSource<T> {
 
-    DataHandle add(T object );
+    DataHandle add(T object);
 
     /**
      * Updates the fact for which the given DataHandle was assigned with the new

@@ -30,37 +30,37 @@ import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_EXIT;
 
 public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 
-	private static final long serialVersionUID = 510l;
-	
-	public ExtendedNodeImpl getExtendedNode() {
-		return (ExtendedNodeImpl) getNode();
-	}
-	
-	public void internalTrigger(KogitoNodeInstance from, String type) {
-	    triggerTime = new Date();
-		triggerEvent(EVENT_NODE_ENTER);
-	}
-	
+    private static final long serialVersionUID = 510l;
+
+    public ExtendedNodeImpl getExtendedNode() {
+        return (ExtendedNodeImpl) getNode();
+    }
+
+    public void internalTrigger(KogitoNodeInstance from, String type) {
+        triggerTime = new Date();
+        triggerEvent(EVENT_NODE_ENTER);
+    }
+
     public void triggerCompleted(boolean remove) {
         triggerCompleted(CONNECTION_DEFAULT_TYPE, remove);
     }
-    
-	public void triggerCompleted(String type, boolean remove) {
-		triggerEvent(EVENT_NODE_EXIT);
-		super.triggerCompleted(type, remove);
-	}
-	
-	protected void triggerEvent(String type) {
-		ExtendedNodeImpl extendedNode = getExtendedNode();
-		if (extendedNode == null) {
-			return;
-		}
-		List<DroolsAction> actions = extendedNode.getActions(type);
-		if (actions != null) {
-			for (DroolsAction droolsAction: actions) {
-			    Action action = (Action) droolsAction.getMetaData(ACTION);
-				executeAction(action);
-			}
-		}
-	}
+
+    public void triggerCompleted(String type, boolean remove) {
+        triggerEvent(EVENT_NODE_EXIT);
+        super.triggerCompleted(type, remove);
+    }
+
+    protected void triggerEvent(String type) {
+        ExtendedNodeImpl extendedNode = getExtendedNode();
+        if (extendedNode == null) {
+            return;
+        }
+        List<DroolsAction> actions = extendedNode.getActions(type);
+        if (actions != null) {
+            for (DroolsAction droolsAction : actions) {
+                Action action = (Action) droolsAction.getMetaData(ACTION);
+                executeAction(action);
+            }
+        }
+    }
 }

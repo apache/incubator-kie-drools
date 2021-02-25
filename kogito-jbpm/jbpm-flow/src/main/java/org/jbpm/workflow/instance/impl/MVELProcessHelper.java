@@ -31,25 +31,19 @@ public class MVELProcessHelper {
 
     private static final boolean IS_JDK = System.getProperty("org.graalvm.nativeimage.imagecode") == null;
     private static final Supplier<MVELEvaluator> EVALUATOR_SUPPLIER =
-            IS_JDK ?
-                    MVELSafeHelper::getEvaluator :
-                    () -> {
-                        throw new UnsupportedOperationException("MVEL evaluation is not supported in native image");
-                    };
+            IS_JDK ? MVELSafeHelper::getEvaluator : () -> {
+                throw new UnsupportedOperationException("MVEL evaluation is not supported in native image");
+            };
 
     private static final Function<String, Serializable> EXPR_COMPILER =
-            IS_JDK ?
-                    MVEL::compileExpression :
-                    expr -> {
-                        throw new UnsupportedOperationException("MVEL compilation is not supported in native image");
-                    };
+            IS_JDK ? MVEL::compileExpression : expr -> {
+                throw new UnsupportedOperationException("MVEL compilation is not supported in native image");
+            };
 
     private static final Function<String, List<ErrorDetail>> EXPR_COMPILER_DETAILED =
-            IS_JDK ?
-                    MVELProcessHelper::expressionCompiler :
-                    expr -> {
-                        throw new UnsupportedOperationException("MVEL compilation is not supported in native image");
-                    };
+            IS_JDK ? MVELProcessHelper::expressionCompiler : expr -> {
+                throw new UnsupportedOperationException("MVEL compilation is not supported in native image");
+            };
 
     public static MVELEvaluator evaluator() {
         return EVALUATOR_SUPPLIER.get();
@@ -66,7 +60,7 @@ public class MVELProcessHelper {
     private static List<ErrorDetail> expressionCompiler(String actionString) {
         ParserContext parserContext = new ParserContext();
         ExpressionCompiler compiler = new ExpressionCompiler(actionString,
-                                                             parserContext);
+                parserContext);
         compiler.setVerifying(true);
         compiler.compile();
         return parserContext.getErrorList();

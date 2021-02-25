@@ -18,12 +18,14 @@ package org.kie.kogito.addon.cloudevents.quarkus;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.jackson.JsonFormat;
-import io.quarkus.runtime.Startup;
 import org.kie.kogito.cloudevents.extension.KogitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cloudevents.jackson.JsonFormat;
+import io.quarkus.runtime.Startup;
 
 /**
  * The goal of this bean is to register the Kogito CloudEvent extension
@@ -36,7 +38,7 @@ public class QuarkusKogitoExtensionInitializer {
 
     @Inject
     ObjectMapper mapper;
-    
+
     @PostConstruct
     private void onPostConstruct() {
         mapper.registerModule(JsonFormat.getCloudEventJacksonModule());

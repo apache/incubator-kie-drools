@@ -25,5 +25,8 @@ public class MultiUnit implements RuleUnitData {
     public DataStore<Object> getValues() {
         return values;
     }
-    private DataStore<Object> thisMethodIsHidden() { return null; }
+
+    private DataStore<Object> thisMethodIsHidden() {
+        return null;
+    }
 }

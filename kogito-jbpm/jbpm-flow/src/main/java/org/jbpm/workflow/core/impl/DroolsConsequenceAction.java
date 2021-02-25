@@ -23,50 +23,50 @@ import java.io.Serializable;
 import org.jbpm.workflow.core.DroolsAction;
 
 public class DroolsConsequenceAction extends DroolsAction implements Serializable {
-	
+
     private static final long serialVersionUID = 510l;
-    
+
     private String dialect = "mvel";
     private String consequence;
-    
+
     public DroolsConsequenceAction() {
     }
-	
-	public DroolsConsequenceAction(String dialect, String consequence) {
-	    this.dialect = dialect;
-		this.consequence = consequence;
-	}
-	
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( dialect );
-        out.writeObject( consequence );
+
+    public DroolsConsequenceAction(String dialect, String consequence) {
+        this.dialect = dialect;
+        this.consequence = consequence;
     }
-    
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(dialect);
+        out.writeObject(consequence);
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
-    ClassNotFoundException {
-        super.readExternal( in );
+            ClassNotFoundException {
+        super.readExternal(in);
         dialect = (String) in.readObject();
         consequence = (String) in.readObject();
-    }    
-  
-	public void setConsequence(String consequence) {
-		this.consequence = consequence;
-	}
-	
-	public String getConsequence() {
-		return consequence;
-	}
-	
-	public void setDialect(String dialect) {
-	    this.dialect = dialect;
-	}
-	
-	public String getDialect() {
-	    return dialect;
-	}
+    }
 
-	public String toString() {
-		return consequence;
-	}
+    public void setConsequence(String consequence) {
+        this.consequence = consequence;
+    }
+
+    public String getConsequence() {
+        return consequence;
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
+
+    public String getDialect() {
+        return dialect;
+    }
+
+    public String toString() {
+        return consequence;
+    }
 }

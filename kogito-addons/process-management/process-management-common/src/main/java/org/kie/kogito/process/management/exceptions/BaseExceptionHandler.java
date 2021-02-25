@@ -44,71 +44,71 @@ public abstract class BaseExceptionHandler<T> {
     public BaseExceptionHandler() {
         mapper = new HashMap<>();
         mapper.put(InvalidLifeCyclePhaseException.class,
-                   ex -> badRequest(Collections.singletonMap(MESSAGE, ex.getMessage())));
+                ex -> badRequest(Collections.singletonMap(MESSAGE, ex.getMessage())));
 
         mapper.put(InvalidTransitionException.class,
-                   ex -> badRequest(Collections.singletonMap(MESSAGE, ex.getMessage())));
+                ex -> badRequest(Collections.singletonMap(MESSAGE, ex.getMessage())));
 
         mapper.put(NodeInstanceNotFoundException.class,
-                   ex -> {
-                       NodeInstanceNotFoundException exception = (NodeInstanceNotFoundException) ex;
-                       Map<String, String> response = new HashMap<>();
-                       response.put(MESSAGE, exception.getMessage());
-                       response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                       response.put(NODE_INSTANCE_ID, exception.getNodeInstanceId());
-                       return notFound(response);
-                   });
+                ex -> {
+                    NodeInstanceNotFoundException exception = (NodeInstanceNotFoundException) ex;
+                    Map<String, String> response = new HashMap<>();
+                    response.put(MESSAGE, exception.getMessage());
+                    response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
+                    response.put(NODE_INSTANCE_ID, exception.getNodeInstanceId());
+                    return notFound(response);
+                });
 
         mapper.put(NodeNotFoundException.class,
-                   ex -> {
-                       NodeNotFoundException exception = (NodeNotFoundException) ex;
-                       Map<String, String> response = new HashMap<>();
-                       response.put(MESSAGE, exception.getMessage());
-                       response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                       response.put(NODE_ID, exception.getNodeId());
-                       return notFound(response);
-                   });
+                ex -> {
+                    NodeNotFoundException exception = (NodeNotFoundException) ex;
+                    Map<String, String> response = new HashMap<>();
+                    response.put(MESSAGE, exception.getMessage());
+                    response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
+                    response.put(NODE_ID, exception.getNodeId());
+                    return notFound(response);
+                });
 
         mapper.put(NotAuthorizedException.class,
-                   ex -> forbidden(Collections.singletonMap(MESSAGE, ex.getMessage())));
+                ex -> forbidden(Collections.singletonMap(MESSAGE, ex.getMessage())));
 
         mapper.put(ProcessInstanceDuplicatedException.class,
-                   ex -> {
-                       ProcessInstanceDuplicatedException exception = (ProcessInstanceDuplicatedException) ex;
-                       Map<String, String> response = new HashMap<>();
-                       response.put(MESSAGE, exception.getMessage());
-                       response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                       return conflict(response);
-                   });
+                ex -> {
+                    ProcessInstanceDuplicatedException exception = (ProcessInstanceDuplicatedException) ex;
+                    Map<String, String> response = new HashMap<>();
+                    response.put(MESSAGE, exception.getMessage());
+                    response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
+                    return conflict(response);
+                });
 
         mapper.put(ProcessInstanceExecutionException.class,
-                   ex -> {
-                       ProcessInstanceExecutionException exception = (ProcessInstanceExecutionException) ex;
-                       Map<String, String> response = new HashMap<>();
-                       response.put(ID, exception.getProcessInstanceId());
-                       response.put(FAILED_NODE_ID, exception.getFailedNodeId());
-                       response.put(MESSAGE, exception.getErrorMessage());
-                       return internalError(response);
-                   });
+                ex -> {
+                    ProcessInstanceExecutionException exception = (ProcessInstanceExecutionException) ex;
+                    Map<String, String> response = new HashMap<>();
+                    response.put(ID, exception.getProcessInstanceId());
+                    response.put(FAILED_NODE_ID, exception.getFailedNodeId());
+                    response.put(MESSAGE, exception.getErrorMessage());
+                    return internalError(response);
+                });
 
         mapper.put(ProcessInstanceNotFoundException.class,
-                   ex -> {
-                       ProcessInstanceNotFoundException exception = (ProcessInstanceNotFoundException) ex;
-                       Map<String, String> response = new HashMap<>();
-                       response.put(MESSAGE, exception.getMessage());
-                       response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                       return notFound(response);
-                   });
+                ex -> {
+                    ProcessInstanceNotFoundException exception = (ProcessInstanceNotFoundException) ex;
+                    Map<String, String> response = new HashMap<>();
+                    response.put(MESSAGE, exception.getMessage());
+                    response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
+                    return notFound(response);
+                });
 
         mapper.put(VariableViolationException.class,
-                   ex -> {
-                       VariableViolationException exception = (VariableViolationException) ex;
-                       Map<String, String> response = new HashMap<>();
-                       response.put(MESSAGE, exception.getMessage() + " : " + exception.getErrorMessage());
-                       response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
-                       response.put(VARIABLE, exception.getVariableName());
-                       return badRequest(response);
-                   });
+                ex -> {
+                    VariableViolationException exception = (VariableViolationException) ex;
+                    Map<String, String> response = new HashMap<>();
+                    response.put(MESSAGE, exception.getMessage() + " : " + exception.getErrorMessage());
+                    response.put(PROCESS_INSTANCE_ID, exception.getProcessInstanceId());
+                    response.put(VARIABLE, exception.getVariableName());
+                    return badRequest(response);
+                });
     }
 
     protected abstract <R> T badRequest(R body);

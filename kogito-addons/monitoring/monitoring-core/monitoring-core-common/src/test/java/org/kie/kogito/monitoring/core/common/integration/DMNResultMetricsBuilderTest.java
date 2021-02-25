@@ -25,17 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
-import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 import org.kie.kogito.monitoring.core.common.mock.DMNDecisionResultMock;
 import org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder;
+import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,14 +103,14 @@ public class DMNResultMetricsBuilderTest {
                 .count());
 
         assertEquals(expectedDictionaryDecisionHello, registry.find(stringDmnType
-                                                                      + DecisionConstants.DECISIONS_NAME_SUFFIX)
+                + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "DictionaryDecision")
                 .tag("identifier", "Hello")
                 .counter()
                 .count());
 
         assertEquals(expectedDictionaryDecisionWorld, registry.find(stringDmnType
-                                                                      + DecisionConstants.DECISIONS_NAME_SUFFIX)
+                + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "DictionaryDecision")
                 .tag("identifier", "World")
                 .counter()
@@ -118,7 +119,7 @@ public class DMNResultMetricsBuilderTest {
         // Boolean type
         String booleanDmnType = SupportedDecisionTypes.fromInternalToStandard(Boolean.class);
         assertEquals(expectedTrueBooleanDecision, registry.find(booleanDmnType
-                                                                        + DecisionConstants.DECISIONS_NAME_SUFFIX)
+                + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "BooleanDecision")
                 .tag("identifier", "true")
                 .counter()

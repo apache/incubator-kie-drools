@@ -26,17 +26,17 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
-import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.process.VariableViolationException;
 
 /**
  * 
  */
 public class VariableScopeInstance extends AbstractContextInstance {
 
-    private static final long serialVersionUID = 510l;    
-    
+    private static final long serialVersionUID = 510l;
+
     private Map<String, Object> variables = new HashMap<String, Object>();
     private transient String variableIdPrefix = null;
     private transient String variableInstanceIdPrefix = null;
@@ -46,7 +46,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
     }
 
     public Object getVariable(String name) {
-                
+
         Object value = variables.get(name);
         if (value != null) {
             return value;
@@ -58,7 +58,6 @@ public class VariableScopeInstance extends AbstractContextInstance {
         } else if ("parentProcessInstanceId".equals(name) && getProcessInstance() != null) {
             return getProcessInstance().getParentProcessInstanceId();
         }
-        
 
         if (getProcessInstance() != null && getProcessInstance().getKnowledgeRuntime() != null) {
             // support for globals
@@ -66,8 +65,8 @@ public class VariableScopeInstance extends AbstractContextInstance {
             if (value != null) {
                 return value;
             }
-            
-        }    
+
+        }
 
         return null;
     }
@@ -79,66 +78,66 @@ public class VariableScopeInstance extends AbstractContextInstance {
     public void setVariable(String name, Object value) {
         setVariable(null, name, value);
     }
-    
+
     public void setVariable(KogitoNodeInstance nodeInstance, String name, Object value) {
         if (name == null) {
             throw new IllegalArgumentException(
-                "The name of a variable may not be null!");
+                    "The name of a variable may not be null!");
         }
         Object oldValue = getVariable(name);
         if (oldValue == null) {
-        	if (value == null) {
-        		return;
-        	}
+            if (value == null) {
+                return;
+            }
         }
- 
+
         // check if variable that is being set is readonly and has already been set
         if (oldValue != null && getVariableScope().isReadOnly(name)) {
             throw new VariableViolationException(getProcessInstance().getStringId(), name, "Variable '" + name + "' is already set and is marked as read only");
         }
-        KogitoProcessEventSupport processEventSupport = ( KogitoProcessEventSupport ) ((InternalProcessRuntime) getProcessInstance()
-    		.getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
-    	processEventSupport.fireBeforeVariableChanged(
-			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
-			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
-			oldValue, value, getVariableScope().tags(name), getProcessInstance(),
-			nodeInstance,
-			getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessEventSupport processEventSupport = (KogitoProcessEventSupport) ((InternalProcessRuntime) getProcessInstance()
+                .getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
+        processEventSupport.fireBeforeVariableChanged(
+                (variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
+                (variableInstanceIdPrefix == null ? "" : variableInstanceIdPrefix + ":") + name,
+                oldValue, value, getVariableScope().tags(name), getProcessInstance(),
+                nodeInstance,
+                getProcessInstance().getKnowledgeRuntime());
         internalSetVariable(name, value);
         processEventSupport.fireAfterVariableChanged(
-			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
-			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
-    		oldValue, value, getVariableScope().tags(name), getProcessInstance(),
-    		nodeInstance,
-			getProcessInstance().getKnowledgeRuntime());
+                (variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
+                (variableInstanceIdPrefix == null ? "" : variableInstanceIdPrefix + ":") + name,
+                oldValue, value, getVariableScope().tags(name), getProcessInstance(),
+                nodeInstance,
+                getProcessInstance().getKnowledgeRuntime());
     }
-    
+
     public void internalSetVariable(String name, Object value) {
         // not a case, store it in normal variables
-    	variables.put(name, value);
+        variables.put(name, value);
     }
-    
+
     public VariableScope getVariableScope() {
-    	return (VariableScope) getContext();
+        return (VariableScope) getContext();
     }
-    
+
     public void setContextInstanceContainer(ContextInstanceContainer contextInstanceContainer) {
-    	super.setContextInstanceContainer(contextInstanceContainer);
-    	for (Variable variable : getVariableScope().getVariables()) {
+        super.setContextInstanceContainer(contextInstanceContainer);
+        for (Variable variable : getVariableScope().getVariables()) {
             if (variable.getValue() != null) {
                 setVariable(variable.getName(), variable.getValue());
             }
         }
-    	if (contextInstanceContainer instanceof CompositeContextNodeInstance) {
-    		this.variableIdPrefix = (( Node ) ((CompositeContextNodeInstance) contextInstanceContainer).getNode()).getUniqueId();
-    		this.variableInstanceIdPrefix = ((CompositeContextNodeInstance) contextInstanceContainer).getUniqueId();
-    	}
-	}
+        if (contextInstanceContainer instanceof CompositeContextNodeInstance) {
+            this.variableIdPrefix = ((Node) ((CompositeContextNodeInstance) contextInstanceContainer).getNode()).getUniqueId();
+            this.variableInstanceIdPrefix = ((CompositeContextNodeInstance) contextInstanceContainer).getUniqueId();
+        }
+    }
 
     public void enforceRequiredVariables() {
         VariableScope variableScope = getVariableScope();
         for (Variable variable : variableScope.getVariables()) {
-            if (variableScope.isRequired(variable.getName()) && !variables.containsKey(variable.getName())) {                
+            if (variableScope.isRequired(variable.getName()) && !variables.containsKey(variable.getName())) {
                 throw new VariableViolationException(getProcessInstance().getStringId(), variable.getName(), "Variable '" + variable.getName() + "' is required but not set");
             }
         }

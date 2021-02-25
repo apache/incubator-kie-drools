@@ -34,16 +34,16 @@ import org.kie.kogito.process.workitem.Transition;
  *
  * It can transition from
  * <ul>
- *  <li>Active</li>
+ * <li>Active</li>
  * </ul>
  */
 public class Claim implements LifeCyclePhase {
 
     public static final String ID = "claim";
     public static final String STATUS = "Reserved";
-    
+
     private List<String> allowedTransitions = Arrays.asList(Active.ID, Release.ID);
-    
+
     @Override
     public String id() {
         return ID;
@@ -61,21 +61,21 @@ public class Claim implements LifeCyclePhase {
 
     @Override
     public boolean canTransition(LifeCyclePhase phase) {
-        return allowedTransitions.contains(phase.id());        
+        return allowedTransitions.contains(phase.id());
     }
 
     @Override
     public void apply(WorkItem workitem, Transition<?> transition) {
-        
+
         if (transition.policies() != null) {
             for (Policy<?> policy : transition.policies()) {
                 if (policy instanceof SecurityPolicy) {
-                    ((HumanTaskWorkItemImpl) workitem).setActualOwner(((SecurityPolicy)policy).value().getName());
+                    ((HumanTaskWorkItemImpl) workitem).setActualOwner(((SecurityPolicy) policy).value().getName());
                     break;
                 }
             }
         }
-        workitem.getResults().put("ActorId", (( HumanTaskWorkItem ) workitem).getActualOwner());
+        workitem.getResults().put("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
     }
 
 }

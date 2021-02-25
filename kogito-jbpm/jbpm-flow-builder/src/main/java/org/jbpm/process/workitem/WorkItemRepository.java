@@ -36,150 +36,149 @@ public class WorkItemRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkItemRepository.class);
 
-	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {
-		return getWorkDefinitions(path, null, null);
-	}
+    public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {
+        return getWorkDefinitions(path, null, null);
+    }
 
-	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames) {
-		return getWorkDefinitions(path, definitionNames, null);
-	}
+    public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames) {
+        return getWorkDefinitions(path, definitionNames, null);
+    }
 
-	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames, String widName) {
-		Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<String, WorkDefinitionImpl>();
-		List<Map<String, Object>> workDefinitionsMaps = getAllWorkDefinitionsMap(path, widName);
-		for (Map<String, Object> workDefinitionMap : workDefinitionsMaps) {
-			if (workDefinitionMap != null) {
-				WorkDefinitionImpl workDefinition = new WorkDefinitionImpl();
-				workDefinition.setName((String) workDefinitionMap.get("name"));
-				workDefinition.setDisplayName((String) workDefinitionMap.get("displayName"));
-				workDefinition.setIcon((String) workDefinitionMap.get("icon"));
-				workDefinition.setCustomEditor((String) workDefinitionMap.get("customEditor"));
-				workDefinition.setCategory((String) workDefinitionMap.get("category"));
-				workDefinition.setPath((String) workDefinitionMap.get("path"));
-				workDefinition.setFile((String) workDefinitionMap.get("file"));
-				workDefinition.setDocumentation((String) workDefinitionMap.get("documentation"));
-				Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-				Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get("parameters");
-				if (parameterMap != null) {
-					for (Map.Entry<String, DataType> entry : parameterMap.entrySet()) {
-						parameters.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
-					}
-				}
-				workDefinition.setParameters(parameters);
+    public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames, String widName) {
+        Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<String, WorkDefinitionImpl>();
+        List<Map<String, Object>> workDefinitionsMaps = getAllWorkDefinitionsMap(path, widName);
+        for (Map<String, Object> workDefinitionMap : workDefinitionsMaps) {
+            if (workDefinitionMap != null) {
+                WorkDefinitionImpl workDefinition = new WorkDefinitionImpl();
+                workDefinition.setName((String) workDefinitionMap.get("name"));
+                workDefinition.setDisplayName((String) workDefinitionMap.get("displayName"));
+                workDefinition.setIcon((String) workDefinitionMap.get("icon"));
+                workDefinition.setCustomEditor((String) workDefinitionMap.get("customEditor"));
+                workDefinition.setCategory((String) workDefinitionMap.get("category"));
+                workDefinition.setPath((String) workDefinitionMap.get("path"));
+                workDefinition.setFile((String) workDefinitionMap.get("file"));
+                workDefinition.setDocumentation((String) workDefinitionMap.get("documentation"));
+                Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+                Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get("parameters");
+                if (parameterMap != null) {
+                    for (Map.Entry<String, DataType> entry : parameterMap.entrySet()) {
+                        parameters.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
+                    }
+                }
+                workDefinition.setParameters(parameters);
 
+                if (workDefinitionMap.get("parameterValues") != null) {
+                    workDefinition.setParameterValues((Map<String, Object>) workDefinitionMap.get("parameterValues"));
+                }
 
-				if(workDefinitionMap.get("parameterValues") != null) {
-					workDefinition.setParameterValues( (Map<String, Object>) workDefinitionMap.get("parameterValues") );
-				}
+                Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+                Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get("results");
+                if (resultMap != null) {
+                    for (Map.Entry<String, DataType> entry : resultMap.entrySet()) {
+                        results.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
+                    }
+                }
+                workDefinition.setResults(results);
 
-				Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-				Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get("results");
-				if (resultMap != null) {
-					for (Map.Entry<String, DataType> entry : resultMap.entrySet()) {
-						results.add(new ParameterDefinitionImpl(entry.getKey(),	entry.getValue()));
-					}
-				}
-				workDefinition.setResults(results);
+                workDefinition.setDefaultHandler((String) workDefinitionMap.get("defaultHandler"));
 
-				workDefinition.setDefaultHandler((String) workDefinitionMap.get("defaultHandler"));
+                if (workDefinitionMap.get("dependencies") != null) {
+                    workDefinition.setDependencies(((List<String>) workDefinitionMap.get("dependencies")).toArray(new String[0]));
+                }
 
-				if(workDefinitionMap.get("dependencies") != null) {
-					workDefinition.setDependencies(((List<String>) workDefinitionMap.get("dependencies")).toArray(new String[0]));
-				}
+                if (workDefinitionMap.get("mavenDependencies") != null) {
+                    workDefinition.setMavenDependencies(((List<String>) workDefinitionMap.get("mavenDependencies")).toArray(new String[0]));
+                }
 
-				if(workDefinitionMap.get("mavenDependencies") != null) {
-					workDefinition.setMavenDependencies(((List<String>) workDefinitionMap.get("mavenDependencies")).toArray(new String[0]));
-				}
+                if (workDefinitionMap.get("version") != null) {
+                    workDefinition.setVersion((String) workDefinitionMap.get("version"));
+                }
 
-				if(workDefinitionMap.get("version") != null) {
-					workDefinition.setVersion((String) workDefinitionMap.get("version"));
-				}
+                if (workDefinitionMap.get("description") != null) {
+                    workDefinition.setDescription((String) workDefinitionMap.get("description"));
+                }
 
-				if(workDefinitionMap.get("description") != null) {
-					workDefinition.setDescription((String) workDefinitionMap.get("description"));
-				}
+                if (workDefinitionMap.get("widType") != null) {
+                    workDefinition.setWidType((String) workDefinitionMap.get("widType"));
+                }
 
-				if(workDefinitionMap.get("widType") != null) {
-					workDefinition.setWidType((String) workDefinitionMap.get("widType"));
-				}
+                workDefinitions.put(workDefinition.getName(), workDefinition);
+            }
+        }
 
-				workDefinitions.put(workDefinition.getName(), workDefinition);
-			}
-		}
+        if (definitionNames != null) {
+            if (definitionNames.length > 0) {
+                workDefinitions.keySet().retainAll(new HashSet(Arrays.asList(definitionNames)));
+            } else {
+                return new HashMap<>();
+            }
 
-		if(definitionNames!= null) {
-			if(definitionNames.length > 0) {
-				workDefinitions.keySet().retainAll(new HashSet(Arrays.asList(definitionNames)));
-			} else {
-				return new HashMap<>();
-			}
+        }
+        return workDefinitions;
+    }
 
-		}
-		return workDefinitions;
-	}
+    private static List<Map<String, Object>> getAllWorkDefinitionsMap(String directory, String widName) {
+        List<Map<String, Object>> workDefinitions = new ArrayList<Map<String, Object>>();
+        if (widName != null) {
+            workDefinitions.addAll(getWorkDefinitionsMapForSingleDir(directory, widName));
+        } else {
+            for (String s : getDirectories(directory)) {
+                try {
+                    workDefinitions.addAll(getAllWorkDefinitionsMap(directory + "/" + s, null));
+                } catch (Throwable t) {
+                    logger.error("Error retrieving work definitions: " + t.getMessage());
+                }
+                workDefinitions.addAll(getWorkDefinitionsMap(directory, s));
+            }
+        }
+        return workDefinitions;
+    }
 
-	private static List<Map<String, Object>> getAllWorkDefinitionsMap(String directory, String widName) {
-		List<Map<String, Object>> workDefinitions = new ArrayList<Map<String, Object>>();
-		if(widName != null) {
-			workDefinitions.addAll(getWorkDefinitionsMapForSingleDir(directory, widName));
-		} else {
-			for (String s: getDirectories(directory)) {
-				try {
-					workDefinitions.addAll(getAllWorkDefinitionsMap(directory + "/" + s, null));
-				} catch (Throwable t) {
-					logger.error("Error retrieving work definitions: " + t.getMessage());
-				}
-				workDefinitions.addAll(getWorkDefinitionsMap(directory, s));
-			}
-		}
-		return workDefinitions;
-	}
+    private static String[] getDirectories(String path) {
+        String content = null;
+        try {
+            content = ConfFileUtils.URLContentsToString(
+                    new URL(path + "/index.conf"));
+        } catch (Exception e) {
+            // directory has no index.conf - do nothing
+        }
+        if (content == null) {
+            return new String[0];
+        }
+        return content.split("\n");
+    }
 
-	private static String[] getDirectories(String path) {
-		String content = null;
-		try {
-			content = ConfFileUtils.URLContentsToString(
-				new URL(path + "/index.conf"));
-		} catch (Exception e) {
-			// directory has no index.conf - do nothing
-		}
-		if (content == null) {
-			return new String[0];
-		}
-		return content.split("\n");
-	}
+    private static List<Map<String, Object>> getWorkDefinitionsMapForSingleDir(String parentPath, String widName) {
+        String path = parentPath + "/" + widName + ".wid";
+        return getWorkDefinitionsForPath(parentPath, path, widName);
+    }
 
-	private static List<Map<String, Object>> getWorkDefinitionsMapForSingleDir(String parentPath, String widName) {
-		String path = parentPath + "/" + widName + ".wid";
-		return getWorkDefinitionsForPath(parentPath, path, widName);
-	}
+    private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
+        String path = parentPath + "/" + file + "/" + file + ".wid";
+        return getWorkDefinitionsForPath(parentPath, path, file);
+    }
 
-	private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
-		String path = parentPath + "/" + file + "/" + file + ".wid";
-		return getWorkDefinitionsForPath(parentPath, path, file);
-	}
-
-	private static List<Map<String, Object>> getWorkDefinitionsForPath(String parentPath, String path, String file) {
-		String content = null;
-		try {
-			content = ConfFileUtils.URLContentsToString(new URL(path));
-		} catch (Exception e) {
-			// Do nothing
-		}
-		if (content == null) {
-			return new ArrayList();
-		}
-		try {
-			List<Map<String, Object>> result = (List<Map<String, Object>>) WidMVELEvaluator.eval(content);
-			for (Map<String, Object> wid: result) {
-				wid.put("path", parentPath + "/" + file);
-				wid.put("file", file + ".wid");
-				wid.put("widType", "mvel");
-			}
-			return result;
-		} catch (Throwable t) {
-			throw new RuntimeException("Could not parse work definition as mvel.", t);
-		}
-	}
+    private static List<Map<String, Object>> getWorkDefinitionsForPath(String parentPath, String path, String file) {
+        String content = null;
+        try {
+            content = ConfFileUtils.URLContentsToString(new URL(path));
+        } catch (Exception e) {
+            // Do nothing
+        }
+        if (content == null) {
+            return new ArrayList();
+        }
+        try {
+            List<Map<String, Object>> result = (List<Map<String, Object>>) WidMVELEvaluator.eval(content);
+            for (Map<String, Object> wid : result) {
+                wid.put("path", parentPath + "/" + file);
+                wid.put("file", file + ".wid");
+                wid.put("widType", "mvel");
+            }
+            return result;
+        } catch (Throwable t) {
+            throw new RuntimeException("Could not parse work definition as mvel.", t);
+        }
+    }
 
 }

@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.kie.api.definition.process.Connection;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;
+import org.kie.api.definition.process.Connection;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -37,47 +37,47 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
     public Class generateNodeFor() {
         return ForEachNode.class;
     }
-    
+
     protected String getNodeName() {
-    	return "forEach";
-    }
-    
-    protected void writeAttributes(CompositeNode compositeNode, StringBuilder xmlDump, boolean includeMeta) {
-    	ForEachNode forEachNode = (ForEachNode) compositeNode;
-    	String variableName = forEachNode.getVariableName();
-    	if (variableName != null) {
-    		xmlDump.append("variableName=\"" + variableName + "\" ");
-    	}
-    	String collectionExpression = forEachNode.getCollectionExpression();
-    	if (collectionExpression != null) {
-    		xmlDump.append("collectionExpression=\"" + XmlDumper.replaceIllegalChars(collectionExpression) + "\" ");
-    	}
-    	boolean waitForCompletion = forEachNode.isWaitForCompletion();
-    	if (!waitForCompletion) {
-    		xmlDump.append("waitForCompletion=\"false\" ");
-    	}
+        return "forEach";
     }
 
-    protected List<Node> getSubNodes( CompositeNode compositeNode) {
-    	return super.getSubNodes(((ForEachNode) compositeNode).getCompositeNode());
+    protected void writeAttributes(CompositeNode compositeNode, StringBuilder xmlDump, boolean includeMeta) {
+        ForEachNode forEachNode = (ForEachNode) compositeNode;
+        String variableName = forEachNode.getVariableName();
+        if (variableName != null) {
+            xmlDump.append("variableName=\"" + variableName + "\" ");
+        }
+        String collectionExpression = forEachNode.getCollectionExpression();
+        if (collectionExpression != null) {
+            xmlDump.append("collectionExpression=\"" + XmlDumper.replaceIllegalChars(collectionExpression) + "\" ");
+        }
+        boolean waitForCompletion = forEachNode.isWaitForCompletion();
+        if (!waitForCompletion) {
+            xmlDump.append("waitForCompletion=\"false\" ");
+        }
+    }
+
+    protected List<Node> getSubNodes(CompositeNode compositeNode) {
+        return super.getSubNodes(((ForEachNode) compositeNode).getCompositeNode());
     }
 
     protected List<Connection> getSubConnections(CompositeNode compositeNode) {
-    	return super.getSubConnections(((ForEachNode) compositeNode).getCompositeNode());
+        return super.getSubConnections(((ForEachNode) compositeNode).getCompositeNode());
     }
 
     protected Map<String, CompositeNode.NodeAndType> getInPorts(CompositeNode compositeNode) {
-    	return ((ForEachNode) compositeNode).getCompositeNode().getLinkedIncomingNodes();
+        return ((ForEachNode) compositeNode).getCompositeNode().getLinkedIncomingNodes();
     }
-    
+
     protected Map<String, CompositeNode.NodeAndType> getOutPorts(CompositeNode compositeNode) {
-    	return ((ForEachNode) compositeNode).getCompositeNode().getLinkedOutgoingNodes();
+        return ((ForEachNode) compositeNode).getCompositeNode().getLinkedOutgoingNodes();
     }
-    
-    protected void handleNode( final Node node, final Element element, final String uri,
-                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
-    	super.handleNode(node, element, uri, localName, parser);
-    	ForEachNode forEachNode = (ForEachNode) node;
+
+    protected void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        ForEachNode forEachNode = (ForEachNode) node;
         final String variableName = element.getAttribute("variableName");
         if (variableName != null && variableName.length() != 0) {
             forEachNode.setVariable(variableName, new ObjectDataType());

@@ -74,7 +74,7 @@ public class KogitoDefaultFactHandle extends DefaultFactHandle implements Kogito
     }
 
     @Override
-    public void setDataStore( InternalStoreCallback dataStore ) {
+    public void setDataStore(InternalStoreCallback dataStore) {
         this.dataStore = dataStore;
     }
 }

@@ -32,37 +32,36 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class StartProcessHelperTest extends AbstractBaseTest {
 
-    public void addLogger() { 
+    public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
     }
-    
+
     @Test
     public void testFindLatestProcessByNameNoInput() {
-        
-        String foundProcessId = StartProcessHelper.findLatestProcessByName((KieBase)null, "Hello");
-        
+
+        String foundProcessId = StartProcessHelper.findLatestProcessByName((KieBase) null, "Hello");
+
         assertNull(foundProcessId);
     }
-    
+
     @Test
     public void testFindLatestProcessByNameNoExisting() {
         List<Process> processes = buildProcessCollection("Hello", 5);
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "NoSuchProcess");
-        
+
         assertNull(foundProcessId);
     }
-    
+
     @Test
     public void testFindLatestProcessByName() {
         List<Process> processes = buildProcessCollection("Hello", 5);
-        
-        
+
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "Hello");
 
         assertNotNull(foundProcessId);
         assertEquals("5", foundProcessId);
     }
-    
+
     @Test
     public void testFindLatestProcessByNameMultipleProcesses() {
         List<Process> processes = buildProcessCollection("Hello", 5);
@@ -84,9 +83,9 @@ public class StartProcessHelperTest extends AbstractBaseTest {
 
         assertNotNull(foundProcessId);
         assertEquals("5", foundProcessId);
-        
+
         foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "DifferentProcess");
-        
+
         assertNotNull(foundProcessId);
         assertEquals("10", foundProcessId);
     }
@@ -99,30 +98,30 @@ public class StartProcessHelperTest extends AbstractBaseTest {
         process.setId("1");
         process.setVersion("0.1");
         processes.add(process);
-        
+
         process = new ProcessImpl();
         process.setName("Hello");
         process.setId("2");
         process.setVersion("0.2");
         processes.add(process);
-        
+
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "Hello");
 
         assertNotNull(foundProcessId);
         assertEquals("2", foundProcessId);
     }
-    
+
     private List<Process> buildProcessCollection(String processName, int limit) {
         List<Process> processes = new ArrayList<Process>();
         ProcessImpl process = null;
         for (int i = 1; i <= limit; i++) {
             process = new ProcessImpl();
             process.setName(processName);
-            process.setId(i+"");
-            process.setVersion(i+"");
+            process.setId(i + "");
+            process.setVersion(i + "");
             processes.add(process);
         }
-        
+
         return processes;
     }
 }

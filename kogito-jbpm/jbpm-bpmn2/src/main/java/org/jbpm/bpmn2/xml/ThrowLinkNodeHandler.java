@@ -23,40 +23,40 @@ import org.xml.sax.Attributes;
 
 public class ThrowLinkNodeHandler extends AbstractNodeHandler {
 
-	public Class<?> generateNodeFor() {
-		return ThrowLinkNode.class;
-	}
+    public Class<?> generateNodeFor() {
+        return ThrowLinkNode.class;
+    }
 
-	@Override
-	protected Node createNode( Attributes attrs) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    protected Node createNode(Attributes attrs) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
+    @Override
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 
-		ThrowLinkNode linkNode = (ThrowLinkNode) node;
+        ThrowLinkNode linkNode = (ThrowLinkNode) node;
 
-		writeNode("intermediateThrowEvent", linkNode, xmlDump, metaDataType);
-		xmlDump.append(">" + EOL);
-		writeExtensionElements(node, xmlDump);
-		
-		String name = (String) node.getMetaData().get(
-				IntermediateThrowEventHandler.LINK_NAME);
+        writeNode("intermediateThrowEvent", linkNode, xmlDump, metaDataType);
+        xmlDump.append(">" + EOL);
+        writeExtensionElements(node, xmlDump);
 
-		xmlDump.append("<linkEventDefinition name=\"" + name + "\" >" + EOL);
+        String name = (String) node.getMetaData().get(
+                IntermediateThrowEventHandler.LINK_NAME);
 
-		List<String> sources = (List<String>) linkNode
-				.getMetaData(IntermediateThrowEventHandler.LINK_SOURCE);
+        xmlDump.append("<linkEventDefinition name=\"" + name + "\" >" + EOL);
 
-		if (null != sources) {
-			for (String s : sources) {
-				xmlDump.append(String.format("<source>%s</source>", s) + EOL);
-			}
-		}
-		xmlDump.append("</linkEventDefinition>" + EOL);
+        List<String> sources = (List<String>) linkNode
+                .getMetaData(IntermediateThrowEventHandler.LINK_SOURCE);
 
-		endNode("intermediateThrowEvent", xmlDump);
+        if (null != sources) {
+            for (String s : sources) {
+                xmlDump.append(String.format("<source>%s</source>", s) + EOL);
+            }
+        }
+        xmlDump.append("</linkEventDefinition>" + EOL);
 
-	}
+        endNode("intermediateThrowEvent", xmlDump);
+
+    }
 }

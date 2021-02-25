@@ -21,13 +21,13 @@ import java.util.Collections;
 
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.KogitoSerializablePlaceholderResolverStrategy;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.KogitoMarshallerReaderContext;
 import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
-import org.drools.core.marshalling.impl.KogitoSerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -46,7 +46,7 @@ public class ProcessInstanceMarshaller {
     public ProcessInstanceMarshaller(ObjectMarshallingStrategy... strategies) {
         ObjectMarshallingStrategy[] strats = null;
         if (strategies == null) {
-            strats = new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)};
+            strats = new ObjectMarshallingStrategy[] { new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) };
         } else {
             strats = new ObjectMarshallingStrategy[strategies.length + 1];
             int i = 0;
@@ -54,7 +54,7 @@ public class ProcessInstanceMarshaller {
                 strats[i] = strategy;
                 i++;
             }
-            strats[i] = new KogitoSerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  );
+            strats[i] = new KogitoSerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
         }
 
         env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, strats);
@@ -67,11 +67,11 @@ public class ProcessInstanceMarshaller {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
             KogitoProcessMarshallerWriteContext context = new KogitoProcessMarshallerWriteContext(baos,
-                                                                                            null,
-                                                                                            null,
-                                                                                            null,
-                                                                                            null,
-                                                                                            this.env);
+                    null,
+                    null,
+                    null,
+                    null,
+                    this.env);
             context.setProcessInstanceId(pi.getStringId());
             context.setState(pi.getState());
 
@@ -96,8 +96,8 @@ public class ProcessInstanceMarshaller {
     public WorkflowProcessInstance unmarshallWorkflowProcessInstance(byte[] data, Process<?> process) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
             MarshallerReaderContext context = new KogitoMarshallerReaderContext(bais,
-                                                                                Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
-                                                                                null, null, null, this.env );
+                    Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
+                    null, null, null, this.env);
             String processInstanceType = context.readUTF();
 
             org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(processInstanceType);

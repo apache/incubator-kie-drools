@@ -19,54 +19,54 @@ import java.io.Serializable;
 
 public class Transformation implements Serializable {
 
-	private static final long serialVersionUID = 1641905060375832661L;
+    private static final long serialVersionUID = 1641905060375832661L;
 
-	private String source;
-	private String language;
-	private String expression;
-	private Object compiledExpression;
+    private String source;
+    private String language;
+    private String expression;
+    private Object compiledExpression;
 
-	public Transformation(String lang, String expression) {
-		this.language = lang;
-		this.expression = expression;
-	}
-	
-	public Transformation(String lang, String expression, String source) {
-		this.language = lang;
-		this.expression = expression;
-		this.source = source;
-	}
+    public Transformation(String lang, String expression) {
+        this.language = lang;
+        this.expression = expression;
+    }
 
-	public String getLanguage() {
-		return language;
-	}
+    public Transformation(String lang, String expression, String source) {
+        this.language = lang;
+        this.expression = expression;
+        this.source = source;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public String getLanguage() {
+        return language;
+    }
 
-	public String getExpression() {
-		return expression;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
-		
-	public Object getCompiledExpression() {
-		return compiledExpression;
-	}
+    public String getExpression() {
+        return expression;
+    }
 
-	public void setCompiledExpression(Object compliedExpression) {
-		this.compiledExpression = compliedExpression;
-	}
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public Object getCompiledExpression() {
+        return compiledExpression;
+    }
 
-	public void setSource(String source) {
-		this.source = source;
-	}
-	
+    public void setCompiledExpression(Object compliedExpression) {
+        this.compiledExpression = compliedExpression;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
 }

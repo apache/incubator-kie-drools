@@ -36,10 +36,10 @@ public class DefaultDecisionModelResource implements DecisionModelResource {
     private final InputStreamReader resourceReader;
 
     public DefaultDecisionModelResource(GAV gav,
-                                        String namespace,
-                                        String modelName,
-                                        DecisionModelType type,
-                                        InputStreamReader resourceReader) {
+            String namespace,
+            String modelName,
+            DecisionModelType type,
+            InputStreamReader resourceReader) {
         this.gav = gav;
         this.namespace = namespace;
         this.modelName = modelName;
@@ -75,7 +75,7 @@ public class DefaultDecisionModelResource implements DecisionModelResource {
     private String load() {
         StringBuilder sb = new StringBuilder();
         try (InputStreamReader isr = resourceReader;
-             BufferedReader reader = new BufferedReader(isr)) {
+                BufferedReader reader = new BufferedReader(isr)) {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }

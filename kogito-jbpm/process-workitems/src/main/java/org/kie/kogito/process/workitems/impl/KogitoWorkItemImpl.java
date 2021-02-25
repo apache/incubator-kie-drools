@@ -73,7 +73,7 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         this.state = state;
     }
 
-    public void setProcessInstanceId( long processInstanceId ) {
+    public void setProcessInstanceId(long processInstanceId) {
         throw new UnsupportedOperationException();
     }
 
@@ -135,7 +135,7 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         this.deploymentId = deploymentId;
     }
 
-    public void setNodeInstanceId( long deploymentId ) {
+    public void setNodeInstanceId(long deploymentId) {
         throw new UnsupportedOperationException();
     }
 
@@ -235,6 +235,6 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
 
     @Override
     public void setProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = (KogitoProcessInstance)processInstance;
+        this.processInstance = (KogitoProcessInstance) processInstance;
     }
 }

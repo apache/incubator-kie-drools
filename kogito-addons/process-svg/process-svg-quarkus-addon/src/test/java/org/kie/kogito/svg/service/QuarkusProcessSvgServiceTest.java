@@ -38,11 +38,10 @@ public class QuarkusProcessSvgServiceTest extends ProcessSvgServiceTest {
         dataIndexClient = mock(DataIndexClient.class);
 
         tested = spy(new QuarkusProcessSvgService(dataIndexClient,
-                                                  Optional.empty(),
-                                                  "#C0C0C0",
-                                                  "#030303",
-                                                  "#FF0000"
-        ));
+                Optional.empty(),
+                "#C0C0C0",
+                "#030303",
+                "#FF0000"));
     }
 
     @Override

@@ -19,14 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import io.quarkus.test.QuarkusDevModeTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import io.quarkus.test.QuarkusDevModeTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 import static java.util.Objects.requireNonNull;
@@ -59,7 +60,7 @@ public class NewFileHotReloadTest {
 
         ValidatableResponse response = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)
-                .contentType( ContentType.JSON)
+                .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
                         "    \"Driver\": {\n" +

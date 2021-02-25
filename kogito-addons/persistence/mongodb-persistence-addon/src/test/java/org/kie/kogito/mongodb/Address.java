@@ -22,7 +22,8 @@ public class Address {
     private String zipCode;
     private String country;
 
-    public Address() {}
+    public Address() {
+    }
 
     public Address(String street, String city, String zipCode, String country) {
         super();

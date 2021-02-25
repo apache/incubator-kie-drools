@@ -26,40 +26,38 @@ import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.runtime.process.NodeInstance;
 
-
-
 public class VariableUtil {
     public static String resolveVariable(String s, NodeInstance nodeInstance) {
         if (s == null) {
             return null;
         }
-        
+
         Map<String, String> replacements = new HashMap<String, String>();
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
         while (matcher.find()) {
             String paramName = matcher.group(1);
             if (replacements.get(paramName) == null) {
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                        ((org.jbpm.workflow.instance.NodeInstance)nodeInstance).resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                VariableScopeInstance variableScopeInstance =
+                        (VariableScopeInstance) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
                 if (variableScopeInstance != null) {
                     Object variableValue = variableScopeInstance.getVariable(paramName);
-                    String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                    String variableValueString = variableValue == null ? "" : variableValue.toString();
                     replacements.put(paramName, variableValueString);
                 } else {
                     try {
                         Object variableValue = MVELProcessHelper.evaluator().eval(paramName, new NodeInstanceResolverFactory((org.jbpm.workflow.instance.NodeInstance) nodeInstance));
-                        String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                        String variableValueString = variableValue == null ? "" : variableValue.toString();
                         replacements.put(paramName, variableValueString);
                     } catch (Throwable t) {
-                        
+
                     }
                 }
             }
         }
-        for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+        for (Map.Entry<String, String> replacement : replacements.entrySet()) {
             s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
         }
-        
+
         return s;
     }
 }

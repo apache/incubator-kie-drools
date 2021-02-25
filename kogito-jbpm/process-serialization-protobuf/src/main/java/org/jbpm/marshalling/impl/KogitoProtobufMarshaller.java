@@ -46,48 +46,48 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  */
 public class KogitoProtobufMarshaller extends ProtobufMarshaller {
 
-    public KogitoProtobufMarshaller( KieBase kbase,
-                                     MarshallingConfiguration marshallingConfig) {
+    public KogitoProtobufMarshaller(KieBase kbase,
+            MarshallingConfiguration marshallingConfig) {
         super(kbase, marshallingConfig);
     }
 
-    public StatefulKnowledgeSession unmarshall( final InputStream stream) throws IOException,
+    public StatefulKnowledgeSession unmarshall(final InputStream stream) throws IOException,
             ClassNotFoundException {
-        return unmarshall( stream, null, null );
+        return unmarshall(stream, null, null);
     }
 
-    public StatefulKnowledgeSession unmarshall( final InputStream stream,
-                                                KieSessionConfiguration config,
-                                                Environment environment) throws IOException, ClassNotFoundException {
+    public StatefulKnowledgeSession unmarshall(final InputStream stream,
+            KieSessionConfiguration config,
+            Environment environment) throws IOException, ClassNotFoundException {
         return unmarshallWithMessage(stream, config, environment).getSession();
     }
 
     public void unmarshall(final InputStream stream,
-                           final KieSession ksession) throws IOException, ClassNotFoundException {
+            final KieSession ksession) throws IOException, ClassNotFoundException {
         KogitoMarshallerReaderContext context = getMarshallerReaderContext(stream, ksession.getEnvironment());
-        ProtobufInputMarshaller.readSession(( StatefulKnowledgeSessionImpl ) ksession, context);
+        ProtobufInputMarshaller.readSession((StatefulKnowledgeSessionImpl) ksession, context);
         context.close();
     }
 
     public void marshall(final OutputStream stream,
-                         final KieSession ksession) throws IOException {
-        marshall( stream, ksession, ksession.getSessionClock().getCurrentTime() );
+            final KieSession ksession) throws IOException {
+        marshall(stream, ksession, ksession.getSessionClock().getCurrentTime());
     }
 
     public void marshall(final OutputStream stream,
-                         final KieSession ksession,
-                         final long clockTime) throws IOException {
-        (( InternalWorkingMemory ) ksession).flushPropagations();
-        KogitoMarshallerWriteContext context = new KogitoMarshallerWriteContext( stream,
-                                                                     ( InternalKnowledgeBase ) kbase,
-                                                                     ( InternalWorkingMemory ) ksession,
-                                                                     RuleBaseNodes.getNodeMap( ( InternalKnowledgeBase ) kbase ),
-                                                                     this.strategyStore,
-                                                                     this.marshallingConfig.isMarshallProcessInstances(),
-                                                                     this.marshallingConfig.isMarshallWorkItems(),
-                                                                     ksession.getEnvironment() );
-        context.setClockTime( clockTime );
-        ProtobufOutputMarshaller.writeSession( context );
+            final KieSession ksession,
+            final long clockTime) throws IOException {
+        ((InternalWorkingMemory) ksession).flushPropagations();
+        KogitoMarshallerWriteContext context = new KogitoMarshallerWriteContext(stream,
+                (InternalKnowledgeBase) kbase,
+                (InternalWorkingMemory) ksession,
+                RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kbase),
+                this.strategyStore,
+                this.marshallingConfig.isMarshallProcessInstances(),
+                this.marshallingConfig.isMarshallWorkItems(),
+                ksession.getEnvironment());
+        context.setClockTime(clockTime);
+        ProtobufOutputMarshaller.writeSession(context);
         context.close();
     }
 
@@ -95,40 +95,40 @@ public class KogitoProtobufMarshaller extends ProtobufMarshaller {
         return marshallingConfig;
     }
 
-    public ReadSessionResult unmarshallWithMessage( final InputStream stream,
-                                                    KieSessionConfiguration config,
-                                                    Environment environment) throws IOException, ClassNotFoundException {
-        if ( config == null ) {
+    public ReadSessionResult unmarshallWithMessage(final InputStream stream,
+            KieSessionConfiguration config,
+            Environment environment) throws IOException, ClassNotFoundException {
+        if (config == null) {
             config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         }
 
-        if ( environment == null ) {
+        if (environment == null) {
             environment = KieServices.get().newEnvironment();
         }
 
         KogitoMarshallerReaderContext context = getMarshallerReaderContext(stream, environment);
-        int id = (( KnowledgeBaseImpl ) this.kbase).nextWorkingMemoryCounter();
+        int id = ((KnowledgeBaseImpl) this.kbase).nextWorkingMemoryCounter();
         ReadSessionResult readSessionResult = ProtobufInputMarshaller.readSession(context,
-                                                                                  id,
-                                                                                  environment,
-                                                                                  ( SessionConfiguration ) config,
-                                                                                  initializer);
+                id,
+                environment,
+                (SessionConfiguration) config,
+                initializer);
         context.close();
-        if ( (( SessionConfiguration ) config).isKeepReference() ) {
-            (( KnowledgeBaseImpl ) this.kbase).addStatefulSession(readSessionResult.getSession());
+        if (((SessionConfiguration) config).isKeepReference()) {
+            ((KnowledgeBaseImpl) this.kbase).addStatefulSession(readSessionResult.getSession());
         }
         return readSessionResult;
     }
 
-    private KogitoMarshallerReaderContext getMarshallerReaderContext( final InputStream inputStream, final Environment environment) throws IOException {
+    private KogitoMarshallerReaderContext getMarshallerReaderContext(final InputStream inputStream, final Environment environment) throws IOException {
         return new KogitoMarshallerReaderContext(inputStream,
-                                           ( KnowledgeBaseImpl ) kbase,
-                                           RuleBaseNodes.getNodeMap(( KnowledgeBaseImpl ) kbase),
-                                           this.strategyStore,
-                                           TIMER_READERS,
-                                           this.marshallingConfig.isMarshallProcessInstances(),
-                                           this.marshallingConfig.isMarshallWorkItems(),
-                                           environment);
+                (KnowledgeBaseImpl) kbase,
+                RuleBaseNodes.getNodeMap((KnowledgeBaseImpl) kbase),
+                this.strategyStore,
+                TIMER_READERS,
+                this.marshallingConfig.isMarshallProcessInstances(),
+                this.marshallingConfig.isMarshallWorkItems(),
+                environment);
     }
 
 }

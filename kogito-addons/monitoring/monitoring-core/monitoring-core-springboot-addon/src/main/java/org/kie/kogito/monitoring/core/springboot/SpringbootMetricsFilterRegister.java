@@ -29,7 +29,7 @@ public class SpringbootMetricsFilterRegister implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        if(httpInterceptorUseDefault) {
+        if (httpInterceptorUseDefault) {
             registry.addInterceptor(new SpringbootMetricsInterceptor());
         }
     }

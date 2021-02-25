@@ -72,4 +72,3 @@ public class RedisSpringBootTestResourceTest {
         assertFalse(resource.isConditionalEnabled());
     }
 }
-

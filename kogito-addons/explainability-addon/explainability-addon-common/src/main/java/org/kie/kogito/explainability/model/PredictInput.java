@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PredictInput {
@@ -29,7 +29,8 @@ public class PredictInput {
     @JsonProperty("request")
     private Map<String, Object> request;
 
-    public PredictInput(){}
+    public PredictInput() {
+    }
 
     public PredictInput(ModelIdentifier modelIdentifier, Map<String, Object> request) {
         this.modelIdentifier = modelIdentifier;

@@ -67,8 +67,8 @@ public class KafkaClient {
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(500));
 
                     StreamSupport.stream(records.spliterator(), true)
-                                 .map(ConsumerRecord::value)
-                                 .forEach(callback::accept);
+                            .map(ConsumerRecord::value)
+                            .forEach(callback::accept);
 
                     consumer.commitSync();
                 }

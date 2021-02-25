@@ -54,6 +54,8 @@ Copyright headers format is enforced during build time. In order to automaticall
 mvn com.mycila:license-maven-plugin:format
 ```
 
+Make sure you have configured your IDE according to the [project codestyle](https://github.com/kiegroup/kogito-runtimes/tree/master/kogito-ide-config).
+
 ### Requirements for Dependencies
 
 Any dependency used in any KIE project must fulfill these hard requirements:
@@ -111,6 +113,7 @@ Any dependency used in any KOGITO projects should fulfill these soft requirement
 There are currently a few dependencies which violate some of these rules. They should be properly commented with a
 warning and explaining why are needed
 If you want to add a dependency that violates any of the rules above, get approval from the project leads.
+
 ### Tests and Documentation 
 
 Don't forget to include tests in your pull requests, and documentation (reference documentation, javadoc...). Guides and reference documentation should be submitted to the [Kogito Docs Repository](https://github.com/kiegroup/kie-docs/tree/master-kogito).

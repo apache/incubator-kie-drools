@@ -20,17 +20,20 @@ import org.kie.api.runtime.KieSession;
 
 public interface KieRuntimeBuilder {
     KieBase getKieBase();
+
     KieBase getKieBase(String name);
 
     default KieBase getKieBase(Class<? extends RuleUnitData> ruleUnit) {
-        return getKieBase(ruleUnit.getName().replace( '.', '$' ) + "KieBase");
+        return getKieBase(ruleUnit.getName().replace('.', '$') + "KieBase");
     }
 
     KieSession newKieSession();
+
     KieSession newKieSession(String sessionName);
+
     KieSession newKieSession(String sessionName, RuleConfig ruleConfig);
 
     default KieSession newKieSession(Class<? extends RuleUnitData> ruleUnit) {
-        return newKieSession(ruleUnit.getName().replace( '.', '$' ) + "KieSession");
+        return newKieSession(ruleUnit.getName().replace('.', '$') + "KieSession");
     }
 }

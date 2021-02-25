@@ -19,14 +19,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.services.event.AbstractProcessDataEvent;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.services.event.AbstractProcessDataEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -118,7 +120,8 @@ class CloudEventConverterTest {
 
         private String kogitoStartFromNode;
 
-        public PersonDataEvent(String source, Person body, String kogitoProcessinstanceId, String kogitoParentProcessinstanceId, String kogitoRootProcessinstanceId, String kogitoProcessId, String kogitoRootProcessId, String kogitoProcessinstanceState, String kogitoAddons) {
+        public PersonDataEvent(String source, Person body, String kogitoProcessinstanceId, String kogitoParentProcessinstanceId, String kogitoRootProcessinstanceId, String kogitoProcessId,
+                String kogitoRootProcessId, String kogitoProcessinstanceState, String kogitoAddons) {
             super(source, body, kogitoProcessinstanceId, kogitoParentProcessinstanceId, kogitoRootProcessinstanceId, kogitoProcessId, kogitoRootProcessId, kogitoProcessinstanceState, kogitoAddons);
         }
 

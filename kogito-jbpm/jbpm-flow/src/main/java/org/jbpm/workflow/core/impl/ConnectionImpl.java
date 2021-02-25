@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.Connection;
+import org.jbpm.workflow.core.Node;
 
 /**
  * Default implementation of a connection.
@@ -36,7 +36,7 @@ public class ConnectionImpl implements Connection, Serializable {
     private String fromType;
     private String toType;
     private Map<String, Object> metaData = new HashMap<String, Object>();
-    
+
     public ConnectionImpl() {
     }
 
@@ -45,16 +45,16 @@ public class ConnectionImpl implements Connection, Serializable {
      * that simply creating the object also adds it to the appropriate
      * {@link List} fields in other objects.
      * </p>
-     * Creates a new connection, given a from node, a to node 
+     * Creates a new connection, given a from node, a to node
      * and a type.
      * 
-     * @param from      The from node
-	 * @param fromType  The node type
-     * @param to        The to node
-     * @param toType    The connection type
+     * @param from The from node
+     * @param fromType The node type
+     * @param to The to node
+     * @param toType The connection type
      */
-    public ConnectionImpl( final org.kie.api.definition.process.Node from, final String fromType,
-                           final org.kie.api.definition.process.Node to, final String toType) {
+    public ConnectionImpl(final org.kie.api.definition.process.Node from, final String fromType,
+            final org.kie.api.definition.process.Node to, final String toType) {
         if (from == null) {
             throw new IllegalArgumentException("From node is null!");
         }
@@ -73,15 +73,15 @@ public class ConnectionImpl implements Connection, Serializable {
         this.toType = toType;
         connect();
     }
-    
+
     public void connect() {
-        (( Node ) this.from).addOutgoingConnection(fromType, this);
-        (( Node ) this.to).addIncomingConnection(toType, this);
+        ((Node) this.from).addOutgoingConnection(fromType, this);
+        ((Node) this.to).addIncomingConnection(toType, this);
     }
 
     public synchronized void terminate() {
-    	(( Node ) this.from).removeOutgoingConnection(fromType, this);
-    	(( Node ) this.to).removeIncomingConnection(toType, this);
+        ((Node) this.from).removeOutgoingConnection(fromType, this);
+        ((Node) this.to).removeIncomingConnection(toType, this);
         this.from = null;
         this.fromType = null;
         this.to = null;
@@ -104,34 +104,34 @@ public class ConnectionImpl implements Connection, Serializable {
         return this.toType;
     }
 
-    public void setFrom( org.kie.api.definition.process.Node from) {
-		this.from = from;
-	}
+    public void setFrom(org.kie.api.definition.process.Node from) {
+        this.from = from;
+    }
 
-	public void setTo( org.kie.api.definition.process.Node to) {
-		this.to = to;
-	}
+    public void setTo(org.kie.api.definition.process.Node to) {
+        this.to = to;
+    }
 
-	public void setFromType(String fromType) {
-		this.fromType = fromType;
-	}
+    public void setFromType(String fromType) {
+        this.fromType = fromType;
+    }
 
-	public void setToType(String toType) {
-		this.toType = toType;
-	}
-	
-	public Map<String, Object> getMetaData() {
-		return this.metaData;
-	}
+    public void setToType(String toType) {
+        this.toType = toType;
+    }
 
-	public void setMetaData(String name, Object value) {
+    public Map<String, Object> getMetaData() {
+        return this.metaData;
+    }
+
+    public void setMetaData(String name, Object value) {
         this.metaData.put(name, value);
     }
-    
+
     public Object getMetaData(String name) {
         return this.metaData.get(name);
     }
-    
+
     public String toString() {
         final StringBuilder sb = new StringBuilder("Connection ");
         sb.append(getFrom() == null ? "null" : getFrom().getName());

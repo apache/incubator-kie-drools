@@ -25,7 +25,7 @@ public class PMMLResource {
     private final Path path;
     private final String modelPath;
 
-    public PMMLResource(List<KiePMMLModel> kiePmmlModels, Path path , String modelPath) {
+    public PMMLResource(List<KiePMMLModel> kiePmmlModels, Path path, String modelPath) {
         this.kiePmmlModels = kiePmmlModels;
         this.path = path;
         this.modelPath = modelPath;

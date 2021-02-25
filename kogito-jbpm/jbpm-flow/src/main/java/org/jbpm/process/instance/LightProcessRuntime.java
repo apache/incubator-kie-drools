@@ -49,14 +49,14 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessJobDescription;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
@@ -72,7 +72,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     private final KogitoWorkItemManager workItemManager;
     private UnitOfWorkManager unitOfWorkManager;
 
-    private final KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl( this );
+    private final KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl(this);
 
     public static LightProcessRuntime ofProcess(Process p) {
         LightProcessRuntimeServiceProvider services =
@@ -93,7 +93,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         this.jobService = services.getJobsService() == null ? new InMemoryJobService(kogitoProcessRuntime, this.unitOfWorkManager) : services.getJobsService();
         this.processEventSupport = services.getEventSupport();
         this.workItemManager = services.getWorkItemManager();
-        
+
         if (isActive()) {
             initProcessEventListeners();
             initStartTimers();
@@ -109,9 +109,9 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
             if (startNodes != null && !startNodes.isEmpty()) {
                 for (StartNode startNode : startNodes) {
                     if (startNode != null && startNode.getTimer() != null) {
-                        
-                        jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), knowledgeRuntime), p.getId()));                        
-                        
+
+                        jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), knowledgeRuntime), p.getId()));
+
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     @Override
-    public KogitoProcessInstance createProcessInstance( String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
+    public KogitoProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
         try {
             runtimeContext.startOperation();
 
@@ -211,8 +211,8 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     @Override
-    public void abortProcessInstance( long l ) {
-        throw new UnsupportedOperationException( "org.jbpm.process.instance.LightProcessRuntime.abortProcessInstance -> TODO" );
+    public void abortProcessInstance(long l) {
+        throw new UnsupportedOperationException("org.jbpm.process.instance.LightProcessRuntime.abortProcessInstance -> TODO");
 
     }
 
@@ -268,11 +268,11 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
                                         }
                                     }
                                     StartProcessEventListener listener = new StartProcessEventListener(process.getId(),
-                                                                                                       filters,
-                                                                                                       trigger.getInMappings(),
-                                                                                                       startNode.getEventTransformer());
+                                            filters,
+                                            trigger.getInMappings(),
+                                            startNode.getEventTransformer());
                                     signalManager.addEventListener(type,
-                                                                   listener);
+                                            listener);
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventType", type);
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventListener", listener);
                                 }
@@ -292,9 +292,9 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         private EventTransformer eventTransformer;
 
         public StartProcessEventListener(String processId,
-                                         List<EventFilter> eventFilters,
-                                         Map<String, String> inMappings,
-                                         EventTransformer eventTransformer) {
+                List<EventFilter> eventFilters,
+                Map<String, String> inMappings,
+                EventTransformer eventTransformer) {
             this.processId = processId;
             this.eventFilters = eventFilters;
             this.inMappings = inMappings;
@@ -306,10 +306,10 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         }
 
         public void signalEvent(final String type,
-                                Object event) {
+                Object event) {
             for (EventFilter filter : eventFilters) {
                 if (!filter.acceptsEvent(type,
-                                         event)) {
+                        event)) {
                     return;
                 }
             }
@@ -326,10 +326,10 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
                     for (Map.Entry<String, String> entry : inMappings.entrySet()) {
                         if ("event".equals(entry.getValue())) {
                             params.put(entry.getKey(),
-                                       event);
+                                    event);
                         } else {
                             params.put(entry.getKey(),
-                                       entry.getValue());
+                                    entry.getValue());
                         }
                     }
                 }
@@ -348,11 +348,11 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
                     String ruleName = event.getMatch().getRule().getName();
                     if (ruleName.startsWith("RuleFlowStateNode-")) {
                         int index = ruleName.indexOf('-',
-                                                     18);
+                                18);
                         index = ruleName.indexOf('-',
-                                                 index + 1);
+                                index + 1);
                         String eventType = ruleName.substring(0,
-                                                              index);
+                                index);
 
                         runtimeContext.queueWorkingMemoryAction(new SignalManagerSignalAction(eventType, event));
                     } else if (ruleName.startsWith("RuleFlowStateEventSubProcess-")
@@ -377,10 +377,10 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
             public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event) {
                 if (runtimeContext instanceof StatefulKnowledgeSession) {
                     signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName() + "_" + ((StatefulKnowledgeSession) runtimeContext).getIdentifier(),
-                                              null);
+                            null);
                 } else {
                     signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
-                                              null);
+                            null);
                 }
             }
         });
@@ -390,7 +390,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
 
         startProcess(processId, params, type);
     }
-
 
     public void abortProcessInstance(String processInstanceId) {
         ProcessInstance processInstance = getProcessInstance(processInstanceId);
@@ -442,62 +441,62 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         // originally: kruntime.getEnvironment().get("Active");
         return runtimeContext.isActive();
     }
-    
+
     protected ExpirationTime createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
-        
-        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
+
+        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
             BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
-            
+
             long delay = businessCalendar.calculateBusinessTimeAsDuration(timer.getDelay());
-            
+
             if (timer.getPeriod() == null) {
                 return DurationExpirationTime.repeat(delay);
             } else {
                 long period = businessCalendar.calculateBusinessTimeAsDuration(timer.getPeriod());
-                
+
                 return DurationExpirationTime.repeat(delay, period);
             }
         } else {
             return configureTimerInstance(timer);
-        }            
+        }
     }
-    
+
     private ExpirationTime configureTimerInstance(Timer timer) {
         long duration = -1;
         switch (timer.getTimeType()) {
-        case Timer.TIME_CYCLE:
-            // when using ISO date/time period is not set
-            long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-            if (repeatValues.length == 3) {
-                int parsedReapedCount = (int)repeatValues[0];
-                if (parsedReapedCount > -1) {
-                    parsedReapedCount = Integer.MAX_VALUE;
-                }
-                return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
-            } else {
-                long delay = repeatValues[0];
-                long period = -1;
-                try {
-                    period = TimeUtils.parseTimeString(timer.getPeriod());
-                    
-                } catch (RuntimeException e) {
-                    period = repeatValues[0];
-                }
-                
-                return DurationExpirationTime.repeat(delay, period);
-            }
-            
-        case Timer.TIME_DURATION:
+            case Timer.TIME_CYCLE:
+                // when using ISO date/time period is not set
+                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                if (repeatValues.length == 3) {
+                    int parsedReapedCount = (int) repeatValues[0];
+                    if (parsedReapedCount > -1) {
+                        parsedReapedCount = Integer.MAX_VALUE;
+                    }
+                    return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
+                } else {
+                    long delay = repeatValues[0];
+                    long period = -1;
+                    try {
+                        period = TimeUtils.parseTimeString(timer.getPeriod());
 
-            duration = DateTimeUtils.parseDuration(timer.getDelay());
-            return DurationExpirationTime.repeat(duration);
+                    } catch (RuntimeException e) {
+                        period = repeatValues[0];
+                    }
 
-        case Timer.TIME_DATE:
-            
-            return ExactExpirationTime.of(timer.getDate());
-        
-        default: 
-            throw new UnsupportedOperationException("Not supported timer definition");
+                    return DurationExpirationTime.repeat(delay, period);
+                }
+
+            case Timer.TIME_DURATION:
+
+                duration = DateTimeUtils.parseDuration(timer.getDelay());
+                return DurationExpirationTime.repeat(duration);
+
+            case Timer.TIME_DATE:
+
+                return ExactExpirationTime.of(timer.getDate());
+
+            default:
+                throw new UnsupportedOperationException("Not supported timer definition");
         }
 
     }
@@ -529,37 +528,37 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     @Override
-    public ProcessInstance startProcessFromNodeIds( String s, Map<String, Object> map, String... strings ) {
+    public ProcessInstance startProcessFromNodeIds(String s, Map<String, Object> map, String... strings) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance startProcessInstance( long l ) {
+    public ProcessInstance startProcessInstance(long l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance startProcessFromNodeIds( String s, CorrelationKey correlationKey, Map<String, Object> map, String... strings ) {
+    public ProcessInstance startProcessFromNodeIds(String s, CorrelationKey correlationKey, Map<String, Object> map, String... strings) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance getProcessInstance( CorrelationKey correlationKey ) {
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance getProcessInstance( long l ) {
+    public ProcessInstance getProcessInstance(long l) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ProcessInstance getProcessInstance( long l, boolean b ) {
+    public ProcessInstance getProcessInstance(long l, boolean b) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void signalEvent( String s, Object o, long l ) {
+    public void signalEvent(String s, Object o, long l) {
         throw new UnsupportedOperationException();
     }
 }

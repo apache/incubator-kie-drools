@@ -16,5 +16,5 @@
 package org.kie.kogito.rules;
 
 public interface DataStream<T> extends DataSource<T> {
-    void append( T value );
+    void append(T value);
 }

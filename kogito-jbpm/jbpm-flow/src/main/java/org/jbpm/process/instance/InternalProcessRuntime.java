@@ -16,9 +16,9 @@
 package org.jbpm.process.instance;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 

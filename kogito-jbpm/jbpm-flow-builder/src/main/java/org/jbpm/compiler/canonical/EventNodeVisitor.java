@@ -18,13 +18,14 @@ package org.jbpm.compiler.canonical;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
 import org.jbpm.workflow.core.node.EventNode;
+
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
@@ -69,7 +70,8 @@ public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
                         MessageFormat.format(
                                 "Invalid parameters for event node \"{0}\": {1}",
                                 node.getName(),
-                                e.getMessage()), e);
+                                e.getMessage()),
+                        e);
             }
         }
         visitMetaData(node.getMetaData(), body, getNodeId(node));

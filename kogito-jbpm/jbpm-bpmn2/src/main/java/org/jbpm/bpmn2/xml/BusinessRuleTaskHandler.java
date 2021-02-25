@@ -15,8 +15,6 @@
  */
 package org.jbpm.bpmn2.xml;
 
-import static org.jbpm.workflow.core.node.RuleSetNode.DMN_LANG;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,25 +36,27 @@ import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.workflow.core.node.RuleSetNode.DMN_LANG;
+
 public class BusinessRuleTaskHandler extends AbstractNodeHandler {
-	
+
     private static final String NAMESPACE_PROP = "namespace";
     private static final String MODEL_PROP = "model";
     private static final String DECISION_PROP = "decision";
-	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
-    
-    protected Node createNode( Attributes attrs) {
+    private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
+
+    protected Node createNode(Attributes attrs) {
         return new RuleSetNode();
     }
-    
+
     @SuppressWarnings("unchecked")
-	public Class generateNodeFor() {
+    public Class generateNodeFor() {
         return RuleSetNode.class;
     }
 
-    protected void handleNode( final Node node, final Element element, final String uri,
-                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
-    	super.handleNode(node, element, uri, localName, parser);
+    protected void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
         RuleSetNode ruleSetNode = (RuleSetNode) node;
 
         String language = element.getAttribute("implementation");
@@ -65,8 +65,8 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         }
         ruleSetNode.setLanguage(language);
 
-		org.w3c.dom.Node xmlNode = element.getFirstChild();
-		while (xmlNode != null) {
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("ioSpecification".equals(nodeName)) {
                 readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes);
@@ -93,25 +93,25 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 
         handleScript(ruleSetNode, element, "onEntry");
         handleScript(ruleSetNode, element, "onExit");
-	}
+    }
 
-	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
-		RuleSetNode ruleSetNode = (RuleSetNode) node;
-		writeNode("businessRuleTask", ruleSetNode, xmlDump, metaDataType);
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+        RuleSetNode ruleSetNode = (RuleSetNode) node;
+        writeNode("businessRuleTask", ruleSetNode, xmlDump, metaDataType);
         RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
         if (ruleType != null) {
             xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleType.getName()) + "\" " + EOL);
             // else DMN
-		}
-		
-        xmlDump.append(" implementation=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getLanguage()) + "\" >" + EOL);        
-		
-		writeExtensionElements(ruleSetNode, xmlDump);
-		writeIO(ruleSetNode, xmlDump);
-		endNode("businessRuleTask", xmlDump);
-	}
-	
-	protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, RuleSetNode ruleSetNode, Map<String, String> dataInputs) {
+        }
+
+        xmlDump.append(" implementation=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getLanguage()) + "\" >" + EOL);
+
+        writeExtensionElements(ruleSetNode, xmlDump);
+        writeIO(ruleSetNode, xmlDump);
+        endNode("businessRuleTask", xmlDump);
+    }
+
+    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, RuleSetNode ruleSetNode, Map<String, String> dataInputs) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         if ("sourceRef".equals(subNode.getNodeName())) {
@@ -128,26 +128,26 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             String target = subNode.getTextContent();
             // transformation
             Transformation transformation = null;
-    		subNode = subNode.getNextSibling();
-    		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
-    			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
-    			String expression = subNode.getTextContent();
-    			
-    			DataTransformer transformer = transformerRegistry.find(lang);
-    			if (transformer == null) {
-    				throw new IllegalArgumentException("No transformer registered for language " + lang);
-    			}    			
-    			transformation = new Transformation(lang, expression);    			
-    			
-    			subNode = subNode.getNextSibling();
-    		}
-    		// assignments  
+            subNode = subNode.getNextSibling();
+            if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+                String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+                String expression = subNode.getTextContent();
+
+                DataTransformer transformer = transformerRegistry.find(lang);
+                if (transformer == null) {
+                    throw new IllegalArgumentException("No transformer registered for language " + lang);
+                }
+                transformation = new Transformation(lang, expression);
+
+                subNode = subNode.getNextSibling();
+            }
+            // assignments  
             List<Assignment> assignments = new LinkedList<Assignment>();
-            while(subNode != null){
-            	String expressionLang = ((Element)subNode).getAttribute("expressionLanguage");
-            	if (expressionLang == null || expressionLang.trim().isEmpty()) {
-            		expressionLang = "XPath";
-            	}
+            while (subNode != null) {
+                String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
+                if (expressionLang == null || expressionLang.trim().isEmpty()) {
+                    expressionLang = "XPath";
+                }
                 org.w3c.dom.Node ssubNode = subNode.getFirstChild();
                 String from = ssubNode.getTextContent();
                 String to = ssubNode.getNextSibling().getTextContent();
@@ -177,7 +177,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
                 if (from instanceof Text) {
                     String text = ((Text) from).getTextContent();
                     if (text.startsWith("\"") && text.endsWith("\"")) {
-                        result = text.substring(1, text.length() -1);
+                        result = text.substring(1, text.length() - 1);
                     } else {
                         result = text;
                     }
@@ -188,7 +188,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             }
         }
     }
-    
+
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, RuleSetNode ruleSetNode, Map<String, String> dataOutputs) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
@@ -205,24 +205,24 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         String target = subNode.getTextContent();
         // transformation
         Transformation transformation = null;
- 		subNode = subNode.getNextSibling();
- 		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
- 			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
- 			String expression = subNode.getTextContent();
- 			DataTransformer transformer = transformerRegistry.find(lang);
- 			if (transformer == null) {
- 				throw new IllegalArgumentException("No transformer registered for language " + lang);
- 			}    			
- 			transformation = new Transformation(lang, expression); 		
- 			subNode = subNode.getNextSibling();
- 		}
- 		// assignments 
+        subNode = subNode.getNextSibling();
+        if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+            String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+            String expression = subNode.getTextContent();
+            DataTransformer transformer = transformerRegistry.find(lang);
+            if (transformer == null) {
+                throw new IllegalArgumentException("No transformer registered for language " + lang);
+            }
+            transformation = new Transformation(lang, expression);
+            subNode = subNode.getNextSibling();
+        }
+        // assignments 
         List<Assignment> assignments = new LinkedList<Assignment>();
-        while(subNode != null){
-        	String expressionLang = ((Element)subNode).getAttribute("expressionLanguage");
-        	if (expressionLang == null || expressionLang.trim().isEmpty()) {
-        		expressionLang = "XPath";
-        	}
+        while (subNode != null) {
+            String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
+            if (expressionLang == null || expressionLang.trim().isEmpty()) {
+                expressionLang = "XPath";
+            }
             org.w3c.dom.Node ssubNode = subNode.getFirstChild();
             String from = ssubNode.getTextContent();
             String to = ssubNode.getNextSibling().getTextContent();
@@ -231,63 +231,67 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         }
         ruleSetNode.addOutAssociation(new DataAssociation(sources.stream().map(source -> dataOutputs.get(source)).collect(Collectors.toList()), target, assignments, transformation));
     }
-    
+
     protected void writeIO(RuleSetNode ruleSetNode, StringBuilder xmlDump) {
         xmlDump.append("      <ioSpecification>" + EOL);
-        for (Map.Entry<String, String> entry: ruleSetNode.getInMappings().entrySet()) {
-            xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Input\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
+        for (Map.Entry<String, String> entry : ruleSetNode.getInMappings().entrySet()) {
+            xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Input\" name=\""
+                    + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
         }
-        for (Map.Entry<String, Object> entry: ruleSetNode.getParameters().entrySet()) {
+        for (Map.Entry<String, Object> entry : ruleSetNode.getParameters().entrySet()) {
             if (!"ActorId".equals(entry.getKey()) && entry.getValue() != null) {
-                xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Input\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
+                xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey())
+                        + "Input\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
             }
         }
-        for (Map.Entry<String, String> entry: ruleSetNode.getOutMappings().entrySet()) {
-            xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Output\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
+        for (Map.Entry<String, String> entry : ruleSetNode.getOutMappings().entrySet()) {
+            xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey())
+                    + "Output\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
         }
         xmlDump.append("        <inputSet>" + EOL);
-        for (Map.Entry<String, String> entry: ruleSetNode.getInMappings().entrySet()) {
+        for (Map.Entry<String, String> entry : ruleSetNode.getInMappings().entrySet()) {
             xmlDump.append("          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</dataInputRefs>" + EOL);
         }
-        for (Map.Entry<String, Object> entry: ruleSetNode.getParameters().entrySet()) {
+        for (Map.Entry<String, Object> entry : ruleSetNode.getParameters().entrySet()) {
             if (!"ActorId".equals(entry.getKey()) && entry.getValue() != null) {
                 xmlDump.append("          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</dataInputRefs>" + EOL);
             }
         }
         xmlDump.append(
-            "        </inputSet>" + EOL);
+                "        </inputSet>" + EOL);
         xmlDump.append("        <outputSet>" + EOL);
-        for (Map.Entry<String, String> entry: ruleSetNode.getOutMappings().entrySet()) {
+        for (Map.Entry<String, String> entry : ruleSetNode.getOutMappings().entrySet()) {
             xmlDump.append("          <dataOutputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output</dataOutputRefs>" + EOL);
         }
         xmlDump.append(
-            "        </outputSet>" + EOL);
+                "        </outputSet>" + EOL);
         xmlDump.append(
-            "      </ioSpecification>" + EOL);
-        for (Map.Entry<String, String> entry: ruleSetNode.getInMappings().entrySet()) {
+                "      </ioSpecification>" + EOL);
+        for (Map.Entry<String, String> entry : ruleSetNode.getInMappings().entrySet()) {
             xmlDump.append("      <dataInputAssociation>" + EOL);
             xmlDump.append(
-                "        <sourceRef>" + XmlDumper.replaceIllegalChars(entry.getValue()) + "</sourceRef>" + EOL +
-                "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</targetRef>" + EOL);
+                    "        <sourceRef>" + XmlDumper.replaceIllegalChars(entry.getValue()) + "</sourceRef>" + EOL +
+                            "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</targetRef>" + EOL);
             xmlDump.append("      </dataInputAssociation>" + EOL);
         }
-        for (Map.Entry<String, Object> entry: ruleSetNode.getParameters().entrySet()) {
+        for (Map.Entry<String, Object> entry : ruleSetNode.getParameters().entrySet()) {
             if (!"ActorId".equals(entry.getKey()) && entry.getValue() != null) {
                 xmlDump.append("      <dataInputAssociation>" + EOL);
                 xmlDump.append(
-                    "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</targetRef>" + EOL +
-                    "        <assignment>" + EOL +
-                    "          <from xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(entry.getValue().toString()) + "</from>" + EOL +
-                    "          <to xsi:type=\"tFormalExpression\">" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</to>" + EOL +
-                    "        </assignment>" + EOL);
+                        "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</targetRef>" + EOL +
+                                "        <assignment>" + EOL +
+                                "          <from xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(entry.getValue().toString()) + "</from>" + EOL +
+                                "          <to xsi:type=\"tFormalExpression\">" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input</to>"
+                                + EOL +
+                                "        </assignment>" + EOL);
                 xmlDump.append("      </dataInputAssociation>" + EOL);
             }
         }
-        for (Map.Entry<String, String> entry: ruleSetNode.getOutMappings().entrySet()) {
+        for (Map.Entry<String, String> entry : ruleSetNode.getOutMappings().entrySet()) {
             xmlDump.append("      <dataOutputAssociation>" + EOL);
             xmlDump.append(
-                "        <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output</sourceRef>" + EOL +
-                "        <targetRef>" + XmlDumper.replaceIllegalChars(entry.getValue()) + "</targetRef>" + EOL);
+                    "        <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(ruleSetNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output</sourceRef>" + EOL +
+                            "        <targetRef>" + XmlDumper.replaceIllegalChars(entry.getValue()) + "</targetRef>" + EOL);
             xmlDump.append("      </dataOutputAssociation>" + EOL);
         }
     }

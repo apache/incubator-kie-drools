@@ -21,13 +21,13 @@ import org.jbpm.bpmn2.xml.di.BPMNPlaneHandler;
 import org.jbpm.bpmn2.xml.di.BPMNShapeHandler;
 
 public class BPMNDISemanticModule extends DefaultSemanticModule {
-	
-	public BPMNDISemanticModule() {
-		super("http://www.omg.org/spec/BPMN/20100524/DI");
-		
-		addHandler("BPMNPlane", new BPMNPlaneHandler());
-		addHandler("BPMNShape", new BPMNShapeHandler());
-		addHandler("BPMNEdge", new BPMNEdgeHandler());
-	}
+
+    public BPMNDISemanticModule() {
+        super("http://www.omg.org/spec/BPMN/20100524/DI");
+
+        addHandler("BPMNPlane", new BPMNPlaneHandler());
+        addHandler("BPMNShape", new BPMNShapeHandler());
+        addHandler("BPMNEdge", new BPMNEdgeHandler());
+    }
 
 }

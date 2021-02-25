@@ -19,37 +19,37 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Definitions implements Serializable {
-	
-	private static final long serialVersionUID = 4L;
-	
-	private String targetNamespace;
-	private List<DataStore> dataStores;
-	private List<Association> associations;
-	private List<Error> errors;
 
-	public String getTargetNamespace() {
-		return targetNamespace;
-	}
+    private static final long serialVersionUID = 4L;
 
-	public void setTargetNamespace(String targetNamespace) {
-		this.targetNamespace = targetNamespace;
-	}
+    private String targetNamespace;
+    private List<DataStore> dataStores;
+    private List<Association> associations;
+    private List<Error> errors;
 
-	public void setDataStores(List<DataStore> dataStores) {
-		this.dataStores = dataStores;
-	}
-	
-	public List<DataStore> getDataStores() {
-		return this.dataStores;
-	}
-	
-	public void setAssociations(List<Association> associations) {
-		this.associations = associations;
-	}
-	
-	public List<Association> getAssociations() {
-		return this.associations;
-	}
+    public String getTargetNamespace() {
+        return targetNamespace;
+    }
+
+    public void setTargetNamespace(String targetNamespace) {
+        this.targetNamespace = targetNamespace;
+    }
+
+    public void setDataStores(List<DataStore> dataStores) {
+        this.dataStores = dataStores;
+    }
+
+    public List<DataStore> getDataStores() {
+        return this.dataStores;
+    }
+
+    public void setAssociations(List<Association> associations) {
+        this.associations = associations;
+    }
+
+    public List<Association> getAssociations() {
+        return this.associations;
+    }
 
     public List<Error> getErrors() {
         return errors;

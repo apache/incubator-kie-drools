@@ -31,14 +31,14 @@ public class Addons {
     public static final Addons EMTPY = new Addons(Collections.emptyList());
 
     private final List<String> availableAddons;
-    
-    
+
     public Addons(List<String> availableAddons) {
         this.availableAddons = availableAddons;
     }
-    
+
     /**
      * Returns all available addons
+     * 
      * @return returns addons
      */
     public List<String> availableAddons() {

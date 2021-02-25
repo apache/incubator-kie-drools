@@ -22,12 +22,12 @@ import org.kie.kogito.internal.process.event.KogitoEventListener;
 
 public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListener {
 
-    int STATE_PENDING   = 0;
-    int STATE_ACTIVE    = 1;
+    int STATE_PENDING = 0;
+    int STATE_ACTIVE = 1;
     int STATE_COMPLETED = 2;
-    int STATE_ABORTED   = 3;
+    int STATE_ABORTED = 3;
     int STATE_SUSPENDED = 4;
-    int STATE_ERROR     = 5;
+    int STATE_ERROR = 5;
 
     @Deprecated
     @Override
@@ -41,36 +41,42 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
 
     /**
      * Returns parent process instance id if this process instance has a parent
+     * 
      * @return the unique id of parent process instance, null if this process instance doesn't have a parent
      */
     String getParentProcessInstanceStringId();
 
     /**
      * Returns root process instance id if this process instance has a root process instance
+     * 
      * @return the unique id of root process instance, null if this process instance doesn't have a root or is a root itself
      */
     String getRootProcessInstanceId();
 
     /**
      * The id of the root process definition that is related to this process instance.
+     * 
      * @return the id of the root process definition that is related to this process instance
      */
     String getRootProcessId();
 
     /**
      * Returns current snapshot of process instance variables
+     * 
      * @return non empty map of process instance variables
      */
     Map<String, Object> getVariables();
 
     /**
      * Returns optional reference id this process instance was triggered by
+     * 
      * @return reference id or null if not set
      */
     String getReferenceId();
 
     /**
      * The description of the current process instance
+     * 
      * @return the process instance description
      */
     String getDescription();

@@ -28,9 +28,9 @@ public class DefaultJobHandle extends AbstractJobHandle implements Serializable 
 
     private volatile boolean cancel = false;
 
-    private long              id;
+    private long id;
 
-    private TimerJobInstance  timerJobInstance;
+    private TimerJobInstance timerJobInstance;
 
     public DefaultJobHandle(long id) {
         this.id = id;
@@ -70,13 +70,18 @@ public class DefaultJobHandle extends AbstractJobHandle implements Serializable 
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         final DefaultJobHandle other = (DefaultJobHandle) obj;
-        if ( getJob() == null ) {
-            if ( other.getJob() != null ) return false;
-        } else if ( !getJob().equals( other.getJob() ) ) return false;
+        if (getJob() == null) {
+            if (other.getJob() != null)
+                return false;
+        } else if (!getJob().equals(other.getJob()))
+            return false;
         return true;
     }
 

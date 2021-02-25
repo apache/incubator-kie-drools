@@ -21,6 +21,7 @@ import org.kie.kogito.cloud.kubernetes.client.KogitoKubeConfig;
 
 /**
  * Wrapper for service operations on Kubernetes Client that resolves the responses from the API calls to Maps.
+ * 
  * @see <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#service-v1-core">Kubernetes API Reference - Services</a>
  */
 public class ServiceOperations extends BaseListOperations {

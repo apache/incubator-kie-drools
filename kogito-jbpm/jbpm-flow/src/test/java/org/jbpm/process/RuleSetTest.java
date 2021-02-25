@@ -132,8 +132,8 @@ public class RuleSetTest extends AbstractBaseTest {
         return process;
     }
 
-    private void connect( Node sourceNode, Node targetNode) {
+    private void connect(Node sourceNode, Node targetNode) {
         new ConnectionImpl(sourceNode, Node.CONNECTION_DEFAULT_TYPE,
-                           targetNode, Node.CONNECTION_DEFAULT_TYPE);
+                targetNode, Node.CONNECTION_DEFAULT_TYPE);
     }
 }

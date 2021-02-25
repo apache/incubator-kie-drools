@@ -46,7 +46,7 @@ public abstract class AbstractProcessAssembler implements KieAssemblerService {
             List<Process> processes = processBuilder.addProcessFromXml(resource);
             List<BaseKnowledgeBuilderResultImpl> errors = processBuilder.getErrors();
             if (errors.isEmpty()) {
-                                
+
                 for (Process process : processes) {
                     onProcessAdded(process, kb);
                 }
@@ -71,7 +71,7 @@ public abstract class AbstractProcessAssembler implements KieAssemblerService {
     }
 
     protected abstract void configurePackageBuilder(KnowledgeBuilderImpl kb);
-    
+
     protected void onProcessAdded(Process process, Object kbuilder) {
         KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) kbuilder;
         InternalKnowledgeBase kBase = kb.getKnowledgeBase();

@@ -15,17 +15,17 @@
  */
 package org.kie.kogito.codegen.api.context;
 
-import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.api.utils.KogitoCodeGenConstants;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.utils.AppPaths;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
+
+import org.kie.kogito.codegen.api.AddonsConfig;
+import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.api.utils.AppPaths;
+import org.kie.kogito.codegen.api.utils.KogitoCodeGenConstants;
 
 public interface KogitoBuildContext {
 
@@ -76,6 +76,7 @@ public interface KogitoBuildContext {
     /**
      * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions
      * (see {@link TemplatedGenerator})
+     * 
      * @return
      */
     String name();

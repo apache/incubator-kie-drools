@@ -17,7 +17,8 @@ package org.drools.compiler.builder.impl;
 
 public class KogitoKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderConfigurationImpl {
 
-    public KogitoKnowledgeBuilderConfigurationImpl() { }
+    public KogitoKnowledgeBuilderConfigurationImpl() {
+    }
 
     public KogitoKnowledgeBuilderConfigurationImpl(ClassLoader... classLoaders) {
         super(classLoaders);

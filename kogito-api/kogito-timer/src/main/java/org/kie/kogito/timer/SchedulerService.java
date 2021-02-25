@@ -29,7 +29,7 @@ public interface SchedulerService<T extends JobHandle> {
     T scheduleJob(Job job, JobContext ctx, Trigger trigger);
 
     /**
-     * Remove the job identified by the given job handle from the 
+     * Remove the job identified by the given job handle from the
      * scheduled queue
      *
      * @param jobHandle the job identity handle

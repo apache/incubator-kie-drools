@@ -25,24 +25,24 @@ import java.util.List;
 
 public class Message implements Serializable {
 
-	private static final long serialVersionUID = 4L;
-	
-	private String          message1 = "One";
-    private String          message2 = "Two";
-    private String          message3 = "Three";
-    private String          message4 = "Four";
+    private static final long serialVersionUID = 4L;
 
-    public static final int HELLO    = 0;
-    public static final int GOODBYE  = 1;
+    private String message1 = "One";
+    private String message2 = "Two";
+    private String message3 = "Three";
+    private String message4 = "Four";
 
-    private String          message;
+    public static final int HELLO = 0;
+    public static final int GOODBYE = 1;
 
-    private int             status;
+    private String message;
 
-    private List<String>    list     = new ArrayList<String>();
-    private int             number   = 0;
-    private Date            birthday = new Date();
-    private boolean         fired    = false;
+    private int status;
+
+    private List<String> list = new ArrayList<String>();
+    private int number = 0;
+    private Date birthday = new Date();
+    private boolean fired = false;
 
     public Message() {
     }
@@ -132,6 +132,6 @@ public class Message implements Serializable {
     }
 
     public void addToList(final String s) {
-        this.list.add( s );
+        this.list.add(s);
     }
 }

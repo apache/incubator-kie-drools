@@ -58,16 +58,16 @@ public class NodeContainerImpl implements NodeContainer {
         if (node == null) {
             throw new IllegalArgumentException("Unknown node id: " + id);
         }
-        return node; 
+        return node;
     }
 
     @Override
-    public Node getNodeByUniqueId( String s ) {
+    public Node getNodeByUniqueId(String s) {
         throw new UnsupportedOperationException();
     }
 
     public Node internalGetNode(long id) {
-    	return getNode(id);
+        return getNode(id);
     }
 
     public void removeNode(final Node node) {

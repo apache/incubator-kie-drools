@@ -21,12 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.end.End;
-import io.serverlessworkflow.api.events.EventDefinition;
-import io.serverlessworkflow.api.functions.FunctionDefinition;
-import io.serverlessworkflow.api.functions.FunctionRef;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
@@ -66,6 +60,14 @@ import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathExprSupplier;
 import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathResultExprSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.end.End;
+import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.functions.FunctionRef;
 
 public class ServerlessWorkflowFactory {
 
@@ -248,15 +250,15 @@ public class ServerlessWorkflowFactory {
         List<DroolsAction> actions = new ArrayList<>();
 
         actions.add(new DroolsConsequenceAction("java",
-                                                "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
-                                                        "workItem.setName(\"Send Task\");" + EOL +
-                                                        "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL +
-                                                        "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());" + EOL +
-                                                        "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
-                                                        "workItem.setParameter(\"MessageType\", \"" + messageType + "\");" + EOL +
-                                                        (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
-                                                        "workItem.setDeploymentId((String) kcontext.getKieRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
-                                                        "((org.drools.core.process.instance.WorkItemManager) kcontext.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
+                "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
+                        "workItem.setName(\"Send Task\");" + EOL +
+                        "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL +
+                        "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());" + EOL +
+                        "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
+                        "workItem.setParameter(\"MessageType\", \"" + messageType + "\");" + EOL +
+                        (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
+                        "workItem.setDeploymentId((String) kcontext.getKieRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
+                        "((org.drools.core.process.instance.WorkItemManager) kcontext.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
         endNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
     }
 
@@ -321,10 +323,10 @@ public class ServerlessWorkflowFactory {
         return scriptNode;
     }
 
-    public org.kie.api.definition.process.Node restServiceNode( long id,
-                                                                FunctionRef functionRef,
-                                                                FunctionDefinition functionDefinition,
-                                                                NodeContainer nodeContainer) {
+    public org.kie.api.definition.process.Node restServiceNode(long id,
+            FunctionRef functionRef,
+            FunctionDefinition functionDefinition,
+            NodeContainer nodeContainer) {
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setId(id);
         workItemNode.setName(functionDefinition.getName());
@@ -449,7 +451,7 @@ public class ServerlessWorkflowFactory {
     public HumanTaskNode humanTaskNode(long id, String name, FunctionDefinition function, RuleFlowProcess process, NodeContainer nodeContainer) {
         // first add the node "decision" variable
         processVar(ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext)
-                           + DEFAULT_DECISION, JsonNode.class, process);
+                + DEFAULT_DECISION, JsonNode.class, process);
         // then the ht node
         HumanTaskNode humanTaskNode = new HumanTaskNode();
         humanTaskNode.setId(id);
@@ -458,10 +460,14 @@ public class ServerlessWorkflowFactory {
         work.setName("Human Task");
         humanTaskNode.setWork(work);
 
-        work.setParameter("TaskName", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext).length() > 0 ?
-                ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext) : DEFAULT_HT_TASKNAME);
-        work.setParameter("Skippable", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_SKIPPABLE, workflowAppContext).length() > 0 ?
-                ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_SKIPPABLE, workflowAppContext) : DEFAULT_HT_SKIPPABLE);
+        work.setParameter("TaskName",
+                ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext).length() > 0
+                        ? ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext)
+                        : DEFAULT_HT_TASKNAME);
+        work.setParameter("Skippable",
+                ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_SKIPPABLE, workflowAppContext).length() > 0
+                        ? ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_SKIPPABLE, workflowAppContext)
+                        : DEFAULT_HT_SKIPPABLE);
 
         if (ServerlessWorkflowUtils.resolveFunctionMetadata(function, HTP_GROUPID, workflowAppContext).length() > 0) {
             work.setParameter("GroupId", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HTP_GROUPID, workflowAppContext));
@@ -474,7 +480,7 @@ public class ServerlessWorkflowFactory {
 
         humanTaskNode.addInMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
         humanTaskNode.addOutMapping(DEFAULT_DECISION, ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME,
-                                                                                                      workflowAppContext) + DEFAULT_DECISION);
+                workflowAppContext) + DEFAULT_DECISION);
 
         nodeContainer.addNode(humanTaskNode);
 

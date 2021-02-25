@@ -15,14 +15,14 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ExtendedNodeFactory extends NodeFactory {
 

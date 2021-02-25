@@ -40,17 +40,18 @@ public class ProjectSourceClass {
         this.dependencyInjection = dependencyInjection;
         return this;
     }
+
     public String generate() {
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "package org.drools.project.model;\n" +
                         "\n" +
-                        "import " + KieBase.class.getCanonicalName()  + ";\n" +
-                        "import " + KieBaseModel.class.getCanonicalName()  + ";\n" +
-                        "import " + KieSession.class.getCanonicalName()  + ";\n" +
-                        "import " + KieBaseBuilder.class.getCanonicalName()  + ";\n" +
+                        "import " + KieBase.class.getCanonicalName() + ";\n" +
+                        "import " + KieBaseModel.class.getCanonicalName() + ";\n" +
+                        "import " + KieSession.class.getCanonicalName() + ";\n" +
+                        "import " + KieBaseBuilder.class.getCanonicalName() + ";\n" +
                         "\n" +
-                        dependencyInjection + "\n"+
+                        dependencyInjection + "\n" +
                         "public class ProjectRuntime implements " + KieRuntimeBuilder.class.getCanonicalName() + " {\n" +
                         "\n" +
                         "    private final ProjectModel model = new ProjectModel();\n" +
@@ -65,7 +66,7 @@ public class ProjectSourceClass {
         sb.append(modelMethod.toGetKieBaseForSessionMethod());
         sb.append("\n");
         sb.append(modelMethod.toKieSessionConfMethod());
-        sb.append("\n}" );
+        sb.append("\n}");
         return sb.toString();
     }
 

@@ -27,13 +27,14 @@ public class AdultUnit implements RuleUnitData {
     private int adultAge = 18;
     private DataSource<Person> persons;
 
-    public AdultUnit( ) { }
+    public AdultUnit() {
+    }
 
-    public AdultUnit( DataSource<Person> persons ) {
+    public AdultUnit(DataSource<Person> persons) {
         this.persons = persons;
     }
 
-    public AdultUnit( DataSource<Person> persons, int adultAge ) {
+    public AdultUnit(DataSource<Person> persons, int adultAge) {
         this.persons = persons;
         this.adultAge = adultAge;
     }

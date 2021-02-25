@@ -23,62 +23,62 @@ import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.jobs.JobsService;
 
 public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
 
     private final InternalProcessRuntime delegate;
 
-    public KogitoProcessRuntimeImpl( InternalProcessRuntime delegate ) {
+    public KogitoProcessRuntimeImpl(InternalProcessRuntime delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public KogitoProcessInstance startProcess( String processId ) {
-        return (KogitoProcessInstance) delegate.startProcess( processId );
+    public KogitoProcessInstance startProcess(String processId) {
+        return (KogitoProcessInstance) delegate.startProcess(processId);
     }
 
     @Override
-    public KogitoProcessInstance startProcess( String processId, Map<String, Object> parameters ) {
-        return (KogitoProcessInstance) delegate.startProcess( processId, parameters );
+    public KogitoProcessInstance startProcess(String processId, Map<String, Object> parameters) {
+        return (KogitoProcessInstance) delegate.startProcess(processId, parameters);
     }
 
     @Override
-    public KogitoProcessInstance createProcessInstance( String processId, Map<String, Object> parameters ) {
-        return (KogitoProcessInstance) delegate.createProcessInstance( processId, parameters );
+    public KogitoProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
+        return (KogitoProcessInstance) delegate.createProcessInstance(processId, parameters);
     }
 
     @Override
-    public KogitoProcessInstance startProcess( String processId, AgendaFilter agendaFilter ) {
-        return (KogitoProcessInstance) delegate.startProcess( processId, agendaFilter );
+    public KogitoProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return (KogitoProcessInstance) delegate.startProcess(processId, agendaFilter);
     }
 
     @Override
-    public KogitoProcessInstance startProcess( String processId, Map<String, Object> parameters, AgendaFilter agendaFilter ) {
-        return (KogitoProcessInstance) delegate.startProcess( processId, parameters, agendaFilter );
+    public KogitoProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
+        return (KogitoProcessInstance) delegate.startProcess(processId, parameters, agendaFilter);
     }
 
     @Override
-    public KogitoProcessInstance startProcessInstance( String processInstanceId ) {
-        return startProcessInstance( processInstanceId, null );
+    public KogitoProcessInstance startProcessInstance(String processInstanceId) {
+        return startProcessInstance(processInstanceId, null);
     }
 
     @Override
-    public KogitoProcessInstance startProcessInstance( String processInstanceId, String trigger ) {
-        return startProcessInstance( processInstanceId, trigger, null );
+    public KogitoProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return startProcessInstance(processInstanceId, trigger, null);
     }
 
     @Override
-    public void signalEvent( String type, Object event ) {
-        delegate.signalEvent( type, event );
+    public void signalEvent(String type, Object event) {
+        delegate.signalEvent(type, event);
     }
 
     @Override
-    public void signalEvent( String type, Object event, String processInstanceId ) {
+    public void signalEvent(String type, Object event, String processInstanceId) {
         delegate.getSignalManager().signalEvent(processInstanceId, type, event);
     }
 
@@ -103,7 +103,7 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
         if (processInstance == null) {
             throw new IllegalArgumentException("Could not find process instance for id " + processInstanceId);
         }
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState( org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED);
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
 
     public KogitoProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger, AgendaFilter agendaFilter) {
         KogitoProcessInstance processInstance = createProcessInstance(processId, parameters);
-        if ( processInstance != null ) {
+        if (processInstance != null) {
             // start process instance
             return startProcessInstance(processInstance.getStringId(), trigger, agendaFilter);
         }
@@ -162,7 +162,7 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
 
             jbpmProcessInstance.configureSLA();
             delegate.getProcessEventSupport().fireBeforeProcessStarted(processInstance, delegate.getInternalKieRuntime());
-            jbpmProcessInstance.setAgendaFilter( agendaFilter );
+            jbpmProcessInstance.setAgendaFilter(agendaFilter);
             jbpmProcessInstance.start(trigger);
             delegate.getProcessEventSupport().fireAfterProcessStarted(processInstance, delegate.getInternalKieRuntime());
             return jbpmProcessInstance;

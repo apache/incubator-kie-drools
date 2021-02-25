@@ -19,12 +19,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import io.quarkus.runtime.Startup;
-import io.smallrye.mutiny.Multi;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.reactivestreams.Publisher;
+
+import io.quarkus.runtime.Startup;
+import io.smallrye.mutiny.Multi;
 
 /**
  * Takes a @Channel event stream and re-exposes it as a Multi
@@ -44,5 +45,5 @@ public class QuarkusCloudEventPublisher {
                 .invoke(Message::ack)
                 .map(Message::getPayload)
                 .broadcast().toAllSubscribers();
-    }    
+    }
 }

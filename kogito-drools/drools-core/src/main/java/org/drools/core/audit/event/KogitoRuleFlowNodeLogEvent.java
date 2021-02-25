@@ -19,14 +19,14 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class KogitoRuleFlowNodeLogEvent extends RuleFlowNodeLogEvent {
-    
-    public KogitoRuleFlowNodeLogEvent( final int type,
-                                       final String nodeId,
-                                       final String nodeName,
-                                       final String nodeInstanceId,
-                                       ProcessInstance processInstance) {
+
+    public KogitoRuleFlowNodeLogEvent(final int type,
+            final String nodeId,
+            final String nodeName,
+            final String nodeInstanceId,
+            ProcessInstance processInstance) {
         super(type, nodeId, nodeName, nodeInstanceId,
-                processInstance.getProcessId(), processInstance.getProcessName(), (( KogitoProcessInstance ) processInstance).getStringId());
+                processInstance.getProcessId(), processInstance.getProcessName(), ((KogitoProcessInstance) processInstance).getStringId());
     }
 
 }

@@ -20,15 +20,17 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.CloudEvent;
-import io.cloudevents.core.builder.CloudEventBuilder;
-import io.cloudevents.core.provider.ExtensionProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.extension.KogitoExtension;
 import org.mockito.MockedStatic;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.builder.CloudEventBuilder;
+import io.cloudevents.core.provider.ExtensionProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -114,9 +116,7 @@ class CloudEventUtilsTest {
 
     @Test
     void testBuildFailure() throws Exception {
-        runWithMockedCloudEventUtilsMapper(() ->
-                assertFalse(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA, TEST_DATA_CLASS).isPresent())
-        );
+        runWithMockedCloudEventUtilsMapper(() -> assertFalse(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA, TEST_DATA_CLASS).isPresent()));
     }
 
     @Test
@@ -128,9 +128,7 @@ class CloudEventUtilsTest {
 
     @Test
     void testBuildWithExtensionFailure() throws Exception {
-        runWithMockedCloudEventUtilsMapper(() ->
-                assertFalse(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA_CLASS.getSimpleName(), TEST_SUBJECT, TEST_DATA, TEST_EXTENSION).isPresent())
-        );
+        runWithMockedCloudEventUtilsMapper(() -> assertFalse(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA_CLASS.getSimpleName(), TEST_SUBJECT, TEST_DATA, TEST_EXTENSION).isPresent()));
     }
 
     @Test
@@ -154,9 +152,7 @@ class CloudEventUtilsTest {
 
     @Test
     void testEncodeFailure() throws Exception {
-        runWithMockedCloudEventUtilsMapper(() ->
-                assertFalse(CloudEventUtils.encode(TEST_CLOUDEVENT).isPresent())
-        );
+        runWithMockedCloudEventUtilsMapper(() -> assertFalse(CloudEventUtils.encode(TEST_CLOUDEVENT).isPresent()));
     }
 
     @Test

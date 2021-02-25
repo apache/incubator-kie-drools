@@ -25,8 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
         defaultImpl = TypedValue.Kind.class,
         property = "kind",
-        visible = true
-)
+        visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = UnitValue.class, name = "UNIT"),
         @JsonSubTypes.Type(value = CollectionValue.class, name = "COLLECTION"),

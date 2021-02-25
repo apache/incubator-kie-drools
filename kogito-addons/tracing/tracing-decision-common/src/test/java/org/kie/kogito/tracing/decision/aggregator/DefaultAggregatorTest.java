@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.cloudevents.CloudEvent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
@@ -33,6 +32,8 @@ import org.kie.kogito.tracing.decision.event.message.InternalMessageType;
 import org.kie.kogito.tracing.decision.event.message.MessageCategory;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEventType;
+
+import io.cloudevents.CloudEvent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -233,7 +234,6 @@ class DefaultAggregatorTest {
 
     private static void assertTraceEventInternalMessage(TraceEvent traceEvent, InternalMessageType type) {
         assertTrue(traceEvent.getHeader().getMessages().stream().anyMatch(
-                m -> m.getLevel() == type.getLevel() && m.getCategory() == MessageCategory.INTERNAL && type.name().equals(m.getType())
-        ));
+                m -> m.getLevel() == type.getLevel() && m.getCategory() == MessageCategory.INTERNAL && type.name().equals(m.getType())));
     }
 }

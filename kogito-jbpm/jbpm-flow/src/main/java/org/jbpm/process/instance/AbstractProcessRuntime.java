@@ -36,34 +36,33 @@ public abstract class AbstractProcessRuntime implements InternalProcessRuntime {
         return processEventSupport;
     }
 
-    public void setProcessEventSupport( ProcessEventSupport processEventSupport) {
+    public void setProcessEventSupport(ProcessEventSupport processEventSupport) {
         throw new UnsupportedOperationException();
     }
 
     public void addEventListener(final ProcessEventListener listener) {
-        (( KogitoProcessEventSupportImpl ) this.processEventSupport).addEventListener( asKogitoProcessEventListener( listener ) );
+        ((KogitoProcessEventSupportImpl) this.processEventSupport).addEventListener(asKogitoProcessEventListener(listener));
     }
 
     public void removeEventListener(final ProcessEventListener listener) {
-        (( KogitoProcessEventSupportImpl ) this.processEventSupport).removeEventListener( removeKogitoProcessEventListener( listener ) );
+        ((KogitoProcessEventSupportImpl) this.processEventSupport).removeEventListener(removeKogitoProcessEventListener(listener));
     }
 
     public List<ProcessEventListener> getProcessEventListeners() {
-        return (List<ProcessEventListener>) (Object) (( KogitoProcessEventSupportImpl ) this.processEventSupport).getEventListeners();
+        return (List<ProcessEventListener>) (Object) ((KogitoProcessEventSupportImpl) this.processEventSupport).getEventListeners();
     }
 
-
-    private KogitoProcessEventListener asKogitoProcessEventListener( ProcessEventListener processEventListener) {
+    private KogitoProcessEventListener asKogitoProcessEventListener(ProcessEventListener processEventListener) {
         if (processEventListener instanceof KogitoProcessEventListener) {
-            return (( KogitoProcessEventListener ) processEventListener);
+            return ((KogitoProcessEventListener) processEventListener);
         }
-        return listenersMap.computeIfAbsent( processEventListener, KogitoProcessEventListenerAdapter::new );
+        return listenersMap.computeIfAbsent(processEventListener, KogitoProcessEventListenerAdapter::new);
     }
 
-    private KogitoProcessEventListener removeKogitoProcessEventListener( ProcessEventListener processEventListener) {
+    private KogitoProcessEventListener removeKogitoProcessEventListener(ProcessEventListener processEventListener) {
         if (processEventListener instanceof KogitoProcessEventListener) {
-            return (( KogitoProcessEventListener ) processEventListener);
+            return ((KogitoProcessEventListener) processEventListener);
         }
-        return listenersMap.remove( processEventListener );
+        return listenersMap.remove(processEventListener);
     }
 }

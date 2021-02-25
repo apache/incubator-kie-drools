@@ -73,9 +73,9 @@ public class DateTimeUtilsTest extends AbstractBaseTest {
         long parsedMilliseconds = DateTimeUtils.parseDateAsDuration(oneMinuteFromNow.format(DateTimeFormatter.ISO_DATE_TIME));
 
         assertTrue(parsedMilliseconds <= MINUTE_IN_MILLISECONDS,
-                              "Parsed date as duration is bigger than " + MINUTE_IN_MILLISECONDS);
+                "Parsed date as duration is bigger than " + MINUTE_IN_MILLISECONDS);
         assertTrue(parsedMilliseconds > FIFTY_NINE_SECONDS_IN_MILLISECONDS,
-                              "Parsed date as duration is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedMilliseconds);
+                "Parsed date as duration is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedMilliseconds);
     }
 
     @Test
@@ -84,34 +84,34 @@ public class DateTimeUtilsTest extends AbstractBaseTest {
         OffsetDateTime twoMinutesFromNow = oneMinuteFromNow.plusMinutes(1);
         String oneMinuteFromNowFormatted = oneMinuteFromNow.format(DateTimeFormatter.ISO_DATE_TIME);
         String twoMinutesFromNowFormatted = twoMinutesFromNow.format(DateTimeFormatter.ISO_DATE_TIME);
-        String isoString = "R5/" + oneMinuteFromNowFormatted  + "/" + twoMinutesFromNowFormatted;
+        String isoString = "R5/" + oneMinuteFromNowFormatted + "/" + twoMinutesFromNowFormatted;
 
         long[] parsedRepeatable = DateTimeUtils.parseRepeatableDateTime(isoString);
 
         assertEquals(5L, parsedRepeatable[0]);
         assertTrue(parsedRepeatable[1] <= MINUTE_IN_MILLISECONDS,
-                              "Parsed delay is bigger than " + MINUTE_IN_MILLISECONDS);
+                "Parsed delay is bigger than " + MINUTE_IN_MILLISECONDS);
         assertTrue(parsedRepeatable[1] > FIFTY_NINE_SECONDS_IN_MILLISECONDS,
-                              "Parsed delay is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedRepeatable[1]);
+                "Parsed delay is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedRepeatable[1]);
         assertEquals(MINUTE_IN_MILLISECONDS, parsedRepeatable[2],
-                                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
+                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
     }
 
     @Test
     public void testParseRepeatableStartDateTimeAndPeriod() {
         OffsetDateTime oneMinuteFromNow = OffsetDateTime.now().plusMinutes(1);
         String oneMinuteFromNowFormatted = oneMinuteFromNow.format(DateTimeFormatter.ISO_DATE_TIME);
-        String isoString = "R5/" + oneMinuteFromNowFormatted  + "/PT1M";
+        String isoString = "R5/" + oneMinuteFromNowFormatted + "/PT1M";
 
         long[] parsedRepeatable = DateTimeUtils.parseRepeatableDateTime(isoString);
 
         assertEquals(5L, parsedRepeatable[0]);
         assertTrue(parsedRepeatable[1] <= MINUTE_IN_MILLISECONDS,
-                              "Parsed delay is bigger than " + MINUTE_IN_MILLISECONDS);
+                "Parsed delay is bigger than " + MINUTE_IN_MILLISECONDS);
         assertTrue(parsedRepeatable[1] > FIFTY_NINE_SECONDS_IN_MILLISECONDS,
-                              "Parsed delay is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedRepeatable[1]);
+                "Parsed delay is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedRepeatable[1]);
         assertEquals(MINUTE_IN_MILLISECONDS, parsedRepeatable[2],
-                                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
+                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
     }
 
     @Test
@@ -124,11 +124,11 @@ public class DateTimeUtilsTest extends AbstractBaseTest {
 
         assertEquals(5L, parsedRepeatable[0]);
         assertTrue(parsedRepeatable[1] <= MINUTE_IN_MILLISECONDS,
-                              "Parsed delay is bigger than " + MINUTE_IN_MILLISECONDS);
+                "Parsed delay is bigger than " + MINUTE_IN_MILLISECONDS);
         assertTrue(parsedRepeatable[1] > FIFTY_NINE_SECONDS_IN_MILLISECONDS,
-                              "Parsed delay is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedRepeatable[1]);
+                "Parsed delay is too low! Expected value is between " + MINUTE_IN_MILLISECONDS + " and " + FIFTY_NINE_SECONDS_IN_MILLISECONDS + " but is " + parsedRepeatable[1]);
         assertEquals(MINUTE_IN_MILLISECONDS, parsedRepeatable[2],
-                                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
+                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
     }
 
     @Test
@@ -141,6 +141,6 @@ public class DateTimeUtilsTest extends AbstractBaseTest {
         // Default delay time is 1000ms
         assertEquals(1000L, parsedRepeatable[1]);
         assertEquals(MINUTE_IN_MILLISECONDS, parsedRepeatable[2],
-                                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
+                "Parsed period should be one minute in milliseconds but is " + parsedRepeatable[2]);
     }
 }

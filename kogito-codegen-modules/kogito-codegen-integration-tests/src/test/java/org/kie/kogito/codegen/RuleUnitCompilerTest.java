@@ -41,7 +41,6 @@ import org.kie.kogito.rules.RuleUnits;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -54,24 +53,24 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         AdultUnit adults = new AdultUnit();
 
-        adults.getPersons().add(new Person( "Mario", 45 ));
-        adults.getPersons().add(new Person( "Marilena", 47 ));
+        adults.getPersons().add(new Person("Mario", 45));
+        adults.getPersons().add(new Person("Marilena", 47));
 
-        Person sofia = new Person( "Sofia", 7 );
+        Person sofia = new Person("Sofia", 7);
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        assertTrue( instance.getClock() instanceof SessionPseudoClock );
+        assertTrue(instance.getClock() instanceof SessionPseudoClock);
 
-        assertEquals(2, instance.fire() );
-        assertTrue( adults.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );
+        assertEquals(2, instance.fire());
+        assertTrue(adults.getResults().getResults().containsAll(asList("Mario", "Marilena")));
 
-        sofia.setAge( 22 );
-        adults.getPersons().update( dhSofia, sofia );
-        assertEquals( 1, instance.fire() );
-        assertTrue( adults.getResults().getResults().containsAll( asList("Mario", "Marilena", "Sofia") ) );
+        sofia.setAge(22);
+        adults.getPersons().update(dhSofia, sofia);
+        assertEquals(1, instance.fire());
+        assertTrue(adults.getResults().getResults().containsAll(asList("Mario", "Marilena", "Sofia")));
     }
 
     @Test
@@ -80,15 +79,15 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         AdultUnit adults = new AdultUnit();
 
-        Person sofia = new Person( "Sofia", 7 );
+        Person sofia = new Person("Sofia", 7);
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        assertEquals(2, instance.fire() );
+        assertEquals(2, instance.fire());
 
-        assertTrue( adults.getResults().getResults().containsAll( asList("Sofia") ) );
+        assertTrue(adults.getResults().getResults().containsAll(asList("Sofia")));
     }
 
     @Test
@@ -97,9 +96,9 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         AdultUnit adults = new AdultUnit();
 
-        adults.getPersons().add(new Person( "Mario", 45 ));
-        adults.getPersons().add(new Person( "Marilena", 47 ));
-        adults.getPersons().add(new Person( "Sofia", 7 ));
+        adults.getPersons().add(new Person("Mario", 45));
+        adults.getPersons().add(new Person("Marilena", 47));
+        adults.getPersons().add(new Person("Sofia", 7));
 
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
@@ -107,8 +106,8 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         instance.fire();
 
         List<String> results = adults.getResults().getResults();
-        assertEquals( 2, results.size() );
-        assertTrue( results.containsAll( asList("Mario", "Marilena") ) );
+        assertEquals(2, results.size());
+        assertTrue(results.containsAll(asList("Mario", "Marilena")));
     }
 
     @Test
@@ -117,20 +116,20 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         AdultUnit adults = new AdultUnit();
 
-        adults.getPersons().add(new Person( "Mario", 45 ));
-        adults.getPersons().add(new Person( "Marilena", 47 ));
-        adults.getPersons().add(new Person( "Sofia", 7 ));
+        adults.getPersons().add(new Person("Mario", 45));
+        adults.getPersons().add(new Person("Marilena", 47));
+        adults.getPersons().add(new Person("Sofia", 7));
 
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         Class<? extends RuleUnitQuery<List<String>>> queryClass = (Class<? extends RuleUnitQuery<List<String>>>) application.getClass()
-                .getClassLoader().loadClass( "org.kie.kogito.codegen.unit.AdultUnitQueryFindAdults" );
-        
-        List<String> results = instance.executeQuery( queryClass );
+                .getClassLoader().loadClass("org.kie.kogito.codegen.unit.AdultUnitQueryFindAdults");
 
-        assertEquals( 2, results.size() );
-        assertTrue( results.containsAll( asList("Mario", "Marilena") ) );
+        List<String> results = instance.executeQuery(queryClass);
+
+        assertEquals(2, results.size());
+        assertTrue(results.containsAll(asList("Mario", "Marilena")));
     }
 
     @Test
@@ -139,21 +138,21 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         AdultUnit adults = new AdultUnit();
 
-        adults.getPersons().add(new Person( "Mario", 45 ));
-        adults.getPersons().add(new Person( "Marilena", 47 ));
-        adults.getPersons().add(new Person( "Sofia", 7 ));
+        adults.getPersons().add(new Person("Mario", 45));
+        adults.getPersons().add(new Person("Marilena", 47));
+        adults.getPersons().add(new Person("Sofia", 7));
 
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        List<Integer> results = instance.executeQuery( "FindAdultsAge" )
+        List<Integer> results = instance.executeQuery("FindAdultsAge")
                 .stream()
-                .map( m -> m.get("$age") )
-                .map( Integer.class::cast )
-                .collect( toList() );
+                .map(m -> m.get("$age"))
+                .map(Integer.class::cast)
+                .collect(toList());
 
-        assertEquals( 2, results.size() );
-        assertTrue( results.containsAll( asList(45, 47) ) );
+        assertEquals(2, results.size());
+        assertTrue(results.containsAll(asList(45, 47)));
     }
 
     @Test
@@ -163,9 +162,9 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
                 "org/kie/kogito/codegen/unit/PersonsUnit.drl");
 
         DataStore<Person> persons = DataSource.createStore();
-        persons.add(new Person( "Mario", 45 ));
-        persons.add(new Person( "Marilena", 17 ));
-        persons.add(new Person( "Sofia", 7 ));
+        persons.add(new Person("Mario", 45));
+        persons.add(new Person("Marilena", 17));
+        persons.add(new Person("Sofia", 7));
 
         RuleUnit<AdultUnit> adultUnit = application.get(RuleUnits.class).create(AdultUnit.class);
 
@@ -176,26 +175,29 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         RuleUnitInstance<AdultUnit> adultUnitInstance21 = adultUnit.createInstance(adultData21, "adult21");
 
         RuleUnit<PersonsUnit> personsUnit = application.get(RuleUnits.class).create(PersonsUnit.class);
-        personsUnit.createInstance( new PersonsUnit(persons) ).fire();
+        personsUnit.createInstance(new PersonsUnit(persons)).fire();
 
-        assertEquals( 2, adultData18.getResults().getResults().size() );
-        assertTrue( adultData18.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );
-        assertEquals( 1, adultData21.getResults().getResults().size() );
-        assertTrue( adultData21.getResults().getResults().containsAll( asList("Mario") ) );
+        assertEquals(2, adultData18.getResults().getResults().size());
+        assertTrue(adultData18.getResults().getResults().containsAll(asList("Mario", "Marilena")));
+        assertEquals(1, adultData21.getResults().getResults().size());
+        assertTrue(adultData21.getResults().getResults().containsAll(asList("Mario")));
     }
 
     @Test
     public void generateSinglePackageSingleUnit() throws Exception {
         Application application = generateCodeRulesOnly(
-                        "org/kie/kogito/codegen/rules/multiunit/MultiUnit.drl",
-                        "org/kie/kogito/codegen/rules/multiunit/MultiUnit2.drl");
+                "org/kie/kogito/codegen/rules/multiunit/MultiUnit.drl",
+                "org/kie/kogito/codegen/rules/multiunit/MultiUnit2.drl");
 
         ArrayList<String> strings = new ArrayList<>();
 
         RuleUnit<MultiUnit> mu = application.get(RuleUnits.class).create(MultiUnit.class);
         MultiUnit data = new MultiUnit();
         RuleUnitInstance<MultiUnit> instance = mu.createInstance(data);
-        data.getValues().subscribe(DataObserver.of(v -> { if (v!=null) strings.add((String) v); }));
+        data.getValues().subscribe(DataObserver.of(v -> {
+            if (v != null)
+                strings.add((String) v);
+        }));
         data.getValues().add("start");
         instance.fire();
 
@@ -215,7 +217,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         Singleton unitData = new Singleton();
         RuleUnitInstance<Singleton> instance = mu.createInstance(unitData);
         unitData.getOutput().subscribe(
-                DataObserver.ofUpdatable(v ->  data.add(v == null? null : v.getValue())));
+                DataObserver.ofUpdatable(v -> data.add(v == null ? null : v.getValue())));
         unitData.getOutput().subscribe(
                 DataObserver.of(lastSeen::set));
 
@@ -237,12 +239,12 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         AdultUnit adults = new AdultUnit();
 
-        Person mario = new Person( "Mario", 42 );
-        mario.addAddress( new Address( "Milano" ) );
-        Person mark = new Person( "Mark", 40 );
-        mark.addAddress( new Address( "London" ) );
-        Person edson = new Person( "Edson", 37 );
-        edson.addAddress( new Address( "Toronto" ) );
+        Person mario = new Person("Mario", 42);
+        mario.addAddress(new Address("Milano"));
+        Person mark = new Person("Mark", 40);
+        mark.addAddress(new Address("London"));
+        Person edson = new Person("Edson", 37);
+        edson.addAddress(new Address("Toronto"));
 
         adults.getPersons().add(mario);
         adults.getPersons().add(mark);
@@ -251,22 +253,22 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        List<Person> results = instance.executeQuery( "FindPeopleInMilano" )
+        List<Person> results = instance.executeQuery("FindPeopleInMilano")
                 .stream()
-                .map( m -> m.get("$p") )
-                .map( Person.class::cast )
-                .collect( toList() );
+                .map(m -> m.get("$p"))
+                .map(Person.class::cast)
+                .collect(toList());
 
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.get( 0 ).getName() );
+        assertEquals(1, results.size());
+        assertEquals("Mario", results.get(0).getName());
     }
 
     @Test
     public void testRuleUnitWithNoBindQueryShouldntCompile() throws Exception {
         try {
-            Application application = generateCodeRulesOnly( "org/kie/kogito/codegen/unit/RuleUnitNoBindQuery.drl" );
+            Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnitNoBindQuery.drl");
             fail("A query without binding shouldn't compile");
-        } catch(RuleCodegenError e) {
+        } catch (RuleCodegenError e) {
             // ignore
         }
     }

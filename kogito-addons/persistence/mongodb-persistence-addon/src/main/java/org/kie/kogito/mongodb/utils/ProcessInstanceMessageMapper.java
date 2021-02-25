@@ -18,15 +18,16 @@ package org.kie.kogito.mongodb.utils;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.protobuf.util.JsonFormat;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.kogito.mongodb.marshalling.DocumentUnmarshallingException;
 import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.protobuf.util.JsonFormat;
 
 import static org.kie.kogito.mongodb.utils.DocumentConstants.VALUE;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.VARIABLE;

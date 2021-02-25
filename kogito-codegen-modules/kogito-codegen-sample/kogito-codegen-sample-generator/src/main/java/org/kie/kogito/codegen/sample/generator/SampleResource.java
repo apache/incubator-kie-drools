@@ -20,7 +20,6 @@ public class SampleResource {
     private final String name;
     private final String content;
 
-
     public SampleResource(String name, String content) {
         this.name = name;
         this.content = content;

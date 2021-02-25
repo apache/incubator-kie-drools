@@ -24,14 +24,13 @@ import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
-
 public class BoundaryEventNodeInstance extends EventNodeInstance {
 
     private static final long serialVersionUID = -4958054074031174180L;
 
     @Override
     public void signalEvent(String type, Object event) {
-        if(triggerTime == null) {
+        if (triggerTime == null) {
             triggerTime = new Date();
         }
         BoundaryEventNode boundaryNode = (BoundaryEventNode) getEventNode();

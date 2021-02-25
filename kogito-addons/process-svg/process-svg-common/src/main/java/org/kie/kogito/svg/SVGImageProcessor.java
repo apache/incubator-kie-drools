@@ -57,8 +57,8 @@ public class SVGImageProcessor {
     }
 
     public static String transform(InputStream svg, List<String> completed, List<String> active,
-                                   Map<String, String> subProcessLinks, String completedNodeColor,
-                                   String completedNodeBorderColor, String activeNodeBorderColor) {
+            Map<String, String> subProcessLinks, String completedNodeColor,
+            String completedNodeBorderColor, String activeNodeBorderColor) {
         SVGProcessor processor = new SVGImageProcessor(svg).getProcessor();
 
         for (String nodeId : completed) {

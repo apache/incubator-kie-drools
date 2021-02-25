@@ -40,7 +40,7 @@ public class TestRuleUnit implements RuleUnitData {
     public boolean bound = false;
 
     public TestRuleUnit() {
-        this(new Integer[]{}, BigDecimal.ZERO);
+        this(new Integer[] {}, BigDecimal.ZERO);
     }
 
     public TestRuleUnit(final Integer[] numbersArray, final BigDecimal number) {

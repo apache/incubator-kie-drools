@@ -27,13 +27,13 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.process.EventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,13 +71,13 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         }
         ProcessInstanceJobDescription jobDescription =
                 ProcessInstanceJobDescription.of(getTimerNode().getTimer().getId(),
-                                                 expirationTime,
-                                                 getProcessInstance().getStringId(),
-                                                 getProcessInstance().getRootProcessInstanceId(),
-                                                 getProcessInstance().getProcessId(),
-                                                 getProcessInstance().getRootProcessId(),
-                                                 Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null));
-        JobsService jobService =  KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
+                        expirationTime,
+                        getProcessInstance().getStringId(),
+                        getProcessInstance().getRootProcessInstanceId(),
+                        getProcessInstance().getProcessId(),
+                        getProcessInstance().getRootProcessId(),
+                        Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null));
+        JobsService jobService = KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
         timerId = jobService.scheduleProcessInstanceJob(jobDescription);
     }
 
@@ -91,17 +91,16 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     }
 
     public String[] getEventTypes() {
-        return new String[]{TIMER_TRIGGERED_EVENT};
+        return new String[] { TIMER_TRIGGERED_EVENT };
     }
 
     public void triggerCompleted(boolean remove) {
-        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, remove);
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, remove);
     }
 
     @Override
     public void cancel() {
-        ((InternalProcessRuntime)
-                getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService().cancelJob(timerId);
+        ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService().cancelJob(timerId);
         super.cancel();
     }
 
@@ -124,6 +123,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         properties.put("Delay", getTimerNode().getTimer().getDelay());
         properties.put("Period", getTimerNode().getTimer().getPeriod());
         properties.put("Date", getTimerNode().getTimer().getDate());
-        return Collections.singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getStringId(), getProcessInstance().getStringId(), null, properties));
+        return Collections
+                .singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getStringId(), getProcessInstance().getStringId(), null, properties));
     }
 }

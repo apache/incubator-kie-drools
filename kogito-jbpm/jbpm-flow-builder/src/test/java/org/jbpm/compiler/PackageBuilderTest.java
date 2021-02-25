@@ -41,108 +41,108 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlow() throws Exception {
-        InputStream in = this.getClass().getResourceAsStream( "/org/jbpm/integrationtests/ruleflow.rfm" );
-        assertNotNull( in );
+        InputStream in = this.getClass().getResourceAsStream("/org/jbpm/integrationtests/ruleflow.rfm");
+        assertNotNull(in);
 
-        builder.addPackage( new PackageDescr( "com.sample" ) );
+        builder.addPackage(new PackageDescr("com.sample"));
 
-        builder.addRuleFlow( new InputStreamReader( in ) );
+        builder.addRuleFlow(new InputStreamReader(in));
         InternalKnowledgePackage pkg = builder.getPackage("com.sample");
-        assertNotNull( pkg );
+        assertNotNull(pkg);
 
         Map<String, Process> flows = pkg.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
+        assertNotNull(flows);
+        assertEquals(1,
+                flows.size());
 
-        assertTrue( flows.containsKey( "0" ) );
+        assertTrue(flows.containsKey("0"));
 
-        Process p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
+        Process p = (Process) flows.get("0");
+        assertTrue(p instanceof WorkflowProcessImpl);
 
         //now serialization
-        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
-        assertNotNull( pkg2 );
+        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(pkg));
+        assertNotNull(pkg2);
 
         flows = pkg2.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-        assertTrue( flows.containsKey( "0" ) );
-        p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
+        assertNotNull(flows);
+        assertEquals(1,
+                flows.size());
+        assertTrue(flows.containsKey("0"));
+        p = (Process) flows.get("0");
+        assertTrue(p instanceof WorkflowProcessImpl);
     }
 
     @Test
     public void testRuleFlowUpgrade() throws Exception {
         // Set the system property so that automatic conversion can happen
-        System.setProperty( "drools.ruleflow.port",
-                            "true" );
+        System.setProperty("drools.ruleflow.port",
+                "true");
 
-        InputStream in = this.getClass().getResourceAsStream( "/org/jbpm/integrationtests/ruleflow40.rfm" );
-        assertNotNull( in );
+        InputStream in = this.getClass().getResourceAsStream("/org/jbpm/integrationtests/ruleflow40.rfm");
+        assertNotNull(in);
 
-        builder.addPackage( new PackageDescr( "com.sample" ) );
+        builder.addPackage(new PackageDescr("com.sample"));
 
-        builder.addRuleFlow( new InputStreamReader( in ) );
+        builder.addRuleFlow(new InputStreamReader(in));
         InternalKnowledgePackage pkg = builder.getPackage("com.sample");
-        assertNotNull( pkg );
+        assertNotNull(pkg);
 
         Map<String, Process> flows = pkg.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
+        assertNotNull(flows);
+        assertEquals(1,
+                flows.size());
 
-        assertTrue( flows.containsKey( "0" ) );
+        assertTrue(flows.containsKey("0"));
 
-        Process p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
+        Process p = (Process) flows.get("0");
+        assertTrue(p instanceof WorkflowProcessImpl);
 
         //now serialization
-        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
-        assertNotNull( pkg2 );
+        InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(pkg));
+        assertNotNull(pkg2);
 
         flows = pkg2.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-        assertTrue( flows.containsKey( "0" ) );
-        p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
+        assertNotNull(flows);
+        assertEquals(1,
+                flows.size());
+        assertTrue(flows.containsKey("0"));
+        p = (Process) flows.get("0");
+        assertTrue(p instanceof WorkflowProcessImpl);
         // Reset the system property so that automatic conversion should not happen
-        System.setProperty( "drools.ruleflow.port",
-                            "false" );
+        System.setProperty("drools.ruleflow.port",
+                "false");
     }
 
     @Test
     public void testPackageRuleFlows() throws Exception {
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "boo" );
-        Process rf = new MockRuleFlow( "1" );
-        pkg.addProcess( rf );
-        assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
-        assertSame( rf,
-                    pkg.getRuleFlows().get( "1" ) );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl("boo");
+        Process rf = new MockRuleFlow("1");
+        pkg.addProcess(rf);
+        assertTrue(pkg.getRuleFlows().containsKey("1"));
+        assertSame(rf,
+                pkg.getRuleFlows().get("1"));
 
-        Process rf2 = new MockRuleFlow( "2" );
-        pkg.addProcess( rf2 );
-        assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
-        assertSame( rf,
-                    pkg.getRuleFlows().get( "1" ) );
-        assertTrue( pkg.getRuleFlows().containsKey( "2" ) );
-        assertSame( rf2,
-                    pkg.getRuleFlows().get( "2" ) );
+        Process rf2 = new MockRuleFlow("2");
+        pkg.addProcess(rf2);
+        assertTrue(pkg.getRuleFlows().containsKey("1"));
+        assertSame(rf,
+                pkg.getRuleFlows().get("1"));
+        assertTrue(pkg.getRuleFlows().containsKey("2"));
+        assertSame(rf2,
+                pkg.getRuleFlows().get("2"));
 
-        pkg.removeRuleFlow( "1" );
-        assertTrue( pkg.getRuleFlows().containsKey( "2" ) );
-        assertSame( rf2,
-                    pkg.getRuleFlows().get( "2" ) );
-        assertFalse( pkg.getRuleFlows().containsKey( "1" ) );
+        pkg.removeRuleFlow("1");
+        assertTrue(pkg.getRuleFlows().containsKey("2"));
+        assertSame(rf2,
+                pkg.getRuleFlows().get("2"));
+        assertFalse(pkg.getRuleFlows().containsKey("1"));
 
     }
 
     class MockRuleFlow
-        implements
-        Process {
+            implements
+            Process {
 
         private String id;
 
@@ -200,20 +200,20 @@ public class PackageBuilderTest extends AbstractBaseTest {
         }
 
         public Context getContext(String contextType,
-                                  long id) {
+                long id) {
             return null;
         }
-        
-    	public Map<String, Object> getMetaData() {
-    		return null;
-    	}
+
+        public Map<String, Object> getMetaData() {
+            return null;
+        }
 
         public Object getMetaData(String name) {
             return null;
         }
 
         public void setMetaData(String name,
-                                Object value) {
+                Object value) {
         }
 
         public Resource getResource() {

@@ -20,12 +20,14 @@ import org.drools.core.ruleunit.InternalStoreCallback;
 import org.kie.kogito.rules.DataHandle;
 
 public interface KogitoInternalFactHandle
-    extends
-    InternalFactHandle {
+        extends
+        InternalFactHandle {
 
     DataHandle getDataHandle();
-    void setDataHandle( DataHandle dataHandle );
+
+    void setDataHandle(DataHandle dataHandle);
 
     InternalStoreCallback getDataStore();
-    void setDataStore( InternalStoreCallback dataStore );
+
+    void setDataStore(InternalStoreCallback dataStore);
 }

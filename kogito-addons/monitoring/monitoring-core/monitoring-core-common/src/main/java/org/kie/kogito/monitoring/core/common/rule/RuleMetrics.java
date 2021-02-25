@@ -17,9 +17,10 @@ package org.kie.kogito.monitoring.core.common.rule;
 
 import java.util.Arrays;
 
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Tag;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 
 public class RuleMetrics {
 

@@ -15,9 +15,9 @@
  */
 package org.kie.kogito.monitoring.prometheus.quarkus.rest;
 
-import org.junit.jupiter.api.Test;
-
 import javax.ws.rs.core.Response;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

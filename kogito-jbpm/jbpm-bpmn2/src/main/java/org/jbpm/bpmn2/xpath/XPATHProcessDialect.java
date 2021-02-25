@@ -23,34 +23,34 @@ import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 
 /**
- * Please make sure to use the getter methods when referring to the static final fields, 
- * because this class is extended in other modules (jbpm-kie-services). 
+ * Please make sure to use the getter methods when referring to the static final fields,
+ * because this class is extended in other modules (jbpm-kie-services).
  */
 public class XPATHProcessDialect implements ProcessDialect {
 
-	public static final String ID = "XPath";
-	private static final ActionBuilder actionBuilder = new XPATHActionBuilder();
-	private static final ReturnValueEvaluatorBuilder returnValueBuilder = new XPATHReturnValueEvaluatorBuilder();
-	private static final AssignmentBuilder assignmentBuilder = new XPATHAssignmentBuilder();
-	
-	public void addProcess(final ProcessBuildContext context) {
+    public static final String ID = "XPath";
+    private static final ActionBuilder actionBuilder = new XPATHActionBuilder();
+    private static final ReturnValueEvaluatorBuilder returnValueBuilder = new XPATHReturnValueEvaluatorBuilder();
+    private static final AssignmentBuilder assignmentBuilder = new XPATHAssignmentBuilder();
+
+    public void addProcess(final ProcessBuildContext context) {
         // @TODO setup line mappings
-	}
+    }
 
-	public ActionBuilder getActionBuilder() {
-		return actionBuilder;
-	}
+    public ActionBuilder getActionBuilder() {
+        return actionBuilder;
+    }
 
-	public ProcessClassBuilder getProcessClassBuilder() {
-        throw new UnsupportedOperationException( "MVELProcessDialect.getProcessClassBuilder is not supported" );
-	}
+    public ProcessClassBuilder getProcessClassBuilder() {
+        throw new UnsupportedOperationException("MVELProcessDialect.getProcessClassBuilder is not supported");
+    }
 
-	public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
-		return returnValueBuilder;
-	}
+    public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
+        return returnValueBuilder;
+    }
 
-	public AssignmentBuilder getAssignmentBuilder() {
-		return assignmentBuilder;
-	}
+    public AssignmentBuilder getAssignmentBuilder() {
+        return assignmentBuilder;
+    }
 
 }

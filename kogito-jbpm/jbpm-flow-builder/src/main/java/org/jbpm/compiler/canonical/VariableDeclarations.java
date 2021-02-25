@@ -33,29 +33,29 @@ public class VariableDeclarations {
             if (variable.hasTag(Variable.INTERNAL_TAG)) {
                 continue;
             }
-            
+
             vs.put(variable.getName(), variable);
         }
         return of(vs);
     }
-    
+
     public static VariableDeclarations ofInput(VariableScope vscope) {
-        
+
         return of(vscope, variable -> variable.hasTag(Variable.INTERNAL_TAG) || variable.hasTag(Variable.OUTPUT_TAG));
     }
-    
+
     public static VariableDeclarations ofOutput(VariableScope vscope) {
-        
+
         return of(vscope, variable -> variable.hasTag(Variable.INTERNAL_TAG) || variable.hasTag(Variable.INPUT_TAG));
     }
-    
+
     public static VariableDeclarations of(VariableScope vscope, Predicate<Variable> filterOut) {
         HashMap<String, Variable> vs = new HashMap<>();
         for (Variable variable : vscope.getVariables()) {
             if (filterOut.test(variable)) {
                 continue;
             }
-            
+
             vs.put(variable.getName(), variable);
         }
         return of(vs);
@@ -64,11 +64,11 @@ public class VariableDeclarations {
     public static VariableDeclarations of(Map<String, Variable> vscope) {
         return new VariableDeclarations(vscope);
     }
-    
+
     public static VariableDeclarations ofRawInfo(Map<String, String> vscope) {
         HashMap<String, Variable> vs = new HashMap<>();
 
-        if(vscope != null) {
+        if (vscope != null) {
             for (Entry<String, String> entry : vscope.entrySet()) {
                 Variable variable = new Variable();
                 variable.setName(entry.getKey());
@@ -76,7 +76,7 @@ public class VariableDeclarations {
                 vs.put(entry.getKey(), variable);
             }
         }
-        
+
         return new VariableDeclarations(vs);
     }
 
@@ -89,7 +89,7 @@ public class VariableDeclarations {
     public String getType(String vname) {
         return vscope.get(vname).getType().getStringType();
     }
-    
+
     public List<String> getTags(String vname) {
         return vscope.get(vname).getTags();
     }

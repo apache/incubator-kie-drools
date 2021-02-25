@@ -21,13 +21,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.drools.core.util.IoUtils;
+import org.kie.kogito.codegen.api.io.CollectedResource;
+
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.IoUtils;
-import org.kie.kogito.codegen.api.io.CollectedResource;
 
 class ReadResourceUtil {
 

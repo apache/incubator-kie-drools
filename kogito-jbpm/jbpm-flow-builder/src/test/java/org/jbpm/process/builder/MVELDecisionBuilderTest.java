@@ -49,46 +49,45 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testSimpleAction() throws Exception {
-        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl("pkg1");
 
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( "list.add( 'hello world' )" );       
+        actionDescr.setText("list.add( 'hello world' )");
 
-        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg );
-        
-        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( pkg.getName() );
-        MVELDialect mvelDialect = ( MVELDialect ) pkgReg.getDialectCompiletimeRegistry().getDialect( "mvel" );
+        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl(pkg);
+
+        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry(pkg.getName());
+        MVELDialect mvelDialect = (MVELDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("mvel");
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init( pkgBuilder, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
-        
-        pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
-        
+        context.init(pkgBuilder, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
+
+        pkgBuilder.addPackageFromDrl(new StringReader("package pkg1;\nglobal java.util.List list;\n"));
+
         ActionNode actionNode = new ActionNode();
         DroolsAction action = new DroolsConsequenceAction("java", null);
         actionNode.setAction(action);
-        
+
         final MVELActionBuilder builder = new MVELActionBuilder();
-        builder.build( context,
-                       action,
-                       actionDescr,
-                       actionNode );
+        builder.build(context,
+                action,
+                actionDescr,
+                actionNode);
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( Arrays.asList(pkgBuilder.getPackages()) );
+        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
         final KieSession wm = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
-        wm.setGlobal( "list", list );        
-        
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage("pkg1").getDialectRuntimeRegistry().getDialectData( "mvel");
-        
-        KogitoProcessContext processContext = new KogitoProcessContextImpl( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
-        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( data );
-        ((Action)actionNode.getAction().getMetaData("Action")).execute( processContext );
-        
-        assertEquals("hello world", list.get(0) );
-    }    
+        wm.setGlobal("list", list);
+
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage("pkg1").getDialectRuntimeRegistry().getDialectData("mvel");
+
+        KogitoProcessContext processContext = new KogitoProcessContextImpl(((InternalWorkingMemory) wm).getKnowledgeRuntime());
+        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile(data);
+        ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
+
+        assertEquals("hello world", list.get(0));
+    }
 
 }
-

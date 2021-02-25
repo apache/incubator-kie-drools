@@ -63,8 +63,8 @@ public class MarshalVariablesProcessEventListener extends DefaultProcessEventLis
                     logger.debug("Strategy of type {} found to handle variable '{}'", strategy, variable.getKey());
                     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         KogitoProcessMarshallerWriteContext context = new KogitoProcessMarshallerWriteContext(baos, null, null, null, null, event.getKieRuntime().getEnvironment());
-                        context.setProcessInstanceId((( KogitoProcessInstance )event.getProcessInstance()).getStringId());
-                        context.setState( ProtobufProcessMarshallerWriteContext.STATE_COMPLETED);
+                        context.setProcessInstanceId(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+                        context.setState(ProtobufProcessMarshallerWriteContext.STATE_COMPLETED);
 
                         strategy.marshal(null, context, variable.getValue());
                         logger.debug("Variable '{}' successfully persisted by strategy {}", variable.getKey(), strategy);

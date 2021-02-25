@@ -19,9 +19,10 @@ import java.util.Collections;
 
 import javax.ws.rs.core.HttpHeaders;
 
-import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Metadata;
+
+import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
 
 /**
  * Decorators for Http CloudEvents outgoing messages
@@ -37,8 +38,8 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
      */
     static final Metadata HTTP_RESPONSE_METADATA =
             Metadata.of(HttpResponseMetadata.builder()
-                                .withQueryParameter(Collections.emptyMap())
-                                .withHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
+                    .withQueryParameter(Collections.emptyMap())
+                    .withHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
 
     CloudEventHttpOutgoingDecorator() {
 
@@ -48,7 +49,7 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
      * Decorates a given payload with custom metadata needed by Http Outgoing processing
      *
      * @param payload of the given message
-     * @param <T>     Payload type
+     * @param <T> Payload type
      */
     public <T> Message<T> decorate(T payload) {
         return Message.of(payload, HTTP_RESPONSE_METADATA);

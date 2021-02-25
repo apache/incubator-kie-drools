@@ -25,26 +25,26 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.definition.process.Process;
 
 public class ProcessBuildContext extends PackageBuildContext {
-	
-    private Process      process;
+
+    private Process process;
     private ProcessDescr processDescr;
     private DialectCompiletimeRegistry dialectRegistry;
 
     public ProcessBuildContext(final DroolsAssemblerContext assemblerContext,
-                               final InternalKnowledgePackage pkg,
-                               final Process process,
-                               final BaseDescr processDescr,
-                               final DialectCompiletimeRegistry dialectRegistry,
-                               final Dialect defaultDialect) {
+            final InternalKnowledgePackage pkg,
+            final Process process,
+            final BaseDescr processDescr,
+            final DialectCompiletimeRegistry dialectRegistry,
+            final Dialect defaultDialect) {
         this.process = process;
         this.processDescr = (ProcessDescr) processDescr;
         this.dialectRegistry = dialectRegistry;
-        init( assemblerContext,
-              pkg,
-              processDescr,
-              dialectRegistry,
-              defaultDialect,
-              null );
+        init(assemblerContext,
+                pkg,
+                processDescr,
+                dialectRegistry,
+                defaultDialect,
+                null);
 
     }
 
@@ -63,9 +63,9 @@ public class ProcessBuildContext extends PackageBuildContext {
     public void setProcess(Process process) {
         this.process = process;
     }
-    
+
     public DialectCompiletimeRegistry getDialectRegistry() {
-    	return dialectRegistry;
+        return dialectRegistry;
     }
 
 }

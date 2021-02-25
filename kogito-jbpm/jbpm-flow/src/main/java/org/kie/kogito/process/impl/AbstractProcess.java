@@ -33,6 +33,10 @@ import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
@@ -45,10 +49,6 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractProcess<T extends Model> implements Process<T> {
@@ -57,7 +57,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     protected ProcessInstancesFactory processInstancesFactory;
     protected MutableProcessInstances<T> instances;
     protected CompletionEventListener completionEventListener = new CompletionEventListener();
-    
+
     protected Application app;
 
     protected boolean activated;
@@ -79,7 +79,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers) {
         this(app, handlers, null);
     }
-    
+
     protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, ProcessInstancesFactory factory) {
         this(new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, factory);
         this.app = app;
@@ -117,7 +117,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     public abstract ProcessInstance<T> createInstance(WorkflowProcessInstance wpi);
 
     public abstract ProcessInstance<T> createReadOnlyInstance(WorkflowProcessInstance wpi);
-    
+
     @Override
     public ProcessInstances<T> instances() {
         return instances;
@@ -216,7 +216,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     }
 
     public EventListener eventListener() {
-    	return completionEventListener;
+        return completionEventListener;
     }
 
     protected class CompletionEventListener implements EventListener {

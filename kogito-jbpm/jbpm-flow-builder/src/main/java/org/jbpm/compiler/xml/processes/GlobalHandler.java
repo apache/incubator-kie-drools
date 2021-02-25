@@ -19,67 +19,65 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.kie.api.definition.process.Process;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
+import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class GlobalHandler extends BaseAbstractHandler
-    implements
-    Handler {
+        implements
+        Handler {
     public GlobalHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
+        if ((this.validParents == null) && (this.validPeers == null)) {
             this.validParents = new HashSet();
-            this.validParents.add( Process.class );
+            this.validParents.add(Process.class);
 
-            this.validPeers = new HashSet();         
-            this.validPeers.add( null );            
+            this.validPeers = new HashSet();
+            this.validPeers.add(null);
             //this.validPeers.add( ImportDescr.class );            
 
             this.allowNesting = false;
         }
     }
-    
 
-    
     public Object start(final String uri,
-                        final String localName,
-                        final Attributes attrs,
-                        final ExtensibleXmlParser parser) throws SAXException {
-        parser.startElementBuilder( localName,
-                                    attrs );
-        
-        WorkflowProcessImpl  process = ( WorkflowProcessImpl ) parser.getParent();        
-        
-        final String identifier = attrs.getValue( "identifier" );
-        final String type = attrs.getValue( "type" );
-        
-        emptyAttributeCheck( localName, "identifier", identifier, parser );
-        emptyAttributeCheck( localName, "type", type, parser );
-        
+            final String localName,
+            final Attributes attrs,
+            final ExtensibleXmlParser parser) throws SAXException {
+        parser.startElementBuilder(localName,
+                attrs);
+
+        WorkflowProcessImpl process = (WorkflowProcessImpl) parser.getParent();
+
+        final String identifier = attrs.getValue("identifier");
+        final String type = attrs.getValue("type");
+
+        emptyAttributeCheck(localName, "identifier", identifier, parser);
+        emptyAttributeCheck(localName, "type", type, parser);
+
         Map<String, String> map = process.getGlobals();
-        if ( map == null ) {
+        if (map == null) {
             map = new HashMap<String, String>();
-            process.setGlobals( map );
+            process.setGlobals(map);
         }
-        map.put( identifier, type );
-        
+        map.put(identifier, type);
+
         return null;
-    }    
-    
+    }
+
     public Object end(final String uri,
-                      final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         return null;
     }
 
     public Class generateNodeFor() {
         return null;
-    }    
+    }
 
 }

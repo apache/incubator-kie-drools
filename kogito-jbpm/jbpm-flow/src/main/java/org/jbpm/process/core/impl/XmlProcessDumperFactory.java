@@ -28,7 +28,7 @@ public class XmlProcessDumperFactory {
     }
 
     private static class LazyHolder {
-        private static final XmlProcessDumperFactoryService service = ServiceRegistry.getInstance().get( XmlProcessDumperFactoryService.class );
+        private static final XmlProcessDumperFactoryService service = ServiceRegistry.getInstance().get(XmlProcessDumperFactoryService.class);
     }
 
     private XmlProcessDumperFactory() {

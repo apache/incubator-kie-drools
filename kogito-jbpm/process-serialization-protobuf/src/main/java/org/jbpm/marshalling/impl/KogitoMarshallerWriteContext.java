@@ -35,28 +35,28 @@ import org.kie.api.runtime.Environment;
  */
 public class KogitoMarshallerWriteContext extends ProtobufMarshallerWriteContext {
 
-    public KogitoMarshallerWriteContext( OutputStream stream,
-                                         InternalKnowledgeBase kBase,
-                                         InternalWorkingMemory wm,
-                                         Map<Integer, BaseNode> sinks,
-                                         ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                         Environment env) throws IOException {
+    public KogitoMarshallerWriteContext(OutputStream stream,
+            InternalKnowledgeBase kBase,
+            InternalWorkingMemory wm,
+            Map<Integer, BaseNode> sinks,
+            ObjectMarshallingStrategyStore resolverStrategyFactory,
+            Environment env) throws IOException {
         super(stream, kBase, wm, sinks, resolverStrategyFactory, env);
     }
 
     public KogitoMarshallerWriteContext(OutputStream stream,
-                                  InternalKnowledgeBase kBase,
-                                  InternalWorkingMemory wm,
-                                  Map<Integer, BaseNode> sinks,
-                                  ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                  boolean marshalProcessInstances,
-                                  boolean marshalWorkItems,
-                                  Environment env) throws IOException {
+            InternalKnowledgeBase kBase,
+            InternalWorkingMemory wm,
+            Map<Integer, BaseNode> sinks,
+            ObjectMarshallingStrategyStore resolverStrategyFactory,
+            boolean marshalProcessInstances,
+            boolean marshalWorkItems,
+            Environment env) throws IOException {
         super(stream, kBase, wm, sinks, resolverStrategyFactory, marshalProcessInstances, marshalWorkItems, env);
     }
 
     @Override
     protected ObjectMarshallingStrategy[] getMarshallingStrategy() {
-        return new ObjectMarshallingStrategy[]{new KogitoSerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )};
+        return new ObjectMarshallingStrategy[] { new KogitoSerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) };
     }
 }

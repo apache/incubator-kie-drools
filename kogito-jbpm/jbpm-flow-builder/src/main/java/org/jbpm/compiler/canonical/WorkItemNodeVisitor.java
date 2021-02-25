@@ -19,6 +19,11 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.jbpm.workflow.core.node.WorkItemNode;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -29,10 +34,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.jbpm.workflow.core.node.WorkItemNode;
 
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_NAME;
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_PARAMETER;
@@ -55,8 +56,8 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
         }
 
         public static ParamType fromString(String name) {
-            for(ParamType p : ParamType.values()) {
-                if(Objects.equals(p.name, name)) {
+            for (ParamType p : ParamType.values()) {
+                if (Objects.equals(p.name, name)) {
                     return p;
                 }
             }
@@ -89,8 +90,8 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
         } else if (workName.equals("Rest Task")) {
             workName = RestTaskDescriptor.getClassName(metadata);
             metadata
-                .getGeneratedHandlers()
-                .computeIfAbsent(workName, RestTaskDescriptor::generateHandlerClassForService);
+                    .getGeneratedHandlers()
+                    .computeIfAbsent(workName, RestTaskDescriptor::generateHandlerClassForService);
         }
 
         body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
@@ -113,14 +114,12 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
                 continue; // interfaceImplementationRef ?
             }
             String paramType = null;
-            if(work.getParameterDefinition(entry.getKey()) != null) {
+            if (work.getParameterDefinition(entry.getKey()) != null) {
                 paramType = work.getParameterDefinition(entry.getKey()).getType().getStringType();
             }
             body.addStatement(getFactoryMethod(variableName, METHOD_WORK_PARAMETER, new StringLiteralExpr(entry.getKey()), getParameterExpr(paramType, entry.getValue())));
         }
     }
-    
-  
 
     private Expression getParameterExpr(String type, Object value) {
         if (value == null) {
@@ -140,9 +139,9 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
                 return new BooleanLiteralExpr(asBoolean(value));
             case FLOAT:
                 return new MethodCallExpr()
-                    .setScope(new NameExpr(Float.class.getName()))
-                    .setName("parseFloat")
-                    .addArgument(new StringLiteralExpr(value.toString()));
+                        .setScope(new NameExpr(Float.class.getName()))
+                        .setName("parseFloat")
+                        .addArgument(new StringLiteralExpr(value.toString()));
             case INTEGER:
                 return new IntegerLiteralExpr(asInteger(value));
             default:

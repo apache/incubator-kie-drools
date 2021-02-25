@@ -58,25 +58,24 @@ public class WorkflowRuntimeException extends RuntimeException {
         initialize(nodeInstance, processInstance);
     }
 
-    private void initialize( KogitoNodeInstance nodeInstance, KogitoProcessInstance processInstance) {
+    private void initialize(KogitoNodeInstance nodeInstance, KogitoProcessInstance processInstance) {
         this.processInstanceId = processInstance.getStringId();
         this.processId = processInstance.getProcessId();
-        this.setDeploymentId(((ProcessInstanceImpl)processInstance).getDeploymentId());
-        if( nodeInstance != null ) { 
+        this.setDeploymentId(((ProcessInstanceImpl) processInstance).getDeploymentId());
+        if (nodeInstance != null) {
             this.nodeInstanceId = nodeInstance.getStringId();
             this.nodeId = nodeInstance.getNodeId();
-            if( ((ProcessInstanceImpl) processInstance).getKnowledgeRuntime() != null ) { 
+            if (((ProcessInstanceImpl) processInstance).getKnowledgeRuntime() != null) {
                 this.nodeName = nodeInstance.getNodeName();
             }
         }
-        
-        VariableScopeInstance variableScope =  (VariableScopeInstance) 
-                ((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance( 
-                        VariableScope.VARIABLE_SCOPE );
-            // set input parameters
-        if( variableScope != null ) { 
+
+        VariableScopeInstance variableScope = (VariableScopeInstance) ((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
+                VariableScope.VARIABLE_SCOPE);
+        // set input parameters
+        if (variableScope != null) {
             this.variables = variableScope.getVariables();
-        } else { 
+        } else {
             this.variables = new HashMap<String, Object>(0);
         }
     }
@@ -157,11 +156,11 @@ public class WorkflowRuntimeException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return MessageFormat.format("[{0}:{4} - {1}:{2}] -- {3}", 
+        return MessageFormat.format("[{0}:{4} - {1}:{2}] -- {3}",
                 getProcessId(),
-                (getNodeName() == null ? "?" : getNodeName()), 
-                (getNodeId() == 0 ? "?" : getNodeId()), 
-                (getCause() == null ? "WorkflowRuntimeException" : getCause().getMessage()), 
+                (getNodeName() == null ? "?" : getNodeName()),
+                (getNodeId() == 0 ? "?" : getNodeId()),
+                (getCause() == null ? "WorkflowRuntimeException" : getCause().getMessage()),
                 getProcessInstanceId());
     }
 

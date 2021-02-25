@@ -83,7 +83,7 @@ public class KafkaProcessInstancesTest {
         instances = new KafkaProcessInstances(process, producer, null, null);
 
         assertThat(instances.getProcess()).isEqualTo(process);
-        
+
         CompletableFuture<Void> async = CompletableFuture.runAsync(() -> instances.setStore(store));
 
         assertThat(instances.getStore()).isNotNull();
@@ -110,7 +110,7 @@ public class KafkaProcessInstancesTest {
 
     @Test
     public void testProcessInstancesExists() {
-        doReturn(new byte[]{}).when(store).get(id);
+        doReturn(new byte[] {}).when(store).get(id);
 
         assertThat(instances.exists(id)).isTrue();
         assertThat(instances.exists(UUID.randomUUID().toString())).isFalse();
@@ -120,7 +120,7 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesFindById() {
         doReturn(mock(ProcessInstance.class)).when(marshaller).unmarshallProcessInstance(any(), any());
 
-        doReturn(new byte[]{}).when(store).get(id);
+        doReturn(new byte[] {}).when(store).get(id);
 
         assertThat(instances.findById(id)).isPresent();
         assertThat(instances.findById(UUID.randomUUID().toString())).isNotPresent();
@@ -131,7 +131,7 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesFindByIdReadOnly() {
         doReturn(mock(ProcessInstance.class)).when(marshaller).unmarshallReadOnlyProcessInstance(any(), any());
 
-        doReturn(new byte[]{}).when(store).get(id);
+        doReturn(new byte[] {}).when(store).get(id);
 
         assertThat(instances.findById(id, ProcessInstanceReadMode.READ_ONLY)).isPresent();
         assertThat(instances.findById(UUID.randomUUID().toString(), ProcessInstanceReadMode.READ_ONLY)).isNotPresent();
@@ -171,7 +171,7 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesUpdate() {
         doReturn(mock(Future.class)).when(producer).send(any());
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
-        doReturn(new byte[]{}).when(marshaller).marshallProcessInstance(instance);
+        doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         when(instance.id()).thenReturn(id);
 
@@ -179,7 +179,7 @@ public class KafkaProcessInstancesTest {
 
         ArgumentCaptor<ProducerRecord> captor = ArgumentCaptor.forClass(ProducerRecord.class);
         verify(producer).send(captor.capture());
-        assertThat(captor.getValue().value()).isEqualTo(new byte[]{});
+        assertThat(captor.getValue().value()).isEqualTo(new byte[] {});
         assertThat(captor.getValue().key()).isEqualTo(id);
         assertThat(captor.getValue().topic()).isEqualTo(topicName(process.id()));
 
@@ -194,7 +194,7 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesUpdateException() {
         doThrow(new RuntimeException()).when(producer).send(any());
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
-        doReturn(new byte[]{}).when(marshaller).marshallProcessInstance(instance);
+        doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> instances.update(id, instance));
@@ -214,14 +214,14 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesCreate() {
         doReturn(mock(Future.class)).when(producer).send(any());
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
-        doReturn(new byte[]{}).when(marshaller).marshallProcessInstance(instance);
+        doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
 
         instances.create(id, instance);
 
         ArgumentCaptor<ProducerRecord> kafkaCaptor = ArgumentCaptor.forClass(ProducerRecord.class);
         verify(producer).send(kafkaCaptor.capture());
-        assertThat(kafkaCaptor.getValue().value()).isEqualTo(new byte[]{});
+        assertThat(kafkaCaptor.getValue().value()).isEqualTo(new byte[] {});
         assertThat(kafkaCaptor.getValue().key()).isEqualTo(id);
         assertThat(kafkaCaptor.getValue().topic()).isEqualTo(topicName(process.id()));
 
@@ -246,7 +246,7 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesCreateException() {
         doThrow(new RuntimeException()).when(producer).send(any());
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
-        doReturn(new byte[]{}).when(marshaller).marshallProcessInstance(instance);
+        doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> instances.create(id, instance));
@@ -254,7 +254,7 @@ public class KafkaProcessInstancesTest {
 
     @Test
     public void testProcessInstancesCreateDuplicate() {
-        when(store.get(id)).thenReturn(new byte[]{});
+        when(store.get(id)).thenReturn(new byte[] {});
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
 

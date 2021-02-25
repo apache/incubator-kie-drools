@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
@@ -139,14 +140,14 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        
+
         Map<String, Object> params = new HashMap<>();
         String varId = "s";
         String varValue = "initialValue";
         params.put(varId, varValue);
         KogitoProcessInstance processInstance = kruntime.startProcess("UserTask", params);
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);       
-        
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
@@ -332,7 +333,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         // Timer
         processInstance = kruntime.startProcess("com.sample.test");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        
+
         countDownListener.waitTillCompleted();
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         kruntime.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
@@ -495,13 +496,13 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNull();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         kruntime.getKieSession().fireAllRules();
-        
+
         kruntime.signalEvent("Hello2", null, processInstance.getStringId());
         workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        
+
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
@@ -523,7 +524,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull().withFailMessage("KogitoWorkItem should not be null.");
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        
+
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
@@ -598,7 +599,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<>();
         params.put("s", "john");
         KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ServiceProcess", params);
-        assertProcessInstanceCompleted( processInstance.getStringId(), kruntime);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
         assertThat(processInstance.getVariable("s")).isEqualTo("Hello john!");
     }
 
@@ -622,7 +623,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ReceiveTask");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
-        assertProcessInstanceCompleted((( KogitoProcessInstance ) processInstance).getStringId(), kruntime);
+        assertProcessInstanceCompleted(((KogitoProcessInstance) processInstance).getStringId(), kruntime);
     }
 
     @Test
@@ -649,11 +650,11 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
-            
+
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
+                list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
-            
+
         });
 
         assertThat(list.size()).isEqualTo(0);
@@ -667,7 +668,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add((( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
+                list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
         });
         kruntime.signalEvent("MySignal", "NewValue");
@@ -688,7 +689,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add((( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
+                list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
         });
         kruntime.signalEvent("Message-HelloMessage", "NewValue");
@@ -730,14 +731,14 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance = kruntime.startProcess("NoneIntermediateEvent");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
-    
+
     @Test
     public void testErrorSignallingExceptionServiceTask() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-ExceptionServiceProcess-ErrorSignalling.bpmn2");
 
         runTestErrorSignallingExceptionServiceTask(kruntime);
     }
-    
+
     public static void runTestErrorSignallingExceptionServiceTask(KogitoProcessRuntime kruntime) throws Exception {
 
         // Setup
@@ -745,26 +746,26 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         SignallingTaskHandlerDecorator signallingTaskWrapper = new SignallingTaskHandlerDecorator(ServiceTaskHandler.class, eventType);
         signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
         kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
-       
-        Object [] caughtEventObjectHolder = new Object[1];
+
+        Object[] caughtEventObjectHolder = new Object[1];
         caughtEventObjectHolder[0] = null;
         ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
-        
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        
+
         // Start process
         Map<String, Object> params = new HashMap<>();
         String input = "this is my service input";
-        params.put("serviceInputItem", input );
+        params.put("serviceInputItem", input);
         KogitoProcessInstance processInstance = kruntime.startProcess("ServiceProcess", params);
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        
+
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        
+
         // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
         assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
         workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
@@ -775,9 +776,9 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         // Complete process
         processInstance = kruntime.getProcessInstance(processInstance.getStringId());
         assertThat(processInstance == null || processInstance.getState() == KogitoProcessInstance.STATE_ABORTED).isTrue().withFailMessage("Process instance has not been aborted.");
-        
+
     }
-    
+
     @Test
     public void testSignallingExceptionServiceTask() throws Exception {
         // dump/reread functionality seems to work for this test 
@@ -786,36 +787,36 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         runTestSignallingExceptionServiceTask(kruntime);
     }
-    
+
     @Test
     public void testXXEProcessVulnerability() throws Exception {
-    	Resource processResource = ResourceFactory.newClassPathResource("xxe-protection/BPMN2-XXE-Process.bpmn2");
-    	
-    	File dtdFile = new File("src/test/resources/xxe-protection/external.dtd");
+        Resource processResource = ResourceFactory.newClassPathResource("xxe-protection/BPMN2-XXE-Process.bpmn2");
+
+        File dtdFile = new File("src/test/resources/xxe-protection/external.dtd");
         assertThat(dtdFile).exists();
-    	
-    	String dtdContent = IoUtils.readFileAsString(dtdFile);
-    	dtdContent = dtdContent.replaceAll("@@PATH@@", dtdFile.getParentFile().getAbsolutePath());
-    	
-    	IoUtils.write(dtdFile, dtdContent.getBytes("UTF-8"));
-    	
-    	byte[] data = IoUtils.readBytesFromInputStream(processResource.getInputStream());
-    	String processAsString = new String(data, "UTF-8");
-    	// replace place holders with actual paths
-    	File testFiles = new File("src/test/resources/xxe-protection");
+
+        String dtdContent = IoUtils.readFileAsString(dtdFile);
+        dtdContent = dtdContent.replaceAll("@@PATH@@", dtdFile.getParentFile().getAbsolutePath());
+
+        IoUtils.write(dtdFile, dtdContent.getBytes("UTF-8"));
+
+        byte[] data = IoUtils.readBytesFromInputStream(processResource.getInputStream());
+        String processAsString = new String(data, "UTF-8");
+        // replace place holders with actual paths
+        File testFiles = new File("src/test/resources/xxe-protection");
 
         assertThat(testFiles).exists();
-    	
-    	String path = testFiles.getAbsolutePath();
-    	processAsString = processAsString.replaceAll("@@PATH@@", path);
-    	
-    	Resource resource = ResourceFactory.newReaderResource(new StringReader(processAsString));
-    	resource.setSourcePath(processResource.getSourcePath());
-    	resource.setTargetPath(processResource.getTargetPath());
 
-    	kruntime = createKogitoProcessRuntime(resource);
+        String path = testFiles.getAbsolutePath();
+        processAsString = processAsString.replaceAll("@@PATH@@", path);
+
+        Resource resource = ResourceFactory.newReaderResource(new StringReader(processAsString));
+        resource.setSourcePath(processResource.getSourcePath());
+        resource.setTargetPath(processResource.getTargetPath());
+
+        kruntime = createKogitoProcessRuntime(resource);
         KogitoProcessInstance processInstance = kruntime.startProcess("async-examples.bp1");
-        
+
         String var1 = getProcessVarValue(processInstance, "testScript1");
         String var2 = getProcessVarValue(processInstance, "testScript2");
 
@@ -845,15 +846,15 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         SignallingTaskHandlerDecorator signallingTaskWrapper = new SignallingTaskHandlerDecorator(ServiceTaskHandler.class, eventType);
         signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
         kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
-       
-        Object [] caughtEventObjectHolder = new Object[1];
+
+        Object[] caughtEventObjectHolder = new Object[1];
         caughtEventObjectHolder[0] = null;
         ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
-        
+
         // Start process
         Map<String, Object> params = new HashMap<>();
         String input = "this is my service input";
-        params.put("serviceInputItem", input );
+        params.put("serviceInputItem", input);
         KogitoProcessInstance processInstance = kruntime.startProcess("ServiceProcess", params);
 
         // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
@@ -866,11 +867,11 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         // Complete process
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE).withFailMessage("Process instance is not active.");
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        
+
         processInstance = kruntime.getProcessInstance(processInstance.getStringId());
-        if( processInstance != null ) {
+        if (processInstance != null) {
             assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED).withFailMessage("Process instance is not completed.");
         } // otherwise, persistence use => processInstance == null => process is completed
     }
-    
+
 }

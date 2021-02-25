@@ -52,7 +52,8 @@ public class EventImplTest {
 
         private String dummyField;
 
-        public DummyEvent() {}
+        public DummyEvent() {
+        }
 
         public DummyEvent(String dummyField) {
             this.dummyField = dummyField;
@@ -65,7 +66,6 @@ public class EventImplTest {
 
     private static class DummyModel implements Model {
         private DummyEvent dummyEvent;
-
 
         @Override
         public void fromMap(Map<String, Object> params) {
@@ -89,16 +89,16 @@ public class EventImplTest {
 
     private static class DummyCloudEvent extends AbstractProcessDataEvent<DummyEvent> {
 
-        public DummyCloudEvent() {}
+        public DummyCloudEvent() {
+        }
 
-        public DummyCloudEvent (DummyEvent dummyEvent) {
+        public DummyCloudEvent(DummyEvent dummyEvent) {
             super("", dummyEvent, "1", null, null, null, null, null, null);
         }
     }
 
     private static EventConsumerFactory factory;
     private static EventMarshaller marshaller;
-
 
     @BeforeAll
     static void init() {
@@ -116,7 +116,7 @@ public class EventImplTest {
 
         application = mock(Application.class);
         when(application.unitOfWorkManager())
-            .thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+                .thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
         process = mock(Process.class);
         processInstances = mock(ProcessInstances.class);
@@ -128,20 +128,19 @@ public class EventImplTest {
 
     }
 
-
     @Test
     void testSigCloudEvent() {
         EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.of(true));
         final String trigger = "dummyTopic";
         final String payload = "{ \"specversion\": \"0.3\"," +
-                               "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
-                               "\"source\": \"\"," +
-                               "\"type\": \"dummyTopic\"," +
-                               "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
-                               "\"kogitoReferenceId\": \"1\"," +
-                               "\"kogitoProcessinstanceId\": \"1\"," +
-                               "\"data\": {\"dummyField\" : \"pepe\"}}";
-        
+                "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
+                "\"source\": \"\"," +
+                "\"type\": \"dummyTopic\"," +
+                "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
+                "\"kogitoReferenceId\": \"1\"," +
+                "\"kogitoProcessinstanceId\": \"1\"," +
+                "\"data\": {\"dummyField\" : \"pepe\"}}";
+
         consumer.consume(application, process, payload, trigger);
         ArgumentCaptor<Signal> signal = ArgumentCaptor.forClass(Signal.class);
         verify(processInstance, times(1)).send(signal.capture());
@@ -156,12 +155,12 @@ public class EventImplTest {
                 factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.empty());
         final String trigger = "dummyTopic";
         final String payload = "{ \"specversion\": \"0.3\"," +
-                               "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
-                               "\"source\": \"\"," +
-                               "\"type\": \"dummyTopic\"," +
-                               "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
-                               "\"kogitoProcessinstanceId\": \"1\"," +
-                               "\"data\": {\"dummyField\" : \"pepe\"}}";
+                "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
+                "\"source\": \"\"," +
+                "\"type\": \"dummyTopic\"," +
+                "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
+                "\"kogitoProcessinstanceId\": \"1\"," +
+                "\"data\": {\"dummyField\" : \"pepe\"}}";
 
         consumer.consume(application, process, payload, trigger);
         verify(processInstance, times(1)).start(trigger, "1");
@@ -181,8 +180,8 @@ public class EventImplTest {
     void testDataMarshaller() {
         DummyEvent dataEvent = new DummyEvent("pepe");
         assertEquals(
-            "{\"dummyField\":\"pepe\"}",
-            marshaller.marshall(dataEvent, DummyCloudEvent::new, Optional.of(false)));
+                "{\"dummyField\":\"pepe\"}",
+                marshaller.marshall(dataEvent, DummyCloudEvent::new, Optional.of(false)));
     }
 
     @Test

@@ -30,28 +30,28 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class MockNodeInstance extends NodeInstanceImpl {
-    
+
     private static final long serialVersionUID = 510l;
 
     private Map<String, List<NodeInstance>> triggers = new HashMap<String, List<NodeInstance>>();
     private MockNode mockNode;
-    
+
     public MockNodeInstance(MockNode mockNode) {
         this.mockNode = mockNode;
     }
-    
+
     public org.kie.api.definition.process.Node getNode() {
         return mockNode;
     }
-    
+
     public MockNode getMockNode() {
         return mockNode;
     }
-    
-    public void internalTrigger( KogitoNodeInstance from, String type) {
+
+    public void internalTrigger(KogitoNodeInstance from, String type) {
         if (type == null) {
             throw new IllegalArgumentException(
-                "Trigger type is null!");
+                    "Trigger type is null!");
         }
         triggerTime = new Date();
         List<NodeInstance> list = triggers.get(type);
@@ -61,24 +61,24 @@ public class MockNodeInstance extends NodeInstanceImpl {
         }
         list.add(from);
     }
-    
+
     public Map<String, List<NodeInstance>> getTriggers() {
         return triggers;
-    }      
-    
+    }
+
     public int hashCode() {
         return (int) getNodeId();
     }
-    
+
     public boolean equals(Object object) {
-        if ( object == null || (!( object instanceof MockNodeInstance ) )) {
+        if (object == null || (!(object instanceof MockNodeInstance))) {
             return false;
         }
-        MockNodeInstance other = ( MockNodeInstance ) object;
+        MockNodeInstance other = (MockNodeInstance) object;
         return getNodeId() == other.getNodeId();
-    }        
-    
+    }
+
     public void triggerCompleted() {
-        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
     }
 }

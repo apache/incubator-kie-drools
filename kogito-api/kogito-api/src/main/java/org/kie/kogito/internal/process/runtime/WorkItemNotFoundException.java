@@ -25,7 +25,7 @@ public class WorkItemNotFoundException extends RuntimeException {
     }
 
     public WorkItemNotFoundException(String message,
-                                     String workItemId) {
+            String workItemId) {
         super(message);
         this.workItemId = workItemId;
     }

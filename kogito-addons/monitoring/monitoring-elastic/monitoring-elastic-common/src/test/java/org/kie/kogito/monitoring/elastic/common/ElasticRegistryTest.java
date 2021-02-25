@@ -20,9 +20,10 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import io.micrometer.elastic.ElasticConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import io.micrometer.elastic.ElasticConfig;
 
 public class ElasticRegistryTest {
 

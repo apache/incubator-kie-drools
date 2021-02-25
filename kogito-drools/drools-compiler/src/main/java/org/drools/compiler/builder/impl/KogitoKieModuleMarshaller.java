@@ -26,6 +26,21 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.drools.compiler.kproject.models.ChannelModelImpl;
+import org.drools.compiler.kproject.models.FileLoggerModelImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.kproject.models.ListenerModelImpl;
+import org.drools.compiler.kproject.models.QualifierModelImpl;
+import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
+import org.drools.compiler.kproject.models.WorkItemHandlerModelImpl;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.IoUtils;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.xml.sax.SAXException;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -44,20 +59,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.security.AnyTypePermission;
-import org.drools.compiler.kproject.models.ChannelModelImpl;
-import org.drools.compiler.kproject.models.FileLoggerModelImpl;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.drools.compiler.kproject.models.ListenerModelImpl;
-import org.drools.compiler.kproject.models.QualifierModelImpl;
-import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
-import org.drools.compiler.kproject.models.WorkItemHandlerModelImpl;
-import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.IoUtils;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.xml.sax.SAXException;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
@@ -106,7 +107,7 @@ public class KogitoKieModuleMarshaller {
         xStream.setClassLoader(KieModuleModelImpl.class.getClassLoader());
     }
 
-    public String toXML( KieModuleModel kieProject) {
+    public String toXML(KieModuleModel kieProject) {
         return xStream.toXML(kieProject);
     }
 
@@ -121,23 +122,23 @@ public class KogitoKieModuleMarshaller {
         try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
             return (KieModuleModel) xStream.fromXML(input);
         } catch (IOException ex) {
-            throw new RuntimeException( "Unable to load KieModuleModel", ex );
+            throw new RuntimeException("Unable to load KieModuleModel", ex);
         }
     }
 
     public KieModuleModel fromXML(java.io.File kModuleFile) {
         KieModuleValidator.validate(kModuleFile);
-        return (KieModuleModel)xStream.fromXML(kModuleFile);
+        return (KieModuleModel) xStream.fromXML(kModuleFile);
     }
 
     public KieModuleModel fromXML(URL kModuleUrl) {
         KieModuleValidator.validate(kModuleUrl);
-        return (KieModuleModel)xStream.fromXML(kModuleUrl);
+        return (KieModuleModel) xStream.fromXML(kModuleUrl);
     }
 
     public KieModuleModel fromXML(String kModuleString) {
         KieModuleValidator.validate(kModuleString);
-        return (KieModuleModel)xStream.fromXML(kModuleString);
+        return (KieModuleModel) xStream.fromXML(kModuleString);
     }
 
     public static class KieModuleConverter extends AbstractXStreamConverter {
@@ -146,25 +147,25 @@ public class KogitoKieModuleMarshaller {
             super(KieModuleModelImpl.class);
         }
 
-        public void marshal( Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            org.drools.compiler.builder.impl.KogitoKieModuleModelImpl kModule = ( org.drools.compiler.builder.impl.KogitoKieModuleModelImpl ) value;
+        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+            org.drools.compiler.builder.impl.KogitoKieModuleModelImpl kModule = (org.drools.compiler.builder.impl.KogitoKieModuleModelImpl) value;
             writePropertyMap(writer, context, "configuration", kModule.getConfProps());
-            for ( KieBaseModel kBaseModule : kModule.getKieBaseModels().values() ) {
-                writeObject( writer, context, "kbase", kBaseModule);
+            for (KieBaseModel kBaseModule : kModule.getKieBaseModels().values()) {
+                writeObject(writer, context, "kbase", kBaseModule);
             }
         }
 
-        public Object unmarshal( HierarchicalStreamReader reader, final UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final org.drools.compiler.builder.impl.KogitoKieModuleModelImpl kModule = new org.drools.compiler.builder.impl.KogitoKieModuleModelImpl();
 
             readNodes(reader, new NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {
                     if ("kbase".equals(name)) {
-                        KieBaseModelImpl kBaseModule = readObject( reader, context, KieBaseModelImpl.class );
-                        kModule.getRawKieBaseModels().put( kBaseModule.getName(), kBaseModule );
+                        KieBaseModelImpl kBaseModule = readObject(reader, context, KieBaseModelImpl.class);
+                        kModule.getRawKieBaseModels().put(kBaseModule.getName(), kBaseModule);
                         kBaseModule.setKModule(kModule);
                     } else if ("configuration".equals(name)) {
-                        kModule.setConfProps( readPropertyMap(reader, context) );
+                        kModule.setConfProps(readPropertyMap(reader, context));
                     }
                 }
             });
@@ -181,8 +182,8 @@ public class KogitoKieModuleMarshaller {
             try {
                 URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/kmodule.xsd");
                 return factory.newSchema(url);
-            } catch (SAXException ex ) {
-                throw new RuntimeException( "Unable to load XSD", ex );
+            } catch (SAXException ex) {
+                throw new RuntimeException("Unable to load XSD", ex);
             }
         }
 
@@ -191,8 +192,8 @@ public class KogitoKieModuleMarshaller {
             try {
                 URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/old-kmodule.xsd");
                 return factory.newSchema(url);
-            } catch (SAXException ex ) {
-                throw new RuntimeException( "Unable to load old XSD", ex );
+            } catch (SAXException ex) {
+                throw new RuntimeException("Unable to load old XSD", ex);
             }
         }
 
@@ -219,11 +220,11 @@ public class KogitoKieModuleMarshaller {
         }
 
         private static void validate(String kModuleString) {
-            byte[] bytes = kModuleString.getBytes( IoUtils.UTF8_CHARSET);
+            byte[] bytes = kModuleString.getBytes(IoUtils.UTF8_CHARSET);
             validate(bytes);
         }
 
-        private static void validate( Source source ) {
+        private static void validate(Source source) {
             try {
                 schema.newValidator().validate(source);
             } catch (Exception schemaException) {

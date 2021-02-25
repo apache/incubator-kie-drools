@@ -19,10 +19,11 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.quarkus.runtime.Startup;
-import io.quarkus.runtime.StartupEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.quarkus.runtime.Startup;
+import io.quarkus.runtime.StartupEvent;
 
 @Singleton
 @Startup

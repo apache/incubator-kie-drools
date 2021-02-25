@@ -28,43 +28,43 @@ public class StateBasedNode extends ExtendedNodeImpl {
 
     private static final long serialVersionUID = 510l;
 
-	private Map<Timer, DroolsAction> timers;
-	
-	private List<String> boundaryEvents;
-	
-	public Map<Timer, DroolsAction> getTimers() {
-		return timers;
-	}
-	
-	public void addTimer(Timer timer, DroolsAction action) {
-		if (timers == null) {
-			timers = new HashMap<Timer, DroolsAction>();
-		}
-		if (timer.getId() == 0) {
-			long id = 0;
-	        for (Timer t: timers.keySet()) {
-	            if (t.getId() > id) {
-	                id = t.getId();
-	            }
-	        }
-	        timer.setId(++id);
-		}
-		timers.put(timer, action);
-	}
-	
-	public void removeAllTimers() {
-		if (timers != null) {
-			timers.clear();
-		}
-	}
+    private Map<Timer, DroolsAction> timers;
 
-	public void addBoundaryEvents(String boundaryEvent) {
+    private List<String> boundaryEvents;
+
+    public Map<Timer, DroolsAction> getTimers() {
+        return timers;
+    }
+
+    public void addTimer(Timer timer, DroolsAction action) {
+        if (timers == null) {
+            timers = new HashMap<Timer, DroolsAction>();
+        }
+        if (timer.getId() == 0) {
+            long id = 0;
+            for (Timer t : timers.keySet()) {
+                if (t.getId() > id) {
+                    id = t.getId();
+                }
+            }
+            timer.setId(++id);
+        }
+        timers.put(timer, action);
+    }
+
+    public void removeAllTimers() {
+        if (timers != null) {
+            timers.clear();
+        }
+    }
+
+    public void addBoundaryEvents(String boundaryEvent) {
         if (this.boundaryEvents == null) {
             this.boundaryEvents = new ArrayList<String>();
         }
-	    this.boundaryEvents.add(boundaryEvent);
+        this.boundaryEvents.add(boundaryEvent);
     }
-	
+
     public void setBoundaryEvents(List<String> boundaryEvents) {
         this.boundaryEvents = boundaryEvents;
     }
@@ -72,5 +72,5 @@ public class StateBasedNode extends ExtendedNodeImpl {
     public List<String> getBoundaryEvents() {
         return boundaryEvents;
     }
-	
+
 }

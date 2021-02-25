@@ -33,7 +33,7 @@ public final class RuleUnitConfig {
     public RuleUnitConfig(EventProcessingType eventProcessingType, ClockType clockType, Integer sessionPool) {
         this.eventProcessingType = Optional.ofNullable(eventProcessingType);
         this.clockType = Optional.ofNullable(clockType);
-        this.sessionPool = sessionPool == null? OptionalInt.empty() : OptionalInt.of(sessionPool);
+        this.sessionPool = sessionPool == null ? OptionalInt.empty() : OptionalInt.of(sessionPool);
     }
 
     public RuleUnitConfig(Optional<EventProcessingType> eventProcessingType, Optional<ClockType> clockType, OptionalInt sessionPool) {
@@ -63,7 +63,7 @@ public final class RuleUnitConfig {
     }
 
     public OptionalInt getDefaultedSessionPool() {
-        return sessionPool.isPresent() ? sessionPool :  Default.getSessionPool();
+        return sessionPool.isPresent() ? sessionPool : Default.getSessionPool();
     }
 
     /**

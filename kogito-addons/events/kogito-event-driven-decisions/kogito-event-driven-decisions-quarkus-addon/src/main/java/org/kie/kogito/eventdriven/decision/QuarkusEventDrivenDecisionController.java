@@ -18,11 +18,12 @@ package org.kie.kogito.eventdriven.decision;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import io.quarkus.runtime.Startup;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.event.CloudEventEmitter;
 import org.kie.kogito.event.CloudEventReceiver;
+
+import io.quarkus.runtime.Startup;
 
 @Startup
 public class QuarkusEventDrivenDecisionController extends EventDrivenDecisionController {

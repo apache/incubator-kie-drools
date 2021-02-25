@@ -34,9 +34,9 @@ public abstract class AbstractDecisionModels implements DecisionModels {
     private static Function<DecisionModel, DecisionModel> decisionModelTransformer = null;
 
     protected static void init(Function<String, KieRuntimeFactory> sKieRuntimeFactoryFunction,
-                               ExecutionIdSupplier executionIdSupplier,
-                               Function<DecisionModel, DecisionModel> decisionModelTransformerInit,
-                               Reader... readers) {
+            ExecutionIdSupplier executionIdSupplier,
+            Function<DecisionModel, DecisionModel> decisionModelTransformerInit,
+            Reader... readers) {
         dmnRuntime = DMNKogito.createGenericDMNRuntime(sKieRuntimeFactoryFunction, readers);
         execIdSupplier = executionIdSupplier;
         decisionModelTransformer = decisionModelTransformerInit;

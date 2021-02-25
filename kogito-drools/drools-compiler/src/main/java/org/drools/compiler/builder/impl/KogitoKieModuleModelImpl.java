@@ -39,7 +39,8 @@ public class KogitoKieModuleModelImpl implements KieModuleModel {
     private Map<String, String> confProps = new HashMap<String, String>();
     private Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
 
-    public KogitoKieModuleModelImpl() { }
+    public KogitoKieModuleModelImpl() {
+    }
 
     public KieModuleModel setConfigurationProperty(String key, String value) {
         confProps.put(key, value);
@@ -55,55 +56,65 @@ public class KogitoKieModuleModelImpl implements KieModuleModel {
     }
 
     public KieBaseModel newKieBaseModel() {
-        return newKieBaseModel( StringUtils.uuid() );
+        return newKieBaseModel(StringUtils.uuid());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.kie.kModule.KieProject#addKBase(org.kie.kModule.KieBaseModelImpl)
      */
     public KieBaseModel newKieBaseModel(String name) {
         KieBaseModel kbase = new KieBaseModelImpl(this, name);
         Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
-        newMap.putAll( this.kBases );        
-        newMap.put( kbase.getName(), kbase );
-        setKBases( newMap );   
-        
+        newMap.putAll(this.kBases);
+        newMap.put(kbase.getName(), kbase);
+        setKBases(newMap);
+
         return kbase;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
     public void removeKieBaseModel(String qName) {
         Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
-        newMap.putAll( this.kBases );
-        newMap.remove( qName );
-        setKBases( newMap );
-    }    
-    
-    /* (non-Javadoc)
+        newMap.putAll(this.kBases);
+        newMap.remove(qName);
+        setKBases(newMap);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
     public void moveKBase(String oldQName, String newQName) {
         Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
-        newMap.putAll( this.kBases );
-        KieBaseModel kieBaseModel = newMap.remove( oldQName );
-        newMap.put( newQName, kieBaseModel);
-        setKBases( newMap );
-    }        
+        newMap.putAll(this.kBases);
+        KieBaseModel kieBaseModel = newMap.remove(oldQName);
+        newMap.put(newQName, kieBaseModel);
+        setKBases(newMap);
+    }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.kie.kModule.KieProject#getKieBaseModels()
      */
     public Map<String, KieBaseModel> getKieBaseModels() {
-        return Collections.unmodifiableMap( kBases );
+        return Collections.unmodifiableMap(kBases);
     }
 
     public Map<String, KieBaseModel> getRawKieBaseModels() {
         return kBases;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.kie.kModule.KieProject#setKBases(java.util.Map)
      */
     private void setKBases(Map<String, KieBaseModel> kBases) {
@@ -119,11 +130,13 @@ public class KogitoKieModuleModelImpl implements KieModuleModel {
         return confProps;
     }
 
-    void setConfProps( Map<String, String> confProps ) {
+    void setConfProps(Map<String, String> confProps) {
         this.confProps = confProps;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.kie.kModule.KieProject#toString()
      */
     @Override
@@ -133,11 +146,11 @@ public class KogitoKieModuleModelImpl implements KieModuleModel {
 
     private static final String KMODULE_XSD =
             "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-            "         xmlns=\"http://www.drools.org/xsd/kmodule\""; // missed end >, so we can cater for />
+                    "         xmlns=\"http://www.drools.org/xsd/kmodule\""; // missed end >, so we can cater for />
 
     public String toXML() {
         String xml = MARSHALLER.toXML(this);
-        return KMODULE_XSD + xml.substring("<kmodule".length());  // missed end >, so we can cater for />
+        return KMODULE_XSD + xml.substring("<kmodule".length()); // missed end >, so we can cater for />
     }
 
     public static KieModuleModel fromXML(InputStream kModuleStream) {

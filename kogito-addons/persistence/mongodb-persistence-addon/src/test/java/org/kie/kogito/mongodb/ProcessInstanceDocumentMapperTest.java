@@ -18,13 +18,14 @@ package org.kie.kogito.mongodb;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.mongodb.marshalling.DocumentMarshallingException;
 import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
 import org.kie.kogito.mongodb.utils.ProcessInstanceDocumentMapper;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

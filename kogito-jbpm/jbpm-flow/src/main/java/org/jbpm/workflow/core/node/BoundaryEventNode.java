@@ -15,13 +15,14 @@
  */
 package org.jbpm.workflow.core.node;
 
-import org.jbpm.process.core.event.EventFilter;
 import java.util.function.Function;
+
+import org.jbpm.process.core.event.EventFilter;
 
 public class BoundaryEventNode extends EventNode {
 
     private static final long serialVersionUID = 3448981074702415561L;
-    
+
     private String attachedToNodeId;
 
     public String getAttachedToNodeId() {
@@ -38,8 +39,8 @@ public class BoundaryEventNode extends EventNode {
             return acceptsEvent(type, event);
         }
 
-        for( EventFilter filter : getEventFilters() ) {
-            if( filter.acceptsEvent(type, event, resolver) ) {
+        for (EventFilter filter : getEventFilters()) {
+            if (filter.acceptsEvent(type, event, resolver)) {
                 return true;
             }
         }

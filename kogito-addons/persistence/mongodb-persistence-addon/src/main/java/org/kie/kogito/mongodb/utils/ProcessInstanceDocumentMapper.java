@@ -20,15 +20,16 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.bson.Document;
+import org.jbpm.marshalling.impl.JBPMMessages;
+import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance;
+import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
+import org.kie.kogito.mongodb.marshalling.DocumentMarshallingException;
+import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.util.JsonFormat;
-import org.bson.Document;
-import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
-import org.jbpm.marshalling.impl.JBPMMessages;
-import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance;
-import org.kie.kogito.mongodb.marshalling.DocumentMarshallingException;
-import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
 
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.VALUE;

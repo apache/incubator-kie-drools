@@ -65,11 +65,11 @@ public class UserTaskInstanceEventBody {
     public String getTaskDescription() {
         return taskDescription;
     }
-    
+
     public String getTaskPriority() {
         return taskPriority;
     }
-    
+
     public String getReferenceName() {
         return referenceName;
     }
@@ -133,7 +133,7 @@ public class UserTaskInstanceEventBody {
     public String getRootProcessId() {
         return rootProcessId;
     }
-    
+
     public Map<String, String> metaData() {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(UT_ID_META_DATA, id);
@@ -147,8 +147,9 @@ public class UserTaskInstanceEventBody {
 
     @Override
     public String toString() {
-        return "UserTaskInstanceEventBody [id=" + id + ", taskName=" + taskName + ", taskDescription=" + taskDescription + ", startDate=" + startDate + ", completeDate=" + completeDate + ", state=" + state +
-               ", actualOwner=" + actualOwner + "]";
+        return "UserTaskInstanceEventBody [id=" + id + ", taskName=" + taskName + ", taskDescription=" + taskDescription + ", startDate=" + startDate + ", completeDate=" + completeDate + ", state="
+                + state +
+                ", actualOwner=" + actualOwner + "]";
     }
 
     public static Builder create() {
@@ -202,12 +203,12 @@ public class UserTaskInstanceEventBody {
             instance.taskDescription = taskDescription;
             return this;
         }
-        
+
         public Builder taskPriority(String taskPriority) {
             instance.taskPriority = taskPriority;
             return this;
         }
-        
+
         public Builder referenceName(String referenceName) {
             instance.referenceName = referenceName;
             return this;
@@ -271,22 +272,22 @@ public class UserTaskInstanceEventBody {
             instance.outputs = outputs;
             return this;
         }
-        
+
         public Builder processInstanceId(String processInstanceId) {
             instance.processInstanceId = processInstanceId;
             return this;
         }
-        
+
         public Builder rootProcessInstanceId(String rootProcessInstanceId) {
             instance.rootProcessInstanceId = rootProcessInstanceId;
             return this;
         }
-        
+
         public Builder processId(String processId) {
             instance.processId = processId;
             return this;
         }
-        
+
         public Builder rootProcessId(String rootProcessId) {
             instance.rootProcessId = rootProcessId;
             return this;

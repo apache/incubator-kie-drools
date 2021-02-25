@@ -18,16 +18,16 @@ package org.jbpm.compiler.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.List;
-import java.util.LinkedList;
-
 import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.xml.parsers.SAXParser;
 
-import org.kie.api.definition.process.Process;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.SemanticModules;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.api.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -37,16 +37,16 @@ import org.xml.sax.SAXParseException;
 public class XmlProcessReader {
     private ExtensibleXmlParser parser;
     private final MessageFormat message = new java.text.MessageFormat("Node Info: id:{0} name:{1} \n" +
-                                                                              "Parser message: {2}");
+            "Parser message: {2}");
 
     private final MessageFormat messageWithProcessInfo = new java.text.MessageFormat("Process Info: id:{0}, pkg:{1}, name:{2}, version:{3} \n" +
-                                                                              "Node Info: id:{4} name:{5} \n" +
-                                                                              "Parser message: {6}");
+            "Node Info: id:{4} name:{5} \n" +
+            "Parser message: {6}");
 
-    private List<Process>        processes;
+    private List<Process> processes;
 
     public XmlProcessReader(final SemanticModules modules, ClassLoader classLoader) {
-        this( modules, classLoader, null );
+        this(modules, classLoader, null);
     }
 
     public XmlProcessReader(final SemanticModules modules, ClassLoader classLoader, final SAXParser parser) {
@@ -57,38 +57,38 @@ public class XmlProcessReader {
             }
 
             public void warning(final SAXParseException x) {
-                logger.debug( buildPrintMessage( x ) );
+                logger.debug(buildPrintMessage(x));
             }
 
             public void error(final SAXParseException x) {
-                logger.debug( buildPrintMessage( x ) );
+                logger.debug(buildPrintMessage(x));
             }
 
             public void fatalError(final SAXParseException x) throws SAXParseException {
-                logger.debug( buildPrintMessage( x ) );
+                logger.debug(buildPrintMessage(x));
                 throw x;
             }
         };
 
-        if(parser != null) {
+        if (parser != null) {
             this.parser.setParser(parser);
         }
-        this.parser.setSemanticModules( modules );
-        this.parser.setData( new ProcessBuildData() );
-        this.parser.setClassLoader( classLoader );
+        this.parser.setSemanticModules(modules);
+        this.parser.setData(new ProcessBuildData());
+        this.parser.setClassLoader(classLoader);
     }
 
     /**
      * Read a <code>Process</code> from a <code>Reader</code>.
      *
      * @param reader
-     *            The reader containing the rule-set.
+     *        The reader containing the rule-set.
      *
      * @return The rule-set.
      */
     public List<Process> read(final Reader reader) throws SAXException,
-                                                 IOException {
-        this.processes = ((ProcessBuildData) this.parser.read( reader )).getProcesses();
+            IOException {
+        this.processes = ((ProcessBuildData) this.parser.read(reader)).getProcesses();
         return this.processes;
     }
 
@@ -96,13 +96,13 @@ public class XmlProcessReader {
      * Read a <code>Process</code> from an <code>InputStream</code>.
      *
      * @param inputStream
-     *            The input-stream containing the rule-set.
+     *        The input-stream containing the rule-set.
      *
      * @return The rule-set.
      */
     public List<Process> read(final InputStream inputStream) throws SAXException,
-                                                           IOException {
-        this.processes = ((ProcessBuildData) this.parser.read( inputStream )).getProcesses();
+            IOException {
+        this.processes = ((ProcessBuildData) this.parser.read(inputStream)).getProcesses();
         return this.processes;
     }
 
@@ -110,13 +110,13 @@ public class XmlProcessReader {
      * Read a <code>Process</code> from an <code>InputSource</code>.
      *
      * @param in
-     *            The rule-set input-source.
+     *        The rule-set input-source.
      *
      * @return The rule-set.
      */
     public List<Process> read(final InputSource in) throws SAXException,
-                                                  IOException {
-        this.processes = ((ProcessBuildData)this.parser.read( in )).getProcesses();
+            IOException {
+        this.processes = ((ProcessBuildData) this.parser.read(in)).getProcesses();
         return this.processes;
     }
 
@@ -127,25 +127,25 @@ public class XmlProcessReader {
     public List<Process> getProcess() {
         return this.processes;
     }
-    
+
     public ProcessBuildData getProcessBuildData() {
         return (ProcessBuildData) this.parser.getData();
     }
 
     protected String processParserMessage(LinkedList<Object> parents, Attributes attr, String errorMessage) {
-        String nodeId = (attr == null  || attr.getValue("id") == null) ? "" : attr.getValue("id");
-        String nodeName = (attr == null  || attr.getValue("name") == null) ? "" : attr.getValue("name");
+        String nodeId = (attr == null || attr.getValue("id") == null) ? "" : attr.getValue("id");
+        String nodeName = (attr == null || attr.getValue("name") == null) ? "" : attr.getValue("name");
 
-        for(Object parent : parents) {
-            if(parent != null && parent instanceof RuleFlowProcess) {
+        for (Object parent : parents) {
+            if (parent != null && parent instanceof RuleFlowProcess) {
                 RuleFlowProcess process = ((RuleFlowProcess) parent);
-                return messageWithProcessInfo.format(new Object[] {process.getId(),
+                return messageWithProcessInfo.format(new Object[] { process.getId(),
                         process.getPackageName(),
                         process.getName(),
-                        process.getVersion(), nodeId, nodeName, errorMessage});
+                        process.getVersion(), nodeId, nodeName, errorMessage });
             }
         }
 
-        return message.format(new Object[] {nodeId, nodeName, errorMessage});
+        return message.format(new Object[] { nodeId, nodeName, errorMessage });
     }
 }

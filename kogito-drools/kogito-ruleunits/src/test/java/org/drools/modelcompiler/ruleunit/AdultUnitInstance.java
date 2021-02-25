@@ -20,7 +20,7 @@ import org.kie.kogito.rules.units.AbstractRuleUnitInstance;
 
 public class AdultUnitInstance extends AbstractRuleUnitInstance<AdultUnit> {
 
-    public AdultUnitInstance( AdultUnit workingMemory, KieSession rt ) {
-        super( null, workingMemory, rt );
+    public AdultUnitInstance(AdultUnit workingMemory, KieSession rt) {
+        super(null, workingMemory, rt);
     }
 }

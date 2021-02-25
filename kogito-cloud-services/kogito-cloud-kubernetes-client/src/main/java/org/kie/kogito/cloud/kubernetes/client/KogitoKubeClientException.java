@@ -22,7 +22,8 @@ public class KogitoKubeClientException extends RuntimeException {
 
     private static final long serialVersionUID = 5121838037390778349L;
 
-    public KogitoKubeClientException() {}
+    public KogitoKubeClientException() {
+    }
 
     public KogitoKubeClientException(String message) {
         super(message);

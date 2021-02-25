@@ -19,11 +19,12 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 
 public class SystemMetricsCollector {
 
@@ -33,7 +34,7 @@ public class SystemMetricsCollector {
 
     private static final String ELAPSED_TIME_NAME = "api_execution_elapsed";
 
-    private static final double[] ELAPSED_TIME_PERCENTILES = new double[]{0.1, 0.25, 0.5, 0.75, 0.9, 0.99};
+    private static final double[] ELAPSED_TIME_PERCENTILES = new double[] { 0.1, 0.25, 0.5, 0.75, 0.9, 0.99 };
 
     private static final String ELAPSED_TIME_HELP = "Endpoint execution elapsed seconds, 3 minutes time window.";
 

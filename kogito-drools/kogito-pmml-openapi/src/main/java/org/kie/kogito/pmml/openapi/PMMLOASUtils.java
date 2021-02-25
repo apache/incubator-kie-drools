@@ -21,6 +21,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.models.Interval;
+import org.kie.pmml.api.models.MiningField;
+
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.fasterxml.jackson.databind.node.DecimalNode;
@@ -32,11 +37,8 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+
 import io.smallrye.openapi.runtime.io.JsonUtil;
-import org.kie.pmml.api.enums.DATA_TYPE;
-import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
-import org.kie.pmml.api.models.Interval;
-import org.kie.pmml.api.models.MiningField;
 
 import static org.kie.kogito.pmml.openapi.api.PMMLOASResult.BOOLEAN;
 import static org.kie.kogito.pmml.openapi.api.PMMLOASResult.DOUBLE;
@@ -124,8 +126,7 @@ public class PMMLOASUtils {
         }
     }
 
-    public static void addToSetNode(String fieldName, DATA_TYPE dataType, List<String> allowedValues, ObjectNode
-            setNode) {
+    public static void addToSetNode(String fieldName, DATA_TYPE dataType, List<String> allowedValues, ObjectNode setNode) {
         final ObjectNode propertiesNode = (ObjectNode) setNode.get(PROPERTIES);
         final ObjectNode typeFieldNode = JsonUtil.objectNode();
         String mappedType = getMappedType(dataType);

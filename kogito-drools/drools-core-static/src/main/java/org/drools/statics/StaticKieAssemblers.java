@@ -46,13 +46,13 @@ public class StaticKieAssemblers implements KieAssemblers {
         KieAssemblerService assembler = assemblers.get(type);
         if (assembler != null) {
             assembler.addResourceBeforeRules(knowledgeBuilder,
-                                             resource,
-                                             type,
-                                             configuration);
+                    resource,
+                    type,
+                    configuration);
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
-    
+
     }
 
     @Override

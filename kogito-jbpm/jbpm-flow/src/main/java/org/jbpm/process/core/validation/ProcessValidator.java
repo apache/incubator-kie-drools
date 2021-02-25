@@ -19,15 +19,15 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 
 /**
- * A validator for validating a RuleFlow process. 
+ * A validator for validating a RuleFlow process.
  * 
  */
 public interface ProcessValidator {
 
     ProcessValidationError[] validateProcess(Process process);
-    
+
     boolean accept(Process process, Resource resource);
-    
+
     boolean compilationSupported();
 
 }

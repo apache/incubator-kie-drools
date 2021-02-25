@@ -117,47 +117,47 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
      *
      * @param workingMemory
      */
-    public KogitoWorkingMemoryLogger( final WorkingMemory workingMemory) {
-        workingMemory.addEventListener( ( RuleRuntimeEventListener ) this );
-        workingMemory.addEventListener( ( AgendaEventListener ) this );
-        setProcessRuntimeEventListener( ( InternalWorkingMemory ) workingMemory );
-        workingMemory.addEventListener( ( KieBaseEventListener ) this );
+    public KogitoWorkingMemoryLogger(final WorkingMemory workingMemory) {
+        workingMemory.addEventListener((RuleRuntimeEventListener) this);
+        workingMemory.addEventListener((AgendaEventListener) this);
+        setProcessRuntimeEventListener((InternalWorkingMemory) workingMemory);
+        workingMemory.addEventListener((KieBaseEventListener) this);
     }
 
-    private void setProcessRuntimeEventListener( InternalWorkingMemory workingMemory ) {
+    private void setProcessRuntimeEventListener(InternalWorkingMemory workingMemory) {
         try {
             InternalProcessRuntime processRuntime = workingMemory.getProcessRuntime();
-            if ( processRuntime != null ) {
-                processRuntime.addEventListener( this );
+            if (processRuntime != null) {
+                processRuntime.addEventListener(this);
             }
         } catch (Exception e) {
             /* ignore */
         }
     }
 
-    public KogitoWorkingMemoryLogger( final KieRuntimeEventManager session) {
-        if (session instanceof StatefulKnowledgeSessionImpl ) {
-            StatefulKnowledgeSessionImpl statefulSession = (( StatefulKnowledgeSessionImpl ) session);
+    public KogitoWorkingMemoryLogger(final KieRuntimeEventManager session) {
+        if (session instanceof StatefulKnowledgeSessionImpl) {
+            StatefulKnowledgeSessionImpl statefulSession = ((StatefulKnowledgeSessionImpl) session);
             WorkingMemoryEventManager eventManager = statefulSession;
-            eventManager.addEventListener( ( RuleRuntimeEventListener ) this );
-            eventManager.addEventListener( ( AgendaEventListener ) this );
-            eventManager.addEventListener( ( KieBaseEventListener ) this );
-            setProcessRuntimeEventListener( ( InternalWorkingMemory ) session );
-        } else if (session instanceof StatelessKnowledgeSessionImpl ) {
-            StatelessKnowledgeSessionImpl statelessSession = (( StatelessKnowledgeSessionImpl ) session);
-            statelessSession.addEventListener(( RuleRuntimeEventListener ) this);
-            statelessSession.addEventListener( ( AgendaEventListener ) this );
-            statelessSession.getKnowledgeBase().addEventListener( ( KieBaseEventListener ) this );
-        } else if (session instanceof CommandBasedStatefulKnowledgeSession ) {
+            eventManager.addEventListener((RuleRuntimeEventListener) this);
+            eventManager.addEventListener((AgendaEventListener) this);
+            eventManager.addEventListener((KieBaseEventListener) this);
+            setProcessRuntimeEventListener((InternalWorkingMemory) session);
+        } else if (session instanceof StatelessKnowledgeSessionImpl) {
+            StatelessKnowledgeSessionImpl statelessSession = ((StatelessKnowledgeSessionImpl) session);
+            statelessSession.addEventListener((RuleRuntimeEventListener) this);
+            statelessSession.addEventListener((AgendaEventListener) this);
+            statelessSession.getKnowledgeBase().addEventListener((KieBaseEventListener) this);
+        } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             StatefulKnowledgeSessionImpl statefulSession =
-                    (( StatefulKnowledgeSessionImpl )(( RegistryContext )(( CommandBasedStatefulKnowledgeSession ) session).getRunner().createContext()).lookup( KieSession.class ));
+                    ((StatefulKnowledgeSessionImpl) ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) session).getRunner().createContext()).lookup(KieSession.class));
             InternalWorkingMemory eventManager = statefulSession;
-            eventManager.addEventListener( ( RuleRuntimeEventListener ) this );
-            eventManager.addEventListener( ( AgendaEventListener ) this );
+            eventManager.addEventListener((RuleRuntimeEventListener) this);
+            eventManager.addEventListener((AgendaEventListener) this);
             InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
-            eventManager.addEventListener( ( KieBaseEventListener ) this );
+            eventManager.addEventListener((KieBaseEventListener) this);
             if (processRuntime != null) {
-                processRuntime.addEventListener( this );
+                processRuntime.addEventListener(this);
             }
         } else {
             throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
@@ -165,11 +165,11 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {
-        filters = ( List<ILogEventFilter> ) in.readObject();
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        filters = (List<ILogEventFilter>) in.readObject();
     }
 
-    public void writeExternal( ObjectOutput out) throws IOException {
+    public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(filters);
     }
 
@@ -180,7 +180,7 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
      * 
      * @param logEvent
      */
-    public abstract void logEventCreated( LogEvent logEvent);
+    public abstract void logEventCreated(LogEvent logEvent);
 
     /**
      * This method is invoked every time a new log event is created.
@@ -189,15 +189,15 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
      * @param logEvent
      */
     private void filterLogEvent(final LogEvent logEvent) {
-        for ( ILogEventFilter filter: this.filters) {
+        for (ILogEventFilter filter : this.filters) {
             // do nothing if one of the filters doesn't accept the event
-            if ( !filter.acceptEvent( logEvent ) ) {
+            if (!filter.acceptEvent(logEvent)) {
                 return;
             }
         }
         // if all the filters accepted the event, signal the creation
         // of the event
-        logEventCreated( logEvent );
+        logEventCreated(logEvent);
     }
 
     /**
@@ -208,10 +208,10 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
      * @param filter The filter that should be added.
      */
     public void addFilter(final ILogEventFilter filter) {
-        if ( filter == null ) {
+        if (filter == null) {
             throw new NullPointerException();
         }
-        this.filters.add( filter );
+        this.filters.add(filter);
     }
 
     /**
@@ -222,7 +222,7 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
      * @param filter The filter that should be removed.
      */
     public void removeFilter(final ILogEventFilter filter) {
-        this.filters.remove( filter );
+        this.filters.remove(filter);
     }
 
     /**
@@ -236,117 +236,117 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
      * @see RuleRuntimeEventListener
      */
     public void objectInserted(final ObjectInsertedEvent event) {
-        filterLogEvent( new ObjectLogEvent( LogEvent.INSERTED,
-                                            (( InternalFactHandle ) event.getFactHandle()).getId(),
-                                            event.getObject().toString() ) );
+        filterLogEvent(new ObjectLogEvent(LogEvent.INSERTED,
+                ((InternalFactHandle) event.getFactHandle()).getId(),
+                event.getObject().toString()));
     }
 
     /**
      * @see RuleRuntimeEventListener
      */
     public void objectUpdated(final ObjectUpdatedEvent event) {
-        filterLogEvent( new ObjectLogEvent( LogEvent.UPDATED,
-                                            (( InternalFactHandle ) event.getFactHandle()).getId(),
-                                            event.getObject().toString() ) );
+        filterLogEvent(new ObjectLogEvent(LogEvent.UPDATED,
+                ((InternalFactHandle) event.getFactHandle()).getId(),
+                event.getObject().toString()));
     }
 
     /**
      * @see RuleRuntimeEventListener
      */
     public void objectDeleted(final ObjectDeletedEvent event) {
-        filterLogEvent( new ObjectLogEvent( LogEvent.RETRACTED,
-                                            (( InternalFactHandle ) event.getFactHandle()).getId(),
-                                            event.getOldObject().toString() ) );
+        filterLogEvent(new ObjectLogEvent(LogEvent.RETRACTED,
+                ((InternalFactHandle) event.getFactHandle()).getId(),
+                event.getOldObject().toString()));
     }
 
     /**
      * @see AgendaEventListener
      */
-    public void matchCreated( MatchCreatedEvent event) {
-        filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
-                                                getActivationId( event.getMatch() ),
-                                                event.getMatch().getRule().getName(),
-                                                extractDeclarations( event.getMatch() ),
-                                                (( RuleImpl )event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( ( Activation ) event.getMatch() ) ) );
+    public void matchCreated(MatchCreatedEvent event) {
+        filterLogEvent(new ActivationLogEvent(LogEvent.ACTIVATION_CREATED,
+                getActivationId(event.getMatch()),
+                event.getMatch().getRule().getName(),
+                extractDeclarations(event.getMatch()),
+                ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup(),
+                extractFactHandleIds((Activation) event.getMatch())));
     }
 
     /**
      * @see AgendaEventListener
      */
-    public void matchCancelled( MatchCancelledEvent event) {
-        filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
-                                                getActivationId( event.getMatch() ),
-                                                event.getMatch().getRule().getName(),
-                                                extractDeclarations( event.getMatch() ),
-                                                (( RuleImpl )event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( ( Activation ) event.getMatch() ) ) );
+    public void matchCancelled(MatchCancelledEvent event) {
+        filterLogEvent(new ActivationLogEvent(LogEvent.ACTIVATION_CANCELLED,
+                getActivationId(event.getMatch()),
+                event.getMatch().getRule().getName(),
+                extractDeclarations(event.getMatch()),
+                ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup(),
+                extractFactHandleIds((Activation) event.getMatch())));
     }
 
     /**
      * @see AgendaEventListener
      */
-    public void beforeMatchFired( BeforeMatchFiredEvent event) {
-        filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
-                                                getActivationId( event.getMatch() ),
-                                                event.getMatch().getRule().getName(),
-                                                extractDeclarations( event.getMatch() ),
-                                                (( RuleImpl )event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( ( Activation ) event.getMatch() ) ) );
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
+        filterLogEvent(new ActivationLogEvent(LogEvent.BEFORE_ACTIVATION_FIRE,
+                getActivationId(event.getMatch()),
+                event.getMatch().getRule().getName(),
+                extractDeclarations(event.getMatch()),
+                ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup(),
+                extractFactHandleIds((Activation) event.getMatch())));
     }
 
     /**
      * @see AgendaEventListener
      */
     public void afterMatchFired(final AfterMatchFiredEvent event) {
-        filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
-                                                getActivationId( event.getMatch() ),
-                                                event.getMatch().getRule().getName(),
-                                                extractDeclarations( event.getMatch() ),
-                                                (( RuleImpl )event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( ( Activation ) event.getMatch() ) ) );
+        filterLogEvent(new ActivationLogEvent(LogEvent.AFTER_ACTIVATION_FIRE,
+                getActivationId(event.getMatch()),
+                event.getMatch().getRule().getName(),
+                extractDeclarations(event.getMatch()),
+                ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup(),
+                extractFactHandleIds((Activation) event.getMatch())));
     }
 
     /**
      * Creates a string representation of the declarations of an activation.
      * This is a list of name-value-pairs for each of the declarations in the
-     * tuple of the activation.  The name is the identifier (=name) of the
+     * tuple of the activation. The name is the identifier (=name) of the
      * declaration, and the value is a toString of the value of the
      * parameter, followed by the id of the fact between parentheses.
      * 
      * @param match The match from which the declarations should be extracted
      * @return A String represetation of the declarations of the activation.
      */
-    private String extractDeclarations( Match match) {
+    private String extractDeclarations(Match match) {
         final StringBuilder result = new StringBuilder();
         List<String> declarations = match.getDeclarationIds();
-        Map<String, Declaration> declsMap = ( ( AgendaItem ) match ).getTerminalNode().getSubRule().getOuterDeclarations();
-        for ( int i = 0; i < declarations.size(); i++ ) {
+        Map<String, Declaration> declsMap = ((AgendaItem) match).getTerminalNode().getSubRule().getOuterDeclarations();
+        for (int i = 0; i < declarations.size(); i++) {
             String declaration = declarations.get(i);
 
             Declaration decl = declsMap.get(declaration);
-            InternalFactHandle handle = ( ( Tuple ) match ).get( decl );
+            InternalFactHandle handle = ((Tuple) match).get(decl);
             if (!handle.isValid()) {
                 continue;
             }
             Object value = decl.getValue(null, handle.getObject());
 
-            result.append( declaration );
-            result.append( "=" );
-            if ( value == null ) {
+            result.append(declaration);
+            result.append("=");
+            if (value == null) {
                 // this should never occur
-                result.append( "null" );
+                result.append("null");
             } else {
-                result.append( value );
+                result.append(value);
             }
-            if ( i < declarations.size() - 1 ) {
-                result.append( "; " );
+            if (i < declarations.size() - 1) {
+                result.append("; ");
             }
         }
         return result.toString();
     }
 
-    private String extractFactHandleIds( Activation activation) {
+    private String extractFactHandleIds(Activation activation) {
         InternalFactHandle activatingFact = activation.getPropagationContext().getFactHandle();
         StringBuilder sb = new StringBuilder();
         if (activatingFact != null) {
@@ -371,111 +371,111 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
 
     /**
      * Returns a String that can be used as unique identifier for an
-     * activation.  Since the activationId is the same for all assertions
+     * activation. Since the activationId is the same for all assertions
      * that are created during a single insert, update or retract, the
      * key of the tuple of the activation is added too (which is a set
-     * of fact handle ids). 
+     * of fact handle ids).
      * 
      * @param match The match for which a unique id should be generated
      * @return A unique id for the activation
      */
-    private static String getActivationId( Match match) {
-        final StringBuilder result = new StringBuilder( match.getRule().getName() );
+    private static String getActivationId(Match match) {
+        final StringBuilder result = new StringBuilder(match.getRule().getName());
         result.append(" [");
-        List< ? extends FactHandle> factHandles = match.getFactHandles();
-        for ( int i = 0; i < factHandles.size(); i++ ) {
-            result.append( (( InternalFactHandle ) factHandles.get(i)).getId() );
-            if ( i < factHandles.size() - 1 ) {
-                result.append( ", " );
+        List<? extends FactHandle> factHandles = match.getFactHandles();
+        for (int i = 0; i < factHandles.size(); i++) {
+            result.append(((InternalFactHandle) factHandles.get(i)).getId());
+            if (i < factHandles.size() - 1) {
+                result.append(", ");
             }
         }
-        return result.append( "]" ).toString();
+        return result.append("]").toString();
     }
-    
-    public void agendaGroupPopped( AgendaGroupPoppedEvent event) {
+
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
         // we don't audit this yet     
     }
 
-    public void agendaGroupPushed( AgendaGroupPushedEvent event) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
         // we don't audit this yet        
     }
-    
-    public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event) {
+
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
-                        LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED,
-                        event.getRuleFlowGroup().getName(),
-                        ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED,
+                event.getRuleFlowGroup().getName(),
+                ((org.drools.core.spi.RuleFlowGroup) event.getRuleFlowGroup()).size()));
     }
-    
-    public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event) {
+
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.AFTER_RULEFLOW_GROUP_ACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                ((org.drools.core.spi.RuleFlowGroup) event.getRuleFlowGroup()).size()));
     }
 
-    public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event) {
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.BEFORE_RULEFLOW_GROUP_DEACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
+                ((org.drools.core.spi.RuleFlowGroup) event.getRuleFlowGroup()).size()));
     }
-    
-    public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event) {
+
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         filterLogEvent(new RuleFlowGroupLogEvent(
                 LogEvent.AFTER_RULEFLOW_GROUP_DEACTIVATED,
                 event.getRuleFlowGroup().getName(),
-                ((org.drools.core.spi.RuleFlowGroup)event.getRuleFlowGroup()).size()));
-    }
-    
-    public void beforeProcessStarted( ProcessStartedEvent event) {
-        filterLogEvent( new KogitoRuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED, event.getProcessInstance() ) );
+                ((org.drools.core.spi.RuleFlowGroup) event.getRuleFlowGroup()).size()));
     }
 
-    public void afterProcessStarted( ProcessStartedEvent event) {
-        filterLogEvent(new KogitoRuleFlowLogEvent( LogEvent.AFTER_RULEFLOW_CREATED, event.getProcessInstance() ) );
+    public void beforeProcessStarted(ProcessStartedEvent event) {
+        filterLogEvent(new KogitoRuleFlowLogEvent(LogEvent.BEFORE_RULEFLOW_CREATED, event.getProcessInstance()));
     }
 
-    public void beforeProcessCompleted( ProcessCompletedEvent event) {
-        filterLogEvent( new KogitoRuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED, event.getProcessInstance() ) );
-    }
-    
-    public void afterProcessCompleted( ProcessCompletedEvent event) {
-        filterLogEvent(new KogitoRuleFlowLogEvent( LogEvent.AFTER_RULEFLOW_COMPLETED, event.getProcessInstance() ) );
+    public void afterProcessStarted(ProcessStartedEvent event) {
+        filterLogEvent(new KogitoRuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_CREATED, event.getProcessInstance()));
     }
 
-    public void beforeNodeTriggered( ProcessNodeTriggeredEvent event) {
-        filterLogEvent(new KogitoRuleFlowNodeLogEvent( LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED,
+    public void beforeProcessCompleted(ProcessCompletedEvent event) {
+        filterLogEvent(new KogitoRuleFlowLogEvent(LogEvent.BEFORE_RULEFLOW_COMPLETED, event.getProcessInstance()));
+    }
+
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        filterLogEvent(new KogitoRuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED, event.getProcessInstance()));
+    }
+
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        filterLogEvent(new KogitoRuleFlowNodeLogEvent(LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED,
                 createNodeId(event.getNodeInstance()),
                 event.getNodeInstance().getNodeName(),
                 createNodeInstanceId(event.getNodeInstance()),
-                event.getProcessInstance()) );
+                event.getProcessInstance()));
     }
 
-    public void afterNodeTriggered( ProcessNodeTriggeredEvent event) {
-        filterLogEvent(new KogitoRuleFlowNodeLogEvent( LogEvent.AFTER_RULEFLOW_NODE_TRIGGERED,
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+        filterLogEvent(new KogitoRuleFlowNodeLogEvent(LogEvent.AFTER_RULEFLOW_NODE_TRIGGERED,
                 createNodeId(event.getNodeInstance()),
                 event.getNodeInstance().getNodeName(),
                 createNodeInstanceId(event.getNodeInstance()),
-                event.getProcessInstance()) );
+                event.getProcessInstance()));
     }
-    
-    private String createNodeId( NodeInstance nodeInstance) {
+
+    private String createNodeId(NodeInstance nodeInstance) {
         Node node = nodeInstance.getNode();
         if (node == null) {
             return "";
         }
         Object uniqueIdObj = node.getMetaData().get("UniqueId");
         String nodeId;
-        if( uniqueIdObj == null ) { 
+        if (uniqueIdObj == null) {
             nodeId = "" + node.getId();
-        } else { 
-            nodeId = ( String ) uniqueIdObj;
+        } else {
+            nodeId = (String) uniqueIdObj;
         }
-        NodeContainer nodeContainer = (( KogitoNode )node).getParentContainer();
+        NodeContainer nodeContainer = ((KogitoNode) node).getParentContainer();
         while (nodeContainer != null) {
-            if (nodeContainer instanceof Node ) {
-                node = ( Node ) nodeContainer;
+            if (nodeContainer instanceof Node) {
+                node = (Node) nodeContainer;
                 nodeContainer = node.getNodeContainer();
                 // TODO fix this filter out hidden compositeNode inside ForEach node
                 if (!(nodeContainer.getClass().getName().endsWith("ForEachNode"))) {
@@ -488,13 +488,13 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
         return nodeId;
     }
 
-    private String createNodeInstanceId( NodeInstance nodeInstance) {
-        String nodeInstanceId = "" + (( KogitoNodeInstance ) nodeInstance).getStringId();
+    private String createNodeInstanceId(NodeInstance nodeInstance) {
+        String nodeInstanceId = "" + ((KogitoNodeInstance) nodeInstance).getStringId();
         NodeInstanceContainer nodeContainer = nodeInstance.getNodeInstanceContainer();
         while (nodeContainer != null) {
-            if (nodeContainer instanceof NodeInstance ) {
-                nodeInstance = ( NodeInstance ) nodeContainer;
-                nodeInstanceId = (( KogitoNodeInstance ) nodeInstance).getStringId() + ":" + nodeInstanceId;
+            if (nodeContainer instanceof NodeInstance) {
+                nodeInstance = (NodeInstance) nodeContainer;
+                nodeInstanceId = ((KogitoNodeInstance) nodeInstance).getStringId() + ":" + nodeInstanceId;
                 nodeContainer = nodeInstance.getNodeInstanceContainer();
             } else {
                 break;
@@ -503,20 +503,20 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
         return nodeInstanceId;
     }
 
-    public void beforeNodeLeft( ProcessNodeLeftEvent event) {
-        filterLogEvent(new KogitoRuleFlowNodeLogEvent( LogEvent.BEFORE_RULEFLOW_NODE_EXITED,
-            createNodeId(event.getNodeInstance()),
-            event.getNodeInstance().getNodeName(),
-            createNodeInstanceId(event.getNodeInstance()),
-            event.getProcessInstance()) );
+    public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+        filterLogEvent(new KogitoRuleFlowNodeLogEvent(LogEvent.BEFORE_RULEFLOW_NODE_EXITED,
+                createNodeId(event.getNodeInstance()),
+                event.getNodeInstance().getNodeName(),
+                createNodeInstanceId(event.getNodeInstance()),
+                event.getProcessInstance()));
     }
 
-    public void afterNodeLeft( ProcessNodeLeftEvent event) {
-        filterLogEvent(new KogitoRuleFlowNodeLogEvent( LogEvent.AFTER_RULEFLOW_NODE_EXITED,
-            createNodeId(event.getNodeInstance()),
-            event.getNodeInstance().getNodeName(),
-            createNodeInstanceId(event.getNodeInstance()),
-            event.getProcessInstance()) );
+    public void afterNodeLeft(ProcessNodeLeftEvent event) {
+        filterLogEvent(new KogitoRuleFlowNodeLogEvent(LogEvent.AFTER_RULEFLOW_NODE_EXITED,
+                createNodeId(event.getNodeInstance()),
+                event.getNodeInstance().getNodeName(),
+                createNodeInstanceId(event.getNodeInstance()),
+                event.getProcessInstance()));
     }
 
     public void beforeVariableChanged(ProcessVariableChangedEvent event) {
@@ -524,7 +524,7 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
                 event.getVariableId(),
                 event.getVariableInstanceId(),
                 event.getProcessInstance(),
-                event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
+                event.getNewValue() == null ? "null" : event.getNewValue().toString()));
     }
 
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
@@ -532,84 +532,84 @@ public abstract class KogitoWorkingMemoryLogger extends WorkingMemoryLogger {
                 event.getVariableId(),
                 event.getVariableInstanceId(),
                 event.getProcessInstance(),
-                event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
+                event.getNewValue() == null ? "null" : event.getNewValue().toString()));
     }
 
-    public void afterKiePackageAdded( AfterKiePackageAddedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
-                                              event.getKiePackage().getName(),
-                                              null ) );
+    public void afterKiePackageAdded(AfterKiePackageAddedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.AFTER_PACKAGE_ADDED,
+                event.getKiePackage().getName(),
+                null));
     }
 
-    public void afterKiePackageRemoved( AfterKiePackageRemovedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_REMOVED,
-                                              event.getKiePackage().getName(),
-                                              null ) );
+    public void afterKiePackageRemoved(AfterKiePackageRemovedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.AFTER_PACKAGE_REMOVED,
+                event.getKiePackage().getName(),
+                null));
     }
 
-    public void beforeKieBaseLocked( BeforeKieBaseLockedEvent event) {
+    public void beforeKieBaseLocked(BeforeKieBaseLockedEvent event) {
     }
 
-    public void afterKieBaseLocked( AfterKieBaseLockedEvent event) {
+    public void afterKieBaseLocked(AfterKieBaseLockedEvent event) {
     }
 
-    public void beforeKieBaseUnlocked( BeforeKieBaseUnlockedEvent event) {
+    public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
     }
 
-    public void afterKieBaseUnlocked( AfterKieBaseUnlockedEvent event) {
+    public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event) {
     }
 
-    public void afterRuleAdded( AfterRuleAddedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_ADDED,
-                                              event.getRule().getPackageName(),
-                                              event.getRule().getName() ) );
+    public void afterRuleAdded(AfterRuleAddedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.AFTER_RULE_ADDED,
+                event.getRule().getPackageName(),
+                event.getRule().getName()));
     }
 
-    public void afterRuleRemoved( AfterRuleRemovedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_REMOVED,
-                                              event.getRule().getPackageName(),
-                                              event.getRule().getName() ) );
+    public void afterRuleRemoved(AfterRuleRemovedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.AFTER_RULE_REMOVED,
+                event.getRule().getPackageName(),
+                event.getRule().getName()));
     }
 
-    public void beforeFunctionRemoved( BeforeFunctionRemovedEvent event) {
+    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
     }
 
-    public void beforeKiePackageAdded( BeforeKiePackageAddedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_ADDED,
-                                              event.getKiePackage().getName(),
-                                              null ) );
+    public void beforeKiePackageAdded(BeforeKiePackageAddedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.BEFORE_PACKAGE_ADDED,
+                event.getKiePackage().getName(),
+                null));
     }
 
-    public void beforeKiePackageRemoved( BeforeKiePackageRemovedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_REMOVED,
-                                              event.getKiePackage().getName(),
-                                              null ) );
+    public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.BEFORE_PACKAGE_REMOVED,
+                event.getKiePackage().getName(),
+                null));
     }
 
-    public void beforeRuleAdded( BeforeRuleAddedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_ADDED,
-                                              event.getRule().getPackageName(),
-                                              event.getRule().getName() ) );
+    public void beforeRuleAdded(BeforeRuleAddedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.BEFORE_RULE_ADDED,
+                event.getRule().getPackageName(),
+                event.getRule().getName()));
     }
 
-    public void beforeRuleRemoved( BeforeRuleRemovedEvent event) {
-        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_REMOVED,
-                                              event.getRule().getPackageName(),
-                                              event.getRule().getName() ) );
-    }
-    
-    public void afterFunctionRemoved( AfterFunctionRemovedEvent event) {
+    public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
+        filterLogEvent(new RuleBaseLogEvent(LogEvent.BEFORE_RULE_REMOVED,
+                event.getRule().getPackageName(),
+                event.getRule().getName()));
     }
 
-    public void beforeProcessAdded( BeforeProcessAddedEvent event) {
+    public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
     }
 
-    public void afterProcessAdded( AfterProcessAddedEvent event) {
+    public void beforeProcessAdded(BeforeProcessAddedEvent event) {
     }
 
-    public void beforeProcessRemoved( BeforeProcessRemovedEvent event) {
+    public void afterProcessAdded(AfterProcessAddedEvent event) {
     }
 
-    public void afterProcessRemoved( AfterProcessRemovedEvent event) {
+    public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
+    }
+
+    public void afterProcessRemoved(AfterProcessRemovedEvent event) {
     }
 }

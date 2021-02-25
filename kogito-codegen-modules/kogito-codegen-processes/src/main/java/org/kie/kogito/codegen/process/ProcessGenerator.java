@@ -23,6 +23,25 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import javax.lang.model.SourceVersion;
+
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.KieFunctions;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.Model;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.process.ProcessInstancesFactory;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.AbstractProcess;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -48,23 +67,6 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import javax.lang.model.SourceVersion;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.KieFunctions;
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.kogito.Model;
-import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.process.ProcessInstancesFactory;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.AbstractProcess;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
@@ -75,7 +77,7 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
  * @see org.kie.kogito.process.Process
  */
 public class ProcessGenerator {
-    
+
     private static final String BUSINESS_KEY = "businessKey";
     private static final String CREATE_MODEL = "createModel";
     private static final String APPLICATION = "app";
@@ -97,11 +99,11 @@ public class ProcessGenerator {
     private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
     public ProcessGenerator(KogitoBuildContext context,
-                            KogitoWorkflowProcess process,
-                            ProcessExecutableModelGenerator processGenerator,
-                            String typeName,
-                            String modelTypeName,
-                            String appCanonicalName) {
+            KogitoWorkflowProcess process,
+            ProcessExecutableModelGenerator processGenerator,
+            String typeName,
+            String modelTypeName,
+            String appCanonicalName) {
         this.context = context;
 
         this.appCanonicalName = appCanonicalName;
@@ -110,14 +112,14 @@ public class ProcessGenerator {
         this.process = process;
         this.processExecutable = processGenerator;
         this.typeName = typeName;
-        this.modelTypeName = modelTypeName;        
+        this.modelTypeName = modelTypeName;
         this.targetTypeName = typeName + "Process";
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.completePath = "src/main/java/" + generatedFilePath;
 
         if (!SourceVersion.isName(targetTypeName)) {
-            throw new IllegalArgumentException("Process id '" + typeName + "' is not valid");   
+            throw new IllegalArgumentException("Process id '" + typeName + "' is not valid");
         }
 
     }
@@ -131,7 +133,7 @@ public class ProcessGenerator {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(completePath, generate().getBytes( StandardCharsets.UTF_8 ));
+        srcMfs.write(completePath, generate().getBytes(StandardCharsets.UTF_8));
     }
 
     public String generate() {
@@ -164,10 +166,10 @@ public class ProcessGenerator {
                 .setType(processInstanceFQCN)
                 .addAnnotation(Override.class)
                 .setBody(new BlockStmt()
-                                 .addStatement(returnStmt));
+                        .addStatement(returnStmt));
         return methodDeclaration;
     }
-    
+
     private MethodDeclaration createInstanceWithBusinessKeyMethod(String processInstanceFQCN) {
         MethodDeclaration methodDeclaration = new MethodDeclaration();
 
@@ -188,7 +190,7 @@ public class ProcessGenerator {
                 .setBody(new BlockStmt().addStatement(returnStmt));
         return methodDeclaration;
     }
-    
+
     private MethodDeclaration createInstanceGenericMethod(String processInstanceFQCN) {
         MethodDeclaration methodDeclaration = new MethodDeclaration();
 
@@ -202,14 +204,14 @@ public class ProcessGenerator {
                 .setBody(new BlockStmt().addStatement(returnStmt));
         return methodDeclaration;
     }
-    
+
     private MethodDeclaration createInstanceGenericWithBusinessKeyMethod(String processInstanceFQCN) {
         MethodDeclaration methodDeclaration = new MethodDeclaration();
 
         ReturnStmt returnStmt = new ReturnStmt(
                 new MethodCallExpr(new ThisExpr(), "createInstance")
-                .addArgument(new NameExpr(BUSINESS_KEY))
-                .addArgument(new CastExpr(new ClassOrInterfaceType(null, modelTypeName), new NameExpr("value"))));
+                        .addArgument(new NameExpr(BUSINESS_KEY))
+                        .addArgument(new CastExpr(new ClassOrInterfaceType(null, modelTypeName), new NameExpr("value"))));
 
         methodDeclaration.setName("createInstance")
                 .addModifier(Modifier.Keyword.PUBLIC)
@@ -289,13 +291,13 @@ public class ProcessGenerator {
                 ClassOrInterfaceDeclaration clazz = listener.findFirst(ClassOrInterfaceDeclaration.class).get();
                 MethodCallExpr eventSupport = new MethodCallExpr(new NameExpr("services"), "getEventSupport");
                 MethodCallExpr registerListener = new MethodCallExpr(eventSupport, "addEventListener")
-                    .addArgument(
-                        new ObjectCreationExpr(
-                            null,
-                            new ClassOrInterfaceType(
-                                null,
-                                listener.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("") + "." +clazz.getName()),
-                            NodeList.nodeList()));
+                        .addArgument(
+                                new ObjectCreationExpr(
+                                        null,
+                                        new ClassOrInterfaceType(
+                                                null,
+                                                listener.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("") + "." + clazz.getName()),
+                                        NodeList.nodeList()));
 
                 body.addStatement(registerListener);
 
@@ -306,7 +308,7 @@ public class ProcessGenerator {
         }
         return Optional.empty();
     }
-    
+
     private Optional<MethodDeclaration> internalRegisterListeners(ProcessMetaData processMetaData) {
         if (!processMetaData.getSubProcesses().isEmpty()) {
             BlockStmt body = new BlockStmt();
@@ -314,11 +316,12 @@ public class ProcessGenerator {
                     .setModifiers(Modifier.Keyword.PROTECTED)
                     .setType(void.class)
                     .setName("registerListeners")
-                    .setBody(body);   
-            
+                    .setBody(body);
+
             for (Entry<String, String> subProcess : processMetaData.getSubProcesses().entrySet()) {
                 MethodCallExpr signalManager = new MethodCallExpr(new NameExpr("services"), "getSignalManager");
-                MethodCallExpr registerListener = new MethodCallExpr(signalManager, "addEventListener").addArgument(new StringLiteralExpr(subProcess.getValue())).addArgument(new NameExpr("completionEventListener"));
+                MethodCallExpr registerListener =
+                        new MethodCallExpr(signalManager, "addEventListener").addArgument(new StringLiteralExpr(subProcess.getValue())).addArgument(new NameExpr("completionEventListener"));
                 body.addStatement(registerListener);
             }
             return Optional.of(internalRegisterListeners);
@@ -337,8 +340,8 @@ public class ProcessGenerator {
 
     public ClassOrInterfaceDeclaration classDeclaration() {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
-            .setName(targetTypeName)
-            .setModifiers(Modifier.Keyword.PUBLIC);
+                .setName(targetTypeName)
+                .setModifiers(Modifier.Keyword.PUBLIC);
         ProcessMetaData processMetaData = processExecutable.generate();
         ConstructorDeclaration constructor = getConstructorDeclaration().addParameter(appCanonicalName, APPLICATION);
 
@@ -351,11 +354,11 @@ public class ProcessGenerator {
             constructor.addParameter(ProcessInstancesFactory.class.getCanonicalName(), FACTORY);
             superMethod.addArgument(new NameExpr(FACTORY));
         }
-        
+
         constructor.setBody(new BlockStmt()
-                                    .addStatement(superMethod)
-                                    .addStatement(new MethodCallExpr("activate")));
-        
+                .addStatement(superMethod)
+                .addStatement(new MethodCallExpr("activate")));
+
         if (context.hasDI()) {
             context.getDependencyInjectionAnnotator().withNamedApplicationComponent(cls, process.getId());
             context.getDependencyInjectionAnnotator().withEagerStartup(cls);
@@ -379,41 +382,42 @@ public class ProcessGenerator {
                 varName = Character.toLowerCase(varName.charAt(0)) + varName.substring(1);
                 ClassOrInterfaceDeclaration handlerClazz =
                         handler
-                            .getValue()
-                            .findFirst(ClassOrInterfaceDeclaration.class)
-                            .orElseThrow(
-                                         () -> new NoSuchElementException(
-                                             "Compilation unit doesn't contain a method declaration!"));
+                                .getValue()
+                                .findFirst(ClassOrInterfaceDeclaration.class)
+                                .orElseThrow(
+                                        () -> new NoSuchElementException(
+                                                "Compilation unit doesn't contain a method declaration!"));
                 String clazzName =
                         handler
-                            .getValue()
-                            .getPackageDeclaration()
-                            .map(pd -> pd.getName().toString() + '.' + handlerClazz.getName())
-                            .orElse(handlerClazz.getName().asString());
+                                .getValue()
+                                .getPackageDeclaration()
+                                .map(pd -> pd.getName().toString() + '.' + handlerClazz.getName())
+                                .orElse(handlerClazz.getName().asString());
 
                 ClassOrInterfaceType clazzNameType = parseClassOrInterfaceType(clazzName);
                 Parameter parameter = new Parameter(clazzNameType, varName);
                 if (context.hasDI()) {
                     context.getDependencyInjectionAnnotator().withApplicationComponent(handlerClazz);
                     context.getDependencyInjectionAnnotator()
-                        .withInjection(
-                                       handlerClazz
-                                           .getConstructors()
-                                           .stream()
-                                           .filter(c -> !c.getParameters().isEmpty())
-                                           .findFirst()
-                                           .orElseThrow(
-                                                        () -> new IllegalStateException(
+                            .withInjection(
+                                    handlerClazz
+                                            .getConstructors()
+                                            .stream()
+                                            .filter(c -> !c.getParameters().isEmpty())
+                                            .findFirst()
+                                            .orElseThrow(
+                                                    () -> new IllegalStateException(
                                                             "Cannot find a non empty constructor to annotate in handler class " +
-                                                                                        handlerClazz)),true);
+                                                                    handlerClazz)),
+                                    true);
                 }
-             
+
                 initMethodCall
-                    .addArgument(
-                                 new ObjectCreationExpr(
-                                     null,
-                                     clazzNameType,
-                                     NodeList.nodeList()));
+                        .addArgument(
+                                new ObjectCreationExpr(
+                                        null,
+                                        clazzNameType,
+                                        NodeList.nodeList()));
 
                 constructor.addParameter(parameter);
                 handlersCollection.addArgument(new NameExpr(varName));
@@ -427,34 +431,34 @@ public class ProcessGenerator {
                 .addMember(createInstanceMethod(processInstanceFQCN))
                 .addMember(createInstanceWithBusinessKeyMethod(processInstanceFQCN))
                 .addMember(new MethodDeclaration()
-                                   .addModifier(Keyword.PUBLIC)
-                                   .setName(CREATE_MODEL)
-                                   .setType(modelTypeName)
-                                   .addAnnotation(Override.class)
-                                   .setBody(new BlockStmt()
-                                                    .addStatement(new ReturnStmt(new ObjectCreationExpr(null,
-                                                                                                        new ClassOrInterfaceType(null, modelTypeName),
-                                                                                                        NodeList.nodeList())))))
+                        .addModifier(Keyword.PUBLIC)
+                        .setName(CREATE_MODEL)
+                        .setType(modelTypeName)
+                        .addAnnotation(Override.class)
+                        .setBody(new BlockStmt()
+                                .addStatement(new ReturnStmt(new ObjectCreationExpr(null,
+                                        new ClassOrInterfaceType(null, modelTypeName),
+                                        NodeList.nodeList())))))
                 .addMember(createInstanceGenericMethod(processInstanceFQCN))
                 .addMember(createInstanceGenericWithBusinessKeyMethod(processInstanceFQCN))
                 .addMember(createInstanceGenericWithWorkflowInstanceMethod(processInstanceFQCN))
                 .addMember(createReadOnlyInstanceGenericWithWorkflowInstanceMethod(processInstanceFQCN))
                 .addMember(process(processMetaData));
 
-
         internalConfigure(processMetaData).ifPresent(cls::addMember);
         internalRegisterListeners(processMetaData).ifPresent(cls::addMember);
 
         if (!processMetaData.getSubProcesses().isEmpty()) {
-            
+
             for (Entry<String, String> subProcess : processMetaData.getSubProcesses().entrySet()) {
-                FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();                    
+                FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();
 
                 String fieldName = "process" + subProcess.getKey();
-                ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.ucFirst(subProcess.getKey() + "Model"))));
+                ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()),
+                        NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.ucFirst(subProcess.getKey() + "Model"))));
                 if (context.hasDI()) {
                     subprocessFieldDeclaration
-                        .addVariable(new VariableDeclarator(modelType, fieldName));
+                            .addVariable(new VariableDeclarator(modelType, fieldName));
                     context.getDependencyInjectionAnnotator().withInjection(subprocessFieldDeclaration);
                 } else {
                     // app.get(org.kie.kogito.process.Processes.class).processById()
@@ -462,40 +466,39 @@ public class ProcessGenerator {
                             new MethodCallExpr(new NameExpr(APPLICATION), "get")
                                     .addArgument(new ClassExpr().setType(Processes.class.getCanonicalName())),
                             "processById").addArgument(new StringLiteralExpr(subProcess.getKey()));
-                    
+
                     subprocessFieldDeclaration.addVariable(new VariableDeclarator(modelType, fieldName));
                     constructor.getBody().addStatement(new AssignExpr(new FieldAccessExpr(new ThisExpr(), fieldName), new CastExpr(modelType, initSubProcessField), Operator.ASSIGN));
-                    
+
                 }
-                
+
                 cls.addMember(subprocessFieldDeclaration);
             }
         }
 
         if (!processMetaData.getTriggers().isEmpty()) {
-            
+
             for (TriggerMetaData trigger : processMetaData.getTriggers()) {
                 // add message produces as field
                 if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
                     String producerFieldType = packageName + "." + typeName + "MessageProducer_" + trigger.getOwnerId();
                     String producerFielName = "producer_" + trigger.getOwnerId();
-                    
+
                     FieldDeclaration producerFieldieldDeclaration = new FieldDeclaration()
                             .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, producerFieldType), producerFielName));
                     cls.addMember(producerFieldieldDeclaration);
-                    
+
                     if (context.hasDI()) {
                         context.getDependencyInjectionAnnotator().withInjection(producerFieldieldDeclaration);
                     } else {
-                        
+
                         AssignExpr assignExpr = new AssignExpr(
-                                                               new FieldAccessExpr(new ThisExpr(), producerFielName),
-                                                               new ObjectCreationExpr().setType(producerFieldType),
-                                                               AssignExpr.Operator.ASSIGN);
-                        
-                        
+                                new FieldAccessExpr(new ThisExpr(), producerFielName),
+                                new ObjectCreationExpr().setType(producerFieldType),
+                                AssignExpr.Operator.ASSIGN);
+
                         cls.getConstructors().forEach(c -> c.getBody().addStatement(assignExpr));
-                        
+
                     }
                 }
             }
@@ -506,8 +509,8 @@ public class ProcessGenerator {
 
     private ConstructorDeclaration getConstructorDeclaration() {
         return new ConstructorDeclaration()
-            .setName(targetTypeName)
-            .addModifier(Modifier.Keyword.PUBLIC);
+                .setName(targetTypeName)
+                .addModifier(Modifier.Keyword.PUBLIC);
     }
 
     public String generatedFilePath() {
@@ -517,11 +520,11 @@ public class ProcessGenerator {
     public boolean isPublic() {
         return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
     }
-    
+
     public String processId() {
         return process.getId();
     }
-    
+
     public List<CompilationUnit> getAdditionalClasses() {
         return additionalClasses;
     }

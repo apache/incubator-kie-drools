@@ -16,8 +16,8 @@
 package org.drools.core.common;
 
 public interface KogitoInternalAgenda
-    extends
-    InternalAgenda {
+        extends
+        InternalAgenda {
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId);
 
@@ -36,6 +36,6 @@ public interface KogitoInternalAgenda
      * in the given ruleflow group name
      */
     boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
-                                     String ruleName,
-                                     String processInstanceId);
+            String ruleName,
+            String processInstanceId);
 }

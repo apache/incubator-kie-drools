@@ -17,14 +17,15 @@ package org.kie.kogito.quarkus.decisions.hotreload;
 
 import java.util.function.Supplier;
 
-import io.quarkus.test.QuarkusDevModeTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import io.quarkus.test.QuarkusDevModeTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -36,7 +37,7 @@ public class SimpleModifyHotReloadTest {
     }
 
     private static final String PACKAGE = "org.kie.kogito.quarkus.decisions.hotreload";
-    private static final String RESOURCE_FILE_PATH = PACKAGE.replace( '.', '/' );
+    private static final String RESOURCE_FILE_PATH = PACKAGE.replace('.', '/');
     private static final String DMN_RESOURCE_FILE = RESOURCE_FILE_PATH + "/TrafficViolation.dmn";
 
     private static final String HTTP_TEST_PORT = "65535";
@@ -59,7 +60,7 @@ public class SimpleModifyHotReloadTest {
         executeTest("No");
 
         test.modifyResourceFile(DMN_RESOURCE_FILE, s -> s.replaceAll("if Total Points >= 20 then \"Yes\" else \"No\"",
-                                                                     "if Total Points >= 2 then \"Yes\" else \"No\""));
+                "if Total Points >= 2 then \"Yes\" else \"No\""));
 
         executeTest("Yes");
     }
@@ -81,7 +82,7 @@ public class SimpleModifyHotReloadTest {
                         "}")
                 .contentType(ContentType.JSON)
                 .when()
-        .post("/Traffic Violation")
+                .post("/Traffic Violation")
                 .then();
 
         response.statusCode(200)

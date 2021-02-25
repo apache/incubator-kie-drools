@@ -21,11 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 public @interface VariableInfo {
-   /**
-    * Variable tags assigned to given property of the model
-    */
-   String tags() default "";
+    /**
+     * Variable tags assigned to given property of the model
+     */
+    String tags() default "";
 
 }

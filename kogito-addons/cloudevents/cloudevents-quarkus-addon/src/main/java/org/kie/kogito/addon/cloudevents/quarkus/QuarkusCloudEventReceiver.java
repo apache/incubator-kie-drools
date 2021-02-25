@@ -21,10 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.smallrye.mutiny.Multi;
 import org.kie.kogito.event.CloudEventReceiver;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.reactivestreams.Publisher;
+
+import io.smallrye.mutiny.Multi;
 
 @ApplicationScoped
 public class QuarkusCloudEventReceiver implements CloudEventReceiver {

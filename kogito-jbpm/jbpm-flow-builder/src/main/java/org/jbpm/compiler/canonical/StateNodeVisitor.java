@@ -15,19 +15,20 @@
  */
 package org.jbpm.compiler.canonical;
 
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.utils.StringEscapeUtils;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.StateNodeFactory;
 import org.jbpm.workflow.core.node.StateNode;
 import org.kie.api.definition.process.Node;
 
-import java.util.Map;
-import java.util.stream.Stream;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.utils.StringEscapeUtils;
 
 import static org.jbpm.ruleflow.core.factory.StateNodeFactory.METHOD_CONSTRAINT;
 

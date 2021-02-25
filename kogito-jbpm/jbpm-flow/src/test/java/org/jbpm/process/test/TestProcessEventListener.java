@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 public class TestProcessEventListener implements ProcessEventListener {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     private List<String> eventHistory = new ArrayList<String>();
-    
+
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
         logAndAdd("bps");
@@ -84,11 +84,11 @@ public class TestProcessEventListener implements ProcessEventListener {
         logAndAdd("avc-" + event.getVariableId());
     }
 
-    public List<String> getEventHistory() { 
+    public List<String> getEventHistory() {
         return eventHistory;
     }
-    
-    private void logAndAdd(String event) { 
+
+    private void logAndAdd(String event) {
         logger.trace(event);
         eventHistory.add(event);
     }

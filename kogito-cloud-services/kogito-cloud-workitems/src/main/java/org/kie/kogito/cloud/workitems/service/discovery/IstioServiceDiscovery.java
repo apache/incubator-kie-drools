@@ -49,10 +49,10 @@ public class IstioServiceDiscovery extends BaseServiceDiscovery {
     @Override
     protected List<Map<String, Object>> query(String namespace, Map<String, String> labels) {
         return kubeClient.knativeService()
-                         .listNamespaced(namespace, labels)
-                         .asMapWalker()
-                         .mapToListMap(KEY_ITEMS)
-                         .asList();
+                .listNamespaced(namespace, labels)
+                .asMapWalker()
+                .mapToListMap(KEY_ITEMS)
+                .asList();
     }
 
     @Override

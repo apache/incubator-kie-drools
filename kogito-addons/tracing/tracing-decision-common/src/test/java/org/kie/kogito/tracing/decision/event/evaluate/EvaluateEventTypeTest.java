@@ -48,32 +48,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class EvaluateEventTypeTest {
 
-    private static final Map<EvaluateEventType, Pair<String, Class<?>>> CHECK_MAP = new HashMap<EvaluateEventType, Pair<String, Class<?>>>() {{
-        put(EvaluateEventType.BEFORE_EVALUATE_ALL, new Pair<>("beforeEvaluateAll", BeforeEvaluateAllEvent.class));
-        put(EvaluateEventType.AFTER_EVALUATE_ALL, new Pair<>("afterEvaluateAll", AfterEvaluateAllEvent.class));
-        put(EvaluateEventType.BEFORE_EVALUATE_BKM, new Pair<>("beforeEvaluateBKM", BeforeEvaluateBKMEvent.class));
-        put(EvaluateEventType.AFTER_EVALUATE_BKM, new Pair<>("afterEvaluateBKM", AfterEvaluateBKMEvent.class));
-        put(EvaluateEventType.BEFORE_EVALUATE_CONTEXT_ENTRY, new Pair<>("beforeEvaluateContextEntry", BeforeEvaluateContextEntryEvent.class));
-        put(EvaluateEventType.AFTER_EVALUATE_CONTEXT_ENTRY, new Pair<>("afterEvaluateContextEntry", AfterEvaluateContextEntryEvent.class));
-        put(EvaluateEventType.BEFORE_EVALUATE_DECISION, new Pair<>("beforeEvaluateDecision", BeforeEvaluateDecisionEvent.class));
-        put(EvaluateEventType.AFTER_EVALUATE_DECISION, new Pair<>("afterEvaluateDecision", AfterEvaluateDecisionEvent.class));
-        put(EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE, new Pair<>("beforeEvaluateDecisionService", BeforeEvaluateDecisionServiceEvent.class));
-        put(EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE, new Pair<>("afterEvaluateDecisionService", AfterEvaluateDecisionServiceEvent.class));
-        put(EvaluateEventType.BEFORE_EVALUATE_DECISION_TABLE, new Pair<>("beforeEvaluateDecisionTable", BeforeEvaluateDecisionTableEvent.class));
-        put(EvaluateEventType.AFTER_EVALUATE_DECISION_TABLE, new Pair<>("afterEvaluateDecisionTable", AfterEvaluateDecisionTableEvent.class));
-        put(EvaluateEventType.BEFORE_INVOKE_BKM, new Pair<>("beforeInvokeBKM", BeforeInvokeBKMEvent.class));
-        put(EvaluateEventType.AFTER_INVOKE_BKM, new Pair<>("afterInvokeBKM", AfterInvokeBKMEvent.class));
-    }};
+    private static final Map<EvaluateEventType, Pair<String, Class<?>>> CHECK_MAP = new HashMap<EvaluateEventType, Pair<String, Class<?>>>() {
+        {
+            put(EvaluateEventType.BEFORE_EVALUATE_ALL, new Pair<>("beforeEvaluateAll", BeforeEvaluateAllEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_ALL, new Pair<>("afterEvaluateAll", AfterEvaluateAllEvent.class));
+            put(EvaluateEventType.BEFORE_EVALUATE_BKM, new Pair<>("beforeEvaluateBKM", BeforeEvaluateBKMEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_BKM, new Pair<>("afterEvaluateBKM", AfterEvaluateBKMEvent.class));
+            put(EvaluateEventType.BEFORE_EVALUATE_CONTEXT_ENTRY, new Pair<>("beforeEvaluateContextEntry", BeforeEvaluateContextEntryEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_CONTEXT_ENTRY, new Pair<>("afterEvaluateContextEntry", AfterEvaluateContextEntryEvent.class));
+            put(EvaluateEventType.BEFORE_EVALUATE_DECISION, new Pair<>("beforeEvaluateDecision", BeforeEvaluateDecisionEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_DECISION, new Pair<>("afterEvaluateDecision", AfterEvaluateDecisionEvent.class));
+            put(EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE, new Pair<>("beforeEvaluateDecisionService", BeforeEvaluateDecisionServiceEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE, new Pair<>("afterEvaluateDecisionService", AfterEvaluateDecisionServiceEvent.class));
+            put(EvaluateEventType.BEFORE_EVALUATE_DECISION_TABLE, new Pair<>("beforeEvaluateDecisionTable", BeforeEvaluateDecisionTableEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_DECISION_TABLE, new Pair<>("afterEvaluateDecisionTable", AfterEvaluateDecisionTableEvent.class));
+            put(EvaluateEventType.BEFORE_INVOKE_BKM, new Pair<>("beforeInvokeBKM", BeforeInvokeBKMEvent.class));
+            put(EvaluateEventType.AFTER_INVOKE_BKM, new Pair<>("afterInvokeBKM", AfterInvokeBKMEvent.class));
+        }
+    };
     private static final Class<DMNRuntimeEventListener> LISTENER_CLASS = DMNRuntimeEventListener.class;
 
     @Test
     void testExistingEvents() {
-        CHECK_MAP.forEach((type, checkPair) ->
-                assertDoesNotThrow(
-                        () -> LISTENER_CLASS.getDeclaredMethod(checkPair.getLeft(), checkPair.getRight()),
-                        () -> String.format("Listener method \"%s(%s)\" not found for EvaluateEventType.%s", checkPair.getLeft(), checkPair.getRight().getSimpleName(), type)
-                )
-        );
+        CHECK_MAP.forEach((type, checkPair) -> assertDoesNotThrow(
+                () -> LISTENER_CLASS.getDeclaredMethod(checkPair.getLeft(), checkPair.getRight()),
+                () -> String.format("Listener method \"%s(%s)\" not found for EvaluateEventType.%s", checkPair.getLeft(), checkPair.getRight().getSimpleName(), type)));
     }
 
     @Test
@@ -84,8 +83,7 @@ class EvaluateEventTypeTest {
                     .findAny();
             assertTrue(
                     optEntry.isPresent(),
-                    () -> String.format("No EvaluateEventType for listener method \"%s\"", listenerMethod.getName())
-            );
+                    () -> String.format("No EvaluateEventType for listener method \"%s\"", listenerMethod.getName()));
         }
     }
 

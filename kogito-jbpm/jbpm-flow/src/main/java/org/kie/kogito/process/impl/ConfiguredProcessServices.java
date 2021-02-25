@@ -22,10 +22,10 @@ public class ConfiguredProcessServices extends AbstractProcessRuntimeServiceProv
 
     public ConfiguredProcessServices(ProcessConfig config) {
         super(config.jobsService(),
-              config.workItemHandlers(),
-              config.processEventListeners(),
-              config.signalManagerHub(),
-              config.unitOfWorkManager());
+                config.workItemHandlers(),
+                config.processEventListeners(),
+                config.signalManagerHub(),
+                config.unitOfWorkManager());
 
     }
 }

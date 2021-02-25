@@ -22,20 +22,20 @@ import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class WorkItemResolverFactory extends ImmutableDefaultFactory {
 
-	private static final long serialVersionUID = 510l;
-	
-	private WorkItem workItem;
-	
-	public WorkItemResolverFactory(WorkItem workItem) {
-		this.workItem = workItem;
-	}
+    private static final long serialVersionUID = 510l;
 
-	public boolean isResolveable(String name) {
-		return workItem.getResult(name) != null;
-	}
-	
-	public VariableResolver getVariableResolver(String name) {
-		return new SimpleValueResolver(workItem.getResult(name));
-	}
-	
+    private WorkItem workItem;
+
+    public WorkItemResolverFactory(WorkItem workItem) {
+        this.workItem = workItem;
+    }
+
+    public boolean isResolveable(String name) {
+        return workItem.getResult(name) != null;
+    }
+
+    public VariableResolver getVariableResolver(String name) {
+        return new SimpleValueResolver(workItem.getResult(name));
+    }
+
 }

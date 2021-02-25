@@ -26,15 +26,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.cloudevents.CloudEvent;
 import io.cloudevents.Extension;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CloudEventUtils {
 
@@ -160,8 +162,7 @@ public class CloudEventUtils {
 
         return URI.create(Optional.of(fullUrl)
                 .filter(s -> !s.isEmpty())
-                .orElse(UNKNOWN_SOURCE_URI_STRING)
-        );
+                .orElse(UNKNOWN_SOURCE_URI_STRING));
     }
 
     // This trick allows to inject a mocked ObjectMapper in the unit tests via Mockito#mockStatic

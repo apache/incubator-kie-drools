@@ -25,9 +25,12 @@ public class DummyEventListener implements KogitoEventListener {
     }
 
     @Override
-    public void signalEvent( String type, Object event ) { }
+    public void signalEvent(String type, Object event) {
+    }
 
     @Override
-    public String[] getEventTypes() { return null; }
+    public String[] getEventTypes() {
+        return null;
+    }
 
 }

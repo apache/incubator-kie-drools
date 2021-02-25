@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 
-import com.mongodb.MongoClientSettings;
 import org.bson.BsonBinaryReader;
 import org.bson.BsonBinaryWriter;
 import org.bson.BsonWriter;
@@ -34,6 +33,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.mongodb.codec.ProcessInstanceDocumentCodec;
 import org.kie.kogito.mongodb.codec.ProcessInstanceDocumentCodecProvider;
 import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
+
+import com.mongodb.MongoClientSettings;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;

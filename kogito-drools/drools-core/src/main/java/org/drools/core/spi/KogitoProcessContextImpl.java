@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 
 public class KogitoProcessContextImpl extends AbstractProcessContext implements KogitoProcessContext {
 
-    private static Logger logger = LoggerFactory.getLogger( KogitoProcessContextImpl.class );
+    private static Logger logger = LoggerFactory.getLogger(KogitoProcessContextImpl.class);
 
-    public KogitoProcessContextImpl( KieRuntime kruntime ) {
+    public KogitoProcessContextImpl(KieRuntime kruntime) {
         super(kruntime);
     }
 

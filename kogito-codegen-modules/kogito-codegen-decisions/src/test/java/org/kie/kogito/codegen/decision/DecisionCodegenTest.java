@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.CompilationUnit;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,6 +33,8 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.grafana.JGrafana;
+
+import com.github.javaparser.ast.CompilationUnit;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -51,13 +52,13 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(6);
         assertThat(fileNames(generatedFiles)).containsAll(Arrays.asList("decision/InputSet.java",
-                                                                        "decision/OutputSet.java",
-                                                                        "decision/TEmployee.java",
-                                                                        "decision/TAddress.java",
-                                                                        "decision/TPayroll.java",
-                                                                        "decision/VacationsResource.java",
-                                                                        "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
-        
+                "decision/OutputSet.java",
+                "decision/TEmployee.java",
+                "decision/TAddress.java",
+                "decision/TPayroll.java",
+                "decision/VacationsResource.java",
+                "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
+
         assertNotEmptySectionCompilationUnit(codeGenerator);
     }
 
@@ -69,9 +70,9 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
         assertThat(fileNames(generatedFiles)).containsAll(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
-                                                                        "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OutputSet.java",
-                                                                        "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java",
-                                                                        "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
+                "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OutputSet.java",
+                "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java",
+                "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
 
         assertNotEmptySectionCompilationUnit(codeGenerator);
     }
@@ -81,7 +82,8 @@ public class DecisionCodegenTest {
     public void givenADMNModelWhenMonitoringIsActiveThenGrafanaDashboardsAreGenerated(KogitoBuildContext.Builder contextBuilder) throws Exception {
         List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withMonitoring(true).withPrometheusMonitoring(true).build(), contextBuilder);
 
-        JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
+        JGrafana vacationOperationalDashboard =
+                JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
         assertEquals(6, vacationOperationalDashboard.getDashboard().panels.size());
         assertEquals(0, vacationOperationalDashboard.getDashboard().links.size());
@@ -97,7 +99,8 @@ public class DecisionCodegenTest {
     public void givenADMNModelWhenMonitoringAndTracingAreActiveThenTheGrafanaDashboardsContainsTheAuditUILink(KogitoBuildContext.Builder contextBuilder) throws Exception {
         List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withMonitoring(true).withPrometheusMonitoring(true).withTracing(true).build(), contextBuilder);
 
-        JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
+        JGrafana vacationOperationalDashboard =
+                JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
         assertEquals(1, vacationOperationalDashboard.getDashboard().links.size());
 
@@ -158,14 +161,14 @@ public class DecisionCodegenTest {
         // with PMML in the classpath
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(DecisionContainerGenerator.PMML_ABSTRACT_CLASS), emptyList()));
-        
+
         assertNotEmptySectionCompilationUnit("src/test/resources/decision/models/vacationDays", contextBuilder)
                 .contains(DecisionContainerGenerator.PMML_FUNCTION);
 
         // without PMML in the classpath
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(emptyList(), singleton(DecisionContainerGenerator.PMML_ABSTRACT_CLASS)));
-        
+
         assertNotEmptySectionCompilationUnit("src/test/resources/decision/models/vacationDays", contextBuilder)
                 .doesNotContain(DecisionContainerGenerator.PMML_FUNCTION);
     }
@@ -176,7 +179,7 @@ public class DecisionCodegenTest {
         builder.withApplicationProperties(properties);
         return builder;
     }
-    
+
     protected AbstractStringAssert<?> assertNotEmptySectionCompilationUnit(String sourcePath, KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen(sourcePath, contextBuilder);
         return assertNotEmptySectionCompilationUnit(codeGenerator);

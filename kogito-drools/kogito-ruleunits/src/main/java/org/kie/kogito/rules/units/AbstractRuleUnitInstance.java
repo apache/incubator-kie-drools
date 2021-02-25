@@ -34,11 +34,11 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
     private final RuleUnit<T> unit;
     private final KieSession runtime;
 
-    public AbstractRuleUnitInstance( RuleUnit<T> unit, T unitMemory, KieSession runtime ) {
+    public AbstractRuleUnitInstance(RuleUnit<T> unit, T unitMemory, KieSession runtime) {
         this.unit = unit;
         this.runtime = runtime;
         this.unitMemory = unitMemory;
-        bind( runtime, unitMemory );
+        bind(runtime, unitMemory);
     }
 
     @Override
@@ -54,14 +54,14 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
 
     @Override
     public <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query) {
-        return createRuleUnitQuery( query ).execute();
+        return createRuleUnitQuery(query).execute();
     }
 
-    protected <Q> RuleUnitQuery<Q> createRuleUnitQuery( Class<? extends RuleUnitQuery<Q>> query ) {
+    protected <Q> RuleUnitQuery<Q> createRuleUnitQuery(Class<? extends RuleUnitQuery<Q>> query) {
         try {
-            return query.getConstructor( RuleUnitInstance.class ).newInstance( this );
+            return query.getConstructor(RuleUnitInstance.class).newInstance(this);
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
     }
 
@@ -87,13 +87,13 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
                 v = f.get(workingMemory);
                 String dataSourceName = String.format(
                         "%s.%s", workingMemory.getClass().getCanonicalName(), f.getName());
-                if ( v instanceof DataSource ) {
-                    DataSource<?> o = ( DataSource<?> ) v;
+                if (v instanceof DataSource) {
+                    DataSource<?> o = (DataSource<?>) v;
                     EntryPoint ep = runtime.getEntryPoint(dataSourceName);
-                    o.subscribe(new EntryPointDataProcessor( ep ));
+                    o.subscribe(new EntryPointDataProcessor(ep));
                 }
                 try {
-                    runtime.setGlobal( dataSourceName, v );
+                    runtime.setGlobal(dataSourceName, v);
                 } catch (RuntimeException e) {
                     // ignore if the global doesn't exist
                 }

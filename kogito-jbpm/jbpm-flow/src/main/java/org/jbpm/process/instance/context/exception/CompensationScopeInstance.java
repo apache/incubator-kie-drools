@@ -40,42 +40,42 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
-public class CompensationScopeInstance extends ExceptionScopeInstance  {
+public class CompensationScopeInstance extends ExceptionScopeInstance {
 
     private static final long serialVersionUID = 510l;
 
     private Stack<NodeInstance> compensationInstances = new Stack<NodeInstance>();
-    
+
     public String getContextType() {
         return CompensationScope.COMPENSATION_SCOPE;
     }
-    
+
     public void addCompensationInstances(Collection<NodeInstance> generatedInstances) {
         this.compensationInstances.addAll(generatedInstances);
     }
 
     public void handleException(String activityRef, Object dunno) {
         assert activityRef != null : "It should not be possible for the compensation activity reference to be null here.";
-        
+
         CompensationScope compensationScope = (CompensationScope) getExceptionScope();
         // broadcast/general compensation in reverse order
-        if( activityRef.startsWith(IMPLICIT_COMPENSATION_PREFIX) ) { 
+        if (activityRef.startsWith(IMPLICIT_COMPENSATION_PREFIX)) {
             activityRef = activityRef.substring(IMPLICIT_COMPENSATION_PREFIX.length());
             assert activityRef.equals(compensationScope.getContextContainerId())
-            : "Compensation activity ref [" + activityRef + "] does not match" +
-            " Compensation Scope container id [" + compensationScope.getContextContainerId() + "]";
+                    : "Compensation activity ref [" + activityRef + "] does not match" +
+                            " Compensation Scope container id [" + compensationScope.getContextContainerId() + "]";
 
             Map<String, ExceptionHandler> handlers = compensationScope.getExceptionHandlers();
             List<String> completedNodeIds = ((WorkflowProcessInstanceImpl) getProcessInstance()).getCompletedNodeIds();
             ListIterator<String> iter = completedNodeIds.listIterator(completedNodeIds.size());
-            while( iter.hasPrevious() ) {
+            while (iter.hasPrevious()) {
                 String completedId = iter.previous();
                 ExceptionHandler handler = handlers.get(completedId);
-                if( handler != null ) { 
+                if (handler != null) {
                     handleException(handler, completedId, null);
                 }
             }
-        } else { 
+        } else {
             // Specific compensation 
             ExceptionHandler handler = compensationScope.getExceptionHandler(activityRef);
             if (handler == null) {
@@ -85,12 +85,12 @@ public class CompensationScopeInstance extends ExceptionScopeInstance  {
         }
 
         // Cancel all node instances created for compensation
-        while( ! compensationInstances.isEmpty() ) { 
+        while (!compensationInstances.isEmpty()) {
             NodeInstance generatedInstance = compensationInstances.pop();
             ((NodeInstanceContainer) generatedInstance.getNodeInstanceContainer()).removeNodeInstance(generatedInstance);
         }
     }
-    
+
     public void handleException(ExceptionHandler handler, String compensationActivityRef, Object dunno) {
         WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) getProcessInstance();
         NodeInstanceContainer nodeInstanceContainer = (NodeInstanceContainer) getContextInstanceContainer();
@@ -98,43 +98,42 @@ public class CompensationScopeInstance extends ExceptionScopeInstance  {
             CompensationHandler compensationHandler = (CompensationHandler) handler;
             try {
                 org.kie.api.definition.process.Node handlerNode = compensationHandler.getnode();
-                if (handlerNode instanceof BoundaryEventNode ) {
+                if (handlerNode instanceof BoundaryEventNode) {
                     NodeInstance compensationHandlerNodeInstance = nodeInstanceContainer.getNodeInstance(handlerNode);
-                    compensationInstances.add(compensationHandlerNodeInstance); 
+                    compensationInstances.add(compensationHandlerNodeInstance);
                     // The BoundaryEventNodeInstance.signalEvent() contains the necessary logic 
                     // to check whether or not compensation may proceed (? : (not-active + completed))
                     EventNodeInstance eventNodeInstance = (EventNodeInstance) compensationHandlerNodeInstance;
                     eventNodeInstance.signalEvent(Metadata.EVENT_TYPE_COMPENSATION, compensationActivityRef);
-                } else if (handlerNode instanceof EventSubProcessNode ) {
+                } else if (handlerNode instanceof EventSubProcessNode) {
                     // Check that subprocess parent has completed. 
                     List<String> completedIds = processInstance.getCompletedNodeIds();
-                    if( completedIds.contains(((NodeImpl) (( Node )handlerNode).getParentContainer()).getMetaData("UniqueId")) ) {
-                        NodeInstance subProcessNodeInstance 
-                            = ((NodeInstanceContainer) nodeInstanceContainer).getNodeInstance(( org.kie.api.definition.process.Node ) (( Node )handlerNode).getParentContainer());
+                    if (completedIds.contains(((NodeImpl) ((Node) handlerNode).getParentContainer()).getMetaData("UniqueId"))) {
+                        NodeInstance subProcessNodeInstance =
+                                ((NodeInstanceContainer) nodeInstanceContainer).getNodeInstance((org.kie.api.definition.process.Node) ((Node) handlerNode).getParentContainer());
                         compensationInstances.add(subProcessNodeInstance);
-                        NodeInstance compensationHandlerNodeInstance 
-                            = ((NodeInstanceContainer) subProcessNodeInstance).getNodeInstance(handlerNode);
-                        compensationInstances.add(compensationHandlerNodeInstance); 
+                        NodeInstance compensationHandlerNodeInstance = ((NodeInstanceContainer) subProcessNodeInstance).getNodeInstance(handlerNode);
+                        compensationInstances.add(compensationHandlerNodeInstance);
                         EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) compensationHandlerNodeInstance;
                         eventNodeInstance.signalEvent("Compensation", compensationActivityRef);
                     }
-                } 
-                assert handlerNode instanceof BoundaryEventNode || handlerNode instanceof EventSubProcessNode 
-                    : "Unexpected compensation handler node type : " + handlerNode.getClass().getSimpleName();
+                }
+                assert handlerNode instanceof BoundaryEventNode || handlerNode instanceof EventSubProcessNode
+                        : "Unexpected compensation handler node type : " + handlerNode.getClass().getSimpleName();
             } catch (Exception e) {
                 throwWorkflowRuntimeException(nodeInstanceContainer, processInstance, "Unable to execute compensation.", e);
             }
         } else {
-            Exception e = new IllegalArgumentException("Unsupported compensation handler: " + handler );
+            Exception e = new IllegalArgumentException("Unsupported compensation handler: " + handler);
             throwWorkflowRuntimeException(nodeInstanceContainer, processInstance, e.getMessage(), e);
         }
     }
 
-    private void throwWorkflowRuntimeException(NodeInstanceContainer nodeInstanceContainer, ProcessInstance processInstance, String msg, Exception e) { 
-        if( nodeInstanceContainer instanceof NodeInstance ) { 
-            throw new WorkflowRuntimeException(( KogitoNodeInstance ) nodeInstanceContainer, processInstance, msg, e );
+    private void throwWorkflowRuntimeException(NodeInstanceContainer nodeInstanceContainer, ProcessInstance processInstance, String msg, Exception e) {
+        if (nodeInstanceContainer instanceof NodeInstance) {
+            throw new WorkflowRuntimeException((KogitoNodeInstance) nodeInstanceContainer, processInstance, msg, e);
         } else {
-            throw new WorkflowRuntimeException(null, processInstance, msg, e );
+            throw new WorkflowRuntimeException(null, processInstance, msg, e);
         }
     }
 }

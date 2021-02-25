@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class StartEventHandler extends AbstractNodeHandler {
-    
+
     private static final String TRIGGER_REF = "TriggerRef";
     private static final String MESSAGE_TYPE = "MessageType";
     private static final String TRIGGER_TYPE = "TriggerType";
@@ -55,7 +55,7 @@ public class StartEventHandler extends AbstractNodeHandler {
     private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     @Override
-    protected Node createNode( Attributes attrs) {
+    protected Node createNode(Attributes attrs) {
         return new StartNode();
     }
 
@@ -67,8 +67,8 @@ public class StartEventHandler extends AbstractNodeHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void handleNode( final Node node, final Element element, final String uri,
-                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode(final Node node, final Element element, final String uri,
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
         // TODO: StartEventHandler.handleNode(): the parser doesn't discriminate between the schema default and the actual set value
@@ -122,12 +122,11 @@ public class StartEventHandler extends AbstractNodeHandler {
                     String eventType = signal.getStructureRef();
                     startNode.setMetaData(TRIGGER_REF, eventType);
                 } else {
-                    startNode.setMetaData(TRIGGER_REF, type); 
+                    startNode.setMetaData(TRIGGER_REF, type);
                 }
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
-                Map<String, Message> messages = (Map<String, Message>)
-                        ((ProcessBuildData) parser.getData()).getMetaData("Messages");
+                Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
                 if (messages == null) {
                     throw new IllegalArgumentException("No messages found");
                 }
@@ -172,8 +171,7 @@ public class StartEventHandler extends AbstractNodeHandler {
             } else if ("escalationEventDefinition".equals(nodeName)) {
                 String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
-                    Map<String, Escalation> escalations = (Map<String, Escalation>)
-                            ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
+                    Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
                     if (escalations == null) {
                         throw new IllegalArgumentException("No escalations found");
                     }
@@ -255,7 +253,7 @@ public class StartEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         StartNode startNode = (StartNode) node;
         writeNode("startEvent", startNode, xmlDump, metaDataType);
         xmlDump.append(" isInterrupting=\"");
@@ -278,7 +276,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                 ConstraintTrigger constraintTrigger = (ConstraintTrigger) trigger;
                 if (constraintTrigger.getHeader() == null) {
                     xmlDump.append("      <conditionalEventDefinition>" + EOL);
-                    xmlDump.append("        <condition xsi:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + constraintTrigger.getConstraint() + "</condition>" + EOL);
+                    xmlDump.append(
+                            "        <condition xsi:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + constraintTrigger.getConstraint() + "</condition>" + EOL);
                     xmlDump.append("      </conditionalEventDefinition>" + EOL);
                 }
             } else if (trigger instanceof EventTrigger) {
@@ -332,7 +331,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                     } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
 
                         if (timer.getPeriod() != null) {
-                            xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
+                            xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###"
+                                    + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
                         } else {
                             xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
                         }
@@ -351,7 +351,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                 } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
 
                     if (timer.getPeriod() != null) {
-                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
+                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod())
+                                + "</timeCycle>" + EOL);
                     } else {
                         xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
                     }
@@ -362,9 +363,9 @@ public class StartEventHandler extends AbstractNodeHandler {
         endNode("startEvent", xmlDump);
     }
 
-    protected void handleTimerNode( final Node node, final Element element,
-                                    final String uri, final String localName,
-                                    final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleTimerNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -424,27 +425,28 @@ public class StartEventHandler extends AbstractNodeHandler {
     protected void handleCompensationNode(final StartNode startNode, final org.w3c.dom.Node xmlNode) {
         if (startNode.isInterrupting()) {
             logger.warn("Compensation Event Sub-Processes [" + startNode.getMetaData("UniqueId") + "] may not be specified as interrupting:" +
-                                " overriding attribute and setting to not-interrupting.");
+                    " overriding attribute and setting to not-interrupting.");
         }
         startNode.setInterrupting(false);
 
-        /** From the BPMN2 spec, P.264:
+        /**
+         * From the BPMN2 spec, P.264:
          * "For a Start Event:
-         *  This Event "catches" the compensation for an Event Sub-Process. No further information is required.
-         *  The Event Sub-Process will provide the id necessary to match the Compensation Event with the Event
-         *  that threw the compensation"
+         * This Event "catches" the compensation for an Event Sub-Process. No further information is required.
+         * The Event Sub-Process will provide the id necessary to match the Compensation Event with the Event
+         * that threw the compensation"
          *
-         *  In other words, the id of the Sub-Process containing this Event Sub-Process is what should be used
-         *  as the activityRef value in any Intermediate (throw) or End compensation event that targets
-         *  this particular Event Sub-Process.
+         * In other words, the id of the Sub-Process containing this Event Sub-Process is what should be used
+         * as the activityRef value in any Intermediate (throw) or End compensation event that targets
+         * this particular Event Sub-Process.
          *
-         *  This is similar to the logic used for a Compensation Boundary Event: it's signaled using
-         *  the id of the activity to which the CBE is attached to.
+         * This is similar to the logic used for a Compensation Boundary Event: it's signaled using
+         * the id of the activity to which the CBE is attached to.
          */
         String activityRef = ((Element) xmlNode).getAttribute("activityRef");
         if (activityRef != null && activityRef.length() > 0) {
             logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getMetaData("UniqueId")
-                                + "' ignored per the BPMN2 specification.");
+                    + "' ignored per the BPMN2 specification.");
         }
 
         // so that this node will get processed in ProcessHandler.postProcessNodes(...)

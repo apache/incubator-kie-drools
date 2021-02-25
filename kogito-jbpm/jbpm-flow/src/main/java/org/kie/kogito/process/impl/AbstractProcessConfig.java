@@ -55,8 +55,8 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
         this.workItemHandlerConfig = orDefault(workItemHandlerConfig, DefaultWorkItemHandlerConfig::new);
         this.processEventListenerConfig = merge(processEventListenerConfigs, processEventListeners);
         this.unitOfWorkManager = orDefault(unitOfWorkManager,
-                                           () -> new DefaultUnitOfWorkManager(
-                                                   new CollectingUnitOfWorkFactory()));
+                () -> new DefaultUnitOfWorkManager(
+                        new CollectingUnitOfWorkFactory()));
         this.jobsService = orDefault(jobsService, () -> null);
 
         eventPublishers.forEach(publisher -> unitOfWorkManager().eventManager().addPublisher(publisher));

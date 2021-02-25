@@ -25,8 +25,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
  */
 public class KogitoRuleFlowLogEvent extends RuleFlowLogEvent {
 
-    public KogitoRuleFlowLogEvent( final int type,
-                                   ProcessInstance processInstance) {
-        super(type, processInstance.getProcessId(), processInstance.getProcessName(), (( KogitoProcessInstance ) processInstance).getStringId());
+    public KogitoRuleFlowLogEvent(final int type,
+            ProcessInstance processInstance) {
+        super(type, processInstance.getProcessId(), processInstance.getProcessName(), ((KogitoProcessInstance) processInstance).getStringId());
     }
 }

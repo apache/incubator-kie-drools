@@ -57,6 +57,7 @@ public class IdentityProviders {
         return new DefaultIdentityProvider(name, roles == null ? Collections.emptyList() : roles);
     }
 
-    private IdentityProviders() {}
+    private IdentityProviders() {
+    }
 
 }

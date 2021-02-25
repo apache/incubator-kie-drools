@@ -24,6 +24,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
+import org.junit.jupiter.api.Test;
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.models.Interval;
+import org.kie.pmml.api.models.MiningField;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
@@ -36,12 +42,8 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+
 import io.smallrye.openapi.runtime.io.JsonUtil;
-import org.junit.jupiter.api.Test;
-import org.kie.pmml.api.enums.DATA_TYPE;
-import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
-import org.kie.pmml.api.models.Interval;
-import org.kie.pmml.api.models.MiningField;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -69,76 +71,76 @@ class PMMLOASUtilsTest {
     @Test
     void isRequired() {
         MiningField toVerify = new MiningField(null,
-                                               FIELD_USAGE_TYPE.PREDICTED,
-                                               null,
-                                               null,
-                                               null,
-                                               null,
-                                               null);
+                FIELD_USAGE_TYPE.PREDICTED,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertFalse(PMMLOASUtils.isRequired(toVerify));
         toVerify = new MiningField(null,
-                                   FIELD_USAGE_TYPE.TARGET,
-                                   null,
-                                   null,
-                                   null,
-                                   null,
-                                   null);
+                FIELD_USAGE_TYPE.TARGET,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertFalse(PMMLOASUtils.isRequired(toVerify));
         toVerify = new MiningField(null,
-                                   null,
-                                   null,
-                                   null,
-                                   "MISSING_VALUE_REPLACEMENT",
-                                   null,
-                                   null);
+                null,
+                null,
+                null,
+                "MISSING_VALUE_REPLACEMENT",
+                null,
+                null);
         assertFalse(PMMLOASUtils.isRequired(toVerify));
         toVerify = new MiningField(null,
-                                   null,
-                                   null,
-                                   null,
-                                   null,
-                                   null,
-                                   null);
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertTrue(PMMLOASUtils.isRequired(toVerify));
     }
 
     @Test
     void isPredicted() {
         MiningField toVerify = new MiningField(null,
-                                               FIELD_USAGE_TYPE.PREDICTED,
-                                               null,
-                                               null,
-                                               null,
-                                               null,
-                                               null);
+                FIELD_USAGE_TYPE.PREDICTED,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertTrue(PMMLOASUtils.isPredicted(toVerify));
         toVerify = new MiningField(null,
-                                   FIELD_USAGE_TYPE.TARGET,
-                                   null,
-                                   null,
-                                   null,
-                                   null,
-                                   null);
+                FIELD_USAGE_TYPE.TARGET,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertTrue(PMMLOASUtils.isPredicted(toVerify));
         toVerify = new MiningField(null,
-                                   null,
-                                   null,
-                                   null,
-                                   null,
-                                   null,
-                                   null);
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertFalse(PMMLOASUtils.isPredicted(toVerify));
         Arrays.stream(FIELD_USAGE_TYPE.values())
                 .filter(usageType -> usageType != FIELD_USAGE_TYPE.TARGET
                         && usageType != FIELD_USAGE_TYPE.PREDICTED)
                 .forEach(usageType -> {
                     MiningField miningField = new MiningField(null,
-                                                              usageType,
-                                                              null,
-                                                              null,
-                                                              null,
-                                                              null,
-                                                              null);
+                            usageType,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null);
                     assertFalse(PMMLOASUtils.isPredicted(miningField));
                 });
     }
@@ -220,7 +222,7 @@ class PMMLOASUtilsTest {
         //
         typeFieldNode = JsonUtil.objectNode();
         List<Interval> intervals = IntStream.range(0, 3)
-                .mapToObj(i -> new Interval(i*2+3, i*3+4))
+                .mapToObj(i -> new Interval(i * 2 + 3, i * 3 + 4))
                 .collect(Collectors.toList());
         PMMLOASUtils.addIntervals(typeFieldNode, intervals);
         assertNull(typeFieldNode.get(MINIMUM));
@@ -256,7 +258,7 @@ class PMMLOASUtilsTest {
         assertNull(fieldNameNode.get(ENUM));
         //
         List<String> allowedValues = IntStream.range(0, 3)
-                .mapToObj(it -> "VALUE"+it)
+                .mapToObj(it -> "VALUE" + it)
                 .collect(Collectors.toList());
         setNode = PMMLOASUtils.createSetNode();
         propertiesNode = (ObjectNode) setNode.get(PROPERTIES);
@@ -268,15 +270,14 @@ class PMMLOASUtilsTest {
         assertEquals(NUMBER, fieldNameNode.get(TYPE).asText());
         assertNotNull(fieldNameNode.get(FORMAT));
         assertEquals(DOUBLE, fieldNameNode.get(FORMAT).asText());
-        ArrayNode availableValuesNode = (ArrayNode)fieldNameNode.get(ENUM);
+        ArrayNode availableValuesNode = (ArrayNode) fieldNameNode.get(ENUM);
         assertEquals(allowedValues.size(), availableValuesNode.size());
         List<JsonNode> nodeList = StreamSupport
                 .stream(availableValuesNode.spliterator(), false)
                 .collect(Collectors.toList());
         nodeList.forEach(availableValueNode -> assertTrue(availableValueNode instanceof TextNode));
-        allowedValues.forEach(allowedValue ->
-                                      assertTrue(nodeList.stream()
-                                              .anyMatch(availableValueNode -> availableValueNode.asText().equals(allowedValue))));
+        allowedValues.forEach(allowedValue -> assertTrue(nodeList.stream()
+                .anyMatch(availableValueNode -> availableValueNode.asText().equals(allowedValue))));
     }
 
     @Test
@@ -342,7 +343,7 @@ class PMMLOASUtilsTest {
         JsonNode propertiesNode = toValidate.get(PROPERTIES);
         assertNotNull(propertiesNode);
         assertTrue(propertiesNode instanceof ObjectNode);
-        assertEquals(0,  propertiesNode.size());
+        assertEquals(0, propertiesNode.size());
     }
 
     private void commonValidateNumericNode(NumericNode toValidate, Number number) {

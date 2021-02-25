@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.quarkus.pmml;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.Test;
-
 import java.util.Collections;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
 
 import static org.kie.kogito.quarkus.pmml.CommonTestUtils.testDescriptive;
 import static org.kie.kogito.quarkus.pmml.CommonTestUtils.testResult;

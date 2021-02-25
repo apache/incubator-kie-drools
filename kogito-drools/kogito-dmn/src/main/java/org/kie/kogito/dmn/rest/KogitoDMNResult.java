@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -32,8 +31,10 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.internal.utils.MapBackedDMNContext;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class KogitoDMNResult implements Serializable,
-                                        org.kie.dmn.api.core.DMNResult {
+        org.kie.dmn.api.core.DMNResult {
 
     private String namespace;
 

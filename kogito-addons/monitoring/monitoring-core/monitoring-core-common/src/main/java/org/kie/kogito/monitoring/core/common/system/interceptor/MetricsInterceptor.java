@@ -35,7 +35,7 @@ public class MetricsInterceptor {
     }
 
     private static String cleanUrl(String matchedUrl) {
-        if(matchedUrl != null && matchedUrl.startsWith("/")) {
+        if (matchedUrl != null && matchedUrl.startsWith("/")) {
             return matchedUrl.substring(1);
         }
         return matchedUrl;

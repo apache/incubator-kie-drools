@@ -58,7 +58,6 @@ class AdHocFragmentsTest extends AbstractCodegenTest {
         assertAdHocFragments(expected, adHocFragments);
     }
 
-
     @Test
     void testStartUserTask() throws Exception {
         String taskName = "AdHoc User Task";
@@ -129,8 +128,7 @@ class AdHocFragmentsTest extends AbstractCodegenTest {
         assertThat(current.size()).isEqualTo(expected.size());
         expected.forEach(e -> assertTrue(
                 current.stream().anyMatch(c -> c.getName().equals(e.getName()) && c.getType().equals(e.getType()) && c.isAutoStart() == e.isAutoStart()),
-                "Expected: " + e.toString() + ", Got: " + current.toString())
-        );
+                "Expected: " + e.toString() + ", Got: " + current.toString()));
     }
 
 }

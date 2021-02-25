@@ -25,21 +25,21 @@ import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
 
 @SessionsPool(1)
-@Clock( ClockType.PSEUDO )
+@Clock(ClockType.PSEUDO)
 public class AdultUnit implements RuleUnitData {
     private int adultAge = 18;
     private DataStore<Person> persons = DataSource.createStore();
     private Results results = new Results();
 
-    public AdultUnit( ) {
-        this( DataSource.createStore() );
+    public AdultUnit() {
+        this(DataSource.createStore());
     }
 
-    public AdultUnit( DataStore<Person> persons ) {
+    public AdultUnit(DataStore<Person> persons) {
         this.persons = persons;
     }
 
-    public AdultUnit( DataStore<Person> persons, int adultAge ) {
+    public AdultUnit(DataStore<Person> persons, int adultAge) {
         this.persons = persons;
         this.adultAge = adultAge;
     }
@@ -52,7 +52,7 @@ public class AdultUnit implements RuleUnitData {
         return adultAge;
     }
 
-    public void setAdultAge( int adultAge ) {
+    public void setAdultAge(int adultAge) {
         this.adultAge = adultAge;
     }
 

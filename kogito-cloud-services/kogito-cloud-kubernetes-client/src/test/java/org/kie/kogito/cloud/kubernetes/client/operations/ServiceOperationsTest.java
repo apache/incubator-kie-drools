@@ -21,12 +21,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.cloud.kubernetes.client.MockKubernetesServerSupport;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.cloud.kubernetes.client.MockKubernetesServerSupport;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -49,10 +50,10 @@ public class ServiceOperationsTest extends MockKubernetesServerSupport {
         Map<String, Object> servicesMap = mapper.readValue(services, typeRef);
         Map<String, Object> spec =
                 new MapWalker(servicesMap)
-                                          .mapToListMap("items")
-                                          .listToMap(0)
-                                          .mapToMap("spec")
-                                          .asMap();
+                        .mapToListMap("items")
+                        .listToMap(0)
+                        .mapToMap("spec")
+                        .asMap();
         assertThat(spec.get("clusterIP"), is(assertIp));
         assertThat(Integer.parseInt(new MapWalker(spec).mapToListMap("ports").listToMap(0).asMap().get("port").toString()), is(8080));
     }
@@ -71,7 +72,7 @@ public class ServiceOperationsTest extends MockKubernetesServerSupport {
         String services = this.getKubeClient().services().listNamespaced(MOCK_NAMESPACE, null).asJson();
         this.assertDefaultServiceCreated(services, "192.168.0.1");
     }
-    
+
     @Test
     public void whenThereIsAListOfServicesNamespacedLookingForLabelKey() throws JsonParseException, JsonMappingException, IOException {
         this.createMockService("service2", "192.168.0.1", Collections.singletonMap("service", null), MOCK_NAMESPACE);
@@ -84,9 +85,9 @@ public class ServiceOperationsTest extends MockKubernetesServerSupport {
         this.createMockService();
         this.createMockService("service2", "192.168.0.1", Collections.singletonMap("service", "test2"), MOCK_NAMESPACE);
         String servicesJson = this.getKubeClient()
-                                  .services()
-                                  .listNamespaced(MOCK_NAMESPACE, Collections.singletonMap("service", "test2"))
-                                  .asJson();
+                .services()
+                .listNamespaced(MOCK_NAMESPACE, Collections.singletonMap("service", "test2"))
+                .asJson();
         this.assertDefaultServiceCreated(servicesJson, "192.168.0.1");
     }
 
@@ -95,9 +96,9 @@ public class ServiceOperationsTest extends MockKubernetesServerSupport {
         this.createMockService();
         Map<String, Object> services =
                 this.getKubeClient()
-                    .services()
-                    .listNamespaced(MOCK_NAMESPACE, null)
-                    .asMap();
+                        .services()
+                        .listNamespaced(MOCK_NAMESPACE, null)
+                        .asMap();
         assertThat(services, notNullValue());
         assertThat(services.size(), is(4));
         assertThat(services.get("items"), instanceOf(ArrayList.class));

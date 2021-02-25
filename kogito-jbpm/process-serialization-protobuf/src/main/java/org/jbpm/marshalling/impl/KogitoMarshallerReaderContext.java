@@ -36,60 +36,60 @@ public class KogitoMarshallerReaderContext extends ProtobufMarshallerReaderConte
     public Map<String, Process> processes = new HashMap<>();
 
     public KogitoMarshallerReaderContext(InputStream stream,
-                                         InternalKnowledgeBase kBase,
-                                         Map<Integer, BaseNode> sinks,
-                                         ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                         Map<Integer, TimersInputMarshaller> timerReaders,
-                                         Environment env) throws IOException {
-        this( stream,
-              kBase,
-              sinks,
-              resolverStrategyFactory,
-              timerReaders,
-              true,
-              true,
-              env );
+            InternalKnowledgeBase kBase,
+            Map<Integer, BaseNode> sinks,
+            ObjectMarshallingStrategyStore resolverStrategyFactory,
+            Map<Integer, TimersInputMarshaller> timerReaders,
+            Environment env) throws IOException {
+        this(stream,
+                kBase,
+                sinks,
+                resolverStrategyFactory,
+                timerReaders,
+                true,
+                true,
+                env);
     }
 
     public KogitoMarshallerReaderContext(InputStream stream,
-                                         Map<String, Process> processes,
-                                         Map<Integer, BaseNode> sinks,
-                                         ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                         Map<Integer, TimersInputMarshaller> timerReaders,
-                                         Environment env) throws IOException {
-        this( stream,
-              null,
-              sinks,
-              resolverStrategyFactory,
-              timerReaders,
-              true,
-              true,
-              env );
+            Map<String, Process> processes,
+            Map<Integer, BaseNode> sinks,
+            ObjectMarshallingStrategyStore resolverStrategyFactory,
+            Map<Integer, TimersInputMarshaller> timerReaders,
+            Environment env) throws IOException {
+        this(stream,
+                null,
+                sinks,
+                resolverStrategyFactory,
+                timerReaders,
+                true,
+                true,
+                env);
         this.processes = processes;
     }
 
     public KogitoMarshallerReaderContext(InputStream stream,
-                                         InternalKnowledgeBase kBase,
-                                         Map<Integer, BaseNode> sinks,
-                                         ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                         Map<Integer, TimersInputMarshaller> timerReaders,
-                                         boolean marshalProcessInstances,
-                                         boolean marshalWorkItems,
-                                         Environment env) throws IOException {
+            InternalKnowledgeBase kBase,
+            Map<Integer, BaseNode> sinks,
+            ObjectMarshallingStrategyStore resolverStrategyFactory,
+            Map<Integer, TimersInputMarshaller> timerReaders,
+            boolean marshalProcessInstances,
+            boolean marshalWorkItems,
+            Environment env) throws IOException {
         super(stream, kBase, sinks, resolverStrategyFactory, timerReaders,
                 marshalProcessInstances, marshalWorkItems, env);
 
         if (this.getKnowledgeBase() != null) {
-            this.getKnowledgeBase().getProcesses().forEach( p -> this.processes.put(p.getId(), p));
+            this.getKnowledgeBase().getProcesses().forEach(p -> this.processes.put(p.getId(), p));
         }
     }
 
     @Override
     protected ObjectMarshallingStrategy[] getMarshallingStrategy() {
-        return new ObjectMarshallingStrategy[]{new KogitoSerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )};
+        return new ObjectMarshallingStrategy[] { new KogitoSerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) };
     }
 
     public Process getProcess(String processId) {
-        return processes.get( processId );
+        return processes.get(processId);
     }
 }

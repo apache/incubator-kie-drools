@@ -33,18 +33,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NodeInnerClassesTest extends AbstractBaseTest {
 
-	@Override
-	public void addLogger() {
-		logger = LoggerFactory.getLogger(this.getClass());
-	}
-	
-	@Test
-	public void testNodeReading() {
+    @Override
+    public void addLogger() {
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
 
-		RuleFlowProcess process = new RuleFlowProcess();
+    @Test
+    public void testNodeReading() {
+
+        RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.event");
         process.setName("Event Process");
-        
+
         List<Variable> variables = new ArrayList<Variable>();
         Variable variable = new Variable();
         variable.setName("event");
@@ -58,7 +58,7 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         CompositeNode compositeNode = new CompositeNode();
         compositeNode.setName("CompositeNode");
         compositeNode.setId(2);
-        
+
         ForEachNode forEachNode = new ForEachNode();
         ForEachNode.ForEachSplitNode split = new ForEachNode.ForEachSplitNode();
         split.setName("ForEachSplit");
@@ -66,16 +66,16 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         split.setMetaData("UniqueId", forEachNode.getMetaData("Uniqueid") + ":foreach:split");
         forEachNode.internalAddNode(split);
         forEachNode.linkIncomingConnections(
-            Node.CONNECTION_DEFAULT_TYPE,
-            new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
+                Node.CONNECTION_DEFAULT_TYPE,
+                new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
 
         process.addNode(forEachNode);
-        KieSession ksession = createKieSession(process); 
+        KieSession ksession = createKieSession(process);
         TestProcessEventListener procEventListener = new TestProcessEventListener();
         ksession.addEventListener(procEventListener);
-        
+
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertNotNull(processInstance);
-	}
+    }
 
 }

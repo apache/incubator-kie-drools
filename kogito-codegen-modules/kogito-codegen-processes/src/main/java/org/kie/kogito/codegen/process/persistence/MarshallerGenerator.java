@@ -23,6 +23,22 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import org.drools.core.util.StringUtils;
+import org.infinispan.protostream.EnumMarshaller;
+import org.infinispan.protostream.FileDescriptorSource;
+import org.infinispan.protostream.SerializationContext;
+import org.infinispan.protostream.config.Configuration;
+import org.infinispan.protostream.descriptors.Descriptor;
+import org.infinispan.protostream.descriptors.EnumDescriptor;
+import org.infinispan.protostream.descriptors.FieldDescriptor;
+import org.infinispan.protostream.descriptors.FileDescriptor;
+import org.infinispan.protostream.descriptors.Option;
+import org.infinispan.protostream.impl.SerializationContextImpl;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -45,21 +61,6 @@ import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
-import org.infinispan.protostream.EnumMarshaller;
-import org.infinispan.protostream.FileDescriptorSource;
-import org.infinispan.protostream.SerializationContext;
-import org.infinispan.protostream.config.Configuration;
-import org.infinispan.protostream.descriptors.Descriptor;
-import org.infinispan.protostream.descriptors.EnumDescriptor;
-import org.infinispan.protostream.descriptors.FieldDescriptor;
-import org.infinispan.protostream.descriptors.FileDescriptor;
-import org.infinispan.protostream.descriptors.Option;
-import org.infinispan.protostream.impl.SerializationContextImpl;
-import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
@@ -123,22 +124,26 @@ public class MarshallerGenerator {
                 clazz.setName(msg.getName() + "MessageMarshaller");
                 clazz.getImplementedTypes(0).setTypeArguments(NodeList.nodeList(new ClassOrInterfaceType(null, javaType)));
 
-                MethodDeclaration getJavaClassMethod = clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getJavaClass")).orElseThrow(() -> new RuntimeException("No getJavaClass method found"));
+                MethodDeclaration getJavaClassMethod =
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getJavaClass")).orElseThrow(() -> new RuntimeException("No getJavaClass method found"));
                 getJavaClassMethod.setType(new ClassOrInterfaceType(null, new SimpleName(Class.class.getName()), NodeList.nodeList(new ClassOrInterfaceType(null, javaType))));
                 BlockStmt getJavaClassMethodBody = new BlockStmt();
                 getJavaClassMethodBody.addStatement(new ReturnStmt(new NameExpr(javaType + ".class")));
                 getJavaClassMethod.setBody(getJavaClassMethodBody);
 
-                MethodDeclaration getTypeNameMethod = clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getTypeName")).orElseThrow(() -> new RuntimeException("No getTypeName method found"));
+                MethodDeclaration getTypeNameMethod =
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getTypeName")).orElseThrow(() -> new RuntimeException("No getTypeName method found"));
                 BlockStmt getTypeNameMethodBody = new BlockStmt();
                 getTypeNameMethodBody.addStatement(new ReturnStmt(new StringLiteralExpr(msg.getFullName())));
                 getTypeNameMethod.setBody(getTypeNameMethodBody);
 
-                MethodDeclaration readFromMethod = clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("readFrom")).orElseThrow(() -> new RuntimeException("No readFrom method found"));
+                MethodDeclaration readFromMethod =
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("readFrom")).orElseThrow(() -> new RuntimeException("No readFrom method found"));
                 readFromMethod.setType(javaType);
                 readFromMethod.setBody(new BlockStmt());
 
-                MethodDeclaration writeToMethod = clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("writeTo")).orElseThrow(() -> new RuntimeException("No writeTo method found"));
+                MethodDeclaration writeToMethod =
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("writeTo")).orElseThrow(() -> new RuntimeException("No writeTo method found"));
                 writeToMethod.getParameter(1).setType(javaType);
                 writeToMethod.setBody(new BlockStmt());
 
@@ -204,7 +209,7 @@ public class MarshallerGenerator {
                 clazz.getMembers().sort(new BodyDeclarationComparator());
             }
 
-            for(EnumDescriptor msg : d.getEnumTypes()) {
+            for (EnumDescriptor msg : d.getEnumTypes()) {
                 CompilationUnit compilationUnit = new CompilationUnit();
                 units.add(compilationUnit);
 
@@ -297,8 +302,8 @@ public class MarshallerGenerator {
                 }
             }
             List<EnumDescriptor> enums = entry.getValue().getEnumTypes();
-            for(EnumDescriptor msg : enums) {
-                if(messageName.equals(msg.getName())) {
+            for (EnumDescriptor msg : enums) {
+                if (messageName.equals(msg.getName())) {
                     return packageFromOption(d, msg) + "." + messageName;
                 } else if (messageName.equals(msg.getFullName())) {
                     return packageFromOption(d, msg) + "." + msg.getName();

@@ -80,12 +80,12 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     @Override
-    public RuleUnitVariable getVar( String name) {
-         try {
-             return super.getVar(name);
-         } catch (UndefinedRuleUnitVariable e) {
-             throw new UndefinedGeneratedRuleUnitVariable(e.getVariable(), e.getUnit());
-         }
+    public RuleUnitVariable getVar(String name) {
+        try {
+            return super.getVar(name);
+        } catch (UndefinedRuleUnitVariable e) {
+            throw new UndefinedGeneratedRuleUnitVariable(e.getVariable(), e.getUnit());
+        }
     }
 
     public void putSimpleVar(String name, String varTypeFQCN) {

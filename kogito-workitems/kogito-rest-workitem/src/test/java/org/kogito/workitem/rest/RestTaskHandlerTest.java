@@ -19,20 +19,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
-import io.vertx.mutiny.core.buffer.Buffer;
-import io.vertx.mutiny.ext.web.client.HttpRequest;
-import io.vertx.mutiny.ext.web.client.HttpResponse;
-import io.vertx.mutiny.ext.web.client.WebClient;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kogito.workitem.rest.jsonpath.functions.JSonPathResultHandler;
 import org.kogito.workitem.rest.jsonpath.functions.JsonPathResolver;
 import org.mockito.ArgumentCaptor;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
+import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.mutiny.ext.web.client.HttpRequest;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
+import io.vertx.mutiny.ext.web.client.WebClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,8 +51,8 @@ public class RestTaskHandlerTest {
         Map<String, Object> parameters = Collections.emptyMap();
         String endPoint = "http://pepe:password@www.google.com/results/id/?user=pepe#at_point";
         assertEquals(
-                     "http://pepe:password@www.google.com/results/id/?user=pepe#at_point",
-                     RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e));
+                "http://pepe:password@www.google.com/results/id/?user=pepe#at_point",
+                RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e));
     }
 
     @Test
@@ -60,8 +62,8 @@ public class RestTaskHandlerTest {
         parameters.put("id", "pepe");
         String endPoint = "http://pepe:password@www.google.com/results/{id}/?user=pepe#at_point";
         assertEquals(
-                     "http://pepe:password@www.google.com/results/pepe/?user=pepe#at_point",
-                     RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e));
+                "http://pepe:password@www.google.com/results/pepe/?user=pepe#at_point",
+                RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e));
     }
 
     @Test
@@ -71,8 +73,8 @@ public class RestTaskHandlerTest {
         parameters.put("name", "pepe");
         String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name}/?user=pepe#at_point";
         assertEquals(
-                     "http://pepe:password@www.google.com/results/26/names/pepe/?user=pepe#at_point",
-                     RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e));
+                "http://pepe:password@www.google.com/results/26/names/pepe/?user=pepe#at_point",
+                RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e));
     }
 
     @Test
@@ -81,11 +83,11 @@ public class RestTaskHandlerTest {
         parameters.put("id", 26);
         String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name}/?user=pepe#at_point";
         assertTrue(
-                   assertThrows(
-                                IllegalArgumentException.class,
-                                () -> RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e))
-                                    .getMessage()
-                                    .contains("name"));
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e))
+                                .getMessage()
+                                .contains("name"));
     }
 
     @Test
@@ -95,11 +97,11 @@ public class RestTaskHandlerTest {
         parameters.put("name", "pepe");
         String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name/?user=pepe#at_point";
         assertTrue(
-                   assertThrows(
-                                IllegalArgumentException.class,
-                                () -> RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e))
-                                    .getMessage()
-                                    .contains("}"));
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> RestWorkItemHandler.resolvePathParams(endPoint, parameters, e -> e))
+                                .getMessage()
+                                .contains("}"));
     }
 
     @SuppressWarnings("unchecked")
@@ -108,10 +110,10 @@ public class RestTaskHandlerTest {
         WebClient webClient = mock(WebClient.class);
         ObjectMapper mapper = new ObjectMapper();
         HttpRequest<Buffer> request = mock(HttpRequest.class);
-        
+
         when(webClient.request(HttpMethod.GET, 8080, "localhost", "/results/26/names/pepe"))
-            .thenReturn(request);
-        HttpResponse<Buffer> response = mock (HttpResponse.class);
+                .thenReturn(request);
+        HttpResponse<Buffer> response = mock(HttpResponse.class);
         when(request.sendAndAwait()).thenReturn(response);
         when(response.bodyAsJsonObject()).thenReturn(JsonObject.mapFrom(Collections.singletonMap("num", 1)));
 
@@ -124,15 +126,15 @@ public class RestTaskHandlerTest {
         parameters.put(RestWorkItemHandler.RESULT_HANDLER, new JSonPathResultHandler());
         parameters.put(RestWorkItemHandler.PARAMETER, mapper.createObjectNode().put("id", 26).put("name", "pepe"));
 
-        KogitoWorkItem workItem = mock( KogitoWorkItem.class);
+        KogitoWorkItem workItem = mock(KogitoWorkItem.class);
         when(workItem.getStringId()).thenReturn("2");
         when(workItem.getParameters()).thenReturn(parameters);
-        KogitoWorkItemManager manager = mock( KogitoWorkItemManager.class);
+        KogitoWorkItemManager manager = mock(KogitoWorkItemManager.class);
 
         ArgumentCaptor<Map<String, Object>> argCaptor = ArgumentCaptor.forClass(Map.class);
 
         RestWorkItemHandler handler = new RestWorkItemHandler(
-            webClient);
+                webClient);
         handler.executeWorkItem(workItem, manager);
         verify(manager).completeWorkItem(anyString(), argCaptor.capture());
         Map<String, Object> results = argCaptor.getValue();

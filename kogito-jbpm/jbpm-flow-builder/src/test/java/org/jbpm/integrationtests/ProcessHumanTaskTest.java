@@ -36,52 +36,52 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProcessHumanTaskTest extends AbstractBaseTest {
-   
+
     @Test
     public void testHumanTask() {
         Reader source = new StringReader(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
-            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
-            "\n" +
-            "  <header>\n" +
-            "  </header>\n" +
-            "\n" +
-            "  <nodes>\n" +
-            "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
-            "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>John Doe</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>Do something</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "      </work>\n" +
-            "    </humanTask>\n" +
-            "    <end id=\"3\" name=\"End\" />\n" +
-            "  </nodes>\n" +
-            "\n" +
-            "  <connections>\n" +
-            "    <connection from=\"1\" to=\"2\" />\n" +
-            "    <connection from=\"2\" to=\"3\" />\n" +
-            "  </connections>\n" +
-            "\n" +
-            "</process>");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+                        "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
+                        "\n" +
+                        "  <header>\n" +
+                        "  </header>\n" +
+                        "\n" +
+                        "  <nodes>\n" +
+                        "    <start id=\"1\" name=\"Start\" />\n" +
+                        "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
+                        "      <work name=\"Human Task\" >\n" +
+                        "        <parameter name=\"ActorId\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>John Doe</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"TaskName\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>Do something</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Priority\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Comment\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "      </work>\n" +
+                        "    </humanTask>\n" +
+                        "    <end id=\"3\" name=\"End\" />\n" +
+                        "  </nodes>\n" +
+                        "\n" +
+                        "  <connections>\n" +
+                        "    <connection from=\"1\" to=\"2\" />\n" +
+                        "    <connection from=\"2\" to=\"3\" />\n" +
+                        "  </connections>\n" +
+                        "\n" +
+                        "</process>");
         builder.addRuleFlow(source);
-        
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(builder.getPackages()) );
-        
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
@@ -91,74 +91,74 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-    
+
     @Test
     public void testSwimlane() {
         Reader source = new StringReader(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
-            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
-            "\n" +
-            "  <header>\n" +
-            "    <swimlanes>\n" +
-            "      <swimlane name=\"actor1\" />\n" +
-            "    </swimlanes>\n" +
-            "  </header>\n" +
-            "\n" +
-            "  <nodes>\n" +
-            "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <humanTask id=\"2\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
-            "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>John Doe</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>Do something</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "      </work>\n" +
-            "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
-            "    </humanTask>\n" +
-            "    <humanTask id=\"3\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
-            "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>Do something else</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "      </work>\n" +
-            "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
-            "    </humanTask>\n" +
-            "    <end id=\"4\" name=\"End\" />\n" +
-            "  </nodes>\n" +
-            "\n" +
-            "  <connections>\n" +
-            "    <connection from=\"1\" to=\"2\" />\n" +
-            "    <connection from=\"2\" to=\"3\" />\n" +
-            "    <connection from=\"3\" to=\"4\" />\n" +
-            "  </connections>\n" +
-            "\n" +
-            "</process>");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+                        "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
+                        "\n" +
+                        "  <header>\n" +
+                        "    <swimlanes>\n" +
+                        "      <swimlane name=\"actor1\" />\n" +
+                        "    </swimlanes>\n" +
+                        "  </header>\n" +
+                        "\n" +
+                        "  <nodes>\n" +
+                        "    <start id=\"1\" name=\"Start\" />\n" +
+                        "    <humanTask id=\"2\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
+                        "      <work name=\"Human Task\" >\n" +
+                        "        <parameter name=\"ActorId\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>John Doe</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"TaskName\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>Do something</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Priority\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Comment\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "      </work>\n" +
+                        "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
+                        "    </humanTask>\n" +
+                        "    <humanTask id=\"3\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
+                        "      <work name=\"Human Task\" >\n" +
+                        "        <parameter name=\"ActorId\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"TaskName\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>Do something else</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Priority\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Comment\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "      </work>\n" +
+                        "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
+                        "    </humanTask>\n" +
+                        "    <end id=\"4\" name=\"End\" />\n" +
+                        "  </nodes>\n" +
+                        "\n" +
+                        "  <connections>\n" +
+                        "    <connection from=\"1\" to=\"2\" />\n" +
+                        "    <connection from=\"2\" to=\"3\" />\n" +
+                        "    <connection from=\"3\" to=\"4\" />\n" +
+                        "  </connections>\n" +
+                        "\n" +
+                        "</process>");
         builder.addRuleFlow(source);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(builder.getPackages()) );
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -169,7 +169,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         assertEquals("Do something", workItem.getParameter("TaskName"));
         assertEquals("John Doe", workItem.getParameter("ActorId"));
         Map<String, Object> results = new HashMap<String, Object>();
-        ((HumanTaskWorkItemImpl)workItem).setActualOwner("Jane Doe");
+        ((HumanTaskWorkItemImpl) workItem).setActualOwner("Jane Doe");
         kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), results);
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -182,47 +182,47 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
     @Test
     public void testHumanTaskCancel() {
         Reader source = new StringReader(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
-            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
-            "\n" +
-            "  <header>\n" +
-            "  </header>\n" +
-            "\n" +
-            "  <nodes>\n" +
-            "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
-            "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>John Doe</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>Do something</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "      </work>\n" +
-            "    </humanTask>\n" +
-            "    <end id=\"3\" name=\"End\" />\n" +
-            "  </nodes>\n" +
-            "\n" +
-            "  <connections>\n" +
-            "    <connection from=\"1\" to=\"2\" />\n" +
-            "    <connection from=\"2\" to=\"3\" />\n" +
-            "  </connections>\n" +
-            "\n" +
-            "</process>");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+                        "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
+                        "\n" +
+                        "  <header>\n" +
+                        "  </header>\n" +
+                        "\n" +
+                        "  <nodes>\n" +
+                        "    <start id=\"1\" name=\"Start\" />\n" +
+                        "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
+                        "      <work name=\"Human Task\" >\n" +
+                        "        <parameter name=\"ActorId\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>John Doe</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"TaskName\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>Do something</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Priority\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Comment\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "      </work>\n" +
+                        "    </humanTask>\n" +
+                        "    <end id=\"3\" name=\"End\" />\n" +
+                        "  </nodes>\n" +
+                        "\n" +
+                        "  <connections>\n" +
+                        "    <connection from=\"1\" to=\"2\" />\n" +
+                        "    <connection from=\"2\" to=\"3\" />\n" +
+                        "  </connections>\n" +
+                        "\n" +
+                        "</process>");
         builder.addRuleFlow(source);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(builder.getPackages()) );
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -233,54 +233,54 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         processInstance.setState(KogitoProcessInstance.STATE_ABORTED);
         assertTrue(handler.isAborted());
     }
-    
+
     @Test
     public void testHumanTaskCancel2() {
         Reader source = new StringReader(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
-            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
-            "\n" +
-            "  <header>\n" +
-            "  </header>\n" +
-            "\n" +
-            "  <nodes>\n" +
-            "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
-            "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>John Doe</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "          <value>Do something</value>\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        </parameter>\n" +
-            "      </work>\n" +
-            "      <onExit>\n" +
-            "        <action type=\"expression\" name=\"Cancel\" dialect=\"java\" >((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();</action>\n" +
-            "      </onExit>\n" +
-            "    </humanTask>\n" +
-            "    <end id=\"3\" name=\"End\" />\n" +
-            "  </nodes>\n" +
-            "\n" +
-            "  <connections>\n" +
-            "    <connection from=\"1\" to=\"2\" />\n" +
-            "    <connection from=\"2\" to=\"3\" />\n" +
-            "  </connections>\n" +
-            "\n" +
-            "</process>");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+                        "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.humantask\" package-name=\"org.drools\" version=\"1\" >\n" +
+                        "\n" +
+                        "  <header>\n" +
+                        "  </header>\n" +
+                        "\n" +
+                        "  <nodes>\n" +
+                        "    <start id=\"1\" name=\"Start\" />\n" +
+                        "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
+                        "      <work name=\"Human Task\" >\n" +
+                        "        <parameter name=\"ActorId\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>John Doe</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"TaskName\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "          <value>Do something</value>\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Priority\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "        <parameter name=\"Comment\" >\n" +
+                        "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+                        "        </parameter>\n" +
+                        "      </work>\n" +
+                        "      <onExit>\n" +
+                        "        <action type=\"expression\" name=\"Cancel\" dialect=\"java\" >((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();</action>\n" +
+                        "      </onExit>\n" +
+                        "    </humanTask>\n" +
+                        "    <end id=\"3\" name=\"End\" />\n" +
+                        "  </nodes>\n" +
+                        "\n" +
+                        "  <connections>\n" +
+                        "    <connection from=\"1\" to=\"2\" />\n" +
+                        "    <connection from=\"2\" to=\"3\" />\n" +
+                        "  </connections>\n" +
+                        "\n" +
+                        "</process>");
         builder.addRuleFlow(source);
-        
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(builder.getPackages()) );
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);

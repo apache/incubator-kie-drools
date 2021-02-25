@@ -26,18 +26,18 @@ public class UnitOfWorkExecutor {
     public static <T> T executeInUnitOfWork(UnitOfWorkManager uowManager, Supplier<T> supplier) {
         T result = null;
         UnitOfWork uow = uowManager.newUnitOfWork();
-        
+
         try {
             uow.start();
-            
+
             result = supplier.get();
             uow.end();
-            
+
             return result;
         } catch (ProcessInstanceExecutionException e) {
-          uow.end();
-          
-          throw e;
+            uow.end();
+
+            throw e;
         } catch (Exception e) {
             uow.abort();
             if (e instanceof RuntimeException) {
@@ -46,6 +46,6 @@ public class UnitOfWorkExecutor {
                 throw new RuntimeException(e);
             }
         }
-        
+
     }
 }

@@ -15,13 +15,15 @@
  */
 package org.kie.kogito.tracing.decision;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
 import org.reactivestreams.Publisher;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.subjects.PublishSubject;
 
 @Singleton
 public class QuarkusModelEventEmitter extends BaseModelEventEmitter {

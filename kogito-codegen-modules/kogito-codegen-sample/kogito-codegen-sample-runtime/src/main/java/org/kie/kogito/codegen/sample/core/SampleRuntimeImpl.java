@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.codegen.sample.core;
 
-import org.kie.kogito.Application;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.kogito.Application;
 
 public class SampleRuntimeImpl implements SampleRuntime {
 
@@ -47,8 +47,8 @@ public class SampleRuntimeImpl implements SampleRuntime {
 
     @Override
     public SampleModel getModel(String name) {
-        if (! rawContent.containsKey(name)) {
-            throw new IllegalArgumentException("Impossible to find "+ name);
+        if (!rawContent.containsKey(name)) {
+            throw new IllegalArgumentException("Impossible to find " + name);
         }
         if (config == null) {
             throw new IllegalStateException("No SampleConfig instance provided");

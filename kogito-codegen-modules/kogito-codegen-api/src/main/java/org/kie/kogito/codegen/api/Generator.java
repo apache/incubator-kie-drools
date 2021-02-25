@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.codegen.api;
 
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-
 import java.util.Collection;
 import java.util.Optional;
+
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 /**
  * A code generator for a part of the platform, e.g. rules, processes, etc.
@@ -51,6 +51,7 @@ public interface Generator {
 
     /**
      * Override this method to specify an order of execution
+     * 
      * @return
      */
     default int priority() {

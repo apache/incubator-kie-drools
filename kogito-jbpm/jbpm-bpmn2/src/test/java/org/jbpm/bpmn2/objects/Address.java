@@ -22,13 +22,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Address implements Serializable {
 
-	private String street;
+    private String street;
 
-	public String getStreet() {
-		return street;
-	}
+    public String getStreet() {
+        return street;
+    }
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+    public void setStreet(String street) {
+        this.street = street;
+    }
 }

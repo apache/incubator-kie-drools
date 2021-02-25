@@ -18,10 +18,11 @@ package org.kie.kogito.codegen.json;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,12 +32,12 @@ public class JsonUtilsTest {
     @Test
     public void testMerge() {
         ObjectMapper mapper = new ObjectMapper();
-        
-        JsonNode node1 = createJson (mapper, createJson(mapper,"numbers",Arrays.asList(1,2,3)));
-        JsonNode node2 = createJson (mapper, createJson(mapper,"numbers",Arrays.asList(4,5,6)));
-        JsonNode node3 = createJson (mapper, mapper.createObjectNode().put("number",1));
-        JsonNode node4 = createJson (mapper, mapper.createObjectNode().put("boolean",false));
-        JsonNode node5 = createJson (mapper, mapper.createObjectNode().put("string","javier"));
+
+        JsonNode node1 = createJson(mapper, createJson(mapper, "numbers", Arrays.asList(1, 2, 3)));
+        JsonNode node2 = createJson(mapper, createJson(mapper, "numbers", Arrays.asList(4, 5, 6)));
+        JsonNode node3 = createJson(mapper, mapper.createObjectNode().put("number", 1));
+        JsonNode node4 = createJson(mapper, mapper.createObjectNode().put("boolean", false));
+        JsonNode node5 = createJson(mapper, mapper.createObjectNode().put("string", "javier"));
 
         JsonNode result = mapper.createObjectNode();
         JsonUtils.merge(node1, result);

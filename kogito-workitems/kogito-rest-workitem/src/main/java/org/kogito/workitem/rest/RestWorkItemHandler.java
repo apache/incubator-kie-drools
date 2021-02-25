@@ -25,14 +25,15 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+
 import io.vertx.core.http.HttpMethod;
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
@@ -59,7 +60,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         @Override
         public Object apply(Object value) {
             return value instanceof RestWorkItemHandlerParamResolver
-                    ? ((RestWorkItemHandlerParamResolver) value).apply(inputModel) : value;
+                    ? ((RestWorkItemHandlerParamResolver) value).apply(inputModel)
+                    : value;
         }
     }
 
@@ -70,7 +72,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         // retrieving parameters
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
         String endPoint = getParam(parameters, ENDPOINT, String.class);
@@ -95,8 +97,9 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (method == HttpMethod.POST || method == HttpMethod.PUT) {
             // if parameters is empty at this stage, assume post content is the whole input model
             // if not, build a map from parameters remaining
-            Object body = parameters.isEmpty() ? inputModel : parameters.entrySet().stream().collect(Collectors.toMap(
-                    Entry::getKey, e -> resolver.apply(e.getValue())));
+            Object body = parameters.isEmpty() ? inputModel
+                    : parameters.entrySet().stream().collect(Collectors.toMap(
+                            Entry::getKey, e -> resolver.apply(e.getValue())));
             response = request.sendJsonAndAwait(body);
         } else {
             response = request.sendAndAwait();

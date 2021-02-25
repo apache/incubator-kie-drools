@@ -22,8 +22,29 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
+import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
+import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.impl.ConstraintImpl;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.kie.api.definition.process.Process;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.actions.Action;
 import io.serverlessworkflow.api.branches.Branch;
@@ -44,25 +65,6 @@ import io.serverlessworkflow.api.switchconditions.DataCondition;
 import io.serverlessworkflow.api.switchconditions.EventCondition;
 import io.serverlessworkflow.api.transitions.Transition;
 import io.serverlessworkflow.api.workflow.Functions;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
-import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
-import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
-import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.impl.ConnectionRef;
-import org.jbpm.workflow.core.impl.ConstraintImpl;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.Split;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.TimerNode;
-import org.kie.api.definition.process.Process;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ServerlessWorkflowParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowParser.class);
@@ -145,7 +147,8 @@ public class ServerlessWorkflowParser {
 
                 List<String> onEventRefs = eventState.getOnEvents().get(0).getEventRefs();
                 if (onEventRefs.size() == 1) {
-                    StartNode singleMessageStartNode = factory.messageStartNode(idCounter.getAndIncrement(), ServerlessWorkflowUtils.getWorkflowEventFor(workflow, eventState.getOnEvents().get(0).getEventRefs().get(0)), process);
+                    StartNode singleMessageStartNode = factory.messageStartNode(idCounter.getAndIncrement(),
+                            ServerlessWorkflowUtils.getWorkflowEventFor(workflow, eventState.getOnEvents().get(0).getEventRefs().get(0)), process);
                     factory.connect(singleMessageStartNode.getId(), embeddedSubProcess.getId(), singleMessageStartNode.getId() + "_" + embeddedSubProcess.getId(), process);
                 } else {
                     Join messageStartJoin = factory.joinNode(idCounter.getAndIncrement(), eventState.getName() + "Split", Join.TYPE_XOR, process);
@@ -158,7 +161,8 @@ public class ServerlessWorkflowParser {
                 }
 
                 if (state.getEnd() != null) {
-                    factory.connect(embeddedSubProcess.getId(), workflowEndNodes.get(state.getName()).getId(), embeddedSubProcess.getId() + "_" + workflowEndNodes.get(state.getName()).getId(), process);
+                    factory.connect(embeddedSubProcess.getId(), workflowEndNodes.get(state.getName()).getId(), embeddedSubProcess.getId() + "_" + workflowEndNodes.get(state.getName()).getId(),
+                            process);
                 }
 
                 Map<String, Long> startEndMap = new HashMap<>();
@@ -177,7 +181,8 @@ public class ServerlessWorkflowParser {
                 }
 
                 if (state.getEnd() != null) {
-                    factory.connect(embeddedSubProcess.getId(), workflowEndNodes.get(state.getName()).getId(), embeddedSubProcess.getId() + "_" + workflowEndNodes.get(state.getName()).getId(), process);
+                    factory.connect(embeddedSubProcess.getId(), workflowEndNodes.get(state.getName()).getId(), embeddedSubProcess.getId() + "_" + workflowEndNodes.get(state.getName()).getId(),
+                            process);
                 }
 
                 Map<String, Long> startEndMap = new HashMap<>();
@@ -325,7 +330,7 @@ public class ServerlessWorkflowParser {
                 Long targetId = nameToNodeId.get(state.getTransition().getNextState()).get(NODETOID_START);
 
                 if (!transition.getProduceEvents().isEmpty()) {
-                    if(transition.getProduceEvents().size() == 1) {
+                    if (transition.getProduceEvents().size() == 1) {
                         ActionNode sendEventNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                 ServerlessWorkflowUtils.getWorkflowEventFor(workflow, transition.getProduceEvents().get(0).getEventRef()), process);
                         factory.connect(sourceId, sendEventNode.getId(), sourceId + "_" + sendEventNode.getId(), process);
@@ -334,10 +339,10 @@ public class ServerlessWorkflowParser {
                         ActionNode firstActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                 ServerlessWorkflowUtils.getWorkflowEventFor(workflow, transition.getProduceEvents().get(0).getEventRef()), process);
                         ActionNode lastActionNode = null;
-                        for(ProduceEvent p : transition.getProduceEvents().subList(1, transition.getProduceEvents().size())) {
+                        for (ProduceEvent p : transition.getProduceEvents().subList(1, transition.getProduceEvents().size())) {
                             ActionNode newActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                     ServerlessWorkflowUtils.getWorkflowEventFor(workflow, p.getEventRef()), process);
-                            if(lastActionNode == null) {
+                            if (lastActionNode == null) {
                                 lastActionNode = newActionNode;
                                 factory.connect(firstActionNode.getId(), lastActionNode.getId(), firstActionNode.getId() + "_" + lastActionNode.getId(), process);
                             } else {
@@ -431,9 +436,9 @@ public class ServerlessWorkflowParser {
                     long targetId = 0;
                     if (condition.getTransition() != null) {
                         // check if we need to produce an event in-between
-                        if(!condition.getTransition().getProduceEvents().isEmpty()) {
+                        if (!condition.getTransition().getProduceEvents().isEmpty()) {
 
-                            if(condition.getTransition().getProduceEvents().size() == 1) {
+                            if (condition.getTransition().getProduceEvents().size() == 1) {
                                 ActionNode sendEventNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                         ServerlessWorkflowUtils.getWorkflowEventFor(workflow, condition.getTransition().getProduceEvents().get(0).getEventRef()), process);
 
@@ -446,10 +451,10 @@ public class ServerlessWorkflowParser {
                                 ActionNode firstActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                         ServerlessWorkflowUtils.getWorkflowEventFor(workflow, condition.getTransition().getProduceEvents().get(0).getEventRef()), process);
                                 ActionNode lastActionNode = null;
-                                for(ProduceEvent p : condition.getTransition().getProduceEvents().subList(1, condition.getTransition().getProduceEvents().size())) {
+                                for (ProduceEvent p : condition.getTransition().getProduceEvents().subList(1, condition.getTransition().getProduceEvents().size())) {
                                     ActionNode newActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                             ServerlessWorkflowUtils.getWorkflowEventFor(workflow, p.getEventRef()), process);
-                                    if(lastActionNode == null) {
+                                    if (lastActionNode == null) {
                                         lastActionNode = newActionNode;
                                         factory.connect(firstActionNode.getId(), lastActionNode.getId(), firstActionNode.getId() + "_" + lastActionNode.getId(), process);
                                     } else {
@@ -506,8 +511,8 @@ public class ServerlessWorkflowParser {
     }
 
     protected void handleActions(Functions workflowFunctions,
-                                 List<Action> actions,
-                                 CompositeContextNode embeddedSubProcess) {
+            List<Action> actions,
+            CompositeContextNode embeddedSubProcess) {
         if (actions != null && !actions.isEmpty() && workflowFunctions != null) {
             StartNode embeddedStartNode =
                     factory.startNode(idCounter.getAndIncrement(), "EmbeddedStart", embeddedSubProcess);
@@ -516,55 +521,55 @@ public class ServerlessWorkflowParser {
 
             for (Action action : actions) {
                 FunctionDefinition actionFunction = workflowFunctions.getFunctionDefs()
-                    .stream()
-                    .filter(wf -> wf.getName().equals(action.getFunctionRef().getRefName()))
-                    .findFirst()
-                    .orElseThrow(
-                                 () -> new IllegalArgumentException(
-                                     "cannot find function " + action.getFunctionRef().getRefName()));
+                        .stream()
+                        .filter(wf -> wf.getName().equals(action.getFunctionRef().getRefName()))
+                        .findFirst()
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "cannot find function " + action.getFunctionRef().getRefName()));
                 if (actionFunction.getMetadata().get("type") != null) {
                     switch (actionFunction.getMetadata().get("type").toLowerCase()) {
                         case SCRIPT_TYPE:
                             current = factory
-                                .scriptNode(
+                                    .scriptNode(
                                             idCounter.getAndIncrement(),
                                             action.getFunctionRef().getRefName(),
                                             ServerlessWorkflowUtils
-                                                .scriptFunctionScript(
-                                                                      action
-                                                                          .getFunctionRef()
-                                                                          .getParameters()
-                                                                          .get(SCRIPT_TYPE_PARAM)),
+                                                    .scriptFunctionScript(
+                                                            action
+                                                                    .getFunctionRef()
+                                                                    .getParameters()
+                                                                    .get(SCRIPT_TYPE_PARAM)),
                                             embeddedSubProcess);
                             break;
                         case SYSOUT_TYPE:
                             current = factory
-                                .scriptNode(
+                                    .scriptNode(
                                             idCounter.getAndIncrement(),
                                             action.getFunctionRef().getRefName(),
                                             ServerlessWorkflowUtils
-                                                .sysOutFunctionScript(
-                                                                      action
-                                                                          .getFunctionRef()
-                                                                          .getParameters()
-                                                                          .get(SYSOUT_TYPE_PARAM)),
+                                                    .sysOutFunctionScript(
+                                                            action
+                                                                    .getFunctionRef()
+                                                                    .getParameters()
+                                                                    .get(SYSOUT_TYPE_PARAM)),
                                             embeddedSubProcess);
                             break;
                         case SERVICE_TYPE:
                             current = factory
-                                .serviceNode(
-                                             idCounter.getAndIncrement(),
-                                             action.getFunctionRef().getRefName(),
-                                             actionFunction,
-                                             embeddedSubProcess);
+                                    .serviceNode(
+                                            idCounter.getAndIncrement(),
+                                            action.getFunctionRef().getRefName(),
+                                            actionFunction,
+                                            embeddedSubProcess);
                             break;
                         case REST_TYPE:
                             current = factory
-                                .restServiceNode(
-                                                 idCounter.getAndIncrement(),
-                                                 action.getFunctionRef(),
-                                                 actionFunction,
-                                                 embeddedSubProcess);
+                                    .restServiceNode(
+                                            idCounter.getAndIncrement(),
+                                            action.getFunctionRef(),
+                                            actionFunction,
+                                            embeddedSubProcess);
                             break;
                         default:
                             current = unsupportedNode(action, embeddedSubProcess);
@@ -590,16 +595,16 @@ public class ServerlessWorkflowParser {
         }
     }
 
-    private org.kie.api.definition.process.Node unsupportedNode( Action action, CompositeContextNode embeddedSubProcess) {
+    private org.kie.api.definition.process.Node unsupportedNode(Action action, CompositeContextNode embeddedSubProcess) {
         LOGGER
-            .warn(
-                  "currently unsupported function type, supported types are 'script', 'sysout', 'service', 'decision', 'rule', 'integration', 'rest'");
+                .warn(
+                        "currently unsupported function type, supported types are 'script', 'sysout', 'service', 'decision', 'rule', 'integration', 'rest'");
         LOGGER.warn("defaulting to script type");
         return factory.scriptNode(
-                        idCounter.getAndIncrement(),
-                        action.getFunctionRef().getRefName(),
-                        ServerlessWorkflowUtils.scriptFunctionScript(""),
-                        embeddedSubProcess);
+                idCounter.getAndIncrement(),
+                action.getFunctionRef().getRefName(),
+                ServerlessWorkflowUtils.scriptFunctionScript(""),
+                embeddedSubProcess);
     }
 
 }

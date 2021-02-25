@@ -18,13 +18,13 @@ package org.jbpm.bpmn2.core;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    
-	private static final long serialVersionUID = 510l;
-	
+
+    private static final long serialVersionUID = 510l;
+
     private String id;
     private String type;
     private String name;
-    
+
     public Message(String id) {
         this.id = id;
     }
@@ -41,12 +41,12 @@ public class Message implements Serializable {
         this.type = type;
     }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

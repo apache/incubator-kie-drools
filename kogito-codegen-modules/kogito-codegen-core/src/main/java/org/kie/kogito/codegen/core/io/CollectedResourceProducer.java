@@ -15,14 +15,6 @@
  */
 package org.kie.kogito.codegen.core.io;
 
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.core.io.internal.InternalResource;
-import org.kie.api.io.Resource;
-import org.kie.kogito.codegen.api.io.CollectedResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -35,6 +27,14 @@ import java.util.Enumeration;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.FileSystemResource;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.io.Resource;
+import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;

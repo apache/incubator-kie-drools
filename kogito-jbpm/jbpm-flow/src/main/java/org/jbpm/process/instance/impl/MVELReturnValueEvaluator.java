@@ -34,43 +34,43 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELReturnValueEvaluator
-    implements
-    ReturnValueEvaluator,
-    MVELCompileable,
-    Externalizable {
-    private static final long   serialVersionUID = 510l;
+        implements
+        ReturnValueEvaluator,
+        MVELCompileable,
+        Externalizable {
+    private static final long serialVersionUID = 510l;
 
     private MVELCompilationUnit unit;
-    private String              id;
+    private String id;
 
-    private Serializable        expr;
+    private Serializable expr;
 
     public MVELReturnValueEvaluator() {
     }
 
     public MVELReturnValueEvaluator(final MVELCompilationUnit unit,
-                                    final String id) {
+            final String id) {
         this.unit = unit;
         this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         id = in.readUTF();
         unit = (MVELCompilationUnit) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF( id );
-        out.writeObject( unit );
+        out.writeUTF(id);
+        out.writeObject(unit);
     }
 
     public void compile(MVELDialectRuntimeData data) {
-        expr = unit.getCompiledExpression( data );
+        expr = unit.getCompiledExpression(data);
     }
 
     public void compile(MVELDialectRuntimeData data, RuleImpl rule) {
-        expr = unit.getCompiledExpression( data );
+        expr = unit.getCompiledExpression(data);
     }
 
     public String getDialect() {
@@ -79,40 +79,39 @@ public class MVELReturnValueEvaluator
 
     public Object evaluate(KogitoProcessContext context) throws Exception {
         int length = unit.getOtherIdentifiers().length;
-        Object[] vars = new Object[ length ];
+        Object[] vars = new Object[length];
         if (unit.getOtherIdentifiers() != null) {
-            for (int i = 0; i < length; i++ ) {
-                vars[i] = context.getVariable( unit.getOtherIdentifiers()[i] );
+            for (int i = 0; i < length; i++) {
+                vars[i] = context.getVariable(unit.getOtherIdentifiers()[i]);
             }
         }
 
         InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) context.getKieRuntime();
-        
-        VariableResolverFactory factory 
-            = unit.getFactory( context, 
-                               null, // No previous declarations
-                               null, // No rule
-                               null, // No "right object" 
-                               null, // No (left) tuples
-                               vars, 
-                               internalWorkingMemory,
-                               (GlobalResolver) context.getKieRuntime().getGlobals() );
+
+        VariableResolverFactory factory = unit.getFactory(context,
+                null, // No previous declarations
+                null, // No rule
+                null, // No "right object" 
+                null, // No (left) tuples
+                vars,
+                internalWorkingMemory,
+                (GlobalResolver) context.getKieRuntime().getGlobals());
 
         // do we have any functions for this namespace?
         KiePackage pkg = context.getKieRuntime().getKieBase().getKiePackage("MAIN");
-        if ( pkg instanceof KnowledgePackageImpl) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImpl) pkg).getDialectRuntimeRegistry().getDialectData( id );
-            factory.setNextFactory( data.getFunctionFactory() );
+        if (pkg instanceof KnowledgePackageImpl) {
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) ((KnowledgePackageImpl) pkg).getDialectRuntimeRegistry().getDialectData(id);
+            factory.setNextFactory(data.getFunctionFactory());
         }
 
         Object value = MVELProcessHelper.evaluator().executeExpression(this.expr,
-                                                                                    null,
-                                                                                    factory );
+                null,
+                factory);
 
-        if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException( "Constraints must return boolean values: " + 
-        		unit.getExpression() + " returns " + value + 
-        		(value == null? "" : " (type=" + value.getClass()));
+        if (!(value instanceof Boolean)) {
+            throw new RuntimeException("Constraints must return boolean values: " +
+                    unit.getExpression() + " returns " + value +
+                    (value == null ? "" : " (type=" + value.getClass()));
         }
         return ((Boolean) value).booleanValue();
 
@@ -121,9 +120,9 @@ public class MVELReturnValueEvaluator
     public Serializable getCompExpr() {
         return expr;
     }
-    
+
     public String toString() {
         return this.unit.getExpression();
-    }    
+    }
 
 }

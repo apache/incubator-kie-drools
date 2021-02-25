@@ -17,10 +17,11 @@ package org.kogito.workitem.rest.jsonpath.suppliers;
 
 import java.util.function.Supplier;
 
+import org.kogito.workitem.rest.jsonpath.functions.JsonPathResolver;
+
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import org.kogito.workitem.rest.jsonpath.functions.JsonPathResolver;
 
 public class JsonPathExprSupplier implements Supplier<Expression> {
 
@@ -33,8 +34,8 @@ public class JsonPathExprSupplier implements Supplier<Expression> {
     @Override
     public Expression get() {
         return new ObjectCreationExpr()
-            .setType(JsonPathResolver.class.getCanonicalName())
-            .addArgument(new StringLiteralExpr(jsonPathExpr));
+                .setType(JsonPathResolver.class.getCanonicalName())
+                .addArgument(new StringLiteralExpr(jsonPathExpr));
     }
 
 }

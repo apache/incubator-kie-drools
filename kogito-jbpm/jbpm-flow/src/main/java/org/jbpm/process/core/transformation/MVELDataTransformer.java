@@ -31,40 +31,41 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class MVELDataTransformer implements DataTransformer {
-	
-	private static final Logger logger = LoggerFactory.getLogger(MVELDataTransformer.class);
 
-	@Override
-	public Object compile(String expression, Map<String, Object> parameters) {
-		logger.debug("About to compile mvel expression {}", expression);
-		ClassLoader classLoader = (ClassLoader) parameters.get("classloader");
-		if (classLoader == null) {
-			classLoader = this.getClass().getClassLoader();
-		}
-		ParserConfiguration config = new ParserConfiguration();
+    private static final Logger logger = LoggerFactory.getLogger(MVELDataTransformer.class);
+
+    @Override
+    public Object compile(String expression, Map<String, Object> parameters) {
+        logger.debug("About to compile mvel expression {}", expression);
+        ClassLoader classLoader = (ClassLoader) parameters.get("classloader");
+        if (classLoader == null) {
+            classLoader = this.getClass().getClassLoader();
+        }
+        ParserConfiguration config = new ParserConfiguration();
         config.setClassLoader(classLoader);
-		ParserContext context = new ParserContext(config);
-		if (parameters != null) {
-			@SuppressWarnings("unchecked")
-			Set<String> imports = (Set<String>)parameters.get("imports");
-			if (imports != null) {
-				for(String clazz : imports) {
-					try {
-						Class<?> cl = Class.forName(clazz, true, classLoader);
-						context.addImport(cl.getSimpleName(), cl);
-					} catch (ClassNotFoundException e) {
-						logger.warn("Unable to load class {} due to {}", clazz, e.getException());
-					};
-				}
-			}
-		}
-		return MVEL.compileExpression(expression, context);
-	}
+        ParserContext context = new ParserContext(config);
+        if (parameters != null) {
+            @SuppressWarnings("unchecked")
+            Set<String> imports = (Set<String>) parameters.get("imports");
+            if (imports != null) {
+                for (String clazz : imports) {
+                    try {
+                        Class<?> cl = Class.forName(clazz, true, classLoader);
+                        context.addImport(cl.getSimpleName(), cl);
+                    } catch (ClassNotFoundException e) {
+                        logger.warn("Unable to load class {} due to {}", clazz, e.getException());
+                    }
+                    ;
+                }
+            }
+        }
+        return MVEL.compileExpression(expression, context);
+    }
 
-	@Override
-	public Object transform(Object expression, Map<String, Object> parameters) {
-		logger.debug("About to execute mvel expression {} with parameters {}", expression, parameters);
-		return MVELProcessHelper.evaluator().executeExpression(expression, parameters);
-	}
+    @Override
+    public Object transform(Object expression, Map<String, Object> parameters) {
+        logger.debug("About to execute mvel expression {} with parameters {}", expression, parameters);
+        return MVELProcessHelper.evaluator().executeExpression(expression, parameters);
+    }
 
 }

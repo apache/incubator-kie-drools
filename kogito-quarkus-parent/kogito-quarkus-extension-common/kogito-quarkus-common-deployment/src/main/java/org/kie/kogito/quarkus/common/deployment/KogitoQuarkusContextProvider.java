@@ -15,11 +15,11 @@
  */
 package org.kie.kogito.quarkus.common.deployment;
 
+import java.util.function.Predicate;
+
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.utils.AppPaths;
-
-import java.util.function.Predicate;
 
 public class KogitoQuarkusContextProvider {
 

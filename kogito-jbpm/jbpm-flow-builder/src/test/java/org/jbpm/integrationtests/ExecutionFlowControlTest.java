@@ -30,16 +30,16 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExecutionFlowControlTest  extends AbstractBaseTest {
+public class ExecutionFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowUpgrade() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         // Set the system property so that automatic conversion can happen
-        System.setProperty( "drools.ruleflow.port", "true" );
+        System.setProperty("drools.ruleflow.port", "true");
 
-        kbuilder.add( ResourceFactory.newClassPathResource("ruleflow.drl", ExecutionFlowControlTest.class), ResourceType.DRL);
-        kbuilder.add( ResourceFactory.newClassPathResource("ruleflow40.rfm", ExecutionFlowControlTest.class), ResourceType.DRF);
+        kbuilder.add(ResourceFactory.newClassPathResource("ruleflow.drl", ExecutionFlowControlTest.class), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newClassPathResource("ruleflow40.rfm", ExecutionFlowControlTest.class), ResourceType.DRF);
         KieBase kbase = kbuilder.newKieBase();
         final KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
@@ -47,19 +47,19 @@ public class ExecutionFlowControlTest  extends AbstractBaseTest {
         ksession.fireAllRules();
         assertEquals(0, list.size());
         final ProcessInstance processInstance = ksession.startProcess("0");
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                processInstance.getState() );
-        
-        assertEquals( 4,
-                      list.size() );
-        assertEquals( "Rule1",
-                      list.get( 0 ) );
-        list.subList(1,2).contains( "Rule2" );
-        list.subList(1,2).contains( "Rule3" );
-        assertEquals( "Rule4",
-                      list.get( 3 ) );
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                      processInstance.getState() );
+        assertEquals(ProcessInstance.STATE_COMPLETED,
+                processInstance.getState());
+
+        assertEquals(4,
+                list.size());
+        assertEquals("Rule1",
+                list.get(0));
+        list.subList(1, 2).contains("Rule2");
+        list.subList(1, 2).contains("Rule3");
+        assertEquals("Rule4",
+                list.get(3));
+        assertEquals(ProcessInstance.STATE_COMPLETED,
+                processInstance.getState());
         // Reset the system property so that automatic conversion should not happen
         System.setProperty("drools.ruleflow.port", "false");
     }

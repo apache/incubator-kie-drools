@@ -20,28 +20,28 @@ import java.util.function.Function;
 
 public class EventTypeFilter implements EventFilter, Serializable {
 
-	private static final long serialVersionUID = 510l;
-	
-	protected String type;
-	
-	public String getType() {
-		return type;
-	}
+    private static final long serialVersionUID = 510l;
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    protected String type;
 
-	public boolean acceptsEvent(String type, Object event) {
-		if (this.type != null && this.type.equals(type)) {
-			return true;
-		}
-		return false;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public String toString() { 
-	    return "Event filter: [" + this.type + "]";
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean acceptsEvent(String type, Object event) {
+        if (this.type != null && this.type.equals(type)) {
+            return true;
+        }
+        return false;
+    }
+
+    public String toString() {
+        return "Event filter: [" + this.type + "]";
+    }
 
     @Override
     public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {

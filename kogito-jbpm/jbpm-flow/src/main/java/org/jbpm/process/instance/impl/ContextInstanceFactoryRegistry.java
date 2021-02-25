@@ -34,9 +34,9 @@ import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 
 public class ContextInstanceFactoryRegistry {
-    
-    public static final ContextInstanceFactoryRegistry INSTANCE = 
-        new ContextInstanceFactoryRegistry();
+
+    public static final ContextInstanceFactoryRegistry INSTANCE =
+            new ContextInstanceFactoryRegistry();
 
     private Map<Class<? extends Context>, ContextInstanceFactory> registry;
 
@@ -52,26 +52,29 @@ public class ContextInstanceFactoryRegistry {
     public ContextInstanceFactory getContextInstanceFactory(Context context) {
         Class<? extends Context> cls = context.getClass();
         // hard wired contexts:
-        if (cls == VariableScope.class) return factoryOf(VariableScopeInstance::new);
-        if (cls == ExceptionScope.class) return factoryOf(DefaultExceptionScopeInstance::new);
-        if (cls == CompensationScope.class) return factoryOf(CompensationScopeInstance::new);
-        if (cls == SwimlaneContext.class) return factoryOf(SwimlaneContextInstance::new);
+        if (cls == VariableScope.class)
+            return factoryOf(VariableScopeInstance::new);
+        if (cls == ExceptionScope.class)
+            return factoryOf(DefaultExceptionScopeInstance::new);
+        if (cls == CompensationScope.class)
+            return factoryOf(CompensationScopeInstance::new);
+        if (cls == SwimlaneContext.class)
+            return factoryOf(SwimlaneContextInstance::new);
 
         return this.registry.get(cls);
     }
 
     private static ContextInstanceFactory factoryOf(Supplier<? extends ContextInstance> supplier) {
-        return (context, contextInstanceContainer, processInstance) ->
-                getContextInstance(supplier,
-                                   context,
-                                   contextInstanceContainer,
-                                   processInstance);
+        return (context, contextInstanceContainer, processInstance) -> getContextInstance(supplier,
+                context,
+                contextInstanceContainer,
+                processInstance);
     }
 
     private static ContextInstance getContextInstance(Supplier<? extends ContextInstance> supplier,
-                                                      Context context,
-                                                      ContextInstanceContainer contextInstanceContainer,
-                                                      ProcessInstance processInstance) {
+            Context context,
+            ContextInstanceContainer contextInstanceContainer,
+            ProcessInstance processInstance) {
         ContextInstance result = contextInstanceContainer.getContextInstance(context.getType(), context.getId());
         if (result != null) {
             return result;

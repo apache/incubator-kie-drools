@@ -20,18 +20,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.api.AddonsConfig;
+import org.kie.kogito.codegen.api.ApplicationSection;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.api.ApplicationSection;
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

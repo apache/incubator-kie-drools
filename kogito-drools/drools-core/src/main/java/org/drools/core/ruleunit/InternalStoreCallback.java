@@ -23,6 +23,7 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalStoreCallback {
-    void update( KogitoInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
-    void delete( KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState);
+    void update(KogitoInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
+
+    void delete(KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState);
 }

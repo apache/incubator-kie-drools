@@ -30,17 +30,16 @@ import org.kie.kogito.uow.WorkUnit;
  * Simple unit of work that collects work elements
  * throughout the life of the unit and invokes all of them at the end
  * when end method is invoked. It does not invoke the work
- * when abort is invoked, only clears the collected items. 
+ * when abort is invoked, only clears the collected items.
  *
  */
 public class CollectingUnitOfWork implements UnitOfWork {
-    
+
     private Set<WorkUnit<?>> collectedWork;
     private boolean done;
-    
+
     private final EventManager eventManager;
-    
-   
+
     public CollectingUnitOfWork(EventManager eventManager) {
         this.eventManager = eventManager;
     }
@@ -56,8 +55,8 @@ public class CollectingUnitOfWork implements UnitOfWork {
     @Override
     public void end() {
         checkStarted();
-        EventBatch batch = eventManager.newBatch();        
-        
+        EventBatch batch = eventManager.newBatch();
+
         for (WorkUnit<?> work : sorted()) {
             batch.append(work.data());
             work.perform();
@@ -68,8 +67,8 @@ public class CollectingUnitOfWork implements UnitOfWork {
 
     @Override
     public void abort() {
-        checkStarted();                
-        for (WorkUnit<?> work : sorted()) {            
+        checkStarted();
+        for (WorkUnit<?> work : sorted()) {
             work.abort();
         }
         done();
@@ -85,27 +84,26 @@ public class CollectingUnitOfWork implements UnitOfWork {
         collectedWork.remove(work);
         collectedWork.add(work);
     }
-    
+
     protected Collection<WorkUnit<?>> sorted() {
         List<WorkUnit<?>> sortedCollectedWork = new ArrayList<>(collectedWork);
         sortedCollectedWork.sort((u1, u2) -> u1.priority().compareTo(u2.priority()));
-        
+
         return sortedCollectedWork;
     }
 
-    
     protected void checkDone() {
         if (done) {
             throw new IllegalStateException("Unit of work is already done (ended or aborted)");
         }
     }
-    
+
     protected void checkStarted() {
         if (collectedWork == null) {
             throw new IllegalStateException("Unit of work is not started");
         }
     }
-    
+
     protected void done() {
         done = true;
         collectedWork = null;

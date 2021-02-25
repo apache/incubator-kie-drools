@@ -26,9 +26,9 @@ public interface Scheduler {
      * @return
      */
     public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
-    
+
     /**
-     * Remove the job identified by the given job handle from the 
+     * Remove the job identified by the given job handle from the
      * scheduled queue
      * 
      * @param jobHandle the job identity handle
@@ -36,5 +36,5 @@ public interface Scheduler {
      * @return
      */
     public boolean removeJob(JobHandle jobHandle);
-    
+
 }

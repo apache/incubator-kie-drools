@@ -36,179 +36,181 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.signal.SignalManager;
 
 public class DefaultSignalManager implements SignalManager {
-	
-	private Map<String, List<EventListener>> processEventListeners = new ConcurrentHashMap<String, List<EventListener>>();
-	private InternalKnowledgeRuntime kruntime;
-	
-	public DefaultSignalManager(InternalKnowledgeRuntime kruntime) {
-		this.kruntime = kruntime;
-	}
-	
-	public void addEventListener(String type, EventListener eventListener) {
-		List<EventListener> eventListeners = processEventListeners.get(type);
-		//this first "if" is not pretty, but allows to synchronize only when needed
-		if (eventListeners == null) {
-			synchronized(processEventListeners){
-				eventListeners = processEventListeners.get(type);
-				if(eventListeners==null){
-					eventListeners = new CopyOnWriteArrayList<EventListener>();
-					processEventListeners.put(type, eventListeners);
-				}
-			}
-		}		
-		eventListeners.add(eventListener);
-	}
-	
-	public void removeEventListener(String type, EventListener eventListener) {
-		if (processEventListeners != null) {
-			List<EventListener> eventListeners = processEventListeners.get(type);
-			if (eventListeners != null) {
-				eventListeners.remove(eventListener);
-				if (eventListeners.isEmpty()) {
-					processEventListeners.remove(type);
-					eventListeners = null;
-				}
-			}
-		}
-	}
-	
-	public void signalEvent(String type, Object event) {
-	    ((DefaultSignalManager) ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
-	}
-	
-	public void internalSignalEvent(String type, Object event) {
-		if (processEventListeners != null) {
-			List<EventListener> eventListeners = processEventListeners.get(type);
-			if (eventListeners != null) {
-				for (EventListener eventListener: eventListeners) {
-					eventListener.signalEvent(type, event);
-				}
-			}
-		}
-	}
-	public void signalEvent(String processInstanceId, String type, Object event) {
-		ProcessInstance processInstance = ((KogitoWorkingMemory)kruntime).getProcessInstance(processInstanceId);
-		if (processInstance != null) {
-		    processInstance.signalEvent(type, event);
-		}
-	}
-	
-	public static class SignalProcessInstanceAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
 
-		private String processInstanceId;
-		private String type;
-		private Object event;
-		
-		public SignalProcessInstanceAction(String processInstanceId, String type, Object event) {
-			this.processInstanceId = processInstanceId;
-			this.type = type;
-			this.event = event;
-			
-		}
-		
-		public SignalProcessInstanceAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
-			processInstanceId = context.readUTF();
-			type = context.readUTF();
-			if (context.readBoolean()) {
-				event = context.readObject();
-			}
-		}
-		
-		public void execute(InternalWorkingMemory workingMemory) {
-			ProcessInstance processInstance = ((KogitoWorkingMemory)workingMemory).getProcessInstance(processInstanceId);
-			if (processInstance != null) {
-				processInstance.signalEvent(type, event);
-			}
-		}
+    private Map<String, List<EventListener>> processEventListeners = new ConcurrentHashMap<String, List<EventListener>>();
+    private InternalKnowledgeRuntime kruntime;
 
-		public void execute(InternalKnowledgeRuntime kruntime) {
-			ProcessInstance processInstance = ((KogitoWorkingMemory)kruntime).getProcessInstance(processInstanceId);
-			if (processInstance != null) {
-				processInstance.signalEvent(type, event);
-			}
-		}
+    public DefaultSignalManager(InternalKnowledgeRuntime kruntime) {
+        this.kruntime = kruntime;
+    }
 
-		public void write(MarshallerWriteContext context) throws IOException {
-			context.writeInt( WorkingMemoryAction.SignalProcessInstanceAction );
-			context.writeUTF(processInstanceId);
-			context.writeUTF(type);
-			context.writeBoolean(event != null);
-			if (event != null) {
-				context.writeObject(event);
-			}
-		}
+    public void addEventListener(String type, EventListener eventListener) {
+        List<EventListener> eventListeners = processEventListeners.get(type);
+        //this first "if" is not pretty, but allows to synchronize only when needed
+        if (eventListeners == null) {
+            synchronized (processEventListeners) {
+                eventListeners = processEventListeners.get(type);
+                if (eventListeners == null) {
+                    eventListeners = new CopyOnWriteArrayList<EventListener>();
+                    processEventListeners.put(type, eventListeners);
+                }
+            }
+        }
+        eventListeners.add(eventListener);
+    }
 
-		public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-			processInstanceId = in.readUTF();
-			type = in.readUTF();
-			if (in.readBoolean()) {
-				event = in.readObject();
-			}
-		}
+    public void removeEventListener(String type, EventListener eventListener) {
+        if (processEventListeners != null) {
+            List<EventListener> eventListeners = processEventListeners.get(type);
+            if (eventListeners != null) {
+                eventListeners.remove(eventListener);
+                if (eventListeners.isEmpty()) {
+                    processEventListeners.remove(type);
+                    eventListeners = null;
+                }
+            }
+        }
+    }
 
-		public void writeExternal(ObjectOutput out) throws IOException {
-			out.writeUTF(processInstanceId);
-			out.writeUTF(type);
-			out.writeBoolean(event != null);
-			if (event != null) {
-				out.writeObject(event);
-			}
-		}
+    public void signalEvent(String type, Object event) {
+        ((DefaultSignalManager) ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
+    }
 
-	}
-	
-	public static class SignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
+    public void internalSignalEvent(String type, Object event) {
+        if (processEventListeners != null) {
+            List<EventListener> eventListeners = processEventListeners.get(type);
+            if (eventListeners != null) {
+                for (EventListener eventListener : eventListeners) {
+                    eventListener.signalEvent(type, event);
+                }
+            }
+        }
+    }
 
-		private String type;
-		private Object event;
-		
-		public SignalAction(String type, Object event) {
-			this.type = type;
-			this.event = event;
-		}
-		
-		public SignalAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
-			type = context.readUTF();
-			if (context.readBoolean()) {
-				event = context.readObject();
-			}
-		}
-		
-		public void execute(InternalWorkingMemory workingMemory) {
-			((DefaultSignalManager) ((InternalProcessRuntime) workingMemory.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
-		}
+    public void signalEvent(String processInstanceId, String type, Object event) {
+        ProcessInstance processInstance = ((KogitoWorkingMemory) kruntime).getProcessInstance(processInstanceId);
+        if (processInstance != null) {
+            processInstance.signalEvent(type, event);
+        }
+    }
+
+    public static class SignalProcessInstanceAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
+
+        private String processInstanceId;
+        private String type;
+        private Object event;
+
+        public SignalProcessInstanceAction(String processInstanceId, String type, Object event) {
+            this.processInstanceId = processInstanceId;
+            this.type = type;
+            this.event = event;
+
+        }
+
+        public SignalProcessInstanceAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
+            processInstanceId = context.readUTF();
+            type = context.readUTF();
+            if (context.readBoolean()) {
+                event = context.readObject();
+            }
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            ProcessInstance processInstance = ((KogitoWorkingMemory) workingMemory).getProcessInstance(processInstanceId);
+            if (processInstance != null) {
+                processInstance.signalEvent(type, event);
+            }
+        }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	((DefaultSignalManager) ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
+            ProcessInstance processInstance = ((KogitoWorkingMemory) kruntime).getProcessInstance(processInstanceId);
+            if (processInstance != null) {
+                processInstance.signalEvent(type, event);
+            }
         }
-		public void write(MarshallerWriteContext context) throws IOException {
-			context.writeInt( WorkingMemoryAction.SignalAction );
-			context.writeUTF(type);
-			context.writeBoolean(event != null);
-			if (event != null) {
-				context.writeObject(event);
-			}
-		}
 
-		public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-			type = in.readUTF();
-			if (in.readBoolean()) {
-				event = in.readObject();
-			}
-		}
+        public void write(MarshallerWriteContext context) throws IOException {
+            context.writeInt(WorkingMemoryAction.SignalProcessInstanceAction);
+            context.writeUTF(processInstanceId);
+            context.writeUTF(type);
+            context.writeBoolean(event != null);
+            if (event != null) {
+                context.writeObject(event);
+            }
+        }
 
-		public void writeExternal(ObjectOutput out) throws IOException {
-			out.writeUTF(type);
-			out.writeBoolean(event != null);
-			if (event != null) {
-				out.writeObject(event);
-			}
-		}
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            processInstanceId = in.readUTF();
+            type = in.readUTF();
+            if (in.readBoolean()) {
+                event = in.readObject();
+            }
+        }
 
-	}
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeUTF(processInstanceId);
+            out.writeUTF(type);
+            out.writeBoolean(event != null);
+            if (event != null) {
+                out.writeObject(event);
+            }
+        }
+
+    }
+
+    public static class SignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
+
+        private String type;
+        private Object event;
+
+        public SignalAction(String type, Object event) {
+            this.type = type;
+            this.event = event;
+        }
+
+        public SignalAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
+            type = context.readUTF();
+            if (context.readBoolean()) {
+                event = context.readObject();
+            }
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            ((DefaultSignalManager) ((InternalProcessRuntime) workingMemory.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            ((DefaultSignalManager) ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            context.writeInt(WorkingMemoryAction.SignalAction);
+            context.writeUTF(type);
+            context.writeBoolean(event != null);
+            if (event != null) {
+                context.writeObject(event);
+            }
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            type = in.readUTF();
+            if (in.readBoolean()) {
+                event = in.readObject();
+            }
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeUTF(type);
+            out.writeBoolean(event != null);
+            if (event != null) {
+                out.writeObject(event);
+            }
+        }
+
+    }
 
     @Override
     public boolean accept(String type, Object event) {
         return processEventListeners.containsKey(type);
-    }	
+    }
 }

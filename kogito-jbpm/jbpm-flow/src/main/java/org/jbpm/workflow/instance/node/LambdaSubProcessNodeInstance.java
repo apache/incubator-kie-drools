@@ -41,9 +41,9 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
-import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,16 +65,16 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void internalTrigger( KogitoNodeInstance from, String type) {
-    	super.internalTrigger(from, type);
-    	// if node instance was cancelled, abort
-		if (getNodeInstanceContainer().getNodeInstance(getStringId()) == null) {
-			return;
-		}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void internalTrigger(KogitoNodeInstance from, String type) {
+        super.internalTrigger(from, type);
+        // if node instance was cancelled, abort
+        if (getNodeInstanceContainer().getNodeInstance(getStringId()) == null) {
+            return;
+        }
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                "A SubProcess node only accepts default incoming connections!");
+                    "A SubProcess node only accepts default incoming connections!");
         }
 
         KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
@@ -82,21 +82,22 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
         Object o = subProcessFactory.bind(context);
         org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
- 
-        org.kie.api.runtime.process.ProcessInstance pi = ((AbstractProcessInstance<?>)processInstance).internalGetProcessInstance();
+
+        org.kie.api.runtime.process.ProcessInstance pi = ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
         ((ProcessInstanceImpl) pi).setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
         ((ProcessInstanceImpl) pi).setMetaData("ParentNodeInstanceId", getUniqueId());
         ((ProcessInstanceImpl) pi).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
         ((ProcessInstanceImpl) pi).setParentProcessInstanceId(getProcessInstance().getStringId());
-        ((ProcessInstanceImpl) pi).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
+        ((ProcessInstanceImpl) pi)
+                .setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
         ((ProcessInstanceImpl) pi).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
         ((ProcessInstanceImpl) pi).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
-        
+
         processInstance.start();
         this.processInstanceId = processInstance.id();
-        
+
         subProcessFactory.unbind(context, processInstance.variables());
-        
+
         if (!getSubProcessNode().isWaitForCompletion()) {
             triggerCompleted();
         } else if (processInstance.status() == ProcessInstance.STATE_COMPLETED || processInstance.status() == ProcessInstance.STATE_ABORTED) {
@@ -110,24 +111,23 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     public void cancel() {
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
-        	ProcessInstance processInstance = null;
+            ProcessInstance processInstance = null;
             KogitoProcessRuntime kruntime = (KogitoProcessRuntime) ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
 
-    		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
-
+            processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
 
             if (processInstance != null) {
-            	processInstance.setState(ProcessInstance.STATE_ABORTED);
+                processInstance.setState(ProcessInstance.STATE_ABORTED);
             }
         }
     }
 
     public String getProcessInstanceId() {
-    	return processInstanceId;
+        return processInstanceId;
     }
 
     public void internalSetProcessInstanceId(String processInstanceId) {
-    	this.processInstanceId = processInstanceId;
+        this.processInstanceId = processInstanceId;
     }
 
     public void addEventListeners() {
@@ -136,7 +136,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     private void addProcessListener() {
-    	getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
+        getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
     public void removeEventListeners() {
@@ -145,35 +145,34 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     @Override
-	public void signalEvent(String type, Object event) {
-		if (("processInstanceCompleted:" + processInstanceId).equals(type)) {
-			processInstanceCompleted((ProcessInstance) event);
-		} else {
-			super.signalEvent(type, event);
-		}
-	}
+    public void signalEvent(String type, Object event) {
+        if (("processInstanceCompleted:" + processInstanceId).equals(type)) {
+            processInstanceCompleted((ProcessInstance) event);
+        } else {
+            super.signalEvent(type, event);
+        }
+    }
 
     @Override
     public String[] getEventTypes() {
-    	return new String[] { "processInstanceCompleted:" + processInstanceId };
+        return new String[] { "processInstanceCompleted:" + processInstanceId };
     }
 
     public void processInstanceCompleted(ProcessInstance processInstance) {
         removeEventListeners();
         handleOutMappings(processInstance);
         if (processInstance.getState() == ProcessInstance.STATE_ABORTED) {
-            String faultName = processInstance.getOutcome()==null?"":processInstance.getOutcome();
+            String faultName = processInstance.getOutcome() == null ? "" : processInstance.getOutcome();
             // handle exception as sub process failed with error code
-            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
-                    resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
+            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
             if (exceptionScopeInstance != null) {
 
                 exceptionScopeInstance.handleException(faultName, processInstance.getFaultData());
-                if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()){
+                if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()) {
                     cancel();
                 }
                 return;
-            } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()){
+            } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()) {
                 getProcessInstance().setState(ProcessInstance.STATE_ABORTED, faultName);
                 return;
             }
@@ -188,26 +187,25 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void handleOutMappings(ProcessInstance processInstance) {
-        
+
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
         KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
-        org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>)processInstance.getMetaData().get("KogitoProcessInstance"));
+        org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>) processInstance.getMetaData().get("KogitoProcessInstance"));
         if (pi != null) {
             subProcessFactory.unbind(context, pi.variables());
-        }        
+        }
     }
 
     public String getNodeName() {
-    	org.kie.api.definition.process.Node node = getNode();
-    	if (node == null) {
-    		return "[Dynamic] Sub Process";
-    	}
-    	return super.getNodeName();
+        org.kie.api.definition.process.Node node = getNode();
+        if (node == null) {
+            return "[Dynamic] Sub Process";
+        }
+        return super.getNodeName();
     }
-
 
     @Override
     public List<ContextInstance> getContextInstances(String contextId) {
@@ -236,7 +234,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     public ContextInstance getContextInstance(String contextId, long id) {
         List<ContextInstance> contextInstances = subContextInstances.get(contextId);
         if (contextInstances != null) {
-            for (ContextInstance contextInstance: contextInstances) {
+            for (ContextInstance contextInstance : contextInstances) {
                 if (contextInstance.getContextId() == id) {
                     return contextInstance;
                 }
@@ -264,26 +262,25 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     protected Map<String, Object> getSourceParameters(DataAssociation association) {
-    	Map<String, Object> parameters = new HashMap<String, Object>();
-    	for (String sourceParam : association.getSources()) {
-	    	Object parameterValue = null;
-	        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	        resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
-	        if (variableScopeInstance != null) {
-	            parameterValue = variableScopeInstance.getVariable(sourceParam);
-	        } else {
-	            try {
-	                parameterValue = MVELProcessHelper.evaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
-	            } catch (Throwable t) {
-	                logger.warn("Could not find variable scope for variable {}", sourceParam);
-	            }
-	        }
-	        if (parameterValue != null) {
-	        	parameters.put(association.getTarget(), parameterValue);
-	        }
-    	}
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        for (String sourceParam : association.getSources()) {
+            Object parameterValue = null;
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
+            if (variableScopeInstance != null) {
+                parameterValue = variableScopeInstance.getVariable(sourceParam);
+            } else {
+                try {
+                    parameterValue = MVELProcessHelper.evaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
+                } catch (Throwable t) {
+                    logger.warn("Could not find variable scope for variable {}", sourceParam);
+                }
+            }
+            if (parameterValue != null) {
+                parameters.put(association.getTarget(), parameterValue);
+            }
+        }
 
-    	return parameters;
+        return parameters;
     }
 
 }

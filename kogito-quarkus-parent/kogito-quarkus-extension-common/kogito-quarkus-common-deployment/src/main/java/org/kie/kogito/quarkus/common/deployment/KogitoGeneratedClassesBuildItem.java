@@ -15,8 +15,9 @@
  */
 package org.kie.kogito.quarkus.common.deployment;
 
-import io.quarkus.builder.item.MultiBuildItem;
 import org.jboss.jandex.IndexView;
+
+import io.quarkus.builder.item.MultiBuildItem;
 
 public final class KogitoGeneratedClassesBuildItem extends MultiBuildItem {
 

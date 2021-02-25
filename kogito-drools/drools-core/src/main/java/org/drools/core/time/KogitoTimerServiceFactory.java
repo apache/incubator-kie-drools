@@ -21,11 +21,11 @@ import org.drools.reflective.ComponentsFactory;
 
 public class KogitoTimerServiceFactory {
 
-    public static TimerService getTimerService( SessionConfiguration config) {
+    public static TimerService getTimerService(SessionConfiguration config) {
         TimerService service;
         switch (config.getClockType()) {
             case REALTIME_CLOCK:
-                service = newTimerService(( SessionConfigurationImpl ) config);
+                service = newTimerService((SessionConfigurationImpl) config);
                 break;
             case PSEUDO_CLOCK:
                 service = (TimerService) config.getClockType().createInstance();
@@ -38,10 +38,10 @@ public class KogitoTimerServiceFactory {
     }
 
     private static TimerService newTimerService(SessionConfigurationImpl config) {
-        String className = config.getPropertyValue( "drools.timerService", "org.drools.core.time.impl.JDKTimerService" );
-        if ( className == null ) {
+        String className = config.getPropertyValue("drools.timerService", "org.drools.core.time.impl.JDKTimerService");
+        if (className == null) {
             return null;
         }
-        return (TimerService) ComponentsFactory.createTimerService( className );
+        return (TimerService) ComponentsFactory.createTimerService(className);
     }
 }

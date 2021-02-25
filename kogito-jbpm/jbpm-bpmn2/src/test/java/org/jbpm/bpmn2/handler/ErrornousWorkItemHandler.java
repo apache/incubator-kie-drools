@@ -22,12 +22,11 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
-
 public class ErrornousWorkItemHandler implements KogitoWorkItemHandler {
-    
+
     private String processId;
     private HandlingStrategy strategy;
-    
+
     private WorkItem workItem;
 
     public ErrornousWorkItemHandler(String processId, HandlingStrategy strategy) {
@@ -37,18 +36,18 @@ public class ErrornousWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         this.workItem = workItem;
         if (processId != null && strategy != null) {
-            
+
             if (workItem.getParameter("isCheckedCheckbox") != null) {
                 manager.completeWorkItem(workItem.getStringId(), workItem.getParameters());
             } else {
-            
+
                 throw new ProcessWorkItemHandlerException(processId, strategy, new RuntimeException("On purpose"));
             }
         }
-        
+
         manager.completeWorkItem(workItem.getStringId(), null);
     }
 

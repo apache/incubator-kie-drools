@@ -52,10 +52,10 @@ public class DocumentMarshallingStrategy implements KogitoObjectMarshallingStrat
 
     @Override
     public Object unmarshal(String dataType,
-                            Context context,
-                            ObjectInputStream is,
-                            byte[] object,
-                            ClassLoader classloader) throws IOException, ClassNotFoundException {
+            Context context,
+            ObjectInputStream is,
+            byte[] object,
+            ClassLoader classloader) throws IOException, ClassNotFoundException {
 
         return DocumentUtils.fromByteArray(dataType, object);
     }

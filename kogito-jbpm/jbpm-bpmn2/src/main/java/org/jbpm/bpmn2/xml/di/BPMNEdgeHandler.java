@@ -33,21 +33,21 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
         initValidPeers();
         this.allowNesting = false;
     }
-    
+
     protected void initValidParents() {
         this.validParents = new HashSet<Class<?>>();
         this.validParents.add(ProcessInfo.class);
     }
-    
+
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
         this.validPeers.add(NodeInfo.class);
         this.validPeers.add(ConnectionInfo.class);
     }
-    
+
     public Object start(final String uri, final String localName,
-                        final Attributes attrs, final ExtensibleXmlParser parser)
+            final Attributes attrs, final ExtensibleXmlParser parser)
             throws SAXException {
         parser.startElementBuilder(localName, attrs);
 
@@ -59,7 +59,7 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Object end(final String uri, final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final ExtensibleXmlParser parser) throws SAXException {
         Element element = parser.endElementBuilder();
         // now get bendpoints
         String bendpoints = null;
@@ -95,16 +95,16 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
     public Class<?> generateNodeFor() {
         return ConnectionInfo.class;
     }
-    
+
     public static class ConnectionInfo {
-        
+
         private String elementRef;
         private String bendpoints;
 
         public ConnectionInfo(String elementRef) {
             this.elementRef = elementRef;
         }
-        
+
         public String getElementRef() {
             return elementRef;
         }
@@ -116,7 +116,7 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
         public void setBendpoints(String bendpoints) {
             this.bendpoints = bendpoints;
         }
-        
+
     }
 
 }

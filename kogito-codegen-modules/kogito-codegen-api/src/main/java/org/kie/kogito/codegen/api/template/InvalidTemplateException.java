@@ -32,5 +32,4 @@ public class InvalidTemplateException extends RuntimeException {
                 "Invalid template for ''{0}'', file ''{1}'': {2}", classType, templateName, errorMessage));
     }
 
-
 }
