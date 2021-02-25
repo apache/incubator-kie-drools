@@ -19,11 +19,8 @@ package org.drools.scenariosimulation.backend.runner;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.drools.scenariosimulation.api.model.Background;
-import org.drools.scenariosimulation.api.model.ExpressionElement;
-import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
@@ -32,7 +29,6 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFacto
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
-import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
@@ -50,12 +46,12 @@ public abstract class AbstractScenarioRunner extends Runner {
     protected final ScenarioRunnerDTO scenarioRunnerDTO;
     protected SimulationRunMetadataBuilder simulationRunMetadataBuilder;
 
-    public AbstractScenarioRunner(KieContainer kieContainer,
-                                  ScenarioRunnerDTO scenarioRunnerDTO,
-                                  ExpressionEvaluatorFactory expressionEvaluatorFactory) {
+    protected AbstractScenarioRunner(KieContainer kieContainer,
+                                     ScenarioRunnerDTO scenarioRunnerDTO,
+                                     ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         this.kieContainer = kieContainer;
         this.scenarioRunnerDTO = scenarioRunnerDTO;
-        this.desc = getDescriptionForSimulation(getFileName(), scenarioRunnerDTO.getScenarioWithIndices());
+        this.desc = getDescriptionForSimulation(getFilePath(), scenarioRunnerDTO.getScenarioWithIndices());
         this.classLoader = kieContainer.getClassLoader();
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
     }
@@ -113,27 +109,24 @@ public abstract class AbstractScenarioRunner extends Runner {
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
 
         int index = scenarioWithIndex.getIndex();
-        FactMapping factMapping = scenarioRunnerDTO.getSimulationModelDescriptor().getFactMappingByIndex(index);
-        Description descriptionForScenario = getDescriptionForScenario(getFileName(), index, scenarioWithIndex.getScesimData());
+        Description descriptionForScenario = getDescriptionForScenario(getFilePath(), index, scenarioWithIndex.getScesimData());
         runNotifier.fireTestStarted(descriptionForScenario);
 
         try {
             internalRunScenario(scenarioWithIndex, scenarioRunnerData, settings, background);
         } catch (ScenarioException e) {
             if (e.isFailedAssertion()) {
-                String expressionElement = String.join(".", factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.toList()));
-                String failedAssertionMessage = ScenarioSimulationServerMessages.getAssertionFailedExceptionMessage(expressionElement, e.getMessage());
-                runNotifier.fireTestFailure(new Failure(descriptionForScenario, new AssertionError(failedAssertionMessage)));
+                runNotifier.fireTestFailure(new Failure(descriptionForScenario, new AssertionError(e.getMessage())));
             } else {
                 IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);
-                indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
+                indexedScenarioException.setFileName(getFileName(getFilePath()));
                 runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
             }
         }
         catch (Exception e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, "Unexpected test error in scenario '" +
                     scenarioWithIndex.getScesimData().getDescription() + "'", e);
-            indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
+            indexedScenarioException.setFileName(getFileName(getFilePath()));
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         }
 
@@ -153,7 +146,7 @@ public abstract class AbstractScenarioRunner extends Runner {
                               background);
     }
 
-    public Optional<String> getFileName() {
+    public Optional<String> getFilePath() {
         return Optional.ofNullable(scenarioRunnerDTO.getFileName());
     }
 

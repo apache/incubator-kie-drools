@@ -33,6 +33,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -96,7 +97,7 @@ public abstract class AbstractRunnerHelper {
                          expressionEvaluatorFactory,
                          requestContext);
 
-        validateAssertion(scenarioRunnerData.getResults());
+        validateAssertion(scenarioRunnerData.getResults(), scesimModelDescriptor, scenario.getDescription());
     }
 
     protected List<InstanceGiven> extractBackgroundValues(Background background,
@@ -259,26 +260,34 @@ public abstract class AbstractRunnerHelper {
         return paramsForBean;
     }
 
-    protected void validateAssertion(List<ScenarioResult> scenarioResults) {
+    protected void validateAssertion(List<ScenarioResult> scenarioResults,
+                                     ScesimModelDescriptor scesimModelDescriptor,
+                                     String scenarioDescription) {
 
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
-                thrownScenarioException(scenarioResult.getFactMappingValue());
+                thrownScenarioException(scenarioResult.getFactMappingValue(), scesimModelDescriptor, scenarioDescription);
             }
         }
 
     }
 
-    private void thrownScenarioException(FactMappingValue factMappingValue) {
-        switch (factMappingValue.getStatus()) {
-            case FAILED_WITH_ERROR: {
-                throw new ScenarioException(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factMappingValue.getErrorValue(),
-                                                                                                                   factMappingValue.getRawValue()),
-                                            true);
-            }
-            case FAILED_WITH_EXCEPTION:
-                throw new ScenarioException(factMappingValue.getExceptionMessage());
-            default: // Nothing
+    private void thrownScenarioException(FactMappingValue factMappingValue,
+                                         ScesimModelDescriptor scesimModelDescriptor,
+                                         String scenarioDescription) {
+        FactMapping factMapping = scesimModelDescriptor.getFactMapping(factMappingValue.getFactIdentifier(),
+                                                                       factMappingValue.getExpressionIdentifier())
+                .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
+        String factName = String.join(".", factMapping.getExpressionElements().stream()
+                .map(ExpressionElement::getStep).collect(Collectors.toList()));
+        if (FactMappingValueStatus.FAILED_WITH_ERROR == factMappingValue.getStatus()) {
+            throw new ScenarioException(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
+                                                                                                               factMappingValue.getErrorValue(),
+                                                                                                               factMappingValue.getRawValue()),
+                                        true);
+        } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
+            throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenarioDescription,
+                                                                                                            factMappingValue.getExceptionMessage()));
         }
     }
 

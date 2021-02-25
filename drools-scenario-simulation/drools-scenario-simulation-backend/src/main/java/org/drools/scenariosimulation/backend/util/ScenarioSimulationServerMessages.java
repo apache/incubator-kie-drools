@@ -15,57 +15,26 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.List;
-
 public class ScenarioSimulationServerMessages {
 
     private ScenarioSimulationServerMessages() {
         // Util class - Not instantiable
     }
 
-    public static final String UNKNOWN_ERROR = "Unknown Error";
     public static final String NULL = "null";
 
-    public static String getUnknownErrorMessage() {
-        return UNKNOWN_ERROR;
-    }
-
-    public static String getFactWithWrongValueExceptionMessage(Object expectedValue, Object actualValue) {
+    public static String getFactWithWrongValueExceptionMessage(String factName, Object expectedValue, Object actualValue) {
         if (expectedValue == null) {
             expectedValue = NULL;
         }
         if (actualValue == null) {
             actualValue = NULL;
         }
-        return String.format("The expected value is %s but the actual one is %s", expectedValue, actualValue);
+        return String.format("Failed in \"%s\": The expected value is \"%s\" but the actual one is \"%s\"", factName, expectedValue, actualValue);
     }
 
-    public static String getAssertionFailedExceptionMessage(String expressionElement, String message) {
-        return String.format("Failed in %s: %s", expressionElement, message);
+    public static String getGenericScenarioExceptionMessage(String scenarioDescription, String exceptionMessage) {
+        return  String.format("Scenario \"%s\" failed: %s", scenarioDescription, exceptionMessage);
     }
 
-    /*
-    public static String getGenericScenarioExceptionMessage(String scenarioDescription) {
-        return  "Scenario '" + scenarioDescription + "' failed";
-    }
-
-    public static String getGenericCollectionErrorMessage() {
-        return "Impossible to find elements in the collection to satisfy the conditions.";
-    }
-
-    public static String getCollectionExceptionMessage(String wrongValue, List<String> pathToWrongValue) {
-        if (wrongValue == null) {
-            return getCollectionWithoutWrongValueExceptionMessage(pathToWrongValue);
-        }
-        return "Value \"" + wrongValue + "\" is wrong inside: \"" +
-                String.join(".", pathToWrongValue) + "\"";
-    }
-
-    private static String getCollectionWithoutWrongValueExceptionMessage(List<String> pathToWrongValue) {
-        if (pathToWrongValue == null || pathToWrongValue.isEmpty()) {
-            return "";
-        }
-        return "Following path \"" + String.join(".", pathToWrongValue) + "\" is wrong";
-    }
-    */
 }

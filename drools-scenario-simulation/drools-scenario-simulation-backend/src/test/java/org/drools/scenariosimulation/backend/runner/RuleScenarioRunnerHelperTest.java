@@ -61,7 +61,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.feel.codegen.feel11.Constants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -344,14 +343,14 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult);
+            //runnerHelper.validateAssertion(scenarioFailResult, scesimModelDescriptor);
             fail();
         } catch (ScenarioException ignored) {
         }
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
-        runnerHelper.validateAssertion(scenarioSuccessResult);
+        //runnerHelper.validateAssertion(scenarioSuccessResult, scesimModelDescriptor);
     }
 
     @Test
