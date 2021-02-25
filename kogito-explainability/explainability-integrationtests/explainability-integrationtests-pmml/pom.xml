@@ -20,6 +20,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
+      <version>${version.org.kie7}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
