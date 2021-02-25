@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
@@ -97,7 +98,6 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.builder.ModelSourceClass.getProjectModelClassNameNameWithReleaseId;
@@ -203,6 +203,21 @@ public class CanonicalKieModule implements InternalKieModule {
     public ResultsImpl build() {
         // TODO should this initialize the CanonicalKieModule in some way? (doesn't seem necessary so far)
         return new ResultsImpl();
+    }
+
+    @Override
+    public ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {
+        ProjectClassLoader projectClassLoader = InternalKieModule.super.createModuleClassLoader(parent);
+        projectClassLoader.setOwnedClassNameSet(getClassNameSet());
+        return projectClassLoader;
+    }
+
+    private Set<String> getClassNameSet() {
+        return internalKieModule.getFileNames().stream()
+                .filter(fileName -> fileName.contains(".class"))
+                .map(fileName -> fileName.substring(0, fileName.lastIndexOf(".class")))
+                .map(fileName -> fileName.replace(File.separatorChar, '.'))
+                .collect(Collectors.toSet());
     }
 
     @Override

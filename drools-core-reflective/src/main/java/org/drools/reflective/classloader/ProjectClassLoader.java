@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,6 +63,8 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
     private ResourceProvider resourceProvider;
+
+    private Set<String> ownedClassNameSet = new HashSet<>();
 
     protected ProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider) {
         super(parent);
@@ -145,6 +148,10 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         try {
             return super.loadClass(name, resolve);
         } catch (ClassNotFoundException e) {
+            if (ownedClassNameSet.contains(name)) {
+                // No need to check parent classloader
+                throw e;
+            }
             return Class.forName(name, resolve, getParent());
         }
     }
@@ -299,6 +306,14 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
             }
         }
         return resources;
+    }
+
+    public Set<String> getOwnedClassNameSet() {
+        return ownedClassNameSet;
+    }
+
+    public void setOwnedClassNameSet(Set<String> ownedClassNameSet) {
+        this.ownedClassNameSet = ownedClassNameSet;
     }
 
     private static class ResourcesEnum implements Enumeration<URL> {
