@@ -103,11 +103,11 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
         if (processInstance == null) {
             throw new IllegalArgumentException("Could not find process instance for id " + processInstanceId);
         }
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED);
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState(KogitoProcessInstance.STATE_ABORTED);
     }
 
     @Override
-    public KogitoWorkItemManager getWorkItemManager() {
+    public KogitoWorkItemManager getKogitoWorkItemManager() {
         return (KogitoWorkItemManager) delegate.getWorkItemManager();
     }
 
@@ -157,7 +157,7 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
         try {
             delegate.getInternalKieRuntime().startOperation();
 
-            org.kie.api.runtime.process.ProcessInstance processInstance = getProcessInstance(processInstanceId);
+            KogitoProcessInstance processInstance = getProcessInstance(processInstanceId);
             org.jbpm.process.instance.ProcessInstance jbpmProcessInstance = (org.jbpm.process.instance.ProcessInstance) processInstance;
 
             jbpmProcessInstance.configureSLA();

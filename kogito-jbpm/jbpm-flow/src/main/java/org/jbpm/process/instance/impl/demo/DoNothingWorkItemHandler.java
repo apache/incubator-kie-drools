@@ -15,19 +15,21 @@
  */
 package org.jbpm.process.instance.impl.demo;
 
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 /**
  * 
  */
-public class DoNothingWorkItemHandler implements WorkItemHandler {
+public class DoNothingWorkItemHandler implements KogitoWorkItemHandler {
 
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    @Override
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
     }
 
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    @Override
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
     }
 
 }

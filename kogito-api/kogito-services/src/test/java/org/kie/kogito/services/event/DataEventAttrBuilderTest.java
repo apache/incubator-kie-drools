@@ -18,7 +18,6 @@ package org.kie.kogito.services.event;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -51,7 +50,7 @@ class DataEventAttrBuilderTest {
     void verifyEventTypeBeingGeneratedWithProcessInstance() {
         final String channelName = "github";
         final String processId = "COOL_PROJECT";
-        ProcessInstance pi = mock(ProcessInstance.class);
+        KogitoProcessInstance pi = mock(KogitoProcessInstance.class);
         when(pi.getProcessId()).thenReturn(processId);
         final String type = DataEventAttrBuilder.toType(channelName, pi);
         assertThat(type)

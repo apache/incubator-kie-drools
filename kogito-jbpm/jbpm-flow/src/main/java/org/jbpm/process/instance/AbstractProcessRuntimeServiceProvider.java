@@ -81,7 +81,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     }
 
     @Override
-    public KogitoWorkItemManager getWorkItemManager() {
+    public KogitoWorkItemManager getKogitoWorkItemManager() {
         return workItemManager;
     }
 

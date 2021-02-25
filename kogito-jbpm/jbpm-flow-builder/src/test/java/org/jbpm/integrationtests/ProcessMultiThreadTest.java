@@ -22,13 +22,13 @@ import java.util.List;
 import org.drools.compiler.compiler.DroolsError;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ProcessMultiThreadTest extends AbstractBaseTest {
@@ -50,12 +50,10 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
                 fail("Could not parse process");
             }
 
-            KieSession session = createKieSession(true, builder.getPackages());
-
-            session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
+            KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
             List<String> list = new ArrayList<String>();
-            session.setGlobal("list", list);
-            ProcessInstance processInstance = session.startProcess("org.drools.integrationtests.multithread");
+            kruntime.getKieSession().setGlobal("list", list);
+            KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.integrationtests.multithread");
             final ProcessInstanceSignalRunner[] r = new ProcessInstanceSignalRunner[THREAD_COUNT];
             for (int i = 0; i < t.length; i++) {
                 r[i] = new ProcessInstanceSignalRunner(i, processInstance, "event" + (i + 1));
@@ -72,8 +70,8 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
                 fail("Multithread test failed. Look at the stack traces for details. ");
             }
             assertEquals(2, list.size());
-            assertFalse(list.get(0).equals(list.get(1)));
-            assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+            assertNotEquals(list.get(1), list.get(0));
+            assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         } catch (Exception e) {
             e.printStackTrace();
             fail("Should not raise any exception: " + e.getMessage());
@@ -82,12 +80,12 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
 
     public static class ProcessInstanceSignalRunner implements Runnable {
 
-        private ProcessInstance processInstance;
+        private KogitoProcessInstance processInstance;
         private String type;
         private Status status;
         private int id;
 
-        public ProcessInstanceSignalRunner(int id, ProcessInstance processInstance, String type) {
+        public ProcessInstanceSignalRunner(int id, KogitoProcessInstance processInstance, String type) {
             this.id = id;
             this.processInstance = processInstance;
             this.type = type;
@@ -117,5 +115,4 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
         }
 
     }
-
 }

@@ -21,13 +21,12 @@ import java.util.Map;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.RegistryContext;
-import org.kie.kogito.internal.process.command.KogitoProcessInstanceIdCommand;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 
-public class KogitoSetProcessInstanceVariablesCommand implements ExecutableCommand<Void>, KogitoProcessInstanceIdCommand {
+public class KogitoSetProcessInstanceVariablesCommand implements ExecutableCommand<Void> {
 
     /**
      * Generated serial version UID
@@ -47,12 +46,10 @@ public class KogitoSetProcessInstanceVariablesCommand implements ExecutableComma
         this.variables = variables;
     }
 
-    @Override
     public String getProcessInstanceId() {
         return processInstanceId;
     }
 
-    @Override
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
@@ -66,12 +63,12 @@ public class KogitoSetProcessInstanceVariablesCommand implements ExecutableComma
     }
 
     public Void execute(Context context) {
-        KogitoProcessRuntime ksession = KogitoProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
-        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(((RegistryContext) context).lookup(KieSession.class));
+        KogitoProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
         if (processInstance != null) {
             if (variables != null) {
                 for (Map.Entry<String, Object> entry : variables.entrySet()) {
-                    ((WorkflowProcessInstance) processInstance).setVariable(entry.getKey(), entry.getValue());
+                    ((KogitoWorkflowProcessInstance) processInstance).setVariable(entry.getKey(), entry.getValue());
                 }
             }
         }

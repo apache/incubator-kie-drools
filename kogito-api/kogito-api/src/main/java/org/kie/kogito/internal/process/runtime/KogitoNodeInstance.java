@@ -51,8 +51,4 @@ public interface KogitoNodeInstance extends NodeInstance {
      * @return actual leave time
      */
     Date getLeaveTime();
-
-    default KogitoProcessInstance getKogitoProcessInstance() {
-        return (KogitoProcessInstance) getProcessInstance();
-    }
 }

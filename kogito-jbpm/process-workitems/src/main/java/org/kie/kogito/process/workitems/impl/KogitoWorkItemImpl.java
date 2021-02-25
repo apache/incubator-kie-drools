@@ -21,12 +21,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
-public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
+public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable {
 
     private static final long serialVersionUID = 510l;
 
@@ -47,56 +46,68 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
     private Date completeDate;
 
     private transient KogitoProcessInstance processInstance;
-    private transient NodeInstance nodeInstance;
+    private transient KogitoNodeInstance nodeInstance;
 
     public void setId(String id) {
         this.id = id;
     }
 
+    @Override
     public long getId() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getStringId() {
         return id;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setState(int state) {
         this.state = state;
     }
 
+    @Override
     public void setProcessInstanceId(long processInstanceId) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int getState() {
         return state;
     }
 
+    @Override
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
     }
 
+    @Override
     public void setParameter(String name, Object value) {
         this.parameters.put(name, value);
     }
 
+    @Override
     public Object getParameter(String name) {
         return parameters.get(name);
     }
 
+    @Override
     public Map<String, Object> getParameters() {
         return parameters;
     }
 
+    @Override
     public void setResults(Map<String, Object> results) {
         if (results != null) {
             this.results = results;
@@ -107,54 +118,67 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         results.put(name, value);
     }
 
+    @Override
     public Object getResult(String name) {
         return results.get(name);
     }
 
+    @Override
     public Map<String, Object> getResults() {
         return results;
     }
 
+    @Override
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
+    @Override
     public long getProcessInstanceId() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getProcessInstanceStringId() {
         return processInstanceId;
     }
 
+    @Override
     public String getDeploymentId() {
         return deploymentId;
     }
 
+    @Override
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
 
+    @Override
     public void setNodeInstanceId(long deploymentId) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public long getNodeInstanceId() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getNodeInstanceStringId() {
         return nodeInstanceId;
     }
 
+    @Override
     public void setNodeInstanceId(String nodeInstanceId) {
         this.nodeInstanceId = nodeInstanceId;
     }
 
+    @Override
     public long getNodeId() {
         return nodeId;
     }
 
+    @Override
     public void setNodeId(long nodeId) {
         this.nodeId = nodeId;
     }
@@ -179,22 +203,27 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         this.phaseStatus = phaseStatus;
     }
 
+    @Override
     public Date getStartDate() {
         return startDate;
     }
 
+    @Override
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
+    @Override
     public Date getCompleteDate() {
         return completeDate;
     }
 
+    @Override
     public void setCompleteDate(Date completeDate) {
         this.completeDate = completeDate;
     }
 
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder("WorkItem ");
         b.append(id);
@@ -219,7 +248,7 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
     }
 
     @Override
-    public NodeInstance getNodeInstance() {
+    public KogitoNodeInstance getNodeInstance() {
         return this.nodeInstance;
     }
 
@@ -229,12 +258,12 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
     }
 
     @Override
-    public void setNodeInstance(NodeInstance nodeInstance) {
+    public void setNodeInstance(KogitoNodeInstance nodeInstance) {
         this.nodeInstance = nodeInstance;
     }
 
     @Override
-    public void setProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = (KogitoProcessInstance) processInstance;
+    public void setProcessInstance(KogitoProcessInstance processInstance) {
+        this.processInstance = processInstance;
     }
 }

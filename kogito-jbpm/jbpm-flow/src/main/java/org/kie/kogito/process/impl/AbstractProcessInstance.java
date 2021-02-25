@@ -420,25 +420,25 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
-        getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().completeWorkItem(id, variables, policies);
+        getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
     }
 
     @Override
     public Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
-        return getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().updateWorkItem(id, variables,
+        return getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, variables,
                 policies);
     }
 
     @Override
     public void abortWorkItem(String id, Policy<?>... policies) {
-        getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().abortWorkItem(id, policies);
+        getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().abortWorkItem(id, policies);
         removeOnFinish();
     }
 
     @Override
     public void transitionWorkItem(String id, Transition<?> transition) {
-        getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().transitionWorkItem(id, transition);
+        getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().transitionWorkItem(id, transition);
         removeOnFinish();
     }
 

@@ -20,10 +20,9 @@ import java.util.stream.Stream;
 
 import org.jbpm.process.instance.impl.workitem.Abort;
 import org.jbpm.process.instance.impl.workitem.Active;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.process.workitem.LifeCycle;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
@@ -34,7 +33,7 @@ import org.kie.kogito.process.workitem.Transition;
  * another life cycle implementation.
  *
  */
-public class HumanTaskWorkItemHandler implements WorkItemHandler {
+public class HumanTaskWorkItemHandler implements KogitoWorkItemHandler {
 
     private final LifeCycle<Map<String, Object>> lifeCycle;
 
@@ -47,17 +46,17 @@ public class HumanTaskWorkItemHandler implements WorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        lifeCycle.transitionTo((KogitoWorkItem) workItem, manager, new HumanTaskTransition(Active.ID));
+    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        lifeCycle.transitionTo(workItem, manager, new HumanTaskTransition(Active.ID));
     }
 
     @Override
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        lifeCycle.transitionTo((KogitoWorkItem) workItem, manager, new HumanTaskTransition(Abort.ID));
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        lifeCycle.transitionTo(workItem, manager, new HumanTaskTransition(Abort.ID));
     }
 
     @SuppressWarnings("unchecked")
-    public static boolean transitionToPhase(WorkItemHandler handler, KogitoWorkItem workItem, WorkItemManager manager, Transition<?> transition) {
+    public static boolean transitionToPhase(KogitoWorkItemHandler handler, KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
         if (handler instanceof HumanTaskWorkItemHandler) {
             ((HumanTaskWorkItemHandler) handler).lifeCycle.transitionTo(workItem, manager, (Transition<Map<String, Object>>) transition);
             return true;
@@ -65,7 +64,7 @@ public class HumanTaskWorkItemHandler implements WorkItemHandler {
         return false;
     }
 
-    public static Stream<LifeCyclePhase> allowedPhases(WorkItemHandler handler, String phaseId) {
+    public static Stream<LifeCyclePhase> allowedPhases(KogitoWorkItemHandler handler, String phaseId) {
         if (handler instanceof HumanTaskWorkItemHandler) {
             return ((HumanTaskWorkItemHandler) handler).lifeCycle.allowedPhases(phaseId);
         }

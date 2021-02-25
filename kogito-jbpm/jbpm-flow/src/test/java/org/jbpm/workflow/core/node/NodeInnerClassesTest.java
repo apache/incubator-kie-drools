@@ -25,8 +25,8 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -70,11 +70,11 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
                 new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
 
         process.addNode(forEachNode);
-        KieSession ksession = createKieSession(process);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime(process);
         TestProcessEventListener procEventListener = new TestProcessEventListener();
-        ksession.addEventListener(procEventListener);
+        kruntime.getProcessEventManager().addEventListener(procEventListener);
 
-        ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.core.process.event");
         assertNotNull(processInstance);
     }
 

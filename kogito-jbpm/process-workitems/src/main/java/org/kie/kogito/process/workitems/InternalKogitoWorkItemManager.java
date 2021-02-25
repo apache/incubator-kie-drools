@@ -19,24 +19,31 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.process.instance.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 
-public interface KogitoWorkItemManager extends org.drools.core.process.instance.WorkItemManager, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager {
+public interface InternalKogitoWorkItemManager extends org.drools.core.process.instance.WorkItemManager, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager {
 
-    void internalExecuteWorkItem(KogitoWorkItem workItem);
+    void internalExecuteWorkItem(InternalKogitoWorkItem workItem);
 
-    void internalAddWorkItem(KogitoWorkItem workItem);
+    void internalAddWorkItem(InternalKogitoWorkItem workItem);
 
     void internalAbortWorkItem(String id);
 
-    void internalCompleteWorkItem(KogitoWorkItem workItem);
+    void internalCompleteWorkItem(InternalKogitoWorkItem workItem);
 
-    KogitoWorkItem getWorkItem(String id);
+    InternalKogitoWorkItem getWorkItem(String id);
 
     void signalEvent(String type, Object event, String processInstanceId);
 
     void retryWorkItem(String workItemID, Map<String, Object> params);
 
     Set<WorkItem> getWorkItems();
+
+    @Override
+    default void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
+        registerWorkItemHandler(workItemName, (KogitoWorkItemHandler) handler);
+    }
 
     @Override
     default void internalExecuteWorkItem(org.drools.core.process.instance.WorkItem workItem) {

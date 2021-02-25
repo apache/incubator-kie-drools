@@ -18,7 +18,6 @@ package org.jbpm.workflow.instance.node;
 import java.util.List;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -28,9 +27,8 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,12 +44,10 @@ public class StartNodeInstanceTest extends AbstractBaseTest {
     @Test
     public void testStartNode() {
 
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KieSession ksession = kbase.newKieSession();
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         MockNode mockNode = new MockNode();
         MockNodeInstanceFactory mockNodeFactory = new MockNodeInstanceFactory(new MockNodeInstance(mockNode));
-        NodeInstanceFactoryRegistry.getInstance(ksession.getEnvironment()).register(mockNode.getClass(), mockNodeFactory);
+        NodeInstanceFactoryRegistry.getInstance(kruntime.getKieRuntime().getEnvironment()).register(mockNode.getClass(), mockNodeFactory);
 
         RuleFlowProcess process = new RuleFlowProcess();
 
@@ -69,7 +65,7 @@ public class StartNodeInstanceTest extends AbstractBaseTest {
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setProcess(process);
-        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) ksession);
+        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) kruntime.getKieSession());
 
         assertEquals(ProcessInstance.STATE_PENDING, processInstance.getState());
         processInstance.start();

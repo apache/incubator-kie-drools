@@ -72,13 +72,12 @@ import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.FaultNodeInstance;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.api.definition.process.NodeContainer;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jobs.DurationExpirationTime;
@@ -140,7 +139,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     private String nodeIdInError;
     private String errorMessage;
 
-    private int slaCompliance = SLA_NA;
+    private int slaCompliance = KogitoProcessInstance.SLA_NA;
     private Date slaDueDate;
     private String slaTimerId;
 
@@ -202,7 +201,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         if (recursive) {
             result = new ArrayList<>(result);
             for (NodeInstance nodeInstance : nodeInstances) {
-                if (nodeInstance instanceof NodeInstanceContainer) {
+                if (nodeInstance instanceof KogitoNodeInstanceContainer) {
                     result.addAll(((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstance).getNodeInstances(true));
                 }
             }
@@ -234,11 +233,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         return result;
     }
 
-    private void addActiveNodeIds(NodeInstanceContainer container, List<String> result) {
+    private void addActiveNodeIds(KogitoNodeInstanceContainer container, List<String> result) {
         for (org.kie.api.runtime.process.NodeInstance nodeInstance : container.getNodeInstances()) {
             result.add(((NodeImpl) nodeInstance.getNode()).getUniqueId());
-            if (nodeInstance instanceof NodeInstanceContainer) {
-                addActiveNodeIds((NodeInstanceContainer) nodeInstance, result);
+            if (nodeInstance instanceof KogitoNodeInstanceContainer) {
+                addActiveNodeIds((KogitoNodeInstanceContainer) nodeInstance, result);
             }
         }
     }
@@ -367,15 +366,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     @Override
     public void setState(final int state, String outcome) {
         // TODO move most of this to ProcessInstanceImpl
-        if (state == ProcessInstance.STATE_COMPLETED
-                || state == ProcessInstance.STATE_ABORTED) {
+        if (state == KogitoProcessInstance.STATE_COMPLETED
+                || state == KogitoProcessInstance.STATE_ABORTED) {
             this.endDate = new Date();
-            if (this.slaCompliance == SLA_PENDING) {
+            if (this.slaCompliance == KogitoProcessInstance.SLA_PENDING) {
                 if (System.currentTimeMillis() > slaDueDate.getTime()) {
                     // completion of the process instance is after expected SLA due date, mark it accordingly
-                    this.slaCompliance = SLA_VIOLATED;
+                    this.slaCompliance = KogitoProcessInstance.SLA_VIOLATED;
                 } else {
-                    this.slaCompliance = state == ProcessInstance.STATE_COMPLETED ? SLA_MET : SLA_ABORTED;
+                    this.slaCompliance = state == KogitoProcessInstance.STATE_COMPLETED ? KogitoProcessInstance.SLA_MET : KogitoProcessInstance.SLA_ABORTED;
                 }
             }
 
@@ -402,7 +401,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
                 List<KogitoEventListener> listeners = eventListeners.get("processInstanceCompleted:" + getStringId());
                 if (listeners != null) {
-                    for (EventListener listener : listeners) {
+                    for (KogitoEventListener listener : listeners) {
                         listener.signalEvent("processInstanceCompleted:" + getStringId(), this);
                     }
                 }
@@ -489,7 +488,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             if (timer != null) {
                 this.slaTimerId = timer.getId();
                 this.slaDueDate = new Date(System.currentTimeMillis() + timer.getDelay());
-                this.slaCompliance = SLA_PENDING;
+                this.slaCompliance = KogitoProcessInstance.SLA_PENDING;
                 logger.debug("SLA for process instance {} is PENDING with due date {}", this.getStringId(), this.slaDueDate);
             }
         }
@@ -551,13 +550,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     private void handleSLAViolation() {
-        if (slaCompliance == SLA_PENDING) {
+        if (slaCompliance == KogitoProcessInstance.SLA_PENDING) {
 
             InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
             InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
             processRuntime.getProcessEventSupport().fireBeforeSLAViolated(this, kruntime);
             logger.debug("SLA violated on process instance {}", getStringId());
-            this.slaCompliance = SLA_VIOLATED;
+            this.slaCompliance = KogitoProcessInstance.SLA_VIOLATED;
             this.slaTimerId = null;
             processRuntime.getProcessEventSupport().fireAfterSLAViolated(this, kruntime);
         }
@@ -568,7 +567,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     public void signalEvent(String type, Object event) {
         logger.debug("Signal {} received with data {} in process instance {}", type, event, getStringId());
         synchronized (this) {
-            if (getState() != ProcessInstance.STATE_ACTIVE) {
+            if (getState() != KogitoProcessInstance.STATE_ACTIVE) {
                 return;
             }
 
@@ -592,13 +591,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 this.activatingNodeIds = new ArrayList<>();
                 List<KogitoEventListener> listeners = eventListeners.get(type);
                 if (listeners != null) {
-                    for (EventListener listener : listeners) {
+                    for (KogitoEventListener listener : listeners) {
                         listener.signalEvent(type, event);
                     }
                 }
                 listeners = externalEventListeners.get(type);
                 if (listeners != null) {
-                    for (EventListener listener : listeners) {
+                    for (KogitoEventListener listener : listeners) {
                         listener.signalEvent(type, event);
                     }
                 }
@@ -756,7 +755,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public Set<EventDescription<?>> getEventDescriptions() {
-        if (getState() == ProcessInstance.STATE_COMPLETED || getState() == ProcessInstance.STATE_ABORTED) {
+        if (getState() == KogitoProcessInstance.STATE_COMPLETED || getState() == KogitoProcessInstance.STATE_ABORTED) {
             return Collections.emptySet();
         }
         VariableScope variableScope = (VariableScope) ((ContextContainer) getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
@@ -867,7 +866,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 ((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()
                 || nodeInstance instanceof CompositeNodeInstance) {
             if (((org.jbpm.workflow.core.WorkflowProcess) getProcess()).isAutoComplete() && canComplete()) {
-                setState(ProcessInstance.STATE_COMPLETED);
+                setState(KogitoProcessInstance.STATE_COMPLETED);
             }
         } else {
             throw new IllegalArgumentException(

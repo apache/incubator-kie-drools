@@ -467,7 +467,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 stream, context, processInstance);
 
         nodeInstance.setNodeId(nodeId);
-        nodeInstance.setNodeInstanceContainer(nodeInstanceContainer);
+        nodeInstance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
         nodeInstance.setProcessInstance((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance);
         nodeInstance.setId(id);
 

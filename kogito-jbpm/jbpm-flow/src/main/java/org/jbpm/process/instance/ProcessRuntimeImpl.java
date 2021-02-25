@@ -109,7 +109,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
             timerService.setTimerJobFactoryManager(new ThreadSafeTrackableTimeJobFactoryManager());
         }
 
-        this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
+        this.kruntime = workingMemory.getKnowledgeRuntime();
         initProcessInstanceManager();
         initSignalManager();
         unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
@@ -153,7 +153,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     private ClassLoader getRootClassLoader() {
-        KieBase kbase = ((InternalKnowledgeBase) kruntime.getKieBase());
+        KieBase kbase = kruntime.getKieBase();
         if (kbase != null) {
             return ((InternalKnowledgeBase) kbase).getRootClassLoader();
         }
@@ -402,6 +402,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         startProcess(processId, params, type);
     }
 
+    @Override
     public WorkItemManager getWorkItemManager() {
         return kruntime.getWorkItemManager();
     }

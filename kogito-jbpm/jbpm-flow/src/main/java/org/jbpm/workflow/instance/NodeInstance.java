@@ -21,6 +21,7 @@ import java.util.Map;
 import org.jbpm.process.instance.ContextInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 /**
  * Represents a node instance in a RuleFlow. This is the runtime counterpart
@@ -48,5 +49,9 @@ public interface NodeInstance extends KogitoNodeInstance {
     Date getSlaDueDate();
 
     String getSlaTimerId();
+
+    default KogitoProcessInstance getKogitoProcessInstance() {
+        return (KogitoProcessInstance) getProcessInstance();
+    }
 
 }

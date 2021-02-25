@@ -22,7 +22,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 
-public interface KogitoWorkflowProcessInstance extends WorkflowProcessInstance, KogitoProcessInstance {
+public interface KogitoWorkflowProcessInstance extends WorkflowProcessInstance, KogitoProcessInstance, KogitoNodeInstanceContainer {
 
     /**
      * Returns start date of this process instance

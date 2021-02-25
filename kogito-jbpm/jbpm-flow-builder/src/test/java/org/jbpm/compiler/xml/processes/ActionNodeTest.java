@@ -21,11 +21,8 @@ import java.util.List;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,15 +30,13 @@ public class ActionNodeTest extends AbstractBaseTest {
 
     @Test
     public void testSingleActionNode() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ClassPathResource("ActionNodeTest.xml", ActionNodeTest.class), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
+        builder.add(new ClassPathResource("ActionNodeTest.xml", ActionNodeTest.class), ResourceType.DRF);
 
-        KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
-        ksession.startProcess("process name");
+        kruntime.startProcess("process name");
 
         assertEquals(1, list.size());
         assertEquals("action node was here", list.get(0));

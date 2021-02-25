@@ -16,7 +16,6 @@
 package org.jbpm.process;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
@@ -24,8 +23,7 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.JobsService;
@@ -54,8 +52,7 @@ public class TimerTest extends AbstractBaseTest {
     @Test
     @Disabled
     public void testTimer() {
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        final KieSession workingMemory = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance() {
             private static final long serialVersionUID = 510l;
@@ -68,17 +65,12 @@ public class TimerTest extends AbstractBaseTest {
                 }
             }
         };
-        processInstance.setKnowledgeRuntime(((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
+        processInstance.setKnowledgeRuntime(((InternalWorkingMemory) kruntime.getKieSession()).getKnowledgeRuntime());
         processInstance.setId("1234");
-        InternalProcessRuntime processRuntime = ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime());
+        InternalProcessRuntime processRuntime = ((InternalProcessRuntime) ((InternalWorkingMemory) kruntime.getKieSession()).getProcessRuntime());
         processRuntime.getProcessInstanceManager().internalAddProcessInstance(processInstance);
 
-        new Thread(new Runnable() {
-            public void run() {
-                workingMemory.fireUntilHalt();
-            }
-        }).start();
-
+        new Thread(() -> kruntime.getKieSession().fireUntilHalt()).start();
         JobsService jobService = new InMemoryJobService(processRuntime.getKogitoProcessRuntime(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
         ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(-1, ExactExpirationTime.now(), processInstance.getStringId(), "test");

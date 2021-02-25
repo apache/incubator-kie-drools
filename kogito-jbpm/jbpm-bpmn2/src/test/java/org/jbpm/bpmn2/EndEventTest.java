@@ -25,7 +25,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,7 +73,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testMessageEnd() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MessageEndEvent.bpmn2");
-        kruntime.getWorkItemManager().registerWorkItemHandler("Send Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Send Task",
                 new SendTaskHandler());
         Map<String, Object> params = new HashMap<>();
         params.put("x", "MyValue");
@@ -89,13 +89,13 @@ public class EndEventTest extends JbpmBpmn2TestCase {
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
 
-        kruntime.getWorkItemManager().registerWorkItemHandler("Send Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Send Task", handler);
         Map<String, Object> params = new HashMap<>();
         params.put("x", "MyValue");
         KogitoProcessInstance processInstance = kruntime.startProcess("MessageEndEvent", params);
         assertProcessInstanceCompleted(processInstance);
 
-        KogitoWorkItem workItem = (KogitoWorkItem) handler.getWorkItem();
+        InternalKogitoWorkItem workItem = (InternalKogitoWorkItem) handler.getWorkItem();
         assertNotNull(workItem);
 
         String nodeInstanceId = workItem.getNodeInstanceStringId();
@@ -113,7 +113,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         processInstance = kruntime.startProcess("MessageEndEvent", params);
         assertProcessInstanceCompleted(processInstance);
 
-        workItem = (KogitoWorkItem) handler.getWorkItem();
+        workItem = (InternalKogitoWorkItem) handler.getWorkItem();
         assertNotNull(workItem);
 
         nodeInstanceId = workItem.getNodeInstanceStringId();
@@ -127,7 +127,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testOnEntryExitScript() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitScriptProcess.bpmn2");
-        kruntime.getWorkItemManager().registerWorkItemHandler("MyTask",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
         List<String> myList = new ArrayList<>();
         kruntime.getKieSession().setGlobal("list", myList);
@@ -141,7 +141,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testOnEntryExitNamespacedScript() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
-        kruntime.getWorkItemManager().registerWorkItemHandler("MyTask",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
         List<String> myList = new ArrayList<>();
         kruntime.getKieSession().setGlobal("list", myList);
@@ -155,7 +155,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testOnEntryExitMixedNamespacedScript() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
-        kruntime.getWorkItemManager().registerWorkItemHandler("MyTask",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
         List<String> myList = new ArrayList<>();
         kruntime.getKieSession().setGlobal("list", myList);
@@ -169,7 +169,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testOnEntryExitScriptDesigner() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
-        kruntime.getWorkItemManager().registerWorkItemHandler("MyTask",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
         List<String> myList = new ArrayList<>();
         kruntime.getKieSession().setGlobal("list", myList);

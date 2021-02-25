@@ -23,10 +23,10 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstanceVariableCommand implements ExecutableCommand<Object>, KogitoProcessInstanceIdCommand {
@@ -64,12 +64,12 @@ public class GetProcessInstanceVariableCommand implements ExecutableCommand<Obje
         if (processInstanceId == null) {
             return null;
         }
-        ProcessInstance processInstance = runtime.getProcessInstance(processInstanceId);
+        KogitoProcessInstance processInstance = runtime.getProcessInstance(processInstanceId);
         if (processInstance == null) {
             throw new IllegalArgumentException("Could not find process instance for id " + processInstanceId);
         }
-        if (processInstance instanceof WorkflowProcessInstance) {
-            return ((WorkflowProcessInstance) processInstance).getVariable(variableId);
+        if (processInstance instanceof KogitoWorkflowProcessInstance) {
+            return ((KogitoWorkflowProcessInstance) processInstance).getVariable(variableId);
         } else {
             throw new IllegalStateException("Could not retrieve variable " + variableId
                     + " because process instance " + processInstanceId + " was inaccessible!");

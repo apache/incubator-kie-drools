@@ -68,6 +68,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
@@ -197,7 +198,7 @@ public class NodeInstanceFactoryRegistry {
 
     private static NodeInstance createInstance(NodeInstanceImpl nodeInstance, Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
         nodeInstance.setNodeId(node.getId());
-        nodeInstance.setNodeInstanceContainer(nodeInstanceContainer);
+        nodeInstance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
         nodeInstance.setProcessInstance(processInstance);
         String uniqueId = (String) node.getMetaData().get(UNIQUE_ID);
         if (uniqueId == null) {

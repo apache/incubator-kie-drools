@@ -20,13 +20,15 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,23 +90,31 @@ public class ProcessStartTest extends AbstractBaseTest {
                         "</process>");
         builder.addRuleFlow(source);
         if (!builder.getErrors().isEmpty()) {
-            for (DroolsError error : builder.getErrors().getErrors()) {
+            for (KnowledgeBuilderError error : builder.getErrors()) {
                 logger.error(error.toString());
             }
             fail("Could not build process");
         }
 
-        KieSession session = createKieSession(builder.getPackages());
+        /*
+         * This test cannot be migrated to use KogitoProcessRuntime because during ProcessRuntime initialization
+         * multiple listeners are registered and this break the semantic of this test:
+         * see ProcessRuntimeImpl#initProcessActivationListener() -> startProcessWithParamsAndTrigger (same for LightProcessRuntime)
+         * This listener triggers a start process when the insert is performed (but no rules are fired) that is an expected behavior
+         * for BPMN2 processes (see org.jbpm.bpmn2.StartEventTest#testConditionalStart() ) while for DRF processes produces an additional
+         * unexpected (broken) execution
+         */
+        KieSession ksession = createKieSession();
 
         List<Message> myList = new ArrayList<Message>();
-        session.setGlobal("myList", myList);
+        ksession.setGlobal("myList", myList);
 
         assertEquals(0, myList.size());
 
         Person jack = new Person();
         jack.setName("Jack");
-        session.insert(jack);
-        session.fireAllRules();
+        ksession.insert(jack);
+        ksession.fireAllRules();
         assertEquals(2, myList.size());
         assertEquals("Jack", myList.get(0));
         assertEquals("SomeString", myList.get(1));
@@ -158,23 +168,23 @@ public class ProcessStartTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
         if (!builder.getErrors().isEmpty()) {
-            for (DroolsError error : builder.getErrors().getErrors()) {
+            for (KnowledgeBuilderError error : builder.getErrors()) {
                 logger.error(error.toString());
             }
             fail("Could not build process");
         }
 
-        KieSession session = createKieSession(builder.getPackages());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         List<Message> myList = new ArrayList<Message>();
-        session.setGlobal("myList", myList);
+        kruntime.getKieSession().setGlobal("myList", myList);
 
         assertEquals(0, myList.size());
 
-        ((InternalWorkingMemory) session).getProcessRuntime().signalEvent("myEvent", "Jack");
-        session.fireAllRules();
+        kruntime.signalEvent("myEvent", "Jack");
+        kruntime.getKieSession().fireAllRules();
         assertEquals(2, myList.size());
         assertEquals("Jack", myList.get(0));
         assertEquals("SomeString", myList.get(1));

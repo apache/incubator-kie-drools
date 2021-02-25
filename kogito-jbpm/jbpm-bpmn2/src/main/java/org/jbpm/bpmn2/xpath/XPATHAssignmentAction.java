@@ -25,7 +25,7 @@ import javax.xml.xpath.XPathFactory;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +46,7 @@ public class XPATHAssignmentAction implements AssignmentAction {
         this.isInput = isInput;
     }
 
-    public void execute(KogitoWorkItem workItem, ProcessContext context) throws Exception {
+    public void execute(InternalKogitoWorkItem workItem, ProcessContext context) throws Exception {
         String from = assignment.getFrom();
         String to = assignment.getTo();
 

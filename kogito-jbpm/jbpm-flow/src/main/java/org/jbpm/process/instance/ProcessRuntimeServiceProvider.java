@@ -29,7 +29,7 @@ public interface ProcessRuntimeServiceProvider {
 
     SignalManager getSignalManager();
 
-    KogitoWorkItemManager getWorkItemManager();
+    KogitoWorkItemManager getKogitoWorkItemManager();
 
     KogitoProcessEventSupport getEventSupport();
 

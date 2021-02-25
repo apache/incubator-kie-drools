@@ -34,20 +34,12 @@
       <artifactId>kie-pmml-dependencies</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-internal</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-mvel</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-mvel-parser</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-api</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>

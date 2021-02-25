@@ -20,13 +20,14 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.compiler.DroolsError;
-import org.jbpm.process.instance.ProcessInstance;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +61,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
         assertEquals(2, builder.getErrors().size());
-        for (DroolsError error : builder.getErrors().getErrors()) {
+        for (KnowledgeBuilderError error : builder.getErrors()) {
             logger.error(error.toString());
         }
     }
@@ -102,15 +103,15 @@ public class ProcessTimerTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession session = createKieSession(builder.getPackages());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         List<String> myList = new ArrayList<>();
-        session.setGlobal("myList", myList);
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        kruntime.getKieSession().setGlobal("myList", myList);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
 
-        ProcessInstance processInstance = (ProcessInstance) session.startProcess("org.drools.timer");
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
@@ -121,6 +122,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
         }
         assertEquals(1, myList.size());
 
-        session.dispose();
+        kruntime.getKieSession().dispose();
     }
 }

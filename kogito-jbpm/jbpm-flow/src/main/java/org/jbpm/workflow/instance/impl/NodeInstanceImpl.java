@@ -47,7 +47,6 @@ import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -59,7 +58,7 @@ import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.Metadata.INCOMING_CONNECTION;
 import static org.jbpm.ruleflow.core.Metadata.OUTGOING_CONNECTION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 
 /**
  * Default implementation of a RuleFlow node instance.
@@ -134,7 +133,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return this.nodeInstanceContainer;
     }
 
-    public void setNodeInstanceContainer(NodeInstanceContainer nodeInstanceContainer) {
+    public void setNodeInstanceContainer(KogitoNodeInstanceContainer nodeInstanceContainer) {
         this.nodeInstanceContainer = (org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer;
         if (nodeInstanceContainer != null) {
             this.nodeInstanceContainer.addNodeInstance(this);
@@ -366,14 +365,14 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     protected org.jbpm.workflow.instance.NodeInstance followConnection(Connection connection) {
         // check for exclusive group first
-        NodeInstanceContainer parent = getNodeInstanceContainer();
+        KogitoNodeInstanceContainer parent = getNodeInstanceContainer();
         if (parent instanceof ContextInstanceContainer) {
             List<ContextInstance> contextInstances = ((ContextInstanceContainer) parent).getContextInstances(ExclusiveGroup.EXCLUSIVE_GROUP);
             if (contextInstances != null) {
                 for (ContextInstance contextInstance : new ArrayList<>(contextInstances)) {
                     ExclusiveGroupInstance groupInstance = (ExclusiveGroupInstance) contextInstance;
                     if (groupInstance.containsNodeInstance(this)) {
-                        for (NodeInstance nodeInstance : groupInstance.getNodeInstances()) {
+                        for (KogitoNodeInstance nodeInstance : groupInstance.getNodeInstances()) {
                             if (nodeInstance != this) {
                                 ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).cancel();
                             }
@@ -471,19 +470,19 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 return contextInstanceContainer;
             }
             contextInstanceContainer = getEnclosingContextInstanceContainer(
-                    (NodeInstance) contextInstanceContainer);
+                    (KogitoNodeInstance) contextInstanceContainer);
         }
         return null;
     }
 
-    private ContextInstanceContainer getEnclosingContextInstanceContainer(NodeInstance nodeInstance) {
+    private ContextInstanceContainer getEnclosingContextInstanceContainer(KogitoNodeInstance nodeInstance) {
         NodeInstanceContainer nodeInstanceContainer = nodeInstance.getNodeInstanceContainer();
         while (true) {
             if (nodeInstanceContainer instanceof ContextInstanceContainer) {
                 return (ContextInstanceContainer) nodeInstanceContainer;
             }
-            if (nodeInstanceContainer instanceof NodeInstance) {
-                nodeInstanceContainer = ((NodeInstance) nodeInstanceContainer).getNodeInstanceContainer();
+            if (nodeInstanceContainer instanceof KogitoNodeInstance) {
+                nodeInstanceContainer = ((KogitoNodeInstance) nodeInstanceContainer).getNodeInstanceContainer();
             } else {
                 return null;
             }

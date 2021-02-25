@@ -23,9 +23,8 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,9 +59,9 @@ public class SubProcessTest extends AbstractBaseTest {
         process.addNode(subProcessNode);
         process.addNode(endNode);
 
-        KieSession ksession = createKieSession(process);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime(process);
 
-        ProcessInstance pi = ksession.startProcess("org.drools.core.process.process");
+        KogitoProcessInstance pi = kruntime.startProcess("org.drools.core.process.process");
         assertEquals(KogitoProcessInstance.STATE_ERROR, pi.getState());
     }
 

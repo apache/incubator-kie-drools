@@ -20,13 +20,10 @@ import java.util.List;
 
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,20 +31,18 @@ public class ExecutionFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowUpgrade() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         // Set the system property so that automatic conversion can happen
         System.setProperty("drools.ruleflow.port", "true");
 
-        kbuilder.add(ResourceFactory.newClassPathResource("ruleflow.drl", ExecutionFlowControlTest.class), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newClassPathResource("ruleflow40.rfm", ExecutionFlowControlTest.class), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        final KieSession ksession = kbase.newKieSession();
+        builder.add(ResourceFactory.newClassPathResource("ruleflow.drl", ExecutionFlowControlTest.class), ResourceType.DRL);
+        builder.add(ResourceFactory.newClassPathResource("ruleflow40.rfm", ExecutionFlowControlTest.class), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-        ksession.fireAllRules();
+        kruntime.getKieSession().setGlobal("list", list);
+        kruntime.getKieSession().fireAllRules();
         assertEquals(0, list.size());
-        final ProcessInstance processInstance = ksession.startProcess("0");
-        assertEquals(ProcessInstance.STATE_COMPLETED,
+        final KogitoProcessInstance processInstance = kruntime.startProcess("0");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
                 processInstance.getState());
 
         assertEquals(4,
@@ -58,7 +53,7 @@ public class ExecutionFlowControlTest extends AbstractBaseTest {
         list.subList(1, 2).contains("Rule3");
         assertEquals("Rule4",
                 list.get(3));
-        assertEquals(ProcessInstance.STATE_COMPLETED,
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
                 processInstance.getState());
         // Reset the system property so that automatic conversion should not happen
         System.setProperty("drools.ruleflow.port", "false");

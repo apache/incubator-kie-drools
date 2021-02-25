@@ -20,12 +20,13 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.io.ResourceType;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -78,17 +79,16 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
@@ -156,12 +156,12 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         KogitoWorkItem workItem = handler.getWorkItem();
@@ -170,12 +170,12 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         assertEquals("John Doe", workItem.getParameter("ActorId"));
         Map<String, Object> results = new HashMap<String, Object>();
         ((HumanTaskWorkItemImpl) workItem).setActualOwner("Jane Doe");
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), results);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), results);
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("Do something else", workItem.getParameter("TaskName"));
         assertEquals("Jane Doe", workItem.getParameter("SwimlaneActorId"));
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
@@ -220,15 +220,15 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = (ProcessInstance) kruntime.startProcess("org.drools.humantask");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        WorkItem workItem = handler.getWorkItem();
+        KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         processInstance.setState(KogitoProcessInstance.STATE_ABORTED);
         assertTrue(handler.isAborted());
@@ -278,17 +278,17 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession(builder.getPackages()));
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertFalse(handler.isAborted());
     }
 

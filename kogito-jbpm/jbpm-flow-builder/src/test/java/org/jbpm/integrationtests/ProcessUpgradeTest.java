@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -32,8 +33,6 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -55,7 +54,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add(new ReaderResource(new StringReader(rule)), ResourceType.DRL);
 
         String process =
@@ -81,25 +80,21 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "</process>";
         builder.add(new ReaderResource(new StringReader(process)), ResourceType.DRF);
 
-        //        RuleBaseConfiguration config = new RuleBaseConfiguration();
-        //        config.setRuleBaseUpdateHandler(null);
-
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(builder.getKnowledgePackages());
-        KieSession session = kbase.newKieSession();
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(session);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Person p = new Person("bobba fet", 32);
-        session.insert(p);
+        kruntime.getKieSession().insert(p);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
 
-        assertEquals(1, session.getProcessInstances().size());
+        assertEquals(1, kruntime.getKieSession().getProcessInstances().size());
 
         String process2 =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -130,15 +125,14 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "    <connection from=\"4\" to=\"3\"/>\n" +
                         "  </connections>\n" +
                         "</process>";
-        builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add(new ReaderResource(new StringReader(process2)), ResourceType.DRF);
         kbase.addPackages(builder.getKnowledgePackages());
-
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
-                kruntime, processInstance.getStringId(), "org.test.ruleflow2", new HashMap<String, Long>());
+                kruntime, processInstance.getStringId(), "org.test.ruleflow2", new HashMap<>());
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
 
-        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 
         assertEquals(1, list.size());
@@ -157,7 +151,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add(new ReaderResource(new StringReader(rule)), ResourceType.DRL);
 
         String process =
@@ -183,22 +177,18 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "</process>";
         builder.add(new ReaderResource(new StringReader(process)), ResourceType.DRF);
 
-        //      RuleBaseConfiguration config = new RuleBaseConfiguration();
-        //      config.setRuleBaseUpdateHandler(null);
-
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(builder.getKnowledgePackages());
-        KieSession ksession = kbase.newKieSession();
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Person p = new Person("bobba fet", 32);
-        ksession.insert(p);
+        kruntime.getKieSession().insert(p);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
 
         assertEquals(1, kruntime.getKogitoProcessInstances().size());
@@ -232,10 +222,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "    <connection from=\"4\" to=\"3\"/>\n" +
                         "  </connections>\n" +
                         "</process>";
-        builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add(new ReaderResource(new StringReader(process2)), ResourceType.DRF);
         kbase.addPackages(builder.getKnowledgePackages());
-
         Map<String, Long> mapping = new HashMap<String, Long>();
         mapping.put("2", 102L);
 
@@ -243,8 +232,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                 kruntime, processInstance.getStringId(), "org.test.ruleflow2", mapping);
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
 
-        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-
+        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
@@ -262,7 +250,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add(new ByteArrayResource(rule.getBytes()), ResourceType.DRL);
 
         String process =
@@ -300,25 +288,21 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "</process>";
         builder.add(new ReaderResource(new StringReader(process)), ResourceType.DRF);
 
-        //      RuleBaseConfiguration config = new RuleBaseConfiguration();
-        //      config.setRuleBaseUpdateHandler(null);
-
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(builder.getKnowledgePackages());
-        KieSession session = kbase.newKieSession();
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(session);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Person p = new Person("bobba fet", 32);
-        session.insert(p);
+        kruntime.getKieSession().insert(p);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
 
-        assertEquals(1, session.getProcessInstances().size());
+        assertEquals(1, kruntime.getKieSession().getProcessInstances().size());
 
         String process2 =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -361,10 +345,8 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\"/>\n" +
                         "  </connections>\n" +
                         "</process>";
-        builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add(new ReaderResource(new StringReader(process2)), ResourceType.DRF);
         kbase.addPackages(builder.getKnowledgePackages());
-
         Map<String, Long> mapping = new HashMap<String, Long>();
         mapping.put("2:1", 101L);
 
@@ -372,8 +354,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                 kruntime, processInstance.getStringId(), "org.test.ruleflow2", mapping);
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
 
-        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-
+        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }

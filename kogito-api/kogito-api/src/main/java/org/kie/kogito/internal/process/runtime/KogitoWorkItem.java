@@ -17,7 +17,6 @@ package org.kie.kogito.internal.process.runtime;
 
 import java.util.Date;
 
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.process.workitem.Policy;
 
@@ -71,7 +70,7 @@ public interface KogitoWorkItem extends WorkItem {
      *
      * @return the related node instance
      */
-    NodeInstance getNodeInstance();
+    KogitoNodeInstance getNodeInstance();
 
     /**
      * The process instance that requested the execution of this

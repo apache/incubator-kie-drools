@@ -17,11 +17,11 @@ package org.kie.kogito.process;
 
 import java.util.Collection;
 
-import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 
 public interface WorkItemHandlerConfig {
 
-    WorkItemHandler forName(String name);
+    KogitoWorkItemHandler forName(String name);
 
     Collection<String> names();
 }

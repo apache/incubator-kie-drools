@@ -29,8 +29,8 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -81,7 +81,7 @@ public class AbstractProcessInstanceTest {
     @Test
     public void testCreateProcessInstance() {
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_PENDING);
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_PENDING);
         assertThat(processInstance.id()).isNull();
         assertThat(processInstance.businessKey()).isNull();
 

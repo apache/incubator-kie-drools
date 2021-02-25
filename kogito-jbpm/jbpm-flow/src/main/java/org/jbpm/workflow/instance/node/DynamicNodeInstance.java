@@ -24,10 +24,9 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.event.process.ContextAwareEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
@@ -62,13 +61,13 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
         if (canActivate()) {
             triggerActivated();
         } else {
-            setState(ProcessInstance.STATE_PENDING);
+            setState(KogitoProcessInstance.STATE_PENDING);
             addActivationListener();
         }
     }
 
     private void triggerActivated() {
-        setState(ProcessInstance.STATE_ACTIVE);
+        setState(KogitoProcessInstance.STATE_ACTIVE);
         // activate ad hoc fragments if they are marked as such
         List<Node> autoStartNodes = getDynamicNode().getAutoStartNodes();
         autoStartNodes.forEach(autoStartNode -> triggerSelectedNode(autoStartNode, null));
@@ -88,7 +87,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 
     private void addActivationListener() {
         getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener(ContextAwareEventListener.using(listener -> {
-            if (canActivate() && getState() == ProcessInstance.STATE_PENDING) {
+            if (canActivate() && getState() == KogitoProcessInstance.STATE_PENDING) {
                 triggerActivated();
                 getProcessInstance().getKnowledgeRuntime().getProcessRuntime().removeEventListener(listener);
             }
@@ -133,7 +132,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
         super.triggerCompleted(outType);
     }
 
-    protected boolean isTerminated(NodeInstance from) {
+    protected boolean isTerminated(KogitoNodeInstance from) {
         if (from instanceof EndNodeInstance) {
             return ((EndNodeInstance) from).getEndNode().isTerminate();
         }

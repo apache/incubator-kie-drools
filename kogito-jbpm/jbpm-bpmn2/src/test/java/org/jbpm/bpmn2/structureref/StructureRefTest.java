@@ -38,14 +38,14 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-StringStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "test value");
-        kruntime.getWorkItemManager().completeWorkItem(
+        kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -56,14 +56,14 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "true");
-        kruntime.getWorkItemManager().completeWorkItem(
+        kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -74,14 +74,14 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-IntegerStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "25");
-        kruntime.getWorkItemManager().completeWorkItem(
+        kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -92,14 +92,14 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-FloatStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "5.5");
-        kruntime.getWorkItemManager().completeWorkItem(
+        kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -113,14 +113,14 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-ObjectStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", personAsXml);
-        kruntime.getWorkItemManager().completeWorkItem(
+        kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -134,14 +134,14 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-DefaultObjectStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", value);
-        kruntime.getWorkItemManager().completeWorkItem(
+        kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -152,7 +152,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         Map<String, Object> params = new HashMap<>();
@@ -166,7 +166,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         Map<String, Object> params = new HashMap<>();
@@ -179,7 +179,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-IntegerStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
@@ -189,7 +189,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         res.put("testHT", true);
 
         try {
-            kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), res);
+            kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), res);
             fail();
         } catch (IllegalArgumentException iae) {
             logger.info("Expected IllegalArgumentException caught: " + iae);
@@ -204,7 +204,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         try {
             Map<String, Object> params = new HashMap<>();
@@ -223,7 +223,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         Map<String, Object> params = new HashMap<>();
@@ -238,7 +238,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-IntegerStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
@@ -250,7 +250,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         res.put(wrongDataOutput, true);
 
         try {
-            kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), res);
+            kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), res);
             fail();
         } catch (IllegalArgumentException iae) {
             System.out.println("Expected IllegalArgumentException catched: " + iae);

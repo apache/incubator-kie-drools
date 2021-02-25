@@ -16,17 +16,12 @@
 package org.jbpm.process.builder;
 
 import java.io.StringReader;
-import java.util.Arrays;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
@@ -38,8 +33,8 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -52,8 +47,8 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("var testString; print('Hello')");
 
-        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl(pkg);
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
+        builder.addPackage(pkg);
+        DialectCompiletimeRegistry dialectRegistry = builder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
 
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setClassName("Process1");
@@ -63,10 +58,10 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
         process.setName("Process1");
         process.setPackageName("pkg1");
 
-        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage("pkg1"), null, processDescr, dialectRegistry, null);
-        context.init(pkgBuilder, pkg, null, dialectRegistry, null, null);
+        ProcessBuildContext context = new ProcessBuildContext(builder, builder.getPackage("pkg1"), null, processDescr, dialectRegistry, null);
+        context.init(builder, pkg, null, dialectRegistry, null, null);
 
-        pkgBuilder.addPackageFromDrl(new StringReader("package pkg1;\nglobal String testField;\n"));
+        builder.addPackageFromDrl(new StringReader("package pkg1;\nglobal String testField;\n"));
 
         ActionNode actionNode = new ActionNode();
         DroolsAction action = new DroolsConsequenceAction("JavaScript", null);
@@ -82,15 +77,13 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
                 actionDescr,
                 actionNode);
 
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
-        final KieSession wm = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
-        wm.setGlobal("testField", "vagon");
+        kruntime.getKieSession().setGlobal("testField", "vagon");
 
-        KogitoProcessContext processContext = new KogitoProcessContextImpl(((InternalWorkingMemory) wm).getKnowledgeRuntime());
+        KogitoProcessContext processContext = new KogitoProcessContextImpl(kruntime.getKieRuntime());
         ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
 
-        assertEquals("vagon", wm.getGlobal("testField").toString());
+        assertEquals("vagon", kruntime.getKieSession().getGlobal("testField").toString());
     }
 }

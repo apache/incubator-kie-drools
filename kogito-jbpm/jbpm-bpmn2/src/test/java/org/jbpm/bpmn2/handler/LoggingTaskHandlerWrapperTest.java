@@ -34,7 +34,7 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
 
         LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
-        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
 
         Map<String, Object> params = new HashMap<>();
         params.put("serviceInputItem", "exception message");
@@ -61,7 +61,7 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
         loggingTaskHandlerWrapper.setLoggedMessageInput(inputParameters);
 
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
-        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
 
         Map<String, Object> params = new HashMap<>();
         params.put("serviceInputItem", "exception message");

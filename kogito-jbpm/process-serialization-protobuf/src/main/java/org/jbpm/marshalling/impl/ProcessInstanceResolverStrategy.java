@@ -27,7 +27,6 @@ import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.marshalling.KogitoObjectMarshallingStrategy;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -35,7 +34,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
  * When using this strategy, knowledge session de/marshalling process will make sure that
  * the processInstance is <i>not</i> serialized as a part of the the session/network.
  * </p>
- * Instead, this strategy, which may only be used for {@link ProcessInstance} objects,
+ * Instead, this strategy, which may only be used for {@link KogitoProcessInstance} objects,
  * saves the process instance in the {@link ProcessInstanceManager}, and later retrieves
  * it from there.
  * </p>
@@ -51,7 +50,7 @@ public class ProcessInstanceResolverStrategy
         KogitoObjectMarshallingStrategy {
 
     public boolean accept(Object object) {
-        return object instanceof ProcessInstance;
+        return object instanceof KogitoProcessInstance;
     }
 
     public void write(ObjectOutputStream os,
@@ -66,11 +65,11 @@ public class ProcessInstanceResolverStrategy
     public Object read(ObjectInputStream is) throws IOException {
         String processInstanceId = is.readUTF();
         ProcessInstanceManager pim = retrieveProcessInstanceManager(is);
-        ProcessInstance processInstance = pim.getProcessInstance(processInstanceId);
+        KogitoProcessInstance processInstance = pim.getProcessInstance(processInstanceId);
         if (processInstance == null) {
             RuleFlowProcessInstance result = new RuleFlowProcessInstance();
             result.setId(processInstanceId);
-            result.internalSetState(ProcessInstance.STATE_COMPLETED);
+            result.internalSetState(KogitoProcessInstance.STATE_COMPLETED);
             return result;
         } else {
             connectProcessInstanceToRuntimeAndProcess(processInstance, is);
@@ -82,7 +81,7 @@ public class ProcessInstanceResolverStrategy
      * Retrieve the {@link ProcessInstanceManager} object from the ObjectOutput- or ObjectInputStream.
      * The stream object will secretly also either be a {@link MarshallerReaderContext} or a
      * {@link MarshallerWriteContext}.
-     * 
+     *
      * @param streamContext The marshaller stream/context.
      * @return A {@link ProcessInstanceManager} object.
      */
@@ -103,11 +102,11 @@ public class ProcessInstanceResolverStrategy
 
     /**
      * Fill the process instance .kruntime and .process fields with the appropriate values.
-     * 
+     *
      * @param processInstance
      * @param streamContext
      */
-    private void connectProcessInstanceToRuntimeAndProcess(ProcessInstance processInstance,
+    private void connectProcessInstanceToRuntimeAndProcess(KogitoProcessInstance processInstance,
             Object streamContext) {
         ProcessInstanceImpl processInstanceImpl = (ProcessInstanceImpl) processInstance;
         InternalKnowledgeRuntime kruntime = processInstanceImpl.getKnowledgeRuntime();
@@ -136,7 +135,7 @@ public class ProcessInstanceResolverStrategy
      * </p>
      * The knowledge runtime object is useful in order to reconnect the process instance to the
      * process and the knowledge runtime object.
-     * 
+     *
      * @param streamContext The marshaller stream/context.
      * @return A {@link InternalKnowledgeRuntime} object.
      */
@@ -171,11 +170,11 @@ public class ProcessInstanceResolverStrategy
         String processInstanceId = new String(object);
         ProcessInstanceManager pim = retrieveProcessInstanceManager(is);
         // load it as read only to avoid any updates to the data base
-        ProcessInstance processInstance = pim.getProcessInstance(processInstanceId, true);
+        KogitoProcessInstance processInstance = pim.getProcessInstance(processInstanceId, true);
         if (processInstance == null) {
             RuleFlowProcessInstance result = new RuleFlowProcessInstance();
             result.setId(processInstanceId);
-            result.internalSetState(ProcessInstance.STATE_COMPLETED);
+            result.internalSetState(KogitoProcessInstance.STATE_COMPLETED);
             return result;
         } else {
             connectProcessInstanceToRuntimeAndProcess(processInstance, is);

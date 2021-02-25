@@ -36,10 +36,10 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
@@ -61,9 +61,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 
 public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
@@ -501,7 +501,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         logger.debug(content);
     }
 
-    protected Map<String, BpmnProcess> createProcesses(Map<String, String> classData, Map<String, WorkItemHandler> handlers) throws Exception {
+    protected Map<String, BpmnProcess> createProcesses(Map<String, String> classData, Map<String, KogitoWorkItemHandler> handlers) throws Exception {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
@@ -519,7 +519,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         assertThat(result.getErrors()).hasSize(0);
 
         CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
-        for (Entry<String, WorkItemHandler> entry : handlers.entrySet()) {
+        for (Entry<String, KogitoWorkItemHandler> entry : handlers.entrySet()) {
             wiConfig.register(entry.getKey(), entry.getValue());
         }
 

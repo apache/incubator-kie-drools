@@ -89,7 +89,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         this.services = services;
         this.instances = new MapProcessInstances<>();
         this.processInstancesFactory = factory;
-        KogitoWorkItemManager workItemManager = services.getWorkItemManager();
+        KogitoWorkItemManager workItemManager = services.getKogitoWorkItemManager();
         for (KogitoWorkItemHandler handler : handlers) {
             workItemManager.registerWorkItemHandler(handler.getName(), handler);
         }

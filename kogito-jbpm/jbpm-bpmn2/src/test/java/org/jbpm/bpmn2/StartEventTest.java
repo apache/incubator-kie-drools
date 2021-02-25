@@ -183,7 +183,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-SignalStart.bpmn2",
                 "BPMN2-IntermediateThrowEventSignal.bpmn2");
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 handler);
         final List<String> startedProcesses = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
@@ -259,7 +259,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testMultipleStartEventsRegularStart() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleStartEventProcessLongInterval.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime
                 .startProcess("MultipleStartEvents");
@@ -267,7 +267,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
 
     }
@@ -280,7 +280,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
@@ -300,7 +300,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         final List<String> list = new ArrayList<>();
@@ -322,7 +322,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
 
     }
@@ -332,7 +332,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         final List<String> list = new ArrayList<>();
@@ -353,7 +353,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
         assertNodeTriggered(processInstanceId, "Start", "Script 1", "User task", "End");
     }
@@ -366,7 +366,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime.getProcessEventManager().addEventListener(countDownListener);
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         final List<String> list = new ArrayList<>();
@@ -391,7 +391,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
             assertThat(workItem).isNotNull();
             assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-            kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+            kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
             assertProcessInstanceFinished(processInstance, kruntime);
             assertNodeTriggered(processInstanceId, "StartTimer", "Script 2", "User task", "End");
         }
@@ -402,7 +402,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         final List<String> list = new ArrayList<>();
@@ -424,7 +424,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
         assertNodeTriggered(processInstanceId, "StartSignal", "Script 3", "User task", "End");
     }
@@ -437,7 +437,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {

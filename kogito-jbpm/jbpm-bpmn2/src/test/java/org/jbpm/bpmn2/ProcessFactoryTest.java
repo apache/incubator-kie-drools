@@ -159,7 +159,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
         kruntime = createKogitoProcessRuntime(res);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 testHandler);
         kruntime.getProcessEventManager().addEventListener(countDownListener);
 
@@ -172,7 +172,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 "End2");
         assertProcessInstanceActive(pi); // still active because CancelActivity = false
 
-        kruntime.getWorkItemManager().completeWorkItem(testHandler.getWorkItem().getStringId(),
+        kruntime.getKogitoWorkItemManager().completeWorkItem(testHandler.getWorkItem().getStringId(),
                 null);
         assertProcessInstanceCompleted(pi);
 
@@ -223,7 +223,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
         kruntime = createKogitoProcessRuntime(res);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 testHandler);
         kruntime.getProcessEventManager().addEventListener(countDownListener);
 
@@ -236,7 +236,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 "End2");
         assertProcessInstanceActive(pi); // still active because CancelActivity = false
 
-        kruntime.getWorkItemManager().completeWorkItem(testHandler.getWorkItem().getStringId(),
+        kruntime.getKogitoWorkItemManager().completeWorkItem(testHandler.getWorkItem().getStringId(),
                 null);
         assertProcessInstanceCompleted(pi);
 

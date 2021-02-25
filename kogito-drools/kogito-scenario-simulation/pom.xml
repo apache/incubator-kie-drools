@@ -50,6 +50,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-scenario-simulation-api</artifactId>
+            <version>${version.org.kie7}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.kie.soup</groupId>
@@ -61,19 +62,12 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-scenario-simulation-backend</artifactId>
+            <version>${version.org.kie7}</version>
             <exclusions>
 
                 <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.kie</groupId>
-                    <artifactId>kie-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.kie</groupId>
-                    <artifactId>kie-internal</artifactId>
                 </exclusion>
 
                 <!-- JSON/XML utils -->

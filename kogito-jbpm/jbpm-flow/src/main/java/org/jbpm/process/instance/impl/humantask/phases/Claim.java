@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Policy;
@@ -65,8 +65,7 @@ public class Claim implements LifeCyclePhase {
     }
 
     @Override
-    public void apply(WorkItem workitem, Transition<?> transition) {
-
+    public void apply(KogitoWorkItem workitem, Transition<?> transition) {
         if (transition.policies() != null) {
             for (Policy<?> policy : transition.policies()) {
                 if (policy instanceof SecurityPolicy) {

@@ -15,20 +15,17 @@
  */
 package org.jbpm.test.util;
 
-import java.util.Arrays;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.jbpm.integrationtests.JbpmSerializationHelper;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 public abstract class AbstractBaseTest {
 
@@ -36,27 +33,18 @@ public abstract class AbstractBaseTest {
 
     @BeforeEach
     public void before() {
-        builder = new KnowledgeBuilderImpl();
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
     }
 
-    public KieSession createKieSession(KiePackage... pkg) {
-        try {
-            return createKieSession(false, pkg);
-        } catch (Exception e) {
-            throw new RuntimeException("There's no reason for an exception to be thrown here (because the kbase is not being serialized)!", e);
-        }
+    public KogitoProcessRuntime createKogitoProcessRuntime() {
+        return KogitoProcessRuntime.asKogitoProcessRuntime(createKieSession());
     }
 
-    public KieSession createKieSession(boolean serializeKbase, KiePackage... pkg) throws Exception {
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList(pkg));
-        if (serializeKbase) {
-            kbase = JbpmSerializationHelper.serializeObject(kbase);
-        }
-
+    @Deprecated
+    public KieSession createKieSession() {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ForceEagerActivationOption.YES);
-        return kbase.newKieSession(conf, null);
+        return builder.newKieBase().newKieSession(conf, null);
     }
 
     @BeforeAll

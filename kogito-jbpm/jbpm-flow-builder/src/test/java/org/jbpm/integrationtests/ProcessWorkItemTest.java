@@ -17,23 +17,17 @@ package org.jbpm.integrationtests;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
@@ -46,7 +40,6 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
 
     @Test
     public void testWorkItem() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -112,28 +105,25 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
+        builder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("UserName", "John Doe");
         Person person = new Person();
         person.setName("John Doe");
         parameters.put("Person", person);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) kruntime.startProcess("org.drools.actions", parameters);
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("John Doe", workItem.getParameter("ActorId"));
         assertEquals("John Doe", workItem.getParameter("Content"));
         assertEquals("John Doe", workItem.getParameter("Comment"));
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         parameters = new HashMap<String, Object>();
         parameters.put("UserName", "Jane Doe");
         parameters.put("MyObject", "SomeString");
@@ -141,7 +131,7 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         person.setName("Jane Doe");
         parameters.put("Person", person);
         processInstance = (WorkflowProcessInstance) kruntime.startProcess("org.drools.actions", parameters);
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("Jane Doe", workItem.getParameter("ActorId"));
@@ -150,15 +140,14 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         assertEquals("Jane Doe", workItem.getParameter("Comment"));
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("Result", "SomeOtherString");
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), results);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), results);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("SomeOtherString", processInstance.getVariable("MyObject"));
         assertEquals(15, processInstance.getVariable("Number"));
     }
 
     @Test
     public void testWorkItemImmediateCompletion() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -224,23 +213,20 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
+        builder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
 
-        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kpkgs);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         ImmediateTestWorkItemHandler handler = new ImmediateTestWorkItemHandler();
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("UserName", "John Doe");
         Person person = new Person();
         person.setName("John Doe");
         parameters.put("Person", person);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) kruntime.startProcess("org.drools.actions", parameters);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     private static class ImmediateTestWorkItemHandler implements KogitoWorkItemHandler {

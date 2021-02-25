@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Application;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
@@ -91,7 +91,7 @@ public class JsonSchemaUtil {
         }).orElseThrow(() -> new ProcessInstanceNotFoundException(processInstanceId));
     }
 
-    public static Set<String> allowedPhases(WorkItemHandler handler, WorkItem workItem) {
+    public static Set<String> allowedPhases(KogitoWorkItemHandler handler, WorkItem workItem) {
         return HumanTaskWorkItemHandler.allowedPhases(handler, workItem.getPhase()).map(LifeCyclePhase::id).collect(Collectors.toSet());
     }
 }

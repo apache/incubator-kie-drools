@@ -36,7 +36,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -48,8 +48,9 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.io.ResourceType;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,24 +63,24 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
     @Test
     public void testInternalNodeSignalEvent() {
         Reader source = new StringReader(process);
-        builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackages());
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        final List<ProcessEvent> processEventList = new ArrayList<ProcessEvent>();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+
+        final List<ProcessEvent> processEventList = new ArrayList<>();
 
         final ProcessEventListener listener = createProcessEventListener(processEventList);
 
-        ((InternalWorkingMemory) session).getProcessRuntime().addEventListener(listener);
-        ProcessInstance processInstance =
-                ((InternalWorkingMemory) session).getProcessRuntime().startProcess("org.drools.core.event");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        kruntime.getProcessEventManager().addEventListener(listener);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.core.event");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) ((org.jbpm.process.instance.ProcessInstance) processInstance)
                 .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
         assertEquals(28, processEventList.size());
         for (ProcessEvent e : processEventList) {
             logger.debug(e.toString());
         }
-        assertEquals("org.drools.core.event", ((ProcessStartedEvent) processEventList.get(2)).getProcessInstance().getProcessId());
+        assertEquals("org.drools.core.event", processEventList.get(2).getProcessInstance().getProcessId());
 
     }
 

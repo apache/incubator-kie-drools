@@ -18,27 +18,22 @@ package org.jbpm.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,40 +93,35 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Person john = new Person("John Doe", 20);
         Person jane = new Person("Jane Doe", 20);
         Person julie = new Person("Julie Doe", 20);
-        workingMemory.insert(john);
-        workingMemory.insert(jane);
-
+        kruntime.getKieSession().insert(john);
+        kruntime.getKieSession().insert(jane);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", john.getName());
-        ProcessInstance processInstance1 = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
-
+        KogitoProcessInstance processInstance1 = kruntime.startProcess("org.jbpm.process-split", params);
         params = new HashMap<String, Object>();
         params.put("name", jane.getName());
-        ProcessInstance processInstance2 = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
-
+        KogitoProcessInstance processInstance2 = kruntime.startProcess("org.jbpm.process-split", params);
         params = new HashMap<String, Object>();
         params.put("name", julie.getName());
-        ProcessInstance processInstance3 = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance3 = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance1.getState());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance2.getState());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance3.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance1.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance2.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance3.getState());
         assertEquals(2, list.size());
     }
 
     @Test
     public void testSplitWithProcessInstanceConstraint2() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
                         "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -180,42 +170,33 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+        builder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
+        for (KnowledgeBuilderError error : builder.getErrors()) {
             logger.error(error.toString());
         }
 
-        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kpkgs);
-        KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        ksession.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Person john = new Person("John Doe", 20);
         Person jane = new Person("Jane Doe", 20);
         Person julie = new Person("Julie Doe", 20);
-        ksession.insert(john);
-        ksession.insert(jane);
-
+        kruntime.getKieSession().insert(john);
+        kruntime.getKieSession().insert(jane);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", john.getName());
-        ProcessInstance processInstance1 =
-                ksession.startProcess("org.jbpm.process-split", params);
-
+        KogitoProcessInstance processInstance1 = kruntime.startProcess("org.jbpm.process-split", params);
         params = new HashMap<String, Object>();
         params.put("name", jane.getName());
-        ProcessInstance processInstance2 =
-                ksession.startProcess("org.jbpm.process-split", params);
-
+        KogitoProcessInstance processInstance2 = kruntime.startProcess("org.jbpm.process-split", params);
         params = new HashMap<String, Object>();
         params.put("name", julie.getName());
-        ProcessInstance processInstance3 =
-                ksession.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance3 = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance1.getState());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance2.getState());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance3.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance1.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance2.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance3.getState());
         assertEquals(2, list.size());
     }
 
@@ -269,18 +250,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", new Person("John Doe"));
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -334,18 +314,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "John Doe");
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -399,18 +378,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", new Person("John Doe"));
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -464,18 +442,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "John Doe");
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -528,18 +505,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "John Doe");
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -592,18 +568,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "John Doe");
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -656,18 +631,17 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "John Doe");
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split", params);
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 
@@ -715,16 +689,15 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "  </connections>" +
                         "" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Long> list = new ArrayList<Long>();
-        workingMemory.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.jbpm.process-split");
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.jbpm.process-split");
 
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
     }
 

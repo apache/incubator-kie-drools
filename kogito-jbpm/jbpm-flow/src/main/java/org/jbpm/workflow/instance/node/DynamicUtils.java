@@ -49,7 +49,7 @@ import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,16 +161,17 @@ public class DynamicUtils {
                 }
             });
         } else {
-            throw new IllegalArgumentException("Unsupported ksession: " + ksession == null ? "null" : ksession.getClass().getName());
+            throw new IllegalArgumentException("Unsupported ksession: " + (ksession == null ? "null" : ksession.getClass().getName()));
         }
     }
 
     private static void executeWorkItem(StatefulKnowledgeSessionImpl ksession,
             KogitoWorkItemImpl workItem,
             WorkItemNodeInstance workItemNodeInstance) {
-        KogitoProcessEventSupport eventSupport = ((InternalProcessRuntime) ksession.getProcessRuntime()).getProcessEventSupport();
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        KogitoProcessEventSupport eventSupport = kruntime.getProcessEventSupport();
         eventSupport.fireBeforeNodeTriggered(workItemNodeInstance, ksession);
-        ((KogitoWorkItemManager) ksession.getWorkItemManager()).internalExecuteWorkItem(workItem);
+        ((InternalKogitoWorkItemManager) kruntime.getKogitoWorkItemManager()).internalExecuteWorkItem(workItem);
         workItemNodeInstance.internalSetWorkItemId(workItem.getStringId());
         eventSupport.fireAfterNodeTriggered(workItemNodeInstance, ksession);
     }

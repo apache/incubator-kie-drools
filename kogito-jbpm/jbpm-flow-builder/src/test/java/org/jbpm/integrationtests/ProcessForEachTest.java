@@ -22,10 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.process.instance.ProcessInstance;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.io.ResourceType;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
@@ -78,20 +80,19 @@ public class ProcessForEachTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> myList = new ArrayList<String>();
-        workingMemory.setGlobal("myList", myList);
+        kruntime.getKieSession().setGlobal("myList", myList);
         List<String> collection = new ArrayList<String>();
         collection.add("one");
         collection.add("two");
         collection.add("three");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.drools.ForEach", params);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(3, myList.size());
     }
 
@@ -141,12 +142,10 @@ public class ProcessForEachTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> myList = new ArrayList<String>();
-        workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
             public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
                 String message = (String) workItem.getParameter("Message");
                 myList.add(message);
@@ -162,8 +161,8 @@ public class ProcessForEachTest extends AbstractBaseTest {
         }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.drools.ForEach", params);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(10000, myList.size());
     }
 
@@ -211,17 +210,15 @@ public class ProcessForEachTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> myList = new ArrayList<String>();
-        workingMemory.setGlobal("myList", myList);
+        kruntime.getKieSession().setGlobal("myList", myList);
         List<String> collection = new ArrayList<String>();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.drools.ForEach", params);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     @Test
@@ -268,14 +265,12 @@ public class ProcessForEachTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> myList = new ArrayList<String>();
-        workingMemory.setGlobal("myList", myList);
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.drools.ForEach");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        kruntime.getKieSession().setGlobal("myList", myList);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     @Test
@@ -334,22 +329,21 @@ public class ProcessForEachTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> myList = new ArrayList<String>();
-        workingMemory.setGlobal("myList", myList);
+        kruntime.getKieSession().setGlobal("myList", myList);
         List<String> collection = new ArrayList<String>();
         collection.add("one");
         collection.add("two");
         collection.add("three");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
-        ProcessInstance processInstance = (ProcessInstance) workingMemory.startProcess("org.drools.ForEach", params);
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         processInstance.signalEvent("MyEvent", null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(3, myList.size());
     }
 

@@ -26,6 +26,8 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 
 public class TestWorkItemHandler implements KogitoWorkItemHandler {
 
@@ -68,7 +70,7 @@ public class TestWorkItemHandler implements KogitoWorkItemHandler {
     public void transitionToPhase(KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
 
         if (transition.phase().equals(Complete.ID)) {
-            ((org.kie.kogito.process.workitems.KogitoWorkItemManager) manager).internalCompleteWorkItem((org.kie.kogito.process.workitems.KogitoWorkItem) workItem);
+            ((InternalKogitoWorkItemManager) manager).internalCompleteWorkItem((InternalKogitoWorkItem) workItem);
         }
     }
 }

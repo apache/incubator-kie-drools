@@ -1,1 +1,0 @@
-org.kie.api.internal.assembler.KieAssemblers = org.kie.api.internal.utils.MockAssemblersImpl;3

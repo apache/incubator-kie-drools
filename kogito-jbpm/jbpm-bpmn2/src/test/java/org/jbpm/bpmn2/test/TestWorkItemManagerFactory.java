@@ -18,12 +18,12 @@ package org.jbpm.bpmn2.test;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoDefaultWorkItemManager;
 
 public class TestWorkItemManagerFactory implements WorkItemManagerFactory {
 
-    public KogitoWorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime) {
+    public InternalKogitoWorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime) {
         return new KogitoDefaultWorkItemManager(KogitoProcessRuntime.asKogitoProcessRuntime(kruntime));
     }
 

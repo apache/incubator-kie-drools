@@ -31,7 +31,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-internal</artifactId>
+      <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

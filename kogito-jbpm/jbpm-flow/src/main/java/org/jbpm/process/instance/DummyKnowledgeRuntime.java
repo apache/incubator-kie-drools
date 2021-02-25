@@ -41,6 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -332,6 +333,11 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     }
 
+    @Override
+    public WorkItemManager getWorkItemManager() {
+        return (WorkItemManager) getKogitoWorkItemManager();
+    }
+
     public KogitoProcessInstance getProcessInstance(String processInstanceId) {
         return null;
     }
@@ -345,7 +351,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
     }
 
     @Override
-    public KogitoWorkItemManager getWorkItemManager() {
+    public KogitoWorkItemManager getKogitoWorkItemManager() {
         return (KogitoWorkItemManager) this.processRuntime.getWorkItemManager();
     }
 

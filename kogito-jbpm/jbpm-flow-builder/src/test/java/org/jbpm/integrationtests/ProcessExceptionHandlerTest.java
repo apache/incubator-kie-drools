@@ -20,12 +20,14 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.jbpm.process.instance.ProcessInstance;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,18 +60,18 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-        PackageBuilderErrors errors = builder.getErrors();
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KnowledgeBuilderErrors errors = builder.getErrors();
         if (errors != null && !errors.isEmpty()) {
-            for (DroolsError error : errors.getErrors()) {
+            for (KnowledgeBuilderError error : errors) {
                 logger.error(error.toString());
             }
             fail("Package could not be compiled");
         }
-        KieSession session = createKieSession(builder.getPackages());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
-        ProcessInstance processInstance = (ProcessInstance) session.startProcess("org.drools.exception");
-        assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.exception");
+        assertEquals(KogitoProcessInstance.STATE_ABORTED, processInstance.getState());
     }
 
     @Test
@@ -111,13 +113,13 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackages());
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
-        ProcessInstance processInstance = (ProcessInstance) session.startProcess("org.drools.exception");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.exception");
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
     }
@@ -138,8 +140,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "    <exceptionHandlers>\n" +
                         "      <exceptionHandler faultName=\"myFault\" type=\"action\"  >\n" +
                         "        <action type=\"expression\" name=\"Complete\" dialect=\"java\" >((org.jbpm.process.instance.ProcessInstance) context.getProcessInstance()).setState(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);</action>\n"
-                        +
-                        "      </exceptionHandler>\n" +
+                        + "      </exceptionHandler>\n" +
                         "    </exceptionHandlers>\n" +
                         "  </header>\n" +
                         "\n" +
@@ -153,10 +154,10 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackages());
-        ProcessInstance processInstance = (ProcessInstance) session.startProcess("org.drools.exception");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.exception");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     @Test
@@ -222,15 +223,14 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "\n" +
                         "</process>");
 
-        builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackages());
-
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
-        ProcessInstance processInstance = (ProcessInstance) session.startProcess("org.drools.exception");
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.exception");
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     @Test
@@ -298,14 +298,14 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "\n" +
                         "</process>");
 
-        builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackages());
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list", list);
-        ProcessInstance processInstance = (ProcessInstance) session.startProcess("org.drools.exception");
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.exception");
         assertEquals(1, list.size());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
 }

@@ -49,7 +49,7 @@ public class ReceiveTaskHandler implements KogitoWorkItemHandler {
         }
         Map<String, Object> results = new HashMap<>();
         results.put("Message", message);
-        kruntime.getWorkItemManager().completeWorkItem(workItemId, results);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItemId, results);
     }
 
     public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {

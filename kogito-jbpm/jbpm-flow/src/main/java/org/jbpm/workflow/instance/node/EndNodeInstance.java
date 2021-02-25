@@ -24,10 +24,10 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.workflow.core.node.EndNode.PROCESS_SCOPE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
 
 /**
  * Runtime counterpart of an end node.
@@ -61,7 +61,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
         if (getEndNode().isTerminate()) {
             if (getNodeInstanceContainer() instanceof CompositeNodeInstance) {
                 if (getEndNode().getScope() == PROCESS_SCOPE) {
-                    getProcessInstance().setState(STATE_COMPLETED);
+                    getProcessInstance().setState(KogitoProcessInstance.STATE_COMPLETED);
                 } else {
                     while (!getNodeInstanceContainer().getNodeInstances().isEmpty()) {
                         ((org.jbpm.workflow.instance.NodeInstance) getNodeInstanceContainer().getNodeInstances().iterator().next()).cancel();
@@ -69,7 +69,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
                     ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
                 }
             } else {
-                ((NodeInstanceContainer) getNodeInstanceContainer()).setState(STATE_COMPLETED);
+                ((NodeInstanceContainer) getNodeInstanceContainer()).setState(KogitoProcessInstance.STATE_COMPLETED);
             }
 
         } else {

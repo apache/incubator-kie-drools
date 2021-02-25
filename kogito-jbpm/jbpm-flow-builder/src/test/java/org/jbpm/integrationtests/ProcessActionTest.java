@@ -28,14 +28,9 @@ import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
@@ -48,7 +43,6 @@ public class ProcessActionTest extends AbstractBaseTest {
 
     @Test
     public void testOnEntryExit() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -98,28 +92,25 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        ProcessInstance processInstance = kruntime.startProcess("org.drools.actions");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, KogitoProcessInstance.getState());
         KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals(1, list.size());
-        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertEquals(3, list.size());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
     @Test
     public void testActionContextJava() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -162,28 +153,21 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        ProcessInstance processInstance =
-                ksession.startProcess("org.drools.actions");
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        Collection<FactHandle> factHandles = ksession.getFactHandles(new ObjectFilter() {
-            public boolean accept(Object object) {
-                return object instanceof Message;
-            }
-        });
+        Collection<FactHandle> factHandles = kruntime.getKieSession().getFactHandles(object -> object instanceof Message);
         assertFalse(factHandles.isEmpty());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
     @Test
     public void testActionContextMVEL() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -227,31 +211,24 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        if (builder.hasErrors()) {
+            fail(builder.getErrors().toString());
         }
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        ProcessInstance processInstance =
-                ksession.startProcess("org.drools.actions");
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        Collection<FactHandle> factHandles = ksession.getFactHandles(new ObjectFilter() {
-            public boolean accept(Object object) {
-                return object instanceof Message;
-            }
-        });
+        Collection<FactHandle> factHandles = kruntime.getKieSession().getFactHandles(object -> object instanceof Message);
         assertFalse(factHandles.isEmpty());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
     @Test
     public void testActionVariableJava() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -289,24 +266,22 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
         TestVariable person = new TestVariable("John Doe");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
-        ProcessInstance processInstance =
-                ksession.startProcess("org.drools.actions", params);
+        KogitoProcessInstance KogitoProcessInstance =
+                kruntime.startProcess("org.drools.actions", params);
         assertEquals(1, list.size());
         assertEquals("John Doe", list.get(0));
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
     @Test
     public void testActionVariableMVEL() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -344,24 +319,22 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        List<String> list = new ArrayList<>();
+        kruntime.getKieSession().setGlobal("list", list);
         TestVariable person = new TestVariable("John Doe");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
-        ProcessInstance processInstance =
-                ksession.startProcess("org.drools.actions", params);
+        KogitoProcessInstance KogitoProcessInstance =
+                kruntime.startProcess("org.drools.actions", params);
         assertEquals(1, list.size());
         assertEquals("John Doe", list.get(0));
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
     @Test
     public void testActionNameConflict() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -389,7 +362,7 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
         source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -417,26 +390,23 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        ProcessInstance processInstance =
-                ksession.startProcess("org.drools.actions1");
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance KogitoProcessInstance =
+                kruntime.startProcess("org.drools.actions1");
         assertEquals(1, list.size());
         assertEquals("Action1", list.get(0));
         list.clear();
-        processInstance =
-                ksession.startProcess("org.drools.actions2");
+        KogitoProcessInstance = kruntime.startProcess("org.drools.actions2");
         assertEquals(1, list.size());
         assertEquals("Action2", list.get(0));
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
     @Test
     public void testActionContextJavaBackwardCheck() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -479,23 +449,17 @@ public class ProcessActionTest extends AbstractBaseTest {
                         "  </connections>\n" +
                         "\n" +
                         "</process>");
-        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        ProcessInstance processInstance =
-                ksession.startProcess("org.drools.actions");
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        Collection<FactHandle> factHandles = ksession.getFactHandles(new ObjectFilter() {
-            public boolean accept(Object object) {
-                return object instanceof Message;
-            }
-        });
+        Collection<FactHandle> factHandles = kruntime.getKieSession().getFactHandles(object -> object instanceof Message);
         assertFalse(factHandles.isEmpty());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
     }
 
 }

@@ -29,15 +29,8 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-serialization-protobuf</artifactId>
+      <version>${version.org.kie7}</version>
       <exclusions>
-        <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-internal</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-api</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-core</artifactId>

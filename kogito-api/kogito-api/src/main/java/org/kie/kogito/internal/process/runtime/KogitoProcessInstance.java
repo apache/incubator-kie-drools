@@ -29,6 +29,12 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
     int STATE_SUSPENDED = 4;
     int STATE_ERROR = 5;
 
+    int SLA_NA = 0;
+    int SLA_PENDING = 1;
+    int SLA_MET = 2;
+    int SLA_VIOLATED = 3;
+    int SLA_ABORTED = 4;
+
     @Deprecated
     @Override
     long getId();

@@ -17,18 +17,14 @@ package org.jbpm.process.builder;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.spi.KogitoProcessContextImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
@@ -40,8 +36,8 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -54,36 +50,34 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("list.add( 'hello world' )");
 
-        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl(pkg);
+        builder = new KnowledgeBuilderImpl(pkg);
 
-        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry(pkg.getName());
+        PackageRegistry pkgReg = builder.getPackageRegistry(pkg.getName());
         MVELDialect mvelDialect = (MVELDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("mvel");
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init(pkgBuilder, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
+        context.init(builder, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
 
-        pkgBuilder.addPackageFromDrl(new StringReader("package pkg1;\nglobal java.util.List list;\n"));
+        builder.addPackageFromDrl(new StringReader("package pkg1;\nglobal java.util.List list;\n"));
 
         ActionNode actionNode = new ActionNode();
         DroolsAction action = new DroolsConsequenceAction("java", null);
         actionNode.setAction(action);
 
-        final MVELActionBuilder builder = new MVELActionBuilder();
-        builder.build(context,
+        final MVELActionBuilder actionBuilder = new MVELActionBuilder();
+        actionBuilder.build(context,
                 action,
                 actionDescr,
                 actionNode);
 
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
-        final KieSession wm = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         List<String> list = new ArrayList<String>();
-        wm.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
 
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage("pkg1").getDialectRuntimeRegistry().getDialectData("mvel");
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) builder.getPackage("pkg1").getDialectRuntimeRegistry().getDialectData("mvel");
 
-        KogitoProcessContext processContext = new KogitoProcessContextImpl(((InternalWorkingMemory) wm).getKnowledgeRuntime());
+        KogitoProcessContext processContext = new KogitoProcessContextImpl(kruntime.getKieSession());
         ((MVELAction) actionNode.getAction().getMetaData("Action")).compile(data);
         ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
 

@@ -26,7 +26,7 @@ import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
 
 public class HandleEscalationAction implements Action, Serializable {
 

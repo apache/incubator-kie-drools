@@ -24,8 +24,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 @XmlRootElement(name = "get-completed-tasks-command")
@@ -54,14 +54,14 @@ public class ResumeProcessInstanceCommand implements ExecutableCommand<Object>, 
         if (processInstanceId == null) {
             return null;
         }
-        ProcessInstance processInstance = runtime.getProcessInstance(processInstanceId);
+        KogitoProcessInstance processInstance = runtime.getProcessInstance(processInstanceId);
         if (processInstance == null) {
             throw new IllegalArgumentException("Could not find process instance for id " + processInstanceId);
         }
-        if (processInstance.getState() != ProcessInstance.STATE_SUSPENDED) {
+        if (processInstance.getState() != KogitoProcessInstance.STATE_SUSPENDED) {
             throw new IllegalArgumentException("Process instance with id " + processInstanceId + " in state " + processInstance.getState());
         }
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState(ProcessInstance.STATE_ACTIVE);
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setState(KogitoProcessInstance.STATE_ACTIVE);
         return null;
     }
 

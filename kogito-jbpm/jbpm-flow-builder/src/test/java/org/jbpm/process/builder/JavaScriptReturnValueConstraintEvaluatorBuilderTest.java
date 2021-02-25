@@ -16,29 +16,26 @@
 package org.jbpm.process.builder;
 
 import java.io.StringReader;
-import java.util.Arrays;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.process.builder.dialect.javascript.JavaScriptReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.instance.node.SplitInstance;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JavaScriptReturnValueConstraintEvaluatorBuilderTest {
+public class JavaScriptReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseTest {
     @Test
     public void testSimpleReturnValueConstraintEvaluator() throws Exception {
         final InternalKnowledgePackage pkg = new KnowledgePackageImpl("pkg1");
@@ -54,17 +51,17 @@ public class JavaScriptReturnValueConstraintEvaluatorBuilderTest {
         ReturnValueDescr descr = new ReturnValueDescr();
         descr.setText("function validate() {return value;} validate();");
 
-        KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl(pkg);
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
+        builder.addPackage(pkg);
+        DialectCompiletimeRegistry dialectRegistry = builder.getPackageRegistry(pkg.getName()).getDialectCompiletimeRegistry();
 
-        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder,
+        ProcessBuildContext context = new ProcessBuildContext(builder,
                 pkg,
                 process,
                 processDescr,
                 dialectRegistry,
                 null);
 
-        pkgBuilder.addPackageFromDrl(new StringReader("package pkg1;\n global Boolean value;\n"));
+        builder.addPackageFromDrl(new StringReader("package pkg1;\n global Boolean value;\n"));
 
         ReturnValueConstraintEvaluator node = new ReturnValueConstraintEvaluator();
 
@@ -74,17 +71,14 @@ public class JavaScriptReturnValueConstraintEvaluatorBuilderTest {
                 descr,
                 null);
 
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
-        final KieSession ksession = kbase.newKieSession();
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) ksession);
+        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) kruntime.getKieSession());
 
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance(processInstance);
 
-        ksession.setGlobal("value", true);
+        kruntime.getKieSession().setGlobal("value", true);
 
         assertTrue(node.evaluate(splitInstance,
                 null,

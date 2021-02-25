@@ -22,23 +22,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.DroolsError;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.logger.KogitoRuntimeLoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,17 +101,16 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "    <connection from=\"3\" to=\"4\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-        for (DroolsError error : builder.getErrors().getErrors()) {
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        for (KnowledgeBuilderError error : builder.getErrors()) {
             logger.error(error.toString());
         }
 
-        KieSession ksession = createKieSession(builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.drools.dynamic");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        kruntime.getKieSession().setGlobal("list", list);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.dynamic");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(4, list.size());
     }
 
@@ -168,24 +165,24 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "    <connection from=\"3\" to=\"4\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        builder.addRuleFlow(source);
-        for (DroolsError error : builder.getErrors().getErrors()) {
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        for (KnowledgeBuilderError error : builder.getErrors()) {
             logger.error(error.toString());
         }
 
-        KieSession ksession = createKieSession(builder.getPackages());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        kruntime.getKieSession().setGlobal("list", list);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Work", testHandler);
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.drools.dynamic");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Work", testHandler);
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.dynamic");
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, list.size());
-        WorkItem workItem = testHandler.getWorkItem();
+        KogitoWorkItem workItem = testHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(3, list.size());
     }
 
@@ -223,21 +220,19 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "    <connection from=\"2\" to=\"3\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
-        KieRuntimeLogger logger = KogitoRuntimeLoggerFactory.newFileLogger(ksession, "test");
+        builder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        KieRuntimeLogger logger = KogitoRuntimeLoggerFactory.newFileLogger(kruntime.getKieSession(), "test");
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         // start a new process instance
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.drools.dynamic");
-        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.dynamic");
+        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((KogitoWorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("TaskName", "Dynamic Task");
         assertNull(handler.getWorkItem());
         assertEquals(0, dynamicContext.getNodeInstances().size());
-        DynamicUtils.addDynamicWorkItem(dynamicContext, ksession, "Human Task", parameters);
+        DynamicUtils.addDynamicWorkItem(dynamicContext, kruntime.getKieRuntime(), "Human Task", parameters);
         assertNotNull(handler.getWorkItem());
         assertEquals(1, dynamicContext.getNodeInstances().size());
         logger.close();
@@ -310,22 +305,20 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "    <connection from=\"3\" to=\"4\" />\n" +
                         "  </connections>\n" +
                         "</process>");
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
-        kbuilder.add(ResourceFactory.newReaderResource(source2), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
-        KieRuntimeLogger logger = KogitoRuntimeLoggerFactory.newFileLogger(ksession, "test");
+        builder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
+        builder.add(ResourceFactory.newReaderResource(source2), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        KieRuntimeLogger logger = KogitoRuntimeLoggerFactory.newFileLogger(kruntime.getKieSession(), "test");
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         // start a new process instance
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess("org.drools.dynamic");
-        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.dynamic");
+        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((KogitoWorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "NewValue");
         assertNull(handler.getWorkItem());
         assertEquals(0, dynamicContext.getNodeInstances().size());
-        DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, "org.drools.subflow", parameters);
+        DynamicUtils.addDynamicSubProcess(dynamicContext, kruntime.getKieRuntime(), "org.drools.subflow", parameters);
         assertNotNull(handler.getWorkItem());
         assertEquals(1, dynamicContext.getNodeInstances().size());
         logger.close();

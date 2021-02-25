@@ -25,7 +25,6 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ClassPathResource;
@@ -40,18 +39,13 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
@@ -59,31 +53,28 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
     @Test
     public void testAccept() {
-        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         WorkflowProcessImpl process = new WorkflowProcessImpl();
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
-        processInstance.setState(ProcessInstance.STATE_ACTIVE);
+        processInstance.setState(KogitoProcessInstance.STATE_ACTIVE);
         processInstance.setProcess(process);
-        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) ksession);
+        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) kruntime.getKieSession());
 
         ProcessInstanceResolverStrategy strategy = new ProcessInstanceResolverStrategy();
 
         assertTrue(strategy.accept(processInstance));
         Object object = new Object();
-        assertTrue(!strategy.accept(object));
+        assertFalse(strategy.accept(object));
     }
 
     @Test
     public void testProcessInstanceResolverStrategy() throws Exception {
         // Setup
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ClassPathResource(PROCESS_NAME, this.getClass()), ResourceType.DRF);
-        KieBase kbase = kbuilder.newKieBase();
-        KieSession ksession = kbase.newKieSession();
-        KogitoProcessInstance processInstance = (KogitoProcessInstance) ksession.createProcessInstance("process name", new HashMap<String, Object>());
-        ksession.insert(processInstance);
+        builder.add(new ClassPathResource(PROCESS_NAME, this.getClass()), ResourceType.DRF);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        KogitoProcessInstance processInstance = kruntime.createProcessInstance("process name", new HashMap<String, Object>());
+        kruntime.getKieSession().insert(processInstance);
 
         // strategy setup
         ProcessInstanceResolverStrategy strategy = new ProcessInstanceResolverStrategy();
@@ -96,48 +87,47 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         org.kie.api.marshalling.MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ProtobufMarshallerWriteContext writerContext = new ProtobufMarshallerWriteContext(baos,
-                ((InternalKnowledgeBase) kbase),
-                (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession),
-                RuleBaseNodes.getNodeMap(((InternalKnowledgeBase) kbase)),
+                ((InternalKnowledgeBase) kruntime.getKieSession().getKieBase()),
+                (InternalWorkingMemory) kruntime.getKieSession(),
+                RuleBaseNodes.getNodeMap(((InternalKnowledgeBase) kruntime.getKieSession().getKieBase())),
                 marshallingConfig.getObjectMarshallingStrategyStore(),
                 marshallingConfig.isMarshallProcessInstances(),
-                marshallingConfig.isMarshallWorkItems(), ksession.getEnvironment());
+                marshallingConfig.isMarshallWorkItems(), kruntime.getKieRuntime().getEnvironment());
 
         strategy.write(writerContext, processInstance);
         baos.close();
         writerContext.close();
         byte[] bytes = baos.toByteArray();
         int numCorrectBytes = calculateNumBytesForLong(processInstance.getStringId());
-        assertTrue(bytes.length == numCorrectBytes, "Expected " + numCorrectBytes + " bytes, not " + bytes.length);
+        assertEquals(numCorrectBytes, bytes.length, "Expected " + numCorrectBytes + " bytes, not " + bytes.length);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bais);
         String serializedProcessInstanceId = ois.readUTF();
         ois.close();
-        assertTrue(processInstance.getStringId().equals(serializedProcessInstanceId),
-                "Expected " + processInstance.getStringId() + ", not " + serializedProcessInstanceId);
+        assertEquals(serializedProcessInstanceId, processInstance.getStringId(), "Expected " + processInstance.getStringId() + ", not " + serializedProcessInstanceId);
 
         // Test other strategy stuff
         ProcessInstanceManager pim = ProcessInstanceResolverStrategy.retrieveProcessInstanceManager(writerContext);
         assertNotNull(pim);
         assertNotNull(ProcessInstanceResolverStrategy.retrieveKnowledgeRuntime(writerContext));
-        assertTrue(processInstance.equals(pim.getProcessInstance(serializedProcessInstanceId)));
+        assertEquals(pim.getProcessInstance(serializedProcessInstanceId), processInstance);
         bais.close();
         // Test strategy.read
         bais = new ByteArrayInputStream(bytes);
         ProtobufMarshallerReaderContext readerContext = new ProtobufMarshallerReaderContext(bais,
-                ((KnowledgeBaseImpl) kbase),
-                RuleBaseNodes.getNodeMap(((KnowledgeBaseImpl) kbase)),
+                ((KnowledgeBaseImpl) kruntime.getKieSession().getKieBase()),
+                RuleBaseNodes.getNodeMap(((KnowledgeBaseImpl) kruntime.getKieSession().getKieBase())),
                 marshallingConfig.getObjectMarshallingStrategyStore(),
                 ProtobufMarshaller.TIMER_READERS,
                 marshallingConfig.isMarshallProcessInstances(),
                 marshallingConfig.isMarshallWorkItems(),
                 EnvironmentFactory.newEnvironment());
         bais.close();
-        readerContext.setWorkingMemory(((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory());
+        readerContext.setWorkingMemory(((StatefulKnowledgeSessionImpl) kruntime.getKieSession()).getInternalWorkingMemory());
         Object procInstObject = strategy.read(readerContext);
-        assertTrue(procInstObject != null && procInstObject instanceof ProcessInstance);
-        assertTrue(processInstance == procInstObject);
+        assertTrue(procInstObject instanceof KogitoProcessInstance);
+        assertSame(processInstance, procInstObject);
     }
 
     private int calculateNumBytesForLong(String longVal) throws Exception {

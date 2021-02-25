@@ -17,10 +17,10 @@ package org.kie.kogito.process.workitems;
 
 import java.util.Date;
 
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-public interface KogitoWorkItem extends org.drools.core.process.instance.WorkItem, org.kie.kogito.internal.process.runtime.KogitoWorkItem {
+public interface InternalKogitoWorkItem extends org.drools.core.process.instance.WorkItem, org.kie.kogito.internal.process.runtime.KogitoWorkItem {
 
     void setProcessInstanceId(String processInstanceId);
 
@@ -36,7 +36,7 @@ public interface KogitoWorkItem extends org.drools.core.process.instance.WorkIte
 
     void setCompleteDate(Date date);
 
-    void setNodeInstance(NodeInstance nodeInstance);
+    void setNodeInstance(KogitoNodeInstance nodeInstance);
 
-    void setProcessInstance(ProcessInstance processInstance);
+    void setProcessInstance(KogitoProcessInstance processInstance);
 }

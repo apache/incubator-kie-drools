@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
@@ -47,10 +47,6 @@ public class OneProcessPerThreadTest {
 
     private static final Logger logger = LoggerFactory.getLogger(OneProcessPerThreadTest.class);
 
-    protected KieSession createStatefulKnowledgeSession(KieBase kbase) {
-        return kbase.newKieSession();
-    }
-
     @Test
     public void testMultiThreadProcessInstanceWorkItem() throws Exception {
         final ConcurrentHashMap<String, Long> workItems = new ConcurrentHashMap<String, Long>();
@@ -60,9 +56,9 @@ public class OneProcessPerThreadTest {
             kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess.bpmn"), ResourceType.BPMN2);
             KieBase kbase = kbuilder.newKieBase();
 
-            KieSession ksession = createStatefulKnowledgeSession(kbase);
+            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
-            ksession.getWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
+            kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
                 public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
                     Long threadId = (Long) workItem.getParameter("id");
                     workItems.put(workItem.getProcessInstanceStringId(), threadId);
@@ -72,8 +68,7 @@ public class OneProcessPerThreadTest {
                 }
             });
 
-            startThreads(ksession);
-
+            startThreads(kruntime);
             assertEquals(THREAD_COUNT, workItems.size());
         } catch (Throwable t) {
             t.printStackTrace();
@@ -90,13 +85,13 @@ public class OneProcessPerThreadTest {
         }
     }
 
-    private static void startThreads(KieSession ksession) throws Throwable {
+    private static void startThreads(KogitoProcessRuntime kruntime) throws Throwable {
         boolean success = true;
         final Thread[] t = new Thread[THREAD_COUNT];
 
         final ProcessInstanceStartRunner[] r = new ProcessInstanceStartRunner[THREAD_COUNT];
         for (int i = 0; i < t.length; i++) {
-            r[i] = new ProcessInstanceStartRunner(ksession, i, "org.drools.integrationtests.multithread");
+            r[i] = new ProcessInstanceStartRunner(kruntime, i, "org.drools.integrationtests.multithread");
             t[i] = new Thread(r[i], "thread-" + i);
             try {
                 t[i].start();
@@ -117,13 +112,13 @@ public class OneProcessPerThreadTest {
 
     public static class ProcessInstanceStartRunner implements Runnable {
 
-        private KieSession ksession;
+        private KogitoProcessRuntime kruntime;
         private String processId;
         private long id;
         private Status status;
 
-        public ProcessInstanceStartRunner(KieSession ksession, int id, String processId) {
-            this.ksession = ksession;
+        public ProcessInstanceStartRunner(KogitoProcessRuntime kruntime, int id, String processId) {
+            this.kruntime = kruntime;
             this.id = id;
             this.processId = processId;
         }
@@ -133,7 +128,7 @@ public class OneProcessPerThreadTest {
             try {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("id", id);
-                ksession.startProcess(processId, params);
+                kruntime.startProcess(processId, params);
             } catch (Throwable t) {
                 this.status = Status.FAIL;
                 logger.error("{} failed: {}", Thread.currentThread().getName(), t.getMessage());

@@ -30,11 +30,10 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +56,12 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         assertEquals(0,
                 builder.getErrors().getErrors().length);
 
-        KieSession session = createKieSession(true, builder.getPackages());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Integer> inList = new ArrayList<Integer>();
         List<Integer> outList = new ArrayList<Integer>();
-        session.setGlobal("inList",
+        kruntime.getKieSession().setGlobal("inList",
                 inList);
-        session.setGlobal("outList",
+        kruntime.getKieSession().setGlobal("outList",
                 outList);
 
         inList.add(1);
@@ -70,8 +69,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         inList.add(6);
         inList.add(25);
 
-        FactHandle handle = session.insert(inList);
-        session.startProcess("ConstraintDialects");
+        FactHandle handle = kruntime.getKieSession().insert(inList);
+        kruntime.startProcess("ConstraintDialects");
         assertEquals(4,
                 outList.size());
         assertEquals("MVELCodeConstraint was here",
@@ -85,9 +84,9 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         outList.clear();
         inList.remove(new Integer(1));
-        session.update(handle,
+        kruntime.getKieSession().update(handle,
                 inList);
-        session.startProcess("ConstraintDialects");
+        kruntime.startProcess("ConstraintDialects");
         assertEquals(3,
                 outList.size());
         assertEquals("JavaCodeConstraint was here",
@@ -99,9 +98,9 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         outList.clear();
         inList.remove(new Integer(6));
-        session.update(handle,
+        kruntime.getKieSession().update(handle,
                 inList);
-        session.startProcess("ConstraintDialects");
+        kruntime.startProcess("ConstraintDialects");
         assertEquals(2,
                 outList.size());
         assertEquals("JavaCodeConstraint was here",
@@ -111,9 +110,9 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         outList.clear();
         inList.remove(new Integer(3));
-        session.update(handle,
+        kruntime.getKieSession().update(handle,
                 inList);
-        session.startProcess("ConstraintDialects");
+        kruntime.startProcess("ConstraintDialects");
         assertEquals(1,
                 outList.size());
         assertEquals("JavaRuleConstraint was here",
@@ -121,9 +120,9 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         outList.clear();
         inList.remove(new Integer(25));
-        session.update(handle,
+        kruntime.getKieSession().update(handle,
                 inList);
-        ProcessInstance processInstance = session.startProcess("ConstraintDialects");
+        KogitoProcessInstance processInstance = kruntime.startProcess("ConstraintDialects");
 
         assertEquals(KogitoProcessInstance.STATE_ERROR,
                 processInstance.getState());
@@ -134,18 +133,17 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
 
-        KieSession workingMemory = createKieSession(true, builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list",
+        kruntime.getKieSession().setGlobal("list",
                 list);
 
-        workingMemory.fireAllRules();
+        kruntime.getKieSession().fireAllRules();
         assertEquals(0,
                 list.size());
 
-        final ProcessInstance processInstance = workingMemory.startProcess("0");
-        assertEquals(ProcessInstance.STATE_COMPLETED,
+        final KogitoProcessInstance processInstance = kruntime.startProcess("0");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
                 processInstance.getState());
         assertEquals(4,
                 list.size());
@@ -166,18 +164,17 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow40.rfm")));
 
-        KieSession workingMemory = createKieSession(true, builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list",
+        kruntime.getKieSession().setGlobal("list",
                 list);
 
-        workingMemory.fireAllRules();
+        kruntime.getKieSession().fireAllRules();
         assertEquals(0,
                 list.size());
 
-        final ProcessInstance processInstance = workingMemory.startProcess("0");
-        assertEquals(ProcessInstance.STATE_COMPLETED,
+        final KogitoProcessInstance processInstance = kruntime.startProcess("0");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
                 processInstance.getState());
         assertEquals(4,
                 list.size());
@@ -187,7 +184,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         list.subList(1, 2).contains("Rule3");
         assertEquals("Rule4",
                 list.get(3));
-
         // Reset the system property so that automatic conversion should not happen
         System.setProperty("drools.ruleflow.port",
                 "false");
@@ -198,10 +194,9 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("test_ruleflowClear.drl")));
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ruleflowClear.rfm")));
 
-        KieSession workingMemory = createKieSession(true, builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list",
+        kruntime.getKieSession().setGlobal("list",
                 list);
 
         final List<Match> activations = new ArrayList<Match>();
@@ -211,13 +206,13 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
             }
         };
 
-        workingMemory.addEventListener(listener);
-        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        kruntime.getKieSession().addEventListener(listener);
+        InternalAgenda agenda = (InternalAgenda) kruntime.getKieSession().getAgenda();
         //        assertEquals( 0,
         //                      agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
 
         // We need to call fireAllRules here to get the InitialFact into the system, to the eval(true)'s kick in
-        workingMemory.fireAllRules();
+        kruntime.getKieSession().fireAllRules();
         agenda.evaluateEagerList();
 
         // Now we have 4 in the RuleFlow, but not yet in the agenda
@@ -232,7 +227,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         assertEquals(0,
                 activations.size());
 
-        ((InternalAgenda) workingMemory.getAgenda()).clearAndCancelRuleFlowGroup("flowgroup-1");
+        ((InternalAgenda) kruntime.getKieSession().getAgenda()).clearAndCancelRuleFlowGroup("flowgroup-1");
 
         // Check the AgendaGroup and RuleFlowGroup  are now empty
         assertEquals(0,
@@ -250,17 +245,17 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
 
-        final KieSession workingMemory = createKieSession(true, builder.getPackages());
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
-        workingMemory.setGlobal("list",
+        kruntime.getKieSession().setGlobal("list",
                 list);
 
-        workingMemory.fireAllRules();
+        kruntime.getKieSession().fireAllRules();
         assertEquals(0,
                 list.size());
 
-        final ProcessInstance processInstance = workingMemory.startProcess("0");
-        assertEquals(ProcessInstance.STATE_COMPLETED,
+        final KogitoProcessInstance processInstance = kruntime.startProcess("0");
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
                 processInstance.getState());
         assertEquals(4,
                 list.size());
@@ -338,13 +333,12 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     public void testRuleFlowActionDialects() throws Exception {
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ActionDialects.rfm")));
 
-        final KieSession session = createKieSession(true, builder.getPackages());
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
-        session.setGlobal("list",
+        kruntime.getKieSession().setGlobal("list",
                 list);
 
-        session.startProcess("ActionDialects");
+        kruntime.startProcess("ActionDialects");
 
         assertEquals(2,
                 list.size());

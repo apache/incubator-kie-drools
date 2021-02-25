@@ -18,12 +18,13 @@ package org.jbpm.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.test.Person;
-import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.io.ResourceType;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,20 +67,19 @@ public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
                         "  then\n" +
                         "    System.out.println(drools.getContext(ProcessContext).getProcessInstance().getProcessName());\n" +
                         "end");
-        builder.addRuleFlow(source);
-        builder.addPackageFromDrl(source2);
+        builder.add(new ReaderResource(source), ResourceType.DRF);
+        builder.add(new ReaderResource(source2), ResourceType.DRL);
 
-        KieSession workingMemory = createKieSession(builder.getPackages());
-        workingMemory.getEnvironment().set("org.jbpm.rule.task.waitstate", "true");
-
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        kruntime.getKieRuntime().getEnvironment().set("org.jbpm.rule.task.waitstate", "true");
         Person person = new Person();
         person.setAge(30);
-        workingMemory.insert(person);
+        kruntime.getKieSession().insert(person);
         // start process
-        RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) workingMemory.startProcess("org.drools.ruleset");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        workingMemory.fireAllRules();
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ruleset");
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        kruntime.getKieSession().fireAllRules();
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
 }

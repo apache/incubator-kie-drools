@@ -21,22 +21,17 @@ import java.util.List;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DebugProcessEventListener;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,23 +108,21 @@ public class AgendaFilterTest extends AbstractBaseTest {
                 "\n" +
                 "</process>";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newByteArrayResource(rf.getBytes()), ResourceType.DRF);
+        builder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        builder.add(ResourceFactory.newByteArrayResource(rf.getBytes()), ResourceType.DRF);
 
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
+        if (builder.hasErrors()) {
+            fail(builder.getErrors().toString());
         }
 
-        KieSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KiePackage[0]));
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
         // go !
         Message message = new Message();
         message.setMessage("Hello World");
         message.setStatus(Message.HELLO);
-        ksession.insert(message);
-        ksession.startProcess("process-test");
-
+        kruntime.getKieSession().insert(message);
+        kruntime.startProcess("process-test");
         assertEquals("Goodbye cruel world", message.getMessage());
     }
 
@@ -246,42 +239,37 @@ public class AgendaFilterTest extends AbstractBaseTest {
                 "  </connections>\n" +
                 "</process>";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newByteArrayResource(rf.getBytes()), ResourceType.DRF);
+        builder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        builder.add(ResourceFactory.newByteArrayResource(rf.getBytes()), ResourceType.DRF);
 
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
+        if (builder.hasErrors()) {
+            fail(builder.getErrors().toString());
         }
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
-        ksession.addEventListener(new DebugAgendaEventListener());
-        ksession.addEventListener(new DebugProcessEventListener());
+        kruntime.getKieSession().addEventListener(new DebugAgendaEventListener());
+        kruntime.getProcessEventManager().addEventListener(new DebugProcessEventListener());
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
-        commands.add(CommandFactory.newInsert(newCancelFact(ksession, false)));
-        commands.add(CommandFactory.newInsert(newCancelFact(ksession, true)));
+        commands.add(CommandFactory.newInsert(newCancelFact(kruntime, false)));
+        commands.add(CommandFactory.newInsert(newCancelFact(kruntime, true)));
         commands.add(CommandFactory.newStartProcess("bz761715"));
         commands.add(new FireAllRulesCommand(new CancelAgendaFilter()));
         commands.add(new FireAllRulesCommand(new CancelAgendaFilter()));
         commands.add(new FireAllRulesCommand(new CancelAgendaFilter()));
 
-        ksession.execute(CommandFactory.newBatchExecution(commands));
+        kruntime.getKieSession().execute(CommandFactory.newBatchExecution(commands));
     }
 
-    private Object newCancelFact(KieSession ksession, boolean cancel) {
-        FactType type = ksession.getKieBase().getFactType("org.jboss.qa.brms.agendafilter", "CancelFact");
+    private Object newCancelFact(KogitoProcessRuntime kruntime, boolean cancel) {
+        FactType type = kruntime.getKieSession().getKieBase().getFactType("org.jboss.qa.brms.agendafilter", "CancelFact");
         Object instance = null;
         try {
             instance = type.newInstance();
 
             type.set(instance, "cancel", cancel);
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
+        } catch (IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
 
@@ -297,18 +285,16 @@ public class AgendaFilterTest extends AbstractBaseTest {
     @Test
     public void testGetListeners() {
         // JBRULES-3378
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        if (kbuilder.hasErrors()) {
-            throw new RuntimeException(kbuilder.getErrors().toString());
+        if (builder.hasErrors()) {
+            throw new RuntimeException(builder.getErrors().toString());
         }
 
-        KieSession ksession = kbuilder.newKieBase().newKieSession();
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
-        ksession.getAgendaEventListeners();
-        ksession.getProcessEventListeners();
-        ksession.getRuleRuntimeEventListeners();
+        kruntime.getKieSession().getAgendaEventListeners();
+        kruntime.getProcessEventManager().getProcessEventListeners();
+        kruntime.getKieSession().getRuleRuntimeEventListeners();
 
-        ksession.dispose();
+        kruntime.getKieSession().dispose();
     }
 }

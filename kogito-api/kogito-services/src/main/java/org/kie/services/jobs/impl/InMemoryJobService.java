@@ -23,7 +23,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.JobDescription;
@@ -146,7 +145,7 @@ public class InMemoryJobService implements JobsService {
             try {
                 LOGGER.debug("Job {} started", id);
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
-                    ProcessInstance pi = processRuntime.getProcessInstance(processInstanceId);
+                    KogitoProcessInstance pi = processRuntime.getProcessInstance(processInstanceId);
                     if (pi != null) {
                         String[] ids = id.split("_");
                         limit--;

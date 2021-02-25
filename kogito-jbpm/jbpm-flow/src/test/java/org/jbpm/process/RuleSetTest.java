@@ -33,12 +33,11 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +58,7 @@ public class RuleSetTest extends AbstractBaseTest {
 
         RuleFlowProcess process = createProcess(namespace, modelName, decisionName);
 
-        KieSession ksession = createKieSession(process);
+        KogitoProcessRuntime kruntime = createKogitoProcessRuntime(process);
 
         Map<String, Object> parameters = new HashMap<>();
         Person person = new Person("John", 25);
@@ -67,12 +66,12 @@ public class RuleSetTest extends AbstractBaseTest {
         parameters.put("person", person);
         parameters.put("isAdult", false);
 
-        KogitoProcessInstance pi = (KogitoProcessInstance) ksession.startProcess("org.drools.core.process.process", parameters);
-        assertEquals(ProcessInstance.STATE_COMPLETED, pi.getState());
+        KogitoProcessInstance pi = kruntime.startProcess("org.drools.core.process.process", parameters);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, pi.getState());
 
         boolean result = (boolean) pi.getVariables().get("isAdult");
 
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     @Test

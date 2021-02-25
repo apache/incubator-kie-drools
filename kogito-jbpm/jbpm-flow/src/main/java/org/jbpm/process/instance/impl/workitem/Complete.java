@@ -21,8 +21,8 @@ import java.util.List;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.humantask.phases.Claim;
 import org.jbpm.process.instance.impl.humantask.phases.Release;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Policy;
@@ -69,7 +69,7 @@ public class Complete implements LifeCyclePhase {
     }
 
     @Override
-    public void apply(WorkItem workitem, Transition<?> transition) {
+    public void apply(KogitoWorkItem workitem, Transition<?> transition) {
         if (workitem instanceof HumanTaskWorkItem) {
             if (transition.policies() != null) {
                 for (Policy<?> policy : transition.policies()) {
