@@ -386,10 +386,10 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         if (spentLimit != null) {
             throw new IllegalArgumentException("The termination spentLimit (" + spentLimit
                     + ") cannot be combined with millisecondsSpentLimit (" + millisecondsSpentLimit
-                    + "), secondsSpentLimit" + secondsSpentLimit
-                    + "), minutesSpentLimit" + minutesSpentLimit
-                    + "), hoursSpentLimit" + hoursSpentLimit
-                    + ") or daysSpentLimit" + daysSpentLimit + ").");
+                    + "), secondsSpentLimit (" + secondsSpentLimit
+                    + "), minutesSpentLimit (" + minutesSpentLimit
+                    + "), hoursSpentLimit (" + hoursSpentLimit
+                    + ") or daysSpentLimit (" + daysSpentLimit + ").");
         }
         long timeMillisSpentLimit = 0L;
         if (millisecondsSpentLimit != null) {
@@ -466,9 +466,9 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         if (unimprovedSpentLimit != null) {
             throw new IllegalArgumentException("The termination unimprovedSpentLimit (" + unimprovedSpentLimit
                     + ") cannot be combined with unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
-                    + "), unimprovedSecondsSpentLimit" + unimprovedSecondsSpentLimit
-                    + "), unimprovedMinutesSpentLimit" + unimprovedMinutesSpentLimit
-                    + "), unimprovedHoursSpentLimit" + unimprovedHoursSpentLimit + ").");
+                    + "), unimprovedSecondsSpentLimit (" + unimprovedSecondsSpentLimit
+                    + "), unimprovedMinutesSpentLimit (" + unimprovedMinutesSpentLimit
+                    + "), unimprovedHoursSpentLimit (" + unimprovedHoursSpentLimit + ").");
         }
         long unimprovedTimeMillisSpentLimit = 0L;
         if (unimprovedMillisecondsSpentLimit != null) {
