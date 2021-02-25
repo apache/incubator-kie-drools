@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-apps/task-console",
+  "name": "@kogito-apps/task-console-webapp",
   "version": "1.0.0",
   "main": "index.js",
   "author": "",
@@ -29,11 +29,8 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@kogito-apps/common": "1.0.0",
-    "ajv": "6.12.2",
-    "uniforms": "3.0.0",
-    "uniforms-bridge-json-schema": "3.0.0",
-    "uniforms-patternfly": "4.1.2"
+    "@kogito-apps/components-common": "^1.0.0",
+    "@kogito-apps/consoles-common": "^1.0.0"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",

@@ -20,7 +20,10 @@
       ${path.to.packages}/common/src,
       ${path.to.packages}/management-console/src,
       ${path.to.packages}/task-console/src,
-      ${path.to.packages}/trusty/src
+      ${path.to.packages}/trusty/src,
+      ${path.to.packages}/components-common/src,
+      ${path.to.packages}/consoles-common/src,
+      ${path.to.packages}/task-console-webapp/src
     </sonar.sources>
     <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/*.stories.tsx</sonar.exclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
@@ -28,7 +31,10 @@
       ${path.to.packages}/common/coverage/lcov.info,
       ${path.to.packages}/management-console/coverage/lcov.info,
       ${path.to.packages}/task-console/coverage/lcov.info,
-      ${path.to.packages}/trusty/coverage/lcov.info
+      ${path.to.packages}/trusty/coverage/lcov.info,
+      ${path.to.packages}/components-common/coverage/lcov.info,
+      ${path.to.packages}/consoles-common/coverage/lcov.info,
+      ${path.to.packages}/task-console-webapp/coverage/lcov.info
     </sonar.javascript.lcov.reportPaths>
   </properties>
   <build>
@@ -51,6 +57,15 @@
             </fileset>
             <fileset>
               <directory>packages/trusty/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/components-common/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/consoles-common/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/task-console-webapp/node_modules</directory>
             </fileset>
           </filesets>
         </configuration>

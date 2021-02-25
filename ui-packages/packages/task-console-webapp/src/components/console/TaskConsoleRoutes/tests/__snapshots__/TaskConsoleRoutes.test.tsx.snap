@@ -1,0 +1,236 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskConsoleRoutes tests Default route test 1`] = `
+<TaskConsoleRoutes>
+  <Switch>
+    <Route
+      component={[Function]}
+      computedMatch={
+        Object {
+          "isExact": true,
+          "params": Object {},
+          "path": "/TaskInbox",
+          "url": "/TaskInbox",
+        }
+      }
+      exact={true}
+      location={
+        Object {
+          "hash": "",
+          "pathname": "/TaskInbox",
+          "search": "",
+          "state": undefined,
+        }
+      }
+      path="/TaskInbox"
+    >
+      <MockedComponent
+        history={
+          Object {
+            "action": "REPLACE",
+            "block": [Function],
+            "canGo": [Function],
+            "createHref": [Function],
+            "entries": Array [
+              Object {
+                "hash": "",
+                "pathname": "/TaskInbox",
+                "search": "",
+                "state": undefined,
+              },
+            ],
+            "go": [Function],
+            "goBack": [Function],
+            "goForward": [Function],
+            "index": 0,
+            "length": 1,
+            "listen": [Function],
+            "location": Object {
+              "hash": "",
+              "pathname": "/TaskInbox",
+              "search": "",
+              "state": undefined,
+            },
+            "push": [Function],
+            "replace": [Function],
+          }
+        }
+        location={
+          Object {
+            "hash": "",
+            "pathname": "/TaskInbox",
+            "search": "",
+            "state": undefined,
+          }
+        }
+        match={
+          Object {
+            "isExact": true,
+            "params": Object {},
+            "path": "/TaskInbox",
+            "url": "/TaskInbox",
+          }
+        }
+      />
+    </Route>
+  </Switch>
+</TaskConsoleRoutes>
+`;
+
+exports[`TaskConsoleRoutes tests TaskDetails route test 1`] = `
+<TaskConsoleRoutes>
+  <Switch>
+    <Route
+      computedMatch={
+        Object {
+          "isExact": true,
+          "params": Object {
+            "taskId": "id",
+          },
+          "path": "/TaskDetails/:taskId",
+          "url": "/TaskDetails/id",
+        }
+      }
+      exact={true}
+      location={
+        Object {
+          "hash": "",
+          "pathname": "/TaskDetails/id",
+          "search": "",
+          "state": undefined,
+        }
+      }
+      path="/TaskDetails/:taskId"
+      render={[Function]}
+    >
+      <MockedComponent
+        history={
+          Object {
+            "action": "POP",
+            "block": [Function],
+            "canGo": [Function],
+            "createHref": [Function],
+            "entries": Array [
+              Object {
+                "hash": "",
+                "pathname": "/TaskDetails/id",
+                "search": "",
+                "state": undefined,
+              },
+            ],
+            "go": [Function],
+            "goBack": [Function],
+            "goForward": [Function],
+            "index": 0,
+            "length": 1,
+            "listen": [Function],
+            "location": Object {
+              "hash": "",
+              "pathname": "/TaskDetails/id",
+              "search": "",
+              "state": undefined,
+            },
+            "push": [Function],
+            "replace": [Function],
+          }
+        }
+        location={
+          Object {
+            "hash": "",
+            "pathname": "/TaskDetails/id",
+            "search": "",
+            "state": undefined,
+          }
+        }
+        match={
+          Object {
+            "isExact": true,
+            "params": Object {
+              "taskId": "id",
+            },
+            "path": "/TaskDetails/:taskId",
+            "url": "/TaskDetails/id",
+          }
+        }
+      />
+    </Route>
+  </Switch>
+</TaskConsoleRoutes>
+`;
+
+exports[`TaskConsoleRoutes tests TaskInbox route test 1`] = `
+<TaskConsoleRoutes>
+  <Switch>
+    <Route
+      component={[Function]}
+      computedMatch={
+        Object {
+          "isExact": true,
+          "params": Object {},
+          "path": "/TaskInbox",
+          "url": "/TaskInbox",
+        }
+      }
+      exact={true}
+      location={
+        Object {
+          "hash": "",
+          "pathname": "/TaskInbox",
+          "search": "",
+          "state": undefined,
+        }
+      }
+      path="/TaskInbox"
+    >
+      <MockedComponent
+        history={
+          Object {
+            "action": "POP",
+            "block": [Function],
+            "canGo": [Function],
+            "createHref": [Function],
+            "entries": Array [
+              Object {
+                "hash": "",
+                "pathname": "/TaskInbox",
+                "search": "",
+                "state": undefined,
+              },
+            ],
+            "go": [Function],
+            "goBack": [Function],
+            "goForward": [Function],
+            "index": 0,
+            "length": 1,
+            "listen": [Function],
+            "location": Object {
+              "hash": "",
+              "pathname": "/TaskInbox",
+              "search": "",
+              "state": undefined,
+            },
+            "push": [Function],
+            "replace": [Function],
+          }
+        }
+        location={
+          Object {
+            "hash": "",
+            "pathname": "/TaskInbox",
+            "search": "",
+            "state": undefined,
+          }
+        }
+        match={
+          Object {
+            "isExact": true,
+            "params": Object {},
+            "path": "/TaskInbox",
+            "url": "/TaskInbox",
+          }
+        }
+      />
+    </Route>
+  </Switch>
+</TaskConsoleRoutes>
+`;

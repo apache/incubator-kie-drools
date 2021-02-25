@@ -15,6 +15,7 @@
     "cypress:run": "lerna run cypress:run --",
     "cypress:run-management-console": "cypress run --project ./packages/management-console",
     "cypress:run-task-console": "cypress run --project ./packages/task-console",
+    "cypress:run-task-console-webapp": "cypress run --project ./packages/task-console-webapp",
     "locktt": "locktt"
   },
   "husky": {

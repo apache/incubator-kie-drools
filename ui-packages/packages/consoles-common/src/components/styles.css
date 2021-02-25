@@ -1,0 +1,7 @@
+.kogito-consoles-common--aboutModalBox .pf-c-about-modal-box__hero {
+    background-attachment: unset;
+}
+
+.kogito-consoles-common--PageLayout .pf-c-page__header-brand-link .pf-c-brand {
+    --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px;
+}

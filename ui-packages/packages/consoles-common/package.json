@@ -1,56 +1,56 @@
 {
-  "name": "@kogito-apps/task-console",
+  "name": "@kogito-apps/consoles-common",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "This library provides a set of common React components for use with the Kogito applications.",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-apps.git"
   },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "precommit": "lint-staged",
-    "build:prod": "yarn run lint && webpack --config webpack.prod.js",
-    "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
+    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
+    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
+    "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",
     "test:coverage": "yarn test --coverage",
     "lint": "eslint './src/**/*.ts{,x}'",
-    "dev": "concurrently 'yarn run   start  --define process.env.TEST_USER_SYSTEM_ENABLED=true' 'yarn run dev:server'",
-    "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"' --define process.env.TEST_USER_SYSTEM_ENABLED=true",
-    "dev:server": "nodemon ./server/app.js",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
-    "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
-    "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
-    "codegen": "graphql-codegen",
-    "cypress:run": "cypress run",
-    "cypress:open": "cypress open"
+    "codegen": "graphql-codegen"
   },
   "dependencies": {
-    "@kogito-apps/common": "1.0.0",
-    "ajv": "6.12.2",
-    "uniforms": "3.0.0",
-    "uniforms-bridge-json-schema": "3.0.0",
-    "uniforms-patternfly": "4.1.2"
+    "@kogito-apps/components-common": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-loader": "8.1.0",
+    "react-docgen-typescript-loader": "3.7.2"
   },
   "jest": {
-    "preset": "ts-jest/presets/js-with-ts",
     "setupFiles": [
       "../../config/Jest-config/test-shim.js",
-      "../../config/Jest-config/test-setup.js"
+      "../../config/Jest-config/test-setup.js",
+      "core-js"
     ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
     ],
-    "globals": {
-      "ts-jest": {
-        "isolatedModules": true
-      }
-    },
+    "coveragePathIgnorePatterns": [
+      "./src/static",
+      "./src/graphql",
+      "dist/"
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

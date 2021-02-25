@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KogitoSpinner component tests snapshot testing with loading test 1`] = `
+<EmptyState
+  data-ouia-component-id="kogito-spinner-ouia-id"
+  data-ouia-component-type="kogito-spinner"
+  data-ouia-safe={true}
+>
+  <EmptyStateIcon
+    component={[Function]}
+    variant="container"
+  />
+  <Title
+    headingLevel="h3"
+    size="lg"
+  >
+    loading...
+  </Title>
+</EmptyState>
+`;
