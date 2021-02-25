@@ -145,7 +145,14 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         try {
             return super.loadClass(name, resolve);
         } catch (ClassNotFoundException e) {
-            return Class.forName(name, resolve, getParent());
+            try {
+                return Class.forName(name, resolve, getParent());
+            } catch (ClassNotFoundException e1) {
+                if (CACHE_NON_EXISTING_CLASSES) {
+                    nonExistingClasses.add(name);
+                }
+                throw e1;
+            }
         }
     }
 
