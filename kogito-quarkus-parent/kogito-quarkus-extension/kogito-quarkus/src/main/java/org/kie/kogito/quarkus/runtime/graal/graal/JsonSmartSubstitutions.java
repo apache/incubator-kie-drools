@@ -21,9 +21,9 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.spi.mapper.JsonSmartMappingProvider;
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
+
 import net.minidev.json.JSONStyle;
 import net.minidev.json.reader.BeansWriterASM;
-
 
 @TargetClass(JsonSmartMappingProvider.class)
 final class JsonSmartMappingProviderTarget {
