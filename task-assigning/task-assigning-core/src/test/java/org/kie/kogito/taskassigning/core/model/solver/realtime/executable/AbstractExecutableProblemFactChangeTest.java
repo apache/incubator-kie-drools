@@ -85,7 +85,7 @@ abstract class AbstractExecutableProblemFactChangeTest extends AbstractTaskAssig
 
         //store the first solution that was produced by the solver for knowing how things looked like at the very
         //beginning before any change was produced.
-        final TaskAssigningSolution[] initialSolution = {null};
+        final TaskAssigningSolution[] initialSolution = { null };
         final AtomicInteger lastExecutedChangeId = new AtomicInteger(-1);
 
         final Semaphore programNextChange = new Semaphore(0);
@@ -96,7 +96,7 @@ abstract class AbstractExecutableProblemFactChangeTest extends AbstractTaskAssig
         List<ProgrammedProblemFactChange> scheduledChanges = new ArrayList<>();
 
         int totalProgrammedChanges = programmedChanges.size();
-        int[] pendingChanges = {programmedChanges.size()};
+        int[] pendingChanges = { programmedChanges.size() };
 
         solver.addEventListener(event -> {
             if (initialSolution[0] == null) {
@@ -156,12 +156,12 @@ abstract class AbstractExecutableProblemFactChangeTest extends AbstractTaskAssig
     }
 
     protected <T extends ProgrammedProblemFactChange> void writeProblemFactChangesTestFiles(TaskAssigningSolution initialSolution,
-                                                                                            String solutionResource,
-                                                                                            String filePrefix,
-                                                                                            String testType,
-                                                                                            List<T> programmedChanges,
-                                                                                            Function<T, String> solutionBeforeChange,
-                                                                                            Function<T, String> solutionAfterChange) throws Exception {
+            String solutionResource,
+            String filePrefix,
+            String testType,
+            List<T> programmedChanges,
+            Function<T, String> solutionBeforeChange,
+            Function<T, String> solutionAfterChange) throws Exception {
 
         String resourceName = solutionResource.substring(solutionResource.lastIndexOf("/") + 1);
         writeToTempFile(buildTestFileName(filePrefix, testType, "InitialSolution", resourceName, 0), printSolution(initialSolution));

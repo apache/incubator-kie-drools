@@ -24,11 +24,12 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import io.redisearch.Client;
-import io.redisearch.Schema;
 import org.kie.kogito.persistence.redis.RedisClientManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.redisearch.Client;
+import io.redisearch.Schema;
 import redis.clients.jedis.exceptions.JedisDataException;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;

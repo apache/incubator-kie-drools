@@ -52,12 +52,12 @@ public class ExecutionHeaderResponse {
     }
 
     public ExecutionHeaderResponse(String executionId,
-                                   OffsetDateTime executionDate,
-                                   Boolean hasSucceeded,
-                                   String executorName,
-                                   String executedModelName,
-                                   String executedModelNamespace,
-                                   ExecutionType executionType) {
+            OffsetDateTime executionDate,
+            Boolean hasSucceeded,
+            String executorName,
+            String executedModelName,
+            String executedModelNamespace,
+            ExecutionType executionType) {
         this.executionId = executionId;
         this.executionDate = executionDate;
         this.hasSucceeded = hasSucceeded;

@@ -59,8 +59,8 @@ public class JobDetails {
 
     @SuppressWarnings("java:S107")
     protected JobDetails(String id, String correlationId, JobStatus status, ZonedDateTime lastUpdate, Integer retries,
-                      Integer executionCounter, String scheduledId, Object payload, Recipient recipient, Trigger trigger,
-                      Type type, Integer priority) {
+            Integer executionCounter, String scheduledId, Object payload, Recipient recipient, Trigger trigger,
+            Type type, Integer priority) {
         this.id = id;
         this.correlationId = correlationId;
         this.status = status;

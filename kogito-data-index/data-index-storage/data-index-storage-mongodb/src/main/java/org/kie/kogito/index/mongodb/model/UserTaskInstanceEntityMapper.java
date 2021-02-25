@@ -16,9 +16,10 @@
 
 package org.kie.kogito.index.mongodb.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.documentToJsonNode;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.instantToZonedDateTime;

@@ -40,7 +40,6 @@ class DateLessThanArgumentTest extends AbstractDateArgumentTest<ZonedDateTime, D
     protected Stream<Arguments> createTestValues() {
         return Stream.of(
                 Arguments.of(new TestArgument<>(VALUE, "{\"lessThan\":\"" + VALUE + "\"}")),
-                Arguments.of(new TestArgument<>(null, "{\"lessThan\":null}"))
-        );
+                Arguments.of(new TestArgument<>(null, "{\"lessThan\":null}")));
     }
 }

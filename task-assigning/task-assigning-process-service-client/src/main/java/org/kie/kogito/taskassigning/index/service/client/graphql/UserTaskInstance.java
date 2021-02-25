@@ -77,8 +77,8 @@ public class UserTaskInstance {
     @JsonDeserialize(using = PlainJsonDeserializer.class)
     private JsonNode inputs;
     /*
-    outputs: String
-    */
+     * outputs: String
+     */
     private String referenceName;
     private ZonedDateTime lastUpdate;
     private String endpoint;

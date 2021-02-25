@@ -16,11 +16,11 @@
 package org.kie.kogito.persistence.api.query;
 
 public class AttributeFilter<T> {
-    
+
     private String attribute;
-    
+
     private FilterCondition condition;
-    
+
     private T value;
 
     protected AttributeFilter(String attribute, FilterCondition condition, T value) {

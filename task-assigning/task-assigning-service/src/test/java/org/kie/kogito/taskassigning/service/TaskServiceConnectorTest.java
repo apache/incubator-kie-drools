@@ -80,20 +80,20 @@ class TaskServiceConnectorTest {
         int pageSize = 3;
 
         List<UserTaskInstance> result0 = Arrays.asList(mockUserTaskInstance(TASK1, parseZonedDateTime("2021-02-08T10:00:00.001Z"), READY.value()),
-                                                       mockUserTaskInstance(TASK2, parseZonedDateTime("2021-02-08T11:00:00.001Z"), READY.value()),
-                                                       mockUserTaskInstance(TASK3, parseZonedDateTime("2021-02-08T12:00:00.001Z"), RESERVED.value()));
+                mockUserTaskInstance(TASK2, parseZonedDateTime("2021-02-08T11:00:00.001Z"), READY.value()),
+                mockUserTaskInstance(TASK3, parseZonedDateTime("2021-02-08T12:00:00.001Z"), RESERVED.value()));
         lenient().doReturn(result0).when(dataIndexServiceClient).findTasks(null, null, "STARTED", true, 0, pageSize);
         ZonedDateTime nextTime = parseZonedDateTime("2021-02-08T12:00:00.000Z");
 
         List<UserTaskInstance> result1 = Arrays.asList(mockUserTaskInstance(TASK4, parseZonedDateTime("2021-02-08T13:00:00.001Z"), READY.value()),
-                                                       mockUserTaskInstance(TASK5, parseZonedDateTime("2021-02-08T14:00:00.001Z"), READY.value()),
-                                                       mockUserTaskInstance(TASK6, parseZonedDateTime("2021-02-08T14:00:00.001Z"), READY.value()));
+                mockUserTaskInstance(TASK5, parseZonedDateTime("2021-02-08T14:00:00.001Z"), READY.value()),
+                mockUserTaskInstance(TASK6, parseZonedDateTime("2021-02-08T14:00:00.001Z"), READY.value()));
         lenient().doReturn(result1).when(dataIndexServiceClient).findTasks(null, nextTime, "STARTED", true, 1, pageSize);
         nextTime = parseZonedDateTime("2021-02-08T14:00:00.000Z");
 
         List<UserTaskInstance> result2 = Arrays.asList(mockUserTaskInstance(TASK7, parseZonedDateTime("2021-02-08T15:00:00.001Z"), READY.value()),
-                                                       mockUserTaskInstance(TASK8, parseZonedDateTime("2021-02-08T16:00:00.001Z"), READY.value()),
-                                                       mockUserTaskInstance(TASK9, parseZonedDateTime("2021-02-08T17:00:00.001Z"), READY.value()));
+                mockUserTaskInstance(TASK8, parseZonedDateTime("2021-02-08T16:00:00.001Z"), READY.value()),
+                mockUserTaskInstance(TASK9, parseZonedDateTime("2021-02-08T17:00:00.001Z"), READY.value()));
 
         lenient().doReturn(result2).when(dataIndexServiceClient).findTasks(null, nextTime, "STARTED", true, 2, pageSize);
         nextTime = parseZonedDateTime("2021-02-08T17:00:00.000Z");

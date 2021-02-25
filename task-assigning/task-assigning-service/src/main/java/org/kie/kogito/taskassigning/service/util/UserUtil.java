@@ -49,6 +49,7 @@ public class UserUtil {
      * of a user is the "id", two users are considered to be the same if they have the same "id". Meaning that if two users
      * with the same "id" are encountered only one instance will be included in the result, typically the first instance
      * found.
+     * 
      * @param externalUsers a collection with the external users to filter.
      * @return a Stream with the filtered users.
      */

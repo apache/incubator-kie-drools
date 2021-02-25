@@ -15,18 +15,19 @@
  */
 package org.kie.kogito.explainability;
 
-import io.vertx.core.json.JsonObject;
-import io.vertx.mutiny.core.Vertx;
-import io.vertx.mutiny.ext.web.client.WebClient;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import io.vertx.core.json.JsonObject;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.ext.web.client.WebClient;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;

@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.it.jobs;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.resources.JobServiceQuarkusTestResource;
 import org.kie.kogito.resources.KogitoServiceRandomPortQuarkusTestResource;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)

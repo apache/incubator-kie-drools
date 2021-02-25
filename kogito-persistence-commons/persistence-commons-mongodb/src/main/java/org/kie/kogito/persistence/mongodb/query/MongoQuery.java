@@ -20,15 +20,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import org.bson.conversions.Bson;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.api.query.SortDirection;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending;
@@ -98,10 +99,8 @@ public class MongoQuery<V, E> implements Query<V> {
 
     private Optional<Bson> generateSort() {
         return Optional.ofNullable(this.sortBy).map(sbList -> orderBy(sbList.stream().map(
-                sb -> SortDirection.ASC.equals(sb.getSort()) ?
-                        ascending(mongoEntityMapper.convertToMongoAttribute(sb.getAttribute())) :
-                        descending(mongoEntityMapper.convertToMongoAttribute(sb.getAttribute())))
-                                                                              .collect(toList()))
-        );
+                sb -> SortDirection.ASC.equals(sb.getSort()) ? ascending(mongoEntityMapper.convertToMongoAttribute(sb.getAttribute()))
+                        : descending(mongoEntityMapper.convertToMongoAttribute(sb.getAttribute())))
+                .collect(toList())));
     }
 }

@@ -39,21 +39,21 @@ public class MongoStorageManager implements StorageService {
     @Override
     public Storage<String, String> getCache(String name) {
         return new MongoStorage<>(mongoClientManager.getCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
-                                  mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
-                                  String.class.getName(), mongoModelService.getEntityMapper(name));
+                mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
+                String.class.getName(), mongoModelService.getEntityMapper(name));
     }
 
     @Override
     public <T> Storage<String, T> getCache(String name, Class<T> type) {
         return new MongoStorage<>(mongoClientManager.getCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
-                                  mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
-                                  type.getName(), mongoModelService.getEntityMapper(name));
+                mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
+                type.getName(), mongoModelService.getEntityMapper(name));
     }
 
     @Override
     public <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType) {
         return new MongoStorage<>(mongoClientManager.getCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
-                                  mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
-                                  rootType, mongoModelService.getEntityMapper(name));
+                mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
+                rootType, mongoModelService.getEntityMapper(name));
     }
 }

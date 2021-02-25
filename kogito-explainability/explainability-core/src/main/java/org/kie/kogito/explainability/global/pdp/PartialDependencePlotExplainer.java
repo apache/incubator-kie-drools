@@ -15,6 +15,17 @@
  */
 package org.kie.kogito.explainability.global.pdp;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
+
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.global.GlobalExplainer;
 import org.kie.kogito.explainability.model.DataDistribution;
@@ -33,17 +44,6 @@ import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.function.ToDoubleFunction;
-import java.util.stream.Collectors;
 
 /**
  * Generates the partial dependence plot for the features of a {@link PredictionProvider}.
@@ -87,7 +87,7 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
     }
 
     private List<PartialDependenceGraph> explainFromDataDistribution(PredictionProvider model, int outputSize,
-                                                                     DataDistribution dataDistribution)
+            DataDistribution dataDistribution)
             throws InterruptedException, ExecutionException, TimeoutException {
         long start = System.currentTimeMillis();
         List<PartialDependenceGraph> pdps = new ArrayList<>();
@@ -112,7 +112,7 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
             // create a PDP for each feature and each output
             for (int outputIndex = 0; outputIndex < outputSize; outputIndex++) {
                 PartialDependenceGraph partialDependenceGraph = getPartialDependenceGraph(model, trainingData, xsValues,
-                                                                                          featureXSvalues, outputIndex);
+                        featureXSvalues, outputIndex);
                 pdps.add(partialDependenceGraph);
             }
         }
@@ -122,9 +122,9 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
     }
 
     private PartialDependenceGraph getPartialDependenceGraph(PredictionProvider model,
-                                                             List<PredictionInput> trainingData,
-                                                             List<Value<?>> xsValues,
-                                                             List<Feature> featureXSvalues, int outputIndex)
+            List<PredictionInput> trainingData,
+            List<Value<?>> xsValues,
+            List<Feature> featureXSvalues, int outputIndex)
             throws InterruptedException, ExecutionException, TimeoutException {
         Output outputDecision = null;
         Feature feature = null;
@@ -162,7 +162,7 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
      * For all other types the final {@link Value} is just the most frequent.
      *
      * @param valueCounts the frequency of each value at each position
-     * @param type        the type of the output
+     * @param type the type of the output
      * @return the marginal impacts
      */
     private List<Value<?>> collapseMarginalImpacts(List<Map<Value<?>, Long>> valueCounts, Type type) {
@@ -170,7 +170,8 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
         if (Type.NUMBER.equals(type)) {
             List<Double> doubles = valueCounts.stream()
                     .map(v -> v.entrySet().stream()
-                            .map(e -> e.getKey().asNumber() * e.getValue() / config.getSeriesLength()).mapToDouble(d -> d).sum()).collect(Collectors.toList());
+                            .map(e -> e.getKey().asNumber() * e.getValue() / config.getSeriesLength()).mapToDouble(d -> d).sum())
+                    .collect(Collectors.toList());
             yValues = doubles.stream().map(Value::new).collect(Collectors.toList());
         } else {
             for (Map<Value<?>, Long> item : valueCounts) {
@@ -208,7 +209,7 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
     /**
      * Perform batch predictions on the model.
      *
-     * @param model            the model to be queried
+     * @param model the model to be queried
      * @param predictionInputs a batch of inputs
      * @return a batch of outputs
      */
@@ -231,12 +232,12 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<List<Part
      * The resulting list of prediction inputs will have the very same value for the feature under analysis, and values
      * from the training data for all other features.
      *
-     * @param featureXs    specific value of the feature under analysis
+     * @param featureXs specific value of the feature under analysis
      * @param trainingData training data
      * @return a list of prediction inputs
      */
     private List<PredictionInput> prepareInputs(Feature featureXs,
-                                                List<PredictionInput> trainingData) {
+            List<PredictionInput> trainingData) {
         List<PredictionInput> predictionInputs = new ArrayList<>(config.getSeriesLength());
 
         for (PredictionInput trainingSample : trainingData) {

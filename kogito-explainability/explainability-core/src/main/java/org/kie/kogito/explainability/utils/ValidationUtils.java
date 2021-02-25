@@ -31,6 +31,7 @@ public class ValidationUtils {
 
     /**
      * Validate local saliency stability scores.
+     * 
      * @param model model to validate
      * @param prediction the prediction to be used to evaluate stability
      * @param explainer the local saliency explainer
@@ -40,25 +41,25 @@ public class ValidationUtils {
      * @throws ValidationException if either positive or negative stability scores are lower than minimum for any decision
      */
     public static void validateLocalSaliencyStability(PredictionProvider model, Prediction prediction,
-                                                      LocalExplainer<Map<String, Saliency>> explainer,
-                                                      int topK, double minimumPositiveStabilityScore,
-                                                      double minimumNegativeStabilityScore)
+            LocalExplainer<Map<String, Saliency>> explainer,
+            int topK, double minimumPositiveStabilityScore,
+            double minimumNegativeStabilityScore)
             throws ValidationException, InterruptedException, ExecutionException, TimeoutException {
         LocalSaliencyStability stability = ExplainabilityMetrics.getLocalSaliencyStability(model, prediction, explainer,
-                                                                                           topK, 10);
+                topK, 10);
         for (int i = 1; i <= topK; i++) {
             for (String decision : stability.getDecisions()) {
                 double positiveStabilityScore = stability.getPositiveStabilityScore(decision, i);
                 double negativeStabilityScore = stability.getNegativeStabilityScore(decision, i);
                 if (positiveStabilityScore < minimumPositiveStabilityScore) {
                     throw new ValidationException("Expected positive stability score bigger than "
-                                                          + minimumPositiveStabilityScore + ". Got:" + positiveStabilityScore
-                                                          + " for " + decision + "@k=" + i);
+                            + minimumPositiveStabilityScore + ". Got:" + positiveStabilityScore
+                            + " for " + decision + "@k=" + i);
                 }
                 if (negativeStabilityScore < minimumNegativeStabilityScore) {
                     throw new ValidationException("Expected negative stability score bigger than "
-                                                          + minimumNegativeStabilityScore + ". Got:" + negativeStabilityScore
-                                                          + " for " + decision + "@k=" + i);
+                            + minimumNegativeStabilityScore + ". Got:" + negativeStabilityScore
+                            + " for " + decision + "@k=" + i);
                 }
             }
         }

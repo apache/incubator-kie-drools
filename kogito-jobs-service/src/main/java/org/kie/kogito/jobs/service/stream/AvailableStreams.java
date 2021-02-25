@@ -26,6 +26,6 @@ public final class AvailableStreams {
     public static final String JOB_STATUS_CHANGE_EVENTS_TOPIC = "kogito-job-service-job-status-events";
 
     private AvailableStreams() {
-        
+
     }
 }

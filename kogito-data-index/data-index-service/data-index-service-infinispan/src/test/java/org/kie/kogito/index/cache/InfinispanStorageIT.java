@@ -16,9 +16,10 @@
 
 package org.kie.kogito.index.cache;
 
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)

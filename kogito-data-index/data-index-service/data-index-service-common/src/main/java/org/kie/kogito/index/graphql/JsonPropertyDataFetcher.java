@@ -15,11 +15,13 @@
  */
 package org.kie.kogito.index.graphql;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
 
 public class JsonPropertyDataFetcher implements DataFetcher {
 

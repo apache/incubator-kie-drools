@@ -42,7 +42,6 @@ class StringInArgumentTest extends AbstractStringArgumentTest<List<String>, Stri
     protected Stream<Arguments> createTestValues() {
         return Stream.of(
                 Arguments.of(new TestArgument<>(Collections.emptyList(), "{\"in\":[]}")),
-                Arguments.of(new TestArgument<>(Arrays.asList("A", "B", "C"), "{\"in\":[\"A\",\"B\",\"C\"]}"))
-        );
+                Arguments.of(new TestArgument<>(Arrays.asList("A", "B", "C"), "{\"in\":[\"A\",\"B\",\"C\"]}")));
     }
 }

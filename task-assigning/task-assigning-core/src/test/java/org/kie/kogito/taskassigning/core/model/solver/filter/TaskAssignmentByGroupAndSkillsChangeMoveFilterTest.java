@@ -101,8 +101,7 @@ class TaskAssignmentByGroupAndSkillsChangeMoveFilterTest {
                         mockChangeMove(
                                 mockTask(Collections.singletonList(mockGroup(GROUP)), Collections.emptySet()),
                                 mockUser(USER, true, Collections.singletonList(mockGroup(GROUP)), Collections.emptySet())),
-                        true)
-        );
+                        true));
     }
 
     @SuppressWarnings("unchecked")

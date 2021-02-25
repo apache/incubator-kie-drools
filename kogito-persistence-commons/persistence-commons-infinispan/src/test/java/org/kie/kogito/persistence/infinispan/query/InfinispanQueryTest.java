@@ -54,77 +54,59 @@ class InfinispanQueryTest {
         return Stream.of(
                 Arguments.of(
                         asList(like("name", "test%")),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name like 'test%'"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.name like 'test%'"),
                 Arguments.of(
                         asList(in("id", asList("8035b580-6ae4-4aa8-9ec0-e18e19809e0b", "a1e139d5-4e77-48c9-84ae-34578e904e5a"))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.id in ('8035b580-6ae4-4aa8-9ec0-e18e19809e0b', 'a1e139d5-4e77-48c9-84ae-34578e904e5a')"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.id in ('8035b580-6ae4-4aa8-9ec0-e18e19809e0b', 'a1e139d5-4e77-48c9-84ae-34578e904e5a')"),
                 Arguments.of(
                         asList(equalTo("id", "8035b580-6ae4-4aa8-9ec0-e18e19809e0b")),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.id = '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.id = '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'"),
                 Arguments.of(
                         asList(contains("name", "test")),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name = 'test'"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.name = 'test'"),
                 Arguments.of(
                         asList(containsAll("name", asList("name1", "name2"))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name = 'name1' and o.name = 'name2'"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.name = 'name1' and o.name = 'name2'"),
                 Arguments.of(
                         asList(containsAny("name", asList("name1", "name2"))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name = 'name1' or o.name = 'name2'"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.name = 'name1' or o.name = 'name2'"),
                 Arguments.of(
                         asList(isNull("name")),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name is null"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.name is null"),
                 Arguments.of(
                         asList(notNull("name")),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name is not null"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.name is not null"),
                 Arguments.of(
                         asList(between("start", "2019-01-01", "2020-01-01")),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.start between '2019-01-01' and '2020-01-01'"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.start between '2019-01-01' and '2020-01-01'"),
                 Arguments.of(
                         asList(greaterThan("priority", 1)),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority > 1"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority > 1"),
                 Arguments.of(
                         asList(greaterThanEqual("priority", 1)),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority >= 1"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority >= 1"),
                 Arguments.of(
                         asList(lessThan("priority", 1)),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority < 1"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority < 1"),
                 Arguments.of(
                         asList(lessThanEqual("priority", 1)),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority <= 1"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority <= 1"),
                 Arguments.of(
                         asList(and(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where (o.priority <= 1 and o.priority > 1)"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.priority <= 1 and o.priority > 1)"),
                 Arguments.of(
                         asList(or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where (o.priority <= 1 or o.priority > 1)"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.priority <= 1 or o.priority > 1)"),
                 Arguments.of(
                         asList(and(asList(notNull("name"), contains("name", "test"))), or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where (o.name is not null and o.name = 'test') and (o.priority <= 1 or o.priority > 1)"
-                ),
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.name is not null and o.name = 'test') and (o.priority <= 1 or o.priority > 1)"),
                 Arguments.of(
-                        asList(or(asList(isNull("name"), contains("name", "test"))), and(asList(between("start", "2019-01-01", "2020-01-01"), or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where (o.name is null or o.name = 'test') and (o.start between '2019-01-01' and '2020-01-01' and (o.priority <= 1 or o.priority > 1))"
-                ),
+                        asList(or(asList(isNull("name"), contains("name", "test"))),
+                                and(asList(between("start", "2019-01-01", "2020-01-01"), or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))))),
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.name is null or o.name = 'test') and (o.start between '2019-01-01' and '2020-01-01' and (o.priority <= 1 or o.priority > 1))"),
                 Arguments.of(
                         asList(not(equalTo("priority", 1))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where not o.priority = 1"
-                )
-        );
+                        "from org.kie.kogito.index.model.ProcessInstance o where not o.priority = 1"));
     }
 
     @BeforeEach

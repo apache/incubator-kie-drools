@@ -44,7 +44,7 @@ class ProtoIndexParserTest {
 
     @Test
     void testConfigureBuilder() {
-        Map<String, EntityIndexDescriptor> entityIndexes = createFileDescriptor().getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor>getProcessedAnnotation(INDEXED_ANNOTATION))
+        Map<String, EntityIndexDescriptor> entityIndexes = createFileDescriptor().getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor> getProcessedAnnotation(INDEXED_ANNOTATION))
                 .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
         assertEquals(getValidEntityIndexDescriptors(false), entityIndexes);
     }
@@ -64,7 +64,7 @@ class ProtoIndexParserTest {
     @Test
     void testCreateEntityIndexeDescriptors() {
         FileDescriptor fileDescriptor = createFileDescriptor();
-        Map<String, EntityIndexDescriptor> entityIndexes = createFileDescriptor().getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor>getProcessedAnnotation(INDEXED_ANNOTATION))
+        Map<String, EntityIndexDescriptor> entityIndexes = createFileDescriptor().getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor> getProcessedAnnotation(INDEXED_ANNOTATION))
                 .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
 
         Map<String, EntityIndexDescriptor> indexDescriptor = createEntityIndexeDescriptors(fileDescriptor, entityIndexes);

@@ -21,14 +21,15 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-import com.mongodb.client.model.changestream.ChangeStreamDocument;
-import com.mongodb.reactivestreams.client.MongoCollection;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mongodb.reactivestreams.client.MongoCollection;
 
 import static com.mongodb.client.model.Aggregates.match;
 import static com.mongodb.client.model.changestream.FullDocument.UPDATE_LOOKUP;
@@ -43,7 +44,7 @@ public class StorageUtils {
     }
 
     public static <V, E> void watchCollection(MongoCollection<E> reactiveMongoCollection, Bson operationType,
-                                              BiConsumer<String, V> consumer, MongoEntityMapper<V, E> mongoEntityMapper) {
+            BiConsumer<String, V> consumer, MongoEntityMapper<V, E> mongoEntityMapper) {
         reactiveMongoCollection.watch(singletonList(match(operationType)))
                 .fullDocument(UPDATE_LOOKUP).subscribe(new ObjectListenerSubscriber<>(consumer, mongoEntityMapper));
 
@@ -78,7 +79,8 @@ public class StorageUtils {
             BsonDocument keyDocument = changeStreamDocument.getDocumentKey();
             Document document = changeStreamDocument.getFullDocument();
             consumer.accept(Optional.ofNullable(keyDocument).map(key -> key.getString(MONGO_ID).getValue()).orElse(null),
-                            Optional.ofNullable(document).map(doc -> mongoEntityMapper.mapToModel(documentToObject(doc, mongoEntityMapper.getEntityClass(), mongoEntityMapper::convertToModelAttribute))).orElse(null));
+                    Optional.ofNullable(document).map(doc -> mongoEntityMapper.mapToModel(documentToObject(doc, mongoEntityMapper.getEntityClass(), mongoEntityMapper::convertToModelAttribute)))
+                            .orElse(null));
         }
 
         @Override

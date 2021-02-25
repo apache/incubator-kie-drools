@@ -58,7 +58,7 @@ class DataIndexServiceClientTest {
 
     @Test
     void findTasks() {
-        UserTaskInstance[] mockedResult = new UserTaskInstance[]{new UserTaskInstance(), new UserTaskInstance(), new UserTaskInstance()};
+        UserTaskInstance[] mockedResult = new UserTaskInstance[] { new UserTaskInstance(), new UserTaskInstance(), new UserTaskInstance() };
         doReturn(mockedResult).when(queryServiceClient).executeQuery(eq(UserTaskInstancesQueryBuilder.QUERY_NAME), anyString(), eq(UserTaskInstance[].class));
         List<UserTaskInstance> result = client.findTasks(Arrays.asList(READY, COMPLETED), parseZonedDateTime(STARTED_AFTER), STARTED, true, OFFSET, LIMIT);
         verify(queryServiceClient).executeQuery(eq(UserTaskInstancesQueryBuilder.QUERY_NAME), anyString(), eq(UserTaskInstance[].class));

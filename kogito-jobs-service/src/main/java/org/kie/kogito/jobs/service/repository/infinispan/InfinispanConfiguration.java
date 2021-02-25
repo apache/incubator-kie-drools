@@ -31,7 +31,6 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.interceptor.Interceptor;
 
-import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -39,6 +38,8 @@ import org.eclipse.microprofile.health.Readiness;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.configuration.XMLStringConfiguration;
 import org.kie.kogito.infinispan.health.InfinispanHealthCheck;
+
+import io.quarkus.runtime.StartupEvent;
 
 import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.JOB_DETAILS;
 
@@ -64,9 +65,9 @@ public class InfinispanConfiguration {
     @Produces
     @Readiness
     public HealthCheck infinispanHealthCheck(@ConfigProperty(name = PERSISTENCE_CONFIG_KEY) Optional<String> persistence,
-                                             Instance<RemoteCacheManager> cacheManagerInstance) {
+            Instance<RemoteCacheManager> cacheManagerInstance) {
         return isEnabled(persistence)
-                .<HealthCheck>map(p -> new InfinispanHealthCheck(cacheManagerInstance))
+                .<HealthCheck> map(p -> new InfinispanHealthCheck(cacheManagerInstance))
                 .orElse(() -> HealthCheckResponse.up("In Memory Persistence"));
     }
 
@@ -76,9 +77,9 @@ public class InfinispanConfiguration {
     }
 
     void initializeCaches(@Observes @Priority(Interceptor.Priority.PLATFORM_BEFORE) StartupEvent startupEvent,
-                          @ConfigProperty(name = PERSISTENCE_CONFIG_KEY) Optional<String> persistence,
-                          Instance<RemoteCacheManager> remoteCacheManager,
-                          Event<InfinispanInitialized> initializedEvent) {
+            @ConfigProperty(name = PERSISTENCE_CONFIG_KEY) Optional<String> persistence,
+            Instance<RemoteCacheManager> remoteCacheManager,
+            Event<InfinispanInitialized> initializedEvent) {
         isEnabled(persistence)
                 .map(c -> remoteCacheManager.get().administration().getOrCreateCache(JOB_DETAILS, getCacheTemplate()))
                 .ifPresent(c -> {
@@ -87,7 +88,7 @@ public class InfinispanConfiguration {
                 });
     }
 
-    protected Boolean isInitialized(){
+    protected Boolean isInitialized() {
         return initialized.get();
     }
 

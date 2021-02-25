@@ -27,7 +27,8 @@ public class Config {
     private long asyncTimeout = DEFAULT_ASYNC_TIMEOUT;
     private TimeUnit asyncTimeUnit = DEFAULT_ASYNC_TIMEUNIT;
 
-    private Config() {}
+    private Config() {
+    }
 
     public long getAsyncTimeout() {
         return asyncTimeout;

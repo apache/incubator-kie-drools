@@ -79,7 +79,7 @@ class PartialDependencePlotExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testPdpNumericClassifier(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -113,7 +113,7 @@ class PartialDependencePlotExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testBrokenPredict(int seed) {
         Random random = new Random();
         random.setSeed(seed);
@@ -131,7 +131,7 @@ class PartialDependencePlotExplainerTest {
                 });
 
         Assertions.assertThrows(TimeoutException.class,
-                                () -> partialDependencePlotProvider.explainFromMetadata(brokenProvider, getMetadata(random)));
+                () -> partialDependencePlotProvider.explainFromMetadata(brokenProvider, getMetadata(random)));
         Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
         Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
     }
@@ -146,7 +146,7 @@ class PartialDependencePlotExplainerTest {
             Collection<Prediction> predictions = new ArrayList<>(3);
 
             List<String> texts = List.of("we want your money", "please reply quickly", "you are the lucky winner",
-                                         "huge donation for you!", "bitcoin for you");
+                    "huge donation for you!", "bitcoin for you");
             for (String text : texts) {
                 List<Feature> features = new ArrayList<>();
                 features.add(FeatureFactory.newFulltextFeature("text", text));

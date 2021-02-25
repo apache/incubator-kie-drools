@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.local.counterfactual;
 
+import java.util.List;
+
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PredictionProvider;
@@ -22,8 +24,6 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-
-import java.util.List;
 
 /**
  * Represents an OptaPlanner {@link PlanningSolution}.

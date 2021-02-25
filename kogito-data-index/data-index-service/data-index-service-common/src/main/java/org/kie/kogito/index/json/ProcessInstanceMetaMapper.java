@@ -17,9 +17,10 @@ package org.kie.kogito.index.json;
 
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.model.ProcessInstance;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.kie.kogito.index.Constants.ID;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;

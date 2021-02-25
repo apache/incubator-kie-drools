@@ -66,8 +66,8 @@ public class Execution {
     }
 
     public Execution(String executionId, String sourceUrl, Long executionTimestamp, Boolean hasSucceeded,
-                     String executorName, String executedModelName, String executedModelNamespace,
-                     ExecutionType executionType) {
+            String executorName, String executedModelName, String executedModelNamespace,
+            ExecutionType executionType) {
         this.executionId = executionId;
         this.sourceUrl = sourceUrl;
         this.executionTimestamp = executionTimestamp;

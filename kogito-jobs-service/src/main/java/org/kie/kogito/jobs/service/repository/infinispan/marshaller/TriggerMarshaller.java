@@ -42,28 +42,28 @@ public class TriggerMarshaller extends BaseMarshaller<Trigger> {
                 .filter(IntervalTrigger.class::isInstance)
                 .map(IntervalTrigger.class::cast)
                 .ifPresentOrElse(intervalTrigger -> {
-                                     try {
-                                         writer.writeInstant("startTime",
-                                                             toInstant(intervalTrigger.getStartTime()));
-                                         writer.writeInstant("endTime", toInstant(intervalTrigger.getEndTime()));
-                                         writer.writeInt("repeatLimit", intervalTrigger.getRepeatLimit());
-                                         writer.writeInt("repeatCount", intervalTrigger.getRepeatCount());
-                                         writer.writeInstant("nextFireTime", toInstant(intervalTrigger.getNextFireTime()));
-                                         writer.writeLong("period", intervalTrigger.getPeriod());
-                                     } catch (IOException e) {
-                                         throw new RuntimeException(e);
-                                     }
-                                 },
-                                 () -> Optional.ofNullable(trigger)
-                                         .filter(PointInTimeTrigger.class::isInstance)
-                                         .map(PointInTimeTrigger.class::cast)
-                                         .ifPresent(c -> {
-                                             try {
-                                                 writer.writeInstant("nextFireTime", toInstant(c.hasNextFireTime()));
-                                             } catch (IOException e) {
-                                                 throw new RuntimeException(e);
-                                             }
-                                         }));
+                    try {
+                        writer.writeInstant("startTime",
+                                toInstant(intervalTrigger.getStartTime()));
+                        writer.writeInstant("endTime", toInstant(intervalTrigger.getEndTime()));
+                        writer.writeInt("repeatLimit", intervalTrigger.getRepeatLimit());
+                        writer.writeInt("repeatCount", intervalTrigger.getRepeatCount());
+                        writer.writeInstant("nextFireTime", toInstant(intervalTrigger.getNextFireTime()));
+                        writer.writeLong("period", intervalTrigger.getPeriod());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                        () -> Optional.ofNullable(trigger)
+                                .filter(PointInTimeTrigger.class::isInstance)
+                                .map(PointInTimeTrigger.class::cast)
+                                .ifPresent(c -> {
+                                    try {
+                                        writer.writeInstant("nextFireTime", toInstant(c.hasNextFireTime()));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class TriggerMarshaller extends BaseMarshaller<Trigger> {
         Long period = reader.readLong("period");
         return Optional.ofNullable(classType)
                 .filter(IntervalTrigger.class.getName()::equals)
-                .<Trigger>map(c -> {
+                .<Trigger> map(c -> {
                     IntervalTrigger intervalTrigger = new IntervalTrigger();
                     intervalTrigger.setStartTime(startTime);
                     intervalTrigger.setEndTime(endTime);

@@ -16,14 +16,15 @@
 
 package org.kie.kogito.explainability;
 
-import io.vertx.mutiny.core.Vertx;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import io.vertx.mutiny.core.Vertx;
 
 @ApplicationScoped
 public class PredictionProviderFactoryImpl implements PredictionProviderFactory {

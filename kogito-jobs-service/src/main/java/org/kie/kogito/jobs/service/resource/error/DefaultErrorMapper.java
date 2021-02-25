@@ -37,11 +37,11 @@ public class DefaultErrorMapper implements ExceptionMapper<Exception> {
         LOGGER.error("Handling HTTP Error", exception);
 
         return Response.status(Optional.ofNullable(exception)
-                                       .filter(WebApplicationException.class::isInstance)
-                                       .map(WebApplicationException.class::cast)
-                                       .map(WebApplicationException::getResponse)
-                                       .map(Response::getStatus)
-                                       .orElse(500))
+                .filter(WebApplicationException.class::isInstance)
+                .map(WebApplicationException.class::cast)
+                .map(WebApplicationException::getResponse)
+                .map(Response::getStatus)
+                .orElse(500))
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .entity(new ErrorResponse(exception.getMessage()))
                 .build();

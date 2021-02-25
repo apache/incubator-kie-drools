@@ -47,6 +47,7 @@ public abstract class RunnableBase implements Runnable {
     /**
      * The semantic of RunnableBase class is it that can't continue "executing" as soon the destroy() method was invoked
      * or the backing thread was interrupted.
+     * 
      * @return true if current RunnableBase can continue executing, false in any other case.
      */
     protected boolean isAlive() {

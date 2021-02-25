@@ -16,20 +16,17 @@
 package org.kie.kogito.security;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.quarkus.security.credential.Credential;
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import static java.util.Arrays.asList;
 
 class UserResourceTest {
 
@@ -37,8 +34,8 @@ class UserResourceTest {
     void meTest() {
         UserResource userResourceTest = new UserResource();
 
-        String userName= "testName";
-        String testToken= "testToken";
+        String userName = "testName";
+        String testToken = "testToken";
         Set roles = new HashSet<String>();
         roles.add("role1");
         Principal mockPrincipal = mock(Principal.class);

@@ -19,9 +19,10 @@ import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
 public class JsonNodeTestField<M> extends StringTestField<M> {
     private static final ObjectMapper MAPPER = new ObjectMapper();

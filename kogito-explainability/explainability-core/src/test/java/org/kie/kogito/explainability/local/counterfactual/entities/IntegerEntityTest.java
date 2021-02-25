@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.util.Random;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,8 +25,6 @@ import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureDomain;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.NumericFeatureDistribution;
-
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,7 +41,7 @@ class IntegerEntityTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void distanceScaled(int seed) {
         Random random = new Random();
         random.setSeed(seed);

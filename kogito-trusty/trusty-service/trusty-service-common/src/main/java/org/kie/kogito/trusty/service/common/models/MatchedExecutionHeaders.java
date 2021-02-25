@@ -25,7 +25,7 @@ public class MatchedExecutionHeaders {
 
     private int availableResults;
 
-    public MatchedExecutionHeaders(List<Execution> executions, int availableResults){
+    public MatchedExecutionHeaders(List<Execution> executions, int availableResults) {
         this.executions = executions;
         this.availableResults = availableResults;
     }

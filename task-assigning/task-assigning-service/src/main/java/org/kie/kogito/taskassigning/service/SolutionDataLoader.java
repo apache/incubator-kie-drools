@@ -85,8 +85,8 @@ public class SolutionDataLoader extends RunnableBase {
     }
 
     public SolutionDataLoader(TaskServiceConnector taskServiceConnector,
-                              UserServiceConnector userServiceConnector,
-                              Duration retryInterval) {
+            UserServiceConnector userServiceConnector,
+            Duration retryInterval) {
         this.taskServiceConnector = taskServiceConnector;
         this.userServiceConnector = userServiceConnector;
         this.retryInterval = retryInterval;

@@ -17,9 +17,10 @@ package org.kie.kogito.taskassigning.index.service.client.graphql;
 
 import javax.inject.Inject;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,8 +34,8 @@ class GraphQLServiceClientFactoryTest {
     void newClient() {
         String serviceUrlMock = "http://localhost:8180/service";
         assertThat(factory.newClient(GraphQLServiceClientConfig.newBuilder()
-                                             .serviceUrl(serviceUrlMock)
-                                             .build(), NoAuthenticationCredentials.INSTANCE))
-        .isNotNull();
+                .serviceUrl(serviceUrlMock)
+                .build(), NoAuthenticationCredentials.INSTANCE))
+                        .isNotNull();
     }
 }

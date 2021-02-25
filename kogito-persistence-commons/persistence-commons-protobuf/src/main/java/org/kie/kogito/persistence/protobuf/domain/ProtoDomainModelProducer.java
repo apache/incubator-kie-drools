@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toMap;
 public class ProtoDomainModelProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtoDomainModelProducer.class);
-    
+
     @Inject
     Event<DomainModelRegisteredEvent> domainEvent;
 

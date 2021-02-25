@@ -20,17 +20,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import io.redisearch.Document;
-import io.redisearch.Query;
-import io.redisearch.SearchResult;
-import io.redisearch.client.Client;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
 import org.kie.kogito.persistence.api.query.SortDirection;
 import org.mockito.Mockito;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.redisearch.Document;
+import io.redisearch.Query;
+import io.redisearch.SearchResult;
+import io.redisearch.client.Client;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -46,9 +48,7 @@ public class RedisQueryTest {
     @Test
     public void multipleAttributeSortingIsNotSupported() {
         RedisQuery<Person> redisQuery = new RedisQuery<>(new RedisClientMock(), TEST_INDEX_NAME, Person.class);
-        Assertions.assertThrows(UnsupportedOperationException.class, () ->
-                redisQuery.sort(asList(orderBy("first", SortDirection.DESC), orderBy("second", SortDirection.ASC)))
-        );
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> redisQuery.sort(asList(orderBy("first", SortDirection.DESC), orderBy("second", SortDirection.ASC))));
     }
 
     @Test

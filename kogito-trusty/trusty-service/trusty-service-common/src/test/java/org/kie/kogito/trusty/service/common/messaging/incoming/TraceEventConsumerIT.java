@@ -16,9 +16,6 @@
 
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
@@ -26,6 +23,10 @@ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -56,10 +57,10 @@ public class TraceEventConsumerIT {
         doNothing().when(trustyService).processDecision(eq(executionIdNoException), any(String.class), any(Decision.class));
 
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(executionIdException)),
-                            KafkaConstants.KOGITO_TRACING_TOPIC);
+                KafkaConstants.KOGITO_TRACING_TOPIC);
 
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(executionIdNoException)),
-                            KafkaConstants.KOGITO_TRACING_TOPIC);
+                KafkaConstants.KOGITO_TRACING_TOPIC);
 
         verify(trustyService, timeout(3000).times(2)).processDecision(any(String.class), any(String.class), any(Decision.class));
     }

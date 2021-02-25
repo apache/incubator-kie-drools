@@ -26,14 +26,15 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.kafka.admin.NewTopic;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.kafka.admin.KafkaAdminClient;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.jobs.service.stream.KafkaJobStreams.PUBLISH_EVENTS_CONFIG_KEY;
 
@@ -55,9 +56,9 @@ public class KafkaConfiguration {
 
     @Inject
     public KafkaConfiguration(@Named("default-kafka-broker") Instance<Map<String, Object>> defaultKafkaConfiguration,
-                              Vertx vertx,
-                              @ConfigProperty(name = PUBLISH_EVENTS_CONFIG_KEY) Optional<Boolean> enabled,
-                              @ConfigProperty(name = "kogito.jobs-events-topic") String topic) {
+            Vertx vertx,
+            @ConfigProperty(name = PUBLISH_EVENTS_CONFIG_KEY) Optional<Boolean> enabled,
+            @ConfigProperty(name = "kogito.jobs-events-topic") String topic) {
         this.defaultKafkaConfiguration = defaultKafkaConfiguration;
         this.vertx = vertx;
         this.enabled = enabled;
@@ -68,6 +69,7 @@ public class KafkaConfiguration {
      * Verify if the needed Kafka topics used by the application already exists, in case they are not found create
      * them. This should not be needed in case the infrastructure is already provisioned with all topics into Kafka.
      * This avoids the health check issues for kafka where the topics are all checked.
+     * 
      * @param event Startup event
      */
     void topicConfiguration(@Observes StartupEvent event) {

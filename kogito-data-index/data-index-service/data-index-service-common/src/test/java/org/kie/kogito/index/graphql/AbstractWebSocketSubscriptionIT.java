@@ -23,13 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
-import io.restassured.http.ContentType;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.WebSocket;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.DataIndexStorageService;
@@ -40,6 +33,14 @@ import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
+
+import io.restassured.http.ContentType;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.WebSocket;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
 
 import static io.restassured.RestAssured.given;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.COMPLETE;
@@ -102,8 +103,10 @@ abstract class AbstractWebSocketSubscriptionIT {
 
         protobufService.registerProtoBufferType(getUserTaskProtobufFileContent());
 
-        assertUserTaskInstanceSubscription(taskId, processId, processInstanceId, "InProgress", "subscription { UserTaskInstanceAdded { id, processInstanceId, processId, state } }", "UserTaskInstanceAdded");
-        assertUserTaskInstanceSubscription(taskId, processId, processInstanceId, "Completed", "subscription { UserTaskInstanceUpdated { id, processInstanceId, processId, state } }", "UserTaskInstanceUpdated");
+        assertUserTaskInstanceSubscription(taskId, processId, processInstanceId, "InProgress", "subscription { UserTaskInstanceAdded { id, processInstanceId, processId, state } }",
+                "UserTaskInstanceAdded");
+        assertUserTaskInstanceSubscription(taskId, processId, processInstanceId, "Completed", "subscription { UserTaskInstanceUpdated { id, processInstanceId, processId, state } }",
+                "UserTaskInstanceUpdated");
     }
 
     @Test
@@ -123,8 +126,10 @@ abstract class AbstractWebSocketSubscriptionIT {
 
         protobufService.registerProtoBufferType(getProcessProtobufFileContent());
 
-        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.ACTIVE, "subscription { TravelsAdded { id, traveller { firstName }, metadata { processInstances { state } } } }", "TravelsAdded");
-        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.COMPLETED, "subscription { TravelsUpdated { id, traveller { firstName }, metadata { processInstances { state } } } }", "TravelsUpdated");
+        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.ACTIVE, "subscription { TravelsAdded { id, traveller { firstName }, metadata { processInstances { state } } } }",
+                "TravelsAdded");
+        assertDomainSubscription(processId, processInstanceId, ProcessInstanceState.COMPLETED,
+                "subscription { TravelsUpdated { id, traveller { firstName }, metadata { processInstances { state } } } }", "TravelsUpdated");
     }
 
     private void assertDomainSubscription(String processId, String processInstanceId, ProcessInstanceState state, String subscription, String subscriptionName) throws Exception {

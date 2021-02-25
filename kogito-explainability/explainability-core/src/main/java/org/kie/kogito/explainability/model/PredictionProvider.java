@@ -27,6 +27,7 @@ public interface PredictionProvider {
 
     /**
      * Perform a batch of predictions, given a batch of inputs.
+     * 
      * @param inputs the input batch
      * @return a batch of prediction outputs
      */

@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.explainability.local;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionProvider;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  * A local explainability method.

@@ -21,6 +21,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection

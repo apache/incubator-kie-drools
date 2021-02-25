@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.taskassigning.core.model.solver.realtime;
 
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.Task;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 
 public class TaskPriorityChangeProblemFactChange extends AbstractTaskPropertyChangeProblemFactChange {
 

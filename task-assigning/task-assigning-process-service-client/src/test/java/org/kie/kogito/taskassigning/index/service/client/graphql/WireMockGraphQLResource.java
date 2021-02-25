@@ -21,6 +21,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.WireMockServer;
+
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -40,16 +41,16 @@ public class WireMockGraphQLResource implements QuarkusTestResourceLifecycleMana
 
     public static final String USER_TASKS_QUERY_MOCK = "{\"query\": \"USER_TASKS_QUERY_MOCK\"}";
 
-    public static final UserTaskInstanceMock[] USER_TASKS_QUERY_MOCK_RESULT = new UserTaskInstanceMock[]{
-            new UserTaskInstanceMock("1", "task1", "2020-12-01T07:54:56.883Z", new String[]{"Group1"}, "{\"inputVariable1\":\"value1\"}"),
-            new UserTaskInstanceMock("2", "task2", "2020-12-02T07:54:56.883Z", new String[]{"Group2"}, "{\"inputVariable2\":\"value2\"}"),
-            new UserTaskInstanceMock("3", "task3", "2020-12-03T07:54:56.883Z", new String[]{"Group3"}, "{\"inputVariable3\":\"value3\"}")};
+    public static final UserTaskInstanceMock[] USER_TASKS_QUERY_MOCK_RESULT = new UserTaskInstanceMock[] {
+            new UserTaskInstanceMock("1", "task1", "2020-12-01T07:54:56.883Z", new String[] { "Group1" }, "{\"inputVariable1\":\"value1\"}"),
+            new UserTaskInstanceMock("2", "task2", "2020-12-02T07:54:56.883Z", new String[] { "Group2" }, "{\"inputVariable2\":\"value2\"}"),
+            new UserTaskInstanceMock("3", "task3", "2020-12-03T07:54:56.883Z", new String[] { "Group3" }, "{\"inputVariable3\":\"value3\"}") };
 
     public static final String USER_TASKS_QUERY_FAILURE_MOCK = "{\"query\": \"USER_TASKS_QUERY_FAILURE_MOCK\"}";
 
-    public static final QueryError[] USER_TASKS_QUERY_FAILURE_MOCK_RESULT = new QueryError[]{
+    public static final QueryError[] USER_TASKS_QUERY_FAILURE_MOCK_RESULT = new QueryError[] {
             new QueryError("Error1"),
-            new QueryError("Error2")};
+            new QueryError("Error2") };
 
     private WireMockServer wireMockServer;
 
@@ -61,22 +62,20 @@ public class WireMockGraphQLResource implements QuarkusTestResourceLifecycleMana
 
         try {
             stubFor(post(urlEqualTo("/graphql/"))
-                            .withRequestBody(equalToJson(USER_TASKS_QUERY_MOCK))
-                            .willReturn(aResponse()
-                                                .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                                .withBody(buildUserTaskResult(USER_TASKS_QUERY_MOCK_RESULT))
+                    .withRequestBody(equalToJson(USER_TASKS_QUERY_MOCK))
+                    .willReturn(aResponse()
+                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                            .withBody(buildUserTaskResult(USER_TASKS_QUERY_MOCK_RESULT))
 
-                            )
-            );
+                    ));
 
             stubFor(post(urlEqualTo("/graphql/"))
-                            .withRequestBody(equalToJson(USER_TASKS_QUERY_FAILURE_MOCK))
-                            .willReturn(aResponse()
-                                                .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                                .withBody(buildFailureResult(USER_TASKS_QUERY_FAILURE_MOCK_RESULT))
+                    .withRequestBody(equalToJson(USER_TASKS_QUERY_FAILURE_MOCK))
+                    .willReturn(aResponse()
+                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                            .withBody(buildFailureResult(USER_TASKS_QUERY_FAILURE_MOCK_RESULT))
 
-                            )
-            );
+                    ));
         } catch (JsonProcessingException e) {
             //by construction this exception will never be produced, since the json generation is produced
             //by this test. In the rare case that it could still be produced only way to fail fast a quarkus test

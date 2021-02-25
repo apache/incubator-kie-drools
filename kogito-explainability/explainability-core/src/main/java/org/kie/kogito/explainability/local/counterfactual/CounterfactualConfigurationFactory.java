@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.explainability.local.counterfactual;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.kogito.explainability.local.counterfactual.entities.BooleanEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.CategoricalEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.DoubleEntity;
@@ -26,9 +29,6 @@ import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CounterfactualConfigurationFactory {
 

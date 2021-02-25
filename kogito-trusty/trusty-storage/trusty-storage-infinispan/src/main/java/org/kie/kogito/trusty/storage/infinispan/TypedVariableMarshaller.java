@@ -18,9 +18,10 @@ package org.kie.kogito.trusty.storage.infinispan;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.tracing.typedvalue.TypedValue.Kind;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TypedVariableMarshaller extends AbstractModelMarshaller<TypedVariable> {
 
@@ -35,8 +36,7 @@ public class TypedVariableMarshaller extends AbstractModelMarshaller<TypedVariab
                 reader.readString(TypedVariable.NAME_FIELD),
                 reader.readString(TypedVariable.TYPE_REF_FIELD),
                 jsonFromString(reader.readString(TypedVariable.VALUE_FIELD)),
-                reader.readCollection(TypedVariable.COMPONENTS_FIELD, new ArrayList<>(), TypedVariable.class)
-        );
+                reader.readCollection(TypedVariable.COMPONENTS_FIELD, new ArrayList<>(), TypedVariable.class));
     }
 
     @Override

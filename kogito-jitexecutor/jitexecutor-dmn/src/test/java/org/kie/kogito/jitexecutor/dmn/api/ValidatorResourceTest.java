@@ -19,18 +19,19 @@ package org.kie.kogito.jitexecutor.dmn.api;
 import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
-
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
 import org.drools.core.util.IoUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.kogito.dmn.rest.KogitoDMNMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -46,8 +47,8 @@ public class ValidatorResourceTest {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     private static final CollectionType LIST_OF_MSGS = MAPPER.getTypeFactory()
-                                                             .constructCollectionType(List.class,
-                                                                                      KogitoDMNMessage.class);
+            .constructCollectionType(List.class,
+                    KogitoDMNMessage.class);
 
     @Test
     public void test() throws IOException {
@@ -62,12 +63,12 @@ public class ValidatorResourceTest {
                 .body(containsString("Decision Table Analysis of table 'Preapproval' finished with no messages to be reported."))
                 .extract()
                 .asString();
-        
+
         LOG.info("Validate response: {}", response);
         List<KogitoDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(1, messages.size());
-        assertTrue(messages.stream().anyMatch(m-> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
-                                                  m.getMessage().equals("Decision Table Analysis of table 'Preapproval' finished with no messages to be reported.")));
+        assertTrue(messages.stream().anyMatch(m -> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
+                m.getMessage().equals("Decision Table Analysis of table 'Preapproval' finished with no messages to be reported.")));
     }
 
     @Test
@@ -83,11 +84,11 @@ public class ValidatorResourceTest {
                 .body(containsString("Overlap detected"))
                 .extract()
                 .asString();
-        
+
         LOG.info("Validate response: {}", response);
         List<KogitoDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertTrue(messages.size() > 0);
-        assertTrue(messages.stream().anyMatch(m-> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
-                                                  m.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
+        assertTrue(messages.stream().anyMatch(m -> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
+                m.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
     }
 }

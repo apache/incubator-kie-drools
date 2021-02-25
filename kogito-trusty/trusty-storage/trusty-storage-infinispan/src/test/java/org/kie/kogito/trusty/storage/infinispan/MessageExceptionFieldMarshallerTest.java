@@ -17,12 +17,13 @@ package org.kie.kogito.trusty.storage.infinispan;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ObjectTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.trusty.storage.api.model.MessageExceptionField.CAUSE_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.MessageExceptionField.CLASS_NAME_FIELD;
@@ -33,8 +34,8 @@ public class MessageExceptionFieldMarshallerTest extends MarshallerTestTemplate<
     private static final List<AbstractTestField<MessageExceptionField, ?>> TEST_FIELD_LIST = List.of(
             new StringTestField<>(CLASS_NAME_FIELD, "class name", MessageExceptionField::getClassName, MessageExceptionField::setClassName),
             new StringTestField<>(MESSAGE_FIELD, "message", MessageExceptionField::getMessage, MessageExceptionField::setMessage),
-            new ObjectTestField<>(CAUSE_FIELD, new MessageExceptionField("cause", "cause message", null), MessageExceptionField::getCause, MessageExceptionField::setCause, MessageExceptionField.class)
-    );
+            new ObjectTestField<>(CAUSE_FIELD, new MessageExceptionField("cause", "cause message", null), MessageExceptionField::getCause, MessageExceptionField::setCause,
+                    MessageExceptionField.class));
 
     public MessageExceptionFieldMarshallerTest() {
         super(MessageExceptionField.class);

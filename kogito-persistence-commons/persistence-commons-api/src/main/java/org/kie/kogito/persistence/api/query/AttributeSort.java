@@ -18,7 +18,7 @@ package org.kie.kogito.persistence.api.query;
 public class AttributeSort {
 
     private String attribute;
-    
+
     private SortDirection sort;
 
     protected AttributeSort(String attribute, SortDirection sort) {

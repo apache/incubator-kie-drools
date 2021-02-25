@@ -60,6 +60,7 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-apps')
+                        .withProperty('validate-formatting')
                         .withProfiles(['run-code-coverage'])
                         .run('clean install')
 

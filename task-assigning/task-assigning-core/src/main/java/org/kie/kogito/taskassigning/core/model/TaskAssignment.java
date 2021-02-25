@@ -38,7 +38,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
  * The initial task of each sequence points to the user that will own all the tasks in the list, so when a solution is
  * created we'll have something like this.
  * <p>
- * User1 <- A <- B <- C <- D  (In this example, User1 is the anchor)
+ * User1 <- A <- B <- C <- D (In this example, User1 is the anchor)
  * <p>
  * This explains why property "previousElement" can be assigned with User or a TaskAssignment.
  * <p>
@@ -46,38 +46,39 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
  * a user. This is how a CHAINED configuration works. And the way the solver knows which must be the fact class
  * that must be used for setting the previousElement property is by considering the order in the PlanningVariable
  * configuration.
+ * 
  * @PlanningVariable(valueRangeProviderRefs = {"userRange", "taskRange"}, graphType = PlanningVariableGraphType.CHAINED)
- * <p>
- * Here we basically declared that we want to build a CHAINED graph but also since the "userRange" is the first
- * valueRangeProviderRef we are declaring that the User will be used as anchor.
- * So the solver will always start by using an User as the head of the list and then it'll consider adding Tasks
- * to the linked structure.
- * <p>
- * Additionally for the calculation of the scores, etc, given a TaskAssignment of a particular solution we'll want to know quickly
- * which is the User that was assigned to this task.
- * <p>
- * If we have the following chain
- * <p>
- * Employee1 (the anchor) <- A <- B <- C <- D
- * <p>
- * and we take e.g. D, then to get the assigned Employee1 the list must be iterated, but this probably not the best idea.
- * <p>
- * Solution, add a shadow variable and let the solver populate this variable when the solution is constructed.
- * With the declaration below a shadow variable is defined for keeping a reference to the anchor. This shadow variable
- * is populated and kept consistent by the solver.
- * <p>
- * Shadow variable:
- * Let all Tasks have a reference to the anchor of the chain, the assigned user.
+ *                                          <p>
+ *                                          Here we basically declared that we want to build a CHAINED graph but also since the "userRange" is the first
+ *                                          valueRangeProviderRef we are declaring that the User will be used as anchor.
+ *                                          So the solver will always start by using an User as the head of the list and then it'll consider adding Tasks
+ *                                          to the linked structure.
+ *                                          <p>
+ *                                          Additionally for the calculation of the scores, etc, given a TaskAssignment of a particular solution we'll want to know quickly
+ *                                          which is the User that was assigned to this task.
+ *                                          <p>
+ *                                          If we have the following chain
+ *                                          <p>
+ *                                          Employee1 (the anchor) <- A <- B <- C <- D
+ *                                          <p>
+ *                                          and we take e.g. D, then to get the assigned Employee1 the list must be iterated, but this probably not the best idea.
+ *                                          <p>
+ *                                          Solution, add a shadow variable and let the solver populate this variable when the solution is constructed.
+ *                                          With the declaration below a shadow variable is defined for keeping a reference to the anchor. This shadow variable
+ *                                          is populated and kept consistent by the solver.
+ *                                          <p>
+ *                                          Shadow variable:
+ *                                          Let all Tasks have a reference to the anchor of the chain, the assigned user.
  * @AnchorShadowVariable(sourceVariableName = "previousElement")
- * private User user;
- * <p>
- * CustomShadowVariable startTimeInMinutes:
- * Convenient shadow variable is declared for having the startTimeInMinutes of a task already calculated.
+ *                                          private User user;
+ *                                          <p>
+ *                                          CustomShadowVariable startTimeInMinutes:
+ *                                          Convenient shadow variable is declared for having the startTimeInMinutes of a task already calculated.
  * @CustomShadowVariable(variableListenerClass = StartAndEndTimeUpdatingVariableListener.class,
- * sources = {@PlanningVariableReference(variableName = "previousElement")})
- * private Integer startTimeInMinutes;
- * <p>
- * So the variableListenerClass is invoked when the source variable is changed/assigned.
+ *                                             sources = {@PlanningVariableReference(variableName = "previousElement")})
+ *                                             private Integer startTimeInMinutes;
+ *                                             <p>
+ *                                             So the variableListenerClass is invoked when the source variable is changed/assigned.
  */
 @PlanningEntity
 public class TaskAssignment extends ChainElement {
@@ -96,7 +97,7 @@ public class TaskAssignment extends ChainElement {
     /**
      * Planning variable: changes during planning, between score calculations.
      */
-    @PlanningVariable(valueRangeProviderRefs = {USER_RANGE, TASK_ASSIGNMENT_RANGE},
+    @PlanningVariable(valueRangeProviderRefs = { USER_RANGE, TASK_ASSIGNMENT_RANGE },
             graphType = PlanningVariableGraphType.CHAINED)
     private ChainElement previousElement;
 
@@ -108,12 +109,12 @@ public class TaskAssignment extends ChainElement {
 
     /**
      * When the previousTask changes we need to update the startTimeInMinutes for current task and also the
-     * startTimeInMinutes for all the tasks that comes after.  previousTask -> currentTask -> C -> D -> E since each
+     * startTimeInMinutes for all the tasks that comes after. previousTask -> currentTask -> C -> D -> E since each
      * task can only start after his previous one has finished. As part of the update the endTimeInMinutes for the
      * modified tasks will also be updated.
      */
     @CustomShadowVariable(variableListenerClass = StartAndEndTimeUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = PREVIOUS_ELEMENT)})
+            sources = { @PlanningVariableReference(variableName = PREVIOUS_ELEMENT) })
     private Integer startTimeInMinutes;
 
     /**
@@ -187,7 +188,7 @@ public class TaskAssignment extends ChainElement {
 
     /**
      * @return The endTimeInMinutes of a task. Can be null when the endTimeInMinutes of a just created task wasn't yet
-     * calculated.
+     *         calculated.
      */
     public Integer getEndTimeInMinutes() {
         return endTimeInMinutes;

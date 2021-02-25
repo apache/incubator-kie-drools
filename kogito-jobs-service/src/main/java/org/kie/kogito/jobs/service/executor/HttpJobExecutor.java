@@ -23,12 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import io.smallrye.mutiny.Uni;
-import io.vertx.mutiny.core.Vertx;
-import io.vertx.mutiny.core.buffer.Buffer;
-import io.vertx.mutiny.ext.web.client.HttpRequest;
-import io.vertx.mutiny.ext.web.client.HttpResponse;
-import io.vertx.mutiny.ext.web.client.WebClient;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.URIBuilder;
@@ -41,6 +35,13 @@ import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.smallrye.mutiny.Uni;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.mutiny.ext.web.client.HttpRequest;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
+import io.vertx.mutiny.ext.web.client.WebClient;
 
 @ApplicationScoped
 public class HttpJobExecutor implements JobExecutor {
@@ -67,9 +68,9 @@ public class HttpJobExecutor implements JobExecutor {
         LOGGER.debug("Executing callback {}", request);
         final URI uri = URIBuilder.toURI(request.getUrl());
         final HttpRequest<Buffer> clientRequest = client.request(httpConverters.convertHttpMethod(request.getMethod()),
-                                                                 uri.getPort(),
-                                                                 uri.getHost(),
-                                                                 uri.getPath());
+                uri.getPort(),
+                uri.getHost(),
+                uri.getPath());
         Optional.ofNullable(request.getQueryParams())
                 .ifPresent(params -> clientRequest.queryParams().addAll(params));
 
@@ -143,10 +144,10 @@ public class HttpJobExecutor implements JobExecutor {
                             .exceptionally(ex -> {
                                 LOGGER.error("Generic error executing job {}", job, ex);
                                 jobStreams.publishJobError(JobExecutionResponse.builder()
-                                                                   .message(ex.getMessage())
-                                                                   .now()
-                                                                   .jobId(job.getId())
-                                                                   .build());
+                                        .message(ex.getMessage())
+                                        .now()
+                                        .jobId(job.getId())
+                                        .build());
                                 return job;
                             });
                 });

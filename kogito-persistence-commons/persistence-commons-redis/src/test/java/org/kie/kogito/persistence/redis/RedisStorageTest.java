@@ -18,13 +18,14 @@ package org.kie.kogito.persistence.redis;
 
 import java.util.Map;
 
-import io.redisearch.Schema;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.redis.index.RedisCreateIndexEvent;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
 import org.mockito.Mockito;
+
+import io.redisearch.Schema;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;
 import static org.kie.kogito.persistence.redis.Constants.RAW_OBJECT_FIELD;

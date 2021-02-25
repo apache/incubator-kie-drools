@@ -57,6 +57,7 @@ public class LocalSaliencyStability {
 
     /**
      * Record stability data about a given decision, on top k features.
+     * 
      * @param decision the decision
      * @param k the no. of top features considered
      * @param positiveFeatureNames the names of top positive features
@@ -65,11 +66,11 @@ public class LocalSaliencyStability {
      * @param negativeFrequencyScore the frequency score of the top negative features
      */
     public void add(String decision, int k, List<String> positiveFeatureNames, double positiveFrequencyScore,
-                    List<String> negativeFeatureNames, double negativeFrequencyScore) {
+            List<String> negativeFeatureNames, double negativeFrequencyScore) {
         if (map.containsKey(decision)) {
             Map<Integer, SaliencyFrequencyMetadata> integerMap = map.get(decision);
             integerMap.put(k, new SaliencyFrequencyMetadata(positiveFeatureNames, positiveFrequencyScore,
-                                                            negativeFeatureNames, negativeFrequencyScore));
+                    negativeFeatureNames, negativeFrequencyScore));
         }
     }
 
@@ -84,7 +85,7 @@ public class LocalSaliencyStability {
         private final double negativeFrequencyScore;
 
         private SaliencyFrequencyMetadata(List<String> positiveFeatureNames, double positiveFrequencyScore,
-                                          List<String> negativeFeatureNames, double negativeFrequencyScore) {
+                List<String> negativeFeatureNames, double negativeFrequencyScore) {
             this.positiveFeatureNames = positiveFeatureNames;
             this.positiveFrequencyScore = positiveFrequencyScore;
             this.negativeFeatureNames = negativeFeatureNames;

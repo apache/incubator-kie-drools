@@ -15,16 +15,17 @@
  */
 package org.kie.kogito.taskassigning.core.model.solver.filter;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.kie.kogito.taskassigning.core.model.ChainElement;
 import org.kie.kogito.taskassigning.core.model.DefaultLabels;
 import org.kie.kogito.taskassigning.core.model.ModelConstants;
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.hasAllLabels;
 import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.isPotentialOwner;

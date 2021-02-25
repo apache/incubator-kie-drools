@@ -66,11 +66,9 @@ class ExplanationServiceImplTest {
         when(localExplainerMock.explainAsync(any(Prediction.class), eq(predictionProviderMock)))
                 .thenReturn(CompletableFuture.completedFuture(SALIENCY_MAP));
 
-        ExplainabilityResultDto resultDto = assertDoesNotThrow(() ->
-                explanationService.explainAsync(REQUEST, predictionProviderMock)
-                        .toCompletableFuture()
-                        .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
-        );
+        ExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(REQUEST, predictionProviderMock)
+                .toCompletableFuture()
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
 
         assertNotNull(resultDto);
         assertEquals(EXECUTION_ID, resultDto.getExecutionId());
@@ -92,11 +90,9 @@ class ExplanationServiceImplTest {
         when(localExplainerMock.explainAsync(any(Prediction.class), eq(predictionProviderMock)))
                 .thenThrow(RuntimeException.class);
 
-        ExplainabilityResultDto resultDto = assertDoesNotThrow(() ->
-                explanationService.explainAsync(REQUEST, predictionProviderMock)
-                        .toCompletableFuture()
-                        .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
-        );
+        ExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(REQUEST, predictionProviderMock)
+                .toCompletableFuture()
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
 
         assertNotNull(resultDto);
         assertEquals(EXECUTION_ID, resultDto.getExecutionId());

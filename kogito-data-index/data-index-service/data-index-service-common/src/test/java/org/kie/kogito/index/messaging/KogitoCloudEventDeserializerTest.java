@@ -73,7 +73,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("id", "_18950AC4-664B-465E-B99E-766D38D362BF")
                 .hasFieldOrPropertyWithValue("name", "AutoStartMilestone")
                 .hasFieldOrPropertyWithValue("status", "AVAILABLE");
-        
+
         softly.assertAll();
     }
 
@@ -171,7 +171,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.id", "8350b8b6-c5d9-432d-a339-a9fc85f642d4_0")
                 .hasFieldOrPropertyWithValue("data.processId", "timerscycle")
                 .hasFieldOrPropertyWithValue("data.processInstanceId", "7c1d9b38-b462-47c5-8bf2-d9154f54957b")
-                .hasFieldOrPropertyWithValue("data.nodeInstanceId","54e66e2f-2acd-4d47-b8e6-991cb6372ad8")
+                .hasFieldOrPropertyWithValue("data.nodeInstanceId", "54e66e2f-2acd-4d47-b8e6-991cb6372ad8")
                 .hasFieldOrPropertyWithValue("data.rootProcessInstanceId", null)
                 .hasFieldOrPropertyWithValue("data.rootProcessId", null)
                 .hasFieldOrPropertyWithValue("data.repeatInterval", 1000L)

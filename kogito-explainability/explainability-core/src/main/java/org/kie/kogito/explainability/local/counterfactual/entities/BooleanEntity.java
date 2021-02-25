@@ -28,7 +28,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
  */
 @PlanningEntity
 public class BooleanEntity implements CounterfactualEntity {
-    @PlanningVariable(valueRangeProviderRefs = {"booleanRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "booleanRange" })
     private Boolean proposedValue;
 
     private boolean constrained;
@@ -50,7 +50,7 @@ public class BooleanEntity implements CounterfactualEntity {
      * provided {@link Feature} and specifying whether the entity is contrained or not.
      *
      * @param originalFeature Original input {@link Feature}
-     * @param constrained     Whether this entity's value should be fixed or not
+     * @param constrained Whether this entity's value should be fixed or not
      */
     public static BooleanEntity from(Feature originalFeature, boolean constrained) {
         return new BooleanEntity((Boolean) originalFeature.getValue().getUnderlyingObject(), originalFeature.getName(), constrained);

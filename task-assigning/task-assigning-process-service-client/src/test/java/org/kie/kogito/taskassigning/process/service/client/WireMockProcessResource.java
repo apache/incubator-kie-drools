@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
+
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -63,41 +64,33 @@ public class WireMockProcessResource implements QuarkusTestResourceLifecycleMana
         configureFor(wireMockServer.port());
 
         stubFor(get(buildGetPhasesUrl(PROCESS_ID))
-                        .willReturn(aResponse()
-                                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                            .withBody(getPhasesResponse())
-                        )
-        );
+                .willReturn(aResponse()
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .withBody(getPhasesResponse())));
 
         stubFor(get(buildGetPhasesUrl(BASIC_AUTH_PROCESS_ID))
-                        .withBasicAuth(AUTH_USER, AUTH_PASSWORD)
-                        .willReturn(aResponse()
-                                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                            .withBody(getPhasesResponse())
-                        )
-        );
+                .withBasicAuth(AUTH_USER, AUTH_PASSWORD)
+                .willReturn(aResponse()
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .withBody(getPhasesResponse())));
 
         stubFor(get(buildGetPhasesUrl(KEYCLOAK_AUTH_PROCESS_ID))
-                        .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN))
-                        .willReturn(aResponse()
-                                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                            .withBody(getPhasesResponse())
-                        )
-        );
+                .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN))
+                .willReturn(aResponse()
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .withBody(getPhasesResponse())));
 
         stubFor(post(buildTransitionTaskUrl())
-                        .willReturn(aResponse()
-                                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                            .withBody("{}")
-                        )
-        );
+                .willReturn(aResponse()
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .withBody("{}")));
 
         return Collections.singletonMap(PROCESS_SERVICE_URL, wireMockServer.baseUrl());
     }
 
     private static UrlPattern buildGetPhasesUrl(String processId) {
         return urlEqualTo("/" + processId + "/" + PROCESS_INSTANCE_ID + "/" + TASK_ID + "/" + WORKITEM_ID + "/schema" +
-                                  "?user=" + USER + "&group=" + GROUP1 + "&group=" + GROUP2);
+                "?user=" + USER + "&group=" + GROUP1 + "&group=" + GROUP2);
     }
 
     private static String getPhasesResponse() {
@@ -106,7 +99,7 @@ public class WireMockProcessResource implements QuarkusTestResourceLifecycleMana
 
     private static UrlPattern buildTransitionTaskUrl() {
         return urlEqualTo("/" + PROCESS_ID + "/" + PROCESS_INSTANCE_ID + "/" + TASK_ID + "/" + WORKITEM_ID +
-                                  "?phase=" + PHASE1 + "&user=" + USER + "&group=" + GROUP1 + "&group=" + GROUP2);
+                "?phase=" + PHASE1 + "&user=" + USER + "&group=" + GROUP1 + "&group=" + GROUP2);
     }
 
     @Override

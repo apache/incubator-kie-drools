@@ -158,7 +158,7 @@ class ExplainabilityMetricsTest {
                 });
 
         Assertions.assertThrows(TimeoutException.class,
-                                () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyList()));
+                () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyList()));
 
         Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
         Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);

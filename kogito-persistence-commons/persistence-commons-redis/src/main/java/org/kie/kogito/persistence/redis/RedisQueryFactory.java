@@ -34,7 +34,7 @@ public class RedisQueryFactory {
                     components.add(String.format("@%s:%s", attributeFilter.getAttribute(), attributeFilter.getValue()));
                     break;
                 case LIKE:
-                    if(!"".equals(attributeFilter.getValue()) && !"*".equals(attributeFilter.getValue())){
+                    if (!"".equals(attributeFilter.getValue()) && !"*".equals(attributeFilter.getValue())) {
                         components.add(String.format("@%s:%s", attributeFilter.getAttribute(), attributeFilter.getValue()));
                     }
                     break;
@@ -52,38 +52,28 @@ public class RedisQueryFactory {
                 case GT:
                     query.addFilter(
                             new io.redisearch.Query.NumericFilter(
-                                    attributeFilter.getAttribute(), convertNumeric(attributeFilter.getValue()), true, Double.POSITIVE_INFINITY, false
-                            )
-                    );
+                                    attributeFilter.getAttribute(), convertNumeric(attributeFilter.getValue()), true, Double.POSITIVE_INFINITY, false));
                     break;
                 case GTE:
                     query.addFilter(
                             new io.redisearch.Query.NumericFilter(
-                                    attributeFilter.getAttribute(), convertNumeric(attributeFilter.getValue()), false, Double.POSITIVE_INFINITY, false
-                            )
-                    );
+                                    attributeFilter.getAttribute(), convertNumeric(attributeFilter.getValue()), false, Double.POSITIVE_INFINITY, false));
                     break;
                 case LT:
                     query.addFilter(
                             new io.redisearch.Query.NumericFilter(
-                                    attributeFilter.getAttribute(), Double.NEGATIVE_INFINITY, false, convertNumeric(attributeFilter.getValue()), true
-                            )
-                    );
+                                    attributeFilter.getAttribute(), Double.NEGATIVE_INFINITY, false, convertNumeric(attributeFilter.getValue()), true));
                     break;
                 case LTE:
                     query.addFilter(
                             new io.redisearch.Query.NumericFilter(
-                                    attributeFilter.getAttribute(), Double.NEGATIVE_INFINITY, false, convertNumeric(attributeFilter.getValue()), false
-                            )
-                    );
+                                    attributeFilter.getAttribute(), Double.NEGATIVE_INFINITY, false, convertNumeric(attributeFilter.getValue()), false));
                     break;
                 case BETWEEN:
                     List<?> value = (List<?>) attributeFilter.getValue();
                     query.addFilter(
                             new io.redisearch.Query.NumericFilter(
-                                    attributeFilter.getAttribute(), convertNumeric(value.get(0)), false, convertNumeric(value.get(1)), false
-                            )
-                    );
+                                    attributeFilter.getAttribute(), convertNumeric(value.get(0)), false, convertNumeric(value.get(1)), false));
                     break;
                 default:
                     throw new UnsupportedOperationException("Redis does not support query filter: " + attributeFilter.getCondition());
@@ -95,7 +85,7 @@ public class RedisQueryFactory {
         if (obj instanceof Long) {
             return ((Long) obj).doubleValue();
         }
-        if (obj instanceof Integer){
+        if (obj instanceof Integer) {
             return ((Integer) obj).doubleValue();
         }
         return (Double) obj;

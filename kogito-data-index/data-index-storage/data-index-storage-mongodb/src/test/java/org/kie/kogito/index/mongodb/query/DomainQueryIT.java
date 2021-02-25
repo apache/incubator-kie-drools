@@ -20,9 +20,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +31,11 @@ import org.kie.kogito.persistence.api.query.SortDirection;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -68,8 +70,8 @@ class DomainQueryIT extends QueryTestBase<String, ObjectNode> {
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection("travels_domain", Document.class),
-                                          mongoClientManager.getReactiveCollection("travels_domain", Document.class),
-                                          "org.acme.travels.travels.Travels", new DomainEntityMapper());
+                mongoClientManager.getReactiveCollection("travels_domain", Document.class),
+                "org.acme.travels.travels.Travels", new DomainEntityMapper());
     }
 
     @AfterEach
@@ -101,12 +103,15 @@ class DomainQueryIT extends QueryTestBase<String, ObjectNode> {
         queryAndAssert(assertWithObjectNode(), storage, singletonList(containsAll("_id", asList(processInstanceId1, processInstanceId2))), null, null, null);
         queryAndAssert(assertWithObjectNode(), storage, singletonList(like("traveller.firstName", "*hn")), null, null, null, processInstanceId1);
         queryAndAssert(assertWithObjectNode(), storage, singletonList(and(asList(equalTo("traveller.firstName", "John"), equalTo("traveller.lastName", "Doe")))), null, null, null, processInstanceId1);
-        queryAndAssert(assertWithObjectNode(), storage, singletonList(or(asList(equalTo("traveller.firstName", "John"), equalTo("traveller.firstName", "Jane")))), null, null, null, processInstanceId1, processInstanceId2);
+        queryAndAssert(assertWithObjectNode(), storage, singletonList(or(asList(equalTo("traveller.firstName", "John"), equalTo("traveller.firstName", "Jane")))), null, null, null, processInstanceId1,
+                processInstanceId2);
         queryAndAssert(assertWithObjectNode(), storage, asList(equalTo("traveller.firstName", "John"), equalTo("traveller.lastName", "Toe")), null, null, null);
 
-        queryAndAssert(assertWithObjectNodeInOrder(), storage, asList(in("traveller.firstName", asList("Jane", "John")), in("traveller.lastName", asList("Doe", "Toe"))), singletonList(orderBy("traveller.lastName", SortDirection.ASC)), 1, 1, processInstanceId2);
+        queryAndAssert(assertWithObjectNodeInOrder(), storage, asList(in("traveller.firstName", asList("Jane", "John")), in("traveller.lastName", asList("Doe", "Toe"))),
+                singletonList(orderBy("traveller.lastName", SortDirection.ASC)), 1, 1, processInstanceId2);
         queryAndAssert(assertWithObjectNodeInOrder(), storage, null, singletonList(orderBy("traveller.firstName", SortDirection.ASC)), null, null, processInstanceId2, processInstanceId1);
         queryAndAssert(assertWithObjectNodeInOrder(), storage, null, null, 1, 1, processInstanceId2);
-        queryAndAssert(assertWithObjectNodeInOrder(), storage, null, asList(orderBy("traveller.firstName", SortDirection.DESC), orderBy("traveller.lastName", SortDirection.ASC)), 1, 1, processInstanceId2);
+        queryAndAssert(assertWithObjectNodeInOrder(), storage, null, asList(orderBy("traveller.firstName", SortDirection.DESC), orderBy("traveller.lastName", SortDirection.ASC)), 1, 1,
+                processInstanceId2);
     }
 }

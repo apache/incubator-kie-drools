@@ -92,7 +92,6 @@ public class LimeConfig {
      */
     private EncodingParams encodingParams = new EncodingParams(DEFAULT_ENCODING_GAUSSIAN_FILTER_WIDTH, DEFAULT_ENCODING_CLUSTER_THRESHOLD);
 
-
     public LimeConfig withSeparableDatasetRatio(double separableDatasetRatio) {
         this.separableDatasetRatio = separableDatasetRatio;
         return this;

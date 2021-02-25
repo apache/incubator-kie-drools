@@ -58,8 +58,7 @@ public class LocalDMNPredictionProvider implements PredictionProvider {
     public static PredictionInput toPredictionInput(Map<String, Object> context) {
         return new PredictionInput(
                 // TODO: Date/Time types are considered as strings, proper conversion to be implemented https://issues.redhat.com/browse/KOGITO-4351
-                Collections.singletonList(FeatureFactory.newCompositeFeature(DUMMY_DMN_CONTEXT_KEY, context))
-        );
+                Collections.singletonList(FeatureFactory.newCompositeFeature(DUMMY_DMN_CONTEXT_KEY, context)));
     }
 
     public static PredictionOutput toPredictionOutput(DMNResult dmnResult) {

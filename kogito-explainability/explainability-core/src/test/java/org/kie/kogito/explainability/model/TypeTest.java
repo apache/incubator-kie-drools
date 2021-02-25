@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 
 class TypeTest {
 
@@ -240,7 +239,7 @@ class TypeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testPerturbCompositeFeature(int seed) {
         Random random = new Random();
         random.setSeed(seed);
@@ -291,7 +290,7 @@ class TypeTest {
     @ParameterizedTest
     @EnumSource
     void testEncode(Type type) {
-      EncodingParams params = new EncodingParams(1, 0.1);
+        EncodingParams params = new EncodingParams(1, 0.1);
         for (int seed = 0; seed < 5; seed++) {
             Random random = new Random();
             random.setSeed(seed);
@@ -312,7 +311,7 @@ class TypeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testEncodeNumericSymmetric(int seed) {
         Random random = new Random();
         random.setSeed(seed);
@@ -346,7 +345,7 @@ class TypeTest {
         values[5] = new Value<>(Double.NaN);
         List<double[]> vectors = Type.NUMBER.encode(params, target, values);
         assertThat(vectors).isNotEmpty();
-        assertThat(vectors).doesNotContain(new double[]{Double.NaN});
+        assertThat(vectors).doesNotContain(new double[] { Double.NaN });
     }
 
     @ParameterizedTest

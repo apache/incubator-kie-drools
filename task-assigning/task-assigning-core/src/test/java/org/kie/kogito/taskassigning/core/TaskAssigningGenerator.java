@@ -25,8 +25,8 @@ import java.util.Set;
 
 import org.kie.kogito.taskassigning.core.model.Group;
 import org.kie.kogito.taskassigning.core.model.Task;
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -71,16 +71,16 @@ public class TaskAssigningGenerator {
 
     private static final StringDataGenerator groupNameGenerator = new StringDataGenerator()
             .addPart(true, 0,
-                     "HR",
-                     "IT",
-                     "PM",
-                     "Sales",
-                     "Legal",
-                     "Marketing",
-                     "Manager",
-                     "Developer",
-                     "Accounting",
-                     "Support");
+                    "HR",
+                    "IT",
+                    "PM",
+                    "Sales",
+                    "Legal",
+                    "Marketing",
+                    "Manager",
+                    "Developer",
+                    "Accounting",
+                    "Support");
 
     private static final StringDataGenerator userNameGenerator = StringDataGenerator.buildFullNames();
 
@@ -117,11 +117,11 @@ public class TaskAssigningGenerator {
         BigInteger fixedFacts = AbstractSolutionImporter.factorial(userListSize - 1);
         BigInteger possibleSolutionSize = (totalFacts == null || fixedFacts == null) ? null : totalFacts.divide(fixedFacts);
         LOGGER.info("TaskAssigningSolution {} has {} tasks, {} groups, and {} users with a search space of {}.",
-                    fileName,
-                    taskListSize,
-                    groupListSize,
-                    userListSize,
-                    AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
+                fileName,
+                taskListSize,
+                groupListSize,
+                userListSize,
+                AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return solution;
     }
 

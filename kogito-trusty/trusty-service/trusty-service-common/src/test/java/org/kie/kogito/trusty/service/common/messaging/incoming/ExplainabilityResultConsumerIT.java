@@ -19,10 +19,6 @@ package org.kie.kogito.trusty.service.common.messaging.incoming;
 import java.net.URI;
 import java.util.Collections;
 
-import io.cloudevents.CloudEvent;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
@@ -31,6 +27,11 @@ import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
+
+import io.cloudevents.CloudEvent;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -55,8 +56,7 @@ public class ExplainabilityResultConsumerIT {
                 resultDto.getExecutionId(),
                 URI.create("explainabilityResult/test"),
                 resultDto,
-                ExplainabilityResultDto.class
-        ).orElseThrow(IllegalStateException::new);
+                ExplainabilityResultDto.class).orElseThrow(IllegalStateException::new);
     }
 
     public static String buildCloudEventJsonString(ExplainabilityResultDto resultDto) {
@@ -71,7 +71,7 @@ public class ExplainabilityResultConsumerIT {
         doNothing().when(trustyService).storeExplainabilityResult(eq(executionId), any(ExplainabilityResult.class));
 
         kafkaClient.produce(buildCloudEventJsonString(ExplainabilityResultDto.buildSucceeded(executionId, Collections.emptyMap())),
-                            KafkaConstants.TRUSTY_EXPLAINABILITY_RESULT_TOPIC);
+                KafkaConstants.TRUSTY_EXPLAINABILITY_RESULT_TOPIC);
 
         verify(trustyService, timeout(3000).times(1)).storeExplainabilityResult(any(String.class), any(ExplainabilityResult.class));
     }

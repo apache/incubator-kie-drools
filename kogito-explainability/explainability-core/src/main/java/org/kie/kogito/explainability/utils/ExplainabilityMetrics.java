@@ -15,6 +15,16 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.LocalExplainer;
@@ -29,16 +39,6 @@ import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Utility class providing different methods to evaluate explainability.
@@ -60,10 +60,10 @@ public class ExplainabilityMetrics {
      * Measure the explainability of an explanation.
      * See paper: "Towards Quantification of Explainability in Explainable Artificial Intelligence Methods" by Islam et al.
      *
-     * @param inputCognitiveChunks  the no. of cognitive chunks (pieces of information) required to generate the
-     *                              explanation (e.g. the no. of explanation inputs)
+     * @param inputCognitiveChunks the no. of cognitive chunks (pieces of information) required to generate the
+     *        explanation (e.g. the no. of explanation inputs)
      * @param outputCognitiveChunks the no. of cognitive chunks generated within the explanation itself
-     * @param interactionRatio      the ratio of interaction (between 0 and 1) required by the explanation
+     * @param interactionRatio the ratio of interaction (between 0 and 1) required by the explanation
      * @return the quantitative explainability measure
      */
     public static double quantifyExplainability(int inputCognitiveChunks, int outputCognitiveChunks, double interactionRatio) {
@@ -77,8 +77,8 @@ public class ExplainabilityMetrics {
      * See paper: Qiu Lin, Zhong, et al. "Do Explanations Reflect Decisions? A Machine-centric Strategy to Quantify the
      * Performance of Explainability Algorithms." 2019.
      *
-     * @param model       the model to be explained
-     * @param prediction  a prediction
+     * @param model the model to be explained
+     * @param prediction a prediction
      * @param topFeatures the list of important features that should be dropped
      * @return the saliency impact
      */
@@ -145,15 +145,15 @@ public class ExplainabilityMetrics {
      * Such an evaluation is intended to measure how stable the explanations are in terms of "are the top k most important
      * positive/negative features always the same for a single prediction?".
      *
-     * @param model                  a model to explain
-     * @param prediction             the prediction on which explanation stability will be evaluated
+     * @param model a model to explain
+     * @param prediction the prediction on which explanation stability will be evaluated
      * @param saliencyLocalExplainer a local saliency explainer
-     * @param topK                   no. of top k positive/negative features for which stability report will be generated
+     * @param topK no. of top k positive/negative features for which stability report will be generated
      * @return a report about stability of all the decisions/predictions (and for each {@code k < topK})
      */
     public static LocalSaliencyStability getLocalSaliencyStability(PredictionProvider model, Prediction prediction,
-                                                                   LocalExplainer<Map<String, Saliency>> saliencyLocalExplainer,
-                                                                   int topK, int runs)
+            LocalExplainer<Map<String, Saliency>> saliencyLocalExplainer,
+            int topK, int runs)
             throws InterruptedException, ExecutionException, TimeoutException {
         Map<String, List<Saliency>> saliencies = getMultipleSaliencies(model, prediction, saliencyLocalExplainer, runs);
 
@@ -189,15 +189,15 @@ public class ExplainabilityMetrics {
     /**
      * Get multiple saliencies, aggregated by decision name.
      *
-     * @param model                  the model used to perform predictions
-     * @param prediction             the prediction to explain
+     * @param model the model used to perform predictions
+     * @param prediction the prediction to explain
      * @param saliencyLocalExplainer a local explainer that generates saliences
-     * @param runs                   the no. of explanations to be generated
+     * @param runs the no. of explanations to be generated
      * @return the generated saliencies, aggregated by decision name, across the different runs
      */
     private static Map<String, List<Saliency>> getMultipleSaliencies(PredictionProvider model, Prediction prediction,
-                                                                     LocalExplainer<Map<String, Saliency>> saliencyLocalExplainer,
-                                                                     int runs)
+            LocalExplainer<Map<String, Saliency>> saliencyLocalExplainer,
+            int runs)
             throws InterruptedException, ExecutionException, TimeoutException {
         Map<String, List<Saliency>> saliencies = new HashMap<>();
         int skipped = 0;

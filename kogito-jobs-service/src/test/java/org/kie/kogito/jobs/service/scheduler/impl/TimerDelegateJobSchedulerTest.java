@@ -18,7 +18,6 @@ package org.kie.kogito.jobs.service.scheduler.impl;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.reactivex.Flowable;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +39,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

@@ -31,8 +31,8 @@ import javax.ws.rs.core.Response;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.validation.DMNValidator;
-import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.dmn.validation.DMNValidator.Validation;
+import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.kogito.dmn.rest.KogitoDMNMessage;
 
 @Path("jitdmn/validate")
@@ -45,7 +45,8 @@ public class ValidationResource {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
     public Response schema(String payload) {
-        List<DMNMessage> validate = validator.validate(new StringReader(payload), Validation.VALIDATE_SCHEMA, Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION, Validation.ANALYZE_DECISION_TABLE);
+        List<DMNMessage> validate =
+                validator.validate(new StringReader(payload), Validation.VALIDATE_SCHEMA, Validation.VALIDATE_MODEL, Validation.VALIDATE_COMPILATION, Validation.ANALYZE_DECISION_TABLE);
         List<KogitoDMNMessage> result = validate.stream().map(KogitoDMNMessage::of).collect(Collectors.toList());
         return Response.ok(result).build();
     }

@@ -19,16 +19,17 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import graphql.Scalars;
-import graphql.schema.GraphQLObjectType;
-import graphql.schema.GraphQLOutputType;
-import graphql.schema.GraphQLSchema;
-import graphql.schema.GraphQLType;
 import org.kie.kogito.index.model.KogitoMetadata;
 import org.kie.kogito.persistence.api.proto.AttributeDescriptor;
 import org.kie.kogito.persistence.api.proto.DomainDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import graphql.Scalars;
+import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
@@ -69,33 +70,32 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
     }
 
     private Consumer<GraphQLObjectType.Builder> build(DomainDescriptor domain) {
-        return builder ->
-                domain.getAttributes().forEach(field -> {
-                    LOGGER.debug("GraphQL mapping field: {}", field.getName());
-                    if (KogitoMetadata.class.getName().equals(field.getTypeName())) {
-                        builder.field(newFieldDefinition().name(KOGITO_DOMAIN_ATTRIBUTE).type(schema.getObjectType("KogitoMetadata"))).build();
-                    } else {
-                        GraphQLOutputType type;
-                        switch (field.getTypeName()) {
-                            case "java.lang.Integer":
-                                type = Scalars.GraphQLInt;
-                                break;
-                            case "java.lang.Long":
-                                type = Scalars.GraphQLLong;
-                                break;
-                            case "java.lang.String":
-                            case "java.util.Date":
-                                type = Scalars.GraphQLString;
-                                break;
-                            case "java.lang.Boolean":
-                                type = Scalars.GraphQLBoolean;
-                                break;
-                            default:
-                                type = getGraphQLType(field, schema, additionalTypes, allTypes);
-                        }
-                        builder.field(newFieldDefinition().name(field.getName()).type(type));
-                    }
-                });
+        return builder -> domain.getAttributes().forEach(field -> {
+            LOGGER.debug("GraphQL mapping field: {}", field.getName());
+            if (KogitoMetadata.class.getName().equals(field.getTypeName())) {
+                builder.field(newFieldDefinition().name(KOGITO_DOMAIN_ATTRIBUTE).type(schema.getObjectType("KogitoMetadata"))).build();
+            } else {
+                GraphQLOutputType type;
+                switch (field.getTypeName()) {
+                    case "java.lang.Integer":
+                        type = Scalars.GraphQLInt;
+                        break;
+                    case "java.lang.Long":
+                        type = Scalars.GraphQLLong;
+                        break;
+                    case "java.lang.String":
+                    case "java.util.Date":
+                        type = Scalars.GraphQLString;
+                        break;
+                    case "java.lang.Boolean":
+                        type = Scalars.GraphQLBoolean;
+                        break;
+                    default:
+                        type = getGraphQLType(field, schema, additionalTypes, allTypes);
+                }
+                builder.field(newFieldDefinition().name(field.getName()).type(type));
+            }
+        });
     }
 
     private GraphQLOutputType getGraphQLType(AttributeDescriptor attribute, GraphQLSchema schema, Map<String, GraphQLType> additionalTypes, Map<String, DomainDescriptor> allTypes) {

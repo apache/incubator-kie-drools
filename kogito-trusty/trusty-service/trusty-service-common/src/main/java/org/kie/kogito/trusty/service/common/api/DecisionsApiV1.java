@@ -57,10 +57,10 @@ public class DecisionsApiV1 {
     @GET
     @Path("/{executionId}")
     @APIResponses(value = {
-            @APIResponse(description = "Gets the decision detail header.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = ExecutionHeaderResponse.class))),
+            @APIResponse(description = "Gets the decision detail header.", responseCode = "200",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = ExecutionHeaderResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    }
-    )
+    })
     @Operation(summary = "Gets The decision header with details.", description = "Gets the decision detail header.")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getExecutionById(
@@ -68,18 +68,17 @@ public class DecisionsApiV1 {
                     name = "executionId",
                     description = "The execution ID.",
                     required = true,
-                    schema = @Schema(implementation = String.class)
-            ) @PathParam("executionId") String executionId) {
+                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return handleDecisionRequest(executionId, ResponseUtils::executionHeaderResponseFrom);
     }
 
     @GET
     @Path("/{executionId}/structuredInputs")
     @APIResponses(value = {
-            @APIResponse(description = "Gets the decision structured inputs.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
+            @APIResponse(description = "Gets the decision structured inputs.", responseCode = "200",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    }
-    )
+    })
     @Operation(summary = "Gets the decision structured inputs.")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStructuredInputs(
@@ -87,18 +86,17 @@ public class DecisionsApiV1 {
                     name = "executionId",
                     description = "The execution ID.",
                     required = true,
-                    schema = @Schema(implementation = String.class)
-            ) @PathParam("executionId") String executionId) {
+                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return handleDecisionRequest(executionId, ResponseUtils::decisionStructuredInputsResponseFrom);
     }
 
     @GET
     @Path("/{executionId}/outcomes")
     @APIResponses(value = {
-            @APIResponse(description = "Gets the decision outcomes.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionOutcomesResponse.class))),
+            @APIResponse(description = "Gets the decision outcomes.", responseCode = "200",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionOutcomesResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    }
-    )
+    })
     @Operation(summary = "Gets the decision outcomes.")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOutcomes(
@@ -106,18 +104,17 @@ public class DecisionsApiV1 {
                     name = "executionId",
                     description = "The execution ID.",
                     required = true,
-                    schema = @Schema(implementation = String.class)
-            ) @PathParam("executionId") String executionId) {
+                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return handleDecisionRequest(executionId, ResponseUtils::decisionOutcomesResponseFrom);
     }
 
     @GET
     @Path("/{executionId}/outcomes/{outcomeId}")
     @APIResponses(value = {
-            @APIResponse(description = "Gets a specific outcome of a decision.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionOutcomeResponse.class))),
+            @APIResponse(description = "Gets a specific outcome of a decision.", responseCode = "200",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionOutcomeResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    }
-    )
+    })
     @Operation(summary = "Gets a specific outcome of a decision.")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOutcomeById(
@@ -125,20 +122,18 @@ public class DecisionsApiV1 {
                     name = "executionId",
                     description = "The execution ID.",
                     required = true,
-                    schema = @Schema(implementation = String.class)
-            ) @PathParam("executionId") String executionId,
+                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId,
             @Parameter(
                     name = "outcomeId",
                     description = "The outcome ID.",
                     required = true,
-                    schema = @Schema(implementation = String.class)
-            ) @PathParam("outcomeId") String outcomeId) {
-        return handleDecisionRequest(executionId, decision -> decision.getOutcomes() == null ? null : decision.getOutcomes().stream()
-                .filter(outcome -> outcomeId != null && outcomeId.equals(outcome.getOutcomeId()))
-                .findFirst()
-                .map(ResponseUtils::decisionOutcomeResponseFrom)
-                .orElse(null)
-        );
+                    schema = @Schema(implementation = String.class)) @PathParam("outcomeId") String outcomeId) {
+        return handleDecisionRequest(executionId, decision -> decision.getOutcomes() == null ? null
+                : decision.getOutcomes().stream()
+                        .filter(outcome -> outcomeId != null && outcomeId.equals(outcome.getOutcomeId()))
+                        .findFirst()
+                        .map(ResponseUtils::decisionOutcomeResponseFrom)
+                        .orElse(null));
     }
 
     private Response handleDecisionRequest(String executionId, Function<Decision, Object> transformer) {

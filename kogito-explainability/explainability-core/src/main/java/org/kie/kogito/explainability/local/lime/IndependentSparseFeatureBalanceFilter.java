@@ -39,7 +39,8 @@ class IndependentSparseFeatureBalanceFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndependentSparseFeatureBalanceFilter.class);
 
-    IndependentSparseFeatureBalanceFilter() {}
+    IndependentSparseFeatureBalanceFilter() {
+    }
 
     /**
      * Filter feature weight {@code coefficients} by attenuating them according to class balance and number of features.
@@ -47,10 +48,10 @@ class IndependentSparseFeatureBalanceFilter {
      * {@code c[i] = Math.tanh((1e-2 + Math.abs(classBalanceForZero - 0.5) + Math.abs(classBalanceForOne - 0.5)) + ts / 10d)}
      *
      * @param linearizedTargetInputFeatures no of features
-     * @param trainingSet                   training set for the linear classifier
+     * @param trainingSet training set for the linear classifier
      */
     void apply(double[] coefficients, List<Feature> linearizedTargetInputFeatures,
-               List<Pair<double[], Double>> trainingSet) {
+            List<Pair<double[], Double>> trainingSet) {
         if (coefficients.length == linearizedTargetInputFeatures.size()) {
             int ts = linearizedTargetInputFeatures.size();
             if (!trainingSet.isEmpty()) {
@@ -82,7 +83,7 @@ class IndependentSparseFeatureBalanceFilter {
             }
         } else {
             LOGGER.warn("coefficients size {} ≠ features size {}, not filtering", coefficients.length,
-                        linearizedTargetInputFeatures.size());
+                    linearizedTargetInputFeatures.size());
         }
     }
 }

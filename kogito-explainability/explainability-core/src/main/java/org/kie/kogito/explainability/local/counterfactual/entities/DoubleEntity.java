@@ -31,7 +31,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
  */
 @PlanningEntity
 public class DoubleEntity implements CounterfactualEntity {
-    @PlanningVariable(valueRangeProviderRefs = {"doubleRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "doubleRange" })
     public Double proposedValue;
 
     double doubleRangeMinimum;
@@ -42,7 +42,6 @@ public class DoubleEntity implements CounterfactualEntity {
 
     private boolean constrained;
     private String featureName;
-
 
     public DoubleEntity() {
     }
@@ -70,9 +69,9 @@ public class DoubleEntity implements CounterfactualEntity {
      * provided {@link Feature} and specifying whether the entity is constrained or not.
      *
      * @param originalFeature Original input {@link Feature}
-     * @param minimum         The start of the domain search space
-     * @param maximum         The end of the domain search space
-     * @param constrained     Whether this entity's value should be fixed or not
+     * @param minimum The start of the domain search space
+     * @param maximum The end of the domain search space
+     * @param constrained Whether this entity's value should be fixed or not
      */
     public static DoubleEntity from(Feature originalFeature, double minimum, double maximum, boolean constrained) {
         return from(originalFeature, minimum, maximum, null, constrained);
@@ -83,24 +82,23 @@ public class DoubleEntity implements CounterfactualEntity {
      * provided {@link Feature} and specifying whether the entity is constrained or not.
      * If the feature distribution is available, it will be used to scale the feature distances.
      *
-     * @param originalFeature     Original input {@link Feature}
-     * @param minimum             The start of the domain search space
-     * @param maximum             The end of the domain search space
+     * @param originalFeature Original input {@link Feature}
+     * @param minimum The start of the domain search space
+     * @param maximum The end of the domain search space
      * @param featureDistribution The feature's distribution (as {@link FeatureDistribution}), if available
-     * @param constrained         Whether this entity's value should be fixed or not
+     * @param constrained Whether this entity's value should be fixed or not
      */
     public static DoubleEntity from(Feature originalFeature, double minimum, double maximum, FeatureDistribution featureDistribution, boolean constrained) {
         return new DoubleEntity(originalFeature.getValue().asNumber(), originalFeature.getName(), minimum, maximum, featureDistribution, constrained);
     }
-
 
     /**
      * Creates an unconstrained {@link DoubleEntity}, taking the original input value from the
      * provided {@link Feature}.
      *
      * @param originalFeature feature Original input {@link Feature}
-     * @param minimum         The start of the domain search space
-     * @param maximum         The end of the domain search space
+     * @param minimum The start of the domain search space
+     * @param maximum The end of the domain search space
      */
     public static DoubleEntity from(Feature originalFeature, double minimum, double maximum) {
         return DoubleEntity.from(originalFeature, minimum, maximum, null, false);
@@ -111,15 +109,14 @@ public class DoubleEntity implements CounterfactualEntity {
      * provided {@link Feature}.
      * If the feature distribution is available, it will be used to scale the feature distances.
      *
-     * @param originalFeature     feature Original input {@link Feature}
-     * @param minimum             The start of the domain search space
-     * @param maximum             The end of the domain search space
+     * @param originalFeature feature Original input {@link Feature}
+     * @param minimum The start of the domain search space
+     * @param maximum The end of the domain search space
      * @param featureDistribution The feature's distribution (as {@link FeatureDistribution}), if available
      */
     public static DoubleEntity from(Feature originalFeature, double minimum, double maximum, FeatureDistribution featureDistribution) {
         return DoubleEntity.from(originalFeature, minimum, maximum, featureDistribution, false);
     }
-
 
     @ValueRangeProvider(id = "doubleRange")
     public ValueRange getValueRange() {

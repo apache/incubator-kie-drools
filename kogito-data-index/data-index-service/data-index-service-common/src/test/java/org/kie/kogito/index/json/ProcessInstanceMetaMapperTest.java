@@ -17,10 +17,11 @@ package org.kie.kogito.index.json;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,10 +59,9 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].endpoint").isEqualTo(event.getSource().toString()),
                 a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStart().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEnd().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli())
-        );
+                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()));
     }
-    
+
     @Test
     public void testProcessInstanceMapperWithBusinessKey() {
         String processId = "travels";
@@ -92,7 +92,6 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStart().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEnd().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].businessKey").isEqualTo(event.getData().getBusinessKey())
-        );
+                a -> a.node(piPrefix + "[0].businessKey").isEqualTo(event.getData().getBusinessKey()));
     }
 }

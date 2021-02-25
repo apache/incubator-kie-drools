@@ -23,7 +23,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
@@ -43,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LimeExplainerTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testEmptyPrediction(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -61,7 +60,7 @@ class LimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testNonEmptyInput(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -84,7 +83,7 @@ class LimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testSparseBalance(int seed) throws InterruptedException, ExecutionException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);

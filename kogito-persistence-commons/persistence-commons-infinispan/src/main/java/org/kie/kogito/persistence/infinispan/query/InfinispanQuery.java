@@ -149,6 +149,6 @@ public class InfinispanQuery<T> implements Query<T> {
         return ((List<AttributeFilter<?>>) filter.getValue())
                 .stream()
                 .map(filterStringFunction())
-                .collect(joining(joining,  "(", ")"));
+                .collect(joining(joining, "(", ")"));
     }
 }

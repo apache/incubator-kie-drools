@@ -39,7 +39,6 @@ class StringIsNullArgumentTest extends AbstractStringArgumentTest<Boolean, Strin
     protected Stream<Arguments> createTestValues() {
         return Stream.of(
                 Arguments.of(new TestArgument<>(Boolean.TRUE, "{\"isNull\":\"true\"}")),
-                Arguments.of(new TestArgument<>(Boolean.FALSE, "{\"isNull\":\"false\"}"))
-        );
+                Arguments.of(new TestArgument<>(Boolean.FALSE, "{\"isNull\":\"false\"}")));
     }
 }

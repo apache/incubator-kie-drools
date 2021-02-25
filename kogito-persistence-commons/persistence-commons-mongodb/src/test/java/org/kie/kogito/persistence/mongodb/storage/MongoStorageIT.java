@@ -20,10 +20,6 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +27,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.mock.MockMongoEntityMapper;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -53,7 +55,7 @@ class MongoStorageIT {
     void setup() {
         collection = mongoClientManager.getCollection("test", Document.class);
         storage = new MongoStorage(collection, mongoClientManager.getReactiveCollection("test", Document.class),
-                                   String.class.getName(), new MockMongoEntityMapper());
+                String.class.getName(), new MockMongoEntityMapper());
     }
 
     @AfterEach

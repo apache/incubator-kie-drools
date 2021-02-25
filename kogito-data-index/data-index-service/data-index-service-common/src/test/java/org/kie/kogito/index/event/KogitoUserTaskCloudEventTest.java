@@ -38,8 +38,7 @@ class KogitoUserTaskCloudEventTest {
                 Arguments.of(URI.create("/travels"), pId, "task", taskId, format("/travels/%s/task/%s", pId, taskId)),
                 Arguments.of(URI.create("http://localhost:8080/travels"), pId, "task", taskId, format("http://localhost:8080/travels/%s/task/%s", pId, taskId)),
                 Arguments.of(URI.create("http://localhost:8080/orderItems"), pId, "Verify_order", taskId, format("http://localhost:8080/orderItems/%s/Verify_order/%s", pId, taskId)),
-                Arguments.of(URI.create("/travels"), pId, "Apply for visa", taskId, format("/travels/%s/%s/%s", pId, "Apply%20for%20visa", taskId))
-        );
+                Arguments.of(URI.create("/travels"), pId, "Apply for visa", taskId, format("/travels/%s/%s/%s", pId, "Apply%20for%20visa", taskId)));
     }
 
     @ParameterizedTest

@@ -54,7 +54,7 @@ public class JobEntity {
     Long lastUpdate;
 
     Integer executionCounter;
-    
+
     String endpoint;
 
     public String getId() {

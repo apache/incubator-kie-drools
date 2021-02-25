@@ -18,10 +18,11 @@ package org.kie.kogito.trusty.service.common;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.quarkus.test.Mock;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
 import org.kie.kogito.persistence.api.factory.StorageQualifier;
+
+import io.quarkus.test.Mock;
 
 import static org.mockito.Mockito.mock;
 

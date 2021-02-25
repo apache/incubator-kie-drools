@@ -33,7 +33,7 @@ public class ClientServices {
 
     @Inject
     public ClientServices(ProcessServiceClientFactory processServiceClientFactory,
-                          DataIndexServiceClientFactory indexClientFactory) {
+            DataIndexServiceClientFactory indexClientFactory) {
         this.processServiceClientFactory = processServiceClientFactory;
         this.indexClientFactory = indexClientFactory;
     }

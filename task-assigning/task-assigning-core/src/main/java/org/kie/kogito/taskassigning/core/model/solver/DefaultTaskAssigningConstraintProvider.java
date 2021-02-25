@@ -26,7 +26,7 @@ public class DefaultTaskAssigningConstraintProvider implements ConstraintProvide
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 requiredPotentialOwner(constraintFactory),
                 requiredSkills(constraintFactory),
                 planningUserAssignment(constraintFactory),

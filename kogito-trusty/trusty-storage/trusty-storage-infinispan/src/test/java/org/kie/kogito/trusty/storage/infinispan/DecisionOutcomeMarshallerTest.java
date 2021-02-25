@@ -18,7 +18,6 @@ package org.kie.kogito.trusty.storage.infinispan;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
@@ -27,6 +26,8 @@ import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.CollectionTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ObjectTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.trusty.storage.api.model.DecisionOutcome.EVALUATION_STATUS_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.DecisionOutcome.MESSAGES_FIELD;
@@ -43,8 +44,7 @@ public class DecisionOutcomeMarshallerTest extends MarshallerTestTemplate<Decisi
             new StringTestField<>(EVALUATION_STATUS_FIELD, "SUCCEEDED", DecisionOutcome::getEvaluationStatus, DecisionOutcome::setEvaluationStatus),
             new ObjectTestField<>(OUTCOME_RESULT_FIELD, null, DecisionOutcome::getOutcomeResult, DecisionOutcome::setOutcomeResult, TypedVariable.class),
             new CollectionTestField<>(OUTCOME_INPUTS_FIELD, Collections.emptyList(), DecisionOutcome::getOutcomeInputs, DecisionOutcome::setOutcomeInputs, TypedVariable.class),
-            new CollectionTestField<>(MESSAGES_FIELD, Collections.emptyList(), DecisionOutcome::getMessages, DecisionOutcome::setMessages, Message.class)
-    );
+            new CollectionTestField<>(MESSAGES_FIELD, Collections.emptyList(), DecisionOutcome::getMessages, DecisionOutcome::setMessages, Message.class));
 
     public DecisionOutcomeMarshallerTest() {
         super(DecisionOutcome.class);

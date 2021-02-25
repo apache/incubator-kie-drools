@@ -82,7 +82,7 @@ public class JobExecutionResponse {
                 .toString();
     }
 
-    public static JobExecutionResponseBuilder builder(){
+    public static JobExecutionResponseBuilder builder() {
         return new JobExecutionResponseBuilder();
     }
 

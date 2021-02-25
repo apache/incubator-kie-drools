@@ -104,7 +104,7 @@ class PmmlRegressionLimeExplainerTest {
                 assertThat(v).isEqualTo(1d);
             }
             assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                                                                                    0.0, 0.0));
+                    0.0, 0.0));
         }
     }
 }

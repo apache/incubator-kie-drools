@@ -17,9 +17,10 @@ package org.kie.kogito.index.json;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,7 +61,6 @@ public class UserTaskInstanceMetaMapperTest {
                 a -> a.node(utPrefix + "[0].potentialUsers[0]").isEqualTo(event.getData().getPotentialUsers().stream().findFirst().get()),
                 a -> a.node(utPrefix + "[0].started").isEqualTo(event.getData().getStarted().toInstant().toEpochMilli()),
                 a -> a.node(utPrefix + "[0].completed").isEqualTo(event.getData().getCompleted().toInstant().toEpochMilli()),
-                a -> a.node(utPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli())
-        );
+                a -> a.node(utPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()));
     }
 }

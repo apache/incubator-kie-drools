@@ -23,8 +23,8 @@ public enum ProcessInstanceState {
     ABORTED,
     SUSPENDED,
     ERROR;
-    
-    public static ProcessInstanceState fromStatus(Integer state){
+
+    public static ProcessInstanceState fromStatus(Integer state) {
         return ProcessInstanceState.values()[state];
     }
 }

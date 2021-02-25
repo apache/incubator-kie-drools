@@ -22,13 +22,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
 import org.kie.kogito.persistence.mongodb.query.MongoQuery;
+
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.ReplaceOptions;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
@@ -49,7 +50,7 @@ public class MongoStorage<V, E> implements Storage<String, V> {
     String rootType;
 
     public MongoStorage(MongoCollection<E> mongoCollection, com.mongodb.reactivestreams.client.MongoCollection<E> reactiveMongoCollection,
-                        String rootType, MongoEntityMapper<V, E> mongoEntityMapper) {
+            String rootType, MongoEntityMapper<V, E> mongoEntityMapper) {
         this.mongoCollection = mongoCollection;
         this.rootType = rootType;
         this.mongoEntityMapper = mongoEntityMapper;

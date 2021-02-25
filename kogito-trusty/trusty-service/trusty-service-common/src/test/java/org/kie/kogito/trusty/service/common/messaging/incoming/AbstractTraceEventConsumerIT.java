@@ -61,7 +61,7 @@ public abstract class AbstractTraceEventConsumerIT {
     @Test
     void testCorrectCloudEvent() throws JsonProcessingException, JSONException {
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(TrustyServiceTestUtils.CORRECT_CLOUDEVENT_ID)),
-                            KafkaConstants.KOGITO_TRACING_TOPIC);
+                KafkaConstants.KOGITO_TRACING_TOPIC);
 
         await()
                 .atMost(5, SECONDS)
@@ -75,7 +75,7 @@ public abstract class AbstractTraceEventConsumerIT {
     @Test
     void testCloudEventWithErrors() throws JsonProcessingException, JSONException {
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildTraceEventWithErrors()),
-                            KafkaConstants.KOGITO_TRACING_TOPIC);
+                KafkaConstants.KOGITO_TRACING_TOPIC);
 
         await()
                 .atMost(5, SECONDS)

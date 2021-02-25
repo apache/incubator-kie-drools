@@ -32,9 +32,9 @@ public interface TrustyService {
     /**
      * Gets all the headers of the executions that were evaluated within a specified time range.
      *
-     * @param from   The start datetime.
-     * @param to     The end datetime.
-     * @param limit  The maximum (non-negative) number of items to be returned.
+     * @param from The start datetime.
+     * @param to The end datetime.
+     * @param limit The maximum (non-negative) number of items to be returned.
      * @param offset The non-negative pagination offset.
      * @param prefix The executionId prefix to be matched in the search.
      * @return The execution headers that satisfy the time range, pagination and prefix conditions and the total number of available results.
@@ -54,7 +54,7 @@ public interface TrustyService {
      * Stores a decision.
      *
      * @param executionId The unique execution ID
-     * @param decision    The decision object.
+     * @param decision The decision object.
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is already present in the system.
      */
     void storeDecision(String executionId, Decision decision);
@@ -63,7 +63,7 @@ public interface TrustyService {
      * Updates a decision. If the decision is not present in the storage, then it is created.
      *
      * @param executionId The execution ID
-     * @param decision    The decision object.
+     * @param decision The decision object.
      */
     void updateDecision(String executionId, Decision decision);
 
@@ -71,8 +71,8 @@ public interface TrustyService {
      * Process a decision. Stores the decision and then send an explainability request if it is enabled.
      *
      * @param executionId The execution ID
-     * @param serviceUrl  The service URL
-     * @param decision    The decision object.
+     * @param serviceUrl The service URL
+     * @param decision The decision object.
      */
     void processDecision(String executionId, String serviceUrl, Decision decision);
 
@@ -94,11 +94,11 @@ public interface TrustyService {
     /**
      * Stores a Model definition.
      *
-     * @param groupId    The Maven Group Id coordinate of the model.
+     * @param groupId The Maven Group Id coordinate of the model.
      * @param artifactId The Maven Artifact Id coordinate of the model.
-     * @param version    The Maven version coordinate of the model.
-     * @param name       The name of the model of the model.
-     * @param namespace  The namespace of the model.
+     * @param version The Maven version coordinate of the model.
+     * @param name The name of the model of the model.
+     * @param namespace The namespace of the model.
      * @param definition The definition of the model.
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the model is already present in the system.
      */

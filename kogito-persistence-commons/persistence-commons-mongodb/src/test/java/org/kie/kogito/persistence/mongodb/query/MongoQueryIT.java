@@ -20,9 +20,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.mongodb.client.MongoCollection;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +28,11 @@ import org.kie.kogito.persistence.api.query.QueryFilterFactory;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.mock.MockMongoEntityMapper;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+
+import com.mongodb.client.MongoCollection;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;

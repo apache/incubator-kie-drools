@@ -55,6 +55,6 @@ public class JobServiceContainer extends GenericContainer<JobServiceContainer> i
 
     private String getImageName() {
         return Optional.ofNullable(System.getProperty(IMAGE)).filter(StringUtils::isNotBlank)
-                       .orElseThrow(() -> new IllegalArgumentException(IMAGE + " property should be set in pom.xml"));
+                .orElseThrow(() -> new IllegalArgumentException(IMAGE + " property should be set in pom.xml"));
     }
 }

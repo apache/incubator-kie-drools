@@ -18,12 +18,13 @@ package org.kie.kogito.trusty.service.common.responses;
 
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.kie.kogito.trusty.service.common.responses.ResponseUtils.typedVariableResponseFrom;
 
@@ -56,28 +57,23 @@ class TypedVariableResponseTest {
         return TypedVariable.buildCollection(VAR_NAME_COLLECTION, TYPE_REF_STRING, List.of(
                 buildTestUnitVariable(null, TYPE_REF_STRING, "\"" + VALUE_COUNT_ONE + "\""),
                 buildTestUnitVariable(null, TYPE_REF_STRING, "\"" + VALUE_COUNT_TWO + "\""),
-                buildTestUnitVariable(null, TYPE_REF_STRING, "\"" + VALUE_COUNT_THREE + "\"")
-        ));
+                buildTestUnitVariable(null, TYPE_REF_STRING, "\"" + VALUE_COUNT_THREE + "\"")));
     }
 
     private static TypedVariable buildTestCollectionOfStructures() throws JsonProcessingException {
         return TypedVariable.buildCollection(VAR_NAME_COLLECTION, TYPE_REF_STRUCT, List.of(
                 TypedVariable.buildStructure(null, TYPE_REF_STRUCT, List.of(
                         buildTestUnitVariable(VALUE_AGE, TYPE_REF_NUMBER, "" + VALUE_34),
-                        buildTestUnitVariable(VALUE_TOWN, TYPE_REF_STRING, "\"" + VALUE_MONZA + "\"")
-                )),
+                        buildTestUnitVariable(VALUE_TOWN, TYPE_REF_STRING, "\"" + VALUE_MONZA + "\""))),
                 TypedVariable.buildStructure(null, TYPE_REF_STRUCT, List.of(
                         buildTestUnitVariable(VALUE_AGE, TYPE_REF_NUMBER, "" + VALUE_41),
-                        buildTestUnitVariable(VALUE_TOWN, TYPE_REF_STRING, "\"" + VALUE_TAVULLIA + "\"")
-                ))
-        ));
+                        buildTestUnitVariable(VALUE_TOWN, TYPE_REF_STRING, "\"" + VALUE_TAVULLIA + "\"")))));
     }
 
     private static TypedVariable buildTestStructure() throws JsonProcessingException {
         return TypedVariable.buildStructure(VAR_NAME_STRUCT, TYPE_REF_STRUCT, List.of(
                 buildTestUnitVariable(VALUE_AGE, TYPE_REF_NUMBER, "" + VALUE_50),
-                buildTestUnitVariable(VALUE_TOWN, TYPE_REF_STRING, "\"" + VALUE_MILANO + "\"")
-        ));
+                buildTestUnitVariable(VALUE_TOWN, TYPE_REF_STRING, "\"" + VALUE_MILANO + "\"")));
     }
 
     private static TypedVariable buildTestUnitVariable() throws JsonProcessingException {

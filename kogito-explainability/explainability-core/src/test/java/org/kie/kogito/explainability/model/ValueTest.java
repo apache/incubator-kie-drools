@@ -36,7 +36,7 @@ class ValueTest {
         assertEquals(1.1, numericValue.asNumber());
         double[] vector = numericValue.asVector();
         assertNotNull(vector);
-        assertArrayEquals(new double[]{1.1}, vector);
+        assertArrayEquals(new double[] { 1.1 }, vector);
     }
 
     @Test
@@ -104,7 +104,7 @@ class ValueTest {
         assertEquals(Double.NaN, vectorValue.asNumber());
         double[] vector = vectorValue.asVector();
         assertNotNull(vector);
-        assertArrayEquals(new double[]{0.1, 0.2, 0.3}, vector);
+        assertArrayEquals(new double[] { 0.1, 0.2, 0.3 }, vector);
     }
 
     @Test
@@ -118,6 +118,6 @@ class ValueTest {
         assertEquals(Double.NaN, vectorValue.asNumber());
         double[] vector = vectorValue.asVector();
         assertNotNull(vector);
-        assertArrayEquals(new double[]{0.1, 0.2, 0.3}, vector);
+        assertArrayEquals(new double[] { 0.1, 0.2, 0.3 }, vector);
     }
 }

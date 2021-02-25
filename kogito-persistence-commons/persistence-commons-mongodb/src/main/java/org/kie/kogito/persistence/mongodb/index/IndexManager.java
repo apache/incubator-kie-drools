@@ -31,18 +31,19 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimaps;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexModel;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import org.kie.kogito.persistence.api.schema.EntityIndexDescriptor;
 import org.kie.kogito.persistence.api.schema.IndexDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
 import org.kie.kogito.persistence.api.schema.SchemaRegistrationException;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimaps;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexModel;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -89,9 +90,8 @@ public class IndexManager {
     }
 
     void updateIndexes(Collection<EntityIndexDescriptor> entityIndexDescriptorList) {
-        entityIndexDescriptorList.forEach(entityIndexDescriptor ->
-                                                  this.getCollectionsWithIndex(entityIndexDescriptor.getName())
-                                                          .forEach(col -> this.updateCollection(this.getCollection(col), entityIndexDescriptor)));
+        entityIndexDescriptorList.forEach(entityIndexDescriptor -> this.getCollectionsWithIndex(entityIndexDescriptor.getName())
+                .forEach(col -> this.updateCollection(this.getCollection(col), entityIndexDescriptor)));
     }
 
     void updateCollection(MongoCollection<Document> collection, EntityIndexDescriptor index) {

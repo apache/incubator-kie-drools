@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.explainability.local.counterfactual;
 
+import java.util.List;
+
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.model.PredictionOutput;
-
-import java.util.List;
 
 /**
  * Represents the result of a counterfactual search.

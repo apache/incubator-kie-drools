@@ -15,6 +15,16 @@
  */
 package org.kie.kogito.explainability.explainability.integrationtests.dmn;
 
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.decision.DecisionModel;
@@ -34,30 +44,19 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 class DummyDmnModelsLimeExplainerTest {
 
     @Test
-    void testFunctional1DMNExplanation()  throws ExecutionException, InterruptedException, TimeoutException {
+    void testFunctional1DMNExplanation() throws ExecutionException, InterruptedException, TimeoutException {
         DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/functionalTest1.dmn")));
         assertThat(dmnRuntime.getModels().size()).isEqualTo(1);
 
         final String namespace = "https://kiegroup.org/dmn/_049CD980-1310-4B02-9E90-EFC57059F44A";
         final String name = "functionalTest1";
         DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, namespace, name);
-
 
         PredictionProvider model = new DecisionModelWrapper(decisionModel);
         Map<String, Object> context = new HashMap<>();
@@ -138,7 +137,6 @@ class DummyDmnModelsLimeExplainerTest {
         final String namespace = "https://kiegroup.org/dmn/_24B9EC8C-2F02-40EB-B6BB-E8CDE82FBF08";
         final String name = "new-file";
         DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, namespace, name);
-
 
         PredictionProvider model = new DecisionModelWrapper(decisionModel);
 

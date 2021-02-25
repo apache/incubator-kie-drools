@@ -16,8 +16,8 @@
 package org.kie.kogito.taskassigning.core.model.solver.realtime;
 
 import org.kie.kogito.taskassigning.core.TaskAssigningRuntimeException;
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 

@@ -70,7 +70,8 @@ public class GraphQLScalarTypeProducer {
                         } else if (input instanceof Long) {
                             dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli((Long) input), ZoneOffset.UTC);
                         } else {
-                            throw new CoercingSerializeException("Expected something we can convert to 'java.time.OffsetDateTime' but was '" + (input == null ? "null" : input.getClass().getName()) + "'.");
+                            throw new CoercingSerializeException(
+                                    "Expected something we can convert to 'java.time.OffsetDateTime' but was '" + (input == null ? "null" : input.getClass().getName()) + "'.");
                         }
                         return formatDateTime(dateTime);
                     }

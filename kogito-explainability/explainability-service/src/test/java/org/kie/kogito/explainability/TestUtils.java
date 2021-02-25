@@ -16,8 +16,10 @@
 
 package org.kie.kogito.explainability;
 
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
@@ -29,9 +31,8 @@ import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;

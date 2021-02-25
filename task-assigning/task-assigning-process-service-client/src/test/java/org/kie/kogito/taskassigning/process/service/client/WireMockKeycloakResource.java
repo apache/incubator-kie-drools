@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
+
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -54,15 +55,14 @@ public class WireMockKeycloakResource implements QuarkusTestResourceLifecycleMan
         configureFor(wireMockServer.port());
 
         stubFor(post(buildTokenRequestUrl(REALM))
-                        .withHeader(CONTENT_TYPE, equalTo(APPLICATION_FORM_URLENCODED))
-                        .withBasicAuth(CLIENT_ID, SECRET)
-                        .withRequestBody(equalTo(getAuthRequestBody()))
-                        .willReturn(aResponse()
-                                            .withHeader(CONTENT_TYPE, APPLICATION_JSON)
-                                            .withBody(getTokenResult())
+                .withHeader(CONTENT_TYPE, equalTo(APPLICATION_FORM_URLENCODED))
+                .withBasicAuth(CLIENT_ID, SECRET)
+                .withRequestBody(equalTo(getAuthRequestBody()))
+                .willReturn(aResponse()
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON)
+                        .withBody(getTokenResult())
 
-                        )
-        );
+                ));
 
         return Collections.singletonMap(KEY_CLOAK_SERVICE_URL, wireMockServer.baseUrl());
     }

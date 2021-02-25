@@ -37,18 +37,18 @@ public class ScheduledJob extends Job {
     }
 
     private ScheduledJob(Optional<Job> job,
-                         Optional<ZonedDateTime> expirationTime) {
+            Optional<ZonedDateTime> expirationTime) {
         super(job.map(Job::getId).orElse(null),
-              expirationTime.orElse(job.map(Job::getExpirationTime).orElse(null)),
-              job.map(Job::getPriority).orElse(null),
-              job.map(Job::getCallbackEndpoint).orElse(null),
-              job.map(Job::getProcessInstanceId).orElse(null),
-              job.map(Job::getRootProcessInstanceId).orElse(null),
-              job.map(Job::getProcessId).orElse(null),
-              job.map(Job::getRootProcessId).orElse(null),
-              job.map(Job::getRepeatInterval).orElse(null),
-              job.map(Job::getRepeatLimit).orElse(null),
-              job.map(Job::getNodeInstanceId).orElse(null));
+                expirationTime.orElse(job.map(Job::getExpirationTime).orElse(null)),
+                job.map(Job::getPriority).orElse(null),
+                job.map(Job::getCallbackEndpoint).orElse(null),
+                job.map(Job::getProcessInstanceId).orElse(null),
+                job.map(Job::getRootProcessInstanceId).orElse(null),
+                job.map(Job::getProcessId).orElse(null),
+                job.map(Job::getRootProcessId).orElse(null),
+                job.map(Job::getRepeatInterval).orElse(null),
+                job.map(Job::getRepeatLimit).orElse(null),
+                job.map(Job::getNodeInstanceId).orElse(null));
     }
 
     public String getScheduledId() {
@@ -141,18 +141,18 @@ public class ScheduledJob extends Job {
         private ScheduledJobBuilder mergeJob(Job mergeJob) {
             final Optional<Job> j = Optional.ofNullable(mergeJob);
             return job(JobBuilder.builder()
-                               .id(j.map(Job::getId).orElse(job.getId()))
-                               .repeatInterval(j.map(Job::getRepeatInterval).orElse(job.getRepeatInterval()))
-                               .repeatLimit(j.map(Job::getRepeatLimit).orElse(job.getRepeatLimit()))
-                               .priority(j.map(Job::getPriority).orElse(job.getPriority()))
-                               .callbackEndpoint(j.map(Job::getCallbackEndpoint).orElse(job.getCallbackEndpoint()))
-                               .rootProcessId(j.map(Job::getRootProcessId).orElse(job.getRootProcessId()))
-                               .processId(j.map(Job::getProcessId).orElse(job.getProcessId()))
-                               .rootProcessInstanceId(j.map(Job::getRootProcessInstanceId).orElse(job.getRootProcessInstanceId()))
-                               .processInstanceId(j.map(Job::getProcessInstanceId).orElse(job.getProcessInstanceId()))
-                               .expirationTime(j.map(Job::getExpirationTime).orElse(job.getExpirationTime()))
-                               .nodeInstanceId(j.map(Job::getNodeInstanceId).orElse(job.getNodeInstanceId()))
-                               .build());
+                    .id(j.map(Job::getId).orElse(job.getId()))
+                    .repeatInterval(j.map(Job::getRepeatInterval).orElse(job.getRepeatInterval()))
+                    .repeatLimit(j.map(Job::getRepeatLimit).orElse(job.getRepeatLimit()))
+                    .priority(j.map(Job::getPriority).orElse(job.getPriority()))
+                    .callbackEndpoint(j.map(Job::getCallbackEndpoint).orElse(job.getCallbackEndpoint()))
+                    .rootProcessId(j.map(Job::getRootProcessId).orElse(job.getRootProcessId()))
+                    .processId(j.map(Job::getProcessId).orElse(job.getProcessId()))
+                    .rootProcessInstanceId(j.map(Job::getRootProcessInstanceId).orElse(job.getRootProcessInstanceId()))
+                    .processInstanceId(j.map(Job::getProcessInstanceId).orElse(job.getProcessInstanceId()))
+                    .expirationTime(j.map(Job::getExpirationTime).orElse(job.getExpirationTime()))
+                    .nodeInstanceId(j.map(Job::getNodeInstanceId).orElse(job.getNodeInstanceId()))
+                    .build());
         }
 
         public ScheduledJobBuilder scheduledId(String scheduledId) {

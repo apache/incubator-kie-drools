@@ -68,9 +68,9 @@ public class ExecutionsApiV1 {
     /**
      * Gets all the headers of the executions that were evaluated within a specified time range.
      *
-     * @param from   The start datetime.
-     * @param to     The end datetime.
-     * @param limit  The maximum (non-negative) number of items to be returned.
+     * @param from The start datetime.
+     * @param to The end datetime.
+     * @param limit The maximum (non-negative) number of items to be returned.
      * @param offset The non-negative pagination offset.
      * @param prefix The executionId prefix to be matched in the search.
      * @return The execution headers that satisfy the time range, pagination and prefix conditions.
@@ -82,8 +82,7 @@ public class ExecutionsApiV1 {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON,
                             schema = @Schema(type = SchemaType.OBJECT, implementation = ExecutionsResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    }
-    )
+    })
     @Operation(summary = "Gets the execution headers", description = "Gets the execution headers.")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getExecutions(
@@ -91,32 +90,27 @@ public class ExecutionsApiV1 {
                     name = "from",
                     description = "Start datetime for the lookup. Date in the format \"yyyy-MM-dd'T'HH:mm:ssZ\"",
                     required = false,
-                    schema = @Schema(implementation = String.class)
-            ) @DefaultValue("yesterday") @QueryParam("from") String from,
+                    schema = @Schema(implementation = String.class)) @DefaultValue("yesterday") @QueryParam("from") String from,
             @Parameter(
                     name = "to",
                     description = "End datetime for the lookup. Date in the format \"yyyy-MM-dd'T'HH:mm:ssZ\"",
                     required = false,
-                    schema = @Schema(implementation = String.class)
-            ) @DefaultValue("now") @QueryParam("to") String to,
+                    schema = @Schema(implementation = String.class)) @DefaultValue("now") @QueryParam("to") String to,
             @Parameter(
                     name = "limit",
                     description = "Maximum number of results to return.",
                     required = false,
-                    schema = @Schema(implementation = Integer.class)
-            ) @DefaultValue("100") @QueryParam("limit") int limit,
+                    schema = @Schema(implementation = Integer.class)) @DefaultValue("100") @QueryParam("limit") int limit,
             @Parameter(
                     name = "offset",
                     description = "Offset for the pagination.",
                     required = false,
-                    schema = @Schema(implementation = Integer.class)
-            ) @DefaultValue("0") @QueryParam("offset") int offset,
+                    schema = @Schema(implementation = Integer.class)) @DefaultValue("0") @QueryParam("offset") int offset,
             @Parameter(
                     name = "search",
                     description = "Execution ID prefix to be matched",
                     required = false,
-                    schema = @Schema(implementation = String.class)
-            ) @DefaultValue("") @QueryParam("search") String prefix) {
+                    schema = @Schema(implementation = String.class)) @DefaultValue("") @QueryParam("search") String prefix) {
 
         if (limit < 0 || offset < 0) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), "Pagination parameters can not have negative values.").build();
@@ -166,10 +160,10 @@ public class ExecutionsApiV1 {
     @GET
     @Path("/{executionId}/model")
     @APIResponses(value = {
-            @APIResponse(description = "Gets the model associated with an execution.", responseCode = "200", content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(type = SchemaType.STRING))),
+            @APIResponse(description = "Gets the model associated with an execution.", responseCode = "200",
+                    content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(type = SchemaType.STRING))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    }
-    )
+    })
     @Operation(summary = "Gets the model associated with an execution.")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getModel(
@@ -177,8 +171,7 @@ public class ExecutionsApiV1 {
                     name = "executionId",
                     description = "The execution ID.",
                     required = true,
-                    schema = @Schema(implementation = String.class)
-            ) @PathParam("executionId") String executionId) {
+                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return handleModelRequest(executionId);
     }
 

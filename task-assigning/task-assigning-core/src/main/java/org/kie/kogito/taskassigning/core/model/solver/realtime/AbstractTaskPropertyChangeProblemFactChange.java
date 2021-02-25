@@ -51,6 +51,7 @@ public abstract class AbstractTaskPropertyChangeProblemFactChange implements Pro
 
     /**
      * Apply the necessary changes on the shallow cloned task instance.
+     * 
      * @see ##cloneCurrentTask(Task)
      * @see Task.CloneBuilder
      */
@@ -58,6 +59,7 @@ public abstract class AbstractTaskPropertyChangeProblemFactChange implements Pro
 
     /**
      * Generates a convenient shallow clone of currentTask.
+     * 
      * @see Task.CloneBuilder
      */
     protected Task cloneCurrentTask(Task currentTask) {

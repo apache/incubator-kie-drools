@@ -17,8 +17,9 @@ package org.kie.kogito.jobs.service.converters;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.vertx.core.http.HttpMethod;
 import org.kie.kogito.jobs.service.model.HTTPRequestCallback;
+
+import io.vertx.core.http.HttpMethod;
 
 @ApplicationScoped
 public class HttpConverters {

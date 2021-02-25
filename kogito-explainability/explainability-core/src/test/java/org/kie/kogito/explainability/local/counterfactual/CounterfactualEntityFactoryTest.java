@@ -15,14 +15,14 @@
  */
 package org.kie.kogito.explainability.local.counterfactual;
 
+import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.local.counterfactual.entities.*;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDomain;
 import org.kie.kogito.explainability.model.FeatureFactory;
-
-import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -25,8 +25,8 @@ import java.util.Set;
 public interface ProcessServiceClient extends Closeable {
 
     Set<String> getAvailablePhases(String processId, String processInstanceId, String taskId, String workItemId,
-                                   String user, List<String> groups);
+            String user, List<String> groups);
 
     void transitionTask(String processId, String processInstanceId, String taskId, String workItemId, String phase,
-                        String user, List<String> groups);
+            String user, List<String> groups);
 }

@@ -100,6 +100,6 @@ class PmmlRegressionCategoricalLimeExplainerTest {
             assertThat(v).isEqualTo(1d);
         }
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                                                                                0.5, 0.5));
+                0.5, 0.5));
     }
 }

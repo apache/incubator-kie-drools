@@ -38,8 +38,8 @@ public final class SocketUtils {
         do {
             if (searchCounter > portRange) {
                 throw new IllegalStateException(String.format(
-                                                              "Could not find an available port in the range [%d, %d] after %d attempts",
-                                                              PORT_RANGE_MIN, PORT_RANGE_MAX, searchCounter));
+                        "Could not find an available port in the range [%d, %d] after %d attempts",
+                        PORT_RANGE_MIN, PORT_RANGE_MAX, searchCounter));
             }
             candidatePort = findRandomPort(PORT_RANGE_MIN, PORT_RANGE_MAX);
             searchCounter++;

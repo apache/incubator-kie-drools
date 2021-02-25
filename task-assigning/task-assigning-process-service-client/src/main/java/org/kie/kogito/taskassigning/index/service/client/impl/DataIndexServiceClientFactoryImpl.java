@@ -42,9 +42,9 @@ public class DataIndexServiceClientFactoryImpl implements DataIndexServiceClient
     @Override
     public DataIndexServiceClient newClient(DataIndexServiceClientConfig config, AuthenticationCredentials credentials) {
         return new DataIndexServiceClientImpl(queryServiceFactory.newClient(GraphQLServiceClientConfig.newBuilder()
-                                                                                    .serviceUrl(config.getServiceUrl().toString())
-                                                                                    .connectTimeoutMillis(config.getConnectTimeoutMillis())
-                                                                                    .readTimeoutMillis(config.getReadTimeoutMillis())
-                                                                                    .build(), credentials));
+                .serviceUrl(config.getServiceUrl().toString())
+                .connectTimeoutMillis(config.getConnectTimeoutMillis())
+                .readTimeoutMillis(config.getReadTimeoutMillis())
+                .build(), credentials));
     }
 }

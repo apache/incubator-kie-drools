@@ -19,12 +19,13 @@ package org.kie.kogito.trusty.storage.infinispan;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.kie.kogito.trusty.storage.api.model.ExecutionType;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
 
@@ -47,8 +48,7 @@ public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
                 reader.readString(Execution.EXECUTED_MODEL_NAME_FIELD),
                 reader.readString(Execution.EXECUTED_MODEL_NAMESPACE_FIELD),
                 reader.readCollection(Decision.INPUTS_FIELD, new ArrayList<>(), DecisionInput.class),
-                reader.readCollection(Decision.OUTCOMES_FIELD, new ArrayList<>(), DecisionOutcome.class)
-        );
+                reader.readCollection(Decision.OUTCOMES_FIELD, new ArrayList<>(), DecisionOutcome.class));
     }
 
     @Override

@@ -17,7 +17,6 @@ package org.kie.kogito.trusty.storage.infinispan;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 import org.kie.kogito.trusty.storage.api.model.Message;
@@ -26,6 +25,8 @@ import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.EnumTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ObjectTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.trusty.storage.api.model.Message.CATEGORY_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Message.EXCEPTION_FIELD;
@@ -42,8 +43,7 @@ public class MessageMarshallerTest extends MarshallerTestTemplate<Message> {
             new StringTestField<>(TYPE_FIELD, "testType", Message::getType, Message::setType),
             new StringTestField<>(SOURCE_ID_FIELD, "testSourceId", Message::getSourceId, Message::setSourceId),
             new StringTestField<>(TEXT_FIELD, "test message text", Message::getText, Message::setText),
-            new ObjectTestField<>(EXCEPTION_FIELD, new MessageExceptionField("exc", "exc message", null), Message::getException, Message::setException, MessageExceptionField.class)
-    );
+            new ObjectTestField<>(EXCEPTION_FIELD, new MessageExceptionField("exc", "exc message", null), Message::getException, Message::setException, MessageExceptionField.class));
 
     public MessageMarshallerTest() {
         super(Message.class);

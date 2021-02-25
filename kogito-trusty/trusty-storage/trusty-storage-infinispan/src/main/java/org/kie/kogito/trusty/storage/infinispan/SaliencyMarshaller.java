@@ -18,9 +18,10 @@ package org.kie.kogito.trusty.storage.infinispan;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
 import org.kie.kogito.trusty.storage.api.model.Saliency;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SaliencyMarshaller extends AbstractModelMarshaller<Saliency> {
 
@@ -33,8 +34,7 @@ public class SaliencyMarshaller extends AbstractModelMarshaller<Saliency> {
         return new Saliency(
                 reader.readString(Saliency.OUTCOME_ID_FIELD),
                 reader.readString(Saliency.OUTCOME_NAME_FIELD),
-                reader.readCollection(Saliency.FEATURE_IMPORTANCE_FIELD, new ArrayList<>(), FeatureImportance.class)
-        );
+                reader.readCollection(Saliency.FEATURE_IMPORTANCE_FIELD, new ArrayList<>(), FeatureImportance.class));
     }
 
     @Override

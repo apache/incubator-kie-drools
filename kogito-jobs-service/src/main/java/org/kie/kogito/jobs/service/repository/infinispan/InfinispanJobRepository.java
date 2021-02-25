@@ -24,7 +24,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.vertx.core.Vertx;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.infinispan.client.hotrod.Flag;
@@ -39,6 +38,8 @@ import org.kie.kogito.jobs.service.qualifier.Repository;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
+
+import io.vertx.core.Vertx;
 
 import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.JOB_DETAILS;
 
@@ -56,8 +57,8 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
 
     @Inject
     public InfinispanJobRepository(Vertx vertx,
-                                   JobStreams jobStreams,
-                                   RemoteCacheManager remoteCacheManager) {
+            JobStreams jobStreams,
+            RemoteCacheManager remoteCacheManager) {
         super(vertx, jobStreams);
         this.remoteCacheManager = remoteCacheManager;
     }
@@ -92,28 +93,27 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
 
     @Override
     public PublisherBuilder<JobDetails> findAll() {
-        Query<JobDetails> query = queryFactory.<JobDetails>create("from job.service.JobDetails");
+        Query<JobDetails> query = queryFactory.<JobDetails> create("from job.service.JobDetails");
         return ReactiveStreams.fromIterable(query.execute().list());
     }
 
     @Override
     public PublisherBuilder<JobDetails> findByStatus(JobStatus... status) {
         Query<JobDetails> query = queryFactory.create("from job.service.JobDetails j " +
-                                                              "where " +
-                                                              "j.status in (" + createStatusQuery(status) + ")");
+                "where " +
+                "j.status in (" + createStatusQuery(status) + ")");
         return ReactiveStreams.fromIterable(query.execute().list());
     }
 
     @Override
     public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to,
-                                                                                JobStatus... status) {
+            JobStatus... status) {
         Query<JobDetails> query = queryFactory.create("from job.service.JobDetails j " +
-                                                              "where " +
-                                                              "j.trigger.nextFireTime > :from " +
-                                                              "and j.trigger.nextFireTime < :to " +
-                                                              "and j.status in (" + createStatusQuery(status) + ") " +
-                                                              "order by j.priority desc"
-        );
+                "where " +
+                "j.trigger.nextFireTime > :from " +
+                "and j.trigger.nextFireTime < :to " +
+                "and j.status in (" + createStatusQuery(status) + ") " +
+                "order by j.priority desc");
         query.setParameter("to", to.toInstant().toEpochMilli());
         query.setParameter("from", from.toInstant().toEpochMilli());
         return ReactiveStreams.fromIterable(query.execute().list());

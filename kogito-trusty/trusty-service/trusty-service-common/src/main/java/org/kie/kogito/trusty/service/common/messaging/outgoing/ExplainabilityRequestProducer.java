@@ -21,14 +21,15 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.subjects.PublishSubject;
 
 @ApplicationScoped
 public class ExplainabilityRequestProducer {

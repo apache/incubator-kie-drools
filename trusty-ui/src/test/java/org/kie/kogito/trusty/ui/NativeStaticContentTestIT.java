@@ -16,7 +16,6 @@
 package org.kie.kogito.trusty.ui;
 
 import io.quarkus.test.junit.NativeImageTest;
-import org.junit.jupiter.api.Disabled;
 
 @NativeImageTest
 public class NativeStaticContentTestIT extends StaticContentTest {

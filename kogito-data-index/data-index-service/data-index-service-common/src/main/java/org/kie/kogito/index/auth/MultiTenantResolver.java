@@ -19,9 +19,10 @@ package org.kie.kogito.index.auth;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import io.quarkus.oidc.TenantResolver;
 import io.vertx.ext.web.RoutingContext;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class MultiTenantResolver implements TenantResolver {

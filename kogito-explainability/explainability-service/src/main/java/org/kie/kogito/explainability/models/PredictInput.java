@@ -29,7 +29,8 @@ public class PredictInput {
     @JsonProperty("request")
     private Map<String, Object> request;
 
-    public PredictInput(){}
+    public PredictInput() {
+    }
 
     public PredictInput(ModelIdentifier modelIdentifier, Map<String, Object> request) {
         this.modelIdentifier = modelIdentifier;

@@ -49,11 +49,11 @@ public class DateUtil {
                 .orElse(null);
     }
 
-    public static ZonedDateTime fromDate(Date date){
+    public static ZonedDateTime fromDate(Date date) {
         return ZonedDateTime.ofInstant(date.toInstant(), DEFAULT_ZONE);
     }
 
-    public static Date toDate(ZonedDateTime zonedDateTime){
+    public static Date toDate(ZonedDateTime zonedDateTime) {
         return new Date(zonedDateTime.toInstant().toEpochMilli());
     }
 }

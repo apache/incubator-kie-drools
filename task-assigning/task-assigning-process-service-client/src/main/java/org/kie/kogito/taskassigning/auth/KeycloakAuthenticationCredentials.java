@@ -28,11 +28,11 @@ public class KeycloakAuthenticationCredentials implements AuthenticationCredenti
     }
 
     private KeycloakAuthenticationCredentials(String serverUrl,
-                                              String realm,
-                                              String username,
-                                              String password,
-                                              String clientId,
-                                              String clientSecret) {
+            String realm,
+            String username,
+            String password,
+            String clientId,
+            String clientSecret) {
         this.serverUrl = serverUrl;
         this.realm = realm;
         this.username = username;

@@ -18,10 +18,11 @@ package org.kie.kogito.trusty.storage.infinispan;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.Saliency;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ExplainabilityResultMarshaller extends AbstractModelMarshaller<ExplainabilityResult> {
 
@@ -35,8 +36,7 @@ public class ExplainabilityResultMarshaller extends AbstractModelMarshaller<Expl
                 reader.readString(ExplainabilityResult.EXECUTION_ID_FIELD),
                 enumFromString(reader.readString(ExplainabilityResult.STATUS_FIELD), ExplainabilityStatus.class),
                 reader.readString(ExplainabilityResult.STATUS_DETAILS_FIELD),
-                reader.readCollection(ExplainabilityResult.SALIENCIES_FIELD, new ArrayList<>(), Saliency.class)
-        );
+                reader.readCollection(ExplainabilityResult.SALIENCIES_FIELD, new ArrayList<>(), Saliency.class));
     }
 
     @Override

@@ -54,7 +54,7 @@ class SolverTest extends AbstractTaskAssigningCoreTest {
         TaskAssigningSolution result = solver.solve(solution);
         if (!result.getScore().isFeasible()) {
             fail(String.format("With current problem definition and stepCountLimit of %s it's expected " +
-                                       "that a feasible solution has been produced.", stepCountLimit));
+                    "that a feasible solution has been produced.", stepCountLimit));
         }
         assertConstraints(result);
     }
@@ -65,6 +65,7 @@ class SolverTest extends AbstractTaskAssigningCoreTest {
      * 1) All tasks are assigned to a user
      * 2) The assigned user for a task is a potentialOwner for the task or the PLANNING_USER
      * 3) All tasks are assigned.
+     * 
      * @param solution a solution.
      */
     private void assertConstraints(TaskAssigningSolution solution) {
@@ -88,10 +89,9 @@ class SolverTest extends AbstractTaskAssigningCoreTest {
                     .as("TaskAssignment: %s without potentialOwners can only be assigned to the PLANNING_USER", taskAssignment)
                     .isEqualTo(PLANNING_USER.getId());
         } else if (PLANNING_USER.getId().equals(user.getId())) {
-            availableUsers.forEach(availableUser ->
-                                           assertThat(isPotentialOwner(taskAssignment.getTask(), user))
-                                                   .as(String.format("PLANNING_USER user was assigned but another potential owner was found, user: %s taskAssignment: %s", user, taskAssignment))
-                                                   .isFalse());
+            availableUsers.forEach(availableUser -> assertThat(isPotentialOwner(taskAssignment.getTask(), user))
+                    .as(String.format("PLANNING_USER user was assigned but another potential owner was found, user: %s taskAssignment: %s", user, taskAssignment))
+                    .isFalse());
         } else {
             assertThat(isPotentialOwner(taskAssignment.getTask(), user))
                     .as(String.format("User: %s is not a potential owner for the taskAssignment: %s", user, taskAssignment))

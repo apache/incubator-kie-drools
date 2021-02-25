@@ -20,8 +20,9 @@ import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.redisearch.Client;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import io.redisearch.Client;
 
 @ApplicationScoped
 public class RedisClientManager {

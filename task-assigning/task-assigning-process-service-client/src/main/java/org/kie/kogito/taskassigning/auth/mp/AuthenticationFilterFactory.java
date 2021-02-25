@@ -46,6 +46,6 @@ public class AuthenticationFilterFactory {
         if (provider == null) {
             throw new UnsupportedOperationException("Authentication method is not supported for the credentials: " + credentials);
         }
-        return ((AuthenticationFilterProvider)provider).createInstance(credentials);
+        return ((AuthenticationFilterProvider) provider).createInstance(credentials);
     }
 }

@@ -104,6 +104,7 @@ public class SolutionBuilder {
 
     /**
      * Link the list of tasks to the given user. The tasks comes in the expected order.
+     * 
      * @param user the user that will "own" the tasks in the chained graph.
      * @param taskAssignments the tasks to link.
      */
@@ -130,10 +131,10 @@ public class SolutionBuilder {
     }
 
     private static void addTaskAssignmentToUser(Map<String, List<IndexedElement<TaskAssignment>>> assignmentsByUserId,
-                                                TaskAssignment taskAssignment,
-                                                String actualOwner,
-                                                int index,
-                                                boolean pinned) {
+            TaskAssignment taskAssignment,
+            String actualOwner,
+            int index,
+            boolean pinned) {
         taskAssignment.setPinned(pinned);
         List<IndexedElement<TaskAssignment>> userAssignments = assignmentsByUserId.computeIfAbsent(actualOwner, key -> new ArrayList<>());
         addInOrder(userAssignments, new IndexedElement<>(taskAssignment, index, taskAssignment.isPinned()));

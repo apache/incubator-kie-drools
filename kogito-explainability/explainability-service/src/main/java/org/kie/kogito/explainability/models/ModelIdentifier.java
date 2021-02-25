@@ -19,16 +19,16 @@ import org.kie.kogito.explainability.api.ModelIdentifierDto;
 
 public class ModelIdentifier extends ModelIdentifierDto {
 
-    public ModelIdentifier(){}
+    public ModelIdentifier() {
+    }
 
-    public ModelIdentifier(String resourceType, String resourceId){
+    public ModelIdentifier(String resourceType, String resourceId) {
         super(resourceType, resourceId);
     }
 
     public static ModelIdentifier from(ModelIdentifierDto dto) {
         return new ModelIdentifier(
                 dto.getResourceType(),
-                dto.getResourceId()
-        );
+                dto.getResourceId());
     }
 }

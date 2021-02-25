@@ -15,8 +15,9 @@
  */
 package org.kie.kogito.task.console;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 import static io.restassured.RestAssured.given;
 

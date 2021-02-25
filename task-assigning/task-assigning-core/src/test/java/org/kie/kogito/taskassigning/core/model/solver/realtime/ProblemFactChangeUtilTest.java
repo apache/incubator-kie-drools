@@ -55,10 +55,10 @@ class ProblemFactChangeUtilTest {
     @BeforeEach
     void setUp() {
         userTasks = Arrays.asList(mockTaskAssignment(TASK_ID1, true),
-                                  mockTaskAssignment(TASK_ID2, true),
-                                  mockTaskAssignment(TASK_ID3, false),
-                                  mockTaskAssignment(TASK_ID4, false),
-                                  mockTaskAssignment(TASK_ID5, false));
+                mockTaskAssignment(TASK_ID2, true),
+                mockTaskAssignment(TASK_ID3, false),
+                mockTaskAssignment(TASK_ID4, false),
+                mockTaskAssignment(TASK_ID5, false));
         user = mockUser(USER_ID, userTasks);
     }
 

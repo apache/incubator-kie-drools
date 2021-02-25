@@ -19,12 +19,13 @@ package org.kie.kogito.persistence.redis;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.redisearch.Query;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
 import org.mockito.Mockito;
+
+import io.redisearch.Query;
 
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.persistence.redis.TestContants.TEST_INDEX_NAME;

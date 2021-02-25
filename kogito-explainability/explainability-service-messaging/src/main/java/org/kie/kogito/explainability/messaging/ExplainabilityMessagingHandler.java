@@ -24,10 +24,6 @@ import java.util.concurrent.CompletionStage;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.CloudEvent;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
@@ -41,6 +37,12 @@ import org.kie.kogito.explainability.models.ExplainabilityRequest;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cloudevents.CloudEvent;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.subjects.PublishSubject;
 
 @ApplicationScoped
 public class ExplainabilityMessagingHandler {
@@ -88,8 +90,8 @@ public class ExplainabilityMessagingHandler {
         try {
             requestDto = objectMapper.readValue(cloudEvent.getData(), ExplainabilityRequestDto.class);
         } catch (IOException e) {
-             LOGGER.error("Unable to deserialize CloudEvent data as ExplainabilityRequest", e);
-             return CompletableFuture.completedFuture(null);
+            LOGGER.error("Unable to deserialize CloudEvent data as ExplainabilityRequest", e);
+            return CompletableFuture.completedFuture(null);
         }
         if (requestDto == null) {
             LOGGER.error("Received CloudEvent with id {} from {} with empty data", cloudEvent.getId(), cloudEvent.getSource());

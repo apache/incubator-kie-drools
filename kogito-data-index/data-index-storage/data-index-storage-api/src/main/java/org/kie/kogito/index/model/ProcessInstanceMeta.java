@@ -74,11 +74,11 @@ public class ProcessInstanceMeta {
     public void setState(Integer state) {
         this.state = state;
     }
-    
+
     public String getBusinessKey() {
         return businessKey;
     }
-    
+
     public void setBusinessKey(String businessKey) {
         if (businessKey != null && !businessKey.trim().isEmpty()) {
             this.businessKey = businessKey;

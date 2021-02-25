@@ -27,6 +27,6 @@ public class DatasetNotSeparableException extends LocalExplanationException {
 
     public DatasetNotSeparableException(Output output, Map<Double, Long> classBalance) {
         super("LIME dataset not separable for output '" + output.getName() + "' of type '" + output.getType() + "' with '"
-                      + output.getValue() + "' (" + classBalance + ")");
+                + output.getValue() + "' (" + classBalance + ")");
     }
 }

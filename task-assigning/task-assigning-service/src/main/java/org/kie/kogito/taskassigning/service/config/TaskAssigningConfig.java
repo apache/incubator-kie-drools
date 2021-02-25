@@ -104,7 +104,7 @@ public class TaskAssigningConfig {
     private String getOidcAuthServerUrlString() {
         return getOidcAuthServerUrl()
                 .orElseThrow(() -> new IllegalArgumentException("A configuration value must be set for the property: "
-                                                                        + QUARKUS_OIDC_AUTH_SERVER_URL))
+                        + QUARKUS_OIDC_AUTH_SERVER_URL))
                 .toString();
     }
 

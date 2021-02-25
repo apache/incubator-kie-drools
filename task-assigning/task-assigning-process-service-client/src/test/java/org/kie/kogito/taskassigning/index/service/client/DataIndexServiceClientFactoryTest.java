@@ -17,9 +17,10 @@ package org.kie.kogito.taskassigning.index.service.client;
 
 import javax.inject.Inject;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,8 +34,8 @@ class DataIndexServiceClientFactoryTest {
     void newClient() {
         String serviceUrlMock = "http://localhost:8180/service";
         DataIndexServiceClient client = serviceClientFactory.newClient(DataIndexServiceClientConfig.newBuilder()
-                                                                               .serviceUrl(serviceUrlMock).build(),
-                                                                       NoAuthenticationCredentials.INSTANCE);
+                .serviceUrl(serviceUrlMock).build(),
+                NoAuthenticationCredentials.INSTANCE);
         assertThat(client).isNotNull();
     }
 }

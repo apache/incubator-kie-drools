@@ -20,7 +20,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -34,6 +33,8 @@ import org.kie.kogito.jobs.service.resource.JobResource;
 import org.kie.kogito.jobs.service.utils.FunctionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ApplicationScoped
 public class KafkaJobStreams {
@@ -51,13 +52,9 @@ public class KafkaJobStreams {
 
     @Inject
     public KafkaJobStreams(ObjectMapper objectMapper,
-                           @ConfigProperty(name = PUBLISH_EVENTS_CONFIG_KEY)
-                                   Optional<String> config,
-                           @Channel(AvailableStreams.JOB_STATUS_CHANGE_EVENTS_TOPIC)
-                           @OnOverflow(value = OnOverflow.Strategy.LATEST)
-                                   Emitter<String> emitter,
-                           @ConfigProperty(name = "kogito.service.url", defaultValue = "http://localhost:8080")
-                                   String url) {
+            @ConfigProperty(name = PUBLISH_EVENTS_CONFIG_KEY) Optional<String> config,
+            @Channel(AvailableStreams.JOB_STATUS_CHANGE_EVENTS_TOPIC) @OnOverflow(value = OnOverflow.Strategy.LATEST) Emitter<String> emitter,
+            @ConfigProperty(name = "kogito.service.url", defaultValue = "http://localhost:8080") String url) {
         this.objectMapper = objectMapper;
         this.enabled = config.map(Boolean::valueOf).filter(Boolean.TRUE::equals);
         this.kafkaEmitter = emitter;

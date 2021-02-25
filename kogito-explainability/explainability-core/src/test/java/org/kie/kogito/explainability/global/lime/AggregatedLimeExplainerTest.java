@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AggregatedLimeExplainerTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testExplainWithMetadata(int seed) throws ExecutionException, InterruptedException {
         Random random = new Random();
         random.setSeed(seed);
@@ -90,7 +90,7 @@ class AggregatedLimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testExplainWithPredictions(int seed) throws ExecutionException, InterruptedException {
         Random random = new Random();
         random.setSeed(seed);

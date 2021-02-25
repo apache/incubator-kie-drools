@@ -16,11 +16,12 @@
 
 package org.kie.kogito.index.messaging;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)

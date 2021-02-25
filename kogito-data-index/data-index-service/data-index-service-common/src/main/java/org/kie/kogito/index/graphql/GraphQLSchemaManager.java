@@ -15,18 +15,22 @@
  */
 package org.kie.kogito.index.graphql;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import graphql.schema.*;
-import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaGenerator;
-import graphql.schema.idl.SchemaParser;
-import graphql.schema.idl.TypeDefinitionRegistry;
-import io.quarkus.arc.Arc;
-import io.vertx.mutiny.core.eventbus.EventBus;
-import io.vertx.mutiny.core.eventbus.Message;
-import io.vertx.mutiny.core.eventbus.MessageConsumer;
-import io.vertx.mutiny.core.eventbus.MessageProducer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
@@ -41,20 +45,19 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import graphql.schema.*;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
+import io.quarkus.arc.Arc;
+import io.vertx.mutiny.core.eventbus.EventBus;
+import io.vertx.mutiny.core.eventbus.Message;
+import io.vertx.mutiny.core.eventbus.MessageConsumer;
+import io.vertx.mutiny.core.eventbus.MessageProducer;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -88,8 +91,7 @@ public class GraphQLSchemaManager {
                 (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
                 (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
                 (GraphQLInputObjectType) schema.getType("JobArgument"),
-                (GraphQLInputObjectType) schema.getType("KogitoMetadataArgument")
-        );
+                (GraphQLInputObjectType) schema.getType("KogitoMetadataArgument"));
     }
 
     @PreDestroy
@@ -162,7 +164,7 @@ public class GraphQLSchemaManager {
         LOGGER.debug("Process endpoint {}", endpoint);
         if (endpoint.startsWith("/")) {
             LOGGER.warn("Process '{}' endpoint '{}', does not contain full URL, please review the kogito.service.url system property to point the public URL for this runtime.",
-                        processId, endpoint);
+                    processId, endpoint);
         }
         String context = getContext(processId);
         LOGGER.debug("Process context {}", context);

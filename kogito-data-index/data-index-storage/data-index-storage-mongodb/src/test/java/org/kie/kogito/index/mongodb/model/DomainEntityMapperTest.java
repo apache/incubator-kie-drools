@@ -19,9 +19,10 @@ package org.kie.kogito.index.mongodb.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.index.mongodb.model.DomainEntityMapper.ID;

@@ -68,9 +68,9 @@ class DisableUserProblemFactChangeTest {
     @Test
     void doChange() {
         List<TaskAssignment> workingUserTasks = Arrays.asList(mockTaskAssignment(TASK_ID1, true),
-                                                              mockTaskAssignment(TASK_ID2, true),
-                                                              mockTaskAssignment(TASK_ID3, false),
-                                                              mockTaskAssignment(TASK_ID4, false));
+                mockTaskAssignment(TASK_ID2, true),
+                mockTaskAssignment(TASK_ID3, false),
+                mockTaskAssignment(TASK_ID4, false));
 
         User workingUser = mockUser(USER_ID, workingUserTasks);
         workingUser.setEnabled(true);

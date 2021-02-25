@@ -62,7 +62,7 @@ public interface Storage<K, V> {
     /**
      * Puts an element with a key. If an element with the same key is already present in the storage, then it is replaced.
      *
-     * @param key   The key.
+     * @param key The key.
      * @param value The value.
      * @return The value.
      */

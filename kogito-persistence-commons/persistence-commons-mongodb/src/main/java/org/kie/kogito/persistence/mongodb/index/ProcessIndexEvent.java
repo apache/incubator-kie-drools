@@ -22,7 +22,7 @@ import org.kie.kogito.persistence.api.schema.ProcessDescriptor;
 
 public class ProcessIndexEvent {
 
-   ProcessDescriptor processDescriptor;
+    ProcessDescriptor processDescriptor;
 
     public ProcessIndexEvent(ProcessDescriptor processDescriptor) {
         this.processDescriptor = processDescriptor;

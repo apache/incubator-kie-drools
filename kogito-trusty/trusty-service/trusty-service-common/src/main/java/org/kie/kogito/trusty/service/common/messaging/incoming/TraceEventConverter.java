@@ -56,8 +56,7 @@ public class TraceEventConverter {
                 event.getHeader().getResourceId().getModelName(),
                 event.getHeader().getResourceId().getModelNamespace(),
                 inputs,
-                outcomes
-        );
+                outcomes);
     }
 
     public static DecisionInput toInput(TraceInputValue eventInput) {
@@ -76,10 +75,8 @@ public class TraceEventConverter {
                         Optional.ofNullable(typedVariable.toStructure().getValue())
                                 .map(v -> v.entrySet().stream()
                                         .map(e -> toTypedVariable(e.getKey(), e.getValue()))
-                                        .collect(Collectors.toList())
-                                )
-                                .orElse(null)
-                );
+                                        .collect(Collectors.toList()))
+                                .orElse(null));
             case COLLECTION:
                 return TypedVariable.buildCollection(
                         name,
@@ -87,16 +84,13 @@ public class TraceEventConverter {
                         Optional.ofNullable(typedVariable.toCollection().getValue())
                                 .map(v -> v.stream()
                                         .map(x -> toTypedVariable(null, x))
-                                        .collect(Collectors.toList())
-                                )
-                                .orElse(null)
-                );
+                                        .collect(Collectors.toList()))
+                                .orElse(null));
             case UNIT:
                 return TypedVariable.buildUnit(
                         name,
                         typedVariable.getType(),
-                        typedVariable.toUnit().getValue()
-                );
+                        typedVariable.toUnit().getValue());
         }
         throw new IllegalStateException("Unsupported TypedVariable of kind " + typedVariable.getKind());
     }
@@ -108,8 +102,7 @@ public class TraceEventConverter {
                 eventOutput.getStatus(),
                 toTypedVariable(eventOutput.getName(), eventOutput.getValue()),
                 eventOutput.getInputs() == null ? null : eventOutput.getInputs().entrySet().stream().map(e -> toTypedVariable(e.getKey(), e.getValue())).collect(Collectors.toList()),
-                eventOutput.getMessages() == null ? null : eventOutput.getMessages().stream().map(TraceEventConverter::toMessage).collect(Collectors.toList())
-        );
+                eventOutput.getMessages() == null ? null : eventOutput.getMessages().stream().map(TraceEventConverter::toMessage).collect(Collectors.toList()));
     }
 
     public static Message toMessage(org.kie.kogito.tracing.decision.event.message.Message eventMessage) {
@@ -119,8 +112,7 @@ public class TraceEventConverter {
                 eventMessage.getType(),
                 eventMessage.getSourceId(),
                 eventMessage.getText(),
-                toMessageExceptionField(eventMessage.getException())
-        );
+                toMessageExceptionField(eventMessage.getException()));
     }
 
     public static MessageExceptionField toMessageExceptionField(org.kie.kogito.tracing.decision.event.message.MessageExceptionField eventException) {

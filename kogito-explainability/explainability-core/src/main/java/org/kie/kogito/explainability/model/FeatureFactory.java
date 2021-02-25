@@ -156,7 +156,7 @@ public class FeatureFactory {
      * Create a copy of a {@code Feature} but with a different {@code Value}.
      *
      * @param feature the Feature to copy
-     * @param value   the Value to inject
+     * @param value the Value to inject
      * @return a copy of the input Feature but having the given Value
      */
     public static Feature copyOf(Feature feature, Value<?> value) {

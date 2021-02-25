@@ -56,7 +56,7 @@ public abstract class AbstractModelEventConsumerIT {
         kafkaClient = new KafkaClient(kafkaBootstrapServers);
 
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectModelEvent()),
-                            KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
+                KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
         await()
                 .atMost(5, SECONDS)
                 .untilAsserted(() -> assertDoesNotThrow(() -> trustyService.getModelById("name:namespace")));

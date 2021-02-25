@@ -68,7 +68,7 @@ public class QueryUtils {
             case BETWEEN:
                 List<?> value = (List<?>) filter.getValue();
                 return and(gte(filterFunction.apply(filter.getAttribute()), value.get(0)),
-                           lte(filterFunction.apply(filter.getAttribute()), value.get(1)));
+                        lte(filterFunction.apply(filter.getAttribute()), value.get(1)));
             case IN:
                 return in(filterFunction.apply(filter.getAttribute()), (List<?>) filter.getValue());
             case CONTAINS_ALL:

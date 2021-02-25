@@ -20,13 +20,14 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.quarkus.runtime.Startup;
-import io.redisearch.Schema;
 import org.kie.kogito.persistence.redis.index.RedisCreateIndexEvent;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.quarkus.runtime.Startup;
+import io.redisearch.Schema;
 
 import static org.kie.kogito.trusty.storage.api.TrustyStorageServiceImpl.DECISIONS_STORAGE;
 import static org.kie.kogito.trusty.storage.api.TrustyStorageServiceImpl.EXPLAINABILITY_RESULTS_STORAGE;

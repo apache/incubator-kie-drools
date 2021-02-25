@@ -21,10 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.mongodb.mock.MockMongoEntityMapper;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MAPPER;

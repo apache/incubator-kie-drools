@@ -30,13 +30,14 @@ class SampleWeighter {
 
     /**
      * Obtain sample weights for a training set, given a list of target input features to compare with.
+     * 
      * @param targetInputFeatures target input features
      * @param training the (sparse) training set
      * @param kernelWidth the width of the kernel used to calculate the proximity
      * @return a weight for each sample in the training set
      */
     static double[] getSampleWeights(List<Feature> targetInputFeatures, Collection<Pair<double[], Double>> training,
-                                     double kernelWidth) {
+            double kernelWidth) {
         int noOfFeatures = targetInputFeatures.size();
         double[] x = new double[noOfFeatures];
         Arrays.fill(x, 1);

@@ -19,12 +19,13 @@ package org.kie.kogito.persistence.redis.index;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.redisearch.Schema;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.redis.RedisClientManager;
 import org.kie.kogito.persistence.redis.RedisClientMock;
 import org.mockito.Mockito;
+
+import io.redisearch.Schema;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;
 import static org.kie.kogito.persistence.redis.Person.AGE_PROPERTY;

@@ -22,13 +22,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
-import io.vertx.core.Vertx;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
+
+import io.vertx.core.Vertx;
 
 public abstract class BaseReactiveJobRepository implements ReactiveJobRepository {
 

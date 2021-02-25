@@ -15,9 +15,10 @@
  */
 package org.kie.kogito.trusty.storage.infinispan;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 abstract class AbstractModelMarshaller<T> extends AbstractMarshaller implements MessageMarshaller<T> {
 

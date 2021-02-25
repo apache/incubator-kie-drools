@@ -28,13 +28,13 @@ public class ModelIdCreator {
 
     @SuppressWarnings("unused")
     public static String makeIdentifier(final String groupId,
-                                        final String artifactId,
-                                        final String version,
-                                        final String name,
-                                        final String namespace) {
+            final String artifactId,
+            final String version,
+            final String name,
+            final String namespace) {
         return String.format(IDENTIFIER_TEMPLATE,
-                             nullable(name),
-                             nullable(namespace));
+                nullable(name),
+                nullable(namespace));
     }
 
     private static String nullable(final String value) {

@@ -101,7 +101,7 @@ class FraudScoringDmnLimeExplainerTest {
                 }
             }
             assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                                                                                    0.4, 0.4)); // set to 0.4 since "Last Transaction" is inherently unstable output
+                    0.4, 0.4)); // set to 0.4 since "Last Transaction" is inherently unstable output
         }
     }
 }

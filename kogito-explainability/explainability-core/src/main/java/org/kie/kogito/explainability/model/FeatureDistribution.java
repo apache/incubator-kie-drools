@@ -25,6 +25,7 @@ public interface FeatureDistribution {
     /**
      * Get the feature associated with this distribution.
      * Such features are expected to have {@code null} {@code Values}
+     * 
      * @return the feature associated with this distribution
      */
     Feature getFeature();

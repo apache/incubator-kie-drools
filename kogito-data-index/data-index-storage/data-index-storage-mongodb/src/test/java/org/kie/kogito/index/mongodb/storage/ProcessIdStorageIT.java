@@ -18,8 +18,6 @@ package org.kie.kogito.index.mongodb.storage;
 
 import javax.inject.Inject;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +27,9 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.kie.kogito.index.Constants.PROCESS_ID_MODEL_STORAGE;
 
@@ -44,8 +45,8 @@ class ProcessIdStorageIT extends StorageTestBase<String, String> {
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
-                                          mongoClientManager.getReactiveCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
-                                          String.class.getName(), new ProcessIdEntityMapper());
+                mongoClientManager.getReactiveCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
+                String.class.getName(), new ProcessIdEntityMapper());
     }
 
     @AfterEach

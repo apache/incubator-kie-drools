@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.testcontainers.ExplainabilityServiceMessagingContainer;
 import org.kie.kogito.testcontainers.InfinispanContainer;
+import org.kie.kogito.testcontainers.InfinispanTrustyServiceContainer;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.KogitoServiceContainer;
-import org.kie.kogito.testcontainers.InfinispanTrustyServiceContainer;
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.slf4j.Logger;
@@ -76,8 +76,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
             "{\"Driver\":{\"Age\":37,\"Points\":20},\"Violation\":{\"Type\":\"speed\",\"Actual Speed\":135,\"Speed Limit\":100}}",
             "{\"Driver\":{\"Age\":18,\"Points\": 0},\"Violation\":{\"Type\":\"speed\",\"Actual Speed\": 85,\"Speed Limit\": 70}}",
             "{\"Driver\":{\"Age\":56,\"Points\":13},\"Violation\":{\"Type\":\"speed\",\"Actual Speed\": 35,\"Speed Limit\": 25}}",
-            "{\"Driver\":{\"Age\":40,\"Points\":13},\"Violation\":{\"Type\":\"speed\",\"Actual Speed\":215,\"Speed Limit\":120}}"
-    );
+            "{\"Driver\":{\"Age\":40,\"Points\":13},\"Violation\":{\"Type\":\"speed\",\"Actual Speed\":215,\"Speed Limit\":120}}");
 
     private static final String TRUSTY_SERVICE_ALIAS = "trusty-service";
     private static final String TRUSTY_SERVICE_OIDC_AUTH_SERVER_URL_VARIABLE = "QUARKUS_OIDC_AUTH_SERVER_URL";
@@ -124,8 +123,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                 final KogitoServiceContainer kogitoService = kogitoServiceContainerProducer.apply(KAFKA_BOOTSTRAP_SERVERS, KOGITO_SERVICE_URL)
                         .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                         .withNetwork(network)
-                        .withNetworkAliases(KOGITO_SERVICE_ALIAS)
-        ) {
+                        .withNetworkAliases(KOGITO_SERVICE_ALIAS)) {
             infinispan.start();
             assertTrue(infinispan.isRunning());
 
@@ -159,14 +157,12 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
 
             final int expectedExecutions = KOGITO_SERVICE_PAYLOADS.size();
 
-            KOGITO_SERVICE_PAYLOADS.forEach(json ->
-                    given()
-                            .port(kogitoService.getFirstMappedPort())
-                            .contentType("application/json")
-                            .body(json)
-                            .when().post("/Traffic Violation")
-                            .then().statusCode(200)
-            );
+            KOGITO_SERVICE_PAYLOADS.forEach(json -> given()
+                    .port(kogitoService.getFirstMappedPort())
+                    .contentType("application/json")
+                    .body(json)
+                    .when().post("/Traffic Violation")
+                    .then().statusCode(200));
 
             await()
                     .atLeast(5, SECONDS)

@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class DummyModelsLimeExplainerTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testMapOneFeatureToOutputRegression(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -75,7 +75,7 @@ class DummyModelsLimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testUnusedFeatureRegression(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -106,7 +106,7 @@ class DummyModelsLimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testMapOneFeatureToOutputClassification(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -134,7 +134,7 @@ class DummyModelsLimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testTextSpamClassification(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -166,7 +166,7 @@ class DummyModelsLimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testUnusedFeatureClassification(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -197,7 +197,7 @@ class DummyModelsLimeExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testFixedOutput(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);

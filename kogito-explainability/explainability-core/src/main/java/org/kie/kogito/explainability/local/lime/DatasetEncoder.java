@@ -45,8 +45,8 @@ class DatasetEncoder {
     private final EncodingParams encodingParams;
 
     DatasetEncoder(List<PredictionInput> perturbedInputs, List<Output> perturbedOutputs,
-                   List<Feature> targetInputFeatures, Output targetOutput, 
-                   EncodingParams encodingParams) {
+            List<Feature> targetInputFeatures, Output targetOutput,
+            EncodingParams encodingParams) {
         this.perturbedInputs = perturbedInputs;
         this.predictedOutputs = perturbedOutputs;
         this.targetInputFeatures = targetInputFeatures;

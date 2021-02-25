@@ -22,7 +22,7 @@ import org.infinispan.commons.configuration.XMLStringConfiguration;
 
 /**
  * Default process event cache configuration
- *  
+ * 
  */
 public class KogitoCacheDefaultConfiguration extends XMLStringConfiguration {
 

@@ -55,10 +55,10 @@ class ScheduledJobAdapterTest {
     @BeforeAll
     public static void before() throws Exception {
         payload = new ObjectMapper().writeValueAsString(new ProcessPayload(PROCESS_INSTANCE_ID,
-                                                                           ROOT_PROCESS_INSTANCE_ID,
-                                                                           PROCESS_ID,
-                                                                           ROOT_PROCESS_ID,
-                                                                           NODE_INSTANCE_ID));
+                ROOT_PROCESS_INSTANCE_ID,
+                PROCESS_ID,
+                ROOT_PROCESS_ID,
+                NODE_INSTANCE_ID));
     }
 
     @Test
@@ -132,16 +132,16 @@ class ScheduledJobAdapterTest {
     private ScheduledJob.ScheduledJobBuilder getScheduledJobCommonBuilder(JobBuilder jobBuilder) {
         return ScheduledJob.builder()
                 .job(jobBuilder
-                             .id(ID)
-                             .priority(PRIORITY)
-                             .expirationTime(TIME)
-                             .callbackEndpoint(ENDPOINT)
-                             .rootProcessId(ROOT_PROCESS_ID)
-                             .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
-                             .processId(PROCESS_ID)
-                             .processInstanceId(PROCESS_INSTANCE_ID)
-                             .nodeInstanceId(NODE_INSTANCE_ID)
-                             .build())
+                        .id(ID)
+                        .priority(PRIORITY)
+                        .expirationTime(TIME)
+                        .callbackEndpoint(ENDPOINT)
+                        .rootProcessId(ROOT_PROCESS_ID)
+                        .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
+                        .processId(PROCESS_ID)
+                        .processInstanceId(PROCESS_INSTANCE_ID)
+                        .nodeInstanceId(NODE_INSTANCE_ID)
+                        .build())
                 .executionCounter(COUNTER)
                 .retries(RETRIES)
                 .scheduledId(SCHEDULED_ID)

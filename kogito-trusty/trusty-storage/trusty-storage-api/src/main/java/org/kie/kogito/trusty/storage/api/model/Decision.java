@@ -42,8 +42,8 @@ public class Decision extends Execution {
     }
 
     public Decision(String executionId, String sourceUrl, Long executionTimestamp, Boolean hasSucceeded,
-                    String executorName, String executedModelName, String executedModelNamespace,
-                    List<DecisionInput> inputs, List<DecisionOutcome> outcomes) {
+            String executorName, String executedModelName, String executedModelNamespace,
+            List<DecisionInput> inputs, List<DecisionOutcome> outcomes) {
         super(executionId, sourceUrl, executionTimestamp, hasSucceeded, executorName,
                 executedModelName, executedModelNamespace, ExecutionType.DECISION);
         this.inputs = inputs;

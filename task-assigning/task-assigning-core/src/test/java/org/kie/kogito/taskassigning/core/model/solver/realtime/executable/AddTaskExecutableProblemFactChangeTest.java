@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.core.TestConstants;
 import org.kie.kogito.taskassigning.core.model.Task;
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AddTaskProblemFactChange;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,7 +93,7 @@ class AddTaskExecutableProblemFactChangeTest extends AbstractExecutableProblemFa
         String taskId = "20"; //randomly selected task.
         TaskAssignment taskAssignment = new TaskAssignment(Task.newBuilder().id(taskId).build());
         Assertions.assertThatThrownBy(() -> executeSequentialChanges(solution,
-                                                                     Collections.singletonList(new ProgrammedProblemFactChange<>(new AddTaskProblemFactChange(taskAssignment)))))
+                Collections.singletonList(new ProgrammedProblemFactChange<>(new AddTaskProblemFactChange(taskAssignment)))))
                 .hasMessage("A task assignment with the given identifier id: %s already exists", taskId);
     }
 

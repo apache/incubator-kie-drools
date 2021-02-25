@@ -18,18 +18,16 @@ package org.kie.kogito.trusty.ui;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-import io.quarkus.test.common.http.TestHTTPResource;
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.vertx.core.http.HttpHeaders;
-import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class StaticContentTest {
@@ -58,7 +56,7 @@ public class StaticContentTest {
                 .header(HttpHeaders.CACHE_CONTROL.toString(), "no-cache")
                 .header(HttpHeaders.CONTENT_TYPE.toString(), "text/html;charset=utf8");
     }
-    
+
     @Test
     public void testHandlePath() {
         given().when().get("/audit")

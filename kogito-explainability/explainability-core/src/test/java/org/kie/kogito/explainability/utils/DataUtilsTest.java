@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.explainability.utils;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -109,8 +108,8 @@ class DataUtilsTest {
 
     @Test
     void testEuclideanDistance() {
-        double[] x = new double[]{1, 1};
-        double[] y = new double[]{2, 3};
+        double[] x = new double[] { 1, 1 };
+        double[] y = new double[] { 2, 3 };
         double distance = DataUtils.euclideanDistance(x, y);
         assertEquals(2.236, distance, 1e-3);
 
@@ -119,8 +118,8 @@ class DataUtilsTest {
 
     @Test
     void testHammingDistanceDouble() {
-        double[] x = new double[]{2, 1};
-        double[] y = new double[]{2, 3};
+        double[] x = new double[] { 2, 1 };
+        double[] y = new double[] { 2, 3 };
         double distance = DataUtils.hammingDistance(x, y);
         assertEquals(1, distance, 1e-1);
 
@@ -375,7 +374,7 @@ class DataUtilsTest {
         list.add(FeatureFactory.newNumericalFeature("f2", 13));
         list.add(FeatureFactory.newDurationFeature("f3", Duration.ofDays(13)));
         list.add(FeatureFactory.newTimeFeature("f4", LocalTime.now()));
-        list.add(FeatureFactory.newObjectFeature("f5", new float[]{0.4f, 0.4f}));
+        list.add(FeatureFactory.newObjectFeature("f5", new float[] { 0.4f, 0.4f }));
         list.add(FeatureFactory.newObjectFeature("f6", FeatureFactory.newObjectFeature("nf-0", new Object())));
         Feature f = FeatureFactory.newCompositeFeature("name", list);
         features.add(f);

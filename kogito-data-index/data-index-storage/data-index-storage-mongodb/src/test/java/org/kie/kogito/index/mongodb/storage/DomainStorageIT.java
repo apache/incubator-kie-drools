@@ -20,9 +20,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +30,11 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)
@@ -46,8 +48,8 @@ class DomainStorageIT extends StorageTestBase<String, ObjectNode> {
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection("travels_domain", Document.class),
-                                          mongoClientManager.getReactiveCollection("travels_domain", Document.class),
-                                          "org.acme.travels.travels.Travels", new DomainEntityMapper());
+                mongoClientManager.getReactiveCollection("travels_domain", Document.class),
+                "org.acme.travels.travels.Travels", new DomainEntityMapper());
     }
 
     @AfterEach

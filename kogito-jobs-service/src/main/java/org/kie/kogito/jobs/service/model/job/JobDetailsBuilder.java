@@ -98,7 +98,7 @@ public class JobDetailsBuilder {
 
     public JobDetails build() {
         return new JobDetails(id, correlationId, status, lastUpdate, retries, executionCounter, scheduledId, payload,
-                              recipient, trigger, type, priority);
+                recipient, trigger, type, priority);
     }
 
     public JobDetailsBuilder of(JobDetails jobDetails) {
@@ -126,10 +126,9 @@ public class JobDetailsBuilder {
         return this;
     }
 
-
     public JobDetailsBuilder merge(JobDetails jobDetails) {
         final Optional<JobDetails> j = Optional.ofNullable(jobDetails);
-        return  scheduledId(j.map(JobDetails::getScheduledId).orElse(scheduledId))
+        return scheduledId(j.map(JobDetails::getScheduledId).orElse(scheduledId))
                 .retries(j.map(JobDetails::getRetries).orElse(retries))
                 .status(j.map(JobDetails::getStatus).orElse(status))
                 .id(j.map(JobDetails::getId).orElse(id))

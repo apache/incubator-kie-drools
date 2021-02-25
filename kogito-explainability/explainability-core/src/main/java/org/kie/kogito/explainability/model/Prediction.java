@@ -25,7 +25,7 @@ public class Prediction {
     private final PredictionOutput output;
 
     public Prediction(PredictionInput input,
-                      PredictionOutput output) {
+            PredictionOutput output) {
         this.input = input;
         this.output = output;
     }

@@ -32,7 +32,7 @@ public class TaskAssigningConditions {
      * @param task a task instance for evaluation.
      * @param user a user instance for evaluation.
      * @return true if the given user is enabled and is a potential owner for the task or is the planning user,
-     * false in any other case.
+     *         false in any other case.
      */
     public static boolean userMeetsPotentialOwnerOrPlanningUserCondition(Task task, User user) {
         return user != null && user.isEnabled() && (ModelConstants.IS_PLANNING_USER.test(user.getId()) || isPotentialOwner(task, user));
@@ -42,7 +42,7 @@ public class TaskAssigningConditions {
      * @param task a task instance for evaluation.
      * @param user a user instance for evaluation.
      * @return true if the given user is enabled and has all the task defined skills if any or is the planning user,
-     * false in any other case.
+     *         false in any other case.
      */
     public static boolean userMeetsRequiredSkillsOrPlanningUserCondition(Task task, User user) {
         return user != null && user.isEnabled() && (ModelConstants.IS_PLANNING_USER.test(user.getId()) || hasAllLabels(task, user, DefaultLabels.SKILLS.name()));

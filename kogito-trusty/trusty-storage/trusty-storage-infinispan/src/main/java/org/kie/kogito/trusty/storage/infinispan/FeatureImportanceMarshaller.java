@@ -17,8 +17,9 @@ package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FeatureImportanceMarshaller extends AbstractModelMarshaller<FeatureImportance> {
 
@@ -30,8 +31,7 @@ public class FeatureImportanceMarshaller extends AbstractModelMarshaller<Feature
     public FeatureImportance readFrom(ProtoStreamReader reader) throws IOException {
         return new FeatureImportance(
                 reader.readString(FeatureImportance.FEATURE_NAME_FIELD),
-                reader.readDouble(FeatureImportance.SCORE_FIELD)
-        );
+                reader.readDouble(FeatureImportance.SCORE_FIELD));
     }
 
     @Override

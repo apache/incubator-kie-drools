@@ -36,7 +36,7 @@ public class TaskAssigningResource {
 
     @GET
     @Path("/service/status")
-    @Produces({"application/json"})
+    @Produces({ "application/json" })
     public String getServiceStatus() {
         return "{\"result\": \"" + service.getStatus() + "\"}";
     }

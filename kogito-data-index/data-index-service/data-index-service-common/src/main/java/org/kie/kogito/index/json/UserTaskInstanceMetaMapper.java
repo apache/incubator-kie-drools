@@ -18,10 +18,11 @@ package org.kie.kogito.index.json;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.kie.kogito.index.Constants.ID;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;

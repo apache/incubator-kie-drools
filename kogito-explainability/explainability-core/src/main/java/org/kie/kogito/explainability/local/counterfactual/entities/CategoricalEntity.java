@@ -15,20 +15,20 @@
  */
 package org.kie.kogito.explainability.local.counterfactual.entities;
 
+import java.util.Set;
+
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
-import java.util.Set;
-
 /**
  * Mapping between a categorical feature an OptaPlanner {@link PlanningEntity}
  */
 @PlanningEntity
 public class CategoricalEntity implements CounterfactualEntity {
-    @PlanningVariable(valueRangeProviderRefs = {"categoricalRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
     public String proposedValue;
 
     private String originalValue;
@@ -55,8 +55,8 @@ public class CategoricalEntity implements CounterfactualEntity {
      * A set of allowed category values must be passed.
      *
      * @param originalFeature Original input {@link Feature}
-     * @param categories      Set of allowed category values
-     * @param constrained     Whether this entity's value should be fixed or not
+     * @param categories Set of allowed category values
+     * @param constrained Whether this entity's value should be fixed or not
      */
     public static CategoricalEntity from(Feature originalFeature, Set<String> categories, boolean constrained) {
         return new CategoricalEntity(originalFeature.getValue().asString(), originalFeature.getName(), categories, constrained);
@@ -68,12 +68,11 @@ public class CategoricalEntity implements CounterfactualEntity {
      * A set of allowed category values must be passed.
      *
      * @param originalFeature feature Original input {@link Feature}
-     * @param categories      Set of allowed category values
+     * @param categories Set of allowed category values
      */
     public static CategoricalEntity from(Feature originalFeature, Set<String> categories) {
         return CategoricalEntity.from(originalFeature, categories, false);
     }
-
 
     @ValueRangeProvider(id = "categoricalRange")
     public Set<String> getValueRange() {

@@ -35,22 +35,22 @@ public class UserTaskInstanceArgument extends ArgumentContainer {
         STATE("state", StringArgument.class);
 
         /*
-        The following fields and the corresponding arguments, etc., will be added on-demand if needed.
-        Since current graphql client implementation might be changed in favor of the future data-index-client
-        Quarkus extension.
-
-        ID("id", IdArgument.class),
-        PROCESS_INSTANCE_ID("processInstanceId", IdArgument.class),
-        POTENTIAL_USERS("potentialUsers", StringArrayArgument.class)
-        POTENTIAL_GROUPS("potentialGroups", StringArrayArgument.class)
-        EXCLUDED_USERS("excludedUsers", StringArrayArgument.class)
-        ADMIN_GROUPS("adminGroups", StringArrayArgument.class)
-        ADMIN_USERS("adminUsers", StringArrayArgument.class)
-
-        AND("and", UserTaskInstanceArgument[].class)
-        OR("or", UserTaskInstanceArgument[].class)
-        NOT("not", UserTaskInstanceArgument[].class);
-        */
+         * The following fields and the corresponding arguments, etc., will be added on-demand if needed.
+         * Since current graphql client implementation might be changed in favor of the future data-index-client
+         * Quarkus extension.
+         * 
+         * ID("id", IdArgument.class),
+         * PROCESS_INSTANCE_ID("processInstanceId", IdArgument.class),
+         * POTENTIAL_USERS("potentialUsers", StringArrayArgument.class)
+         * POTENTIAL_GROUPS("potentialGroups", StringArrayArgument.class)
+         * EXCLUDED_USERS("excludedUsers", StringArrayArgument.class)
+         * ADMIN_GROUPS("adminGroups", StringArrayArgument.class)
+         * ADMIN_USERS("adminUsers", StringArrayArgument.class)
+         * 
+         * AND("and", UserTaskInstanceArgument[].class)
+         * OR("or", UserTaskInstanceArgument[].class)
+         * NOT("not", UserTaskInstanceArgument[].class);
+         */
 
         private final String name;
         private final Class<? extends Argument> baseType;

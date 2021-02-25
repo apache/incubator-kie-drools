@@ -37,11 +37,12 @@ public class GraphQLQueryParser implements Function<Object, List<AttributeFilter
 
     @Override
     public List<AttributeFilter<?>> apply(Object where) {
-        return where == null ? emptyList() : ((Map<String, Object>) where).entrySet().stream()
-                .filter(entry -> mapper.containsKey(entry.getKey()) && entry.getValue() != null)
-                .flatMap(entry -> mapper.get(entry.getKey()).apply(entry.getValue()))
-                .filter(Objects::nonNull)
-                .collect(toList());
+        return where == null ? emptyList()
+                : ((Map<String, Object>) where).entrySet().stream()
+                        .filter(entry -> mapper.containsKey(entry.getKey()) && entry.getValue() != null)
+                        .flatMap(entry -> mapper.get(entry.getKey()).apply(entry.getValue()))
+                        .filter(Objects::nonNull)
+                        .collect(toList());
     }
 
     @Override

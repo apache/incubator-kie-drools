@@ -41,8 +41,7 @@ public class HTTPRequestCallback {
     private Map<String, String> queryParams;
     private String body;
 
-    public HTTPRequestCallback(String url, HTTPMethod method, Map<String, String> headers, String body, Map<String,
-            String> queryParams) {
+    public HTTPRequestCallback(String url, HTTPMethod method, Map<String, String> headers, String body, Map<String, String> queryParams) {
         this.url = url;
         this.method = method;
         this.headers = headers;

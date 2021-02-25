@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
-
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -41,7 +40,6 @@ public class SolverExecutor extends RunnableBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SolverExecutor.class);
 
-
     private Solver<TaskAssigningSolution> solver;
     private TaskAssigningSolution solution;
     private SolverFactory<TaskAssigningSolution> solverFactory;
@@ -50,7 +48,7 @@ public class SolverExecutor extends RunnableBase {
     private final Semaphore startPermit = new Semaphore(0);
 
     public SolverExecutor(SolverFactory<TaskAssigningSolution> solverFactory,
-                          SolverEventListener<TaskAssigningSolution> eventListener) {
+            SolverEventListener<TaskAssigningSolution> eventListener) {
         this.solverFactory = solverFactory;
         this.eventListener = eventListener;
     }
@@ -61,6 +59,7 @@ public class SolverExecutor extends RunnableBase {
      * method to verify. This method is not thread-safe so it's expected that any synchronization required between the
      * isStarted(), start() and stop() methods is performed by the callers. However it's normally not expected that multiple
      * threads might try to start the same solver runner instance.
+     * 
      * @param solution a valid solution for starting the solver with.
      */
     public void start(final TaskAssigningSolution solution) {
@@ -127,7 +126,7 @@ public class SolverExecutor extends RunnableBase {
             solver.addProblemFactChanges(changes);
         } else {
             throw new SolverExecutorException("SolverExecutor has not been started. Be sure it's started and not " +
-                                                      "stopped or destroyed prior to executing this method");
+                    "stopped or destroyed prior to executing this method");
         }
     }
 

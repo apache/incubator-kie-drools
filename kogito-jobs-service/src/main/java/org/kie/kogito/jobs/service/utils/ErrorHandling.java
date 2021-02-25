@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 public class ErrorHandling {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorHandling.class);
-    
+
     private ErrorHandling() {
-        
+
     }
 
     /**
@@ -47,7 +47,7 @@ public class ErrorHandling {
         return ReactiveStreams
                 .fromPublisher(function.apply(input))
                 .onError(t -> LOGGER.warn("Error skipped when processing {}.", input, t))
-                .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R>empty().buildRs())
+                .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R> empty().buildRs())
                 .buildRs();
     }
 
@@ -66,6 +66,6 @@ public class ErrorHandling {
     public static <R, T> PublisherBuilder<R> skipErrorPublisherBuilder(Function<? super T, PublisherBuilder<R>> function, T input) {
         return function.apply(input)
                 .onError(t -> LOGGER.warn("Error skipped when processing {}.", input, t))
-                .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R>empty().buildRs());
+                .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R> empty().buildRs());
     }
 }

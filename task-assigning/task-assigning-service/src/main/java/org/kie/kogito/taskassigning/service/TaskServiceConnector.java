@@ -61,7 +61,7 @@ public class TaskServiceConnector {
         indexServiceClient = ensureServiceClient();
         while (!finished) {
             partialResult = indexServiceClient.findTasks(null, startedAfter, UserTaskInstance.Field.STARTED.name(),
-                                                         true, offset, pageSize);
+                    true, offset, pageSize);
             result.addAll(filterByState(stateSet, partialResult));
             if (partialResult.isEmpty() || partialResult.size() < pageSize) {
                 finished = true;
@@ -83,8 +83,7 @@ public class TaskServiceConnector {
         if (stateSet.isEmpty()) {
             return userTaskList;
         }
-        return userTaskList.stream().filter(userTaskInstance -> stateSet.contains(userTaskInstance.getState())).
-                collect(Collectors.toList());
+        return userTaskList.stream().filter(userTaskInstance -> stateSet.contains(userTaskInstance.getState())).collect(Collectors.toList());
     }
 
     private DataIndexServiceClient ensureServiceClient() {

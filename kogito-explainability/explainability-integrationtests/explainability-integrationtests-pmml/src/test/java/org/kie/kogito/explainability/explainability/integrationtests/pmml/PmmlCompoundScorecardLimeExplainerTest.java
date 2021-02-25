@@ -85,8 +85,7 @@ class PmmlCompoundScorecardLimeExplainerTest {
                     String reason1 = "" + resultVariables.get(CompoundNestedPredicateScorecardExecutor.REASON_CODE1_FIELD);
                     PredictionOutput predictionOutput = new PredictionOutput(List.of(
                             new Output("score", Type.TEXT, new Value<>(score), 1d),
-                            new Output("reason1", Type.TEXT, new Value<>(reason1), 1d)
-                    ));
+                            new Output("reason1", Type.TEXT, new Value<>(reason1), 1d)));
                     outputs.add(predictionOutput);
                 }
                 return outputs;
@@ -107,7 +106,7 @@ class PmmlCompoundScorecardLimeExplainerTest {
                 assertThat(v).isEqualTo(1d);
             }
             assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                                                                                    0.5, 0.5));
+                    0.5, 0.5));
         }
     }
 }

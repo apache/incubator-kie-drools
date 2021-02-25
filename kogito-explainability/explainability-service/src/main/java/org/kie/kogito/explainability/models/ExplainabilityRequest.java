@@ -63,7 +63,6 @@ public class ExplainabilityRequest {
                 dto.getServiceUrl(),
                 ModelIdentifier.from(dto.getModelIdentifier()),
                 dto.getInputs(),
-                dto.getOutputs()
-        );
+                dto.getOutputs());
     }
 }

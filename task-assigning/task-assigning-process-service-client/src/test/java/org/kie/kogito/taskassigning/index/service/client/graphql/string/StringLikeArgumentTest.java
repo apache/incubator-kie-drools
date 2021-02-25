@@ -41,7 +41,6 @@ class StringLikeArgumentTest extends AbstractStringArgumentTest<String, StringLi
     protected Stream<Arguments> createTestValues() {
         return Stream.of(
                 Arguments.of(new TestArgument<>(VALUE, "{\"like\":\"" + VALUE + "\"}")),
-                Arguments.of(new TestArgument<>(null, "{\"like\":null}"))
-        );
+                Arguments.of(new TestArgument<>(null, "{\"like\":null}")));
     }
 }

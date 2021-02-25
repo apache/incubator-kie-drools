@@ -54,8 +54,8 @@ class AssignTaskExecutableProblemFactChangeTest extends AbstractExecutableProble
         private Consumer<TaskAssigningSolution> solutionBeforeChangesConsumer;
 
         WorkingSolutionAwareProblemFactChange(TaskAssignment taskAssignment,
-                                              User user,
-                                              Consumer<TaskAssigningSolution> solutionBeforeChangesConsumer) {
+                User user,
+                Consumer<TaskAssigningSolution> solutionBeforeChangesConsumer) {
             super(taskAssignment, user);
             this.solutionBeforeChangesConsumer = solutionBeforeChangesConsumer;
         }
@@ -76,8 +76,8 @@ class AssignTaskExecutableProblemFactChangeTest extends AbstractExecutableProble
 
         ProgrammedAssignTaskProblemFactChange(TaskAssignment taskAssignment, User user) {
             setChange(new WorkingSolutionAwareProblemFactChange(taskAssignment,
-                                                                user,
-                                                                workingSolution -> printSolution(workingSolution, workingSolutionBeforeChange)));
+                    user,
+                    workingSolution -> printSolution(workingSolution, workingSolutionBeforeChange)));
         }
 
         String workingSolutionBeforeChangeAsString() {
@@ -251,18 +251,18 @@ class AssignTaskExecutableProblemFactChangeTest extends AbstractExecutableProble
     }
 
     private void assignTaskProblemFactChange(TaskAssigningSolution solution,
-                                             String solutionResource,
-                                             String testType,
-                                             List<ProgrammedAssignTaskProblemFactChange> programmedChanges) throws Exception {
+            String solutionResource,
+            String testType,
+            List<ProgrammedAssignTaskProblemFactChange> programmedChanges) throws Exception {
         TaskAssigningSolution initialSolution = executeSequentialChanges(solution, programmedChanges);
         if (writeTestFiles()) {
             writeProblemFactChangesTestFiles(initialSolution,
-                                             solutionResource,
-                                             "AssignTaskExecutableProblemFactChangeTest.assignTaskProblemFactChangeTest",
-                                             testType,
-                                             programmedChanges,
-                                             ProgrammedAssignTaskProblemFactChange::workingSolutionBeforeChangeAsString,
-                                             ProgrammedAssignTaskProblemFactChange::solutionAfterChangeAsString);
+                    solutionResource,
+                    "AssignTaskExecutableProblemFactChangeTest.assignTaskProblemFactChangeTest",
+                    testType,
+                    programmedChanges,
+                    ProgrammedAssignTaskProblemFactChange::workingSolutionBeforeChangeAsString,
+                    ProgrammedAssignTaskProblemFactChange::solutionAfterChangeAsString);
         }
 
         //each partial solution must have the change that was applied on it.
@@ -287,6 +287,7 @@ class AssignTaskExecutableProblemFactChangeTest extends AbstractExecutableProble
      * asserts that the assignment defined by the change is not violated (exists in) by the solution.
      * The assignment defined in the change must also be pinned in the produced solution as well as any other
      * previous assignment for the given user.
+     * 
      * @param change The change that was executed for producing the solution.
      * @param solution The produced solution.
      */

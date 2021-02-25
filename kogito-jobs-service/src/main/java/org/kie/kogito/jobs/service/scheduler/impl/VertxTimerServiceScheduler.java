@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.vertx.mutiny.core.Vertx;
 import org.kie.kogito.jobs.service.model.job.ManageableJobHandle;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.InternalSchedulerService;
@@ -35,9 +34,11 @@ import org.kie.kogito.timer.impl.DefaultTimerJobFactoryManager;
 import org.kie.kogito.timer.impl.TimerJobFactoryManager;
 import org.kie.kogito.timer.impl.TimerJobInstance;
 
+import io.vertx.mutiny.core.Vertx;
+
 @ApplicationScoped
 public class VertxTimerServiceScheduler implements TimerService<ManageableJobHandle>,
-                                                   InternalSchedulerService {
+        InternalSchedulerService {
 
     protected TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
@@ -113,9 +114,7 @@ public class VertxTimerServiceScheduler implements TimerService<ManageableJobHan
         final ZonedDateTime now = DateUtil.now();
         final long delay = calculateDelay(then, now);
         final ManageableJobHandle handle = (ManageableJobHandle) timerJobInstance.getJobHandle();
-        long scheduledId = vertx.setTimer(delay, i ->
-            timerJobInstance.getJob().execute(timerJobInstance.getJobContext())
-        );
+        long scheduledId = vertx.setTimer(delay, i -> timerJobInstance.getJob().execute(timerJobInstance.getJobContext()));
         handle.setId(scheduledId);
         handle.setScheduledTime(now);
     }

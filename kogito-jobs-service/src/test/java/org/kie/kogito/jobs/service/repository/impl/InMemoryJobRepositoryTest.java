@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.jobs.service.repository.impl;
 
-import io.vertx.core.Vertx;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import io.vertx.core.Vertx;
 
 @ExtendWith(MockitoExtension.class)
 class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {

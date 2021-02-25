@@ -15,8 +15,9 @@
  */
 package org.kie.kogito.taskassigning.index.service.client.graphql.pagination;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.kie.kogito.taskassigning.index.service.client.graphql.Argument;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.kie.kogito.taskassigning.util.JsonUtils.OBJECT_MAPPER;
 

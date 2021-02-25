@@ -18,8 +18,6 @@ package org.kie.kogito.index.mongodb.query;
 
 import javax.inject.Inject;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +28,9 @@ import org.kie.kogito.persistence.api.query.SortDirection;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -59,8 +60,8 @@ class ProcessIdQueryIT extends QueryTestBase<String, String> {
     @BeforeEach
     void setUp() {
         storage = new MongoStorage<>(mongoClientManager.getCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
-                                     mongoClientManager.getReactiveCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
-                                     String.class.getName(), new ProcessIdEntityMapper());
+                mongoClientManager.getReactiveCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
+                String.class.getName(), new ProcessIdEntityMapper());
         storage.clear();
     }
 

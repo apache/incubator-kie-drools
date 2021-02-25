@@ -16,10 +16,11 @@
 
 package org.kie.kogito.index.graphql;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)

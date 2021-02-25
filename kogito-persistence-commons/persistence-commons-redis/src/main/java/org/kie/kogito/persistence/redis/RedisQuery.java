@@ -20,14 +20,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.redisearch.Client;
-import io.redisearch.SearchResult;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.api.query.SortDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.redisearch.Client;
+import io.redisearch.SearchResult;
 
 import static org.kie.kogito.persistence.redis.Constants.RAW_OBJECT_FIELD;
 
@@ -103,16 +104,16 @@ public class RedisQuery<V> implements Query<V> {
         }).collect(Collectors.toList());
     }
 
-    private void setQueryLimitAndOffset(io.redisearch.Query query){
-        if (limit != null && offset == null){
+    private void setQueryLimitAndOffset(io.redisearch.Query query) {
+        if (limit != null && offset == null) {
             LOGGER.warn("Limit was specified in Redis query but not the offset. Limit is ignored.");
             return;
         }
-        if (limit == null && offset != null){
+        if (limit == null && offset != null) {
             LOGGER.warn("Offset was specified in Redis query but not the limit. Offset is ignored.");
             return;
         }
-        if (limit != null && offset != null){
+        if (limit != null && offset != null) {
             query.limit(offset, limit);
         }
     }

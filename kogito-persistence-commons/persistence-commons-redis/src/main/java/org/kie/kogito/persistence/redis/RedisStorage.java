@@ -22,14 +22,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import io.redisearch.Client;
-import io.redisearch.Document;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.redisearch.Client;
+import io.redisearch.Document;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;
 import static org.kie.kogito.persistence.redis.Constants.RAW_OBJECT_FIELD;

@@ -20,13 +20,9 @@ import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.ExplanationService;
@@ -39,6 +35,13 @@ import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,7 +76,8 @@ public class ExplainabilityMessagingHandlerIT {
         ModelIdentifierDto modelIdentifierDto = new ModelIdentifierDto("dmn", "namespace:name");
 
         ExplainabilityRequestDto request = new ExplainabilityRequestDto(executionId, serviceUrl, modelIdentifierDto, Collections.emptyMap(), Collections.emptyMap());
-        when(explanationService.explainAsync(any(ExplainabilityRequest.class), any(PredictionProvider.class))).thenReturn(CompletableFuture.completedFuture(ExplainabilityResultDto.buildSucceeded(executionId, Collections.emptyMap())));
+        when(explanationService.explainAsync(any(ExplainabilityRequest.class), any(PredictionProvider.class)))
+                .thenReturn(CompletableFuture.completedFuture(ExplainabilityResultDto.buildSucceeded(executionId, Collections.emptyMap())));
 
         kafkaClient.produce(ExplainabilityCloudEventBuilder.buildCloudEventJsonString(request), TOPIC_REQUEST);
 

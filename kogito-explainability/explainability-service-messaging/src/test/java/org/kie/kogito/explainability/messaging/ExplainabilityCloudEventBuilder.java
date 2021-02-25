@@ -18,9 +18,10 @@ package org.kie.kogito.explainability.messaging;
 
 import java.net.URI;
 
-import io.cloudevents.CloudEvent;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+
+import io.cloudevents.CloudEvent;
 
 public class ExplainabilityCloudEventBuilder {
 
@@ -29,8 +30,7 @@ public class ExplainabilityCloudEventBuilder {
                 request.getExecutionId(),
                 URI.create("trustyService/test"),
                 request,
-                ExplainabilityRequestDto.class
-        ).get();
+                ExplainabilityRequestDto.class).get();
     }
 
     public static String buildCloudEventJsonString(ExplainabilityRequestDto request) {

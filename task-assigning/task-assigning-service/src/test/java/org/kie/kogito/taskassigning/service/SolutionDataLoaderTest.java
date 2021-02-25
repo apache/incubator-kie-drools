@@ -93,11 +93,11 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
         CompletableFuture future = startRunnableBase();
 
         List<List<UserTaskInstance>> taskServiceResults = Arrays.asList(new ArrayList<>(),
-                                                                        null,
-                                                                        new ArrayList<>(),
-                                                                        new ArrayList<>(),
-                                                                        new ArrayList<>(),
-                                                                        null);
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                null);
         List<List<User>> userServiceResults = Arrays.asList(null, null, null, null);
         doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), anyInt());
         doAnswer(createExecutions(userServiceResults)).when(userServiceConnector).findAllUsers();

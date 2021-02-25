@@ -23,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.CloudEvent;
-import io.cloudevents.jackson.JsonFormat;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.tracing.decision.event.message.Message;
@@ -51,6 +46,13 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 
 public class TrustyServiceTestUtils {
 
@@ -91,7 +93,8 @@ public class TrustyServiceTestUtils {
     private static final String MESSAGE_INFO_TEXT = "This is a info test message";
     private static final String MESSAGE_INFO_TYPE = "INFO_TEST_MESSAGE";
     private static final MessageCategory MESSAGE_ERROR_CATEGORY = MessageCategory.DMN;
-    private static final String MESSAGE_ERROR_TEXT = "DMN: Required dependency 'Driver' not found on node 'Should the driver be suspended?' (DMN id: _8A408366-D8E9-4626-ABF3-5F69AA01F880, The referenced node was not found) ";
+    private static final String MESSAGE_ERROR_TEXT =
+            "DMN: Required dependency 'Driver' not found on node 'Should the driver be suspended?' (DMN id: _8A408366-D8E9-4626-ABF3-5F69AA01F880, The referenced node was not found) ";
     private static final String MESSAGE_ERROR_TYPE = "REQ_NOT_FOUND";
     private static final MessageCategory MESSAGE_WARNING_CATEGORY = MessageCategory.INTERNAL;
     private static final String MESSAGE_WARNING_TEXT = "This is a warning test message";
@@ -114,34 +117,28 @@ public class TrustyServiceTestUtils {
 
     private static final TypedValue vEventDriver = new StructureValue("tDriver", Map.of(
             "Age", new UnitValue("number", toJsonNode("25")),
-            "Points", new UnitValue("number", toJsonNode("13"))
-    ));
+            "Points", new UnitValue("number", toJsonNode("13"))));
     private static final TypedValue vEventDriverNull = new StructureValue("tDriver", null);
     private static final TypedValue vEventViolation = new StructureValue("tViolation", Map.of(
             "Type", new UnitValue("string", toJsonNode("\"speed\"")),
             "Actual Speed", new UnitValue("number", toJsonNode("140")),
-            "Speed Limit", new UnitValue("number", toJsonNode("100"))
-    ));
+            "Speed Limit", new UnitValue("number", toJsonNode("100"))));
     private static final TypedValue vEventFine = new StructureValue("tFine", Map.of(
             "Amount", new UnitValue("number", toJsonNode("1000")),
-            "Points", new UnitValue("number", toJsonNode("7"))
-    ));
+            "Points", new UnitValue("number", toJsonNode("7"))));
     private static final TypedValue vEventSuspended = new UnitValue("string", toJsonNode("\"Yes\""));
 
     private static final TypedVariable vDecisionDriver = TypedVariable.buildStructure(INPUT_DRIVER_NODE_NAME, "tDriver", List.of(
             TypedVariable.buildUnit("Age", "number", toJsonNode("25")),
-            TypedVariable.buildUnit("Points", "number", toJsonNode("13"))
-    ));
+            TypedVariable.buildUnit("Points", "number", toJsonNode("13"))));
     private static final TypedVariable vDecisionDriverNull = TypedVariable.buildStructure(INPUT_DRIVER_NODE_NAME, "tDriver", null);
     private static final TypedVariable vDecisionViolation = TypedVariable.buildStructure(INPUT_VIOLATION_NODE_NAME, "tViolation", List.of(
             TypedVariable.buildUnit("Type", "string", toJsonNode("\"speed\"")),
             TypedVariable.buildUnit("Actual Speed", "number", toJsonNode("140")),
-            TypedVariable.buildUnit("Speed Limit", "number", toJsonNode("100"))
-    ));
+            TypedVariable.buildUnit("Speed Limit", "number", toJsonNode("100"))));
     private static final TypedVariable vDecisionFine = TypedVariable.buildStructure(OUTPUT_FINE_NODE_NAME, "tFine", List.of(
             TypedVariable.buildUnit("Amount", "number", toJsonNode("1000")),
-            TypedVariable.buildUnit("Points", "number", toJsonNode("7"))
-    ));
+            TypedVariable.buildUnit("Points", "number", toJsonNode("7"))));
     private static final TypedVariable vDecisionSuspended = TypedVariable.buildUnit(OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME, "string", toJsonNode("\"Yes\""));
 
     public static CloudEvent buildCloudEvent(TraceEvent traceEvent) {
@@ -149,8 +146,7 @@ public class TrustyServiceTestUtils {
                 traceEvent.getHeader().getExecutionId(),
                 URI.create(CLOUDEVENT_SOURCE),
                 traceEvent,
-                TraceEvent.class
-        ).get();
+                TraceEvent.class).get();
     }
 
     public static String buildCloudEventJsonString(TraceEvent traceEvent) {
@@ -170,12 +166,10 @@ public class TrustyServiceTestUtils {
                 buildHeader(cloudEventId, CORRECT_CLOUDEVENT_START_TS, CORRECT_CLOUDEVENT_START_TS + CORRECT_CLOUDEVENT_DURATION, CORRECT_CLOUDEVENT_DURATION, null),
                 List.of(
                         buildInputViolation(INPUT_VIOLATION_JSON, null),
-                        buildInputDriver(INPUT_DRIVER_JSON, null)
-                ),
+                        buildInputDriver(INPUT_DRIVER_JSON, null)),
                 List.of(
                         buildOutputFine(OUTPUT_FINE_JSON, null),
-                        buildOutputShouldTheDriverBeSuspended(EVALUATION_STATUS_SUCCEEDED, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_JSON, null)
-                ),
+                        buildOutputShouldTheDriverBeSuspended(EVALUATION_STATUS_SUCCEEDED, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_JSON, null)),
                 List.of(
                         new TraceExecutionStep(
                                 TraceExecutionStepType.DMN_DECISION, 10, OUTPUT_FINE_NODE_NAME,
@@ -190,12 +184,8 @@ public class TrustyServiceTestUtils {
                                                 Map.of(
                                                         "matches", "2",
                                                         "nodeId", OUTPUT_FINE_NODE_ID,
-                                                        "selected", "2"
-                                                ),
-                                                null
-                                        )
-                                )
-                        ),
+                                                        "selected", "2"),
+                                                null))),
                         new TraceExecutionStep(
                                 TraceExecutionStepType.DMN_DECISION, 9, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME,
                                 toJsonNode(OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_JSON),
@@ -207,10 +197,8 @@ public class TrustyServiceTestUtils {
                                                 null,
                                                 null,
                                                 Map.of(
-                                                        "nodeId", "_AB2593EF-E85F-425B-B5F8-9A29397CA4E9"
-                                                ),
-                                                null
-                                        ),
+                                                        "nodeId", "_AB2593EF-E85F-425B-B5F8-9A29397CA4E9"),
+                                                null),
                                         new TraceExecutionStep(
                                                 TraceExecutionStepType.DMN_CONTEXT_ENTRY, 6, "Total Points",
                                                 toJsonNode("20"),
@@ -218,24 +206,16 @@ public class TrustyServiceTestUtils {
                                                 Map.of(
                                                         "expressionId", "_F1BEBF16-033F-4A25-9523-CAC23ACC5DFC",
                                                         "variableId", "_09385E8D-68E0-4DFD-AAD8-141C15C96B71",
-                                                        "nodeId", OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID
-                                                ),
-                                                null
-                                        ),
+                                                        "nodeId", OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID),
+                                                null),
                                         new TraceExecutionStep(
                                                 TraceExecutionStepType.DMN_CONTEXT_ENTRY, 0, "__RESULT__",
                                                 toJsonNode(OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_JSON),
                                                 null,
                                                 Map.of(
                                                         "expressionId", "_1929D813-B1C9-43C5-9497-CE5D8B2B040C",
-                                                        "nodeId", OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID
-                                                ),
-                                                null
-                                        )
-                                )
-                        )
-                )
-        );
+                                                        "nodeId", OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID),
+                                                null)))));
     }
 
     public static TraceEvent buildTraceEventWithNullType(String cloudEventId) {
@@ -243,8 +223,7 @@ public class TrustyServiceTestUtils {
                 buildNullTypeHeader(cloudEventId, CORRECT_CLOUDEVENT_START_TS, CORRECT_CLOUDEVENT_START_TS + CORRECT_CLOUDEVENT_DURATION, CORRECT_CLOUDEVENT_DURATION, null),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>()
-        );
+                new ArrayList<>());
     }
 
     public static Decision buildCorrectDecision(String cloudEventId) {
@@ -252,21 +231,16 @@ public class TrustyServiceTestUtils {
                 cloudEventId, CLOUDEVENT_SOURCE, CORRECT_CLOUDEVENT_START_TS, true, null, MODEL_NAME, MODEL_NAMESPACE,
                 List.of(
                         new DecisionInput(INPUT_VIOLATION_NODE_ID, INPUT_VIOLATION_NODE_NAME, vDecisionViolation),
-                        new DecisionInput(INPUT_DRIVER_NODE_ID, INPUT_DRIVER_NODE_NAME, vDecisionDriver)
-                ),
+                        new DecisionInput(INPUT_DRIVER_NODE_ID, INPUT_DRIVER_NODE_NAME, vDecisionDriver)),
                 List.of(
                         new DecisionOutcome(
                                 OUTPUT_FINE_NODE_ID, OUTPUT_FINE_NODE_NAME, EVALUATION_STATUS_SUCCEEDED,
                                 vDecisionFine,
-                                List.of(vDecisionViolation), null
-                        ),
+                                List.of(vDecisionViolation), null),
                         new DecisionOutcome(
                                 OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME, EVALUATION_STATUS_SUCCEEDED,
                                 vDecisionSuspended,
-                                List.of(vDecisionDriver, vDecisionFine), null
-                        )
-                )
-        );
+                                List.of(vDecisionDriver, vDecisionFine), null)));
     }
 
     public static TraceEvent buildTraceEventWithErrors() {
@@ -274,8 +248,7 @@ public class TrustyServiceTestUtils {
                 buildHeader(CLOUDEVENT_WITH_ERRORS_ID, CLOUDEVENT_WITH_ERRORS_START_TS, CLOUDEVENT_WITH_ERRORS_START_TS + CLOUDEVENT_WITH_ERRORS_DURATION, CLOUDEVENT_WITH_ERRORS_DURATION, null),
                 List.of(
                         buildInputViolation(INPUT_VIOLATION_JSON, null),
-                        buildInputDriver(null, null)
-                ),
+                        buildInputDriver(null, null)),
                 List.of(
                         buildOutputFine(OUTPUT_FINE_JSON, List.of(
                                 new Message(
@@ -285,27 +258,20 @@ public class TrustyServiceTestUtils {
                                         null,
                                         new MessageExceptionField(
                                                 EXCEPTION_CLASS_NAME, EXCEPTION_MESSAGE,
-                                                new MessageExceptionField(EXCEPTION_CAUSE_CLASS_NAME, EXCEPTION_CAUSE_MESSAGE, null)
-                                        )
-                                ),
+                                                new MessageExceptionField(EXCEPTION_CAUSE_CLASS_NAME, EXCEPTION_CAUSE_MESSAGE, null))),
                                 new Message(
                                         MessageLevel.INFO, MESSAGE_INFO_CATEGORY, MESSAGE_INFO_TYPE,
                                         OUTPUT_FINE_NODE_ID,
                                         MESSAGE_INFO_TEXT,
                                         null,
-                                        null
-                                )
-                        )),
+                                        null))),
                         buildOutputShouldTheDriverBeSuspended(EVALUATION_STATUS_SKIPPED, null, List.of(
                                 new Message(
                                         MessageLevel.ERROR, MESSAGE_ERROR_CATEGORY, MESSAGE_ERROR_TYPE,
                                         OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID,
                                         MESSAGE_ERROR_TEXT,
                                         null,
-                                        null
-                                )
-                        ))
-                ),
+                                        null)))),
                 List.of(
                         new TraceExecutionStep(
                                 TraceExecutionStepType.DMN_DECISION, 81, OUTPUT_FINE_NODE_NAME,
@@ -320,12 +286,8 @@ public class TrustyServiceTestUtils {
                                                 Map.of(
                                                         "matches", "2",
                                                         "nodeId", OUTPUT_FINE_NODE_ID,
-                                                        "selected", "2"
-                                                ),
-                                                null
-                                        )
-                                )
-                        ),
+                                                        "selected", "2"),
+                                                null))),
                         new TraceExecutionStep(
                                 TraceExecutionStepType.DMN_DECISION, 9, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME,
                                 toJsonNode(OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_JSON),
@@ -335,9 +297,7 @@ public class TrustyServiceTestUtils {
                                                 OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID,
                                                 MESSAGE_ERROR_TEXT,
                                                 null,
-                                                null
-                                        )
-                                ),
+                                                null)),
                                 Map.of("nodeId", OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID),
                                 List.of(
                                         new TraceExecutionStep(
@@ -345,14 +305,8 @@ public class TrustyServiceTestUtils {
                                                 null,
                                                 null,
                                                 Map.of(
-                                                        "nodeId", "_AB2593EF-E85F-425B-B5F8-9A29397CA4E9"
-                                                ),
-                                                null
-                                        )
-                                )
-                        )
-                )
-        );
+                                                        "nodeId", "_AB2593EF-E85F-425B-B5F8-9A29397CA4E9"),
+                                                null)))));
     }
 
     public static Decision buildDecisionWithErrors() {
@@ -360,8 +314,7 @@ public class TrustyServiceTestUtils {
                 CLOUDEVENT_WITH_ERRORS_ID, CLOUDEVENT_SOURCE, CLOUDEVENT_WITH_ERRORS_START_TS, false, null, MODEL_NAME, MODEL_NAMESPACE,
                 List.of(
                         new DecisionInput(INPUT_VIOLATION_NODE_ID, INPUT_VIOLATION_NODE_NAME, vDecisionViolation),
-                        new DecisionInput(INPUT_DRIVER_NODE_ID, INPUT_DRIVER_NODE_NAME, vDecisionDriverNull)
-                ),
+                        new DecisionInput(INPUT_DRIVER_NODE_ID, INPUT_DRIVER_NODE_NAME, vDecisionDriverNull)),
                 List.of(
                         new DecisionOutcome(
                                 OUTPUT_FINE_NODE_ID, OUTPUT_FINE_NODE_NAME, EVALUATION_STATUS_SUCCEEDED,
@@ -374,17 +327,12 @@ public class TrustyServiceTestUtils {
                                                 MESSAGE_WARNING_TEXT,
                                                 new org.kie.kogito.trusty.storage.api.model.MessageExceptionField(
                                                         EXCEPTION_CLASS_NAME, EXCEPTION_MESSAGE,
-                                                        new org.kie.kogito.trusty.storage.api.model.MessageExceptionField(EXCEPTION_CAUSE_CLASS_NAME, "Exception cause message", null)
-                                                )
-                                        ),
+                                                        new org.kie.kogito.trusty.storage.api.model.MessageExceptionField(EXCEPTION_CAUSE_CLASS_NAME, "Exception cause message", null))),
                                         new org.kie.kogito.trusty.storage.api.model.Message(
                                                 MessageLevel.INFO, MESSAGE_INFO_CATEGORY.name(), MESSAGE_INFO_TYPE,
                                                 OUTPUT_FINE_NODE_ID,
                                                 MESSAGE_INFO_TEXT,
-                                                null
-                                        )
-                                )
-                        ),
+                                                null))),
                         new DecisionOutcome(
                                 OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME, EVALUATION_STATUS_SUCCEEDED,
                                 vDecisionSuspended,
@@ -394,19 +342,14 @@ public class TrustyServiceTestUtils {
                                                 MessageLevel.ERROR, MESSAGE_ERROR_CATEGORY.name(), MESSAGE_ERROR_TYPE,
                                                 OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID,
                                                 MESSAGE_ERROR_TEXT,
-                                                null
-                                        )
-                                )
-                        )
-                )
-        );
+                                                null)))));
     }
 
     public static TraceEvent buildTraceEventWithNullFields() {
         return new TraceEvent(
-                buildHeader(CLOUDEVENT_WITH_NULL_FIELDS_ID, CLOUDEVENT_WITH_NULL_FIELDS_START_TS, CLOUDEVENT_WITH_NULL_FIELDS_START_TS + CLOUDEVENT_WITH_NULL_FIELDS_DURATION, CLOUDEVENT_WITH_NULL_FIELDS_DURATION, null),
-                null, null, null
-        );
+                buildHeader(CLOUDEVENT_WITH_NULL_FIELDS_ID, CLOUDEVENT_WITH_NULL_FIELDS_START_TS, CLOUDEVENT_WITH_NULL_FIELDS_START_TS + CLOUDEVENT_WITH_NULL_FIELDS_DURATION,
+                        CLOUDEVENT_WITH_NULL_FIELDS_DURATION, null),
+                null, null, null);
     }
 
     public static Decision buildDecisionWithNullFields() {
@@ -435,11 +378,10 @@ public class TrustyServiceTestUtils {
 
     private static TraceOutputValue buildOutputShouldTheDriverBeSuspended(String status, String value, List<Message> messages) {
         return new TraceOutputValue(OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_ID, OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME,
-                                    status,
-                                    value == null ? null : vEventSuspended,
-                                    value == null ? Map.of("Fine", vEventFine) : Map.of("Driver", vEventDriver, "Fine", vEventFine),
-                                    messages
-        );
+                status,
+                value == null ? null : vEventSuspended,
+                value == null ? Map.of("Fine", vEventFine) : Map.of("Driver", vEventDriver, "Fine", vEventFine),
+                messages);
     }
 
     private static JsonNode toJsonNode(String serializedJson) {
@@ -464,8 +406,8 @@ public class TrustyServiceTestUtils {
 
     public static CloudEvent buildCloudEvent(ModelEvent modelEvent) {
         return CloudEventUtils.build("id",
-                                     URI.create(URLEncoder.encode(ModelEvent.class.getName(), StandardCharsets.UTF_8)),
-                                     modelEvent,
-                                     ModelEvent.class).get();
+                URI.create(URLEncoder.encode(ModelEvent.class.getName(), StandardCharsets.UTF_8)),
+                modelEvent,
+                ModelEvent.class).get();
     }
 }

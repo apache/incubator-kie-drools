@@ -126,13 +126,13 @@ public abstract class AbstractTaskAssigningCoreTest {
         StringBuilder builder = new StringBuilder();
         Task task = taskAssignment.getTask();
         builder.append(task.getName() +
-                               ", pinned: " + taskAssignment.isPinned() +
-                               ", priority: " + task.getPriority() +
-                               ", startTimeInMinutes: " + taskAssignment.getStartTimeInMinutes() +
-                               ", durationInMinutes:" + taskAssignment.getDurationInMinutes() +
-                               ", endTimeInMinutes: " + taskAssignment.getEndTimeInMinutes() +
-                               ", user: " + taskAssignment.getUser().getId() +
-                               ", potentialOwners: " + task.getPotentialUsers());
+                ", pinned: " + taskAssignment.isPinned() +
+                ", priority: " + task.getPriority() +
+                ", startTimeInMinutes: " + taskAssignment.getStartTimeInMinutes() +
+                ", durationInMinutes:" + taskAssignment.getDurationInMinutes() +
+                ", endTimeInMinutes: " + taskAssignment.getEndTimeInMinutes() +
+                ", user: " + taskAssignment.getUser().getId() +
+                ", potentialOwners: " + task.getPotentialUsers());
         return builder.toString();
     }
 

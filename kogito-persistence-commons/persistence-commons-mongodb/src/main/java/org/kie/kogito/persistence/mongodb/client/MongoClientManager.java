@@ -19,12 +19,14 @@ package org.kie.kogito.persistence.mongodb.client;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.bson.Document;
+import org.eclipse.microprofile.config.ConfigProvider;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
-import org.bson.Document;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 @ApplicationScoped
 public class MongoClientManager {

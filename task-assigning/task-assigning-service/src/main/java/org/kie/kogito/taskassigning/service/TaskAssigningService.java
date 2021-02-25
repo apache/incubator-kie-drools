@@ -24,8 +24,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.quarkus.runtime.ShutdownEvent;
-import io.quarkus.runtime.Startup;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfig;
@@ -34,6 +32,9 @@ import org.kie.kogito.taskassigning.user.service.api.UserServiceConnector;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.Startup;
 
 /**
  * Class in experimental status! don't waste time here!
@@ -79,8 +80,8 @@ public class TaskAssigningService {
 
         managedExecutor.execute(solverExecutor);
         solutionDataLoader = new SolutionDataLoader(taskServiceConnector,
-                                                    userServiceConnector,
-                                                    Duration.ofMillis(5000));
+                userServiceConnector,
+                Duration.ofMillis(5000));
         managedExecutor.execute(solutionDataLoader);
         solutionDataLoader.start(this::processTaskLoadResult, 1);
     }

@@ -16,9 +16,10 @@
 
 package org.kie.kogito.jitexecutor.dmn.responses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DMNResultWithExplanation {
 

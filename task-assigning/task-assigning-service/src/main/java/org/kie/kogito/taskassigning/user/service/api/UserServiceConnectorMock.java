@@ -77,37 +77,37 @@ public class UserServiceConnectorMock implements UserServiceConnector {
 
     public UserServiceConnectorMock() {
         mockedUsers.put("krisv", new UserMock("krisv",
-                                              new HashSet<>(Arrays.asList(new GroupMock("admin"),
-                                                                          new GroupMock("analyst"),
-                                                                          new GroupMock("user")))));
+                new HashSet<>(Arrays.asList(new GroupMock("admin"),
+                        new GroupMock("analyst"),
+                        new GroupMock("user")))));
         mockedUsers.put("john", new UserMock("john",
-                                             new HashSet<>(Arrays.asList(new GroupMock("analyst"),
-                                                                         new GroupMock("Accounting"),
-                                                                         new GroupMock("PM")))));
+                new HashSet<>(Arrays.asList(new GroupMock("analyst"),
+                        new GroupMock("Accounting"),
+                        new GroupMock("PM")))));
         mockedUsers.put("mary", new UserMock("mary",
-                                             new HashSet<>(Arrays.asList(new GroupMock("analyst"),
-                                                                         new GroupMock("HR")))));
+                new HashSet<>(Arrays.asList(new GroupMock("analyst"),
+                        new GroupMock("HR")))));
         mockedUsers.put("sales-rep", new UserMock("sales-rep",
-                                                  new HashSet<>(Arrays.asList(new GroupMock("analyst"),
-                                                                              new GroupMock("sales")))));
+                new HashSet<>(Arrays.asList(new GroupMock("analyst"),
+                        new GroupMock("sales")))));
         mockedUsers.put("jack", new UserMock("jack",
-                                             new HashSet<>(Arrays.asList(new GroupMock("analyst"),
-                                                                         new GroupMock("IT")))));
+                new HashSet<>(Arrays.asList(new GroupMock("analyst"),
+                        new GroupMock("IT")))));
         mockedUsers.put("katy", new UserMock("katy",
-                                             new HashSet<>(Arrays.asList(new GroupMock("analyst"),
-                                                                         new GroupMock("HR")))));
+                new HashSet<>(Arrays.asList(new GroupMock("analyst"),
+                        new GroupMock("HR")))));
         mockedUsers.put("salaboy", new UserMock("salaboy",
-                                                new HashSet<>(Arrays.asList(new GroupMock("admin"),
-                                                                            new GroupMock("analyst"),
-                                                                            new GroupMock("IT"),
-                                                                            new GroupMock("HR"),
-                                                                            new GroupMock("Accounting")))));
+                new HashSet<>(Arrays.asList(new GroupMock("admin"),
+                        new GroupMock("analyst"),
+                        new GroupMock("IT"),
+                        new GroupMock("HR"),
+                        new GroupMock("Accounting")))));
         mockedUsers.put("maciek", new UserMock("maciek",
-                                               new HashSet<>(Arrays.asList(new GroupMock("admin"),
-                                                                           new GroupMock("analyst"),
-                                                                           new GroupMock("user"),
-                                                                           new GroupMock("PM"),
-                                                                           new GroupMock("HR")))));
+                new HashSet<>(Arrays.asList(new GroupMock("admin"),
+                        new GroupMock("analyst"),
+                        new GroupMock("user"),
+                        new GroupMock("PM"),
+                        new GroupMock("HR")))));
     }
 
     public List<User> findAllUsers() {

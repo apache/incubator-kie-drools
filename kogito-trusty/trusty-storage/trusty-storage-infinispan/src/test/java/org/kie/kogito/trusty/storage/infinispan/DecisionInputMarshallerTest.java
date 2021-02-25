@@ -17,13 +17,14 @@ package org.kie.kogito.trusty.storage.infinispan;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ObjectTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.kie.kogito.trusty.storage.api.model.DecisionInput.ID_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.DecisionInput.NAME_FIELD;
@@ -34,8 +35,7 @@ public class DecisionInputMarshallerTest extends MarshallerTestTemplate<Decision
     private static final List<AbstractTestField<DecisionInput, ?>> TEST_FIELD_LIST = List.of(
             new StringTestField<>(ID_FIELD, "ID", DecisionInput::getId, DecisionInput::setId),
             new StringTestField<>(NAME_FIELD, "name", DecisionInput::getName, DecisionInput::setName),
-            new ObjectTestField<>(VALUE_FIELD, null, DecisionInput::getValue, DecisionInput::setValue, TypedVariable.class)
-    );
+            new ObjectTestField<>(VALUE_FIELD, null, DecisionInput::getValue, DecisionInput::setValue, TypedVariable.class));
 
     public DecisionInputMarshallerTest() {
         super(DecisionInput.class);

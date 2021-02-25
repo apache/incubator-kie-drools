@@ -20,9 +20,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.NodeInstance;
@@ -31,6 +28,10 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.api.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.index.Constants.ID;
@@ -70,7 +71,7 @@ public class IndexingService {
         String processId = json.remove(PROCESS_ID).asText();
         Storage<String, ObjectNode> cache = manager.getDomainModelCache(processId);
         if (cache == null) {
-//          Unknown process type, ignore
+            //          Unknown process type, ignore
             LOGGER.debug("Ignoring Kogito cloud event for unknown process: {}", processId);
             return;
         }

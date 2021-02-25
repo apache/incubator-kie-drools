@@ -15,6 +15,13 @@
  */
 package org.kie.kogito.explainability.local.counterfactual;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.model.Feature;
@@ -25,13 +32,6 @@ import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDeci
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 /**
  * Counterfactual score calculator.

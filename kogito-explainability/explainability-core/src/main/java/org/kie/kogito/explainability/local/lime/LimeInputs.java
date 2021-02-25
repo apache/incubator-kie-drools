@@ -30,7 +30,7 @@ public class LimeInputs {
     private final List<Output> perturbedOutputs;
 
     public LimeInputs(boolean classification, List<Feature> features, Output targetOutput,
-                      List<PredictionInput> perturbedInputs, List<Output> perturbedOutputs) {
+            List<PredictionInput> perturbedInputs, List<Output> perturbedOutputs) {
         this.classification = classification;
         this.features = features;
         this.targetOutput = targetOutput;

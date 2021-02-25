@@ -26,7 +26,7 @@ public class ModelConstants {
     }
 
     private static final ZonedDateTime DUMMY_DATE = ZonedDateTime.parse("2021-01-01T01:01:01.001Z",
-                                                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     /**
      * System property for configuring the PLANNING_USER entityId.
      */
@@ -50,18 +50,18 @@ public class ModelConstants {
      * Since the only potential owner for the dummy task is the PLANNING_USER this task won't affect the score dramatically.
      */
     public static final TaskAssignment DUMMY_TASK_ASSIGNMENT = new ImmutableTaskAssignment(new ImmutableTask("-1",
-                                                                                                             "dummy-task",
-                                                                                                             "dummy-state",
-                                                                                                             "dummy-description",
-                                                                                                             "dummy-reference-name",
-                                                                                                             "1",
-                                                                                                             "dummy-process-instance-id",
-                                                                                                             "dummy-process-id",
-                                                                                                             "dummy-root-process-id",
-                                                                                                             "dummy-root-process-id",
-                                                                                                             DUMMY_DATE,
-                                                                                                             DUMMY_DATE,
-                                                                                                             DUMMY_DATE,
-                                                                                                             "dummy-endpoint"),
-                                                                                           false);
+            "dummy-task",
+            "dummy-state",
+            "dummy-description",
+            "dummy-reference-name",
+            "1",
+            "dummy-process-instance-id",
+            "dummy-process-id",
+            "dummy-root-process-id",
+            "dummy-root-process-id",
+            DUMMY_DATE,
+            DUMMY_DATE,
+            DUMMY_DATE,
+            "dummy-endpoint"),
+            false);
 }

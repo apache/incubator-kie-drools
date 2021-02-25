@@ -57,21 +57,21 @@ class SolutionBuilderTest {
     @Test
     void build() {
         List<UserTaskInstance> userTaskInstances = Arrays.asList(mockUserTaskInstance(TASK1, READY.value()),
-                                                                 mockUserTaskInstance(TASK2, RESERVED.value(), USER2),
-                                                                 mockUserTaskInstance(TASK3, READY.value()),
-                                                                 mockUserTaskInstance(TASK4, READY.value()),
-                                                                 mockUserTaskInstance(TASK5, RESERVED.value(), USER2),
-                                                                 mockUserTaskInstance(TASK6, READY.value()),
-                                                                 mockUserTaskInstance(TASK7, RESERVED.value(), USER4),
-                                                                 mockUserTaskInstance(TASK8, READY.value()),
-                                                                 mockUserTaskInstance(TASK9, RESERVED.value(), USER4),
-                                                                 mockUserTaskInstance(TASK10, RESERVED.value(), USER1),
-                                                                 mockUserTaskInstance(TASK11, RESERVED.value(), USER_NOT_IN_THE_EXTERNAL_SYSTEM));
+                mockUserTaskInstance(TASK2, RESERVED.value(), USER2),
+                mockUserTaskInstance(TASK3, READY.value()),
+                mockUserTaskInstance(TASK4, READY.value()),
+                mockUserTaskInstance(TASK5, RESERVED.value(), USER2),
+                mockUserTaskInstance(TASK6, READY.value()),
+                mockUserTaskInstance(TASK7, RESERVED.value(), USER4),
+                mockUserTaskInstance(TASK8, READY.value()),
+                mockUserTaskInstance(TASK9, RESERVED.value(), USER4),
+                mockUserTaskInstance(TASK10, RESERVED.value(), USER1),
+                mockUserTaskInstance(TASK11, RESERVED.value(), USER_NOT_IN_THE_EXTERNAL_SYSTEM));
 
         List<org.kie.kogito.taskassigning.user.service.api.User> externalUsers = Arrays.asList(mockExternalUser(USER1),
-                                                                                               mockExternalUser(USER2),
-                                                                                               mockExternalUser(USER3),
-                                                                                               mockExternalUser(USER4));
+                mockExternalUser(USER2),
+                mockExternalUser(USER3),
+                mockExternalUser(USER4));
 
         TaskAssigningSolution solution = SolutionBuilder.newBuilder()
                 .withTasks(userTaskInstances)
@@ -105,8 +105,8 @@ class SolutionBuilderTest {
     }
 
     private void assertThatUserHasTask(TaskAssigningSolution solution, String userId,
-                                       int expectedTasks, int expectedTaskPosition,
-                                       String expectedTask, int expectedStartTimeInMinutes, int expectedEndTimeInMinutes) {
+            int expectedTasks, int expectedTaskPosition,
+            String expectedTask, int expectedStartTimeInMinutes, int expectedEndTimeInMinutes) {
         User user = solution.getUserList().stream().filter(u -> userId.equals(u.getId())).findFirst().orElse(null);
         assertThat(user)
                 .withFailMessage("User %s is not present in solution.", userId)

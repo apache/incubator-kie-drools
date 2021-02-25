@@ -44,7 +44,7 @@ class LimeStabilityTest {
     static final double TOP_FEATURE_THRESHOLD = 0.9;
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testStabilityWithNumericData(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -59,7 +59,7 @@ class LimeStabilityTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testStabilityWithTextData(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);
@@ -77,7 +77,7 @@ class LimeStabilityTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testAdaptiveVariance(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);

@@ -20,12 +20,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
 import org.drools.core.util.IoUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;

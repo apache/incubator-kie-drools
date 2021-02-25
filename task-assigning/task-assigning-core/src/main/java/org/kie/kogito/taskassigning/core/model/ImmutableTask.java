@@ -27,9 +27,9 @@ public class ImmutableTask extends Task {
     }
 
     public ImmutableTask(String id, String name, String state, String description, String referenceName, String priority,
-                         String processInstanceId, String processId, String rootProcessInstanceId, String rootProcessId,
-                         ZonedDateTime started, ZonedDateTime completed, ZonedDateTime lastUpdate,
-                         String endpoint) {
+            String processInstanceId, String processId, String rootProcessInstanceId, String rootProcessId,
+            ZonedDateTime started, ZonedDateTime completed, ZonedDateTime lastUpdate,
+            String endpoint) {
         super.setId(id);
         super.setName(name);
         super.setState(state);

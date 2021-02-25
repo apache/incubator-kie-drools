@@ -48,8 +48,8 @@ class UserUtilTest {
         attributes.put(ATTRIBUTE_2_NAME, ATTRIBUTE_2_VALUE);
 
         org.kie.kogito.taskassigning.user.service.api.User externalUser = mockExternalUser(USER_ID_1,
-                                                                                           Arrays.asList(GROUP_ID_1, GROUP_ID_2),
-                                                                                           attributes);
+                Arrays.asList(GROUP_ID_1, GROUP_ID_2),
+                attributes);
         User user = UserUtil.fromExternalUser(externalUser);
         assertThat(user.getId()).isEqualTo(USER_ID_1);
         assertThat(user.getGroups().stream().map(IdentifiableElement::getId).collect(Collectors.toSet()))
@@ -60,12 +60,12 @@ class UserUtilTest {
     @Test
     void filterDuplicates() {
         List<org.kie.kogito.taskassigning.user.service.api.User> users = Arrays.asList(mockExternalUser(USER_ID_1),
-                                                                                       mockExternalUser(USER_ID_2),
-                                                                                       mockExternalUser(USER_ID_1),
-                                                                                       mockExternalUser(USER_ID_3),
-                                                                                       mockExternalUser(USER_ID_2),
-                                                                                       mockExternalUser(USER_ID_1),
-                                                                                       null);
+                mockExternalUser(USER_ID_2),
+                mockExternalUser(USER_ID_1),
+                mockExternalUser(USER_ID_3),
+                mockExternalUser(USER_ID_2),
+                mockExternalUser(USER_ID_1),
+                null);
         List<org.kie.kogito.taskassigning.user.service.api.User> filteredUsers = UserUtil.filterDuplicates(users).collect(Collectors.toList());
         assertThat(filteredUsers.stream().map(org.kie.kogito.taskassigning.user.service.api.User::getId).collect(Collectors.toList()))
                 .containsExactlyInAnyOrderElementsOf(Arrays.asList(USER_ID_1, USER_ID_2, USER_ID_3));

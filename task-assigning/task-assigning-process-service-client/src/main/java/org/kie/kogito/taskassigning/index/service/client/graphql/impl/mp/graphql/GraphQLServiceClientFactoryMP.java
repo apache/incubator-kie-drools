@@ -44,10 +44,10 @@ public class GraphQLServiceClientFactoryMP implements GraphQLServiceClientFactor
     @Override
     public GraphQLServiceClient newClient(GraphQLServiceClientConfig config, AuthenticationCredentials credentials) {
         return new GraphQLServiceClientMP(RestClientBuilder.newBuilder()
-                                                  .baseUrl(config.getServiceUrl())
-                                                  .register(filterFactory.newAuthenticationFilter(credentials))
-                                                  .connectTimeout(config.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
-                                                  .readTimeout(config.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
-                                                  .build(GraphQLServiceClientRest.class));
+                .baseUrl(config.getServiceUrl())
+                .register(filterFactory.newAuthenticationFilter(credentials))
+                .connectTimeout(config.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+                .readTimeout(config.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
+                .build(GraphQLServiceClientRest.class));
     }
 }
