@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package $Package$;
+
 public class RuleConfig extends org.drools.core.config.StaticRuleConfig {
 
 }

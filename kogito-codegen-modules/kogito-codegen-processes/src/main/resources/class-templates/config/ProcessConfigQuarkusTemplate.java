@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package $Package$;
+
 import java.util.List;
 
 import org.kie.api.event.process.ProcessEventListener;

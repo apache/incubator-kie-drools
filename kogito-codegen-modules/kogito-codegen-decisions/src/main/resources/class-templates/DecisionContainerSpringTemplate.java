@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package $Package$;
+
 @org.springframework.stereotype.Component
 @org.springframework.web.context.annotation.ApplicationScope
 public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {

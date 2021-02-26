@@ -15,7 +15,6 @@
  */
 package $Package$;
 
-
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 
 public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {

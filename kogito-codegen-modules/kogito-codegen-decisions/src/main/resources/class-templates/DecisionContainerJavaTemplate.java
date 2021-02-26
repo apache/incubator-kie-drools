@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package $Package$;
+
 public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {
 
     static {

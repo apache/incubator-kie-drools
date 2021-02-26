@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package $Package$;
+
 public class DecisionModelResourcesProvider implements org.kie.kogito.decision.DecisionModelResourcesProvider {
 
     private final static boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;

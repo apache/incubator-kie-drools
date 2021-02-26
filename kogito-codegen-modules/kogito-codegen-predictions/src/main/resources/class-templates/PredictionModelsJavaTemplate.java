@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package $Package$;
+
 public class PredictionModels extends org.kie.kogito.pmml.AbstractPredictionModels {
 
     static {
