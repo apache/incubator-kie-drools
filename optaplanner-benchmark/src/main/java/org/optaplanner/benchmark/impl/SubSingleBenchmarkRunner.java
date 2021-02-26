@@ -19,8 +19,10 @@ package org.optaplanner.benchmark.impl;
 import java.util.concurrent.Callable;
 
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -74,7 +76,8 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
     public SubSingleBenchmarkRunner<Solution_> call() {
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
-        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult()
+        SingleBenchmarkResult singleBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult();
+        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = singleBenchmarkResult
                 .getProblemBenchmarkResult();
         Solution_ problem = problemBenchmarkResult.readProblem();
         if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
@@ -84,9 +87,9 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         logger.trace("Benchmark problem has been read for subSingleBenchmarkResult ({}).",
                 subSingleBenchmarkResult);
 
-        SolverConfig solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult()
+        SolverConfig solverConfig = singleBenchmarkResult.getSolverBenchmarkResult()
                 .getSolverConfig();
-        if (subSingleBenchmarkResult.getSingleBenchmarkResult().getSubSingleCount() > 1) {
+        if (singleBenchmarkResult.getSubSingleCount() > 1) {
             solverConfig = new SolverConfig(solverConfig);
             solverConfig.offerRandomSeedFromSubSingleIndex(subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
         }
@@ -95,7 +98,8 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         DefaultSolverFactory<Solution_> solverFactory = new DefaultSolverFactory<>(new SolverConfig(solverConfig));
         DefaultSolver<Solution_> solver = (DefaultSolver<Solution_>) solverFactory.buildSolver();
 
-        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
+        for (SubSingleStatistic<Solution_, ?> subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap()
+                .values()) {
             subSingleStatistic.open(solver);
             subSingleStatistic.initPointList();
         }
@@ -103,21 +107,25 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         Solution_ solution = solver.solve(problem);
         long timeMillisSpent = solver.getTimeMillisSpent();
 
-        SolverScope<Solution_> solverScope = solver.getSolverScope();
-        SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
-        problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(solution),
-                solutionDescriptor.getGenuineVariableCount(solution),
-                solutionDescriptor.getMaximumValueCount(solution),
-                solutionDescriptor.getProblemScale(solution));
-        subSingleBenchmarkResult.setScore(solutionDescriptor.getScore(solution));
-        subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
-        subSingleBenchmarkResult.setScoreCalculationCount(solverScope.getScoreCalculationCount());
-
-        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
+        for (SubSingleStatistic<Solution_, ?> subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap()
+                .values()) {
             subSingleStatistic.close(solver);
             subSingleStatistic.hibernatePointList();
         }
         if (!warmUp) {
+            SolverScope<Solution_> solverScope = solver.getSolverScope();
+            SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
+            problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(solution),
+                    solutionDescriptor.getGenuineVariableCount(solution),
+                    solutionDescriptor.getMaximumValueCount(solution),
+                    solutionDescriptor.getProblemScale(solution));
+            subSingleBenchmarkResult.setScore(solutionDescriptor.getScore(solution));
+            subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
+            subSingleBenchmarkResult.setScoreCalculationCount(solverScope.getScoreCalculationCount());
+
+            ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
+            subSingleBenchmarkResult.setScoreExplanationSummary(scoreManager.getSummary(solution));
+
             problemBenchmarkResult.writeSolution(subSingleBenchmarkResult, solution);
         }
         MDC.remove(NAME_MDC);

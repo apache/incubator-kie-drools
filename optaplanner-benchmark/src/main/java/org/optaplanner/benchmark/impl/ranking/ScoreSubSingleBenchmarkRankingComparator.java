@@ -25,7 +25,7 @@ public class ScoreSubSingleBenchmarkRankingComparator implements Comparator<SubS
 
     @Override
     public int compare(SubSingleBenchmarkResult a, SubSingleBenchmarkResult b) {
-        ScoreDefinition aScoreDefinition = a.getSingleBenchmarkResult().getSolverBenchmarkResult().getScoreDefinition();
+        ScoreDefinition<?> aScoreDefinition = a.getSingleBenchmarkResult().getSolverBenchmarkResult().getScoreDefinition();
         return Comparator
                 // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
                 .comparing(SubSingleBenchmarkResult::hasAnyFailure, Comparator.reverseOrder())

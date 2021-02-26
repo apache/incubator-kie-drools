@@ -29,11 +29,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.ScoreSubSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankBasedComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.Score;
@@ -76,13 +78,14 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     private double[] standardDeviationDoubles = null;
     private long timeMillisSpent = -1L;
     private long scoreCalculationCount = -1L;
+    private String scoreExplanationSummary = null;
 
     // ************************************************************************
     // Report accumulates
     // ************************************************************************
 
     // Compared to winningSingleBenchmarkResult in the same ProblemBenchmarkResult (which might not be the overall favorite)
-    private Score winningScoreDifference = null;
+    private Score<?> winningScoreDifference = null;
     private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
     private Double worstScoreCalculationSpeedDifferencePercentage = null;
 
@@ -167,11 +170,19 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         this.scoreCalculationCount = scoreCalculationCount;
     }
 
-    public Score getWinningScoreDifference() {
+    public String getScoreExplanationSummary() {
+        return scoreExplanationSummary;
+    }
+
+    public String getScoreExplanationSummaryAsHtmlEscaped() {
+        return StringEscapeUtils.escapeHtml4(scoreExplanationSummary);
+    }
+
+    public Score<?> getWinningScoreDifference() {
         return winningScoreDifference;
     }
 
-    public void setWinningScoreDifference(Score winningScoreDifference) {
+    public void setWinningScoreDifference(Score<?> winningScoreDifference) {
         this.winningScoreDifference = winningScoreDifference;
     }
 
@@ -204,7 +215,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         return averageScore;
     }
 
-    public void setAverageAndTotalScoreForTesting(Score averageAndTotalScore) {
+    public void setAverageAndTotalScoreForTesting(Score<?> averageAndTotalScore) {
         this.averageScore = averageAndTotalScore;
         this.totalScore = averageAndTotalScore;
     }
@@ -233,13 +244,17 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         return uninitializedSolutionCount;
     }
 
-    public Score getTotalScore() {
+    public Score<?> getTotalScore() {
         return totalScore;
     }
 
     // ************************************************************************
     // Smart getters
     // ************************************************************************
+
+    public String getAnchorId() {
+        return ReportHelper.escapeHtmlId(getName());
+    }
 
     /**
      * @return never null, filename safe
@@ -346,6 +361,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         usedMemoryAfterInputSolution = median.getUsedMemoryAfterInputSolution();
         timeMillisSpent = median.getTimeMillisSpent();
         scoreCalculationCount = median.getScoreCalculationCount();
+        scoreExplanationSummary = median.getScoreExplanationSummary();
     }
 
     private void determineTotalsAndAveragesAndRanking() {

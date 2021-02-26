@@ -681,6 +681,21 @@
                             </div>
                         </div>
                     </#if>
+                    <#list problemBenchmarkResult.singleBenchmarkResultList as singleBenchmarkResult>
+                        <section id="singleBenchmark_${singleBenchmarkResult.anchorId}">
+                            <h3>${singleBenchmarkResult.name}</h3>
+                            <#if singleBenchmarkResult.hasAnyFailure()>
+                                <div class="alert alert-error">
+                                    <p>${singleBenchmarkResult.failureCount} benchmarks have failed!</p>
+                                </div>
+                            <#else>
+                                <#if singleBenchmarkResult.getSubSingleCount() gt 1 >
+                                    <p>Only the median sub single run of each solver is shown in the statistics below.</p>
+                                </#if>
+                                <pre class="prettyprint">${singleBenchmarkResult.scoreExplanationSummaryAsHtmlEscaped}</pre>
+                            </#if>
+                        </section>
+                    </#list>
                 </section>
             </#list>
             </section>

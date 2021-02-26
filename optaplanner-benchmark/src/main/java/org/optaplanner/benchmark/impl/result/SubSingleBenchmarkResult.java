@@ -70,9 +70,10 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     private Long usedMemoryAfterInputSolution = null;
 
     private Boolean succeeded = null;
-    private Score score = null;
+    private Score<?> score = null;
     private long timeMillisSpent = -1L;
     private long scoreCalculationCount = -1L;
+    private String scoreExplanationSummary = null;
 
     // ************************************************************************
     // Report accumulates
@@ -151,11 +152,11 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         this.succeeded = succeeded;
     }
 
-    public Score getScore() {
+    public Score<?> getScore() {
         return score;
     }
 
-    public void setScore(Score score) {
+    public void setScore(Score<?> score) {
         this.score = score;
     }
 
@@ -173,6 +174,14 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     public void setScoreCalculationCount(long scoreCalculationCount) {
         this.scoreCalculationCount = scoreCalculationCount;
+    }
+
+    public String getScoreExplanationSummary() {
+        return scoreExplanationSummary;
+    }
+
+    public void setScoreExplanationSummary(String scoreExplanationSummary) {
+        this.scoreExplanationSummary = scoreExplanationSummary;
     }
 
     public Integer getRanking() {
@@ -231,7 +240,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public Score getAverageScore() {
+    public Score<?> getAverageScore() {
         return getScore();
     }
 
