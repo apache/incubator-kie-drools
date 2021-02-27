@@ -136,17 +136,46 @@ public final class TestParametersUtil {
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
+     * @param testEquality If true, the configurations returned contain configurations with EQUALITY_MODE instead of IDENTITY_MODE.
+     */
+    public static Collection<Object[]> getKieBaseStreamConfigurations(final boolean testAlsoExecutableModel, final boolean testEquality) {
+        return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.STREAM_MODE, testAlsoExecutableModel, testEquality);
+    }
+
+    /**
+     * Prepares collection of stream KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
      */
     public static Collection<Object[]> getKieBaseCloudConfigurations(final boolean testAlsoExecutableModel) {
         return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.CLOUD_MODE, testAlsoExecutableModel);
     }
 
+    /**
+     * Prepares collection of stream KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
+     * @param testEquality If true, the configurations returned contain configurations with EQUALITY_MODE instead of IDENTITY_MODE.
+     */
+    public static Collection<Object[]> getKieBaseCloudConfigurations(final boolean testAlsoExecutableModel, final boolean testEquality) {
+        return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.CLOUD_MODE, testAlsoExecutableModel, testEquality);
+    }
+
     private static Collection<Object[]> getKieBaseStreamOrCloudConfigurations(final EngineTestConfiguration streamOrCloudConfig,
                                                                               final boolean testAlsoExecutableModel) {
+        // Testing just IDENTITY_MODE by default, leaving EQUALITY_MODE to specialized tests.
+        return getKieBaseStreamOrCloudConfigurations(streamOrCloudConfig, testAlsoExecutableModel, false);
+    }
+
+    private static Collection<Object[]> getKieBaseStreamOrCloudConfigurations(final EngineTestConfiguration streamOrCloudConfig,
+                                                                              final boolean testAlsoExecutableModel, final boolean testEquality) {
         final List<EngineTestConfiguration> engineTestConfigurations = new ArrayList<>();
         engineTestConfigurations.add(streamOrCloudConfig);
-        // Testing just IDENTITY_MODE by default, leaving EQUALITY_MODE to specialized tests.
-        engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
+        if (testEquality) {
+            engineTestConfigurations.add(EngineTestConfiguration.EQUALITY_MODE);
+        } else {
+            engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
+        }
         engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_OFF);
         engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
 
