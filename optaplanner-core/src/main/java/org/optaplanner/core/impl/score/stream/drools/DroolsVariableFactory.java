@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import java.util.function.Function;
-
 import org.drools.model.DSL;
 import org.drools.model.Variable;
 
@@ -55,20 +53,6 @@ public interface DroolsVariableFactory {
      * @return new variable declaration, not yet bound to anything
      */
     <X> Variable<X> createVariable(String baseName, Variable<X> source);
-
-    /**
-     * Declare a new {@link Variable} with a given name, the contents of which will be derived from the source variable.
-     * Delegates to {@link DSL#declarationOf(Class, String, org.drools.model.DeclarationSource)}.
-     *
-     * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
-     *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param source source of the variable
-     * @param extractor function to apply on the source variable to receive the value for the new variable
-     * @param <In> generic type of the source variable
-     * @param <Out> generic type of the new variable
-     * @return new variable declaration, not yet bound to anything
-     */
-    <In, Out> Variable<Out> createVariable(String baseName, Variable<In> source, Function<In, Out> extractor);
 
     /**
      * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for details.

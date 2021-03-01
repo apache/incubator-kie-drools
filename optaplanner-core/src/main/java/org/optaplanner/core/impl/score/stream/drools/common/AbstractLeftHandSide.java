@@ -54,9 +54,9 @@ abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
         }
     }
 
-    protected static ViewItem<?> joinViewItemsWithLogicalAnd(PatternVariable<?>... patternVariables) {
+    protected static ViewItem<?> joinViewItemsWithLogicalAnd(PatternVariable<?, ?, ?>... patternVariables) {
         List<ViewItem<?>> viewItemList = new ArrayList<>();
-        for (PatternVariable<?> patternVariable : patternVariables) {
+        for (PatternVariable<?, ?, ?> patternVariable : patternVariables) {
             viewItemList.addAll(patternVariable.build());
         }
         int viewItemListSize = viewItemList.size();
