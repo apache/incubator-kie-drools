@@ -40,11 +40,12 @@ public class SolverBuildTimeConfig {
     Optional<EnvironmentMode> environmentMode;
 
     /**
-     * Determines how to access the fields and methods of domain classes.
-     * Defaults to {@link DomainAccessType#GIZMO}.
+     * Enable daemon mode. In daemon mode, non-early termination pauses the solver instead of stopping it,
+     * until the next problem fact change arrives. This is often useful for real-time planning.
+     * Defaults to "false".
      */
     @ConfigItem
-    Optional<DomainAccessType> domainAccessType;
+    Optional<Boolean> daemon;
 
     /**
      * Enable multithreaded solving for a single problem, which increases CPU consumption.
@@ -54,6 +55,13 @@ public class SolverBuildTimeConfig {
      */
     @ConfigItem
     Optional<String> moveThreadCount;
+
+    /**
+     * Determines how to access the fields and methods of domain classes.
+     * Defaults to {@link DomainAccessType#GIZMO}.
+     */
+    @ConfigItem
+    Optional<DomainAccessType> domainAccessType;
 
     /**
      * Configuration properties that overwrite OptaPlanner's {@link TerminationConfig}.

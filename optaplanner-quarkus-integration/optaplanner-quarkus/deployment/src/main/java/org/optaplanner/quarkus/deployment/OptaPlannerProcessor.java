@@ -209,6 +209,7 @@ class OptaPlannerProcessor {
         }
         applyScoreDirectorFactoryProperties(indexView, solverConfig);
         optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
+        optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
         optaPlannerBuildTimeConfig.solver.moveThreadCount.ifPresent(solverConfig::setMoveThreadCount);
         optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
         if (solverConfig.getDomainAccessType() == null) {

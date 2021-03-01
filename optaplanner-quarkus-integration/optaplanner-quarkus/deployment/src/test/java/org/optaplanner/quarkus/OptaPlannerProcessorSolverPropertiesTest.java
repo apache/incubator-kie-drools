@@ -18,6 +18,7 @@ package org.optaplanner.quarkus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 
@@ -42,13 +43,13 @@ public class OptaPlannerProcessorSolverPropertiesTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
-            .overrideConfigKey("quarkus.optaplanner.solver.environment-mode",
-                    "FULL_ASSERT")
+            .overrideConfigKey("quarkus.optaplanner.solver.environment-mode", "FULL_ASSERT")
+            .overrideConfigKey("quarkus.optaplanner.solver.daemon", "true")
             .overrideConfigKey("quarkus.optaplanner.solver.move-thread-count", "2")
+            .overrideConfigKey("quarkus.optaplanner.solver.domain-access-type", "REFLECTION")
             .overrideConfigKey("quarkus.optaplanner.solver.termination.spent-limit", "4h")
             .overrideConfigKey("quarkus.optaplanner.solver.termination.unimproved-spent-limit", "5h")
             .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
-            .overrideConfigKey("quarkus.optaplanner.solver.domain-access-type", "REFLECTION")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class, TestdataQuarkusSolution.class,
                             TestdataQuarkusConstraintProvider.class));
@@ -61,6 +62,7 @@ public class OptaPlannerProcessorSolverPropertiesTest {
     @Test
     public void solverProperties() {
         assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
+        assertTrue(solverConfig.getDaemon());
         assertEquals("2", solverConfig.getMoveThreadCount());
         assertEquals(DomainAccessType.REFLECTION, solverConfig.getDomainAccessType());
 

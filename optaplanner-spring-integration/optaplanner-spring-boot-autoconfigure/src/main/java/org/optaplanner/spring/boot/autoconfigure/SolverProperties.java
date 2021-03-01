@@ -29,15 +29,6 @@ public class SolverProperties {
     private EnvironmentMode environmentMode;
 
     /**
-     * Determines how to access the fields and methods of domain classes.
-     * Defaults to {@link DomainAccessType#REFLECTION}.
-     * <p>
-     * To use {@link DomainAccessType#GIZMO}, {@code io.quarkus.gizmo:gizmo} must be in your classpath,
-     * and all planning annotations must be on public members.
-     */
-    private DomainAccessType domainAccessType;
-
-    /**
      * Enable daemon mode. In daemon mode, non-early termination pauses the solver instead of stopping it,
      * until the next problem fact change arrives. This is often useful for real-time planning.
      * Defaults to "false".
@@ -49,6 +40,15 @@ public class SolverProperties {
      * Other options include "AUTO", a number or formula based on the available processor count.
      */
     private String moveThreadCount;
+
+    /**
+     * Determines how to access the fields and methods of domain classes.
+     * Defaults to {@link DomainAccessType#REFLECTION}.
+     * <p>
+     * To use {@link DomainAccessType#GIZMO}, {@code io.quarkus.gizmo:gizmo} must be in your classpath,
+     * and all planning annotations must be on public members.
+     */
+    private DomainAccessType domainAccessType;
 
     @NestedConfigurationProperty
     private TerminationProperties termination;
@@ -65,14 +65,6 @@ public class SolverProperties {
         this.environmentMode = environmentMode;
     }
 
-    public DomainAccessType getDomainAccessType() {
-        return domainAccessType;
-    }
-
-    public void setDomainAccessType(DomainAccessType domainAccessType) {
-        this.domainAccessType = domainAccessType;
-    }
-
     public Boolean getDaemon() {
         return daemon;
     }
@@ -87,6 +79,14 @@ public class SolverProperties {
 
     public void setMoveThreadCount(String moveThreadCount) {
         this.moveThreadCount = moveThreadCount;
+    }
+
+    public DomainAccessType getDomainAccessType() {
+        return domainAccessType;
+    }
+
+    public void setDomainAccessType(DomainAccessType domainAccessType) {
+        this.domainAccessType = domainAccessType;
     }
 
     public TerminationProperties getTermination() {
