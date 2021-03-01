@@ -21,15 +21,13 @@ import static org.drools.model.DSL.and;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import org.drools.model.Index;
-import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 
-abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
+abstract class AbstractLeftHandSide {
 
     protected final DroolsVariableFactory variableFactory;
 
@@ -68,7 +66,5 @@ abstract class AbstractLeftHandSide implements Supplier<List<ViewItem<?>>> {
                 .toArray(new ViewItem[0]);
         return and(firstPattern, remainingPatternArray);
     }
-
-    public abstract Variable[] getVariables();
 
 }

@@ -32,9 +32,9 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
@@ -52,14 +52,9 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public int getCardinality() {
-        return 2;
-    }
-
-    @Override
     public BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate) {
-        DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsFilterBiConstraintStream<>(constraintFactory, this,
-                predicate);
+        DroolsAbstractBiConstraintStream<Solution_, A, B> stream =
+                new DroolsFilterBiConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -70,9 +65,9 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             return join(otherStream)
                     .filter(((FilteringTriJoiner<A, B, C>) joiner).getFilter());
         }
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream = new DroolsJoinTriConstraintStream<>(constraintFactory,
-                this,
-                (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
+                new DroolsJoinTriConstraintStream<>(constraintFactory, this,
+                        (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
         addChildStream(stream);
         return stream;
     }
@@ -233,57 +228,57 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate();
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate();
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<BiLeftHandSide<A, B>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     // ************************************************************************

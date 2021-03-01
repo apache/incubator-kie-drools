@@ -36,8 +36,8 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
@@ -50,19 +50,14 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         super(constraintFactory);
     }
 
-    @Override
-    public int getCardinality() {
-        return 1;
-    }
-
     // ************************************************************************
     // Filter
     // ************************************************************************
 
     @Override
     public UniConstraintStream<A> filter(Predicate<A> predicate) {
-        DroolsFilterUniConstraintStream<Solution_, A> stream = new DroolsFilterUniConstraintStream<>(constraintFactory, this,
-                predicate);
+        DroolsFilterUniConstraintStream<Solution_, A> stream = new DroolsFilterUniConstraintStream<>(constraintFactory,
+                this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -242,57 +237,57 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate();
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate();
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<UniLeftHandSide<A>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     // ************************************************************************

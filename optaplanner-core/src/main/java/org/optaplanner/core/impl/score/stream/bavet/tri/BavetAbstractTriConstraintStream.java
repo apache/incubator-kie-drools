@@ -56,11 +56,6 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         childStreamList.add(childStream);
     }
 
-    @Override
-    public int getCardinality() {
-        return 3;
-    }
-
     // ************************************************************************
     // Filter
     // ************************************************************************

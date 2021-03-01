@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -55,15 +55,15 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            DroolsConstraint<Solution_>[] constraints) {
+            List<DroolsConstraint<Solution_>> constraints) {
         this.solutionDescriptor = solutionDescriptor;
         this.originalModel = model;
         this.originalKieBase = buildKieBaseFromModel(model);
         this.currentKieBase = originalKieBase;
-        this.compiledRuleToConstraintMap = Arrays.stream(constraints)
+        this.compiledRuleToConstraintMap = constraints.stream()
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
                         constraint.getConstraintName()), Function.identity()));
-        this.constraintToModelRuleMap = Arrays.stream(constraints)
+        this.constraintToModelRuleMap = constraints.stream()
                 .collect(toMap(Constraint::getConstraintId, constraint -> model.getRules().stream()
                         .filter(rule -> Objects.equals(rule.getName(), constraint.getConstraintName()))
                         .filter(rule -> Objects.equals(rule.getPackage(), constraint.getConstraintPackage()))

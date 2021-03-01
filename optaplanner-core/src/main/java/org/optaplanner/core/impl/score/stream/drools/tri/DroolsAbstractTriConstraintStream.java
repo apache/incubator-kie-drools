@@ -33,8 +33,8 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.TriLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
@@ -52,14 +52,9 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public int getCardinality() {
-        return 3;
-    }
-
-    @Override
     public TriConstraintStream<A, B, C> filter(TriPredicate<A, B, C> predicate) {
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream = new DroolsFilterTriConstraintStream<>(constraintFactory,
-                this, predicate);
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
+                new DroolsFilterTriConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -71,9 +66,9 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
             return join(otherStream)
                     .filter(((FilteringQuadJoiner<A, B, C, D>) joiner).getFilter());
         }
-        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsJoinQuadConstraintStream<>(
-                constraintFactory, this,
-                (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
+        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
+                        (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
         addChildStream(stream);
         return stream;
     }
@@ -237,57 +232,57 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate();
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate();
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        AbstractConstraintConsequence<TriLeftHandSide<A, B, C>> consequence = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
     }
 
     // ************************************************************************

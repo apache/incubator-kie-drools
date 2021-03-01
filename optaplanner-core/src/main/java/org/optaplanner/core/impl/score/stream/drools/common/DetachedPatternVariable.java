@@ -64,7 +64,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
  * <p>
  * Therefore most of its operations will throw {@link UnsupportedOperationException}, as you can not really do anything
  * with the variable.
- * It is only useful as a auxiliary variable in bindings or expressions on another {@link DirectPatternVariable} or
+ * It is only useful as an auxiliary variable in bindings or expressions on another {@link DirectPatternVariable} or
  * {@link IndirectPatternVariable}.
  *
  * <p>
