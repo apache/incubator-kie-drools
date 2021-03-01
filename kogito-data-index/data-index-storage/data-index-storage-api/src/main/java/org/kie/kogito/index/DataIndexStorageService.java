@@ -33,5 +33,7 @@ public interface DataIndexStorageService {
 
     Storage<String, ObjectNode> getDomainModelCache(String processId);
 
+    String getDomainModelCacheName(String processId);
+
     Storage<String, String> getProcessIdModelCache();
 }

@@ -1,0 +1,24 @@
+<infinispan>
+  <cache-container statistics="true" shutdown-hook="DEFAULT">
+    {#let template=config:property('kogito.cache.domain.template')}
+      {#if template is null}
+    <local-cache name="{cache_name}">
+      {#else}
+    <local-cache name="{cache_name}" configuration="{template}">
+      {/if}
+    {/let}
+      <indexing>
+        <property name="hibernate.search.index_uninverting_allowed">true</property>
+        <property name="default.directory_provider">local-heap</property>
+        <indexed-entities>
+          <indexed-entity>org.kie.kogito.index.model.KogitoMetadata</indexed-entity>
+          <indexed-entity>org.kie.kogito.index.model.ProcessInstanceMeta</indexed-entity>
+          <indexed-entity>org.kie.kogito.index.model.UserTaskInstanceMeta</indexed-entity>
+          {#for index in indexed}
+          <indexed-entity>{index}</indexed-entity>
+          {/for}
+        </indexed-entities>
+      </indexing>
+    </local-cache>
+  </cache-container>
+</infinispan>

@@ -1,7 +1,5 @@
 package org.kie.kogito.index.model;
 
-option indexed_by_default = true;
-
 /* @Indexed */
 message KogitoMetadata {
     /* @Field(store = Store.YES) @SortableField */

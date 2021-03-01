@@ -16,6 +16,9 @@
 
 package org.kie.kogito.index.infinispan.protostream;
 
+import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
+import org.infinispan.commons.configuration.BasicConfiguration;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,13 +36,18 @@ import org.kie.kogito.persistence.infinispan.cache.ProtobufCacheService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
+import io.quarkus.qute.Template;
+import io.quarkus.qute.TemplateInstance;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @ExtendWith(MockitoExtension.class)
 class ProtoSchemaManagerTest {
@@ -62,12 +70,28 @@ class ProtoSchemaManagerTest {
     @Mock
     Storage<String, String> processIdModelCache;
 
+    @Mock
+    Template cacheTemplate;
+
+    @Mock
+    TemplateInstance templateInstance;
+
+    @Mock
+    RemoteCacheManager manager;
+
+    @Mock
+    RemoteCacheManagerAdmin remoteCacheManagerAdmin;
+
     @BeforeEach
     void prepare() {
-        initMocks(this);
         when(protoSchemaAcceptor.accept(any())).thenReturn(true);
         when(protobufCacheService.getProtobufCache()).thenReturn(protobufCache);
         when(cacheManager.getProcessIdModelCache()).thenReturn(processIdModelCache);
+        when(cacheManager.getDomainModelCacheName(any())).thenAnswer(
+                (Answer<String>) inv -> inv.getArgument(0).toString() + "_domain");
+        when(cacheTemplate.data(any(), any())).thenReturn(templateInstance);
+        when(templateInstance.data(any(), any())).thenReturn(templateInstance);
+        when(manager.administration()).thenReturn(remoteCacheManagerAdmin);
     }
 
     @Test
@@ -77,7 +101,7 @@ class ProtoSchemaManagerTest {
         ProcessDescriptor processDescriptor = new ProcessDescriptor(processId, processType);
         String name = "testName";
         String content = "testContent";
-        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, null, processDescriptor);
+        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, emptyMap(), processDescriptor);
         SchemaType schemaType = new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE);
         SchemaRegisteredEvent event = new SchemaRegisteredEvent(schemaDescriptor, schemaType);
 
@@ -86,6 +110,10 @@ class ProtoSchemaManagerTest {
         verify(protoSchemaAcceptor).accept(eq(schemaType));
         verify(protobufCache).put(eq(name), eq(content));
         verify(processIdModelCache).put(eq(processId), eq(processType));
+        verify(remoteCacheManagerAdmin).getOrCreateCache(eq(processId + "_domain"), any(BasicConfiguration.class));
+        verify(cacheManager).getDomainModelCacheName(processId);
+        verify(cacheTemplate).data("cache_name", processId + "_domain");
+        verify(templateInstance).data("indexed", emptySet());
     }
 
     @Test
@@ -95,7 +123,7 @@ class ProtoSchemaManagerTest {
         ProcessDescriptor processDescriptor = new ProcessDescriptor(processId, processType);
         String name = "testName";
         String content = "testContent";
-        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, null, processDescriptor);
+        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, emptyMap(), processDescriptor);
         SchemaType schemaType = new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE);
         SchemaRegisteredEvent event = new SchemaRegisteredEvent(schemaDescriptor, schemaType);
 
