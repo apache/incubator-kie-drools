@@ -103,16 +103,10 @@ NOTE: KIE session IDs are in the `kmodule.xml` file of your {PRODUCT} project. T
 .Example Java command
 [source,java]
 ----
-BatchExecutionCommand command = new BatchExecutionCommand();
-command.setLookup("ksession1");
+InsertObjectCommand insertCommand = new InsertObjectCommand(new Person("john", 25));
+FireAllRulesCommand fireCommand = new FireAllRulesCommand();
 
-InsertObjectCommand insertObjectCommand = new InsertObjectCommand(new Person("john", 25));
-FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
-
-command.getCommands().add(insertObjectCommand);
-command.getCommands().add(fireAllRulesCommand);
-
-ksession.execute(command);
+BatchExecutionCommand batch = new BatchExecutionCommandImpl(Arrays.asList(insertCommand, fireCommand), "ksession1");
 ----
 
 .Example server response (JSON)
