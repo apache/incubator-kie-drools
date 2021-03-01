@@ -1372,7 +1372,6 @@ public class RuleModelDRLPersistenceImpl
             final String[] values = ListSplitter.split("\"", true, workingValue);
             buf.append(" ( ");
             for (String v : values) {
-                v = v.trim();
                 constraintValueBuilder.buildLHSFieldValue(buf,
                                                           type,
                                                           fieldType,
