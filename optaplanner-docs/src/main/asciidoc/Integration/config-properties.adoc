@@ -1,0 +1,53 @@
+////
+Quarkus and Spring Boot support the same configuration properties.
+All the properties are in this file, which can then be included multiple times.
+The {property_prefix} attribute is used for Quarkus properties.
+////
+
+{property_prefix}optaplanner.solver-manager.parallel-solver-count::
+The number of solvers that run in parallel.
+This directly influences CPU consumption.
+Defaults to `AUTO`.
+
+{property_prefix}optaplanner.solver-config-xml::
+A classpath resource to read the solver configuration XML.
+Defaults to `solverConfig.xml`.
+If this property isn't specified, that file is optional.
+
+{property_prefix}optaplanner.score-drl::
+A classpath resource to read the score DRL.
+Defaults to `constraints.drl`.
+Do not define this property when a `ConstraintProvider`, `EasyScoreCalculator` or `IncrementalScoreCalculator` class exists.
+
+{property_prefix}optaplanner.solver.environment-mode::
+Enable runtime assertions to detect common bugs in your implementation during development.
+
+{property_prefix}optaplanner.solver.daemon::
+Enable <<daemon,daemon mode>>.
+In daemon mode, non-early termination pauses the solver instead of stopping it, until the next problem fact change arrives.
+This is often useful for <<realTimePlanning,real-time planning>>.
+Defaults to `false`.
+
+{property_prefix}optaplanner.solver.move-thread-count::
+Enable multithreaded solving for a single problem, which increases CPU consumption.
+Defaults to `NONE`.
+See <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
+
+{property_prefix}optaplanner.solver.domain-access-type::
+How OptaPlanner should access the domain model.
+See <<domainAccess,the domain access section>> for more details.
+Defaults to `REFLECTION`.
+
+{property_prefix}optaplanner.solver.termination.spent-limit::
+How long the solver can run.
+For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
+
+{property_prefix}optaplanner.solver.termination.unimproved-spent-limit::
+How long the solver can run without finding a new best solution after finding a new best solution.
+For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
+
+{property_prefix}optaplanner.solver.termination.best-score-limit::
+Terminates the solver when a specific or higher score has been reached.
+For example: `0hard/-1000soft` terminates when the best score changes from `0hard/-1200soft` to `0hard/-900soft`.
+Wildcards are supported to replace numbers.
+For example: `0hard/*soft` to terminate when any feasible score is reached.

@@ -481,51 +481,6 @@ This generates:
 
 [[integrationWithQuarkus]]
 == Quarkus
-////
-Quarkus and Spring Boot support similar configuration properties.
-Define each properties as an adoc attribute and use it in both sections.
-////
-:property_optaplanner_solver-manager_parallel-solver-count: The number of solvers that run in parallel. \
-This directly influences CPU consumption. \
-Defaults to `AUTO`.
-
-:property_optaplanner_solver-config-xml: A classpath resource to read the solver configuration XML. \
-Defaults to `solverConfig.xml`. \
-If this property isn't specified, that file is optional.
-
-:property_optaplanner_score-drl: A classpath resource to read the score DRL. \
-Defaults to `constraints.drl`. \
-Do not define this property when a `ConstraintProvider`, `EasyScoreCalculator` or `IncrementalScoreCalculator` class exists.
-
-:property_optaplanner_solver_environment-mode: Enable runtime assertions to detect common bugs in your implementation \
-during development.
-
-:property_optaplanner_solver_daemon: Enable <<daemon,daemon mode>>. \
-In daemon mode, non-early termination pauses the solver instead of stopping it, until the next problem fact change arrives. \
-This is often useful for <<realTimePlanning,real-time planning>>. \
-Defaults to `false`.
-
-:property_optaplanner_solver_move-thread-count: Enable multithreaded solving for a single problem, which increases CPU consumption. \
-Defaults to `NONE`. \
-See <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
-
-:property_optaplanner_solver_domain-access-type: How OptaPlanner should access the domain model. See \
-<<domainAccess,the domain access section>> for more details. \
-Defaults to `REFLECTION`.
-
-:property_optaplanner_solver_termination_spent-limit: How long the solver can run. \
-For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
-
-:property_optaplanner_solver_termination_unimproved-spent-limit: How long the solver can run without finding \
-a new best solution after finding a new best solution. \
-For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
-
-:property_optaplanner_solver_termination_best-score-limit: Terminates the solver when a specific or higher score has been reached. \
-For example: `0hard/-1000soft` terminates when the best score changes from `0hard/-1200soft` to `0hard/-900soft`. \
-Wildcards are supported to replace numbers. \
-For example: `0hard/*soft` to terminate when any feasible score is reached.
-
-// End of attributes definitions.
 
 To use OptaPlanner with Quarkus, read the <<quarkusJavaQuickStart, Quarkus Java quick start>>.
 If you are starting a new project, visit the https://code.quarkus.io/[code.quarkus.io] and select
@@ -538,26 +493,8 @@ DRL score calculation is currently incompatible with the `quarkus:dev` mode.
 
 Following properties are supported in the Quarkus `application.properties`:
 
-quarkus.optaplanner.solver-manager.parallel-solver-count::
-{property_optaplanner_solver-manager_parallel-solver-count}
-quarkus.optaplanner.solver-config-xml::
-{property_optaplanner_solver-config-xml}
-quarkus.optaplanner.score-drl::
-{property_optaplanner_score-drl}
-quarkus.optaplanner.solver.environment-mode::
-{property_optaplanner_solver_environment-mode}
-quarkus.optaplanner.solver.daemon::
-{property_optaplanner_solver_daemon}
-quarkus.optaplanner.solver.move-thread-count::
-{property_optaplanner_solver_move-thread-count}
-quarkus.optaplanner.solver.domain-access-type::
-{property_optaplanner_solver_domain-access-type}
-quarkus.optaplanner.solver.termination.spent-limit::
-{property_optaplanner_solver_termination_spent-limit}
-quarkus.optaplanner.solver.termination.unimproved-spent-limit::
-{property_optaplanner_solver_termination_unimproved-spent-limit}
-quarkus.optaplanner.solver.termination.best-score-limit::
-{property_optaplanner_solver_termination_best-score-limit}
+:property_prefix: quarkus.
+include::config-properties.adoc[]
 
 [[integrationWithSpringBoot]]
 == Spring Boot
@@ -573,26 +510,8 @@ none of the DRL rules will fire, due to ClassLoader issues.
 
 These properties are supported in Spring's `application.properties`:
 
-optaplanner.solver-manager.parallel-solver-count::
-{property_optaplanner_solver-manager_parallel-solver-count}
-optaplanner.solver-config-xml::
-{property_optaplanner_solver-config-xml}
-optaplanner.score-drl::
-{property_optaplanner_score-drl}
-optaplanner.solver.environment-mode::
-{property_optaplanner_solver_environment-mode}
-optaplanner.solver.daemon::
-{property_optaplanner_solver_daemon}
-optaplanner.solver.move-thread-count::
-{property_optaplanner_solver_move-thread-count}
-optaplanner.solver.domain-access-type::
-{property_optaplanner_solver_domain-access-type}
-optaplanner.solver.termination.spent-limit::
-{property_optaplanner_solver_termination_spent-limit}
-optaplanner.solver.termination.unimproved-spent-limit::
-{property_optaplanner_solver_termination_unimproved-spent-limit}
-optaplanner.solver.termination.best-score-limit::
-{property_optaplanner_solver_termination_best-score-limit}
+:property_prefix:
+include::config-properties.adoc[]
 
 
 [[integrationWithSoaAndEsb]]
