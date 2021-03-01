@@ -116,4 +116,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         }
     }
 
+    public String getSignalName() {
+        return signalNameTemplate;
+    }
 }

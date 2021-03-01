@@ -87,7 +87,7 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                 Entry<String, String> varInfo = variableMapping.entrySet().iterator().next();
 
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
-                        new StringLiteralExpr((String) nodeMetaData.get(MESSAGE_TYPE)),
+                        new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
                         getOrNullExpr(varInfo.getKey()),
                         getOrNullExpr(varInfo.getValue())));
                 variable = variableScope.findVariable(varInfo.getKey());

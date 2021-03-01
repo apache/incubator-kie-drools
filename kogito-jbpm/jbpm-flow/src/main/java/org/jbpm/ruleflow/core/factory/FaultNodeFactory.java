@@ -24,6 +24,7 @@ public class FaultNodeFactory extends ExtendedNodeFactory {
 
     public static final String METHOD_FAULT_NAME = "faultName";
     public static final String METHOD_FAULT_VARIABLE = "faultVariable";
+    public static final String METHOD_TERMINATE_PARENT = "terminateParent";
 
     public FaultNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -50,6 +51,11 @@ public class FaultNodeFactory extends ExtendedNodeFactory {
 
     public FaultNodeFactory faultName(String faultName) {
         getFaultNode().setFaultName(faultName);
+        return this;
+    }
+
+    public FaultNodeFactory terminateParent(Boolean terminateParent) {
+        getFaultNode().setTerminateParent(terminateParent);
         return this;
     }
 }

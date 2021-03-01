@@ -1,0 +1,171 @@
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_IZt5MEe0EDmaKZ1-lMcQzQ" exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:error id="error1" errorCode="error1"/>
+  <bpmn2:error id="error1" errorCode="error1"/>
+  <bpmn2:process id="EndErrorWithEventSubprocess" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="EndErrorWithEventSubprocess" isExecutable="true" processType="Public">
+    <bpmn2:sequenceFlow id="_71A69705-3515-4DF0-B90C-4B3F0C2E6E00" sourceRef="_CCE02051-D053-41D9-927C-1F2506139CE7" targetRef="_EB3A9DA7-60E5-42D2-8CE8-B605A72F4ACE">
+      <bpmn2:extensionElements>
+        <drools:metaData name="isAutoConnection.source">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="isAutoConnection.target">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="_C7C99B08-0F4B-4AD7-B32F-DD94D472E013" sourceRef="_32455644-27D0-4CDA-BE21-1BC38DE3F1C1" targetRef="_CCE02051-D053-41D9-927C-1F2506139CE7">
+      <bpmn2:extensionElements>
+        <drools:metaData name="isAutoConnection.source">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="isAutoConnection.target">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="_EB3A9DA7-60E5-42D2-8CE8-B605A72F4ACE">
+      <bpmn2:incoming>_71A69705-3515-4DF0-B90C-4B3F0C2E6E00</bpmn2:incoming>
+      <bpmn2:errorEventDefinition drools:erefname="error1" errorRef="error1"/>
+    </bpmn2:endEvent>
+    <bpmn2:scriptTask id="_CCE02051-D053-41D9-927C-1F2506139CE7" name="task" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[task]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_C7C99B08-0F4B-4AD7-B32F-DD94D472E013</bpmn2:incoming>
+      <bpmn2:outgoing>_71A69705-3515-4DF0-B90C-4B3F0C2E6E00</bpmn2:outgoing>
+      <bpmn2:script>System.out.println("Error task !");</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:startEvent id="_32455644-27D0-4CDA-BE21-1BC38DE3F1C1" name="start">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[start]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_C7C99B08-0F4B-4AD7-B32F-DD94D472E013</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:subProcess id="_331F4958-D054-4B4A-B8F6-DCE866780E45" name="Event Sub-process" triggeredByEvent="true">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Event Sub-process]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:sequenceFlow id="_1160B226-5F89-4194-A799-904D56475D8B" sourceRef="_1AF4674F-B9A2-47E0-9E90-DEE3B52A3903" targetRef="_CECA3555-1F45-43EF-ADAE-BE586D9F12D6">
+        <bpmn2:extensionElements>
+          <drools:metaData name="isAutoConnection.source">
+            <drools:metaValue><![CDATA[true]]></drools:metaValue>
+          </drools:metaData>
+          <drools:metaData name="isAutoConnection.target">
+            <drools:metaValue><![CDATA[true]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="_6ACF6CF0-7FC6-4EA3-B105-6EC538BBFDF7" sourceRef="_865A752D-EE6B-48B6-8B8F-DFFCA8CD5005" targetRef="_1AF4674F-B9A2-47E0-9E90-DEE3B52A3903">
+        <bpmn2:extensionElements>
+          <drools:metaData name="isAutoConnection.source">
+            <drools:metaValue><![CDATA[true]]></drools:metaValue>
+          </drools:metaData>
+          <drools:metaData name="isAutoConnection.target">
+            <drools:metaValue><![CDATA[true]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:endEvent id="_CECA3555-1F45-43EF-ADAE-BE586D9F12D6">
+        <bpmn2:incoming>_1160B226-5F89-4194-A799-904D56475D8B</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:scriptTask id="_1AF4674F-B9A2-47E0-9E90-DEE3B52A3903" name="subprocess-task" scriptFormat="http://www.java.com/java">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[subprocess-task]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_6ACF6CF0-7FC6-4EA3-B105-6EC538BBFDF7</bpmn2:incoming>
+        <bpmn2:outgoing>_1160B226-5F89-4194-A799-904D56475D8B</bpmn2:outgoing>
+        <bpmn2:script>System.out.println("Subprocess Task");</bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:startEvent id="_865A752D-EE6B-48B6-8B8F-DFFCA8CD5005">
+        <bpmn2:outgoing>_6ACF6CF0-7FC6-4EA3-B105-6EC538BBFDF7</bpmn2:outgoing>
+        <bpmn2:errorEventDefinition drools:erefname="error1" errorRef="error1"/>
+      </bpmn2:startEvent>
+    </bpmn2:subProcess>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="EndErrorWithEventSubprocess">
+      <bpmndi:BPMNShape id="shape__331F4958-D054-4B4A-B8F6-DCE866780E45" bpmnElement="_331F4958-D054-4B4A-B8F6-DCE866780E45" isExpanded="true">
+        <dc:Bounds height="253" width="653" x="361" y="311"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__865A752D-EE6B-48B6-8B8F-DFFCA8CD5005" bpmnElement="_865A752D-EE6B-48B6-8B8F-DFFCA8CD5005">
+        <dc:Bounds height="56" width="56" x="476" y="417"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__1AF4674F-B9A2-47E0-9E90-DEE3B52A3903" bpmnElement="_1AF4674F-B9A2-47E0-9E90-DEE3B52A3903">
+        <dc:Bounds height="100" width="171" x="611" y="394"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__CECA3555-1F45-43EF-ADAE-BE586D9F12D6" bpmnElement="_CECA3555-1F45-43EF-ADAE-BE586D9F12D6">
+        <dc:Bounds height="56" width="56" x="846" y="417"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__865A752D-EE6B-48B6-8B8F-DFFCA8CD5005_to_shape__1AF4674F-B9A2-47E0-9E90-DEE3B52A3903" bpmnElement="_6ACF6CF0-7FC6-4EA3-B105-6EC538BBFDF7">
+        <di:waypoint x="532" y="445"/>
+        <di:waypoint x="611" y="444"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__1AF4674F-B9A2-47E0-9E90-DEE3B52A3903_to_shape__CECA3555-1F45-43EF-ADAE-BE586D9F12D6" bpmnElement="_1160B226-5F89-4194-A799-904D56475D8B">
+        <di:waypoint x="782" y="444"/>
+        <di:waypoint x="846" y="445"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape__32455644-27D0-4CDA-BE21-1BC38DE3F1C1" bpmnElement="_32455644-27D0-4CDA-BE21-1BC38DE3F1C1">
+        <dc:Bounds height="56" width="56" x="465" y="132"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__CCE02051-D053-41D9-927C-1F2506139CE7" bpmnElement="_CCE02051-D053-41D9-927C-1F2506139CE7">
+        <dc:Bounds height="102" width="154" x="601" y="109"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__EB3A9DA7-60E5-42D2-8CE8-B605A72F4ACE" bpmnElement="_EB3A9DA7-60E5-42D2-8CE8-B605A72F4ACE">
+        <dc:Bounds height="56" width="56" x="835" y="132"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__32455644-27D0-4CDA-BE21-1BC38DE3F1C1_to_shape__CCE02051-D053-41D9-927C-1F2506139CE7" bpmnElement="_C7C99B08-0F4B-4AD7-B32F-DD94D472E013">
+        <di:waypoint x="521" y="160"/>
+        <di:waypoint x="601" y="160"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__CCE02051-D053-41D9-927C-1F2506139CE7_to_shape__EB3A9DA7-60E5-42D2-8CE8-B605A72F4ACE" bpmnElement="_71A69705-3515-4DF0-B90C-4B3F0C2E6E00">
+        <di:waypoint x="755" y="160"/>
+        <di:waypoint x="835" y="160"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+          <bpsim:ElementParameters elementRef="_32455644-27D0-4CDA-BE21-1BC38DE3F1C1">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters elementRef="_CCE02051-D053-41D9-927C-1F2506139CE7">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_IZt5MEe0EDmaKZ1-lMcQzQ</bpmn2:source>
+    <bpmn2:target>_IZt5MEe0EDmaKZ1-lMcQzQ</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

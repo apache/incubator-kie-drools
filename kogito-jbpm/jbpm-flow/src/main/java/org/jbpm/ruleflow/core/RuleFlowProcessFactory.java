@@ -20,10 +20,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.DataType;
@@ -33,6 +35,7 @@ import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
+import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -71,6 +74,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     public static final String METHOD_GLOBAL = "global";
     public static final String METHOD_VARIABLE = "variable";
     public static final String METHOD_ADD_COMPENSATION_CONTEXT = "addCompensationContext";
+    public static final String METHOD_ERROR_EXCEPTION_HANDLER = "errorExceptionHandler";
 
     private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
 
@@ -190,6 +194,21 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
         exceptionHandler.setAction(new DroolsConsequenceAction(dialect, action));
         return exceptionHandler(exception, exceptionHandler);
+    }
+
+    public RuleFlowProcessFactory errorExceptionHandler(String signalType, String faultCode, String faultVariable) {
+        ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+        DroolsConsequenceAction action = new DroolsConsequenceAction("java", "");
+        action.setMetaData("Action", new SignalProcessInstanceAction(signalType, faultVariable, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+        exceptionHandler.setAction(action);
+        exceptionHandler.setFaultVariable(faultVariable);
+
+        if (Objects.isNull(getRuleFlowProcess().getExceptionScope())) {
+            getRuleFlowProcess().addContext(new ExceptionScope());
+        }
+
+        getRuleFlowProcess().getExceptionScope().setExceptionHandler(faultCode, exceptionHandler);
+        return this;
     }
 
     public RuleFlowProcessFactory metaData(String name, Object value) {
