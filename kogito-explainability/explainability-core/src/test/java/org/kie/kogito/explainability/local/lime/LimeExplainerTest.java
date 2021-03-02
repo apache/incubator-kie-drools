@@ -29,6 +29,7 @@ import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
@@ -41,12 +42,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LimeExplainerTest {
 
+    private static final int DEFAULT_NO_OF_PERTURBATIONS = 1;
+
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2, 3, 4 })
     void testEmptyPrediction(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
         LimeConfig limeConfig = new LimeConfig()
+                .withPerturbationContext(new PerturbationContext(random, DEFAULT_NO_OF_PERTURBATIONS))
                 .withSamples(10);
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         PredictionInput input = new PredictionInput(Collections.emptyList());
@@ -65,6 +69,7 @@ class LimeExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
         LimeConfig limeConfig = new LimeConfig()
+                .withPerturbationContext(new PerturbationContext(random, DEFAULT_NO_OF_PERTURBATIONS))
                 .withSamples(10);
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         List<Feature> features = new ArrayList<>();
@@ -90,6 +95,7 @@ class LimeExplainerTest {
         for (int nf = 1; nf < 4; nf++) {
             int noOfSamples = 100;
             LimeConfig limeConfigNoPenalty = new LimeConfig()
+                    .withPerturbationContext(new PerturbationContext(random, DEFAULT_NO_OF_PERTURBATIONS))
                     .withSamples(noOfSamples)
                     .withPenalizeBalanceSparse(false);
             LimeExplainer limeExplainerNoPenalty = new LimeExplainer(limeConfigNoPenalty);
