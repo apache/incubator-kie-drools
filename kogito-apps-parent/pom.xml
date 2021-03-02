@@ -17,7 +17,7 @@
 
   <properties>
     <!-- Override: temporarily override Apps until we upgrade to ISPN 12 -->
-    <version.io.quarkus>1.11.3.Final</version.io.quarkus>
+    <version.io.quarkus>1.11.4.Final</version.io.quarkus>
     <!-- End of Override -->
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
     <version.node>v12.16.2</version.node>
