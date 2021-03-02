@@ -16,6 +16,7 @@
 package org.drools.mvel.compiler.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.ActivationIterator;
@@ -24,23 +25,38 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.Iterator;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ActivationIteratorTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class ActivationIteratorTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ActivationIteratorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with testFilteredEagerEvaluation, testLianPlusEvalnWithSharingWithMixedDormantAndActive, testSingleJoinNodePlusEvalnWithSharingWithMixedDormantAndActive. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testSingleLian() {
@@ -56,9 +72,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -105,9 +120,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -179,9 +193,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -256,9 +269,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -288,9 +300,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -328,9 +339,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -379,9 +389,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -448,9 +457,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
@@ -500,9 +508,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "0" );
         ksession.insert( "2" );
@@ -549,9 +556,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "0" );
         ksession.insert( "1" );
@@ -598,9 +604,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         list.add( "0" );
@@ -644,9 +649,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Integer( 1 ) );
         ksession.insert( new Integer( 2 ) );
@@ -692,8 +696,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = createKnowledgeSession(kbase, conf);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession( conf, null );
 
         final List list = new ArrayList();
 
@@ -732,8 +736,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             }
         }));
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = createKnowledgeSession(kbase, conf);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession( conf, null );
 
         final List list = new ArrayList();
 

@@ -16,25 +16,43 @@
 package org.drools.mvel.compiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@RunWith(Parameterized.class)
 public class NestedAccessorsTest extends CommonTestMethodBase {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public NestedAccessorsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testNestedAccessor() throws Exception {
@@ -44,7 +62,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final Person mark1 = new Person("mark");
@@ -65,7 +83,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "   sb.append( $type );\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final StringBuilder sb = new StringBuilder();
@@ -88,7 +106,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final Person mark1 = new Person("mark");
@@ -107,7 +125,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final Person mark1 = new Person("mark");
@@ -127,7 +145,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessors() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NestedAccessors.drl"));
+        //final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NestedAccessors.drl"));
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_NestedAccessors.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
@@ -182,7 +201,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
         final KieSession ksession = createKnowledgeSession(kbase);
         final org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);

@@ -16,16 +16,34 @@
 package org.drools.mvel.compiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class InlineCastTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class InlineCastTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public InlineCastTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        // TODO: EM failed with testInlineCastOnRightOperand etc. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testInlineCast() throws Exception {
@@ -35,7 +53,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -61,7 +79,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -87,7 +105,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -113,7 +131,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -133,7 +151,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -154,7 +172,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -174,7 +192,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -201,7 +219,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -228,7 +246,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -254,7 +272,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -282,7 +300,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
@@ -310,7 +328,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then\n"
                      + "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         try {
             Person mark1 = new Person("mark");
@@ -341,7 +359,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then\n"
                      + "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         try {
             Person mark1 = new Person("mark");
@@ -373,7 +391,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then\n"
                      + "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         try {
             Person mark1 = new Person("mark");
@@ -404,7 +422,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then "
                      + "end ";
 
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert( "United States" );
@@ -428,7 +446,7 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "   list.add($x);" +
                 "end\n";
  
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
  
         List<String> list = new ArrayList<String>();
