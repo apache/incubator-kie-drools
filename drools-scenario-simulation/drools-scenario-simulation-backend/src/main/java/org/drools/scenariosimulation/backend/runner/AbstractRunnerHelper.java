@@ -97,7 +97,9 @@ public abstract class AbstractRunnerHelper {
                          expressionEvaluatorFactory,
                          requestContext);
 
-        validateAssertion(scenarioRunnerData.getResults(), scesimModelDescriptor, scenario.getDescription());
+        validateAssertion(scenarioRunnerData.getResults(),
+                          scesimModelDescriptor,
+                          scenario.getDescription());
     }
 
     protected List<InstanceGiven> extractBackgroundValues(Background background,

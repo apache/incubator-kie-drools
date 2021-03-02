@@ -343,14 +343,14 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            //runnerHelper.validateAssertion(scenarioFailResult, scesimModelDescriptor);
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), "description");
             fail();
         } catch (ScenarioException ignored) {
         }
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
-        //runnerHelper.validateAssertion(scenarioSuccessResult, scesimModelDescriptor);
+        runnerHelper.validateAssertion(scenarioSuccessResult, simulation.getScesimModelDescriptor(), "description");
     }
 
     @Test
