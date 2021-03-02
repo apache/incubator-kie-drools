@@ -22,8 +22,8 @@ import org.drools.core.rule.Pattern;
 
 public class GroupByDeclaration extends Declaration {
 
-    public GroupByDeclaration(Pattern pattern) {
-        super("GROUP_KEY_DECLARATION_NAME", new LambdaReadAccessor( Object.class, x -> x ), pattern);
+    public GroupByDeclaration(String name, Pattern pattern) {
+        super(name, new LambdaReadAccessor( Object.class, x -> x ), pattern);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class GroupByDeclaration extends Declaration {
 
     @Override
     public Declaration cloneWithPattern(Pattern pattern) {
-        return new GroupByDeclaration( pattern );
+        return new GroupByDeclaration( getIdentifier(), pattern );
     }
 }

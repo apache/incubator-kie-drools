@@ -124,7 +124,6 @@ public class MVELExprAnalyzer {
 
         parserContext1.setStrictTypeEnforcement( false );
         parserContext1.setStrongTyping( false );
-        parserContext1.setInterceptors( dialect.getInterceptors() );
         Class< ? > returnType;
 
         try {
@@ -163,7 +162,6 @@ public class MVELExprAnalyzer {
         final ParserContext parserContext2 = new ParserContext( conf );
         parserContext2.setStrictTypeEnforcement( true );
         parserContext2.setStrongTyping( true );
-        parserContext2.setInterceptors( dialect.getInterceptors() );
 
         for ( String input : requiredInputs ) {
             if ("this".equals( input )) {
