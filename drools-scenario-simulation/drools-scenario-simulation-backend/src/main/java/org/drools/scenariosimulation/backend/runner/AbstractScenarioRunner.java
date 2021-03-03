@@ -64,11 +64,9 @@ public abstract class AbstractScenarioRunner extends Runner {
     }
 
     public static Description getDescriptionForScenario(Optional<String> fullFileName, int index, Scenario scenario) {
-        String testName = fullFileName.isPresent() ?
-                String.format("#%d: %s (%s)", index, scenario.getDescription(), getFileName(fullFileName.get())) :
-                String.format("#%d: %s", index, scenario.getDescription());
-        return Description.createTestDescription(fullFileName.orElse(AbstractScenarioRunner.class.getCanonicalName()),
-                                                 testName);
+        String testName = fullFileName.isPresent() ? getFileName(fullFileName.get()) : AbstractScenarioRunner.class.getCanonicalName();
+        return Description.createTestDescription(testName,
+                                                 String.format("#%d: %s", index, scenario.getDescription()));
     }
 
     private static String getFileName(String fileFullPath) {
