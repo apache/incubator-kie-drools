@@ -19,8 +19,8 @@ public class ResourceWithConfigurationImpl implements ResourceWithConfiguration 
          * 
          * @param resource 
          * @param resourceConfiguration
-         * @param beforeAdd callback executed on `kbuilder` as a paramenter, which will be executed before performing {@link KieAssemblerService#addResource(Object, Resource, ResourceType, ResourceConfiguration)} for the given resource {@link #resource}
-         * @param afterAdd callback executed on `kbuilder` as a paramenter, which will be executed after performing {@link KieAssemblerService#addResource(Object, Resource, ResourceType, ResourceConfiguration)} for the given resource {@link #resource}
+         * @param beforeAdd callback executed on `kbuilder` as a paramenter, which will be executed before performing {@link KieAssemblerService#addResourceAfterRules(Object, Resource, ResourceType, ResourceConfiguration)} for the given resource {@link #resource}
+         * @param afterAdd callback executed on `kbuilder` as a paramenter, which will be executed after performing {@link KieAssemblerService#addResourceAfterRules(Object, Resource, ResourceType, ResourceConfiguration)} for the given resource {@link #resource}
          */
         public ResourceWithConfigurationImpl(Resource resource, ResourceConfiguration resourceConfiguration, Consumer<Object> beforeAdd, Consumer<Object> afterAdd) {
             this.resource = resource;

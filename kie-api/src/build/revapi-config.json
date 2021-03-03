@@ -59,7 +59,34 @@
                 "methodName": "addResourceBeforeRules",
                 "elementKind": "method",
                 "justification": "Add AssemblerService method running before rules compilation"
-              } 
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method void org.kie.api.internal.assembler.KieAssemblerService::addResourceAfterRules(java.lang.Object, org.kie.api.io.Resource, org.kie.api.io.ResourceType, org.kie.api.io.ResourceConfiguration) throws java.lang.Exception",
+                "package": "org.kie.api.internal.assembler",
+                "classSimpleName": "KieAssemblerService",
+                "methodName": "addResourceAfterRules",
+                "elementKind": "method",
+                "justification": "Enforcing before rules/after rules semantic"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method void org.kie.api.internal.assembler.KieAssemblers::addResourceAfterRules(java.lang.Object, org.kie.api.io.Resource, org.kie.api.io.ResourceType, org.kie.api.io.ResourceConfiguration) throws java.lang.Exception",
+                "package": "org.kie.api.internal.assembler",
+                "classSimpleName": "KieAssemblers",
+                "methodName": "addResourceAfterRules",
+                "elementKind": "method",
+                "justification": "Enforcing before rules/after rules semantic"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method void org.kie.api.internal.assembler.KieAssemblers::addResourcesAfterRules(java.lang.Object, java.util.List<org.kie.api.io.ResourceWithConfiguration>, org.kie.api.io.ResourceType) throws java.lang.Exception",
+                "package": "org.kie.api.internal.assembler",
+                "classSimpleName": "KieAssemblers",
+                "methodName": "addResourcesAfterRules",
+                "elementKind": "method",
+                "justification": "Enforcing before rules/after rules semantic"
+              }
             ]
         }
     }

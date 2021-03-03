@@ -53,13 +53,13 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
     }
 
     @Override
-    public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResourceAfterRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         KieAssemblerService assembler = assemblers.get(type);
         if (assembler != null) {
-            assembler.addResource(knowledgeBuilder,
-                                  resource,
-                                  type,
-                                  configuration);
+            assembler.addResourceAfterRules(knowledgeBuilder,
+                                            resource,
+                                            type,
+                                            configuration);
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
@@ -67,10 +67,10 @@ public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerSe
     }
 
     @Override
-    public void addResources(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+    public void addResourcesAfterRules(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         KieAssemblerService assembler = assemblers.get(type);
         if (assembler != null) {
-            assembler.addResources(knowledgeBuilder, resources, type);
+            assembler.addResourcesAfterRules(knowledgeBuilder, resources, type);
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
