@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,10 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             subSingleBenchmarkResult.setScoreCalculationCount(solverScope.getScoreCalculationCount());
 
             ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
-            subSingleBenchmarkResult.setScoreExplanationSummary(scoreManager.getSummary(solution));
+            boolean isConstraintMatchEnabled = solver.getSolverScope().getScoreDirector().isConstraintMatchEnabled();
+            if (isConstraintMatchEnabled) { // Easy calculator fails otherwise.
+                subSingleBenchmarkResult.setScoreExplanationSummary(scoreManager.getSummary(solution));
+            }
 
             problemBenchmarkResult.writeSolution(subSingleBenchmarkResult, solution);
         }

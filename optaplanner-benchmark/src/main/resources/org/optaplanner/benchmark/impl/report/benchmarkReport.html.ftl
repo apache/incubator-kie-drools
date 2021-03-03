@@ -692,7 +692,11 @@
                                 <#if singleBenchmarkResult.getSubSingleCount() gt 1 >
                                     <p>Only the median sub single run of each solver is shown in the statistics below.</p>
                                 </#if>
-                                <pre class="prettyprint">${singleBenchmarkResult.scoreExplanationSummaryAsHtmlEscaped}</pre>
+                                <#if singleBenchmarkResult.getScoreExplanationSummaryAsHtmlEscaped()??>
+                                    <pre class="prettyprint">${singleBenchmarkResult.scoreExplanationSummaryAsHtmlEscaped}</pre>
+                                <#else>
+                                    <p>Score summary not provided.</p>
+                                </#if>
                             </#if>
                         </section>
                     </#list>
