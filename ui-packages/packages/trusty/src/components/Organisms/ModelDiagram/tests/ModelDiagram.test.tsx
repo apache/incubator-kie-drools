@@ -3,18 +3,25 @@ import { mount } from 'enzyme';
 import ModelDiagram from '../ModelDiagram';
 import { ModelData } from '../../../../types';
 
+const mockOpenFunction = jest.fn();
+jest.mock('@kogito-tooling/kie-editors-standalone/dist/dmn', () => ({
+  open: () => mockOpenFunction()
+}));
+
+afterAll(() => jest.resetAllMocks());
+
 describe('ModelDiagram', () => {
   test('renders a DMN model', () => {
-    const wrapper = mount(<ModelDiagram model={modelDataDMN} />);
+    mount(<ModelDiagram model={modelDataDMN} />);
 
     // investigating other ways to test for the embedded dmn viewer
-    expect(wrapper.find('iframe')).toHaveLength(1);
+    expect(mockOpenFunction).toBeCalledTimes(1);
   });
 
   test('renders a message if the model type is not supported', () => {
     const wrapper = mount(<ModelDiagram model={modelDataUnknown} />);
 
-    expect(wrapper.find('div').text()).toEqual('Unknown model type');
+    expect(wrapper.find('h4').text()).toEqual('Unsupported model type');
   });
 });
 

@@ -7,14 +7,6 @@ To install dependencies you need to have yarn installed globally and run in the 
 yarn install
 ```
 
-### Install GWT editors
-
-To install the GWT editors to view DMN models you need to run the following in the terminal before running the project:
-
-```
-yarn run copy-embedded-editor
-```
-
 ### Run the project
 
 Compile and run the project in development mode with:

@@ -1873,74 +1873,120 @@
     uniforms-bridge-json-schema "3.0.0"
     uniforms-patternfly "4.1.2"
 
-"@kogito-tooling/channel-common-api@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/channel-common-api/-/channel-common-api-0.6.1.tgz#fcc5fc4e969fc27164346bc599773f4b727d19c5"
-  integrity sha512-6hFx/z1vSLDPqflWny56i9CXxXU7BnAOQ35W1qslm7xjyfQU/XqF3H4+7wd8Holly/aB+MugVnq/87fGX5aQmA==
-
-"@kogito-tooling/editor@0.6.1", "@kogito-tooling/editor@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/editor/-/editor-0.6.1.tgz#52fd9597426b45cf6b49f2ef2ef41407102aa575"
-  integrity sha512-43JltV6soGwYtxxv6pPGWqf2R09Pp/tjUs5sPjB376IJDMH/n/K1uf4HGcSoFzvYzh99PKClvjtNHk8sykfK1Q==
+"@kogito-tooling/backend@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/backend/-/backend-0.8.3.tgz#748edb427621c44fa02db725c5413569cb81d7a6"
+  integrity sha512-wUulpHvS0c7KYZnhi6S6DpTBqgD0UQ+MyW2l+YA54/NEmXYTXlDVkcZhg4EUjtHKEOaUi1ESV4Fj3kZUxJe73A==
   dependencies:
-    "@kogito-tooling/envelope" "0.6.1"
-    "@kogito-tooling/envelope-bus" "0.6.1"
-    "@kogito-tooling/guided-tour" "0.6.1"
-    "@kogito-tooling/keyboard-shortcuts" "0.6.1"
+    "@kogito-tooling/i18n" "0.8.3"
+    "@kogito-tooling/i18n-common-dictionary" "0.8.3"
+    "@kogito-tooling/workspace" "0.8.3"
+    "@types/semver" "^7.3.3"
+    axios "^0.19.2"
+    fast-xml-parser "^3.17.4"
+    portfinder "^1.0.27"
 
-"@kogito-tooling/envelope-bus@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope-bus/-/envelope-bus-0.6.1.tgz#88864c40e14748431e51ea64ab3731df019e656b"
-  integrity sha512-2INOMepepa/c1YeOeKH+MW7GrUpgGWYEGXP8D0xlgmM+wH41Yagw0QB705fUpHHFQaaaFhwc71nUx5TR6m/lHg==
+"@kogito-tooling/channel-common-api@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/channel-common-api/-/channel-common-api-0.8.3.tgz#967a9d192d61f9652d04c8a609f1ac65057c0b01"
+  integrity sha512-2c1LJScqtNydveP1J3T/PiOTb+FavFvNq1IvN/9KSbksPPhUXMoy8DPWwoueCnIdSpkUtIAYOzTJeptkU7LyWw==
 
-"@kogito-tooling/envelope@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope/-/envelope-0.6.1.tgz#60aa38e5981ad1a9f81f7570d6d021bd1b20cb0f"
-  integrity sha512-n9zX0mH3ItjkCMfnnvJzSSD6tUI5T/RQQXDUGu0dBNxObwh3Wk9CceH5gJSFajxwf4XSCyMXMJzwLL24tSKVkg==
+"@kogito-tooling/editor@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/editor/-/editor-0.8.3.tgz#2348f0e9228485058ee6dbf8013811f722a11fa2"
+  integrity sha512-PgDEOk+vKjme8scmNSlfZIMeJjb+gh6FH1ZMa9ypbxal/dvACYEZkaFjn0poc/GocubbyMGs2mKGzmee7LdnDg==
   dependencies:
-    "@kogito-tooling/envelope-bus" "0.6.1"
+    "@kogito-tooling/backend" "0.8.3"
+    "@kogito-tooling/envelope" "0.8.3"
+    "@kogito-tooling/envelope-bus" "0.8.3"
+    "@kogito-tooling/guided-tour" "0.8.3"
+    "@kogito-tooling/i18n" "0.8.3"
+    "@kogito-tooling/keyboard-shortcuts" "0.8.3"
+    "@kogito-tooling/workspace" "0.8.3"
 
-"@kogito-tooling/guided-tour@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.6.1.tgz#60a39b3faa501ddfa558de543165fee69de84396"
-  integrity sha512-GUCA0Yu2on00ZbTmg2fcMZBmTS046zPSwVkvAr21y5EVnrT1ChivAae4XAk/CHHj4rOJiYVr3+6yOR1BPrUF1Q==
+"@kogito-tooling/envelope-bus@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope-bus/-/envelope-bus-0.8.3.tgz#b441d855313ae46a7e629689e730d182e71d52da"
+  integrity sha512-ZTQ/wK4iBvBfjYDq/mn9YzbyxcfXoWJlGqBE2cQB3QF1a/0rLnt/0b0qlgBms2XHiuMhgaRiucFf9w0viHbT1w==
+
+"@kogito-tooling/envelope@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope/-/envelope-0.8.3.tgz#aef9d55bebfa93798b1b4bf7f1ead4c23fad3f93"
+  integrity sha512-XNePowQYpZ1hxfpJqq4aCKF041Ce/76bwRBrn7SnCI92RIDO0OUg55obuLEavkYQr+mv99MZnN/y91/Nun2f0w==
   dependencies:
-    "@kogito-tooling/envelope-bus" "0.6.1"
-    "@kogito-tooling/i18n" "0.6.1"
-    "@kogito-tooling/i18n-common-dictionary" "0.6.1"
+    "@kogito-tooling/envelope-bus" "0.8.3"
 
-"@kogito-tooling/i18n-common-dictionary@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n-common-dictionary/-/i18n-common-dictionary-0.6.1.tgz#74adeabf226abda76821766daa665a41a8b04b6c"
-  integrity sha512-5jHe4Q2tUKtE7ynedxYqK1ZN+NN2VqNoxDztbd1r4m5DeNoijeOipzYxeroV/51XOjQIgUBiMeHqWETfQCjuaA==
+"@kogito-tooling/external-assets-base@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/external-assets-base/-/external-assets-base-0.8.3.tgz#12834de5ac40ce970ae58246e122f7e5e524afd5"
+  integrity sha512-6K9CH6XW0YZf27CDR5G5Jmg6Rwilebe2K3TXdl5qmxasEgu7BdzxVPtt+6B4wyCAS4ACbMaLOqii5dk7Toyk2A==
   dependencies:
-    "@kogito-tooling/i18n" "0.6.1"
+    "@types/glob" "^7.1.3"
+    glob "^7.1.6"
 
-"@kogito-tooling/i18n@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n/-/i18n-0.6.1.tgz#54b7909a99fd28882521950c69552989521d549f"
-  integrity sha512-QKTVoFUfQIrIx7FxQNXLJRm4CyjCJF2awaiIpXtuSOX0xWIoykLuaUTw2keMYbDo9ozRG8NVHgzOinLJvXl3Hw==
-
-"@kogito-tooling/keyboard-shortcuts@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.6.1.tgz#c0ecf75a84ef4a70c5db1267fc11a72e7b75184b"
-  integrity sha512-3tz0hhqYxPXzFODTQYkRQYGZxlJSf6Sd/GUQudPk1ttsU/41tCWG/zK/GTeLZcXCCi2Z/rPlzlDYF27NJ9zO8w==
+"@kogito-tooling/guided-tour@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.8.3.tgz#eb692fafa7c76ed32b3a103606a062f330f62b20"
+  integrity sha512-M5xR1aKcJG1sh2pwCe4K+cUm+PEjeiX5ymuSJ4VMYBdLAi71HxAZZkYXImHoMkdVCPes5LoKSOo9KuHpB80/Dg==
   dependencies:
-    "@kogito-tooling/channel-common-api" "0.6.1"
-    "@kogito-tooling/envelope-bus" "0.6.1"
+    "@kogito-tooling/envelope-bus" "0.8.3"
+    "@kogito-tooling/i18n" "0.8.3"
+    "@kogito-tooling/i18n-common-dictionary" "0.8.3"
 
-"@kogito-tooling/kie-bc-editors-unpacked@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors-unpacked/-/kie-bc-editors-unpacked-0.6.1.tgz#3f39f715b346770bc4e6336971e3f0c4f97ac72b"
-  integrity sha512-d8F5GiT7nKOQWVVopkGGyD+Ffrj1NpwIhlyRKJsVbKqnjbTryEMOGdCDu2GPbCVG/F0KAUJ9BycAVX1M/xNoeg==
-
-"@kogito-tooling/kie-bc-editors@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.6.1.tgz#79633c6226a8f08105c02ca377235555c2db8c71"
-  integrity sha512-+bUmKmOn52J4jXMlhgpFOMD+1hodHYbOVRIrga3atUyfy6e7f6BZS1jnVPtXaT+U1lxhVB7GRIwHzNcTep3orQ==
+"@kogito-tooling/i18n-common-dictionary@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n-common-dictionary/-/i18n-common-dictionary-0.8.3.tgz#6ba37190ab196e4d7083d947c0918cc13475b497"
+  integrity sha512-CezVQQyVAjpwQGwG7E5sEwqASIRMjJ5G3euDo0jE/Yk3YbOybhyHpq8VQPu4A30whDYEYIXpROpbx625IHfUaw==
   dependencies:
-    "@kogito-tooling/editor" "0.6.1"
-    "@kogito-tooling/kie-bc-editors-unpacked" "0.6.1"
+    "@kogito-tooling/i18n" "0.8.3"
+
+"@kogito-tooling/i18n@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n/-/i18n-0.8.3.tgz#72d46d7951c9df1a6d540fbbce819a3a2f79131c"
+  integrity sha512-pVIk+yt8nMmttTWullMM5WEq6Fou2DLk5oUuMSu1+mttl880MmR63BX/LEbmylSxUcsVoZ4CQOF3xWtvQOKYQA==
+
+"@kogito-tooling/keyboard-shortcuts@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.8.3.tgz#a83d6feb9ad10dff8b1d85791ca2c500ed1b13de"
+  integrity sha512-mtUPwE2/u15n4LNrVk2XMtFSSkpU43sAkhhH/YC69F83WNnTOhLTkIYXl8bz8nkyY9ynGcB58I8ImZLWNXfWtg==
+  dependencies:
+    "@kogito-tooling/channel-common-api" "0.8.3"
+    "@kogito-tooling/envelope-bus" "0.8.3"
+
+"@kogito-tooling/kie-bc-editors@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.8.3.tgz#9f1d45e9bbeee9f34ca3245542ae3da662522da1"
+  integrity sha512-Yz6x058wQA/ddc+zMKKUF36e+rhRESK56Ssg/T4eaipy9Lb7pt6ZR3NkDZ4yUQVuU4oeM7xuFgc1STMVPvCjqQ==
+  dependencies:
+    "@kogito-tooling/backend" "0.8.3"
+    "@kogito-tooling/editor" "0.8.3"
+    "@kogito-tooling/i18n" "0.8.3"
+    "@kogito-tooling/pmml-editor-marshaller" "0.8.3"
+
+"@kogito-tooling/kie-editors-standalone@^0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-editors-standalone/-/kie-editors-standalone-0.8.3.tgz#9d41dbb016cf2ff40af02bdb8f0edf80bdc2d6f2"
+  integrity sha512-g2q+G0xcyJIQzQRKOn1CwDSFZJ8oNLGYWCp3cUvDAngV/fTcMYpTrVqYIQkwchNzq/E9+q4ShbQKlxIXr5e8Sg==
+  dependencies:
+    "@kogito-tooling/editor" "0.8.3"
+    "@kogito-tooling/external-assets-base" "0.8.3"
+    "@kogito-tooling/i18n" "0.8.3"
+    "@kogito-tooling/kie-bc-editors" "0.8.3"
+
+"@kogito-tooling/pmml-editor-marshaller@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/pmml-editor-marshaller/-/pmml-editor-marshaller-0.8.3.tgz#9dbdb289b678f46bb40488d09aedf069d036dd54"
+  integrity sha512-0MWIflY2GTQP61BvTR3KLOtT+NuGXkHA6qFnOAWgku4deIalfktG5rSAsdDpMXgY/Td8E80d1ZpSlffL0JpUZQ==
+  dependencies:
+    jsonata "^1.8.3"
+    xml-js "^1.6.11"
+
+"@kogito-tooling/workspace@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/workspace/-/workspace-0.8.3.tgz#fd151e809068d05794ea848e69ed30065b5f32e6"
+  integrity sha512-kZOyweWwGykprA9L9ohaHfHdV9v5BKCrkYSdV3/CvsrFIYu75Xtg1zeB5JQsJnrtolVNjQP5BnGaeC7zF+7GhA==
+  dependencies:
+    "@kogito-tooling/channel-common-api" "0.8.3"
 
 "@lerna/add@3.21.0":
   version "3.21.0"
@@ -2660,13 +2706,6 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
-
-"@npmcli/move-file@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@npmcli/move-file/-/move-file-1.0.1.tgz#de103070dac0f48ce49cf6693c23af59c0f70464"
-  integrity sha512-Uv6h1sT+0DrblvIrolFtbvM1FgWm+/sy4B3pvLp67Zys+thcukzS5ekn7HsZFGpWP4Q3fYJCljbWQE/XivMRLw==
-  dependencies:
-    mkdirp "^1.0.4"
 
 "@octokit/auth-token@^2.4.0":
   version "2.4.2"
@@ -3822,7 +3861,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/glob@^7.1.1":
+"@types/glob@^7.1.1", "@types/glob@^7.1.3":
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.3.tgz#e6ba80f36b7daad2c685acd9266382e68985c183"
   integrity sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w==
@@ -4095,6 +4134,11 @@
   integrity sha512-d2gQQ0IL6hXLnoRfVYZukQNWHuVsE75DzFTLPUuyyEhJS8G2VvlE+qfQQ91SJjaMqlURRCNIsX7Jcsw6cEuJlA==
   dependencies:
     "@types/react" "*"
+
+"@types/semver@^7.3.3":
+  version "7.3.4"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.4.tgz#43d7168fec6fa0988bb1a513a697b29296721afb"
+  integrity sha512-+nVsLKlcUCeMzD2ufHEYuJ9a2ovstb6Dp52A5VsoKxDXgvE051XgHI/33I1EymwkRGQkwnA0LkhnUzituGs4EQ==
 
 "@types/serve-static@*":
   version "1.13.4"
@@ -6119,29 +6163,6 @@ cacache@^13.0.1:
     ssri "^7.0.0"
     unique-filename "^1.1.1"
 
-cacache@^15.0.4:
-  version "15.0.5"
-  resolved "https://registry.yarnpkg.com/cacache/-/cacache-15.0.5.tgz#69162833da29170d6732334643c60e005f5f17d0"
-  integrity sha512-lloiL22n7sOjEEXdL8NAjTgv9a1u43xICE9/203qonkZUCj5X1UEWIdf2/Y0d6QcCtMzbKQyhrcDbdvlZTs/+A==
-  dependencies:
-    "@npmcli/move-file" "^1.0.1"
-    chownr "^2.0.0"
-    fs-minipass "^2.0.0"
-    glob "^7.1.4"
-    infer-owner "^1.0.4"
-    lru-cache "^6.0.0"
-    minipass "^3.1.1"
-    minipass-collect "^1.0.2"
-    minipass-flush "^1.0.5"
-    minipass-pipeline "^1.2.2"
-    mkdirp "^1.0.3"
-    p-map "^4.0.0"
-    promise-inflight "^1.0.1"
-    rimraf "^3.0.2"
-    ssri "^8.0.0"
-    tar "^6.0.2"
-    unique-filename "^1.1.1"
-
 cache-base@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cache-base/-/cache-base-1.0.1.tgz#0a7f46416831c8b662ee36fe4e7c59d76f666ab2"
@@ -6414,11 +6435,6 @@ chownr@^1.1.1, chownr@^1.1.2:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
-
-chownr@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
-  integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
 chrome-trace-event@^1.0.2:
   version "1.0.2"
@@ -6997,23 +7013,6 @@ copy-to-clipboard@^3.0.8:
   integrity sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw==
   dependencies:
     toggle-selection "^1.0.6"
-
-copy-webpack-plugin@^6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-6.0.3.tgz#2b3d2bfc6861b96432a65f0149720adbd902040b"
-  integrity sha512-q5m6Vz4elsuyVEIUXr7wJdIdePWTubsqVbEMvf1WQnHGv0Q+9yPRu7MtYFPt+GBOXRav9lvIINifTQ1vSCs+eA==
-  dependencies:
-    cacache "^15.0.4"
-    fast-glob "^3.2.4"
-    find-cache-dir "^3.3.1"
-    glob-parent "^5.1.1"
-    globby "^11.0.1"
-    loader-utils "^2.0.0"
-    normalize-path "^3.0.0"
-    p-limit "^3.0.1"
-    schema-utils "^2.7.0"
-    serialize-javascript "^4.0.0"
-    webpack-sources "^1.4.3"
 
 core-js-compat@^3.6.2:
   version "3.6.5"
@@ -8930,7 +8929,7 @@ fast-glob@^2.0.2, fast-glob@^2.2.6:
     merge2 "^1.2.3"
     micromatch "^3.1.10"
 
-fast-glob@^3.0.3, fast-glob@^3.1.1, fast-glob@^3.2.4:
+fast-glob@^3.0.3, fast-glob@^3.1.1:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.4.tgz#d20aefbf99579383e7f3cc66529158c9b98554d3"
   integrity sha512-kr/Oo6PX51265qeuCYsyGypiO5uJFgBS0jksyG7FUeCyQzNwYnzrNIMR1NXfkZXsMYXYLRAHgISHBz8gQcxKHQ==
@@ -8951,6 +8950,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
+
+fast-xml-parser@^3.17.4:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.18.0.tgz#b77f4a494cd64e6f44aadfa68fbde30cd922b2df"
+  integrity sha512-tRrwShhppv0K5GKEtuVs92W0VGDaVltZAwtHbpjNF+JOT7cjIFySBGTEOmdBslXYyWYaZwEX/g4Su8ZeKg0LKQ==
 
 fastq@^1.6.0:
   version "1.8.0"
@@ -9662,7 +9666,7 @@ glob-parent@^3.1.0:
     is-glob "^3.1.0"
     path-dirname "^1.0.0"
 
-glob-parent@^5.0.0, glob-parent@^5.1.0, glob-parent@^5.1.1, glob-parent@~5.1.0:
+glob-parent@^5.0.0, glob-parent@^5.1.0, glob-parent@~5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.1.1.tgz#b6c1ef417c4e5663ea498f1c45afac6916bbc229"
   integrity sha512-FnI+VGOpnlGHWZxthPGR+QhR78fuiK0sNLkHQv+bL9fQi57lNNdquIbna/WrfROrolq8GK5Ek6BiMwqL/voRYQ==
@@ -9756,7 +9760,7 @@ globalthis@^1.0.0:
   dependencies:
     define-properties "^1.1.3"
 
-globby@11.0.1, globby@^11.0.1:
+globby@11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/globby/-/globby-11.0.1.tgz#9a2bf107a068f3ffeabc49ad702c79ede8cfd357"
   integrity sha512-iH9RmgwCmUJHi2z5o2l3eTtGBtXek1OYlHrbcxOYugyHLmAsZrPj43OtHThd62Buh/Vv6VyCBD2bdyWcGNQqoQ==
@@ -11883,6 +11887,11 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+jsonata@^1.8.3:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/jsonata/-/jsonata-1.8.4.tgz#de96dec822053b83064d1b5ed616ee2fcb26fcab"
+  integrity sha512-OqzmM5IICtm/687zckG5BROZzInGCEuKojpYs48H8RnkII8Np+o912ryvhnYwsRrSI24TQRG/qqrSwBuaneDbg==
+
 jsonfile@^2.1.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-2.4.0.tgz#3736a2b428b87bbda0cc83b53fa3d633a35c2ae8"
@@ -12598,13 +12607,6 @@ lru-cache@^5.0.0, lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-lru-cache@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
-  integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
-  dependencies:
-    yallist "^4.0.0"
-
 macos-release@^2.2.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/macos-release/-/macos-release-2.4.1.tgz#64033d0ec6a5e6375155a74b1a1eba8e509820ac"
@@ -13061,14 +13063,6 @@ minizlib@^1.2.1:
   dependencies:
     minipass "^2.9.0"
 
-minizlib@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/minizlib/-/minizlib-2.1.2.tgz#e90d3466ba209b932451508a11ce3d3632145931"
-  integrity sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==
-  dependencies:
-    minipass "^3.0.0"
-    yallist "^4.0.0"
-
 mississippi@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/mississippi/-/mississippi-3.0.0.tgz#ea0a3291f97e0b5e8776b363d5f0a12d94c67022"
@@ -13108,12 +13102,12 @@ mkdirp-promise@^5.0.1:
   dependencies:
     mkdirp "*"
 
-mkdirp@*, mkdirp@1.0.4, mkdirp@^1.0.3, mkdirp@^1.0.4:
+mkdirp@*, mkdirp@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mkdirp@0.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4, mkdirp@~0.5.1:
+mkdirp@0.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4, mkdirp@^0.5.5, mkdirp@~0.5.1:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
@@ -13884,7 +13878,7 @@ p-finally@^2.0.0:
   resolved "https://registry.yarnpkg.com/p-finally/-/p-finally-2.0.1.tgz#bd6fcaa9c559a096b680806f4d657b3f0f240561"
   integrity sha512-vpm09aKwq6H9phqRQzecoDpD8TmVyGw70qmWlyq5onxY7tqyTTFVvxMykxQSQKILBSFlbXpypIw2T1Ml7+DDtw==
 
-p-limit@3.0.2, p-limit@^3.0.1:
+p-limit@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-3.0.2.tgz#1664e010af3cadc681baafd3e2a437be7b0fb5fe"
   integrity sha512-iwqZSOoWIW+Ew4kAGUlN16J4M7OB3ysMLSZtnhmqx7njIHFPlxWBX8xo3lVTyFVq6mI/lL9qt2IsN1sHwaxJkg==
@@ -14394,6 +14388,15 @@ portfinder@^1.0.26:
     async "^2.6.2"
     debug "^3.1.1"
     mkdirp "^0.5.1"
+
+portfinder@^1.0.27:
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"
+  integrity sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA==
+  dependencies:
+    async "^2.6.2"
+    debug "^3.1.1"
+    mkdirp "^0.5.5"
 
 posix-character-classes@^0.1.0:
   version "0.1.1"
@@ -16315,7 +16318,7 @@ rimraf@^2.2.8, rimraf@^2.5.4, rimraf@^2.6.2, rimraf@^2.6.3, rimraf@^2.7.1:
   dependencies:
     glob "^7.1.3"
 
-rimraf@^3.0.0, rimraf@^3.0.2:
+rimraf@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-3.0.2.tgz#f1a5402ba6220ad52cc1282bac1ae3aa49fd061a"
   integrity sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==
@@ -16427,7 +16430,7 @@ sass@^1.26.10:
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
-sax@~1.2.4:
+sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -16547,13 +16550,6 @@ serialize-javascript@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-3.1.0.tgz#8bf3a9170712664ef2561b44b691eafe399214ea"
   integrity sha512-JIJT1DGiWmIKhzRsG91aS6Ze4sFUrYbltlkg2onR5OrnNM02Kl/hnY/T4FN2omvyeBbQmMJv+K4cPOpGzOTFBg==
-  dependencies:
-    randombytes "^2.1.0"
-
-serialize-javascript@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-4.0.0.tgz#b525e1238489a5ecfc42afacc3fe99e666f4b1aa"
-  integrity sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==
   dependencies:
     randombytes "^2.1.0"
 
@@ -17063,13 +17059,6 @@ ssri@^7.0.0:
     figgy-pudding "^3.5.1"
     minipass "^3.1.1"
 
-ssri@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/ssri/-/ssri-8.0.0.tgz#79ca74e21f8ceaeddfcb4b90143c458b8d988808"
-  integrity sha512-aq/pz989nxVYwn16Tsbj1TqFpD5LLrQxHf5zaHuieFV+R0Bbr4y8qUsOA45hXT/N4/9UNXTarBjnjVmjSOVaAA==
-  dependencies:
-    minipass "^3.1.1"
-
 stable@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"
@@ -17552,18 +17541,6 @@ tar@^4.4.10, tar@^4.4.12, tar@^4.4.8:
     mkdirp "^0.5.0"
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
-
-tar@^6.0.2:
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-6.0.5.tgz#bde815086e10b39f1dcd298e89d596e1535e200f"
-  integrity sha512-0b4HOimQHj9nXNEAA7zWwMM91Zhhba3pspja6sQbgTpynOJf+bkjBnfybNYzbpLbnwXnbyB4LOREvlyXLkCHSg==
-  dependencies:
-    chownr "^2.0.0"
-    fs-minipass "^2.0.0"
-    minipass "^3.0.0"
-    minizlib "^2.1.1"
-    mkdirp "^1.0.3"
-    yallist "^4.0.0"
 
 telejson@^3.2.0:
   version "3.3.0"
@@ -19237,6 +19214,13 @@ xdg-basedir@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-4.0.0.tgz#4bc8d9984403696225ef83a1573cbbcb4e79db13"
   integrity sha512-PSNhEJDejZYV7h50BohL09Er9VaIefr2LMAf3OEmpCkjOi34eYyQYAXUTjEQtZJTKcF0E2UKTh+osDLsgNim9Q==
+
+xml-js@^1.6.11:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/xml-js/-/xml-js-1.6.11.tgz#927d2f6947f7f1c19a316dd8eea3614e8b18f8e9"
+  integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
+  dependencies:
+    sax "^1.2.4"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
