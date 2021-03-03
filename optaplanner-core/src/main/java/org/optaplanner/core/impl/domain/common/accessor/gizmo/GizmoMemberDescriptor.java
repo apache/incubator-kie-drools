@@ -19,10 +19,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.objectweb.asm.Type;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 import io.quarkus.gizmo.BytecodeCreator;
@@ -140,6 +140,49 @@ public class GizmoMemberDescriptor {
         return this;
     }
 
+    public ResultHandle readMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
+        if (memberDescriptor instanceof FieldDescriptor) {
+            FieldDescriptor fd = (FieldDescriptor) memberDescriptor;
+            return bytecodeCreator.readInstanceField(fd, thisObj);
+        } else if (memberDescriptor instanceof MethodDescriptor) {
+            MethodDescriptor md = (MethodDescriptor) memberDescriptor;
+            return invokeMemberMethod(bytecodeCreator, md, thisObj);
+        } else {
+            throw new IllegalStateException(
+                    "memberDescriptor (" + memberDescriptor + ") is neither a field descriptor or a method descriptor.");
+        }
+    }
+
+    /**
+     * Write the bytecode for writing to this member. If there is no setter,
+     * it write the bytecode for throwing the exception. Return true if
+     * it was able to write the member value.
+     *
+     * @param bytecodeCreator the bytecode creator to use
+     * @param thisObj the bean to write the new value to
+     * @param newValue to new value of the member
+     * @return True if it was able to write the member value, false otherwise
+     */
+    public boolean writeMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj, ResultHandle newValue) {
+        if (memberDescriptor instanceof FieldDescriptor) {
+            FieldDescriptor fd = (FieldDescriptor) memberDescriptor;
+            bytecodeCreator.writeInstanceField(fd, thisObj, newValue);
+            return true;
+        } else if (memberDescriptor instanceof MethodDescriptor) {
+            MethodDescriptor md = (MethodDescriptor) memberDescriptor;
+            Optional<MethodDescriptor> maybeSetter = getSetter();
+            if (!maybeSetter.isPresent()) {
+                return false;
+            } else {
+                invokeMemberMethod(bytecodeCreator, maybeSetter.get(), thisObj, newValue);
+                return true;
+            }
+        } else {
+            throw new IllegalStateException(
+                    "memberDescriptor (" + memberDescriptor + ") is neither a field descriptor or a method descriptor.");
+        }
+    }
+
     /**
      * If the member metadata is on a field, pass the member's field descriptor to the
      * provided consumer. Otherwise, do nothing. Returns self for chaining.
@@ -230,16 +273,37 @@ public class GizmoMemberDescriptor {
      * The name does not include generic infomation.
      */
     public String getTypeName() {
-        String[] holder = new String[1];
-        whenMetadataIsOnField(fd -> {
-            holder[0] = fd.getType();
-        });
+        String typeName;
+        if (metadataDescriptor instanceof FieldDescriptor) {
+            typeName = ((FieldDescriptor) metadataDescriptor).getType();
+        } else {
+            // Must be a method descriptor if it not a field descriptor
+            typeName = ((MethodDescriptor) metadataDescriptor).getReturnType();
+        }
+        return org.objectweb.asm.Type.getType(typeName).getClassName();
+    }
 
-        whenMetadataIsOnMethod(md -> {
-            holder[0] = md.getReturnType();
-        });
-
-        return Type.getType(holder[0]).getClassName();
+    public Type getType() {
+        if (metadataDescriptor instanceof FieldDescriptor) {
+            FieldDescriptor fieldDescriptor = (FieldDescriptor) metadataDescriptor;
+            try {
+                return declaringClass.getDeclaredField(fieldDescriptor.getName()).getGenericType();
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException(
+                        "Cannot find field (" + fieldDescriptor.getName() + ") on class (" + declaringClass + ").",
+                        e);
+            }
+        } else {
+            // Must be a method descriptor if it not a field descriptor
+            MethodDescriptor methodDescriptor = (MethodDescriptor) metadataDescriptor;
+            try {
+                return declaringClass.getDeclaredMethod(methodDescriptor.getName()).getGenericReturnType();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(
+                        "Cannot find method (" + methodDescriptor.getName() + ") on class (" + declaringClass + ").",
+                        e);
+            }
+        }
     }
 
     @Override

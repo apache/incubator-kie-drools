@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
@@ -143,6 +142,7 @@ public class GizmoMemberAccessorImplementor {
                 .interfaces(MemberAccessor.class)
                 .superClass(Object.class)
                 .classOutput(classOutput)
+                .setFinal(true)
                 .build()) {
 
             GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
@@ -253,6 +253,8 @@ public class GizmoMemberAccessorImplementor {
      * @param annotationClass Used in exception message
      */
     private static void assertIsGoodMethod(MethodDescriptor method, Class<? extends Annotation> annotationClass) {
+        // V = void return type
+        // Z = primitive boolean return type
         String methodName = method.getName();
         if (method.getParameterTypes().length != 0) {
             // not read or getter method
@@ -266,7 +268,7 @@ public class GizmoMemberAccessorImplementor {
                         + annotationClass.getSimpleName() + " annotation must have a non-void return type.");
             }
         } else if (methodName.startsWith("is")) {
-            if (!method.getReturnType().equals("boolean")) {
+            if (!method.getReturnType().equals("Z")) {
                 throw new IllegalStateException("The getterMethod (" + methodName + ") with a "
                         + annotationClass.getSimpleName()
                         + " annotation must have a primitive boolean return type but returns ("
@@ -373,17 +375,7 @@ public class GizmoMemberAccessorImplementor {
     private static void createExecuteGetter(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getMethodCreator(classCreator, "executeGetter", Object.class);
         ResultHandle bean = methodCreator.getMethodParam(0);
-
-        memberInfo.getDescriptor().whenIsMethod(method -> {
-            assertIsGoodMethod(method, memberInfo.getAnnotationClass());
-            ResultHandle out = memberInfo.getDescriptor().invokeMemberMethod(methodCreator, method, bean);
-            methodCreator.returnValue(out);
-        });
-
-        memberInfo.getDescriptor().whenIsField(field -> {
-            ResultHandle out = methodCreator.readInstanceField(field, bean);
-            methodCreator.returnValue(out);
-        });
+        methodCreator.returnValue(memberInfo.getDescriptor().readMemberValue(methodCreator, bean));
     }
 
     /**
@@ -449,24 +441,14 @@ public class GizmoMemberAccessorImplementor {
         MethodCreator methodCreator = getMethodCreator(classCreator, "executeSetter", Object.class,
                 Object.class);
 
-        memberInfo.getDescriptor().whenIsMethod(method -> {
-            Optional<MethodDescriptor> setter = memberInfo.getDescriptor().getSetter();
-            if (setter.isPresent()) {
-                ResultHandle bean = methodCreator.getMethodParam(0);
-                ResultHandle value = methodCreator.getMethodParam(1);
-                memberInfo.getDescriptor().invokeMemberMethod(methodCreator, setter.get(), bean, value);
-                methodCreator.returnValue(null);
-            } else {
-                methodCreator.throwException(UnsupportedOperationException.class, "Setter not supported");
-            }
-        });
-
-        memberInfo.getDescriptor().whenIsField(field -> {
-            ResultHandle bean = methodCreator.getMethodParam(0);
-            ResultHandle value = methodCreator.getMethodParam(1);
-            methodCreator.writeInstanceField(field, bean, value);
+        ResultHandle bean = methodCreator.getMethodParam(0);
+        ResultHandle value = methodCreator.getMethodParam(1);
+        if (memberInfo.getDescriptor().writeMemberValue(methodCreator, bean, value)) {
+            // we are here only if the write is successful
             methodCreator.returnValue(null);
-        });
+        } else {
+            methodCreator.throwException(UnsupportedOperationException.class, "Setter not supported");
+        }
     }
 
     /**

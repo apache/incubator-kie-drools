@@ -31,7 +31,6 @@ public class TestDataKitchenSinkEntity {
     @PlanningVariable(valueRangeProviderRefs = { "names" })
     private String stringVariable;
 
-    @PlanningPin
     private boolean isPinned;
 
     @PlanningVariable(valueRangeProviderRefs = { "ints" })
@@ -39,7 +38,7 @@ public class TestDataKitchenSinkEntity {
         return intVariable;
     }
 
-    private void setIntVariable(Integer val) {
+    public void setIntVariable(Integer val) {
         intVariable = val;
     }
 
@@ -49,6 +48,11 @@ public class TestDataKitchenSinkEntity {
 
     public String testGetStringVariable() {
         return stringVariable;
+    }
+
+    @PlanningPin
+    private boolean isPinned() {
+        return isPinned;
     }
 
     @ValueRangeProvider(id = "ints")

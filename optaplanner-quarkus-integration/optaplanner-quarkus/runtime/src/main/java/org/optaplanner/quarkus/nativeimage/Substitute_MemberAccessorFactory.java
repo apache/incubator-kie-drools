@@ -40,9 +40,21 @@ public final class Substitute_MemberAccessorFactory {
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorFactory.MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass,
             DomainAccessType domainAccessType) {
-        if (domainAccessType == DomainAccessType.GIZMO) {
-            return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+        switch (domainAccessType) {
+            case GIZMO:
+                return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+
+            case REFLECTION:
+                return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
+
+            default:
+                throw new IllegalStateException("The domainAccessType (" + domainAccessType + ") is not implemented.");
         }
+    }
+
+    private static MemberAccessor buildReflectiveMemberAccessor(Member member,
+            MemberAccessorFactory.MemberAccessorType memberAccessorType,
+            Class<? extends Annotation> annotationClass) {
         if (member instanceof Field) {
             Field field = (Field) member;
             return new ReflectionFieldMemberAccessor(field);

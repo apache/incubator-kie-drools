@@ -55,6 +55,9 @@ public class DescriptorPolicy {
         return fromEntityValueRangeProviderMap.containsKey(id);
     }
 
+    /**
+     * @return never null
+     */
     public DomainAccessType getDomainAccessType() {
         return domainAccessType;
     }

@@ -17,7 +17,6 @@ public class GizmoTestdataEntity {
     @PlanningVariable
     public TestdataValue value;
 
-    @PlanningPin
     public boolean isPinned;
 
     public Collection<Map<String, String>> genericField;
@@ -41,6 +40,7 @@ public class GizmoTestdataEntity {
         this.value = value;
     }
 
+    @PlanningPin
     public boolean isPinned() {
         return isPinned;
     }

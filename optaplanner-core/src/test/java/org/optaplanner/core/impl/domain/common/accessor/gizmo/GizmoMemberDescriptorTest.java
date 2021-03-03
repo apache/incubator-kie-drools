@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.gizmo.GizmoTestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataVisibilityModifierSolution;
+import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodDescriptor;
@@ -18,16 +20,18 @@ public class GizmoMemberDescriptorTest {
 
     @Test
     public void testThatCreatingDescriptorForPrivateMembersFail() {
-        assertThatCode(() -> new GizmoMemberDescriptor(GizmoTestdataEntity.class.getDeclaredField("id")))
-                .hasMessage("Member (" + "id" + ") of class (" +
-                        GizmoTestdataEntity.class.getName() + ") is not public and domainAccessType is GIZMO.\n" +
+        assertThatCode(() -> new GizmoMemberDescriptor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value")))
+                .hasMessage("Member (" + "value" + ") of class (" +
+                        TestdataFieldAnnotatedEntity.class.getName() + ") is not public and domainAccessType is GIZMO.\n" +
                         "Maybe put the annotations onto the public getter of the field.\n" +
                         "Maybe use domainAccessType REFLECTION instead of GIZMO.");
 
-        assertThatCode(() -> new GizmoMemberDescriptor(GizmoTestdataEntity.class.getDeclaredMethod("getBadMethod")))
-                .hasMessage("Member (" + "getBadMethod" + ") of class (" +
-                        GizmoTestdataEntity.class.getName() + ") is not public and domainAccessType is GIZMO.\n" +
-                        "Maybe use domainAccessType REFLECTION instead of GIZMO.");
+        assertThatCode(() -> new GizmoMemberDescriptor(
+                TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPrivateProperty")))
+                        .hasMessage("Member (" + "getPrivateProperty" + ") of class (" +
+                                TestdataVisibilityModifierSolution.class.getName()
+                                + ") is not public and domainAccessType is GIZMO.\n" +
+                                "Maybe use domainAccessType REFLECTION instead of GIZMO.");
     }
 
     @Test

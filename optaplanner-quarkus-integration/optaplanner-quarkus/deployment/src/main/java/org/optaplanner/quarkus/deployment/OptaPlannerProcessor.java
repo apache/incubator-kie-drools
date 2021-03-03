@@ -149,7 +149,7 @@ class OptaPlannerProcessor {
         applySolverProperties(recorderContext, indexView, solverConfig);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
-        if (solverConfig.getSolutionClass() != null) {
+        if (solverConfig.getSolutionClass() != null && solverConfig.getDomainAccessType() != DomainAccessType.GIZMO) {
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
             reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
                     .type(jandexType)
@@ -437,7 +437,9 @@ class OptaPlannerProcessor {
             }
             classOutput.write(className, bytes);
         };
-        Set<String> generatedClassSet = new HashSet<>();
+
+        Set<String> generatedMemberAccessorsClassNameSet = new HashSet<>();
+        Set<String> gizmoSolutionClonerClassNameSet = new HashSet<>();
 
         if (solverConfig.getDomainAccessType() == DomainAccessType.GIZMO) {
             Collection<AnnotationInstance> membersToGeneratedAccessorsFor = new ArrayList<>();
@@ -454,11 +456,11 @@ class OptaPlannerProcessor {
 
                         if (!shouldIgnoreMember(classInfo)) {
                             try {
-                                generatedClassSet
+                                generatedMemberAccessorsClassNameSet
                                         .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
                                                 debuggableClassOutput,
                                                 classInfo, fieldInfo, transformers));
-                            } catch (ClassNotFoundException e) {
+                            } catch (ClassNotFoundException | NoSuchFieldException e) {
                                 throw new IllegalStateException("Fail to generate member accessor for field (" +
                                         fieldInfo.name() + ") of class " +
                                         classInfo.name().toString() + ".", e);
@@ -472,11 +474,11 @@ class OptaPlannerProcessor {
 
                         if (!shouldIgnoreMember(classInfo)) {
                             try {
-                                generatedClassSet.add(
+                                generatedMemberAccessorsClassNameSet.add(
                                         GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
                                                 debuggableClassOutput,
                                                 classInfo, methodInfo, transformers));
-                            } catch (ClassNotFoundException e) {
+                            } catch (ClassNotFoundException | NoSuchMethodException e) {
                                 throw new IllegalStateException("Failed to generate member accessor for the method (" +
                                         methodInfo.name() + ") of the class (" +
                                         classInfo.name() + ").", e);
@@ -489,9 +491,21 @@ class OptaPlannerProcessor {
                     }
                 }
             }
+            // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
+            SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
+                    solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
+            try {
+                gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
+                        debuggableClassOutput,
+                        indexView,
+                        transformers));
+            } catch (ClassNotFoundException | NoSuchFieldException e) {
+                throw new IllegalStateException("Error generating SolutionCloner.", e);
+            }
         }
-        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedClassSet);
 
+        GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,
+                gizmoSolutionClonerClassNameSet);
     }
 
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {

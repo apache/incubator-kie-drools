@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -115,6 +116,10 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneFieldAnnotatedSolution() {
+        // can't check cloner class; it doesn't implement any additional interfaces
+        Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
+                "Gizmo cannot use reflection");
+
         SolutionDescriptor<TestdataFieldAnnotatedSolution> solutionDescriptor =
                 TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataFieldAnnotatedSolution> cloner = createSolutionCloner(solutionDescriptor);
@@ -156,6 +161,10 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneAccessModifierSolution() {
+        // can't check cloner class; it doesn't implement any additional interfaces
+        Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
+                "Gizmo cannot use reflection");
+
         Object staticObject = new Object();
         TestdataAccessModifierSolution.setStaticField(staticObject);
 
@@ -211,6 +220,10 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneExtendedSolution() {
+        // can't check cloner class; it doesn't implement any additional interfaces
+        Assumptions.assumeFalse(this instanceof GizmoSolutionClonerTest,
+                "Gizmo cannot handle subclasses of the class annotated with @PlanningSolution");
+
         SolutionDescriptor solutionDescriptor = TestdataUnannotatedExtendedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataUnannotatedExtendedSolution> cloner = createSolutionCloner(solutionDescriptor);
 
