@@ -29,6 +29,10 @@
   <name>Kogito :: Drools :: Kogito RuleUnits</name>
 
   <packaging>jar</packaging>
+  
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.ruleunits</java.module.name>
+  </properties>
 
   <!-- Logging -->
   <dependencies>

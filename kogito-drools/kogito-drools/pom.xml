@@ -29,6 +29,10 @@
   <packaging>jar</packaging>
 
   <name>Kogito :: Drools :: Kogito Drools</name>
+  
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.drools</java.module.name>
+  </properties>
 
   <!-- Logging -->
   <dependencies>

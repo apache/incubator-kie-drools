@@ -12,6 +12,10 @@
   <artifactId>kogito-pmml-api-dependencies</artifactId>
   <name>Kogito :: Drools :: Kogito Predictive Model Markup Language :: API Dependencies</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.pmml.api.dependencies</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

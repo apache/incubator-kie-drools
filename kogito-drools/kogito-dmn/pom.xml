@@ -13,6 +13,10 @@
 
   <name>Kogito :: Drools :: Kogito Decision Model Notation</name>
   <description>Kogito wrapper for Kie Drools DMN open source engine</description>
+  
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.dmn</java.module.name>
+  </properties>
 
   <dependencies>
     <dependency>

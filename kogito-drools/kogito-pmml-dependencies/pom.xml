@@ -16,6 +16,10 @@
   <description>
     Declare this artifact as "pom" dependency to import all default kie-pmml-trusty modules with exclusions needed for Kogito environment.
   </description>
+  
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.pmml.dependencies</java.module.name>
+  </properties>
 
   <dependencyManagement>
     <dependencies>

@@ -11,6 +11,10 @@
 
     <artifactId>drools-decisiontables</artifactId>
     <name>Kogito :: Drools :: Drools DecisionTables</name>
+    
+    <properties>
+      <java.module.name>org.kie.kogito.drools.decisiontables</java.module.name>
+    </properties>
 
     <dependencies>
         <dependency>

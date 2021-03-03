@@ -14,6 +14,10 @@
 
   <name>Kogito :: Drools :: Kogito Predictive Model Markup Language</name>
   <description>Kogito wrapper for Kie Drools PMML open source engine</description>
+  
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.pmml</java.module.name>
+  </properties>
 
   <dependencyManagement>
    <dependencies>

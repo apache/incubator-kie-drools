@@ -27,6 +27,10 @@
 
   <artifactId>kogito-drools-model</artifactId>
   <name>Kogito :: Drools :: Kogito Drools Model</name>
+  
+  <properties>
+    <java.module.name>org.kie.kogito.kogito.drools.model</java.module.name>
+  </properties>
 
   <!-- Logging -->
   <dependencies>
