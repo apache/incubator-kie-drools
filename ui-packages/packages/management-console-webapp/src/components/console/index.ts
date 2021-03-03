@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-export * from './src/environment/context';
-export * from './src/environment/auth';
-export * from './src/utils/KeycloakClient';
-export * from './src/graphql/types';
-
-export { default as PageLayout } from './src/components/layout/PageLayout/PageLayout';
-export { default as ServerUnavailablePage } from './src/components/pages/ServerUnavailablePage/ServerUnavailablePage';
-export { default as PageNotFound } from './src/components/pages/PageNotFound/PageNotFound';
-export { default as NoData } from './src/components/pages/NoData/NoData';
+export { default as ManagementConsole } from './ManagementConsole/ManagementConsole';
+export { default as ManagementConsoleNav } from './ManagementConsoleNav/ManagementConsoleNav';
+export { default as ManagementConsoleRoutes } from './ManagementConsoleRoutes/ManagementConsoleRoutes';

@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ManagementConsole tests Snapshot test with default props 1`] = `
+<ManagementConsole
+  apolloClient={
+    ApolloClient {
+      "__actionHookForDevTools": [MockFunction],
+      "__requestRaw": [MockFunction],
+      "addResolvers": [MockFunction],
+      "clearStore": [MockFunction],
+      "extract": [MockFunction],
+      "getResolvers": [MockFunction],
+      "initQueryManager": [MockFunction],
+      "mutate": [MockFunction],
+      "onClearStore": [MockFunction],
+      "onResetStore": [MockFunction],
+      "query": [MockFunction],
+      "reFetchObservableQueries": [MockFunction],
+      "readFragment": [MockFunction],
+      "readQuery": [MockFunction],
+      "resetStore": [MockFunction],
+      "restore": [MockFunction],
+      "setLocalStateFragmentMatcher": [MockFunction],
+      "setResolvers": [MockFunction],
+      "stop": [MockFunction],
+      "subscribe": [MockFunction],
+      "watchQuery": [MockFunction],
+      "writeData": [MockFunction],
+      "writeFragment": [MockFunction],
+      "writeQuery": [MockFunction],
+    }
+  }
+  userContext={
+    Object {
+      "getCurrentUser": [MockFunction],
+    }
+  }
+>
+  <ApolloProvider
+    client={
+      ApolloClient {
+        "__actionHookForDevTools": [MockFunction],
+        "__requestRaw": [MockFunction],
+        "addResolvers": [MockFunction],
+        "clearStore": [MockFunction],
+        "extract": [MockFunction],
+        "getResolvers": [MockFunction],
+        "initQueryManager": [MockFunction],
+        "mutate": [MockFunction],
+        "onClearStore": [MockFunction],
+        "onResetStore": [MockFunction],
+        "query": [MockFunction],
+        "reFetchObservableQueries": [MockFunction],
+        "readFragment": [MockFunction],
+        "readQuery": [MockFunction],
+        "resetStore": [MockFunction],
+        "restore": [MockFunction],
+        "setLocalStateFragmentMatcher": [MockFunction],
+        "setResolvers": [MockFunction],
+        "stop": [MockFunction],
+        "subscribe": [MockFunction],
+        "watchQuery": [MockFunction],
+        "writeData": [MockFunction],
+        "writeFragment": [MockFunction],
+        "writeQuery": [MockFunction],
+      }
+    }
+  >
+    <KogitoAppContextProvider
+      userContext={
+        Object {
+          "getCurrentUser": [MockFunction],
+        }
+      }
+    >
+      <BrowserRouter>
+        <Router
+          history={
+            Object {
+              "action": "POP",
+              "block": [Function],
+              "createHref": [Function],
+              "go": [Function],
+              "goBack": [Function],
+              "goForward": [Function],
+              "length": 1,
+              "listen": [Function],
+              "location": Object {
+                "hash": "",
+                "pathname": "/",
+                "search": "",
+                "state": undefined,
+              },
+              "push": [Function],
+              "replace": [Function],
+            }
+          }
+        >
+          <Switch>
+            <Route
+              computedMatch={
+                Object {
+                  "isExact": true,
+                  "params": Object {},
+                  "path": "/",
+                  "url": "/",
+                }
+              }
+              location={
+                Object {
+                  "hash": "",
+                  "pathname": "/",
+                  "search": "",
+                  "state": undefined,
+                }
+              }
+              path="/"
+              render={[Function]}
+            >
+              <PageLayout
+                BrandAltText="Management Console Logo"
+                BrandClick={[Function]}
+                BrandSrc="managementConsoleLogo.svg"
+                PageNav={
+                  <ManagementConsoleNav
+                    pathname="/"
+                  />
+                }
+                pageNavOpen={true}
+              >
+                <MockedComponent />
+              </PageLayout>
+            </Route>
+          </Switch>
+        </Router>
+      </BrowserRouter>
+    </KogitoAppContextProvider>
+  </ApolloProvider>
+</ManagementConsole>
+`;

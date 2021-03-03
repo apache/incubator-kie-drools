@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ManagementConsoleNav tests Snapshot testing with default props 1`] = `
+<ManagementConsoleNav
+  pathname="/JobsManagement"
+>
+  <Nav
+    aria-label="Nav"
+    onSelect={[Function]}
+    onToggle={[Function]}
+    ouiaSafe={true}
+    theme="dark"
+  >
+    <nav
+      aria-label="Nav"
+      className="pf-c-nav"
+      data-ouia-component-id="OUIA-Generated-Nav-1"
+      data-ouia-component-type="PF4/Nav"
+      data-ouia-safe={true}
+    >
+      <NavList
+        ariaLeftScroll="Scroll left"
+        ariaRightScroll="Scroll right"
+      >
+        <ul
+          className="pf-c-nav__list"
+          onScroll={[Function]}
+        >
+          <NavItem
+            isActive={true}
+            key="jobs-management-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-1"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current="page"
+                className="pf-c-nav__link pf-m-current"
+                data-ouia-navigation-name="jobs-management"
+                onClick={[Function]}
+                to="/JobsManagement"
+              >
+                <LinkAnchor
+                  aria-current="page"
+                  className="pf-c-nav__link pf-m-current"
+                  data-ouia-navigation-name="jobs-management"
+                  href="/JobsManagement"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current="page"
+                    className="pf-c-nav__link pf-m-current"
+                    data-ouia-navigation-name="jobs-management"
+                    href="/JobsManagement"
+                    onClick={[Function]}
+                  >
+                    Jobs Management
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+        </ul>
+      </NavList>
+    </nav>
+  </Nav>
+</ManagementConsoleNav>
+`;

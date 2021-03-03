@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ManagementConsoleRoutes tests Default route test 1`] = `
+<ManagementConsoleRoutes>
+  <Switch>
+    <Route
+      component={[Function]}
+      computedMatch={
+        Object {
+          "isExact": true,
+          "params": Object {},
+          "path": "/JobsManagement",
+          "url": "/JobsManagement",
+        }
+      }
+      exact={true}
+      location={
+        Object {
+          "hash": "",
+          "pathname": "/JobsManagement",
+          "search": "",
+          "state": undefined,
+        }
+      }
+      path="/JobsManagement"
+    >
+      <MockedJobsManagementPage
+        history={
+          Object {
+            "action": "REPLACE",
+            "block": [Function],
+            "canGo": [Function],
+            "createHref": [Function],
+            "entries": Array [
+              Object {
+                "hash": "",
+                "pathname": "/JobsManagement",
+                "search": "",
+                "state": undefined,
+              },
+            ],
+            "go": [Function],
+            "goBack": [Function],
+            "goForward": [Function],
+            "index": 0,
+            "length": 1,
+            "listen": [Function],
+            "location": Object {
+              "hash": "",
+              "pathname": "/JobsManagement",
+              "search": "",
+              "state": undefined,
+            },
+            "push": [Function],
+            "replace": [Function],
+          }
+        }
+        location={
+          Object {
+            "hash": "",
+            "pathname": "/JobsManagement",
+            "search": "",
+            "state": undefined,
+          }
+        }
+        match={
+          Object {
+            "isExact": true,
+            "params": Object {},
+            "path": "/JobsManagement",
+            "url": "/JobsManagement",
+          }
+        }
+      />
+    </Route>
+  </Switch>
+</ManagementConsoleRoutes>
+`;
