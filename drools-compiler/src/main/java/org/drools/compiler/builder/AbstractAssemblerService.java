@@ -47,7 +47,7 @@ public abstract class AbstractAssemblerService<T extends ResourceTypePackage<U>,
     protected abstract ResourceProcessor<U> createResourceProcessor(Resource resource);
 
     @Override
-    public final void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public final void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         AssemblerContext kb = (AssemblerContext) kbuilder;
         ResourceProcessor<U> processor = createResourceProcessor(resource);
         processor.process();

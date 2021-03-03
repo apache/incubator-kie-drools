@@ -181,7 +181,7 @@ public class PMMLRuntimeFactoryInternal {
 
     protected static PMMLRuntime getPMMLRuntime(File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
         FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
-        new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
+        new PMMLAssemblerService().addResourceAfterRules(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
         KieBase kieBase = createKieBase(kbuilderImpl);
         return getPMMLRuntime(kieBase);
     }
