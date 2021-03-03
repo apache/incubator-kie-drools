@@ -17,18 +17,36 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
+@RunWith(Parameterized.class)
 public class OOPathMultilevelTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathMultilevelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testClassTwoLevelPath() {
@@ -42,9 +60,8 @@ public class OOPathMultilevelTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -80,9 +97,8 @@ public class OOPathMultilevelTest {
                         "  list.add( $toyName );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -134,9 +150,8 @@ public class OOPathMultilevelTest {
     }
 
     private void testScenarioTwoLevelPathWithConstraint(final String drl) {
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );

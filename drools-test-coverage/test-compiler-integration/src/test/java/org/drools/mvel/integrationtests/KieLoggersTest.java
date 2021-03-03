@@ -16,9 +16,15 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.drools.mvel.compiler.Message;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -37,11 +43,23 @@ import org.kie.internal.io.ResourceFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@RunWith(Parameterized.class)
 public class KieLoggersTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieLoggersTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testKieConsoleLogger() throws Exception {
@@ -85,7 +103,8 @@ public class KieLoggersTest {
         kfs.writeKModuleXML(kproj.toXML());
         kfs.write("src/main/resources/KBase1/rule.drl", drl);
 
-        KieModule kieModule = ks.newKieBuilder(kfs).buildAll().getKieModule();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        KieModule kieModule = kieBuilder.getKieModule();
         KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
 
         KieSession ksession = kieContainer.newKieSession("KSession1");
@@ -146,7 +165,8 @@ public class KieLoggersTest {
         kfs.writeKModuleXML(kproj.toXML());
         kfs.write("src/main/resources/KBase1/rule.drl", drl);
 
-        KieModule kieModule = ks.newKieBuilder(kfs).buildAll().getKieModule();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        KieModule kieModule = kieBuilder.getKieModule();
         KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
 
         StatelessKieSession ksession = kieContainer.newStatelessKieSession("KSession1");
@@ -255,7 +275,8 @@ public class KieLoggersTest {
         kfs.writeKModuleXML(kproj.toXML());
         kfs.write("src/main/resources/KBase1/rule.drl", drl);
 
-        KieModule kieModule = ks.newKieBuilder(kfs).buildAll().getKieModule();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        KieModule kieModule = kieBuilder.getKieModule();
         KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
 
         KieSession ksession = kieContainer.newKieSession("KSession1");
@@ -292,7 +313,7 @@ public class KieLoggersTest {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( dt );
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         assertTrue( kb.getResults().getMessages().isEmpty() );
         return ks;
     }

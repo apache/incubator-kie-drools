@@ -22,9 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Cheesery;
@@ -40,28 +38,28 @@ import org.drools.mvel.compiler.SpecialString;
 import org.drools.mvel.compiler.State;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.compiler.Triangle;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieModule;
 import org.kie.api.conf.RemoveIdentitiesOption;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,20 +67,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class FirstOrderLogicTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class FirstOrderLogicTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public FirstOrderLogicTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private static Logger logger = LoggerFactory.getLogger(FirstOrderLogicTest.class);
 
-    protected KieSession createKnowledgeSession(KieBase kbase) { 
-        return kbase.newKieSession();
-    }
-    
     @Test
     public void testCollect() throws Exception {
         List results = new ArrayList();
 
-        KieBase kbase = loadKnowledgeBase("test_Collect.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Collect.drl");
+        KieSession wm = kbase.newKieSession();
 
         wm.setGlobal( "results",
                       results );
@@ -124,8 +131,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectNodeSharing() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_collectNodeSharing.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_collectNodeSharing.drl");
+        KieSession wm = kbase.newKieSession();
 
         List results = new ArrayList();
         wm.setGlobal( "results",
@@ -156,8 +163,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectModify() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_Collect.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Collect.drl");
+        KieSession wm = kbase.newKieSession();
 
         List results = new ArrayList();
 
@@ -225,8 +232,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectResultConstraints() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_CollectResultConstraints.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectResultConstraints.drl");
+        KieSession wm = kbase.newKieSession();
         List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -264,8 +271,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testExistsWithBinding() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_ExistsWithBindings.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ExistsWithBindings.drl");
+        KieSession wm = kbase.newKieSession();
 
         final List list = new ArrayList();
         wm.setGlobal( "results",
@@ -286,8 +293,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testNot() throws Exception {
-        KieBase kbase = loadKnowledgeBase("not_rule_test.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "not_rule_test.drl");
+        KieSession wm = kbase.newKieSession();
 
         final List list = new ArrayList();
         wm.setGlobal( "list", list );
@@ -317,8 +324,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testNotWithBindings() throws Exception {
-        KieBase kbase = loadKnowledgeBase("not_with_bindings_rule_test.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "not_with_bindings_rule_test.drl");
+        KieSession wm = kbase.newKieSession();
 
         final List list = new ArrayList();
         wm.setGlobal( "list",
@@ -350,8 +357,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testExists() throws Exception {
-        KieBase kbase = loadKnowledgeBase("exists_rule_test.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "exists_rule_test.drl");
+        KieSession wm = kbase.newKieSession();
 
         final List list = new ArrayList();
         wm.setGlobal( "list", list );
@@ -383,8 +390,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testExists2() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_exists.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_exists.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -422,8 +429,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testExists3() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_Exists_JBRULES_2810.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Exists_JBRULES_2810.drl");
+        KieSession ksession = kbase.newKieSession();
 
         WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( ksession );
         ksession.fireAllRules();
@@ -432,8 +439,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForall() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_Forall.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Forall.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -462,8 +469,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForall2() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_Forall2.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Forall2.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal( "results",
@@ -497,12 +504,10 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testRemoveIdentitiesSubNetwork() throws Exception {
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption(RemoveIdentitiesOption.YES);
-
-        KieBase kbase = loadKnowledgeBase(conf, "test_removeIdentitiesSubNetwork.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
-
+        KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "test_removeIdentitiesSubNetwork.drl");
+        KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, RemoveIdentitiesOption.YES);
+        KieSession workingMemory = kbase.newKieSession();
+        
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
                                  list );
@@ -545,8 +550,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithNestedFromWithParams() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_CollectWithNestedFrom.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectWithNestedFrom.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -586,8 +591,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectModifyAlphaRestriction() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_CollectAlphaRestriction.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectAlphaRestriction.drl");
+        KieSession wm = kbase.newKieSession();
 
         final List results = new ArrayList();
 
@@ -634,8 +639,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForallSinglePattern() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_ForallSinglePattern.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ForallSinglePattern.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -690,8 +695,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForallSinglePattern2() throws Exception {
-        final KieBase kbase = loadKnowledgeBase( "test_ForallSinglePattern2.drl" );
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ForallSinglePattern2.drl");
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Triangle( 3,
                                        3,
@@ -710,8 +715,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testMVELCollect() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_MVELCollect.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MVELCollect.drl");
+        KieSession wm = kbase.newKieSession();
 
         final List results = new ArrayList();
 
@@ -745,8 +750,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedCorelatedRulesWithForall() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_NestedCorrelatedRulesWithForall.drl");
-        KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NestedCorrelatedRulesWithForall.drl");
+        KieSession session = kbase.newKieSession();
 
         List list1 = new ArrayList();
         List list2 = new ArrayList();
@@ -805,8 +810,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testFromInsideNotAndExists() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_FromInsideNotAndExists.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_FromInsideNotAndExists.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -839,8 +844,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testOr() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_OrNesting.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OrNesting.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -868,21 +873,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     // JBRULES-2482 
     @Test
     public void testOrWithVariableResolution() throws Exception {
-//        KieBase kbase = loadKnowledgeBase( "test_OrCEFollowedByMultipleEval.drl");
-//        KieSession workingMemory = createKnowledgeSession(kbase);
-
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval.drl",
-                                                            FirstOrderLogicTest.class ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OrCEFollowedByMultipleEval.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final AgendaEventListener al = mock( AgendaEventListener.class );
         ksession.addEventListener( al );
@@ -899,21 +891,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     // JBRULES-2526 
     @Test
     public void testOrWithVariableResolution2() throws Exception {
-        //        KieBase kbase = loadKnowledgeBase( "test_OrCEFollowedByMultipleEval.drl");
-        //        KieSession workingMemory = createKnowledgeSession(kbase);
-
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval2.drl",
-                                                            FirstOrderLogicTest.class ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OrCEFollowedByMultipleEval2.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final AgendaEventListener al = mock( AgendaEventListener.class );
         ksession.addEventListener( al );
@@ -929,8 +908,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithMemberOfOperators() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_CollectMemberOfOperator.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectMemberOfOperator.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -982,8 +961,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithContainsOperators() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_CollectContainsOperator.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectContainsOperator.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1035,8 +1014,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForallSinglePatternWithExists() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_ForallSinglePatternWithExists.drl");
-        KieSession workingMemory = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ForallSinglePatternWithExists.drl");
+        KieSession workingMemory = kbase.newKieSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1064,8 +1043,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectResultBetaConstraint() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_CollectResultsBetaConstraint.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectResultsBetaConstraint.drl");
+        KieSession wm = kbase.newKieSession();
 
         List results = new ArrayList();
 
@@ -1094,8 +1073,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testFromWithOr() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_FromWithOr.drl");
-        KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_FromWithOr.drl");
+        KieSession session = kbase.newKieSession();
 
         final List<Address> results = new ArrayList<Address>();
         session.setGlobal( "results",
@@ -1128,8 +1107,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieBase kbase = loadKnowledgeBase( "test_ForallSlidingWindow.drl");
-        KieSession ksession = createKnowledgeSession(kbase, conf);
+        kieBaseTestConfiguration.setStreamMode(true);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ForallSlidingWindow.drl");
+        KieSession ksession = kbase.newKieSession(conf, null);
 
         final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         List<String> results = new ArrayList<String>();
@@ -1219,8 +1199,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectFromMVELAfterOr() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "test_CollectFromMVELAfterOr.drl");
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CollectFromMVELAfterOr.drl");
+        KieSession wm = kbase.newKieSession();
 
         List results = new ArrayList();
 
@@ -1252,11 +1232,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectAfterOrCE() throws Exception {
-        Collection<KiePackage> pkgs = loadKnowledgePackages("test_OrCEFollowedByCollect.drl");
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(pkgs);
-        KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OrCEFollowedByCollect.drl");
+        KieSession session = kbase.newKieSession();
 
         //Set up facts
         final Cheesery bonFromage = new Cheesery();
@@ -1268,19 +1245,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         int rules = session.fireAllRules();
         assertEquals( 2,
                       rules );
-
-        //Serialize and test again
-        pkgs = SerializationHelper.serializeObject(pkgs);
-        kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( pkgs );
-        
-        session = createKnowledgeSession(kbase);
-        session.insert( bonFromage );
-
-        rules = session.fireAllRules();
-        assertEquals( 2,
-                      rules );
-
     }
     
     @Test 
@@ -1338,9 +1302,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 "end";
         
         logger.info( str );
-        
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        KieSession ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
              
         ksession.insert(new Field("t", "Y"));
         ksession.insert(new Field("a", "b"));
@@ -1361,9 +1325,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 "        Message( !fired ) or eval( !false )\n" + 
                 "    then\n" + 
                 "end\n";
-        
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        KieSession ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         
         ksession.insert( new Message( "test" ) );
         int rules = ksession.fireAllRules();

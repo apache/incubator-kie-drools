@@ -15,18 +15,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.command.Command;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.CommandFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,9 +26,45 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.command.Command;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.CommandFactory;
+
 import static org.junit.Assert.assertEquals;
 
-public class DynamicRulesChangesTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DynamicRulesChangesTest {
+
+    // Note: If PARALLEL_THREADS is set to 2 or larger, this test fails with the below Exception even before modifying this test to cover exec-model
+    //   Exception in thread pool-7-thread-1: Exception executing consequence for rule "Raise the alarm when we have one or more fires" in defaultpkg:
+    //   java.lang.IllegalArgumentException: Rule name 'Raise the alarm when we have one or more fires' does not exist in the Package 'defaultpkg'.
+    
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+    private static KieBaseTestConfiguration staticKieBaseTestConfiguration;
+
+    public DynamicRulesChangesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private static final int PARALLEL_THREADS = 1;
 
@@ -49,6 +73,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
     @Before
     public void setUp() throws Exception {
+        staticKieBaseTestConfiguration = kieBaseTestConfiguration;
         executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
         addRule("raiseAlarm");
@@ -122,13 +147,13 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
         }
     }
 
-    public static class BatchRulesExecutor extends CommonTestMethodBase implements Callable<List<String>> {
+    public static class BatchRulesExecutor implements Callable<List<String>> {
 
         public List<String> call() throws Exception {
             final List<String> events = new ArrayList<String>();
 
             try {
-                KieSession ksession = createKnowledgeSession(kbase);
+                KieSession ksession = kbase.newKieSession();
                 ksession.setGlobal("events", events);
 
                 Room room1 = new Room("Room 1");
@@ -178,9 +203,9 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
     public static void addRule(String ruleName, RuleImpl firingRule) throws Exception {
         String rule = rules.get(ruleName);
 
-        CommonTestMethodBase testBaseMethod = new CommonTestMethodBase();
-
-        kbase.addPackages(testBaseMethod.loadKnowledgePackagesFromString( rule ));
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(staticKieBaseTestConfiguration, true, rule);
+        Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
+        kbase.addPackages(pkgs);
 
         if (firingRule != null) {
             kbase.removeRule("defaultpkg", firingRule.getName());

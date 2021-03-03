@@ -17,18 +17,36 @@
 package org.drools.mvel.compiler.oopath.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class OOPathOnGraphTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathOnGraphTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testOOPathOnGraph() {
@@ -45,9 +63,8 @@ public class OOPathOnGraphTest {
                 "  list.add( $a.getName() );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
@@ -84,9 +101,8 @@ public class OOPathOnGraphTest {
                 "  list.add( $a.getName() );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
@@ -123,9 +139,8 @@ public class OOPathOnGraphTest {
                 "  list.add( ((Person)$v.getIt()).getName() );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
@@ -162,9 +177,8 @@ public class OOPathOnGraphTest {
                 "  list.add( ((Person)$v.getIt()).getName() );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );

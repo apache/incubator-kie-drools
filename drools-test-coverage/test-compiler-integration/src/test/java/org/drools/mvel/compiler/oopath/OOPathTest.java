@@ -17,12 +17,15 @@ package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.core.phreak.ReactiveSet;
 import org.drools.mvel.compiler.oopath.model.Adult;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Group;
@@ -35,25 +38,41 @@ import org.drools.mvel.compiler.oopath.model.TMFileWithParentObj;
 import org.drools.mvel.compiler.oopath.model.Thing;
 import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
-import org.drools.core.phreak.AbstractReactiveObject;
-import org.drools.core.phreak.ReactiveSet;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
 import org.kie.api.event.rule.DefaultRuleRuntimeEventListener;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class OOPathTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testInvalidOOPath() {
@@ -86,10 +105,8 @@ public class OOPathTest {
     }
 
     private void testInvalid(final String drl) {
-        final KieServices ks = KieServices.Factory.get();
-        final KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        final Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertTrue( results.hasMessages( Message.Level.ERROR ) );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        assertTrue(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
     }
 
     @Test
@@ -104,9 +121,8 @@ public class OOPathTest {
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -172,9 +188,8 @@ public class OOPathTest {
         final Thing key = new Thing( "key" );
         draw.addChild( key );
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -206,9 +221,8 @@ public class OOPathTest {
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -246,9 +260,8 @@ public class OOPathTest {
                 "  list.add( $x );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -276,10 +289,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
  
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         final Group x = new Group("X");
         final Group y = new Group("Y");
         ksession.insert( x );
@@ -326,10 +338,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
  
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         final Adult ada = new Adult("Ada", 20);
         final Adult bea = new Adult("Bea", 20);
         final Group x = new Group("X");
@@ -369,10 +380,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         final Group x = new Group("X");
         final Group y = new Group("Y");
         ksession.fireAllRules();
@@ -422,10 +432,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         final TMDirectory x = new TMDirectory("X");
         final TMDirectory y = new TMDirectory("Y");
         ksession.insert( x );
@@ -504,10 +513,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         final TMDirectory x = new TMDirectory("X");
         final TMDirectory y = new TMDirectory("Y");
         final TMFile file0 = new TMFile("File0", 999);
@@ -571,10 +579,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         ksession.addEventListener(new DefaultRuleRuntimeEventListener() {
             @Override
             public void objectDeleted(ObjectDeletedEvent event) {
@@ -677,10 +684,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         ksession.addEventListener(new DefaultRuleRuntimeEventListener() {
             @Override
             public void objectDeleted(ObjectDeletedEvent event) {
@@ -779,10 +785,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         ksession.addEventListener(new DefaultRuleRuntimeEventListener() {
             @Override
             public void objectDeleted(ObjectDeletedEvent event) {
@@ -850,10 +855,9 @@ public class OOPathTest {
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-        
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         final TMFileSet x = new TMFileSet("X");
         final TMFileSet y = new TMFileSet("Y");
         ksession.insert( x );
@@ -924,9 +928,8 @@ public class OOPathTest {
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Set<String> duplicateNames = new HashSet<>();
         ksession.setGlobal("duplicateNames", duplicateNames);
@@ -959,9 +962,8 @@ public class OOPathTest {
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Set<String> duplicateNames = new HashSet<>();
         ksession.setGlobal("duplicateNames", duplicateNames);
@@ -994,9 +996,8 @@ public class OOPathTest {
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Set<String> duplicateNames = new HashSet<>();
         ksession.setGlobal("duplicateNames", duplicateNames);
@@ -1045,9 +1046,8 @@ public class OOPathTest {
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Set<String> duplicateNames = new HashSet<>();
         ksession.setGlobal("duplicateNames", duplicateNames);
@@ -1098,9 +1098,8 @@ public class OOPathTest {
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Set duplicateNames = new HashSet();
         ksession.setGlobal("duplicateNames", duplicateNames);
@@ -1155,10 +1154,8 @@ public class OOPathTest {
                 "  list.add($m.getName());\n" +
                 "end\n\n";
 
-        final KieSession ksession = new KieHelper()
-                .addContent( header + drl1 + drl2 + drl3, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, header + drl1 + drl2 + drl3);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -1205,10 +1202,8 @@ public class OOPathTest {
                 "  list.add(\"Found\");\n" +
                 "end\n\n";
 
-        final KieSession ksession = new KieHelper()
-                .addContent( header + drl1, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, header + drl1);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -1245,7 +1240,8 @@ public class OOPathTest {
                 "  insert($a.getName());\n" +
                 "end\n\n";
 
-        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL ).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -1272,9 +1268,8 @@ public class OOPathTest {
                 "  list.add( $child.getName() );\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );

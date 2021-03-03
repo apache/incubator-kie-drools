@@ -17,26 +17,40 @@
 package org.drools.mvel.compiler.definitions;
 
 
+import java.util.Collection;
+
+import org.drools.core.definitions.rule.impl.GlobalImpl;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.FactType;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.drools.core.definitions.rule.impl.GlobalImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.rule.Query;
-import org.kie.api.definition.type.FactField;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
-
+@RunWith(Parameterized.class)
 public class KnowledgePackageMetaDataTest {
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KnowledgePackageMetaDataTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        // TODO: EM failed with testMetaData. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private String drl ="" +
             "package org.drools.mvel.compiler.test.definitions \n" +
@@ -78,15 +92,8 @@ public class KnowledgePackageMetaDataTest {
 
     @Test
     public void testMetaData() {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            fail( kBuilder.getErrors().toString() );
-        }
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages( kBuilder.getKnowledgePackages() );
-        KiePackage pack = kBase.getPackage( "org.drools.mvel.compiler.test.definitions" );
+        KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KiePackage pack = kBase.getKiePackage( "org.drools.mvel.compiler.test.definitions" );
 
         assertNotNull( pack );
 
@@ -117,7 +124,6 @@ public class KnowledgePackageMetaDataTest {
             }
         }
 
-
         assertEquals( 2, pack.getQueries().size() );
         for ( Query q : pack.getQueries() ) {
             assertTrue( q.getName().equals( "qry1" ) || q.getName().equals( "qry2" ) );
@@ -125,8 +131,5 @@ public class KnowledgePackageMetaDataTest {
 
         assertEquals( 4, pack.getRules().size() );
         assertTrue( pack.getRules().containsAll( pack.getQueries() ) );
-
     }
-
-
 }

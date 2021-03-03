@@ -21,15 +21,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Message;
 import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -57,14 +62,27 @@ import static org.junit.Assert.fail;
 /**
  * This is a sample class to launch a rule.
  */
-public class KieHelloWorldTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class KieHelloWorldTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieHelloWorldTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testHelloWorld() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", createDrl( "R1" ) );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         ksession.insert(new Message("Hello World"));
@@ -81,7 +99,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieContainer kcontainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
 
@@ -104,7 +122,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                   .newReaderResource( new StringReader( createDrl( "R1" ) ) )
                   .setResourceType( ResourceType.DRL )
                   .setSourcePath( "src/main/resources/r1.txt" ) );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         ksession.insert(new Message("Hello World"));
@@ -123,7 +141,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl)
                 .write( "src/main/resources/empty.drl", ks.getResources().newInputStreamResource( new ByteArrayInputStream( new byte[0] ) ) );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
         ksession.insert(new Message("Hello World"));
@@ -145,8 +163,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drl);
-        
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+
+        KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 1, kb.getResults().getMessages().size() );
     }
@@ -183,7 +201,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         includingBase.newKieSessionModel("includingKSession").setDefault(false);
 
         kfs.writeKModuleXML(module.toXML());
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         assertEquals( 0, kb.getResults().getMessages().size() );
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
@@ -206,7 +224,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write( "src/main/resources/KBase1/org/pkg1/r1.drl", createDrl( "org.pkg1", "R1" ) )
                 .write( "src/main/resources/KBase1/org/pkg2/r2.drl", createDrl( "org.pkg2", "R2" ) )
                 .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1" ).toXML() );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
@@ -235,7 +253,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/resources/KBase1/r1_2.drl", createDrl("org.pkg1", "R1"))
                 .write("src/main/resources/KBase1/r2.drl", createDrl("org.pkg2", "R2"))
                 .writeKModuleXML(createKieProjectWithPackages(ks, "org.pkg1").toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert( new Message( "Hello World" ) );
@@ -264,7 +282,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1" )
                         .setConfigurationProperty( "drools.groupDRLsInKieBasesByFolder", "true" )
                         .toXML() );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer( releaseId ).newKieSession( "KSession1" );
         ksession.insert( new Message( "Hello World" ) );
@@ -282,7 +300,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write( "src/main/resources/org/pkg1/test/r1.drl", createDrlWithGlobal( "org.pkg1.test", "R1" ) )
                 .write( "src/main/resources/org/pkg2/test/r2.drl", createDrlWithGlobal( "org.pkg2.test", "R2" ) )
                 .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1.*" ).toXML() );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
@@ -310,7 +328,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/resources/tests/tests.drl", createDrlWithGlobal("tests", "R6"))
                 .write("src/main/resources/rules2/rules2.drl", createDrlWithGlobal("rules2", "R7"))
                 .writeKModuleXML( createKieProjectWithPackages(ks, "rules.*").toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
@@ -433,7 +451,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .generateAndWritePomXML(releaseId)
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl)
                 .writeKModuleXML(createKieProjectWithPackages(ks, "*").toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
     }
 
     @Test
@@ -469,7 +487,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeKModuleXML(createKieProjectWithPackagesAnd2KieBases(ks).toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
@@ -550,7 +568,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                               .write( "src/main/resources/myrules/r2.drl", drl2 )
                               .writeKModuleXML( kproj.toXML() );
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         KieSession ksession = ks.newKieContainer( releaseId ).newKieSession( );
 
         List<String> results = new ArrayList<String>();
@@ -578,7 +596,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", createDrl( "R1" ) );
         kfs.writeKModuleXML(kmodule);
 
-        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 1, kb.getResults().getMessages().size() );
         assertTrue( kb.getResults().getMessages().get(0).toString().contains( "ABC" ) );
@@ -603,8 +621,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         fs.write( ResourceFactory.newUrlResource("file:/tmp/t%20tt/one.drl"));
 
-        KieBuilder kieBuilder = kieServices.newKieBuilder(fs);
-        kieBuilder.buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, fs, false);
         KieModule kieModule = kieBuilder.getKieModule();
 
         KieSession ksession = kieServices.newKieContainer(kieModule.getReleaseId()).newKieSession();
@@ -621,7 +638,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", createDrl( "R1" ) );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         try {
@@ -698,7 +715,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/java/org/mypackage/WeekendCalendar.java", weekendCalendarSource)
                 .write("src/main/java/org/mypackage/WeekdayCalendar.java", weekdayCalendarSource)
                 .writeKModuleXML(kproj.toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
 

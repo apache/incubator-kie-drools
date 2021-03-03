@@ -233,8 +233,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
     private static List<KieBaseOption> additionalKieBaseOptions = Collections.emptyList();
 
-    private final boolean identity;
-    private final boolean streamMode;
+    private boolean identity;
+    private boolean streamMode;
     private final boolean alphaNetworkCompiler;
     private final Class<? extends KieBuilder.ProjectType> executableModelProjectClass;
 
@@ -250,6 +250,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         this.executableModelProjectClass = executableModelProjectClass;
     }
 
+    // additionalKieBaseOptions is only used by getKieBaseConfiguration(), not by getKieBaseModel(). Little confusing
     @Override
     public void setAdditionalKieBaseOptions(final KieBaseOption... options) {
         additionalKieBaseOptions = Arrays.asList(options);
@@ -260,9 +261,19 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         return identity;
     }
 
+    // identity is mutable for test convenience but basically we don't need to use this (One test class should focus on identity or equality)
+    public void setIdentity(boolean identity) {
+        this.identity = identity;
+    }
+
     @Override
     public boolean isStreamMode() {
         return streamMode;
+    }
+
+    // streamMode is mutable for test convenience but basically we don't need to use this (One test class should focus on cloud or stream)
+    public void setStreamMode(boolean streamMode) {
+        this.streamMode = streamMode;
     }
 
     @Override

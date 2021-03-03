@@ -17,6 +17,7 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -25,18 +26,34 @@ import org.drools.mvel.compiler.oopath.model.BabyGirl;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+@RunWith(Parameterized.class)
 public class OOPathCastTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathCastTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testInlineCast() {
@@ -50,9 +67,8 @@ public class OOPathCastTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -88,10 +104,9 @@ public class OOPathCastTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieServices ks = KieServices.Factory.get();
-        final KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        final Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertTrue( results.hasMessages( Message.Level.ERROR ) );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -106,9 +121,8 @@ public class OOPathCastTest {
                         "  list.add( $name );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
