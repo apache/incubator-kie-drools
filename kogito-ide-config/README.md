@@ -12,7 +12,7 @@ Click Import and select the `kogito-ide-config/src/main/resources/eclipse.import
 
 ## IDEA Setup
 
-Open the _Preferences_ window (or _Settings_ depending on your edition), navigate to Plugins and install the https://plugins.jetbrains.com/plugin/6546-eclipse-code-formatter[Eclipse Code Formatter Plugin] from the Marketplace.
+Open the _Preferences_ window (or _Settings_ depending on your edition), navigate to Plugins and install the [Eclipse Code Formatter Plugin](https://plugins.jetbrains.com/plugin/6546-eclipse-code-formatter) from the Marketplace.
 
 Restart your IDE, open the _Preferences_ (or _Settings_) window again and navigate to _Other Settings -> Eclipse Code Formatter_.
 
