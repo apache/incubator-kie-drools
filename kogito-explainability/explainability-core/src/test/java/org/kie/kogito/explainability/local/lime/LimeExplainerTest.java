@@ -132,7 +132,7 @@ class LimeExplainerTest {
             for (int i = 0; i < features.size(); i++) {
                 double score = saliency.getPerFeatureImportance().get(i).getScore();
                 double scoreNoPenalty = saliencyNoPenalty.getPerFeatureImportance().get(i).getScore();
-                assertThat(score).isLessThanOrEqualTo(scoreNoPenalty);
+                assertThat(Math.abs(score)).isLessThanOrEqualTo(Math.abs(scoreNoPenalty));
             }
         }
     }
