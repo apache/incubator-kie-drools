@@ -290,6 +290,8 @@ public abstract class AbstractRunnerHelper {
         } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
             throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenarioDescription,
                                                                                                             factMappingValue.getExceptionMessage()));
+        } else {
+            throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenarioDescription));
         }
     }
 

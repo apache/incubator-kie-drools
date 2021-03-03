@@ -37,4 +37,8 @@ public class ScenarioSimulationServerMessages {
         return  String.format("Scenario \"%s\" failed: %s", scenarioDescription, exceptionMessage);
     }
 
+    public static String getGenericScenarioExceptionMessage(String scenarioDescription) {
+        return  String.format("Scenario \"%s\" failed", scenarioDescription);
+    }
+
 }
