@@ -56,18 +56,18 @@ public abstract class AbstractScenarioRunner extends Runner {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
     }
 
-    public static Description getDescriptionForSimulation(Optional<String> className, List<ScenarioWithIndex> scenarios) {
+    public static Description getDescriptionForSimulation(Optional<String> fullFileName, List<ScenarioWithIndex> scenarios) {
         Description suiteDescription = Description.createSuiteDescription("Test Scenarios (Preview) tests");
         scenarios.forEach(scenarioWithIndex -> suiteDescription.addChild(
-                getDescriptionForScenario(className, scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData())));
+                getDescriptionForScenario(fullFileName, scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData())));
         return suiteDescription;
     }
 
-    public static Description getDescriptionForScenario(Optional<String> className, int index, Scenario scenario) {
-        String testName = className.isPresent() ?
-                String.format("#%d: %s (%s)", index, scenario.getDescription(), getFileName(className.get())) :
+    public static Description getDescriptionForScenario(Optional<String> fullFileName, int index, Scenario scenario) {
+        String testName = fullFileName.isPresent() ?
+                String.format("#%d: %s (%s)", index, scenario.getDescription(), getFileName(fullFileName.get())) :
                 String.format("#%d: %s", index, scenario.getDescription());
-        return Description.createTestDescription(className.orElse(AbstractScenarioRunner.class.getCanonicalName()),
+        return Description.createTestDescription(fullFileName.orElse(AbstractScenarioRunner.class.getCanonicalName()),
                                                  testName);
     }
 
