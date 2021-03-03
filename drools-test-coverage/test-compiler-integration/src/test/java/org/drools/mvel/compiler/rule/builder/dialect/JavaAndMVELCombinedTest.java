@@ -15,11 +15,29 @@
 
 package org.drools.mvel.compiler.rule.builder.dialect;
 
-import org.drools.mvel.CommonTestMethodBase;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 
-public class JavaAndMVELCombinedTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class JavaAndMVELCombinedTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public JavaAndMVELCombinedTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private final static String FN1 = "mveljavarules.drl";
     private final static String FN2 = "mvelonly.drl";
@@ -72,7 +90,7 @@ public class JavaAndMVELCombinedTest extends CommonTestMethodBase {
 
     private void readDRL(String fn) {
         try {
-            KieBase kieBase = loadKnowledgeBase(fn);
+            KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, fn);
         } catch ( Throwable t ) {
             throw new RuntimeException(t);
         }

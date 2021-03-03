@@ -506,4 +506,29 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertTrue(obj instanceof Map);
         assertEquals("value", ((Map) obj).get("key"));
     }
+
+    @Test
+    public void testEmptySingleApexString() {
+        // DROOLS-6057
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name == '' )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Person person1 = new Person("");
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("", list.get(0));
+    }
 }

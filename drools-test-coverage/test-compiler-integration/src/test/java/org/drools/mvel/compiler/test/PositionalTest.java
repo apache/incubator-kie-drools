@@ -16,23 +16,34 @@
 package org.drools.mvel.compiler.test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PositionalTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class PositionalTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public PositionalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with ttestPositional. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testPositional() {
@@ -49,16 +60,8 @@ public class PositionalTest extends CommonTestMethodBase {
                 "    list.add($w); " +
                 "end";
 
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ),
-                              ResourceType.DRL );
-
-        System.out.println( knowledgeBuilder.getErrors().toString() );
-        
-        assertFalse( knowledgeBuilder.hasErrors() );
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages( knowledgeBuilder.getKnowledgePackages() );
-        KieSession kSession = createKnowledgeSession(kBase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kSession = kbase.newKieSession();
 
         java.util.ArrayList list = new ArrayList();
         kSession.setGlobal( "list",
@@ -97,7 +100,7 @@ public class PositionalTest extends CommonTestMethodBase {
                 "  modify ( $b ) { setValue( $s ); }\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals(2, ksession.fireAllRules());
     }

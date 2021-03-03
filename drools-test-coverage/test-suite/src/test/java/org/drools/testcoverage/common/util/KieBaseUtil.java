@@ -45,7 +45,7 @@ public final class KieBaseUtil {
         return getDefaultKieBaseFromReleaseId(kmodule.getReleaseId());
     }
 
-    private static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
+    public static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
         return getKieBaseFromReleaseIdByName(id, null);
     }
 
