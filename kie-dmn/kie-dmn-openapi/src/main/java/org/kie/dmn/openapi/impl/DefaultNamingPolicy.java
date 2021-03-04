@@ -24,6 +24,12 @@ import org.kie.dmn.openapi.NamingPolicy;
 
 public class DefaultNamingPolicy implements NamingPolicy {
 
+    private final String refPrefix;
+
+    public DefaultNamingPolicy(String refPrefix) {
+        this.refPrefix = refPrefix;
+    }
+
     @Override
     public String getName(DMNType type) {
         String name = type.getName();
@@ -44,6 +50,6 @@ public class DefaultNamingPolicy implements NamingPolicy {
         } catch (Exception e) {
             namePart = type.getName();
         }
-        return "#/definitions/" + namePart;
+        return refPrefix + namePart;
     }
 }

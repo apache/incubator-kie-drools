@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
@@ -449,7 +450,7 @@ implements RuleSheetListener {
             final int column,
             final String value) {
         String testVal = value.trim().toLowerCase();
-        if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
+        if (isRuleTable(testVal)) {
             initRuleTable( row, column, value.trim(), true );
         } else {
             this._propertiesListener.newCell( row, column, value, RuleSheetListener.NON_MERGED );
@@ -462,7 +463,7 @@ implements RuleSheetListener {
             final int mergedColStart) {
         String trimVal = trimCell ? value.trim() : value;
         String testVal = trimVal.toLowerCase();
-        if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
+        if (isRuleTable(testVal)) {
             finishRuleTable();
             initRuleTable( row, column, trimVal, false );
             return;
@@ -499,6 +500,10 @@ implements RuleSheetListener {
             nextDataCell( row, column, trimVal );
             break;
         }
+    }
+
+    private boolean isRuleTable(final String testVal) {
+        return Objects.equals(RULE_TABLE_TAG, testVal) || testVal.startsWith(RULE_TABLE_TAG + " ");
     }
 
     /**

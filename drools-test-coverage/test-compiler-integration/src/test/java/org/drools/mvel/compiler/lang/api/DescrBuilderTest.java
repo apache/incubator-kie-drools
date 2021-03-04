@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.AttributeDescr;
@@ -38,7 +37,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.StockTick;
 import org.junit.Test;
@@ -55,11 +54,11 @@ import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -67,7 +66,7 @@ import static org.mockito.Mockito.verify;
 /**
  * DescrBuilderTest
  */
-public class DescrBuilderTest extends CommonTestMethodBase {
+public class DescrBuilderTest {
 
     @Test
     public void testPackage() {
@@ -196,7 +195,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         int rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
@@ -226,7 +225,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
 
         Cheese stilton = new Cheese( "stilton", 5 );
         Cheese cheddar = new Cheese( "cheddar", 7 );
@@ -283,7 +282,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
 
         Cheese stilton = new Cheese( "stilton", 5 );
         Cheese cheddar = new Cheese( "cheddar", 7 );
@@ -507,7 +506,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0, rules );
@@ -537,7 +536,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         EntryPoint ep = ksession.getEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();

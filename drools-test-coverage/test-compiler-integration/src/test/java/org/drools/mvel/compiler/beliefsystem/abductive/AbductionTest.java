@@ -17,6 +17,7 @@ package org.drools.mvel.compiler.beliefsystem.abductive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,62 +33,58 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
-import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-public class AbductionTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class AbductionTest {
 
-    protected KieSession getSessionFromString( String drlString ) {
-        return getSessionFromString( drlString, null );
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public AbductionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
-    protected KieSession getSessionFromString( String drlString, KieBaseConfiguration kbConf ) {
-        KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( drlString, ResourceType.DRL );
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with testBindNonAbductiveQueryError etc. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false, true);
+    }
 
-        Results res = kieHelper.verify();
-        if ( res.hasMessages( Message.Level.ERROR ) ) {
-            fail( res.getMessages( Message.Level.ERROR ).toString() );
-        }
-
-        if ( kbConf == null ) {
-            kbConf = KieServices.Factory.get().newKieBaseConfiguration();
-        }
-        kbConf.setOption( EqualityBehaviorOption.EQUALITY );
-        KieBase kieBase = kieHelper.build( kbConf );
-
+    protected KieSession getSessionFromString( String drlString, KieBaseOption... options ) {
+        KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drlString);
+        KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, options);
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
-        return kieBase.newKieSession( ksConf, null );
+        return kbase.newKieSession( ksConf, null );
     }
-
 
     @Test
     public void testAbductiveLogicWithConstructorArgs() {
@@ -235,11 +232,10 @@ public class AbductionTest extends CommonTestMethodBase {
                 "";
         /////////////////////////////////////
 
-        KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( droolsSource, ResourceType.DRL );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
+        Results res = kieBuilder.getResults();
 
-        Results res = kieHelper.verify();
-        assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
+        assertEquals(1, res.getMessages(Message.Level.ERROR).size());
     }
 
     @Test
@@ -270,10 +266,9 @@ public class AbductionTest extends CommonTestMethodBase {
                 "";
         /////////////////////////////////////
 
-        KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( droolsSource, ResourceType.DRL );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
+        Results res = kieBuilder.getResults();
 
-        Results res = kieHelper.verify();
         assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
     }
 
@@ -292,16 +287,9 @@ public class AbductionTest extends CommonTestMethodBase {
                 "";
         /////////////////////////////////////
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ks.getResources()
-                           .newByteArrayResource( droolsSource.getBytes() )
-                           .setSourcePath( "drl1.drl" )
-                           .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        kieBuilder.buildAll();
-
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
         Results res = kieBuilder.getResults();
+
         assertTrue( res.hasMessages( Message.Level.ERROR ) );
 
     }
@@ -493,9 +481,6 @@ public class AbductionTest extends CommonTestMethodBase {
 
     }
 
-
-
-
     @Test
     public void testAbductiveLogicUnlinking() {
         String droolsSource =
@@ -577,10 +562,8 @@ public class AbductionTest extends CommonTestMethodBase {
                 "";
         /////////////////////////////////////
 
-        KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( droolsSource, ResourceType.DRL );
-
-        Results res = kieHelper.verify();
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, droolsSource);
+        Results res = kieBuilder.getResults();
         assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
     }
 
@@ -1025,18 +1008,13 @@ public class AbductionTest extends CommonTestMethodBase {
 
         /////////////////////////////////////
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-
-        KieSession session = getSessionFromString( droolsSource, kconf );
+        KieSession session = getSessionFromString( droolsSource, DeclarativeAgendaOption.ENABLED );
 
         session.fireAllRules();
 
         for ( Object o : session.getObjects() ) {
             System.out.println( ">>> " + o );
         }
-
-
     }
 
 
@@ -1085,18 +1063,13 @@ public class AbductionTest extends CommonTestMethodBase {
 
         /////////////////////////////////////
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-
-        KieSession session = getSessionFromString( droolsSource, kconf );
+        KieSession session = getSessionFromString( droolsSource, DeclarativeAgendaOption.ENABLED );
 
         session.fireAllRules();
 
         for ( Object o : session.getObjects() ) {
             System.out.println( ">>> " + o );
         }
-
-
     }
 
 

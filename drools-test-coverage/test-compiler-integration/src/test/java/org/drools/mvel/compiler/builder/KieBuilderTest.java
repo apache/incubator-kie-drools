@@ -29,7 +29,6 @@ import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.util.FileManager;
-import org.drools.mvel.CommonTestMethodBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +52,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class KieBuilderTest extends CommonTestMethodBase {
+public class KieBuilderTest {
+
     protected FileManager fileManager;
     
     @Before

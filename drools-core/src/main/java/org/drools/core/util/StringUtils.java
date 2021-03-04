@@ -1016,7 +1016,7 @@ public class StringUtils {
         return codeAwareSplitOnChar(string, trimArgs, ',');
     }
 
-    private static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
+    public static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
         List<String> args = new ArrayList<String>();
         int lastStart = 0;
         int nestedParam = 0;
