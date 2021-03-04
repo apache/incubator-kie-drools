@@ -57,8 +57,8 @@ public abstract class AbstractScenarioRunner extends Runner {
     }
 
     public static Description getDescriptionForSimulation(Optional<String> fullFileName, List<ScenarioWithIndex> scenarios) {
-        String testName = fullFileName.isPresent() ? getFileName(fullFileName.get()) : AbstractScenarioRunner.class.getCanonicalName();
-        Description suiteDescription = Description.createSuiteDescription(testName);
+        String testSuiteName = fullFileName.isPresent() ? getFileName(fullFileName.get()) : AbstractScenarioRunner.class.getCanonicalName();
+        Description suiteDescription = Description.createSuiteDescription(testSuiteName);
         scenarios.forEach(scenarioWithIndex -> suiteDescription.addChild(
                 getDescriptionForScenario(fullFileName,
                                           scenarioWithIndex.getIndex(),
@@ -72,13 +72,13 @@ public abstract class AbstractScenarioRunner extends Runner {
                                                  String.format("#%d: %s", index, description));
     }
 
-    private static String getFileName(String fileFullPath) {
+    public static String getFileName(String fileFullPath) {
         if (Objects.isNull(fileFullPath)) {
             return null;
         }
         int idx = fileFullPath.replaceAll("\\\\", "/").lastIndexOf('/');
-        String fileWithExtension = idx >= 0 ? fileFullPath.substring(idx + 1) : fileFullPath;
-        return fileWithExtension.substring(0, fileWithExtension.lastIndexOf('.'));
+        String fileName = idx >= 0 ? fileFullPath.substring(idx + 1) : fileFullPath;
+        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     }
 
     public static ScenarioRunnerProvider getSpecificRunnerProvider(Type type) {

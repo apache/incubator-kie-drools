@@ -70,17 +70,17 @@ public class AbstractScenarioRunnerTest {
     public void getDescriptionForSimulationByClassNameAndSimulation() {
         Description retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.empty(), scenarioRunnerDTOLocal.getScenarioWithIndices());
         commonVerifyDescriptionForSimulation(retrieved, AbstractScenarioRunner.class.getCanonicalName());
-        retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(String.class.getCanonicalName()), scenarioRunnerDTOLocal.getScenarioWithIndices());
-        commonVerifyDescriptionForSimulation(retrieved, String.class.getCanonicalName());
+        retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of("src/test/Test.scesim"), scenarioRunnerDTOLocal.getScenarioWithIndices());
+        commonVerifyDescriptionForSimulation(retrieved, "Test");
     }
 
     @Test
     public void getDescriptionForScenario() {
         final Scenario scenario = scenarioRunnerDTOLocal.getScenarioWithIndices().get(2).getScesimData();
-        Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, "description");
+        Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, scenario.getDescription());
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), AbstractScenarioRunner.class.getCanonicalName());
-        retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of(String.class.getCanonicalName()), 1, "description");
-        commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), String.class.getCanonicalName());
+        retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of("src/test/Test.scesim"), 1, scenario.getDescription());
+        commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), "Test");
     }
 
     @Test
@@ -107,10 +107,10 @@ public class AbstractScenarioRunnerTest {
 
     private void commonVerifyDescriptionForSimulation(final Description retrieved, final String className) {
         assertNotNull(retrieved);
-        assertEquals("Test Scenarios (Preview) tests", retrieved.getDisplayName());
+        assertEquals(className, retrieved.getDisplayName());
         assertEquals(SCENARIO_DATA, retrieved.getChildren().size());
         assertNull(retrieved.getTestClass());
-        assertEquals("Test Scenarios (Preview) tests", retrieved.getClassName());
+        assertEquals(className, retrieved.getClassName());
         IntStream.range(0, SCENARIO_DATA).forEach(index -> {
             final Description description = retrieved.getChildren().get(index);
             commonVerifyDescriptionForScenario(description, index + 1, scenarioRunnerDTOLocal.getScenarioWithIndices().get(index).getScesimData().getDescription(), className);
@@ -133,6 +133,6 @@ public class AbstractScenarioRunnerTest {
         ScenarioSimulationModel model = new ScenarioSimulationModel();
         model.setSimulation(simulation);
 
-        return new ScenarioRunnerDTO(model, "");
+        return new ScenarioRunnerDTO(model, "test.scesim");
     }
 }
