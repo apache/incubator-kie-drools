@@ -57,6 +57,7 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -339,18 +340,46 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     @Test
     public void validateAssertionTest() {
-
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), "description");
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
             fail();
-        } catch (ScenarioException ignored) {
+        } catch (ScenarioException exception) {
+            assertFalse(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenario2.getDescription()),
+                         exception.getMessage());
         }
+
+        amountNameExpectedFactMappingValue.setErrorValue("Error");
+        scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
+        try {
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            fail();
+        } catch (ScenarioException exception) {
+            assertTrue(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage("Fact 2.amount",
+                                                                                                amountNameExpectedFactMappingValue.getErrorValue(),
+                                                                                                amountNameExpectedFactMappingValue.getRawValue()),
+                         exception.getMessage());
+        }
+
+        String exceptionMessage = "Message";
+        amountNameExpectedFactMappingValue.setExceptionMessage(exceptionMessage);
+        scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
+        try {
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            fail();
+        } catch (ScenarioException exception) {
+            assertFalse(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenario2.getDescription(), exceptionMessage),
+                         exception.getMessage());
+        }
+
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
-        runnerHelper.validateAssertion(scenarioSuccessResult, simulation.getScesimModelDescriptor(), "description");
+        runnerHelper.validateAssertion(scenarioSuccessResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
     }
 
     @Test
