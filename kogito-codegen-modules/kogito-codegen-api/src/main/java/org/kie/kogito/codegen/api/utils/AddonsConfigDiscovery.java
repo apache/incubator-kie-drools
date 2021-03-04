@@ -36,6 +36,8 @@ public class AddonsConfigDiscovery {
     public static final String KNATIVE_EVENTING_CLASS = "org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension";
     public static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventEmitter";
     public static final String SPRING_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.spring.SpringKafkaCloudEventEmitter";
+    public static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
+    public static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";
 
     private AddonsConfigDiscovery() {
         // utility class
@@ -52,6 +54,7 @@ public class AddonsConfigDiscovery {
         boolean useTracing = classAvailabilityResolver.test(TRACING_CLASS);
         boolean useKnativeEventing = classAvailabilityResolver.test(KNATIVE_EVENTING_CLASS);
         boolean useCloudEvents = classAvailabilityResolver.test(QUARKUS_CLOUD_EVENTS) || classAvailabilityResolver.test(SPRING_CLOUD_EVENTS);
+        boolean useExplainability = classAvailabilityResolver.test(QUARKUS_EXPLAINABILITY) || classAvailabilityResolver.test(SPRING_EXPLAINABILITY);
 
         AddonsConfig addonsConfig = AddonsConfig.builder()
                 .withPersistence(usePersistence)
@@ -60,6 +63,7 @@ public class AddonsConfigDiscovery {
                 .withTracing(useTracing)
                 .withKnativeEventing(useKnativeEventing)
                 .withCloudEvents(useCloudEvents)
+                .withExplainability(useExplainability)
                 .build();
 
         LOGGER.info("Performed addonsConfig discovery, found: {}", addonsConfig);

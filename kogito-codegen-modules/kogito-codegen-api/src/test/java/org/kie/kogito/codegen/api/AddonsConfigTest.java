@@ -54,5 +54,8 @@ public class AddonsConfigTest {
 
         assertThat(DEFAULT.useCloudEvents()).isFalse();
         assertThat(builder().withCloudEvents(true).build().useCloudEvents()).isTrue();
+
+        assertThat(DEFAULT.useExplainability()).isFalse();
+        assertThat(builder().withExplainability(true).build().useExplainability()).isTrue();
     }
 }

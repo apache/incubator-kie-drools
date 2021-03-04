@@ -147,11 +147,17 @@ public class KogitoAssetsProcessor {
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.UserTaskInstanceDataEvent"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.UserTaskInstanceEventBody"));
+
         if (context.getAddonsConfig().useMonitoring()) {
-            reflectiveClass.produce(
-                    new ReflectiveClassBuildItem(true, true, "org.HdrHistogram.Histogram"));
-            reflectiveClass.produce(
-                    new ReflectiveClassBuildItem(true, true, "org.HdrHistogram.ConcurrentHistogram"));
+            registerMonitoringAddonClasses(reflectiveClass);
+        }
+
+        if (context.getAddonsConfig().useTracing()) {
+            registerTracingAddonClasses(reflectiveClass);
+        }
+
+        if (context.getAddonsConfig().useExplainability()) {
+            registerExplainabilityAddonClasses(reflectiveClass);
         }
 
         optionalIndex.ifPresent(index -> {
@@ -159,6 +165,75 @@ public class KogitoAssetsProcessor {
             addChildrenClasses(index, "org.kie.kogito.event.AbstractDataEvent", reflectiveClass);
             addChildrenClasses(index, "org.kie.kogito.services.event.AbstractProcessDataEvent", reflectiveClass);
         });
+    }
+
+    private void registerMonitoringAddonClasses(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.HdrHistogram.Histogram"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.HdrHistogram.ConcurrentHistogram"));
+    }
+
+    private void registerTracingAddonClasses(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceEvent"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceHeader"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceEventType"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceResourceId"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.Message"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageLevel"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageCategory"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEvent"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageExceptionField"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity"));
+
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceInputValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceOutputValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.typedvalue.TypedValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.typedvalue.UnitValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.typedvalue.CollectionValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.typedvalue.StructureValue"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.trace.TraceExecutionStepType"));
+
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.model.ModelEvent"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.model.ModelEvent$GAV"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.decision.DecisionModelType"));
+    }
+
+    private void registerExplainabilityAddonClasses(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.explainability.model.PredictOutput"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.explainability.model.PredictInput"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.explainability.model.ModelIdentifier"));
     }
 
     private void addChildrenClasses(IndexView index,
