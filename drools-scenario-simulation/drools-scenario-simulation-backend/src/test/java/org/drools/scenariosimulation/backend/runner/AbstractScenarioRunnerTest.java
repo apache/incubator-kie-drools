@@ -69,7 +69,7 @@ public class AbstractScenarioRunnerTest {
     @Test
     public void getDescriptionForSimulationByClassNameAndSimulation() {
         Description retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.empty(), scenarioRunnerDTOLocal.getScenarioWithIndices());
-        commonVerifyDescriptionForSimulation(retrieved, AbstractScenarioRunner.class.getCanonicalName());
+        commonVerifyDescriptionForSimulation(retrieved, AbstractScenarioRunner.class.getSimpleName());
         retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of("src/test/Test.scesim"), scenarioRunnerDTOLocal.getScenarioWithIndices());
         commonVerifyDescriptionForSimulation(retrieved, "Test");
     }
@@ -78,7 +78,7 @@ public class AbstractScenarioRunnerTest {
     public void getDescriptionForScenario() {
         final Scenario scenario = scenarioRunnerDTOLocal.getScenarioWithIndices().get(2).getScesimData();
         Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, scenario.getDescription());
-        commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), AbstractScenarioRunner.class.getCanonicalName());
+        commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), AbstractScenarioRunner.class.getSimpleName());
         retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of("src/test/Test.scesim"), 1, scenario.getDescription());
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), "Test");
     }
