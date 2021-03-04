@@ -36,7 +36,14 @@ See <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
 {property_prefix}optaplanner.solver.domain-access-type::
 How OptaPlanner should access the domain model.
 See <<domainAccess,the domain access section>> for more details.
+ifeval::["{property_prefix}" == "quarkus."]
+Defaults to `GIZMO`.
+The other possible value is `REFLECTION`.
+endif::[]
+ifeval::["{property_prefix}" == ""]
 Defaults to `REFLECTION`.
+The other possible value is `GIZMO`.
+endif::[]
 
 {property_prefix}optaplanner.solver.termination.spent-limit::
 How long the solver can run.
