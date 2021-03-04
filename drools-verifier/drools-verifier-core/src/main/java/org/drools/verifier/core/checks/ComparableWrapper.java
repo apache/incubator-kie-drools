@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package org.drools.verifier.core.checks;
 
+import java.util.Comparator;
+import java.util.Objects;
+
 public class ComparableWrapper
         implements Comparable<ComparableWrapper> {
 
@@ -23,8 +26,8 @@ public class ComparableWrapper
 
     enum Type {
         NEGATIVE_INFINITE,
-        INFINITE,
-        NORMAL
+        NORMAL,
+        INFINITE
     }
 
     private final Comparable value;
@@ -42,16 +45,12 @@ public class ComparableWrapper
 
     @Override
     public int compareTo(final ComparableWrapper other) {
-        if (type.equals(Type.INFINITE)) {
-            return other.type.equals(Type.INFINITE) ? 0 : 1;
-        } else if (type.equals(Type.NEGATIVE_INFINITE)) {
-            return other.type.equals(Type.NEGATIVE_INFINITE) ? 0 : -1;
-        } else if (other.type.equals(Type.INFINITE)) {
-            return -1;
-        } else if (other.type.equals(Type.NEGATIVE_INFINITE)) {
-            return 1;
+
+        if (!Objects.equals(type, Type.NORMAL) || !Objects.equals(other.type, Type.NORMAL)) {
+            return type.compareTo(other.type);
         } else {
-            return value.compareTo(other.value);
+            Comparator<Comparable> nullFirstCompare = Comparator.nullsFirst(Comparable::compareTo);
+            return nullFirstCompare.compare(value, other.value);
         }
     }
 

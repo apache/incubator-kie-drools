@@ -22,6 +22,7 @@ import org.junit.Test;
 
 public class ComparableWrapperTest {
 
+    private final ComparableWrapper theNull = new ComparableWrapper(null);
     private final ComparableWrapper one = new ComparableWrapper(1);
     private final ComparableWrapper ten = new ComparableWrapper(10);
     private final ComparableWrapper min = ComparableWrapper.MIN_VALUE;
@@ -30,8 +31,8 @@ public class ComparableWrapperTest {
     @Test
     public void testSorting() {
 
-        final ComparableWrapper[] unsorted = {one, ten, max, min};
-        final ComparableWrapper[] sorted = {min, one, ten, max};
+        final ComparableWrapper[] unsorted = {one, ten, theNull, max, min};
+        final ComparableWrapper[] sorted = {min, theNull, one, ten, max};
 
         Arrays.sort(unsorted);
 
@@ -40,23 +41,28 @@ public class ComparableWrapperTest {
 
     @Test
     public void compareTo() {
+        Assert.assertEquals(0, theNull.compareTo(theNull));
         Assert.assertEquals(0, one.compareTo(one));
         Assert.assertEquals(0, ten.compareTo(ten));
         Assert.assertEquals(0, min.compareTo(min));
         Assert.assertEquals(0, max.compareTo(max));
 
+        Assert.assertTrue(one.compareTo(theNull) > 0);
         Assert.assertTrue(one.compareTo(ten) < 0);
         Assert.assertTrue(one.compareTo(min) > 0);
         Assert.assertTrue(one.compareTo(max) < 0);
 
+        Assert.assertTrue(ten.compareTo(theNull) > 0);
         Assert.assertTrue(ten.compareTo(one) > 0);
         Assert.assertTrue(ten.compareTo(min) > 0);
         Assert.assertTrue(ten.compareTo(max) < 0);
 
+        Assert.assertTrue(min.compareTo(theNull) < 0);
         Assert.assertTrue(min.compareTo(one) < 0);
         Assert.assertTrue(min.compareTo(ten) < 0);
         Assert.assertTrue(min.compareTo(max) < 0);
 
+        Assert.assertTrue(max.compareTo(theNull) > 0);
         Assert.assertTrue(max.compareTo(one) > 0);
         Assert.assertTrue(max.compareTo(ten) > 0);
         Assert.assertTrue(max.compareTo(min) > 0);
