@@ -77,9 +77,9 @@ public class AbstractScenarioRunnerTest {
     @Test
     public void getDescriptionForScenario() {
         final Scenario scenario = scenarioRunnerDTOLocal.getScenarioWithIndices().get(2).getScesimData();
-        Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, scenario);
+        Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, "description");
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), AbstractScenarioRunner.class.getCanonicalName());
-        retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of(String.class.getCanonicalName()), 1, scenario);
+        retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.of(String.class.getCanonicalName()), 1, "description");
         commonVerifyDescriptionForScenario(retrieved, 1, scenario.getDescription(), String.class.getCanonicalName());
     }
 
