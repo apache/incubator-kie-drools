@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.scenariosimulation.api.model.Background;
-import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
@@ -121,9 +120,11 @@ public abstract class AbstractScenarioRunner extends Runner {
             internalRunScenario(scenarioWithIndex, scenarioRunnerData, settings, background);
         } catch (ScenarioException e) {
             if (e.isFailedAssertion()) {
-                IndexedScenarioAssertionError indexedScenarioAssertionError = new IndexedScenarioAssertionError(index, e);
-                indexedScenarioAssertionError.setFileName(getFileName(scenarioRunnerDTO.getFileName()));
-                indexedScenarioAssertionError.setScenarioDescription(scenarioWithIndex.getScesimData().getDescription());
+                IndexedScenarioAssertionError indexedScenarioAssertionError =
+                        new IndexedScenarioAssertionError(index,
+                                                          scenarioWithIndex.getScesimData().getDescription(),
+                                                          getFileName(scenarioRunnerDTO.getFileName()),
+                                                          e);
                 runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioAssertionError));
             } else {
                 IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);

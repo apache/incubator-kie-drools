@@ -19,30 +19,14 @@ package org.drools.scenariosimulation.backend.runner;
 public class IndexedScenarioAssertionError extends AssertionError {
 
     private final int index;
-    private String scenarioDescription;
-    private String fileName;
+    private final String scenarioDescription;
+    private final String fileName;
 
-    public IndexedScenarioAssertionError(int index, String message) {
-        super(message);
-        this.index = index;
-    }
-
-    public IndexedScenarioAssertionError(int index, String message, Throwable cause) {
-        super(message, cause);
-        this.index = index;
-    }
-
-    public IndexedScenarioAssertionError(int index, Throwable cause) {
+    public IndexedScenarioAssertionError(int index, String scenarioDescription, String fileName, Throwable cause) {
         super(cause);
         this.index = index;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setScenarioDescription(String scenarioDescription) {
         this.scenarioDescription = scenarioDescription;
+        this.fileName = fileName;
     }
 
     @Override
