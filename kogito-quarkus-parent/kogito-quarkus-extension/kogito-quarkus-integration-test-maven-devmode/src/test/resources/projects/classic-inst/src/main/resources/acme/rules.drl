@@ -1,0 +1,14 @@
+package acme;
+unit Hello;
+
+rule "r1"
+when
+    $s: /strings
+then
+    messages.add(new Message("Hello, "+ $s));
+end
+
+query "q1"
+  $s : /strings
+  $m : /messages
+end

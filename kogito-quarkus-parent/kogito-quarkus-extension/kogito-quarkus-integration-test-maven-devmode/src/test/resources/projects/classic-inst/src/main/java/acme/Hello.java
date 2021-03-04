@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package $Package$;
+package acme;
 
-@javax.enterprise.context.ApplicationScoped()
-@io.quarkus.runtime.Startup() //<-- Required to force full reload during hot reload
-public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.DataStore;
+import org.kie.kogito.rules.RuleUnitData;
 
-    static {
-        init(
-                /* arguments provided during codegen */);
+public class Hello implements RuleUnitData {
+    DataStore<String> strings = DataSource.createStore();
+    DataStore<Message> messages = DataSource.createStore();
+
+    public DataStore<String> getStrings() {
+        return strings;
     }
-
-    @javax.inject.Inject
-    protected org.kie.kogito.Application application;
-
-    public DecisionModels() {
-        super();
-    }
-
-    @javax.annotation.PostConstruct
-    protected void init() {
-        initApplication(application);
+    
+    public DataStore<Message> getMessages() {
+        return messages;
     }
 }

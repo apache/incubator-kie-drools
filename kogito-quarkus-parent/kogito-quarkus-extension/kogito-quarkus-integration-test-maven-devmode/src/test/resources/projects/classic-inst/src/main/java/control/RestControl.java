@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package $Package$;
+package control;
 
-@javax.enterprise.context.ApplicationScoped()
-@io.quarkus.runtime.Startup() //<-- Required to force full reload during hot reload
-public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.UUID;
 
-    static {
-        init(
-                /* arguments provided during codegen */);
-    }
+@Path("/control")
+public class RestControl {
 
-    @javax.inject.Inject
-    protected org.kie.kogito.Application application;
-
-    public DecisionModels() {
-        super();
-    }
-
-    @javax.annotation.PostConstruct
-    protected void init() {
-        initApplication(application);
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "Hello, "+ "v1";
     }
 }

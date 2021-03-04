@@ -59,10 +59,16 @@ public class SimpleModifyHotReloadTest {
     void simpleHotReloadTest() throws InterruptedException {
         executeTest("No");
 
+        // --- Change #1
         test.modifyResourceFile(DMN_RESOURCE_FILE, s -> s.replaceAll("if Total Points >= 20 then \"Yes\" else \"No\"",
                 "if Total Points >= 2 then \"Yes\" else \"No\""));
 
         executeTest("Yes");
+
+        // --- Change #2
+        test.modifyResourceFile(DMN_RESOURCE_FILE, s -> s.replaceAll("if Total Points >= 2 then \"Yes\" else \"No\"",
+                "if Total Points >= 20 then \"Yes\" else \"No\""));
+        executeTest("No");
     }
 
     private void executeTest(String result) {
