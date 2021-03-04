@@ -15,12 +15,15 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * FactMappingValue contains the identifier of a fact mapping + the raw value
+ * - collectionPathToValue: In case of an error occurred in a collection (List or Map), it contains the path which
+ *                          describes how to reach the wrong field (eg. Item #1 | field | ... ).
  */
 public class FactMappingValue {
 
@@ -31,6 +34,8 @@ public class FactMappingValue {
     private FactMappingValueStatus status = FactMappingValueStatus.SUCCESS;
     @XStreamOmitField
     private Object errorValue;
+    @XStreamOmitField
+    private List<String> collectionPathToValue;
     @XStreamOmitField
     private String exceptionMessage;
 
@@ -89,9 +94,19 @@ public class FactMappingValue {
         this.status = FactMappingValueStatus.FAILED_WITH_EXCEPTION;
     }
 
+    public List<String> getCollectionPathToValue() {
+        return collectionPathToValue;
+    }
+
+    public void setCollectionPathToValue(List<String> collectionPathToValue) {
+        this.collectionPathToValue = collectionPathToValue;
+        this.status = FactMappingValueStatus.FAILED_WITH_ERROR;
+    }
+
     public void resetStatus() {
         this.status = FactMappingValueStatus.SUCCESS;
         this.exceptionMessage = null;
         this.errorValue = null;
+        this.collectionPathToValue = null;
     }
 }
