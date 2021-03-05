@@ -41,13 +41,17 @@ public interface InternalKieModuleProvider {
 
         @Override
         public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
-            log.info( "Creating KieModule for artifact " + releaseId );
+            if (log.isInfoEnabled()) {
+                log.info( "Creating KieModule for artifact " + releaseId );
+            }
             return file.isDirectory() ? new FileKieModule( releaseId, kieProject, file ) : new ZipKieModule( releaseId, kieProject, file );
         }
 
         @Override
         public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs ) {
-            log.info( "Creating in memory KieModule for artifact " + releaseId );
+            if (log.isInfoEnabled()) {
+                log.info( "Creating in memory KieModule for artifact " + releaseId );
+            }
             return new MemoryKieModule(releaseId, kieProject, mfs);
         }
     }

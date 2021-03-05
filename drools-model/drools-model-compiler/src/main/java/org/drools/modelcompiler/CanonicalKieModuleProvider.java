@@ -44,10 +44,14 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
 
     private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
         if (internalKieModule.hasResource(getModelFileWithGAV(internalKieModule.getReleaseId()))) {
-            log.info( "Artifact " + internalKieModule.getReleaseId() + " has executable model");
+            if (log.isInfoEnabled()) {
+                log.info( "Artifact " + internalKieModule.getReleaseId() + " has executable model" );
+            }
             return new CanonicalKieModule(internalKieModule);
         } else {
-            log.info( "No executable model found for artifact " + internalKieModule.getReleaseId() + ". Falling back to resources parsing.");
+            if (log.isInfoEnabled()) {
+                log.info( "No executable model found for artifact " + internalKieModule.getReleaseId() + ". Falling back to resources parsing." );
+            }
             return internalKieModule;
         }
     }
