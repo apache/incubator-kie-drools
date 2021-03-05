@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.kie" level="info"/>
+    <logger name="org.kie" level="warn"/>
     <logger name="org.jboss.weld" level="info"/>
 
     <root level="info"><!-- TODO We probably want to set default level to warn instead -->
