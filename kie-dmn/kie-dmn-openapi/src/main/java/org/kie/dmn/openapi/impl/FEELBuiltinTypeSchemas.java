@@ -64,6 +64,8 @@ public class FEELBuiltinTypeSchemas {
                 return OASFactory.createObject(Schema.class).type(SchemaType.NUMBER).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:number");
             case STRING:
                 return OASFactory.createObject(Schema.class).type(SchemaType.STRING).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:string");
+            case CONTEXT:
+                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:context"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:context is {}
             case DURATION:
             default:
                 throw new IllegalArgumentException();
