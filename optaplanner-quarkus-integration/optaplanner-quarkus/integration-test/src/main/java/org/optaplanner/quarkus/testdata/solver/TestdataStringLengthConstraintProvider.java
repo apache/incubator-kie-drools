@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.jackson.it.solver;
+package org.optaplanner.quarkus.testdata.solver;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.quarkus.jackson.it.domain.ITestdataPlanningEntity;
+import org.optaplanner.quarkus.testdata.domain.TestdataStringLengthShadowEntity;
 
-public class ITestdataPlanningConstraintProvider implements ConstraintProvider {
+public class TestdataStringLengthConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.from(ITestdataPlanningEntity.class)
-                        .join(ITestdataPlanningEntity.class, Joiners.equal(ITestdataPlanningEntity::getValue))
+                factory.from(TestdataStringLengthShadowEntity.class)
+                        .join(TestdataStringLengthShadowEntity.class, Joiners.equal(TestdataStringLengthShadowEntity::getValue))
                         .filter((a, b) -> a != b)
-                        .penalize("Don't assign 2 entities the same value.", SimpleScore.ONE)
+                        .penalize("Don't assign 2 entities the same value.", HardSoftScore.ONE_HARD),
+                factory.from(TestdataStringLengthShadowEntity.class)
+                        .reward("Maximize value length", HardSoftScore.ONE_SOFT,
+                                TestdataStringLengthShadowEntity::getLength)
         };
     }
 

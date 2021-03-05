@@ -62,10 +62,13 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
+import io.quarkus.gizmo.BranchResult;
+import io.quarkus.gizmo.BytecodeCreator;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.DescriptorUtils;
@@ -250,7 +253,7 @@ public class GizmoMemberAccessorEntityEnhancer {
     public static String generateSolutionCloner(SolutionDescriptor solutionDescriptor,
             ClassOutput classOutput,
             IndexView indexView,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
         try (ClassCreator classCreator = ClassCreator
                 .builder()
@@ -302,7 +305,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             SolutionDescriptor solutionDescriptor,
             Class<?> entityClass,
             Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedMap,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) throws NoSuchFieldException, ClassNotFoundException {
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         Map<Field, GizmoMemberDescriptor> solutionFieldToMemberDescriptor = new HashMap<>();
 
         Class<?> currentClass = entityClass;
@@ -383,6 +386,41 @@ public class GizmoMemberAccessorEntityEnhancer {
                         void.class, Map.class),
                 solutionClonerMap);
         methodCreator.returnValue(null);
+
+        classCreator.close();
+        return generatedClassName;
+    }
+
+    public static String generateGizmoBeanFactory(ClassOutput classOutput, Set<Class<?>> beanClasses) {
+        String generatedClassName = OptaPlannerGizmoBeanFactory.class.getName() + "$Implementation";
+        ClassCreator classCreator = ClassCreator
+                .builder()
+                .className(generatedClassName)
+                .interfaces(OptaPlannerGizmoBeanFactory.class)
+                .classOutput(classOutput)
+                .build();
+
+        classCreator.addAnnotation(ApplicationScoped.class);
+        MethodCreator methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoBeanFactory.class,
+                "newInstance", Object.class, Class.class));
+        ResultHandle query = methodCreator.getMethodParam(0);
+        BytecodeCreator currentBranch = methodCreator;
+
+        for (Class<?> beanClass : beanClasses) {
+            ResultHandle beanClassHandle = currentBranch.loadClass(beanClass);
+            ResultHandle isTarget = currentBranch.invokeVirtualMethod(
+                    MethodDescriptor.ofMethod(Object.class, "equals", boolean.class, Object.class),
+                    beanClassHandle, query);
+
+            BranchResult isQueryBranchResult = currentBranch.ifTrue(isTarget);
+            BytecodeCreator isQueryBranch = isQueryBranchResult.trueBranch();
+            ResultHandle beanInstance =
+                    isQueryBranch.newInstance(MethodDescriptor.ofConstructor(beanClass));
+            isQueryBranch.returnValue(beanInstance);
+
+            currentBranch = isQueryBranchResult.falseBranch();
+        }
+        currentBranch.returnValue(currentBranch.loadNull());
 
         classCreator.close();
         return generatedClassName;

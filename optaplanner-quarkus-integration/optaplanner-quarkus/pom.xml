@@ -16,5 +16,6 @@
   <modules>
     <module>runtime</module>
     <module>deployment</module>
+    <module>integration-test</module>
   </modules>
 </project>

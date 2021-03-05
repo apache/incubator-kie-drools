@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.jackson.it.domain;
+package org.optaplanner.quarkus.gizmo;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
+public interface OptaPlannerGizmoBeanFactory {
+    Reference INSTANCE = new Reference();
 
-@PlanningEntity
-public class ITestdataPlanningEntity {
+    <T> T newInstance(Class<T> clazz);
 
-    @PlanningVariable(valueRangeProviderRefs = "valueRange")
-    private String value;
+    class Reference {
+        OptaPlannerGizmoBeanFactory instance;
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
+        public OptaPlannerGizmoBeanFactory getInstance() {
+            return instance;
+        }
 
-    public String getValue() {
-        return value;
+        public void setInstance(OptaPlannerGizmoBeanFactory instance) {
+            this.instance = instance;
+        }
     }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
 }

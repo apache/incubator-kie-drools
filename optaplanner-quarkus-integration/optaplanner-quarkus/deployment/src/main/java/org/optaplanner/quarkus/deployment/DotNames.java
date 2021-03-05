@@ -16,6 +16,9 @@
 
 package org.optaplanner.quarkus.deployment;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.jboss.jandex.DotName;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
@@ -93,6 +96,32 @@ public final class DotNames {
             CUSTOM_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
     };
+
+    public enum BeanDefiningAnnotations {
+        PLANNING_SCORE(DotNames.PLANNING_SCORE, "scoreDefinitionClass"),
+        PLANNING_SOLUTION(DotNames.PLANNING_SOLUTION, "solutionCloner"),
+        PLANNING_ENTITY(DotNames.PLANNING_ENTITY, "pinningFilter", "difficultyComparatorClass",
+                "difficultyWeightFactoryClass"),
+        PLANNING_VARIABLE(DotNames.PLANNING_VARIABLE, "strengthComparatorClass",
+                "strengthWeightFactoryClass"),
+        CUSTOM_SHADOW_VARIABLE(DotNames.CUSTOM_SHADOW_VARIABLE, "variableListenerClass");
+
+        private final DotName annotationDotName;
+        private final List<String> parameterNames;
+
+        BeanDefiningAnnotations(DotName annotationDotName, String... parameterNames) {
+            this.annotationDotName = annotationDotName;
+            this.parameterNames = Arrays.asList(parameterNames);
+        }
+
+        public DotName getAnnotationDotName() {
+            return annotationDotName;
+        }
+
+        public List<String> getParameterNames() {
+            return parameterNames;
+        }
+    }
 
     private DotNames() {
     }

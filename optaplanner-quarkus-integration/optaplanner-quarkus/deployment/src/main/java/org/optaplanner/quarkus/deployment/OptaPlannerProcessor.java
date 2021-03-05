@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +36,7 @@ import javax.inject.Singleton;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
@@ -70,7 +72,6 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.gizmo.ClassOutput;
@@ -112,7 +113,6 @@ class OptaPlannerProcessor {
     void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
-            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
@@ -149,34 +149,39 @@ class OptaPlannerProcessor {
         applySolverProperties(recorderContext, indexView, solverConfig);
         assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
-        if (solverConfig.getSolutionClass() != null && solverConfig.getDomainAccessType() != DomainAccessType.GIZMO) {
+        if (solverConfig.getSolutionClass() != null) {
+            // Need to register even when using GIZMO so annotations are preserved
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
             reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
                     .type(jandexType)
+                    // Ignore only the packages from optaplanner-core
+                    // (Can cause a hard to diagnoise issue when creating a test/example
+                    // in the package "org.optaplanner").
                     .ignoreTypePredicate(
                             dotName -> ReflectiveHierarchyBuildItem.DefaultIgnoreTypePredicate.INSTANCE.test(dotName)
-                                    || dotName.toString().startsWith("org.optaplanner"))
+                                    || dotName.toString().startsWith("org.optaplanner.api")
+                                    || dotName.toString().startsWith("org.optaplanner.config")
+                                    || dotName.toString().startsWith("org.optaplanner.impl"))
                     .build());
         }
 
-        generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, transformers);
-
-        List<Class<?>> reflectiveClassList = new ArrayList<>(5);
+        Set<Class<?>> reflectiveClassSet = new LinkedHashSet<>();
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         if (scoreDirectorFactoryConfig != null) {
             if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() != null) {
-                reflectiveClassList.add(scoreDirectorFactoryConfig.getEasyScoreCalculatorClass());
+                reflectiveClassSet.add(scoreDirectorFactoryConfig.getEasyScoreCalculatorClass());
             }
             if (scoreDirectorFactoryConfig.getConstraintProviderClass() != null) {
-                reflectiveClassList.add(scoreDirectorFactoryConfig.getConstraintProviderClass());
+                reflectiveClassSet.add(scoreDirectorFactoryConfig.getConstraintProviderClass());
             }
             if (scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() != null) {
-                reflectiveClassList.add(scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass());
+                reflectiveClassSet.add(scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass());
             }
         }
-        reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, false, false,
-                        reflectiveClassList.stream().map(Class::getName).toArray(String[]::new)));
+
+        registerClassesFromAnnotations(indexView, reflectiveClassSet);
+        generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, transformers,
+                reflectiveClassSet);
 
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
         optaPlannerBuildTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
@@ -284,6 +289,30 @@ class OptaPlannerProcessor {
                         " annotation.\n" +
                         "Maybe add a @" + PlanningEntity.class.getSimpleName() +
                         " annotation on the class (" + declaringClass.name() + ").");
+            }
+        }
+    }
+
+    private void registerClassesFromAnnotations(IndexView indexView, Set<Class<?>> reflectiveClassSet) {
+        for (DotNames.BeanDefiningAnnotations beanDefiningAnnotation : DotNames.BeanDefiningAnnotations.values()) {
+            for (AnnotationInstance annotationInstance : indexView
+                    .getAnnotations(beanDefiningAnnotation.getAnnotationDotName())) {
+                for (String parameterName : beanDefiningAnnotation.getParameterNames()) {
+                    AnnotationValue value = annotationInstance.value(parameterName);
+
+                    // We don't care about the default/null type.
+                    if (value != null) {
+                        Type type = value.asClass();
+                        try {
+                            Class<?> beanClass = Class.forName(type.name().toString(), false,
+                                    Thread.currentThread().getContextClassLoader());
+                            reflectiveClassSet.add(beanClass);
+                        } catch (ClassNotFoundException e) {
+                            throw new IllegalStateException("Cannot find bean class (" + type.name() +
+                                    ") referenced in annotation (" + annotationInstance + ").");
+                        }
+                    }
+                }
             }
         }
     }
@@ -421,7 +450,7 @@ class OptaPlannerProcessor {
     private void generateDomainAccessors(SolverConfig solverConfig, IndexView indexView,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
-            BuildProducer<BytecodeTransformerBuildItem> transformers) {
+            BuildProducer<BytecodeTransformerBuildItem> transformers, Set<Class<?>> reflectiveClassSet) {
         ClassOutput classOutput = new GeneratedClassGizmoAdaptor(generatedClasses, true);
         ClassOutput beanClassOutput = new GeneratedBeanGizmoAdaptor(generatedBeans);
         ClassOutput debuggableClassOutput = (className, bytes) -> {
@@ -494,18 +523,15 @@ class OptaPlannerProcessor {
             // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
             SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
                     solverConfig.getSolutionClass(), solverConfig.getEntityClassList());
-            try {
-                gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
-                        debuggableClassOutput,
-                        indexView,
-                        transformers));
-            } catch (ClassNotFoundException | NoSuchFieldException e) {
-                throw new IllegalStateException("Error generating SolutionCloner.", e);
-            }
+            gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
+                    debuggableClassOutput,
+                    indexView,
+                    transformers));
         }
 
         GizmoMemberAccessorEntityEnhancer.generateGizmoInitializer(beanClassOutput, generatedMemberAccessorsClassNameSet,
                 gizmoSolutionClonerClassNameSet);
+        GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet);
     }
 
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {

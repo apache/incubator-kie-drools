@@ -21,14 +21,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionMethodMemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
@@ -37,21 +35,6 @@ import com.oracle.svm.core.annotate.TargetClass;
 public final class Substitute_MemberAccessorFactory {
 
     @Substitute
-    public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorFactory.MemberAccessorType memberAccessorType,
-            Class<? extends Annotation> annotationClass,
-            DomainAccessType domainAccessType) {
-        switch (domainAccessType) {
-            case GIZMO:
-                return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
-
-            case REFLECTION:
-                return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
-
-            default:
-                throw new IllegalStateException("The domainAccessType (" + domainAccessType + ") is not implemented.");
-        }
-    }
-
     private static MemberAccessor buildReflectiveMemberAccessor(Member member,
             MemberAccessorFactory.MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass) {
