@@ -351,6 +351,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                          exception.getMessage());
         }
 
+        amountNameExpectedFactMappingValue.resetStatus();
         amountNameExpectedFactMappingValue.setErrorValue("Error");
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
@@ -365,6 +366,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         }
 
         String exceptionMessage = "Message";
+        amountNameExpectedFactMappingValue.resetStatus();
         amountNameExpectedFactMappingValue.setExceptionMessage(exceptionMessage);
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
@@ -376,6 +378,20 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                          exception.getMessage());
         }
 
+        List<String> pathToValue = Arrays.asList("Item #2");
+        amountNameExpectedFactMappingValue.resetStatus();
+        amountNameExpectedFactMappingValue.setCollectionPathToValue(pathToValue);
+        scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
+        try {
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            fail();
+        } catch (ScenarioException exception) {
+            assertTrue(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getCollectionFactExceptionMessage("Fact 2.amount",
+                                                                                            pathToValue,
+                                                                                            amountNameExpectedFactMappingValue.getErrorValue()),
+                         exception.getMessage());
+        }
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
