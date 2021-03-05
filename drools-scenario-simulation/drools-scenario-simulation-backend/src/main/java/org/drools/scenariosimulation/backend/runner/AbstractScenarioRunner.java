@@ -35,7 +35,6 @@ import org.junit.runner.notification.RunNotifier;
 import org.kie.api.runtime.KieContainer;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_EXTENSION;
 
 public abstract class AbstractScenarioRunner extends Runner {
 
