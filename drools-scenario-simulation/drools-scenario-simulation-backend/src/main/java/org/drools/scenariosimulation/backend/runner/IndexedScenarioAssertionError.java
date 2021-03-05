@@ -33,7 +33,7 @@ public class IndexedScenarioAssertionError extends AssertionError {
     public String getMessage() {
         String errorMessage = getCause() != null ? getCause().getMessage() : super.getMessage();
         StringBuilder message = new StringBuilder().append("#").append(index);
-        if (scenarioDescription != null) {
+        if (scenarioDescription != null && !scenarioDescription.isEmpty()) {
             message.append(" ").append(scenarioDescription);
         }
         message.append(": ").append(errorMessage);
