@@ -466,6 +466,8 @@ public class KieContainerImpl
     }
 
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
+        log.info( "Start creation of KieBase: " + kBaseModel.getName() );
+
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
         kModule.afterKieBaseCreationUpdate(kBaseModel.getName(), kBase);
@@ -477,6 +479,8 @@ public class KieContainerImpl
         kBase.setContainerId(containerId);
         kBase.setKieContainer(this);
         kBase.initMBeans();
+
+        log.info( "End creation of KieBase: " + kBaseModel.getName() );
 
         return kBase;
     }
