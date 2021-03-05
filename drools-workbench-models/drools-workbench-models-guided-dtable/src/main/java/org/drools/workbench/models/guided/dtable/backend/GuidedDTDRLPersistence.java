@@ -489,6 +489,7 @@ public class GuidedDTDRLPersistence {
             update.setFieldValues(old.getFieldValues());
             a.action = update;
         }
+
         ActionSetField asf = (ActionSetField) a.action;
         ActionFieldValue val = new ActionFieldValue(sf.getFactField(),
                                                     cell,
@@ -534,7 +535,9 @@ public class GuidedDTDRLPersistence {
         for (LabelledAction labelledAction : actions) {
             IAction action = labelledAction.action;
             if (action instanceof ActionFieldList) {
-                if (labelledAction.boundName.equals(boundName) && labelledAction.isUpdate == isUpdate) {
+                if (labelledAction.boundName.equals(boundName)
+                        && labelledAction.isUpdate == isUpdate
+                        && !(labelledAction.action instanceof ActionCallMethod)) {
                     return labelledAction;
                 }
             }
