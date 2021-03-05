@@ -54,7 +54,7 @@ public interface KieAssemblerService extends KieService {
      */
     @Deprecated
     default void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        addResourceAfterRules(kbuilder, resource, type, configuration);
+
     }
 
     /**
