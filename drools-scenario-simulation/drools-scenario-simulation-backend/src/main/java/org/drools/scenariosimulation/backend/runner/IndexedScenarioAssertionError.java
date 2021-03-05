@@ -16,6 +16,8 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
+
 public class IndexedScenarioAssertionError extends AssertionError {
 
     private final int index;
@@ -31,16 +33,10 @@ public class IndexedScenarioAssertionError extends AssertionError {
 
     @Override
     public String getMessage() {
-        String errorMessage = getCause() != null ? getCause().getMessage() : super.getMessage();
-        StringBuilder message = new StringBuilder().append("#").append(index);
-        if (scenarioDescription != null && !scenarioDescription.isEmpty()) {
-            message.append(" ").append(scenarioDescription);
-        }
-        message.append(": ").append(errorMessage);
-        if (fileName != null) {
-            message.append(" (").append(fileName).append(")");
-        }
-        return message.toString();
+        String assertionError = getCause() != null ? getCause().getMessage() : super.getMessage();
+        return ScenarioSimulationServerMessages.getIndexedScenarioMessage(assertionError,
+                                                                          index,
+                                                                          scenarioDescription,
+                                                                          fileName);
     }
-
 }

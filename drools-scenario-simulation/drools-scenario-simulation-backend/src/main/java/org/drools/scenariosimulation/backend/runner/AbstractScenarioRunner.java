@@ -75,7 +75,7 @@ public abstract class AbstractScenarioRunner extends Runner {
         if (fileFullPath == null) {
             return null;
         }
-        int idx = fileFullPath.replaceAll("\\\\", "/").lastIndexOf('/');
+        int idx = fileFullPath.replace("\\", "/").lastIndexOf('/');
         String fileName = idx >= 0 ? fileFullPath.substring(idx + 1) : fileFullPath;
         return fileName.contains(ConstantsHolder.SCESIM_EXTENSION) ?
                 fileName.substring(0, fileName.lastIndexOf(ConstantsHolder.SCESIM_EXTENSION)) :
@@ -111,11 +111,11 @@ public abstract class AbstractScenarioRunner extends Runner {
 
     protected Optional<ScenarioResultMetadata> singleRunScenario(ScenarioWithIndex scenarioWithIndex, RunNotifier runNotifier, Settings settings, Background background) {
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
-
+        String scenarioName = scenarioWithIndex.getScesimData().getDescription();
         int index = scenarioWithIndex.getIndex();
         Description descriptionForScenario = getDescriptionForScenario(getFilePath(),
                                                                        index,
-                                                                       scenarioWithIndex.getScesimData().getDescription());
+                                                                       scenarioName);
         runNotifier.fireTestStarted(descriptionForScenario);
 
         try {
@@ -124,20 +124,25 @@ public abstract class AbstractScenarioRunner extends Runner {
             if (e.isFailedAssertion()) {
                 IndexedScenarioAssertionError indexedScenarioAssertionError =
                         new IndexedScenarioAssertionError(index,
-                                                          scenarioWithIndex.getScesimData().getDescription(),
+                                                          scenarioName,
                                                           getScesimFileName(scenarioRunnerDTO.getFileName()),
                                                           e);
                 runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioAssertionError));
             } else {
-                IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);
-                indexedScenarioException.setFileName(getScesimFileName(scenarioRunnerDTO.getFileName()));
+                IndexedScenarioException indexedScenarioException =
+                        new IndexedScenarioException(index,
+                                                     scenarioName,
+                                                     getScesimFileName(scenarioRunnerDTO.getFileName()),
+                                                     e);
                 runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
             }
         }
         catch (Exception e) {
-            IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, "Unexpected test error in scenario '" +
-                    scenarioWithIndex.getScesimData().getDescription() + "'", e);
-            indexedScenarioException.setFileName(getScesimFileName(scenarioRunnerDTO.getFileName()));
+            IndexedScenarioException indexedScenarioException =
+                    new IndexedScenarioException(index,
+                                                 scenarioName,
+                                                 getScesimFileName(scenarioRunnerDTO.getFileName()),
+                                                 e);
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         }
 

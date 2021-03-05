@@ -343,19 +343,18 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
             fail();
         } catch (ScenarioException exception) {
             assertFalse(exception.isFailedAssertion());
-            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenario2.getDescription()),
-                         exception.getMessage());
+            assertEquals("Illegal FactMappingValue status", exception.getMessage());
         }
 
         amountNameExpectedFactMappingValue.resetStatus();
         amountNameExpectedFactMappingValue.setErrorValue("Error");
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
             fail();
         } catch (ScenarioException exception) {
             assertTrue(exception.isFailedAssertion());
@@ -370,11 +369,11 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         amountNameExpectedFactMappingValue.setExceptionMessage(exceptionMessage);
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
             fail();
         } catch (ScenarioException exception) {
             assertFalse(exception.isFailedAssertion());
-            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenario2.getDescription(), exceptionMessage),
+            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(exceptionMessage),
                          exception.getMessage());
         }
 
@@ -383,7 +382,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         amountNameExpectedFactMappingValue.setCollectionPathToValue(pathToValue);
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
             fail();
         } catch (ScenarioException exception) {
             assertTrue(exception.isFailedAssertion());
@@ -395,7 +394,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
-        runnerHelper.validateAssertion(scenarioSuccessResult, simulation.getScesimModelDescriptor(), scenario2.getDescription());
+        runnerHelper.validateAssertion(scenarioSuccessResult, simulation.getScesimModelDescriptor());
     }
 
     @Test
@@ -677,7 +676,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        verify(ruleScenarioExecutableBuilderMock, times(1)).setActiveRuleFlowGroup(eq(ruleFlowGroup));
+        verify(ruleScenarioExecutableBuilderMock, times(1)).setActiveRuleFlowGroup(ruleFlowGroup);
 
         verify(ruleScenarioExecutableBuilderMock, times(inputObjects)).insert(insertCaptor.capture());
         for (Object value : insertCaptor.getAllValues()) {

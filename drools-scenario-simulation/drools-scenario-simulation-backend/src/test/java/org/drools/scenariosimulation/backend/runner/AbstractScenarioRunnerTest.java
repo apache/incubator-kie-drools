@@ -27,6 +27,7 @@ import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -127,6 +128,10 @@ public class AbstractScenarioRunnerTest {
                 .when(abstractScenarioRunnerLocal).internalRunScenario(eq(scenarioRunnerDTOLocal.getScenarioWithIndices().get(2)),
                                                                        isA(ScenarioRunnerData.class),
                                                                        any(), any());
+        doThrow(new RuntimeException("Unknown exception"))
+                .when(abstractScenarioRunnerLocal).internalRunScenario(eq(scenarioRunnerDTOLocal.getScenarioWithIndices().get(3)),
+                                                                       isA(ScenarioRunnerData.class),
+                                                                       any(), any());
         assertNull(abstractScenarioRunnerLocal.simulationRunMetadataBuilder);
         RunNotifier runNotifier = spy(new RunNotifier());
 
@@ -140,12 +145,18 @@ public class AbstractScenarioRunnerTest {
         verify(runNotifier, times(1)).fireTestSuiteFinished(isA(Description.class));
 
         List<Failure> capturedFailures = failureArgumentCaptor.getAllValues();
-        assertEquals("#1 INDEX-0: Failed assertion (test)", capturedFailures.get(0).getException().getMessage());
+        assertEquals(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Failed assertion", 1, "INDEX-0", "test"),
+                     capturedFailures.get(0).getException().getMessage());
         assertTrue(capturedFailures.get(0).getException() instanceof IndexedScenarioAssertionError);
-        assertEquals("#2: Generic exception(test)", capturedFailures.get(1).getException().getMessage());
+        assertEquals(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Generic exception", 2, "INDEX-1", "test"),
+                     capturedFailures.get(1).getException().getMessage());
         assertTrue(capturedFailures.get(1).getException() instanceof IndexedScenarioException);
-        assertEquals("#3: Wrong argument(test)", capturedFailures.get(2).getException().getMessage());
+        assertEquals(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Wrong argument", 3, "INDEX-2", "test"),
+                     capturedFailures.get(2).getException().getMessage());
         assertTrue(capturedFailures.get(2).getException() instanceof IndexedScenarioException);
+        assertEquals(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Unknown exception", 4, "INDEX-3", "test"),
+                     capturedFailures.get(3).getException().getMessage());
+        assertTrue(capturedFailures.get(3).getException() instanceof IndexedScenarioException);
     }
 
     @Test

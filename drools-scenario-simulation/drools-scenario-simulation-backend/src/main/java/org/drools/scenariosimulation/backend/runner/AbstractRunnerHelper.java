@@ -100,8 +100,7 @@ public abstract class AbstractRunnerHelper {
                          requestContext);
 
         validateAssertion(scenarioRunnerData.getResults(),
-                          scesimModelDescriptor,
-                          scenario.getDescription());
+                          scesimModelDescriptor);
     }
 
     protected List<InstanceGiven> extractBackgroundValues(Background background,
@@ -265,20 +264,18 @@ public abstract class AbstractRunnerHelper {
     }
 
     protected void validateAssertion(List<ScenarioResult> scenarioResults,
-                                     ScesimModelDescriptor scesimModelDescriptor,
-                                     String scenarioDescription) {
+                                     ScesimModelDescriptor scesimModelDescriptor) {
 
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
-                thrownScenarioException(scenarioResult.getFactMappingValue(), scesimModelDescriptor, scenarioDescription);
+                thrownScenarioException(scenarioResult.getFactMappingValue(), scesimModelDescriptor);
             }
         }
 
     }
 
     private void thrownScenarioException(FactMappingValue factMappingValue,
-                                         ScesimModelDescriptor scesimModelDescriptor,
-                                         String scenarioDescription) {
+                                         ScesimModelDescriptor scesimModelDescriptor) {
         FactMapping factMapping = scesimModelDescriptor.getFactMapping(factMappingValue.getFactIdentifier(),
                                                                        factMappingValue.getExpressionIdentifier())
                 .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
@@ -297,10 +294,9 @@ public abstract class AbstractRunnerHelper {
             }
             throw new ScenarioException(exceptionMessage, true);
         } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
-            throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenarioDescription,
-                                                                                                            factMappingValue.getExceptionMessage()));
+            throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(factMappingValue.getExceptionMessage()));
         } else {
-            throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenarioDescription));
+            throw new ScenarioException("Illegal FactMappingValue status");
         }
     }
 
