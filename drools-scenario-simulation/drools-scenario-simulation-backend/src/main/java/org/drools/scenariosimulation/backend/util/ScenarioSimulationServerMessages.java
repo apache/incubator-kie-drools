@@ -15,6 +15,8 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
+import java.util.List;
+
 public class ScenarioSimulationServerMessages {
 
     private ScenarioSimulationServerMessages() {
@@ -39,6 +41,21 @@ public class ScenarioSimulationServerMessages {
 
     public static String getGenericScenarioExceptionMessage(String scenarioDescription) {
         return  String.format("Scenario \"%s\" failed", scenarioDescription);
+    }
+
+    public static String getCollectionFactExceptionMessage(String factName, List<String> pathToWrongValue, Object wrongValue) {
+        StringBuilder stringBuilder = new StringBuilder("Failed in \"").append(factName).append("\": ");
+        if (pathToWrongValue.isEmpty()) {
+            stringBuilder.append("Impossible to find elements in the collection to satisfy the conditions.");
+        } else {
+            if (wrongValue != null) {
+                stringBuilder.append("Value \"").append(wrongValue).append("\" is wrong in ");
+            } else {
+                stringBuilder.append("Wrong in ");
+            }
+            stringBuilder.append("\"").append(String.join(".", pathToWrongValue)).append("\"");
+        }
+        return stringBuilder.toString();
     }
 
 }

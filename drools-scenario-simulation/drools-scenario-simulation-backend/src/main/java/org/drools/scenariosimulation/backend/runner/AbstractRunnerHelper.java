@@ -285,10 +285,17 @@ public abstract class AbstractRunnerHelper {
         String factName = String.join(".", factMapping.getExpressionElements().stream()
                 .map(ExpressionElement::getStep).collect(Collectors.toList()));
         if (FactMappingValueStatus.FAILED_WITH_ERROR == factMappingValue.getStatus()) {
-            throw new ScenarioException(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
-                                                                                                               factMappingValue.getErrorValue(),
-                                                                                                               factMappingValue.getRawValue()),
-                                        true);
+            String exceptionMessage;
+            if (factMappingValue.getCollectionPathToValue() == null) {
+                exceptionMessage = ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
+                                                                                                          factMappingValue.getErrorValue(),
+                                                                                                          factMappingValue.getRawValue());
+            } else {
+                exceptionMessage = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName,
+                                                                                                      factMappingValue.getCollectionPathToValue(),
+                                                                                                      factMappingValue.getErrorValue());
+            }
+            throw new ScenarioException(exceptionMessage, true);
         } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
             throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(scenarioDescription,
                                                                                                             factMappingValue.getExceptionMessage()));
