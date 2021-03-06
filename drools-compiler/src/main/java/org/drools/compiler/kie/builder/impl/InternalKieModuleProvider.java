@@ -22,6 +22,8 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.internal.utils.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface InternalKieModuleProvider {
 
@@ -35,13 +37,21 @@ public interface InternalKieModuleProvider {
 
     class DrlBasedKieModuleProvider implements InternalKieModuleProvider {
 
+        private static final Logger log = LoggerFactory.getLogger( InternalKieModuleProvider.class );
+
         @Override
         public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
+            if (log.isInfoEnabled()) {
+                log.info( "Creating KieModule for artifact " + releaseId );
+            }
             return file.isDirectory() ? new FileKieModule( releaseId, kieProject, file ) : new ZipKieModule( releaseId, kieProject, file );
         }
 
         @Override
         public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs ) {
+            if (log.isInfoEnabled()) {
+                log.info( "Creating in memory KieModule for artifact " + releaseId );
+            }
             return new MemoryKieModule(releaseId, kieProject, mfs);
         }
     }

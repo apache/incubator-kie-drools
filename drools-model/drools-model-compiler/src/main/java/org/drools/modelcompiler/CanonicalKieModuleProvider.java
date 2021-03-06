@@ -23,10 +23,14 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModuleProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 
 public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBasedKieModuleProvider implements InternalKieModuleProvider {
+
+    private static final Logger log = LoggerFactory.getLogger( CanonicalKieModuleProvider.class );
 
     @Override
     public InternalKieModule createKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
@@ -40,8 +44,14 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
 
     private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
         if (internalKieModule.hasResource(getModelFileWithGAV(internalKieModule.getReleaseId()))) {
+            if (log.isInfoEnabled()) {
+                log.info( "Artifact " + internalKieModule.getReleaseId() + " has executable model" );
+            }
             return new CanonicalKieModule(internalKieModule);
         } else {
+            if (log.isInfoEnabled()) {
+                log.info( "No executable model found for artifact " + internalKieModule.getReleaseId() + ". Falling back to resources parsing." );
+            }
             return internalKieModule;
         }
     }

@@ -23,8 +23,8 @@
         </encoder>
     </appender>
 
-    <logger name="org.kie" level="info"/>
-    <logger name="org.drools" level="info"/>
+    <logger name="org.kie" level="warn"/>
+    <logger name="org.drools" level="warn"/>
 
     <logger name="org.drools.core.management" level="debug"/>
 <!--    <logger name="org.drools.modelcompiler.builder" level="debug"/>-->
