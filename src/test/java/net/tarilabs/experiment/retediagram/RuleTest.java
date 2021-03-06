@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.tarilabs.experiment.retediagram.ReteDiagram.DefaultBrowser;
 import net.tarilabs.experiment.retediagram.ReteDiagram.Layout;
 import net.tarilabs.model.Measurement;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.ReteDumper;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -44,13 +44,15 @@ import static org.junit.Assert.assertTrue;
 
 public class RuleTest extends CommonTestMethodBase {
 	static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
+
+    @BeforeClass
+    public static void init() {
+        System.setProperty("java.awt.headless", "false");
+    }
 	
 	@Test
 	public void test() {
-	    System.out.println("x");
-		KieServices kieServices = KieServices.Factory.get();
-        
-		KieBase kieBase = new KieHelper()
+	    KieBase kieBase = new KieHelper()
 		        .addFromClassPath("/rules.drl")
 		        .build();
 
@@ -86,7 +88,7 @@ public class RuleTest extends CommonTestMethodBase {
 	    System.out.println("---");
 	    ReteDiagram.newInstance()
 	            .configLayout(Layout.VLEVEL)
-	            .configOpenFileWithBrowser(DefaultBrowser.FIREFOX, true, false)
+	            .configOpenFile(true, true)
 	            .diagramRete(((InternalKnowledgeBase)session.getKieBase()));
 	}
 	

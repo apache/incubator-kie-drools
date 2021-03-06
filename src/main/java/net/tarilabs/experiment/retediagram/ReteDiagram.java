@@ -61,18 +61,6 @@ public class ReteDiagram {
             return path;
         }
     }
-    public enum DefaultBrowser {
-        GOOGLE_CHROME("google-chrome"),
-        FIREFOX("firefox");
-        private String command;
-        DefaultBrowser(String command) {
-            this.command = command;
-        }
-        public String getCommand() {
-            return command;
-        }
-    }
-
     public enum Layout {
         PARTITION, VLEVEL
     }
@@ -82,12 +70,10 @@ public class ReteDiagram {
     private boolean prefixTimestamp;
     private boolean outputSVG;
     private boolean outputPNG;
-    private String browserCommand;
     private boolean openSVG;
     private boolean openPNG;
     private boolean printDebugVerticalCluster = false;
     
-
     private ReteDiagram() { }
    
     /**
@@ -98,7 +84,7 @@ public class ReteDiagram {
                 .configLayout(Layout.VLEVEL)
                 .configFilenameScheme(PredefinedOutputPath.CWD, true)
                 .configGraphviz(true, true)
-                .configOpenFileWithBrowser(DefaultBrowser.GOOGLE_CHROME, true, false)
+                .configOpenFile(true, false)
                 ;
     }
     
@@ -130,14 +116,10 @@ public class ReteDiagram {
         return this;
     }
     
-    public ReteDiagram configOpenFileWithBrowser(String browserCommand, boolean openSVG, boolean openPNG) {
-        this.browserCommand = browserCommand;
+    public ReteDiagram configOpenFile(boolean openSVG, boolean openPNG) {
         this.openSVG = openSVG;
         this.openPNG = openPNG;
         return this;
-    }
-    public ReteDiagram configOpenFileWithBrowser(DefaultBrowser browserCommand, boolean openSVG, boolean openPNG) {
-        return configOpenFileWithBrowser(browserCommand.getCommand(), openSVG, openPNG);
     }
     
     public void diagramRete(KieBase kbase) {
@@ -213,18 +195,14 @@ public class ReteDiagram {
         
         if (outputSVG && openSVG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( browserCommand, svgFileName );
-            pbuilder.redirectErrorStream( true );
-            pbuilder.start();
+            java.awt.Desktop.getDesktop().open(new File(svgFileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
         }
         if (outputPNG && openPNG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( browserCommand, pngFileName );
-            pbuilder.redirectErrorStream( true );
-            pbuilder.start();
+            java.awt.Desktop.getDesktop().open(new File(svgFileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
