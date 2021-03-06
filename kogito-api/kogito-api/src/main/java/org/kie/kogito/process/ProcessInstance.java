@@ -21,7 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 import org.kie.kogito.process.workitem.Policy;
@@ -121,6 +125,16 @@ public interface ProcessInstance<T> {
     Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
 
     /**
+     * Updates work item according to provided consumer
+     * 
+     * @param id the id of the work item that has been completed
+     * @param updater consumer implementation that contains the logic to update workitem
+     * @param policies optional security information
+     * @return result of the operation performed by the updater
+     */
+    <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy<?>... policies);
+
+    /**
      * Aborts work item belonging to this process instance
      *
      * @param id id of the work item to complete
@@ -144,6 +158,14 @@ public interface ProcessInstance<T> {
      * @return work item with its parameters if found
      */
     WorkItem workItem(String workItemId, Policy<?>... policies);
+
+    /**
+     * Return nodes that fulfills a particular filter
+     * 
+     * @filter filter the returned nodes should fulfill
+     * @return collections of nodes that match the filter
+     */
+    Collection<KogitoNodeInstance> findNodes(Predicate<KogitoNodeInstance> filter);
 
     /**
      * Returns list of currently active work items.

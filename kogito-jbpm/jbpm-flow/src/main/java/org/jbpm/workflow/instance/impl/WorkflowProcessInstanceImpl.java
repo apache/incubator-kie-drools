@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -207,6 +208,22 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             }
         }
         return Collections.unmodifiableCollection(result);
+    }
+
+    @Override
+    public Collection<KogitoNodeInstance> getKogitoNodeInstances(Predicate<KogitoNodeInstance> filter,
+            boolean recursive) {
+        Collection<KogitoNodeInstance> result = new ArrayList<>();
+        for (NodeInstance nodeInstance : nodeInstances) {
+            if (nodeInstance instanceof KogitoNodeInstance && filter.test(nodeInstance)) {
+                result.add(nodeInstance);
+            }
+            if (nodeInstance instanceof KogitoNodeInstanceContainer && recursive) {
+                result.addAll(((KogitoNodeInstanceContainer) nodeInstance).getKogitoNodeInstances(
+                        filter, true));
+            }
+        }
+        return result;
     }
 
     @Override
@@ -954,6 +971,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         this.deploymentId = deploymentId;
     }
 
+    @Override
     public String getCorrelationKey() {
         if (correlationKey == null && getMetaData().get(CORRELATION_KEY) != null) {
             this.correlationKey = ((CorrelationKey) getMetaData().get(CORRELATION_KEY)).toExternalForm();
@@ -975,6 +993,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         return endDate;
     }
 
+    @Override
     public void setStartDate(Date startDate) {
         if (this.startDate == null) {
             this.startDate = startDate;

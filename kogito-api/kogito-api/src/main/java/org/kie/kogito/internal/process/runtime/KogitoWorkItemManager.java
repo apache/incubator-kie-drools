@@ -16,6 +16,7 @@
 package org.kie.kogito.internal.process.runtime;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
@@ -35,16 +36,15 @@ public interface KogitoWorkItemManager {
             Policy<?>... policies);
 
     /**
-     * Updates work item results, merging the input parameter with
-     * already existing one
-     *
+     * Updates work item, performing operation indicated by updater
+     * 
      * @param id the id of the work item that has been completed
-     * @param results the results related to this work item
+     * @param updater consumer implementation that contains the logic to update workitem
      * @param policies optional security information
-     * @return map containing updated model
+     * @return result of the operation performed by updater consumer
      */
-    Map<String, Object> updateWorkItem(String id,
-            Map<String, Object> results,
+    <T> T updateWorkItem(String id,
+            Function<org.kie.kogito.internal.process.runtime.KogitoWorkItem, T> updater,
             Policy<?>... policies);
 
     /**

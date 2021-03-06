@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -42,6 +43,7 @@ import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
@@ -107,6 +109,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return (CompositeNode) getNode();
     }
 
+    @Override
     public NodeContainer getNodeContainer() {
         return getCompositeNode();
     }
@@ -183,6 +186,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         super.cancel();
     }
 
+    @Override
     public void addNodeInstance(final NodeInstance nodeInstance) {
         if (nodeInstance.getStringId() == null) {
             // assign new id only if it does not exist as it might already be set by marshalling 
@@ -192,10 +196,12 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         this.nodeInstances.add(nodeInstance);
     }
 
+    @Override
     public void removeNodeInstance(final NodeInstance nodeInstance) {
         this.nodeInstances.remove(nodeInstance);
     }
 
+    @Override
     public Collection<org.kie.api.runtime.process.NodeInstance> getNodeInstances() {
         return new ArrayList<>(getNodeInstances(false));
     }
@@ -205,6 +211,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Collection<NodeInstance> getNodeInstances(boolean recursive) {
         Collection<NodeInstance> result = nodeInstances;
         if (recursive) {
@@ -218,6 +225,25 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return Collections.unmodifiableCollection(result);
     }
 
+    @Override
+    public Collection<KogitoNodeInstance> getKogitoNodeInstances(Predicate<KogitoNodeInstance> filter,
+            boolean recursive) {
+        Collection<KogitoNodeInstance> result = new ArrayList<>();
+        for (NodeInstance nodeInstance : nodeInstances) {
+
+            if (nodeInstance instanceof KogitoNodeInstance && filter.test(nodeInstance)) {
+                result.add(nodeInstance);
+
+            }
+            if (nodeInstance instanceof KogitoNodeInstanceContainer && recursive) {
+                result.addAll(((KogitoNodeInstanceContainer) nodeInstance).getKogitoNodeInstances(
+                        filter, true));
+            }
+        }
+        return result;
+    }
+
+    @Override
     public NodeInstance getNodeInstance(String nodeInstanceId) {
         for (NodeInstance nodeInstance : nodeInstances) {
             if (nodeInstance.getStringId().equals(nodeInstanceId)) {
@@ -227,6 +253,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return null;
     }
 
+    @Override
     public NodeInstance getNodeInstance(String nodeInstanceId, boolean recursive) {
         for (NodeInstance nodeInstance : getNodeInstances(recursive)) {
             if (nodeInstance.getStringId().equals(nodeInstanceId)) {
@@ -236,6 +263,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return null;
     }
 
+    @Override
     public NodeInstance getFirstNodeInstance(final long nodeId) {
         for (final NodeInstance nodeInstance : this.nodeInstances) {
             if (nodeInstance.getNodeId() == nodeId && nodeInstance.getLevel() == getCurrentLevel()) {
@@ -245,6 +273,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return null;
     }
 
+    @Override
     public NodeInstance getNodeInstance(final org.kie.api.definition.process.Node node) {
         if (node instanceof CompositeNode.CompositeNodeStart) {
             return buildCompositeNodeInstance(new CompositeNodeStartInstance(), node);
@@ -335,6 +364,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return (CompositeNode.CompositeNodeStart) getNode();
         }
 
+        @Override
         public void internalTrigger(KogitoNodeInstance from, String type) {
             triggerTime = new Date();
             triggerCompleted();
@@ -354,6 +384,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return (CompositeNode.CompositeNodeEnd) getNode();
         }
 
+        @Override
         public void internalTrigger(KogitoNodeInstance from, String type) {
             triggerTime = new Date();
             triggerCompleted();
@@ -366,6 +397,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     }
 
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         for (NodeInstance nodeInstance : nodeInstances) {
@@ -375,6 +407,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
     }
 
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         for (NodeInstance nodeInstance : nodeInstances) {
@@ -384,6 +417,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
     }
 
+    @Override
     public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
         org.kie.api.definition.process.Node nodeInstanceNode = nodeInstance.getNode();
         if (nodeInstanceNode != null) {
@@ -403,6 +437,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
     }
 
+    @Override
     public void setState(final int state) {
         this.state = state;
         if (state == STATE_ABORTED) {
@@ -410,14 +445,17 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
     }
 
+    @Override
     public int getState() {
         return this.state;
     }
 
+    @Override
     public int getCurrentLevel() {
         return currentLevel;
     }
 
+    @Override
     public void setCurrentLevel(int currentLevel) {
         this.currentLevel = currentLevel;
     }

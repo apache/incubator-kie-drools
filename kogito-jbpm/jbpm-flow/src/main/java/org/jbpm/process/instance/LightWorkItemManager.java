@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.drools.core.process.instance.WorkItem;
 import org.jbpm.process.instance.impl.workitem.Abort;
@@ -150,31 +151,17 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
     }
 
     @Override
-    public Map<String, Object> updateWorkItem(String id, Map<String, Object> params, Policy<?>... policies) {
+    public <T> T updateWorkItem(String id,
+            Function<org.kie.kogito.internal.process.runtime.KogitoWorkItem, T> updater,
+            Policy<?>... policies) {
         InternalKogitoWorkItem workItem = workItems.get(id);
         if (workItem != null) {
             if (!workItem.enforce(policies)) {
                 throw new NotAuthorizedException("User is not authorized to access task instance with id " + id);
             }
-            Map<String, Object> results = workItem.getResults() == null ? new HashMap<>() : workItem.getResults();
-            results.putAll(params);
+            T results = updater.apply(workItem);
             eventSupport.fireAfterWorkItemTransition(processInstanceManager.getProcessInstance(workItem
-                    .getProcessInstanceStringId()), workItem, new Transition<Map<String, Object>>() {
-                        @Override
-                        public String phase() {
-                            return workItem.getPhaseId();
-                        }
-
-                        @Override
-                        public Map<String, Object> data() {
-                            return results;
-                        }
-
-                        @Override
-                        public List policies() {
-                            return Arrays.asList(policies);
-                        }
-                    }, null);
+                    .getProcessInstanceStringId()), workItem, null, null);
             return results;
         } else {
             throw new WorkItemNotFoundException(id);
@@ -369,4 +356,5 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
             return policies;
         }
     }
+
 }

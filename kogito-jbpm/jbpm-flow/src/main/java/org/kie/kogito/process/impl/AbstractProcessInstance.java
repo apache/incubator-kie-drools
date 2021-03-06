@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -44,7 +46,9 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.MutableProcessInstances;
@@ -60,6 +64,7 @@ import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
@@ -386,6 +391,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
+    public Collection<KogitoNodeInstance> findNodes(Predicate<KogitoNodeInstance> predicate) {
+        return processInstance().getKogitoNodeInstances(predicate, true);
+    }
+
+    @Override
     public WorkItem workItem(String workItemId, Policy<?>... policies) {
         WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) processInstance().getNodeInstances(true)
                 .stream()
@@ -425,9 +435,24 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
-        return getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, variables,
+    public <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy<?>... policies) {
+        R result = getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, updater,
                 policies);
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
+        return updateWorkItem(id, workItem -> {
+            Map<String, Object> results = workItem.getResults();
+            if (results == null) {
+                results = new HashMap<>();
+            }
+            results.putAll(variables);
+            ((InternalKogitoWorkItem) workItem).setResults(results);
+            return results;
+        }, policies);
     }
 
     @Override

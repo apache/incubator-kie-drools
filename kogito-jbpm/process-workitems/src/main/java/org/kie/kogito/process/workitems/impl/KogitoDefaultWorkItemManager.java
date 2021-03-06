@@ -23,13 +23,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.drools.core.process.instance.WorkItem;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
+import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
@@ -132,22 +135,6 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
         }
     }
 
-    public Map<String, Object> updateWorkItem(String id, Map<String, Object> params, Policy<?>... policies) {
-        InternalKogitoWorkItem workItem = workItems.get(id);
-        if (workItem != null) {
-            Map<String, Object> results = workItem.getResults();
-            if (results == null) {
-                workItem.setResults(params);
-                return params;
-            } else {
-                results.putAll(params);
-                return results;
-            }
-        } else {
-            throw new WorkItemNotFoundException(id);
-        }
-    }
-
     @Override
     public void abortWorkItem(String id, Policy<?>... policies) {
         KogitoWorkItemImpl workItem = (KogitoWorkItemImpl) workItems.get(id);
@@ -221,5 +208,20 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
     @Override
     public void internalCompleteWorkItem(InternalKogitoWorkItem workItem) {
 
+    }
+
+    @Override
+    public <T> T updateWorkItem(String id,
+            Function<org.kie.kogito.internal.process.runtime.KogitoWorkItem, T> updater,
+            Policy<?>... policies) {
+        KogitoWorkItem workItem = workItems.get(id);
+        if (workItem != null) {
+            if (!workItem.enforce(policies)) {
+                throw new NotAuthorizedException("User is not authorized to access task instance with id " + id);
+            }
+            return updater.apply(workItem);
+        } else {
+            throw new WorkItemNotFoundException(id);
+        }
     }
 }

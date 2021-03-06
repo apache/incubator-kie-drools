@@ -26,6 +26,8 @@
         <module>jobs</module>
         <module>predictions</module>
         <module>process-management</module>
+        <module>kogito-rest-exception-handler</module>
+        <module>task-management</module>
         <module>process-svg</module>
         <module>tracing</module>
         <module>monitoring</module>

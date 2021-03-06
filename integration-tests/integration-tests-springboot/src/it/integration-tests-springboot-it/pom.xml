@@ -54,6 +54,12 @@
             <artifactId>process-management-springboot-addon</artifactId>
         </dependency>
 
+
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>task-management-springboot-addon</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-spring-boot-starter-remote</artifactId>

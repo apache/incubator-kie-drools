@@ -17,10 +17,14 @@
 package org.kie.kogito.integrationtests.quarkus;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 import org.acme.travels.Traveller;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -32,6 +36,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
@@ -107,6 +112,137 @@ class TaskTest {
                 .then()
                 .statusCode(200)
                 .body("approved", is(false));
+    }
+
+    @Test
+    void testUpdateExcludedUsers() {
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
+
+        String processId = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("traveller", traveller))
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("[0].id");
+
+        Collection<String> excludedUsers = Arrays.asList("Javierito", "Manuel");
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .body(Collections.singletonMap("excludedUsers", excludedUsers))
+                .patch("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
+                .then()
+                .statusCode(200)
+                .body("excludedUsers", is(excludedUsers));
+
+        assertEquals(excludedUsers, given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .get("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("excludedUsers"));
+    }
+
+    private static class ClientTaskInfo {
+
+        public String description;
+        public String priority;
+        public Set<String> potentialUsers;
+        public Set<String> potentialGroups;
+        public Set<String> excludedUsers;
+        public Set<String> adminUsers;
+        public Set<String> adminGroups;
+        public TravellerInputModel inputParams;
+    }
+
+    private static class TravellerInputModel {
+
+        public Traveller traveller;
+    }
+
+    @Test
+    void testUpdateTaskInfo() {
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
+
+        String processId = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("traveller", traveller))
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("[0].id");
+
+        traveller.setEmail("javierito@gmail.com");
+        TaskInfo upTaskInfo = new TaskInfo("firstAproval", "high", Collections.singleton("admin"),
+                Collections.singleton("managers"), Collections.singleton("Javierito"), Collections.emptySet(),
+                Collections.emptySet(), Collections.singletonMap("traveller", traveller));
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .body(upTaskInfo)
+                .put("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
+                .then()
+                .statusCode(200);
+
+        ClientTaskInfo downTaskInfo = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .get("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(ClientTaskInfo.class);
+        assertEquals(upTaskInfo.getAdminGroups(), downTaskInfo.adminGroups);
+        assertEquals(upTaskInfo.getAdminUsers(), downTaskInfo.adminUsers);
+        assertEquals(upTaskInfo.getPotentialGroups(), downTaskInfo.potentialGroups);
+        assertEquals(upTaskInfo.getPotentialUsers(), downTaskInfo.potentialUsers);
+        assertEquals(upTaskInfo.getExcludedUsers(), downTaskInfo.excludedUsers);
+        assertEquals(upTaskInfo.getDescription(), downTaskInfo.description);
+        assertEquals(upTaskInfo.getPriority(), downTaskInfo.priority);
+        assertEquals(traveller, downTaskInfo.inputParams.traveller);
     }
 
 }

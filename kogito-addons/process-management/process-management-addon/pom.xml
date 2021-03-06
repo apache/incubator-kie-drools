@@ -44,6 +44,7 @@
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- test dependencies -->
@@ -71,6 +72,10 @@
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-rest-exception-handler-quarkus</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -515,6 +515,72 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>task-management-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>task-management-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>task-management-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>task-management-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>task-management-springboot-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>task-management-springboot-addon</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-rest-exception-handler-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-rest-exception-handler-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-rest-exception-handler-quarkus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-rest-exception-handler-quarkus</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-rest-exception-handler-springboot</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-rest-exception-handler-springboot</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>process-svg-common</artifactId>
         <version>${project.version}</version>
       </dependency>
