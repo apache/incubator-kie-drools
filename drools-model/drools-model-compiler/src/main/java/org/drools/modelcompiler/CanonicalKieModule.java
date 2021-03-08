@@ -255,7 +255,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase ) {
         KnowledgeBuilder kbuilder = getKnowledgeBuilderForKieBase(kBaseModel.getName());
-        if ( !kbuilder.hasErrors() ) {
+        if ( kbuilder != null && !kbuilder.hasErrors() ) {
             for (KiePackage pk : kbuilder.getKnowledgePackages()) {
                 // Workaround to "mark" already compiled packages (as found inside the kjar and retrieved by createKiePackages(kieProject, kBaseModel, messages, kBaseConf))
                 // as "PMML" packages

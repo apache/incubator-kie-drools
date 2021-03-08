@@ -2399,14 +2399,19 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
+    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+        processPackages(packages);
+        postBuild(packages);
+    }
+
     // composite build lifecycle
 
-    public void processPackages( Collection<CompositePackageDescr> packages ) {
+    protected void processPackages( Collection<CompositePackageDescr> packages ) {
         buildPackagesWithoutRules(packages);
         buildRules(packages);
     }
 
-    public void postBuild() { }
+    protected void postBuild( Collection<CompositePackageDescr> packages ) { }
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);
