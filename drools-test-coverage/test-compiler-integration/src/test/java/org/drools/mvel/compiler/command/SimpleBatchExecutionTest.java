@@ -20,28 +20,27 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class SimpleBatchExecutionTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class SimpleBatchExecutionTest {
 
     private KieSession ksession;
     protected final static String ruleString = ""
@@ -53,15 +52,21 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         + "    then\n"
         + "end\n";
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SimpleBatchExecutionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
+
     @Before
     public void createKSession() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(ruleString.getBytes()), ResourceType.DRL );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        assertFalse( kbuilder.hasErrors() );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, ruleString);
+        ksession = kbase.newKieSession();
     }
     
     @After

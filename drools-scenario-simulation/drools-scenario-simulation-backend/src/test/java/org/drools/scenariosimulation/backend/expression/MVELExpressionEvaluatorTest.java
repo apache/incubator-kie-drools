@@ -40,24 +40,24 @@ public class MVELExpressionEvaluatorTest {
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\")"), "Test", String.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", " + "\"Test\")"), "Test1", String.class));
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("1"), 1, Integer.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("2"), 1, Integer.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\")"), "Test", String.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", " + "\"Test\")"), "Test1", String.class).isSuccessful());
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("1"), 1, Integer.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression("2"), 1, Integer.class).isSuccessful());
 
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(""), null, String.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(""), "", String.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(""), null, String.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(""), "", String.class).isSuccessful());
 
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(null), null, String.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(null), "null", String.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(null), null, String.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(null), "null", String.class).isSuccessful());
 
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("\"\""), "", String.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(null), "", String.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression("\"\""), "", String.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(null), "", String.class).isSuccessful());
 
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 123, Integer.class));
-        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 321, Integer.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 321, Integer.class));
-        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 123, Integer.class));
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 123, Integer.class).isSuccessful());
+        assertTrue(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 321, Integer.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " == 123"), 321, Integer.class).isSuccessful());
+        assertFalse(evaluator.evaluateUnaryExpression(mvelExpression(ACTUAL_VALUE_IDENTIFIER + " != 123"), 123, Integer.class).isSuccessful());
 
         assertThatThrownBy(() -> evaluator.evaluateUnaryExpression(null, "", String.class))
                 .isInstanceOf(IllegalArgumentException.class)

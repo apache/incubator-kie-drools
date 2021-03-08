@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,7 +58,8 @@ public class SingleRangeCheck extends CheckBase {
 
     private final Collection<RuleInspector> ruleInspectors;
 
-    public SingleRangeCheck(AnalyzerConfiguration configuration, Collection<RuleInspector> ruleInspectors) {
+    public SingleRangeCheck(final AnalyzerConfiguration configuration,
+                            final Collection<RuleInspector> ruleInspectors) {
         super(configuration);
         this.ruleInspectors = ruleInspectors;
     }
@@ -94,8 +96,10 @@ public class SingleRangeCheck extends CheckBase {
             for (ObjectField field : rangeFields) {
                 if ("Integer".equals(field.getFieldType())) {
                     checkMonodimensionalRange(partition, dimensions, field, conditionIndex, IntegerRange::new, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                } else {
+                } else if ("Double".equals(field.getFieldType())) {
                     checkMonodimensionalRange(partition, dimensions, field, conditionIndex, NumericRange::new, Double.MIN_VALUE, Double.MAX_VALUE);
+                } else {
+                    checkMonodimensionalRange(partition, dimensions, field, conditionIndex, ComparableRange::new, ComparableWrapper.MIN_VALUE, ComparableWrapper.MAX_VALUE);
                 }
             }
 
@@ -112,8 +116,8 @@ public class SingleRangeCheck extends CheckBase {
                 .map(rangeSupplier)
                 .collect(toList());
 
-        T upper = getCoverageUpperBound(min, ranges);
-        if (upper.equals(max)) {
+        final T upper = getCoverageUpperBound(min, ranges);
+        if ((upper != null && upper.equals(max)) || (upper == null && max == null)) {
             dimensions.add(ranges);
         } else {
             errors.add(new RangeError(partition.getValue(), partition.getKey(), upper));
@@ -335,6 +339,41 @@ public class SingleRangeCheck extends CheckBase {
         protected abstract T minValue();
 
         protected abstract T maxValue();
+    }
+
+    private static class ComparableRange extends Range<ComparableWrapper> implements Comparable<Range<ComparableWrapper>> {
+
+        ComparableRange(List<ConditionInspector> conditionInspectors) {
+            super(conditionInspectors);
+        }
+
+        @Override
+        protected Consumer<ConditionInspector> getConditionParser() {
+            return c -> {
+                FieldCondition cond = (FieldCondition) c.getCondition();
+                Operator op = resolve(cond.getOperator());
+                switch (op) {
+                    case LESS_OR_EQUAL:
+                    case LESS_THAN:
+                        upperBound = new ComparableWrapper((Comparable) cond.getValues().iterator().next());
+                        break;
+                    case GREATER_THAN:
+                    case GREATER_OR_EQUAL:
+                        lowerBound = new ComparableWrapper((Comparable) cond.getValues().iterator().next());
+                        break;
+                }
+            };
+        }
+
+        @Override
+        protected ComparableWrapper minValue() {
+            return ComparableWrapper.MIN_VALUE;
+        }
+
+        @Override
+        protected ComparableWrapper maxValue() {
+            return ComparableWrapper.MAX_VALUE;
+        }
     }
 
     private static class IntegerRange extends Range<Integer> implements Comparable<Range<Integer>> {

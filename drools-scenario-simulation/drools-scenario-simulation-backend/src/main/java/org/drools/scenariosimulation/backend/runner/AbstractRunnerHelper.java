@@ -39,6 +39,7 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
+import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorResult;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
@@ -53,6 +54,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithValidValue;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithCollectionPathToValue;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
 
 public abstract class AbstractRunnerHelper {
@@ -284,6 +286,9 @@ public abstract class AbstractRunnerHelper {
         } else if (resultValue.getErrorMessage().isPresent()) {
             // propagate error message
             expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
+        } else if (resultValue.getCollectionPathToValue() != null) {
+            expectedResult.setCollectionPathToValue(resultValue.getCollectionPathToValue());
+            expectedResult.setErrorValue(resultValue.getValue());
         } else {
             try {
                 // set actual as proposed value
@@ -304,12 +309,13 @@ public abstract class AbstractRunnerHelper {
                                             Object resultRaw,
                                             Class<?> resultClass) {
         try {
-            boolean evaluationSucceed = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw, resultRaw, resultClass);
-            if (evaluationSucceed) {
+            ExpressionEvaluatorResult evaluationResult = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw,
+                                                                                                     resultRaw,
+                                                                                                     resultClass);
+            if (evaluationResult.isSuccessful()) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
-                // no suggestions for collection yet
-                return errorWithMessage("Impossible to find elements in the collection to satisfy the conditions");
+                return errorWithCollectionPathToValue(evaluationResult.getWrongValue(), evaluationResult.getPathToWrongValue());
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
             }

@@ -111,7 +111,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             kBuilder.buildPackagesWithoutRules(packages);
         }
         buildProcesses();
-        buildAssemblersAfterRules();
+        buildAssemblerResourcesAfterRules();
         kBuilder.postBuild();
         resourcesByType.clear();
         if (buildException != null) {
@@ -153,19 +153,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                     kBuilder.setAssetFilter(null);
                 }
             }
-        }
-    }
-
-    private void buildAssemblersAfterRules() {
-        try {
-            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
-                kBuilder.addPackageForExternalType(entry.getKey(), rds);
-            }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException( e );
         }
     }
 
@@ -215,6 +202,19 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
+    private void buildAssemblerResourcesAfterRules() {
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        try {
+            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
+                List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
+                assemblers.addResourcesAfterRules(kBuilder, rds, entry.getKey());
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void buildResource(Map<String, CompositePackageDescr> packages, ResourceType resourceType, ResourceToPkgDescrMapper mapper) {
         List<ResourceDescr> resourcesByType = this.resourcesByType.remove(resourceType);

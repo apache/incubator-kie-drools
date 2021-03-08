@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.builder.impl;
 
@@ -780,17 +780,17 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                                    ResourceConfiguration configuration) throws Exception {
         KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
-        assemblers.addResource(this,
-                              resource,
-                              type,
-                              configuration);
+        assemblers.addResourceAfterRules(this,
+                               resource,
+                               type,
+                               configuration);
     }
 
     @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
         KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
-        assemblers.addResources(this, resources, type);
+        assemblers.addResourcesAfterRules(this, resources, type);
     }
 
     void addPackageFromXSD(Resource resource, ResourceConfiguration configuration) throws IOException {
@@ -1129,19 +1129,19 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
             try {
                 ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
-                rules.stream().parallel()
-                        .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
-                        .forEach(ruleDescr -> {
-                            initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
-                            RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
-                            ruleCxts.put(ruleDescr.getName(), context);
-                            List<? extends KnowledgeBuilderResult> results = addRule(context);
-                            if (!results.isEmpty()) {
-                            synchronized (this.results) {
-                                    this.results.addAll(results);
-                                }
-                            }
-                        })
+                                                                rules.stream().parallel()
+                                                                        .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
+                                                                        .forEach(ruleDescr -> {
+                                                                            initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
+                                                                            RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
+                                                                            ruleCxts.put(ruleDescr.getName(), context);
+                                                                            List<? extends KnowledgeBuilderResult> results = addRule(context);
+                                                                            if (!results.isEmpty()) {
+                                                                                synchronized (this.results) {
+                                                                                    this.results.addAll(results);
+                                                                                }
+                                                                            }
+                                                                        })
                 ).get();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException("Rules compilation failed or interrupted", e);
@@ -1699,7 +1699,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     protected void processAccumulateFunctions(PackageRegistry pkgRegistry,
-                                            PackageDescr packageDescr) {
+                                              PackageDescr packageDescr) {
         for (final AccumulateImportDescr aid : packageDescr.getAccumulateImports()) {
             AccumulateFunction af = loadAccumulateFunction(pkgRegistry,
                                                            aid.getFunctionName(),
@@ -1728,7 +1728,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     protected void processFunctions(PackageRegistry pkgRegistry,
-                                  PackageDescr packageDescr) {
+                                    PackageDescr packageDescr) {
         for (FunctionDescr function : packageDescr.getFunctions()) {
             Function existingFunc = pkgRegistry.getPackage().getFunctions().get(function.getName());
             if (existingFunc != null && function.getNamespace().equals(existingFunc.getNamespace())) {
@@ -1766,7 +1766,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     protected void processWindowDeclarations(PackageRegistry pkgRegistry,
-                                           PackageDescr packageDescr) {
+                                             PackageDescr packageDescr) {
         for (WindowDeclarationDescr wd : packageDescr.getWindowDeclarations()) {
             WindowDeclaration window = new WindowDeclaration(wd.getName(), packageDescr.getName());
             // TODO: process annotations
