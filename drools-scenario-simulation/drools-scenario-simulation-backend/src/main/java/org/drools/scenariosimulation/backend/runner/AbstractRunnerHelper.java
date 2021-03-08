@@ -281,22 +281,23 @@ public abstract class AbstractRunnerHelper {
         String factName = String.join(".", factMapping.getExpressionElements().stream()
                 .map(ExpressionElement::getStep).collect(Collectors.toList()));
         if (FactMappingValueStatus.FAILED_WITH_ERROR == factMappingValue.getStatus()) {
-            String exceptionMessage;
-            if (factMappingValue.getCollectionPathToValue() == null) {
-                exceptionMessage = ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
-                                                                                                          factMappingValue.getErrorValue(),
-                                                                                                          factMappingValue.getRawValue());
-            } else {
-                exceptionMessage = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName,
-                                                                                                      factMappingValue.getCollectionPathToValue(),
-                                                                                                      factMappingValue.getErrorValue());
-            }
-            throw new ScenarioException(exceptionMessage, true);
+            throw new ScenarioException(determineExceptionMessage(factMappingValue, factName), true);
         } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
             throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(factMappingValue.getExceptionMessage()));
         } else {
             throw new ScenarioException("Illegal FactMappingValue status");
         }
+    }
+
+    private String determineExceptionMessage(FactMappingValue factMappingValue, String factName) {
+        if (factMappingValue.getCollectionPathToValue() == null) {
+            return ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
+                                                                                          factMappingValue.getErrorValue(),
+                                                                                          factMappingValue.getRawValue());
+        }
+        return ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName,
+                                                                                  factMappingValue.getCollectionPathToValue(),
+                                                                                  factMappingValue.getErrorValue());
     }
 
     protected ScenarioResult fillResult(FactMappingValue expectedResult,
