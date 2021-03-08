@@ -15,9 +15,15 @@
 
 package org.drools.mvel.compiler.kie.builder;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -32,7 +38,19 @@ import static org.junit.Assert.assertTrue;
 /**
  * Test for DSL expansion with KieBuilder
  */
+@RunWith(Parameterized.class)
 public class DslExpansionTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DslExpansionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testDSLExpansion_MessageImplNPE() throws Exception {
@@ -46,8 +64,8 @@ public class DslExpansionTest {
                 .write( "src/main/resources/KBase1/test-dsl.dsl", createDSL() )
                 .write( "src/main/resources/KBase1/test-rule.dslr", createDRL() );
 
-        final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        final List<Message> messages = kieBuilder.getResults().getMessages();
         if ( !messages.isEmpty() ) {
             for ( final Message m : messages ) {
                 System.out.println( m.getText() );
@@ -68,8 +86,8 @@ public class DslExpansionTest {
                 .write( "src/main/resources/KBase1/test-dsl.dsl", createDSL() )
                 .write( "src/main/resources/KBase1/test-rule.drl", createDRL() );
 
-        final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        final List<Message> messages = kieBuilder.getResults().getMessages();
         if ( !messages.isEmpty() ) {
             for ( final Message m : messages ) {
                 System.out.println( m.getText() );

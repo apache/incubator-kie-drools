@@ -16,11 +16,18 @@
 
 package org.drools.mvel.compiler.kie.builder.impl;
 
+import java.util.Collection;
+
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBuilderSetImpl;
 import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -30,7 +37,19 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class KieBuilderSetImplTest extends CommonTestMethodBase {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieBuilderSetImplTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testBuild() throws Exception {
@@ -84,10 +103,7 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
     private KieBuilderImpl kieBuilder( final KieServices ks,
                                        final KieFileSystem kfs ) {
-        final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-
-        kieBuilder.buildAll();
-
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
         return (KieBuilderImpl) kieBuilder;
     }
 

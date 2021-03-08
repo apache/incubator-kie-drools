@@ -15,44 +15,24 @@
 
 package org.drools.mvel.compiler.compiler;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeDeclaration.Format;
-import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.Message;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
-@RunWith(Parameterized.class)
 public class TypeDeclarationMergingTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+    // TODO: Fails with standard-drl after changing to new API. See DROOLS-6061
 
-    public TypeDeclarationMergingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testInheritExitenceFromParentClass etc. Not fully sure if the test change is valid. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-    
     @Test
     public void testMask() {
         TypeDeclaration tdeclr = new TypeDeclaration(CImpl.class.getName() );
@@ -92,11 +72,6 @@ public class TypeDeclarationMergingTest {
            "end\n" +           
            "declare " + DImpl.class.getCanonicalName() + "\n" +
            "    @typesafe(false)\n" +
-           "end\n" +
-           "rule r1\n" +
-           "when\n " +
-           "  DImpl()\n" +
-           "then\n" +
            "end\n";
         KnowledgeBuilderImpl builder = getPackageBuilder( str );
         TypeDeclaration tdecl = builder.getTypeDeclaration( DImpl.class );
@@ -255,11 +230,16 @@ public class TypeDeclarationMergingTest {
         assertEquals( true, tdecl.isTypesafe() );
         assertEquals( Role.Type.FACT, tdecl.getRole() );
     }      
-
+    
     private KnowledgeBuilderImpl getPackageBuilder(String str) {
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, str);
-        InternalKieModule kieModule = (InternalKieModule)kieBuilder.getKieModule();
-        return (KnowledgeBuilderImpl)kieModule.getKnowledgeBuilderForKieBase("defaultKieBase");
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        return (KnowledgeBuilderImpl)kbuilder;
     }
 
     @Test
@@ -277,9 +257,10 @@ public class TypeDeclarationMergingTest {
                 "then \n" +
                 "end \n";
 
-        KieBuilder kieBuilder = null;
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         try {
-            kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                    ResourceType.DRL );
         } catch (IndexOutOfBoundsException e) {
             final String msg = e.getMessage();
             if ( "Error trying to access field at position 0".equals( msg ) ) {
@@ -288,9 +269,8 @@ public class TypeDeclarationMergingTest {
                 fail( "Check the test, unexpected error message: " + msg );
             }
         }
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
         assertFalse( "Check the test, unexpected error message: "
-                + errors, !errors.isEmpty());
+                + kbuilder.getErrors(), kbuilder.hasErrors());
     }
 
     public static class PositionAnnotatedEvent {

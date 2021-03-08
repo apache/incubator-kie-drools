@@ -17,11 +17,18 @@
 package org.drools.mvel.integrationtests;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.mvel.compiler.Message;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
@@ -34,7 +41,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class DynamicRuleLoadTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DynamicRuleLoadTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DynamicRuleLoadTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private final String drl1 =
             "package org.drools.mvel.compiler\n" +
@@ -116,7 +135,7 @@ public class DynamicRuleLoadTest extends CommonTestMethodBase {
 
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        KieModule km = createAndDeployJar( ks, releaseId1, drl1, drl2_1 );
+        KieModule km = KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1, drl2_1);
 
         // Create a session and fire rules
         kieContainer = ks.newKieContainer( km.getReleaseId() );
@@ -147,7 +166,8 @@ public class DynamicRuleLoadTest extends CommonTestMethodBase {
                 .setSourcePath( "org/drools/mvel/compiler/test/PersonObject.java" );
         Resource drlResource = ResourceFactory.newByteArrayResource( person_drl.getBytes() ).setResourceType( ResourceType.DRL )
                 .setSourcePath( "kbase1/person.drl" );
-        KieModule km = createAndDeployJar( ks, kmodule, releaseId1, javaResource, drlResource );
+        KieFileSystem kfs = KieUtil.getKieFileSystemWithKieModule(KieModuleModelImpl.fromXML(kmodule), releaseId1, javaResource, drlResource);
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, kfs);
 
         // Create a session and fire rules
         kieContainer = ks.newKieContainer( km.getReleaseId() );
@@ -169,7 +189,8 @@ public class DynamicRuleLoadTest extends CommonTestMethodBase {
                 .setSourcePath( "org/drools/mvel/compiler/test/PersonObject.java" );
         Resource drlResource2 = ResourceFactory.newByteArrayResource( person_drl.getBytes() ).setResourceType( ResourceType.DRL )
                 .setSourcePath( "kbase1/person.drl" );
-        createAndDeployJar( ks, kmodule, releaseId2, javaResource2, drlResource2 );
+        KieFileSystem kfs2 = KieUtil.getKieFileSystemWithKieModule(KieModuleModelImpl.fromXML(kmodule), releaseId2, javaResource2, drlResource2);
+        KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, kfs2);
 
         // update container
         kieContainer.updateToVersion(releaseId2);
@@ -193,7 +214,7 @@ public class DynamicRuleLoadTest extends CommonTestMethodBase {
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        KieModule km = createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
+        KieModule km = KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1, drl2_2);
 
         // try to update the container to version 1.1.0
         kieContainer.updateToVersion( releaseId2 );

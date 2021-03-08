@@ -16,6 +16,7 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -23,16 +24,33 @@ import java.util.stream.StreamSupport;
 import org.drools.mvel.compiler.oopath.model.Room;
 import org.drools.mvel.compiler.oopath.model.SensorEvent;
 import org.drools.mvel.compiler.oopath.model.Thing;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Parameterized.class)
 public class OOPathQueriesTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathQueriesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testQueryFromCode() {
@@ -48,9 +66,8 @@ public class OOPathQueriesTest {
         final List<String> itemList = Arrays.asList(new String[] { "display", "keyboard", "processor" });
         itemList.stream().map(item -> new Thing(item)).forEach((thing) -> smartphone.addChild(thing));
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(smartphone);
 
         final QueryResults queryResults = ksession.getQueryResults("isContainedIn", new Object[] { smartphone, Variable.v });
@@ -97,9 +114,8 @@ public class OOPathQueriesTest {
         room.getTemperatureSensor().setValue(15);
         room.getHeating().setOn(false);
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(room);
         ksession.insert(room.getTemperatureSensor());
         ksession.insert(room.getHeating());
@@ -149,9 +165,8 @@ public class OOPathQueriesTest {
         room.getTemperatureSensor().setValue(15);
         room.getHeating().setOn(false);
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(room);
         ksession.insert(room.getTemperatureSensor());
         ksession.insert(room.getHeating());

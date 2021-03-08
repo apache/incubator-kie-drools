@@ -17,17 +17,24 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.io.impl.InputStreamResource;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -37,7 +44,19 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class DRLDumperTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DRLDumperTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DRLDumperTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private static Logger logger = LoggerFactory.getLogger( DRLDumperTest.class );
 
@@ -54,7 +73,9 @@ public class DRLDumperTest extends CommonTestMethodBase {
             fail(parser.getErrors().toString());
         }
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(pkg));
+        final Resource descrResource = KieServices.Factory.get().getResources().newDescrResource(pkg);
+        descrResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_Dumpers.descr");
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, descrResource);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -70,12 +91,14 @@ public class DRLDumperTest extends CommonTestMethodBase {
         assertEquals("MAIN", list.get(1));
         assertEquals("1 1", list.get(2));
 
+        //---------------------------
+        
         final DrlDumper drlDumper = new DrlDumper();
         final String drlResult = drlDumper.dump(pkg);
 
         System.out.println(drlResult);
 
-        kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(drlResult));
+        kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drlResult);
         ksession = kbase.newKieSession();
 
         list = new ArrayList();

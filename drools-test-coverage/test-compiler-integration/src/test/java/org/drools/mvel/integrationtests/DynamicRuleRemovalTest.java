@@ -15,20 +15,40 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class DynamicRuleRemovalTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DynamicRuleRemovalTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DynamicRuleRemovalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testDynamicRuleRemoval() throws Exception {
@@ -61,7 +81,9 @@ public class DynamicRuleRemovalTest extends CommonTestMethodBase {
 
     private void addRule(InternalKnowledgeBase kbase, String ruleName) {
         String rule = createDRL(ruleName);
-        kbase.addPackages(loadKnowledgePackagesFromString(rule));
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, rule);
+        Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
+        kbase.addPackages(pkgs);
     }
 
     private void removeRule(InternalKnowledgeBase kbase, String ruleName) {
