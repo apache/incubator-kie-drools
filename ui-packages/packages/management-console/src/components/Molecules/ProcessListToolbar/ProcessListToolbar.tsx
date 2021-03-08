@@ -53,16 +53,21 @@ interface IOwnProps {
   searchWord: string;
   isAllChecked: boolean;
   setIsAllChecked: (isAllChecked: boolean) => void;
-  setSelectedNumber: (selectedNumber: number) => void;
-  selectedNumber: number;
   statusArray: GraphQL.ProcessInstanceState[];
   setStatusArray: (stautsArray) => void;
+  setSelectableInstances: React.Dispatch<React.SetStateAction<number>>;
 }
 
-type filterType = {
+export type filterType = {
   status: ProcessInstanceState[] | string[];
   businessKey: string[];
 };
+
+enum BulkSelectionType {
+  NONE = 'NONE',
+  PARENT = 'PARENT',
+  PARENT_CHILD = 'PARENT_CHILD'
+}
 
 const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   filterClick,
@@ -76,10 +81,9 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   setInitData,
   setIsAllChecked,
   setSelectedInstances,
-  selectedNumber,
-  setSelectedNumber,
   statusArray,
   setStatusArray,
+  setSelectableInstances,
   ouiaId,
   ouiaSafe
 }) => {
@@ -149,6 +153,16 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
                 ignoredItems,
                 OperationType.ABORT
               );
+              const copyOfInitData = _.cloneDeep(initData);
+              copyOfInitData.ProcessInstances.forEach(processInstance => {
+                successItems.forEach(successItem => {
+                  if (successItem.id === processInstance.id) {
+                    processInstance.state =
+                      GraphQL.ProcessInstanceState.Aborted;
+                  }
+                });
+              });
+              setInitData(copyOfInitData);
             },
             OperationType.ABORT
           );
@@ -324,156 +338,86 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
 
   const handleCheckboxSelectClick = (
     selection: string,
-    isCheckboxClicked: boolean
+    isCheckBoxClicked: boolean
   ): void => {
-    if (selection === 'none') {
-      setIsAllChecked(false);
-      setSelectedNumber(0);
-      const copyOfInitData = { ...initData };
-      const copyOfSelectedInstances = [...selectedInstances];
-      copyOfInitData.ProcessInstances.map(instance => {
-        copyOfSelectedInstances.splice(
-          copyOfSelectedInstances.findIndex(
-            parentInstance => parentInstance.id === instance.id
-          ),
-          1
-        );
-        instance.isChecked = false;
-        if (instance.childDataList !== undefined && instance.isOpen) {
-          instance.childDataList.map(child => {
-            copyOfSelectedInstances.splice(
-              copyOfSelectedInstances.findIndex(
-                childInstance => childInstance.id === child.id
-              ),
-              1
-            );
+    const clonedData = _.cloneDeep(initData);
+    if (selection === BulkSelectionType.NONE) {
+      clonedData.ProcessInstances.forEach(instance => {
+        instance.isSelected = false;
+        instance.childProcessInstances.length > 0 &&
+          instance.childProcessInstances.forEach(childInstance => {
+            childInstance.isSelected = false;
           });
-        }
       });
-      setSelectedInstances(copyOfSelectedInstances);
-      setInitData(copyOfInitData);
-    } else if (selection === 'parent') {
-      let parentSelectedNumber = 0;
-      setIsAllChecked(true);
-      const copyOfInitData = { ...initData };
-      const copyOfSelectedInstances = [...selectedInstances];
-      copyOfInitData.ProcessInstances.map(instance => {
-        if (
-          instance.addons.includes('process-management') &&
-          instance.serviceUrl !== null
-        ) {
-          instance.isChecked = true;
-          copyOfSelectedInstances.push(instance);
-          parentSelectedNumber += 1;
-        }
-        if (instance.childDataList !== undefined && instance.isOpen) {
-          instance.childDataList.map(child => {
-            copyOfSelectedInstances.splice(
-              copyOfSelectedInstances.findIndex(
-                childInstance => childInstance.id === child.id
-              ),
-              1
-            );
-            child.isChecked = false;
-          });
-        }
-      });
-      setSelectedNumber(parentSelectedNumber);
-      setSelectedInstances(copyOfSelectedInstances);
-      setInitData(copyOfInitData);
-    } else if (selection === 'parent&child') {
-      let allSelected = 0;
-      setIsAllChecked(true);
-      const copyOfInitData = { ...initData };
-      const copyOfSelectedInstances = [...selectedInstances];
-      copyOfInitData.ProcessInstances.map(instance => {
-        if (
-          instance.addons.includes('process-management') &&
-          instance.serviceUrl !== null
-        ) {
-          instance.isChecked = true;
-          copyOfSelectedInstances.push(instance);
-          allSelected += 1;
-        }
-        if (instance.childDataList !== undefined && instance.isOpen) {
-          instance.childDataList.map(child => {
-            if (
-              child.addons.includes('process-management') &&
-              instance.serviceUrl !== null
-            ) {
-              copyOfSelectedInstances.push(child);
-              child.isChecked = true;
-              allSelected += 1;
-            }
-          });
-        }
-      });
-      setSelectedNumber(allSelected);
-      setSelectedInstances(copyOfSelectedInstances);
-      setInitData(copyOfInitData);
+      setSelectedInstances([]);
     }
-    if (!isCheckboxClicked) {
-      setisCheckboxDropdownOpen(!isCheckboxDropdownOpen);
-    } else {
-      if (isAllChecked) {
-        setIsAllChecked(false);
-        const copyOfInitData = { ...initData };
-        const copyOfSelectedInstances = [...selectedInstances];
-        copyOfInitData.ProcessInstances.map(instance => {
-          copyOfSelectedInstances.splice(
-            copyOfSelectedInstances.findIndex(
-              parentInstance => parentInstance.id === instance.id
-            ),
-            1
-          );
-          instance.isChecked = false;
-          if (instance.childDataList !== undefined && instance.isOpen) {
-            instance.childDataList.map(child => {
-              copyOfSelectedInstances.splice(
-                copyOfSelectedInstances.findIndex(
-                  childInstance => childInstance.id === child.id
-                ),
-                1
-              );
-              child.isChecked = false;
-            });
-          }
-        });
-        setSelectedNumber(0);
-        setSelectedInstances(copyOfSelectedInstances);
-        setInitData(copyOfInitData);
-      } else {
-        let allSelected = 0;
-        setIsAllChecked(true);
-        const copyOfInitData = { ...initData };
-        const copyOfSelectedInstances = [...selectedInstances];
-        copyOfInitData.ProcessInstances.map(instance => {
+    if (selection === BulkSelectionType.PARENT) {
+      const tempSelectedInstances = [];
+      clonedData.ProcessInstances.forEach(instance => {
+        if (
+          instance.serviceUrl &&
+          instance.addons.includes('process-management')
+        ) {
+          instance.isSelected = true;
+          tempSelectedInstances.push(instance);
+        }
+        instance.childProcessInstances.length > 0 &&
+          instance.childProcessInstances.forEach(childInstance => {
+            childInstance.isSelected = false;
+          });
+      });
+      setSelectedInstances(tempSelectedInstances);
+    }
+    if (selection === BulkSelectionType.PARENT_CHILD) {
+      const tempSelectedInstances = [];
+      if (isAllChecked && isCheckBoxClicked) {
+        tempSelectedInstances.length = 0;
+        clonedData.ProcessInstances.forEach(instance => {
           if (
-            instance.addons.includes('process-management') &&
-            instance.serviceUrl !== null
+            instance.serviceUrl &&
+            instance.addons.includes('process-management')
           ) {
-            instance.isChecked = true;
-            copyOfSelectedInstances.push(instance);
-            allSelected += 1;
+            instance.isSelected = false;
           }
-          if (instance.childDataList !== undefined && instance.isOpen) {
-            instance.childDataList.map(child => {
+          instance.childProcessInstances.length > 0 &&
+            instance.childProcessInstances.forEach(childInstance => {
               if (
-                child.addons.includes('process-management') &&
-                instance.serviceUrl !== null
+                childInstance.serviceUrl &&
+                childInstance.addons.includes('process-management')
               ) {
-                copyOfSelectedInstances.push(child);
-                child.isChecked = true;
-                allSelected += 1;
+                if (instance.isOpen) {
+                  childInstance.isSelected = false;
+                }
               }
             });
-          }
         });
-        setSelectedNumber(allSelected);
-        setSelectedInstances(copyOfSelectedInstances);
-        setInitData(copyOfInitData);
+      } else {
+        clonedData.ProcessInstances.forEach(instance => {
+          if (
+            instance.serviceUrl &&
+            instance.addons.includes('process-management')
+          ) {
+            instance.isSelected = true;
+            tempSelectedInstances.push(instance);
+          }
+          instance.childProcessInstances.length > 0 &&
+            instance.childProcessInstances.forEach(childInstance => {
+              if (
+                childInstance.serviceUrl &&
+                childInstance.addons.includes('process-management')
+              ) {
+                if (instance.isOpen) {
+                  childInstance.isSelected = true;
+                  tempSelectedInstances.push(childInstance);
+                }
+              }
+            });
+        });
       }
+
+      setSelectedInstances(tempSelectedInstances);
     }
+    setInitData(clonedData);
   };
 
   const onShowMessage = (
@@ -498,38 +442,45 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
     handleModalToggle();
   };
 
-  const resetSelected = () => {
-    initData.ProcessInstances.map(processInstance => {
-      processInstance['isChecked'] = false;
-      processInstance['childDataList'] &&
-        processInstance['childDataList'].length !== 0 &&
-        processInstance['childDataList'].map(
-          child => (child['isChecked'] = false)
+  const resetSelected = (): void => {
+    const clonedInitData = _.cloneDeep(initData);
+    clonedInitData.ProcessInstances.forEach(processInstance => {
+      processInstance.isSelected = false;
+      if (!_.isEmpty(processInstance.childProcessInstances)) {
+        processInstance.childProcessInstances.forEach(
+          (
+            childInstance: GraphQL.ProcessInstance & { isSelected: boolean }
+          ) => {
+            childInstance.isSelected = false;
+          }
         );
+      }
     });
-    setSelectedInstances([]);
-    setSelectedNumber(0);
     setIsAllChecked(false);
+    setSelectedInstances([]);
+    setInitData(clonedInitData);
   };
 
   const checkboxItems = [
     <DropdownItem
       key="none"
-      onClick={() => handleCheckboxSelectClick('none', false)}
+      onClick={() => handleCheckboxSelectClick(BulkSelectionType.NONE, false)}
       id="none"
     >
       Select none
     </DropdownItem>,
     <DropdownItem
       key="all-parent"
-      onClick={() => handleCheckboxSelectClick('parent', false)}
+      onClick={() => handleCheckboxSelectClick(BulkSelectionType.PARENT, false)}
       id="all-parent"
     >
       Select all parent processes
     </DropdownItem>,
     <DropdownItem
       key="all-parent-child"
-      onClick={() => handleCheckboxSelectClick('parent&child', false)}
+      onClick={() =>
+        handleCheckboxSelectClick(BulkSelectionType.PARENT_CHILD, false)
+      }
       id="all-parent-child"
     >
       Select all processes
@@ -621,6 +572,7 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
             position={DropdownPosition.left}
             toggle={
               <DropdownToggle
+                isDisabled={filters.status.length === 0}
                 onToggle={checkboxDropdownToggle}
                 splitButtonItems={[
                   <DropdownToggleCheckbox
@@ -629,12 +581,18 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
                     aria-label="Select all"
                     isChecked={isAllChecked}
                     onChange={() =>
-                      handleCheckboxSelectClick('parent&child', true)
+                      handleCheckboxSelectClick(
+                        BulkSelectionType.PARENT_CHILD,
+                        true
+                      )
                     }
+                    isDisabled={filters.status.length === 0}
                   />
                 ]}
               >
-                {selectedNumber === 0 ? '' : selectedNumber + ' selected'}
+                {selectedInstances.length === 0
+                  ? ''
+                  : selectedInstances.length + ' selected'}
               </DropdownToggle>
             }
             dropdownItems={checkboxItems}

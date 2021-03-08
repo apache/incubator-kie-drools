@@ -497,3 +497,22 @@ export const formatForBulkListJob = (
   });
   return formattedItems;
 };
+
+export const checkProcessInstanceState = (
+  processInstance: Pick<
+    GraphQL.ProcessInstance,
+    'state' | 'addons' | 'serviceUrl'
+  >
+): boolean => {
+  if (
+    (processInstance.state === 'ERROR' ||
+      processInstance.state === 'ACTIVE' ||
+      processInstance.state === 'SUSPENDED') &&
+    processInstance.addons.includes('process-management') &&
+    processInstance.serviceUrl
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};

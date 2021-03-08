@@ -239,7 +239,6 @@ describe('Jobs management page tests', () => {
         ['onClick'](event);
     });
     wrapper = wrapper.update();
-    console.log;
     expect(wrapper.find('h5').text()).toEqual('No results found');
     expect(wrapper.find('.pf-c-empty-state__body').text()).toEqual(
       'Try using different filters'

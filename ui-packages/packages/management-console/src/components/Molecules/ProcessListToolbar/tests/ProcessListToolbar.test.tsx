@@ -28,106 +28,10 @@ const initData = {
       parentProcessInstance: null,
       processName: 'travels',
       roles: [],
-      isOpen: 'true',
-      childDataList: [
-        {
-          id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-          processId: 'flightBooking',
-          businessKey: null,
-          parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-          parentProcessInstance: {
-            id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-            processName: 'travels',
-            businessKey: null
-          },
-          processName: 'FlightBooking',
-          rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-          roles: [],
-          state: GraphQL.ProcessInstanceState.Error,
-          serviceUrl: 'http://localhost:4000',
-          endpoint: 'http://localhost:4000',
-          addons: ['process-management'],
-          error: {
-            nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
-            message: 'Something went wrong'
-          },
-          start: '2019-10-22T03:40:44.089Z',
-          end: '2019-10-22T05:40:44.089Z',
-          variables:
-            '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
-          nodes: [
-            {
-              nodeId: '1',
-              name: 'End Event 1',
-              definitionId: 'EndEvent_1',
-              id: '7244ba1b-75ec-4789-8c65-499a0c5b1a6f',
-              enter: '2019-10-22T04:43:01.144Z',
-              exit: '2019-10-22T04:43:01.144Z',
-              type: 'EndNode'
-            },
-            {
-              nodeId: '2',
-              name: 'Book flight',
-              definitionId: 'ServiceTask_1',
-              id: '2f588da5-a323-4111-9017-3093ef9319d1',
-              enter: '2019-10-22T04:43:01.144Z',
-              exit: '2019-10-22T04:43:01.144Z',
-              type: 'WorkItemNode'
-            },
-            {
-              nodeId: '3',
-              name: 'StartProcess',
-              definitionId: 'StartEvent_1',
-              id: '6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2',
-              enter: '2019-10-22T04:43:01.144Z',
-              exit: '2019-10-22T04:43:01.144Z',
-              type: 'StartNode'
-            }
-          ],
-          childProcessInstances: []
-        },
-        {
-          id: 'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e',
-          processId: 'flightBooking',
-          businessKey: null,
-          parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-          parentProcessInstance: {
-            id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-            processName: 'travels',
-            businessKey: null
-          },
-          processName: 'FlightBooking',
-          rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-          roles: [],
-          state: GraphQL.ProcessInstanceState.Completed,
-          serviceUrl: 'http://localhost:4000',
-          endpoint: 'http://localhost:4000',
-          addons: ['process-management'],
-          error: {
-            nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
-            message: 'Something went wrong'
-          },
-          start: '2019-10-22T03:40:44.089Z',
-          end: '2019-10-22T05:40:44.089Z',
-          variables:
-            '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
-          nodes: [
-            {
-              nodeId: '1',
-              name: 'End Event 1',
-              definitionId: 'EndEvent_1',
-              id: '7244ba1b-75ec-4789-8c65-499a0c5b1a6f',
-              enter: '2019-10-22T04:43:01.144Z',
-              exit: '2019-10-22T04:43:01.144Z',
-              type: 'EndNode'
-            }
-          ],
-          childProcessInstances: []
-        }
-      ],
       state: ProcessInstanceState.Active,
       rootProcessInstanceId: null,
       endpoint: 'http://localhost:4000',
+      serviceUrl: 'http://localhost:4000',
       addons: [
         'jobs-management',
         'prometheus-monitoring',
@@ -138,27 +42,65 @@ const initData = {
         message: 'Something went wrong'
       },
       start: '2019-10-22T03:40:44.089Z',
+      lastUpdate: '2019-10-22T03:40:44.089Z',
       end: null,
       variables:
         '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
-      nodes: [
-        {
-          name: 'Book Flight',
-          definitionId: 'CallActivity_2',
-          id: '7cdeba99-cd36-4425-980d-e59d44769a3e',
-          enter: '2019-10-22T04:43:01.143Z',
-          exit: '2019-10-22T04:43:01.146Z',
-          type: 'SubProcessNode'
-        }
-      ],
+      nodes: [],
+      isOpen: 'true',
+      isSelected: false,
       childProcessInstances: [
         {
-          id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-          processName: 'FlightBooking'
+          id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
+          processId: 'flightBooking',
+          businessKey: 'T1234FlightBooking02',
+          parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+          parentProcessInstance: null,
+          processName: 'FlightBooking',
+          rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+          roles: [],
+          state: ProcessInstanceState.Error,
+          serviceUrl: 'http://localhost:4000',
+          start: '2019-10-22T03:40:44.089Z',
+          end: '2019-10-22T05:40:44.089Z',
+          latUpdate: '2019-10-22T03:40:44.089Z',
+          endpoint: 'http://localhost:4000',
+          error: {
+            nodeDefinitionId: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf823',
+            message: 'some thing went wrong'
+          },
+          addons: ['process-management'],
+          variables:
+            '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+          nodes: [],
+          childProcessInstances: [],
+          isSelected: false
         },
         {
-          id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
-          processName: 'HotelBooking'
+          id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf86211223344',
+          processId: 'flightBooking1111',
+          businessKey: 'T1234FlightBooking021111',
+          parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+          parentProcessInstance: null,
+          processName: 'FlightBooking',
+          rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+          roles: [],
+          state: ProcessInstanceState.Error,
+          serviceUrl: 'http://localhost:4000',
+          start: '2019-10-22T03:40:44.089Z',
+          end: '2019-10-22T05:40:44.089Z',
+          latUpdate: '2019-10-22T03:40:44.089Z',
+          endpoint: 'http://localhost:4000',
+          error: {
+            nodeDefinitionId: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf823',
+            message: 'some thing went wrong'
+          },
+          addons: ['process-management'],
+          variables:
+            '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+          nodes: [],
+          childProcessInstances: [],
+          isSelected: false
         }
       ]
     }
@@ -175,7 +117,6 @@ const props = {
   ],
   filterClick: jest.fn(),
   setStatusArray: jest.fn(),
-  setIsStatusSelected: jest.fn(),
   filters: {
     status: [
       GraphQL.ProcessInstanceState.Active,
@@ -191,24 +132,11 @@ const props = {
   setSelectedInstances: jest.fn(),
   selectedInstances: [],
   initData,
-  setOffset: jest.fn(),
-  getProcessInstances: jest.fn(),
-  setLimit: jest.fn(),
-  pageSize: 10,
-  setFilteredData: jest.fn(),
   setSearchWord: jest.fn(),
   searchWord: 'Tra',
-  setIsClearAllClicked: jest.fn(),
-  handleCheckAll: jest.fn(),
   isAllChecked: true,
   setIsAllChecked: jest.fn(),
-  setSelectedNumber: jest.fn(),
-  selectedNumber: 0,
-  setModalTitle: jest.fn(),
-  setTitleType: jest.fn(),
-  setAbortedMessageObj: jest.fn(),
-  setCompletedMessageObj: jest.fn(),
-  handleAbortModalToggle: jest.fn()
+  setSelectableInstances: jest.fn()
 };
 
 afterEach(() => {
@@ -397,16 +325,13 @@ describe('ProcessListToolbar component tests', () => {
   describe('select multiple checkbox tests', () => {
     const wrapper = shallow(<ProcessListToolbar {...props} />);
     const wrapper1 = shallow(
-      <ProcessListToolbar
-        {...{ ...props, abortedObj: {}, isAllChecked: false }}
-      />
+      <ProcessListToolbar {...{ ...props, isAllChecked: false }} />
     );
     it('none selected click', () => {
       wrapper
         .find('#bulk-select')
         .props()
         ['children']['props']['dropdownItems'][0]['props']['onClick']();
-      expect(props.setInitData).toHaveBeenCalled();
       expect(props.setSelectedInstances).toHaveBeenCalled();
     });
 
@@ -415,9 +340,6 @@ describe('ProcessListToolbar component tests', () => {
         .find('#bulk-select')
         .props()
         ['children']['props']['dropdownItems'][1]['props']['onClick']();
-      expect(props.setIsAllChecked).toHaveBeenCalled();
-      expect(props.setSelectedNumber).toHaveBeenCalled();
-      expect(props.setInitData).toHaveBeenCalled();
       expect(props.setSelectedInstances).toHaveBeenCalled();
     });
 
@@ -426,9 +348,6 @@ describe('ProcessListToolbar component tests', () => {
         .find('#bulk-select')
         .props()
         ['children']['props']['dropdownItems'][2]['props']['onClick']();
-      expect(props.setIsAllChecked).toHaveBeenCalled();
-      expect(props.setSelectedNumber).toHaveBeenCalled();
-      expect(props.setInitData).toHaveBeenCalled();
       expect(props.setSelectedInstances).toHaveBeenCalled();
     });
     it('bulk select checkbox click', () => {
@@ -438,10 +357,6 @@ describe('ProcessListToolbar component tests', () => {
         ['children']['props']['toggle']['props']['splitButtonItems'][0][
           'props'
         ]['onChange']();
-      4;
-      expect(props.setIsAllChecked).toHaveBeenCalled();
-      expect(props.setSelectedNumber).toHaveBeenCalled();
-      expect(props.setInitData).toHaveBeenCalled();
       expect(props.setSelectedInstances).toHaveBeenCalled();
     });
     it('bulk select checkbox click', () => {
@@ -451,9 +366,6 @@ describe('ProcessListToolbar component tests', () => {
         ['children']['props']['toggle']['props']['splitButtonItems'][0][
           'props'
         ]['onChange']();
-      expect(props.setIsAllChecked).toHaveBeenCalled();
-      expect(props.setSelectedNumber).toHaveBeenCalled();
-      expect(props.setInitData).toHaveBeenCalled();
       expect(props.setSelectedInstances).toHaveBeenCalled();
     });
 
@@ -470,8 +382,8 @@ describe('ProcessListToolbar component tests', () => {
     it('multi abort click success', async () => {
       props.selectedInstances = [
         initData.ProcessInstances[0],
-        initData.ProcessInstances[0].childDataList[0],
-        initData.ProcessInstances[0].childDataList[1]
+        initData.ProcessInstances[0].childProcessInstances[0],
+        initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.delete.mockResolvedValue({});
       let wrapper = getWrapper(
@@ -501,8 +413,8 @@ describe('ProcessListToolbar component tests', () => {
     it('multi abort click fail', async () => {
       props.selectedInstances = [
         initData.ProcessInstances[0],
-        initData.ProcessInstances[0].childDataList[0],
-        initData.ProcessInstances[0].childDataList[1]
+        initData.ProcessInstances[0].childProcessInstances[0],
+        initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.delete.mockRejectedValue({});
       let wrapper = getWrapper(
@@ -536,8 +448,8 @@ describe('ProcessListToolbar component tests', () => {
     it('multi skip click success', async () => {
       props.selectedInstances = [
         initData.ProcessInstances[0],
-        initData.ProcessInstances[0].childDataList[0],
-        initData.ProcessInstances[0].childDataList[1]
+        initData.ProcessInstances[0].childProcessInstances[0],
+        initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockResolvedValue({});
       let wrapper = getWrapper(
@@ -567,8 +479,8 @@ describe('ProcessListToolbar component tests', () => {
     it('multi skip click fail', async () => {
       props.selectedInstances = [
         initData.ProcessInstances[0],
-        initData.ProcessInstances[0].childDataList[0],
-        initData.ProcessInstances[0].childDataList[1]
+        initData.ProcessInstances[0].childProcessInstances[0],
+        initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockRejectedValue({});
       let wrapper = getWrapper(
@@ -602,8 +514,8 @@ describe('ProcessListToolbar component tests', () => {
     it('multi retry click success', async () => {
       props.selectedInstances = [
         initData.ProcessInstances[0],
-        initData.ProcessInstances[0].childDataList[0],
-        initData.ProcessInstances[0].childDataList[1]
+        initData.ProcessInstances[0].childProcessInstances[0],
+        initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockResolvedValue({});
       let wrapper = getWrapper(
@@ -633,8 +545,8 @@ describe('ProcessListToolbar component tests', () => {
     it('multi retry click fail', async () => {
       props.selectedInstances = [
         initData.ProcessInstances[0],
-        initData.ProcessInstances[0].childDataList[0],
-        initData.ProcessInstances[0].childDataList[1]
+        initData.ProcessInstances[0].childProcessInstances[0],
+        initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockRejectedValue({});
       let wrapper = getWrapper(
@@ -673,7 +585,6 @@ describe('ProcessListToolbar component tests', () => {
       .props()
       ['resetSelected']();
     expect(props.setSelectedInstances).toHaveBeenCalled();
-    expect(props.setSelectedNumber).toHaveBeenCalled();
     expect(props.setIsAllChecked).toHaveBeenCalled();
   });
 });

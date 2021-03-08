@@ -21,98 +21,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
       },
       "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
       "lastUpdate": "2019-10-22T03:40:44.089Z",
-      "nodes": Array [
-        Object {
-          "definitionId": "EndEvent_1",
-          "enter": "2019-10-22T03:37:38.586Z",
-          "exit": "2019-10-22T03:37:38.586Z",
-          "id": "870bdda0-be04-4e59-bb0b-f9b665eaacc9",
-          "name": "End Event 1",
-          "nodeId": "1",
-          "type": "EndNode",
-        },
-        Object {
-          "definitionId": "UserTask_2",
-          "enter": "2019-10-22T03:37:30.807Z",
-          "exit": "2019-10-22T03:37:38.586Z",
-          "id": "6b4a4fe9-4aab-4e8c-bb79-27b8b6b88d1f",
-          "name": "Confirm travel",
-          "nodeId": "2",
-          "type": "HumanTaskNode",
-        },
-        Object {
-          "definitionId": "CallActivity_1",
-          "enter": "2019-10-22T03:37:30.793Z",
-          "exit": "2019-10-22T03:37:30.803Z",
-          "id": "dd33de7c-c39c-484a-83a8-3e1b007fce95",
-          "name": "Book Hotel",
-          "nodeId": "3",
-          "type": "SubProcessNode",
-        },
-        Object {
-          "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-          "enter": "2019-10-22T03:37:30.806Z",
-          "exit": "2019-10-22T03:37:30.807Z",
-          "id": "08c153e8-2766-4675-81f7-29943efdf411",
-          "name": "Join",
-          "nodeId": "4",
-          "type": "Join",
-        },
-        Object {
-          "definitionId": "CallActivity_2",
-          "enter": "2019-10-22T03:37:30.803Z",
-          "exit": "2019-10-22T03:37:30.806Z",
-          "id": "683cf307-f082-4a8e-9c85-d5a11b13903a",
-          "name": "Book Flight",
-          "nodeId": "4",
-          "type": "SubProcessNode",
-        },
-        Object {
-          "definitionId": "ParallelGateway_1",
-          "enter": "2019-10-22T03:37:30.792Z",
-          "exit": "2019-10-22T03:37:30.803Z",
-          "id": "cf057e58-4113-46c0-be13-6de42ea8377e",
-          "name": "Book",
-          "nodeId": "5",
-          "type": "Split",
-        },
-        Object {
-          "definitionId": "ExclusiveGateway_2",
-          "enter": "2019-10-22T03:37:30.792Z",
-          "exit": "2019-10-22T03:37:30.792Z",
-          "id": "415a52c0-dc1f-4a93-9238-862dc8072262",
-          "name": "Join",
-          "nodeId": "6",
-          "type": "Join",
-        },
-        Object {
-          "definitionId": "ExclusiveGateway_1",
-          "enter": "2019-10-22T03:37:30.79Z",
-          "exit": "2019-10-22T03:37:30.792Z",
-          "id": "52d64298-3f28-4aba-a812-dba4077c9665",
-          "name": "is visa required",
-          "nodeId": "7",
-          "type": "Split",
-        },
-        Object {
-          "definitionId": "BusinessRuleTask_1",
-          "enter": "2019-10-22T03:37:30.755Z",
-          "exit": "2019-10-22T03:37:30.79Z",
-          "id": "6fdee287-08f6-49c2-af2d-2d125ba76ab7",
-          "name": "Visa check",
-          "nodeId": "8",
-          "type": "RuleSetNode",
-        },
-        Object {
-          "definitionId": "StartEvent_1",
-          "enter": "2019-10-22T03:37:30.753Z",
-          "exit": "2019-10-22T03:37:30.754Z",
-          "id": "d98c1762-9d3c-4228-9ffc-bc3f423079c0",
-          "name": "StartProcess",
-          "nodeId": "9",
-          "type": "StartNode",
-        },
-      ],
+      "nodes": Array [],
       "parentProcessInstance": null,
       "parentProcessInstanceId": null,
       "processId": "travels",
@@ -139,7 +48,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
         <Button
           className="pf-u-mr-sm"
           id="skip-button"
-          onClick={[MockFunction]}
+          onClick={[Function]}
           variant="secondary"
         >
           Skip
@@ -147,7 +56,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
         <Button
           className="pf-u-mr-sm"
           id="retry-button"
-          onClick={[MockFunction]}
+          onClick={[Function]}
           variant="secondary"
         >
           Retry
@@ -237,7 +146,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
               <Button
                 className="pf-u-mr-sm"
                 id="skip-button"
-                onClick={[MockFunction]}
+                onClick={[Function]}
                 variant="secondary"
               >
                 Skip
@@ -245,7 +154,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
               <Button
                 className="pf-u-mr-sm"
                 id="retry-button"
-                onClick={[MockFunction]}
+                onClick={[Function]}
                 variant="secondary"
               >
                 Retry
@@ -352,98 +261,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
       "error": null,
       "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
       "lastUpdate": "2019-10-22T03:40:44.089Z",
-      "nodes": Array [
-        Object {
-          "definitionId": "EndEvent_1",
-          "enter": "2019-10-22T03:37:38.586Z",
-          "exit": "2019-10-22T03:37:38.586Z",
-          "id": "870bdda0-be04-4e59-bb0b-f9b665eaacc9",
-          "name": "End Event 1",
-          "nodeId": "1",
-          "type": "EndNode",
-        },
-        Object {
-          "definitionId": "UserTask_2",
-          "enter": "2019-10-22T03:37:30.807Z",
-          "exit": "2019-10-22T03:37:38.586Z",
-          "id": "6b4a4fe9-4aab-4e8c-bb79-27b8b6b88d1f",
-          "name": "Confirm travel",
-          "nodeId": "2",
-          "type": "HumanTaskNode",
-        },
-        Object {
-          "definitionId": "CallActivity_1",
-          "enter": "2019-10-22T03:37:30.793Z",
-          "exit": "2019-10-22T03:37:30.803Z",
-          "id": "dd33de7c-c39c-484a-83a8-3e1b007fce95",
-          "name": "Book Hotel",
-          "nodeId": "3",
-          "type": "SubProcessNode",
-        },
-        Object {
-          "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-          "enter": "2019-10-22T03:37:30.806Z",
-          "exit": "2019-10-22T03:37:30.807Z",
-          "id": "08c153e8-2766-4675-81f7-29943efdf411",
-          "name": "Join",
-          "nodeId": "4",
-          "type": "Join",
-        },
-        Object {
-          "definitionId": "CallActivity_2",
-          "enter": "2019-10-22T03:37:30.803Z",
-          "exit": "2019-10-22T03:37:30.806Z",
-          "id": "683cf307-f082-4a8e-9c85-d5a11b13903a",
-          "name": "Book Flight",
-          "nodeId": "4",
-          "type": "SubProcessNode",
-        },
-        Object {
-          "definitionId": "ParallelGateway_1",
-          "enter": "2019-10-22T03:37:30.792Z",
-          "exit": "2019-10-22T03:37:30.803Z",
-          "id": "cf057e58-4113-46c0-be13-6de42ea8377e",
-          "name": "Book",
-          "nodeId": "5",
-          "type": "Split",
-        },
-        Object {
-          "definitionId": "ExclusiveGateway_2",
-          "enter": "2019-10-22T03:37:30.792Z",
-          "exit": "2019-10-22T03:37:30.792Z",
-          "id": "415a52c0-dc1f-4a93-9238-862dc8072262",
-          "name": "Join",
-          "nodeId": "6",
-          "type": "Join",
-        },
-        Object {
-          "definitionId": "ExclusiveGateway_1",
-          "enter": "2019-10-22T03:37:30.79Z",
-          "exit": "2019-10-22T03:37:30.792Z",
-          "id": "52d64298-3f28-4aba-a812-dba4077c9665",
-          "name": "is visa required",
-          "nodeId": "7",
-          "type": "Split",
-        },
-        Object {
-          "definitionId": "BusinessRuleTask_1",
-          "enter": "2019-10-22T03:37:30.755Z",
-          "exit": "2019-10-22T03:37:30.79Z",
-          "id": "6fdee287-08f6-49c2-af2d-2d125ba76ab7",
-          "name": "Visa check",
-          "nodeId": "8",
-          "type": "RuleSetNode",
-        },
-        Object {
-          "definitionId": "StartEvent_1",
-          "enter": "2019-10-22T03:37:30.753Z",
-          "exit": "2019-10-22T03:37:30.754Z",
-          "id": "d98c1762-9d3c-4228-9ffc-bc3f423079c0",
-          "name": "StartProcess",
-          "nodeId": "9",
-          "type": "StartNode",
-        },
-      ],
+      "nodes": Array [],
       "parentProcessInstance": null,
       "parentProcessInstanceId": null,
       "processId": "travels",
@@ -470,7 +288,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
         <Button
           className="pf-u-mr-sm"
           id="skip-button"
-          onClick={[MockFunction]}
+          onClick={[Function]}
           variant="secondary"
         >
           Skip
@@ -478,7 +296,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
         <Button
           className="pf-u-mr-sm"
           id="retry-button"
-          onClick={[MockFunction]}
+          onClick={[Function]}
           variant="secondary"
         >
           Retry
@@ -568,7 +386,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
               <Button
                 className="pf-u-mr-sm"
                 id="skip-button"
-                onClick={[MockFunction]}
+                onClick={[Function]}
                 variant="secondary"
               >
                 Skip
@@ -576,7 +394,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
               <Button
                 className="pf-u-mr-sm"
                 id="retry-button"
-                onClick={[MockFunction]}
+                onClick={[Function]}
                 variant="secondary"
               >
                 Retry

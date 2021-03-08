@@ -17,7 +17,8 @@ import {
   performMultipleCancel,
   getSvg,
   formatForBulkListProcessInstance,
-  formatForBulkListJob
+  formatForBulkListJob,
+  checkProcessInstanceState
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -956,5 +957,21 @@ describe('uitility function testing', () => {
         errorMessage: null
       }
     ]);
+  });
+  it('test checkProcessInstanceState method', () => {
+    const testProcessInstance1 = {
+      state: GraphQL.ProcessInstanceState.Active,
+      addons: ['process-management'],
+      serviceUrl: 'http://localhost:4000'
+    };
+    const testProcessInstance2 = {
+      state: GraphQL.ProcessInstanceState.Aborted,
+      addons: [],
+      serviceUrl: null
+    };
+    const falseResult = checkProcessInstanceState(testProcessInstance1);
+    const trueResult = checkProcessInstanceState(testProcessInstance2);
+    expect(falseResult).toBeFalsy();
+    expect(trueResult).toBeTruthy();
   });
 });

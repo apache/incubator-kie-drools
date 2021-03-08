@@ -1,320 +1,397 @@
+import { getWrapper, GraphQL, KogitoSpinner } from '@kogito-apps/common';
 import React from 'react';
 import ProcessListTable from '../ProcessListTable';
-import { MockedProvider } from '@apollo/react-testing';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
-import ProcessInstanceState = GraphQL.ProcessInstanceState;
-import GetProcessInstancesDocument = GraphQL.GetProcessInstancesDocument;
 import { BrowserRouter } from 'react-router-dom';
-jest.mock('../../../Molecules/ProcessListTableItems/ProcessListTableItems');
-Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-jest.mock('@kogito-apps/common', () => ({
-  ...jest.requireActual('@kogito-apps/common'),
-  KogitoEmptyState: () => {
-    return <MockedComponent />;
-  }
-}));
+import { Button, Checkbox } from '@patternfly/react-core';
+import _ from 'lodash';
+import { act } from 'react-dom/test-utils';
+import axios from 'axios';
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock('../../../Molecules/ProcessListChildTable/ProcessListChildTable');
+jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
+jest.mock('../../../Atoms/ErrorPopover/ErrorPopover');
+jest.mock('../../../Molecules/DisablePopup/DisablePopup');
+jest.mock('../../../Atoms/ProcessListActionsKebab/ProcessListActionsKebab');
 
-const processInstance = {
-  id: '201a8a42-043e-375a-9f52-57c804b24db4',
-  processId: 'travels',
-  processName: 'travels',
-  businessKey: 'MQQ640',
-  parentProcessInstanceId: null,
-  parentProcessInstance: null,
-  roles: [],
-  rootProcessInstanceId: null,
-  variables:
-    '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2020-05-08T03:30:00.000+05:30","arrival":"2020-05-09T03:30:00.000+05:30"},"hotel":{"name":"Perfect hotel","address":{"street":"street","city":"Bengaluru","zipCode":"12345","country":"India"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"trip":{"city":"Bengaluru","country":"India","begin":"2020-05-08T03:30:00.000+05:30","end":"2020-05-09T03:30:00.000+05:30","visaRequired":false},"traveller":{"firstName":"Ajay","lastName":"Jaganathan","email":"ajaganat@redhat.com","nationality":"Polish","address":{"street":"Bangalore","city":"Bangalore","zipCode":"560093","country":"Poland"}}}',
-  state: 'ACTIVE',
-  start: '2020-05-07T06:50:18.274Z',
-  lastUpdate: '2020-05-07T06:50:18.502Z',
-  end: null,
-  addons: [
-    'process-management',
-    'infinispan-persistence',
-    'prometheus-monitoring'
-  ],
-  endpoint: 'http://localhost:8080/travels',
-  serviceUrl: 'http://localhost:8080',
-  error: null,
-  childProcessInstances: [
+const data = {
+  ProcessInstances: [
     {
-      id: 'bfde98ed-0cdd-4700-ae87-377f7ec430cd',
-      processName: 'HotelBooking',
-      businessKey: null
+      id: '538f9feb-5a14-4096-b791-2055b38da7c6',
+      processId: 'travels',
+      businessKey: 'Tra234',
+      parentProcessInstanceId: null,
+      parentProcessInstance: null,
+      processName: 'travels',
+      rootProcessInstanceId: null,
+      roles: [],
+      state: GraphQL.ProcessInstanceState.Error,
+      addons: [
+        'jobs-management',
+        'prometheus-monitoring',
+        'process-management'
+      ],
+      start: '2019-10-22T03:40:44.089Z',
+      error: {
+        nodeDefinitionId: '__a1e139d5-4e77-48c9-84ae-34578e9817n',
+        message: 'Something went wrong'
+      },
+      lastUpdate: '2019-10-22T03:40:44.089Z',
+      serviceUrl: 'http://localhost:4000',
+      endpoint: 'http://localhost:4000',
+      variables:
+        '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
+      nodes: [],
+      milestones: [],
+      isSelected: false,
+      childProcessInstances: [
+        {
+          id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
+          processId: 'travels',
+          businessKey: 'TP444',
+          parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+          parentProcessInstance: null,
+          rootProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+          processName: 'FlightBooking test 2',
+          roles: [],
+          state: GraphQL.ProcessInstanceState.Active,
+          serviceUrl: 'http://localhost:4000',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
+          endpoint: 'http://localhost:4000',
+          addons: ['process-management'],
+          error: {
+            nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
+            message: 'Something went wrong'
+          },
+          start: '2019-10-22T03:40:44.089Z',
+          end: '2019-10-22T05:40:44.089Z',
+          variables:
+            '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
+          nodes: [],
+          isSelected: true,
+          milestones: [],
+          childProcessInstances: []
+        }
+      ]
     },
     {
-      id: 'e607b2a9-0aca-4788-9623-dd2e156ce9c4',
-      processName: 'FlightBooking',
-      businessKey: null
-    }
-  ],
-  nodes: [
-    {
-      id: '39d5fe7c-4e37-44ce-8d25-05a4a29ec6ea',
-      nodeId: '17',
-      name: 'Book Hotel',
-      enter: '2020-05-07T06:50:18.429Z',
-      exit: '2020-05-07T06:50:18.439Z',
-      type: 'SubProcessNode',
-      definitionId: '_1A708F87-11C0-42A0-A464-0B7E259C426F'
+      id: '538f9feb-5a14-4096-b791-2055b38da7c6',
+      processId: 'travels',
+      businessKey: 'Tra234',
+      parentProcessInstanceId: null,
+      parentProcessInstance: null,
+      processName: 'travels',
+      rootProcessInstanceId: null,
+      roles: [],
+      state: GraphQL.ProcessInstanceState.Error,
+      addons: [
+        'jobs-management',
+        'prometheus-monitoring',
+        'process-management'
+      ],
+      start: '2019-10-22T03:40:44.089Z',
+      error: {
+        nodeDefinitionId: '__a1e139d5-4e77-48c9-84ae-34578e9817n',
+        message: 'Something went wrong'
+      },
+      lastUpdate: '2019-10-22T03:40:44.089Z',
+      serviceUrl: 'http://localhost:4000',
+      endpoint: 'http://localhost:4000',
+      variables:
+        '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
+      nodes: [],
+      milestones: [],
+      isSelected: true,
+      childProcessInstances: ['538f9feb-5a14-4096-b791-2055b38da7c6child']
     }
   ]
 };
-const initData1 = {
-  ProcessInstances: [processInstance]
-};
 
-const initData2 = {
-  ProcessInstances: []
-};
-
-const mocks1 = [
-  {
-    request: {
-      query: GetProcessInstancesDocument,
-      variables: {
-        where: {
-          state: { in: [ProcessInstanceState.Active] },
-          parentProcessInstanceId: { isNull: true }
-        },
-        offset: 0,
-        limit: 10
-      }
-    },
-    result: {
-      data: {
-        ProcessInstances: [processInstance]
-      }
-    }
-  }
-];
-
-const mocks2 = [
-  {
-    request: {
-      query: GetProcessInstancesDocument,
-      variables: {
-        where: {
-          state: { in: [ProcessInstanceState.Active] },
-          parentProcessInstanceId: { isNull: true }
-        },
-        offset: 0,
-        limit: 10
-      }
-    },
-    result: {
-      data: {
-        ProcessInstances: []
-      }
-    }
-  }
-];
-
-const mocks3 = [
-  {
-    request: {
-      query: GetProcessInstancesDocument,
-      variables: {
-        where: {
-          state: { in: ['something'] },
-          parentProcessInstanceId: { isNull: true }
-        },
-        offset: 0,
-        limit: 10
-      }
-    },
-    result: {
-      data: {
-        ProcessInstances: []
-      },
-      error: {
-        errorMessage: 'some error message'
-      }
-    }
-  }
-];
-
-const mocks4 = [
-  {
-    request: {
-      query: GetProcessInstancesDocument,
-      variables: {
-        where: {
-          state: { in: [ProcessInstanceState.Active] },
-          parentProcessInstanceId: { isNull: true },
-          or: [{ businessKey: { like: 'MQQ640' } }]
-        },
-        offset: 0,
-        limit: 10
-      }
-    },
-    result: {
-      data: {
-        ProcessInstances: [processInstance]
-      }
-    }
-  }
-];
-
-const props1 = {
+const props = {
+  initData: data,
   setInitData: jest.fn(),
-  setLimit: jest.fn(),
-  isLoading: false,
-  setIsError: jest.fn(),
-  setIsLoading: jest.fn(),
-  initData: initData1,
-  checkedArray: ['ACTIVE'],
-  selectedInstances: [],
-  setSelectedInstances: jest.fn(),
-  pageSize: 10,
-  isLoadingMore: false,
-  filteredData: initData1,
-  setFilteredData: jest.fn(),
-  isFilterClicked: false,
+  loading: false,
   filters: {
-    status: [ProcessInstanceState.Active],
+    status: [GraphQL.ProcessInstanceState.Active],
     businessKey: []
   },
-  setIsAllChecked: jest.fn(),
-  selectedNumber: 0,
-  setSelectedNumber: jest.fn()
-};
-
-const props2 = {
-  setInitData: jest.fn(),
-  setLimit: jest.fn(),
-  isLoading: false,
-  setIsError: jest.fn(),
-  setIsLoading: jest.fn(),
-  initData: initData2,
-  checkedArray: ['ACTIVE'],
-  selectedInstances: [],
-  setSelectedInstances: jest.fn(),
-  pageSize: 10,
-  isLoadingMore: false,
-  filteredData: initData1,
-  setFilteredData: jest.fn(),
-  isFilterClicked: false,
-  filters: {
-    status: [ProcessInstanceState.Active],
-    businessKey: []
+  expanded: {
+    0: false,
+    1: false
   },
-  setIsAllChecked: jest.fn(),
-  selectedNumber: 0,
-  setSelectedNumber: jest.fn()
-};
-
-const props3 = {
-  setInitData: jest.fn(),
-  setLimit: jest.fn(),
-  isLoading: false,
-  setIsError: jest.fn(),
-  setIsLoading: jest.fn(),
-  initData: initData2,
-  checkedArray: ['ACTIVE'],
-  selectedInstances: [],
+  setExpanded: jest.fn(),
   setSelectedInstances: jest.fn(),
-  pageSize: 10,
-  isLoadingMore: true,
-  filteredData: initData1,
-  setFilteredData: jest.fn(),
-  isFilterClicked: false,
-  filters: {
-    status: [ProcessInstanceState.Active],
-    businessKey: []
-  },
-  setIsAllChecked: jest.fn(),
-  selectedNumber: 0,
-  setSelectedNumber: jest.fn()
-};
-
-const props4 = {
-  setInitData: jest.fn(),
-  isLoading: false,
-  setIsError: jest.fn(),
-  setIsLoading: jest.fn(),
-  initData: initData1,
   selectedInstances: [],
-  setSelectedInstances: jest.fn(),
-  pageSize: 10,
-  isLoadingMore: false,
-  filteredData: initData1,
-  setFilteredData: jest.fn(),
-  isFilterClicked: false,
-  filters: {
-    status: [ProcessInstanceState.Active],
-    businessKey: ['MQQ640']
-  },
+  setSelectableInstances: jest.fn(),
   setIsAllChecked: jest.fn(),
-  selectedNumber: 0,
-  setSelectedNumber: jest.fn(),
-  setLimit: jest.fn()
+  selectableInstances: 0
 };
 
-describe('ProcessListTable component tests', () => {
-  it('Snapshot testing with success data', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          {' '}
-          <ProcessListTable {...props1} />
-        </BrowserRouter>
-      </MockedProvider>,
+describe('ProcessListPage tests', () => {
+  it('snapshot test for process list - without expanded', () => {
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...props} />
+      </BrowserRouter>,
       'ProcessListTable'
     );
     expect(wrapper).toMatchSnapshot();
   });
-
-  it('Snapshot testing with success data(with businessKey)', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks4} addTypename={false}>
-        <BrowserRouter>
-          {' '}
-          <ProcessListTable {...props4} />
-        </BrowserRouter>
-      </MockedProvider>,
+  it('snapshot test for disabled process and non "error" state', () => {
+    const clonedProps = _.cloneDeep(props);
+    clonedProps.initData.ProcessInstances[0].state =
+      GraphQL.ProcessInstanceState.Active;
+    clonedProps.initData.ProcessInstances[0].addons = [];
+    clonedProps.initData.ProcessInstances[0].serviceUrl = null;
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...clonedProps} />
+      </BrowserRouter>,
       'ProcessListTable'
     );
     expect(wrapper).toMatchSnapshot();
   });
-
-  it('Snapshot testing with no data', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks2} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListTable {...props2} />
-        </BrowserRouter>
-      </MockedProvider>,
+  it('snapshot for loading state', () => {
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...{ ...props, loading: true, initData: {} }} />
+      </BrowserRouter>,
       'ProcessListTable'
     );
-    expect(wrapper).toMatchSnapshot();
+    const spinner = wrapper.find(KogitoSpinner);
+    expect(spinner.exists()).toBeTruthy();
+    expect(spinner).toMatchSnapshot();
+  });
+  it('snapshot test for process list - with expanded', async () => {
+    const clonedProps = _.cloneDeep(props);
+    clonedProps.expanded = {
+      0: true,
+      1: false
+    };
+    clonedProps.selectedInstances = [
+      {
+        id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
+        processId: 'travels',
+        businessKey: 'TP444',
+        parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+        parentProcessInstance: null,
+        rootProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
+        processName: 'FlightBooking test 2',
+        roles: [],
+        state: GraphQL.ProcessInstanceState.Completed,
+        serviceUrl: null,
+        lastUpdate: '2019-10-22T03:40:44.089Z',
+        endpoint: 'http://localhost:4000',
+        addons: [],
+        error: {
+          nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
+          message: 'Something went wrong'
+        },
+        start: '2019-10-22T03:40:44.089Z',
+        end: '2019-10-22T05:40:44.089Z',
+        variables:
+          '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
+        nodes: [],
+        isSelected: true,
+        milestones: [],
+        childProcessInstances: []
+      }
+    ];
+    clonedProps.selectableInstances = 1;
+
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...clonedProps} />
+      </BrowserRouter>,
+      'ProcessListTable'
+    );
+    await act(async () => {
+      wrapper
+        .find('CollapseColumn')
+        .at(0)
+        .find(Button)
+        .simulate('click');
+    });
+    const ProcessListChildTable = wrapper
+      .update()
+      .find('MockedProcessListChildTable');
+    expect(ProcessListChildTable.exists()).toBeTruthy();
+    expect(ProcessListChildTable).toMatchSnapshot();
+  });
+  it('checkbox click tests - selected', async () => {
+    const clonedProps = _.cloneDeep(props);
+    let wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...clonedProps} />
+      </BrowserRouter>,
+      'ProcessListTable'
+    );
+    await act(async () => {
+      wrapper
+        .find(Checkbox)
+        .at(0)
+        .find('input')
+        .simulate('change', { target: { checked: true } });
+    });
+    wrapper = wrapper.update();
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+  it('checkbox click tests - unselected', async () => {
+    let wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...props} />
+      </BrowserRouter>,
+      'ProcessListTable'
+    );
+    await act(async () => {
+      wrapper
+        .find(Checkbox)
+        .at(1)
+        .find('input')
+        .simulate('change', { target: { checked: false } });
+    });
+    wrapper = wrapper.update();
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+  describe('skip call tests', () => {
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...props} />
+      </BrowserRouter>,
+      'ProcessListTable'
+    );
+    it('on skip success', async () => {
+      mockedAxios.post.mockResolvedValue({});
+      await act(async () => {
+        wrapper
+          .find('MockedProcessListActionsKebab')
+          .at(0)
+          .props()
+          ['onSkipClick'](props.initData.ProcessInstances[0]);
+      });
+      const skipSuccessWrapper = wrapper.update();
+      expect(
+        skipSuccessWrapper.find('MockedProcessListModal').exists()
+      ).toBeTruthy();
+      expect(
+        skipSuccessWrapper.find('MockedProcessListModal').props()[
+          'modalContent'
+        ]
+      ).toEqual('The process travels was successfully skipped.');
+    });
+    it('on skip failure', async () => {
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      await act(async () => {
+        wrapper
+          .find('MockedProcessListActionsKebab')
+          .at(0)
+          .props()
+          ['onSkipClick'](props.initData.ProcessInstances[0]);
+      });
+      const skipFailureWrapper = wrapper.update();
+      expect(
+        skipFailureWrapper.find('MockedProcessListModal').exists()
+      ).toBeTruthy();
+      expect(
+        skipFailureWrapper.find('MockedProcessListModal').props()[
+          'modalContent'
+        ]
+      ).toEqual('The process travels failed to skip. Message: "404 error"');
+    });
   });
 
-  it('Snapshot testing with wrong query parameters', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks3} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListTable {...props2} />
-        </BrowserRouter>
-      </MockedProvider>,
+  describe('Retry call tests', () => {
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...props} />
+      </BrowserRouter>,
       'ProcessListTable'
     );
-    expect(wrapper).toMatchSnapshot();
+    it('on retry success', async () => {
+      mockedAxios.post.mockResolvedValue({});
+      await act(async () => {
+        wrapper
+          .find('MockedProcessListActionsKebab')
+          .at(0)
+          .props()
+          ['onRetryClick'](props.initData.ProcessInstances[0]);
+      });
+      const retrySuccessWrapper = wrapper.update();
+      expect(
+        retrySuccessWrapper.find('MockedProcessListModal').exists()
+      ).toBeTruthy();
+      expect(
+        retrySuccessWrapper.find('MockedProcessListModal').props()[
+          'modalContent'
+        ]
+      ).toEqual('The process travels was successfully re-executed.');
+    });
+    it('on retry failure', async () => {
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      await act(async () => {
+        wrapper
+          .find('MockedProcessListActionsKebab')
+          .at(0)
+          .props()
+          ['onRetryClick'](props.initData.ProcessInstances[0]);
+      });
+      const retryFailureWrapper = wrapper.update();
+      expect(
+        retryFailureWrapper.find('MockedProcessListModal').exists()
+      ).toBeTruthy();
+      expect(
+        retryFailureWrapper.find('MockedProcessListModal').props()[
+          'modalContent'
+        ]
+      ).toEqual(
+        'The process travels failed to re-execute. Message: "404 error"'
+      );
+    });
   });
-
-  it('Snapshot testing initial empty data', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListTable {...props3} />
-        </BrowserRouter>
-      </MockedProvider>,
+  describe('Abort call tests', () => {
+    const wrapper = getWrapper(
+      <BrowserRouter>
+        <ProcessListTable {...props} />
+      </BrowserRouter>,
       'ProcessListTable'
     );
-    expect(wrapper).toMatchSnapshot();
+    it('on Abort success', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      await act(async () => {
+        wrapper
+          .find('MockedProcessListActionsKebab')
+          .at(0)
+          .props()
+          ['onAbortClick'](props.initData.ProcessInstances[0]);
+      });
+      const abortSuccessWrapper = wrapper.update();
+      expect(
+        abortSuccessWrapper.find('MockedProcessListModal').exists()
+      ).toBeTruthy();
+      expect(
+        abortSuccessWrapper.find('MockedProcessListModal').props()[
+          'modalContent'
+        ]
+      ).toEqual('The process travels was successfully aborted.');
+    });
+    it('on retry failure', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      await act(async () => {
+        wrapper
+          .find('MockedProcessListActionsKebab')
+          .at(0)
+          .props()
+          ['onAbortClick'](props.initData.ProcessInstances[0]);
+      });
+      const abortFailureWrapper = wrapper.update();
+      expect(
+        abortFailureWrapper.find('MockedProcessListModal').exists()
+      ).toBeTruthy();
+      expect(
+        abortFailureWrapper.find('MockedProcessListModal').props()[
+          'modalContent'
+        ]
+      ).toEqual('Failed to abort process travels. Message: "404 error"');
+    });
   });
 });

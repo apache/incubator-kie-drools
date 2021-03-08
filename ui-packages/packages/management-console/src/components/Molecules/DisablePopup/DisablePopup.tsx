@@ -37,7 +37,6 @@ const DisablePopup: React.FC<IOwnProps & OUIAProps> = ({
   return (
     <Tooltip
       content={content}
-      distance={-15}
       {...componentOuiaProps(ouiaId, 'disable-popup', ouiaSafe)}
     >
       {component}
