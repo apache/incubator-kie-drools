@@ -16,9 +16,11 @@
 package org.kie.kogito.codegen.core;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -26,6 +28,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
@@ -79,6 +82,23 @@ public class CodegenUtils {
 
     public static void interpolateArguments(MethodDeclaration md, String dataType) {
         md.getParameters().forEach(p -> p.setType(dataType));
+    }
+
+    public static void interpolateArguments(NodeWithArguments<? extends Node> node, Map<String, Expression> expressions) {
+        List<Expression> argumentList = node.getArguments();
+        Map<String, Integer> argumentIds = new HashMap<>();
+
+        expressions.forEach((placeholder, expr) -> {
+            for (int i = 0; i < argumentList.size(); i++) {
+                if (argumentList.get(i).toString().trim().equals(placeholder)) {
+                    argumentIds.put(placeholder, i);
+                }
+            }
+        });
+
+        argumentIds.forEach((placeholder, id) -> {
+            node.setArgument(id, expressions.get(placeholder));
+        });
     }
 
     //Defaults the "to be interpolated type" to $Type$.

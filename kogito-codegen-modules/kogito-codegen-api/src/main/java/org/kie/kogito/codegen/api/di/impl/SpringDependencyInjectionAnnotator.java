@@ -183,4 +183,16 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
                         .filter(x -> "value".equals(x.getName().asString())).findFirst())
                 .map(value -> value.getValue().asStringLiteralExpr().asString());
     }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withFactoryClass(T node) {
+        node.addAnnotation("org.springframework.context.annotation.Configuration");
+        return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withFactoryMethod(T node) {
+        node.addAnnotation("org.springframework.context.annotation.Bean");
+        return node;
+    }
 }

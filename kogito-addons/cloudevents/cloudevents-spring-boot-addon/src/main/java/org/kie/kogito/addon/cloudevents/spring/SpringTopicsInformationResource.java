@@ -13,39 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.app;
 
-import java.util.ArrayList;
+package org.kie.kogito.addon.cloudevents.spring;
+
 import java.util.List;
 
+import org.kie.kogito.addon.cloudevents.AbstractTopicsInformationResource;
 import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.Topic;
 import org.kie.kogito.event.TopicDiscovery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/messaging/topics")
-public class TopicsInformationResource {
+@Component()
+public class SpringTopicsInformationResource extends AbstractTopicsInformationResource {
 
-    TopicDiscovery discovery;
-
-    private List<CloudEventMeta> eventsMeta;
-
-    public TopicsInformationResource() {
-        eventsMeta = new ArrayList<>();
-        /*
-         * $repeat$
-         * eventsMeta.add(new CloudEventMeta("$type$", "$source$", $kind$));
-         * $end_repeat$
-         */
+    @Autowired
+    public SpringTopicsInformationResource(TopicDiscovery topicDiscovery, List<CloudEventMeta> cloudEventMetaIterable) {
+        setup(topicDiscovery, cloudEventMetaIterable);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<List<Topic>>  getTopics() {
-        return ResponseEntity.ok(discovery.getTopics(eventsMeta));
+    public ResponseEntity<List<Topic>> getTopics() {
+        return ResponseEntity.ok(getTopicList());
     }
 }

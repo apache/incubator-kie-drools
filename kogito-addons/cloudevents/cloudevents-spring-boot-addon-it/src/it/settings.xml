@@ -34,11 +34,4 @@
             </pluginRepositories>
         </profile>
     </profiles>
-    <mirrors>
-        <mirror>
-            <id>local.mirror</id>
-            <mirrorOf>*</mirrorOf>
-            <url>@localRepositoryUrl@</url>
-        </mirror>
-    </mirrors>
 </settings>

@@ -173,4 +173,15 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
         Optional<AnnotationExpr> path = node.getAnnotationByName("Path");
         return path.map(annotationExpr -> annotationExpr.asSingleMemberAnnotationExpr().getMemberValue().asStringLiteralExpr().asString());
     }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withFactoryClass(T node) {
+        return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withFactoryMethod(T node) {
+        node.addAnnotation("javax.enterprise.inject.Produces");
+        return node;
+    }
 }
