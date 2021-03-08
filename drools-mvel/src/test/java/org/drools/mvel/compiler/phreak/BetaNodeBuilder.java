@@ -15,6 +15,8 @@
 
 package org.drools.mvel.compiler.phreak;
 
+import java.util.HashMap;
+
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
@@ -83,6 +85,7 @@ public class BetaNodeBuilder {
 
     public BetaNode build() {
         NodeFactory nFactory = buildContext.getComponentFactory().getNodeFactoryService();
+        buildContext.setDeclarations(new HashMap<>());
 
         EntryPointNode epn = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
 
@@ -113,6 +116,7 @@ public class BetaNodeBuilder {
             Declaration declr = new Declaration(leftVariableName,
                                                 extractor,
                                                 pattern);
+            leftInput.getDeclarations().put(leftFieldName, declr);
                 betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
                                                                                                         constraintFieldName,
                                                                                                         declr,

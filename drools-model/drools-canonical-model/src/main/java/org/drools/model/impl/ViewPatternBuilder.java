@@ -139,7 +139,7 @@ public class ViewPatternBuilder implements ViewBuilder {
 
         if ( ruleItem instanceof AccumulateExprViewItem ) {
             AccumulateExprViewItem acc = (AccumulateExprViewItem) ruleItem;
-            return new AccumulatePatternImpl(ruleItem2Condition( acc.getExpr() ), acc.getAccumulateFunctions());
+            return new AccumulatePatternImpl(ruleItem2Condition( acc.getExpr() ), null, acc.getAccumulateFunctions());
         }
 
         if ( ruleItem instanceof ExprViewItem ) {

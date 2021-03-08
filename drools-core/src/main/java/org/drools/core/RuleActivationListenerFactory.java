@@ -32,7 +32,8 @@ public class RuleActivationListenerFactory implements ActivationListenerFactory 
                                                  int subruleIndex,                                                 
                                                  BuildContext context,
                                                  Object... args) {
-        return context.getComponentFactory().getNodeFactoryService().buildTerminalNode( id, source, rule, subrule, subruleIndex, context );
+        TerminalNode t = context.getComponentFactory().getNodeFactoryService().buildTerminalNode( id, source, rule, subrule, subruleIndex, context );
+        return t;
     }
 
 }

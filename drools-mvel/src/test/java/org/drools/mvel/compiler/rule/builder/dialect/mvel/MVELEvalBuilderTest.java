@@ -34,6 +34,9 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.MockLeftTupleSink;
+import org.drools.core.reteoo.MockTupleSource;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
@@ -42,7 +45,6 @@ import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.builder.MVELEvalBuilder;
 import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.compiler.reteoo.MockLeftTupleSink;
 import org.drools.mvel.expr.MVELEvalExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -103,7 +105,12 @@ public class MVELEvalBuilderTest {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        MockLeftTupleSink sink = new MockLeftTupleSink();
+        BuildContext                             buildContext = new BuildContext(kBase);
+        org.drools.core.reteoo.MockLeftTupleSink sink         = new MockLeftTupleSink(buildContext);
+        MockTupleSource                          source       = new MockTupleSource(1, buildContext);
+        source.setObjectCount(1);
+        sink.setLeftTupleSource(source);
+
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );

@@ -395,8 +395,8 @@ public class RuleExecutor {
                 innerFireActivation( wm, agenda, activation, activation.getConsequence() );
             } finally {
                 // if the tuple contains expired events
-                for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getFactHandle() != null && tuple.getFactHandle().isEvent() ) {
+                for ( Tuple tuple = activation.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getFactHandle().isEvent() ) {
                         // can be null for eval, not and exists that have no right input
 
                         EventFactHandle handle = ( EventFactHandle ) tuple.getFactHandle();

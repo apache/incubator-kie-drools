@@ -60,10 +60,8 @@ public class XpathBackReference {
 
         int backRefPos = Integer.parseInt( id.substring( XpathBackReference.BACK_REFERENCE_HEAD.length() ) );
         int relativeOffset = backReferenceClasses.size() - 1 - backRefPos;
-        declaration = new Declaration( id,
-                                       new PatternExtractor( new ClassObjectType( backReferenceClasses.get(backRefPos) ) ),
-                                       new RelativePattern( pattern, relativeOffset ),
-                                       true );
+        declaration = new Declaration(id, new PatternExtractor( new ClassObjectType( backReferenceClasses.get(backRefPos))), pattern, true);
+        declaration.setxPathOffset(relativeOffset);
 
         if (declarations.isEmpty()) {
             declarations = new HashMap<>();
@@ -90,8 +88,8 @@ public class XpathBackReference {
         }
 
         @Override
-        public int getOffset() {
-            return pattern.getOffset() + relativeOffset;
+        public int getTupleIndex() {
+            return pattern.getTupleIndex() + relativeOffset;
         }
     }
 

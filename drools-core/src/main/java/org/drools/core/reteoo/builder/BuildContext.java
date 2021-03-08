@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Stack;
 
 import org.drools.core.common.BaseNode;
@@ -34,6 +35,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
@@ -57,8 +59,7 @@ public class BuildContext {
     private ObjectSource                     objectSource;
     // object type cache to check for cross products
     private LinkedList<Pattern>              objectType;
-    // offset of the pattern
-    private int                              currentPatternOffset;
+
     // rule base to add rules to
     private InternalKnowledgeBase            kBase;
     // rule being added at this moment
@@ -74,6 +75,9 @@ public class BuildContext {
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
     // xpath constraints from the last pattern attached
     private List<XpathConstraint>            xpathConstraints;
+
+    private Map<String, Declaration>         declarations;
+
     // the current entry point
     private EntryPointId                     currentEntryPoint;
     private boolean                          tupleMemoryEnabled;
@@ -115,8 +119,6 @@ public class BuildContext {
         this.tupleSource = null;
         this.objectSource = null;
 
-        this.currentPatternOffset = 0;
-
         this.tupleMemoryEnabled = true;
 
         this.objectTypeNodeMemoryEnabled = true;
@@ -144,27 +146,14 @@ public class BuildContext {
         this.emptyForAllBetaConstraints = true;
     }
 
-    /**
-     * @return the currentPatternOffset
-     */
-    public int getCurrentPatternOffset() {
-        return this.currentPatternOffset;
-    }
-
-    /**
-     * @param currentPatternIndex the currentPatternOffset to set
-     */
-    void setCurrentPatternOffset(final int currentPatternIndex) {
-        this.currentPatternOffset = currentPatternIndex;
-        this.syncObjectTypesWithPatternOffset();
-    }
-
-    private void syncObjectTypesWithPatternOffset() {
+    public void syncObjectTypesWithObjectCount() {
         if (this.objectType == null) {
             this.objectType = new LinkedList<>();
         }
-        while (this.objectType.size() > this.currentPatternOffset) {
-            this.objectType.removeLast();
+        if (tupleSource != null) {
+            while (this.objectType.size() > tupleSource.getObjectCount()) {
+                this.objectType.removeLast();
+            }
         }
     }
 
@@ -214,15 +203,6 @@ public class BuildContext {
      */
     public void setTupleSource(final LeftTupleSource tupleSource) {
         this.tupleSource = tupleSource;
-    }
-
-    public void incrementCurrentPatternOffset() {
-        this.currentPatternOffset++;
-    }
-
-    public void decrementCurrentPatternOffset() {
-        this.currentPatternOffset--;
-        this.syncObjectTypesWithPatternOffset();
     }
 
     /**
@@ -505,5 +485,13 @@ public class BuildContext {
 
     public void setConsequenceName( String consequenceName ) {
         this.consequenceName = consequenceName;
+    }
+
+    public void setDeclarations(Map<String, Declaration> declarations) {
+        this.declarations = declarations;
+    }
+
+    public Map<String, Declaration> getDeclarations() {
+        return declarations;
     }
 }

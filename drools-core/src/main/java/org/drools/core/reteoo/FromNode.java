@@ -88,8 +88,11 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         super(id, context);
         this.dataProvider = dataProvider;
         setLeftTupleSource(tupleSource);
+        this.setObjectCount(leftInput.getObjectCount() + 1); // 'from' node increases the object count
+
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
+        //BetaNode.replaceDeclarations(betaConstraints, this);
         this.betaConstraints.init(context, getType());
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;
@@ -423,7 +426,8 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return leftInput.getObjectTypeNode();
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
     }
 

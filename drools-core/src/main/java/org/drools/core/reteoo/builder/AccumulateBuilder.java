@@ -30,9 +30,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AccumulateBuilder
         implements
         ReteooComponentBuilder {
@@ -63,7 +60,6 @@ public class AccumulateBuilder
 
         // save tuple source and current pattern offset for later if needed
         LeftTupleSource tupleSource = context.getTupleSource();
-        final int currentPatternIndex = context.getCurrentPatternOffset();
 
         // builds the source pattern
         builder.build( context,
@@ -115,7 +111,6 @@ public class AccumulateBuilder
 
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
-        context.setCurrentPatternOffset( currentPatternIndex );
         context.popRuleComponent();
     }
 

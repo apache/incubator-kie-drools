@@ -24,6 +24,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
@@ -58,7 +59,6 @@ public class CollectBuilder
 
         // save tuple source and pattern offset for later if needed
         final LeftTupleSource tupleSource = context.getTupleSource();
-        final int currentPatternIndex = context.getCurrentPatternOffset();
 
         // builds the source pattern
         builder.build( context,
@@ -94,10 +94,15 @@ public class CollectBuilder
                                                                        resultBetaConstraints,
                                                                        true );
 
+        // The node needs to declare the vars it returns
+        Pattern resultPattern = collect.getResultPattern();
+        Declaration[] outerDeclarations = resultPattern.getOuterDeclarations().values().toArray( new Declaration[resultPattern.getOuterDeclarations().size()]);
+
         CollectAccumulator accumulator = new CollectAccumulator( collect, 
                                                                  existSubNetwort );
         Accumulate accumulate = new SingleAccumulate( sourcePattern,
                                                       sourcePattern.getRequiredDeclarations(),
+//                                                      outerDeclarations,
                                                       accumulator );
 
         AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
@@ -113,7 +118,6 @@ public class CollectBuilder
 
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
-        context.setCurrentPatternOffset( currentPatternIndex );
         context.popRuleComponent();
     }
 

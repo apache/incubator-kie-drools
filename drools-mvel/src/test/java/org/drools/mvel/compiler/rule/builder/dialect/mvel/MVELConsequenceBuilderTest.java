@@ -54,6 +54,8 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.MockLeftTupleSink;
+import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ReteooBuilder;
@@ -138,14 +140,19 @@ public class MVELConsequenceBuilderTest {
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
+        BuildContext buildContext = new BuildContext(kBase);
+        MockTupleSource      source       = new MockTupleSource(1, buildContext);
+        source.setDeclarations(map);
+        source.setObjectCount(1);
+        RuleTerminalNode rtn = new RuleTerminalNode(0, source, context.getRule(), subrule, 0, buildContext);
+
         final Cheese cheddar = new Cheese( "cheddar", 10 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
-        final LeftTupleImpl tuple = new LeftTupleImpl( f0, null, true );
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0, rtn, true );
         f0.removeLeftTuple(tuple);
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
-                                                pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, tuple != null ? (TerminalNode)tuple.getTupleSink() : null, null ),
-                                                new RuleTerminalNode(0, new MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase )), null);
+                                                pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, null, null ), rtn, null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         (( MVELConsequence ) context.getRule().getConsequence()).compile(  ( MVELDialectRuntimeData ) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));

@@ -249,8 +249,8 @@ public class LegacyAccumulate {
         }
 
         @Override
-        public Pattern findPatternByIndex( int index ) {
-            return delegate.findPatternByIndex( index );
+        public Pattern findPatternById(int id) {
+            return delegate.findPatternById(id);
         }
     }
 }

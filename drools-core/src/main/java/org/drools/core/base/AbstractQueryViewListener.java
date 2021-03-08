@@ -7,6 +7,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 
 public abstract class AbstractQueryViewListener implements InternalViewChangedEventListener {
@@ -26,19 +27,18 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
     public void rowAdded(final RuleImpl rule,
             final LeftTuple tuple,
             final InternalWorkingMemory workingMemory) {
-        InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex() + 1];
-        LeftTuple entry = tuple;
+        InternalFactHandle[] handles = new InternalFactHandle[((LeftTupleNode)tuple.getTupleSink()).getObjectCount()];
+        LeftTuple entry = (LeftTuple) tuple.skipEmptyHandles();
 
         // Add all the FactHandles
+        int i = handles.length-1;
         while ( entry != null ) {
             InternalFactHandle handle = entry.getFactHandle();
-            if ( handle != null ) {
-                handles[entry.getIndex()] = getHandle(handle);
-            }
+            handles[i--] = getHandle(handle);
             entry = entry.getParent();
         }
 
-        QueryTerminalNode node = ( QueryTerminalNode ) tuple.getTupleSink();
+        QueryTerminalNode node = tuple.getTupleSink();
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
 

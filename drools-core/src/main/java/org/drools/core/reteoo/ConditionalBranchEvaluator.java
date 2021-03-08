@@ -83,9 +83,17 @@ public class ConditionalBranchEvaluator implements Externalizable {
         }
     }
 
-    public ConditionalExecution evaluate( Tuple tuple,
-                                          WorkingMemory workingMemory,
-                                          Object context ) {
+    public EvalCondition getCondition() {
+        return condition;
+    }
+
+    public ConditionalBranchEvaluator getElseBranchEvaluator() {
+        return elseBranchEvaluator;
+    }
+
+    public ConditionalExecution evaluate(Tuple tuple,
+                                         WorkingMemory workingMemory,
+                                         Object context) {
 
         if ( condition.isAllowed( tuple, workingMemory, context ) ) {
             return conditionalExecution;

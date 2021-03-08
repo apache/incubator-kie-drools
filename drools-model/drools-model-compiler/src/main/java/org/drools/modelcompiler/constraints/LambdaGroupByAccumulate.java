@@ -43,8 +43,11 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     public LambdaGroupByAccumulate() { }
 
-    public LambdaGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations, FunctionN groupingFunction ) {
-        super(innerAccumulate.getSource(), innerAccumulate.getRequiredDeclarations());
+    public LambdaGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations,
+                                    //final Declaration[] outerDeclarations,
+                                    FunctionN groupingFunction ) {
+        super(innerAccumulate.getSource(), innerAccumulate.getRequiredDeclarations()); //,
+              //outerDeclarations);
         this.innerAccumulate = innerAccumulate;
         this.groupingDeclarations = groupingDeclarations;
         this.groupingFunction = groupingFunction;
@@ -64,7 +67,9 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     private Object getValue( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory, Declaration declaration ) {
-        return declaration.getValue( ( InternalWorkingMemory )workingMemory, declaration.getOffset() < tuple.size() ? tuple.get( declaration ) : handle );
+        // we already have the handle, so avoid tuple iteration if not needed.
+        // (is this really saving time, as get(int index) has pretty much the same check, at best saves some method call) (mdp)
+        return declaration.getValue( ( InternalWorkingMemory )workingMemory, declaration.getTupleIndex() < tuple.size() ? tuple.get( declaration ).getObject() : handle.getObject() );
     }
 
     @Override
@@ -153,7 +158,8 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     @Override
     public Accumulate clone() {
-        return new LambdaGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, groupingFunction );
+        return new LambdaGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, //outerDeclarations,
+                                            groupingFunction );
     }
 
     @Override

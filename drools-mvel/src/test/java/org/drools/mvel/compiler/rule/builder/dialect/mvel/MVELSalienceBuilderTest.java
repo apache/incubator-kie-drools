@@ -36,7 +36,10 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.MockLeftTupleSink;
+import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
@@ -56,6 +59,7 @@ import static org.junit.Assert.assertEquals;
 public class MVELSalienceBuilderTest {
     private RuleBuildContext context;
     private InternalKnowledgeBase kBase ;
+    private BuildContext buildContext;
 
     @Before
     public void setUp() throws Exception {
@@ -94,6 +98,8 @@ public class MVELSalienceBuilderTest {
         context.setDeclarationResolver( declarationResolver );
 
         kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        buildContext = new BuildContext(kBase);
+
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
 
@@ -104,14 +110,20 @@ public class MVELSalienceBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
+        StatefulKnowledgeSessionImpl ksession     = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Person p = new Person( "mark",
                                      "",
                                      31 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( p );
+
+        MockLeftTupleSink sink = new MockLeftTupleSink(buildContext);
+        MockTupleSource source = new MockTupleSource(1, buildContext);
+        source.setObjectCount(1);
+        sink.setLeftTupleSource(source);
+
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
-                                                       null,
+                                                       sink,
                                                        true );
 
         RuleTerminalNode rtn = new RuleTerminalNode();
@@ -188,8 +200,15 @@ public class MVELSalienceBuilderTest {
 
             this.context = context;
             final InternalFactHandle f0 = (InternalFactHandle) wm.insert( person );
+
+            BuildContext buildContext = new BuildContext(kBase);
+            MockLeftTupleSink sink = new MockLeftTupleSink(buildContext);
+            MockTupleSource source = new MockTupleSource(1, buildContext);
+            source.setObjectCount(1);
+            sink.setLeftTupleSource(source);
+
             tuple = new LeftTupleImpl( f0,
-                                   null,
+                                       sink,
                                    true );
             this.salience = salience;
             this.halt = false;

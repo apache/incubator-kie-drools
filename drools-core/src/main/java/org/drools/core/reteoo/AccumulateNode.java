@@ -82,6 +82,7 @@ public class AccumulateNode extends BetaNode {
                rightInput,
                sourceBinder,
                context );
+        this.setObjectCount(leftInput.getObjectCount() + 1); // 'accumulate' node increases the object count
         this.resultBinder = resultBinder;
         this.resultBinder.init( context, getType() );
         this.resultConstraints = resultConstraints;
@@ -178,8 +179,8 @@ public class AccumulateNode extends BetaNode {
     }
 
     @Override
-    public void attach( BuildContext context ) {
-        super.attach( context );
+    public void doAttach( BuildContext context ) {
+        super.doAttach( context );
     }
 
     protected int calculateHashCode() {

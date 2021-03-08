@@ -246,7 +246,7 @@ public abstract class AccumulateVisitor {
         Class<?> clazz = decl.map(DeclarationSpec::getDeclarationClass)
                 .orElseGet( () -> {
                     try {
-                        return context.getTypeResolver().resolveType(rootNodeName);
+                        return  context.getTypeResolver().resolveType(rootNodeName);
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException( e );
                     }
@@ -343,7 +343,7 @@ public abstract class AccumulateVisitor {
 
             List<String> ids = new ArrayList<>();
             if (singleResult.getPatternBinding() != null) {
-                ids.add( singleResult.getPatternBinding() );
+                 ids.add( singleResult.getPatternBinding() );
             }
             if (input instanceof PatternDescr) {
                 String patternId = ((PatternDescr) input).getIdentifier();

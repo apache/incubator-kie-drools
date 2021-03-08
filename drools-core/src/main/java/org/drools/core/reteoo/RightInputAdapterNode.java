@@ -62,6 +62,8 @@ public class RightInputAdapterNode extends ObjectSource
 
     private PathMemSpec pathMemSpec;
 
+    private int objectCount;
+
     public RightInputAdapterNode() {
     }
 
@@ -135,8 +137,16 @@ public class RightInputAdapterNode extends ObjectSource
         return startTupleSource;
     }
 
-    public int getPositionInPath() {
-        return tupleSource.getPositionInPath() + 1;
+    public int getPathIndex() {
+        return tupleSource.getPathIndex() + 1;
+    }
+
+    public int getObjectCount() {
+        return objectCount;
+    }
+
+    public void setObjectCount(int count) {
+        objectCount = count;
     }
 
     /**
@@ -161,7 +171,7 @@ public class RightInputAdapterNode extends ObjectSource
         return peer;
     }     
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
     }
 

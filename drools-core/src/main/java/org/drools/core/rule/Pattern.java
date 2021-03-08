@@ -58,11 +58,11 @@ public class Pattern
     AcceptsClassObjectType,
     Externalizable {
     private static final long serialVersionUID = 510l;
-    private ObjectType objectType;
-    private List<Constraint> constraints = Collections.EMPTY_LIST;
+    private ObjectType               objectType;
+    private List<Constraint>         constraints = Collections.EMPTY_LIST;
     private Declaration              declaration;
     private Map<String, Declaration> declarations = Collections.EMPTY_MAP;
-    private int                      index;
+    private int                      patternId;
     private PatternSource            source;
     private List<Behavior>           behaviors;
     private Collection<String>       listenedProperties = new HashSet<>();
@@ -72,11 +72,14 @@ public class Pattern
 
     private Map<String, AnnotationDefinition> annotations;
 
-    // this is the offset of the related fact inside a tuple. i.e:
-    // the position of the related fact inside the tuple;
-    private int offset;
+    // This is the index of the related fact inside a tuple chain. i.e:
+    // the position of the fact inside the tuple;
+    private int             tupleIndex;
 
-    private boolean           passive;
+    // This is the index of the related fact, relative to the other facts in the current Path.
+    private int             objectIndex;
+
+    private boolean         passive;
     
     private XpathConstraint xPath;
 
@@ -88,41 +91,47 @@ public class Pattern
              null);
     }
 
-    public Pattern(final int index,
+    public Pattern(final int patternId,
                    final ObjectType objectType) {
-        this(index,
-             index,
+        this(patternId,
+             0,
+             0,
              objectType,
              null);
     }
 
-    public Pattern(final int index,
+    public Pattern(final int patternId,
                    final ObjectType objectType,
                    final String identifier) {
-        this(index,
-             index,
+        this(patternId,
+             0,
+             0,
              objectType,
              identifier);
     }
 
-    public Pattern(final int index,
-                   final int offset,
+    public Pattern(final int patternId,
+                   final int tupleIndex,
+                   final int objectIndex,
                    final ObjectType objectType,
                    final String identifier) {
-        this(index,
-             offset,
+        this(patternId,
+             tupleIndex,
+             objectIndex,
              objectType,
              identifier,
              false);
     }
 
-    public Pattern(final int index,
-                   final int offset,
+    public Pattern(final int patternId,
+                   final int tupleIndex,
+                   final int objectIndex,
                    final ObjectType objectType,
                    final String identifier,
                    final boolean isInternalFact) {
-        this.index = index;
-        this.offset = offset;
+        this.patternId = patternId;
+        this.tupleIndex = tupleIndex;
+        this.objectIndex = objectIndex;
         this.objectType = objectType;
         if (identifier != null && (!identifier.equals(""))) {
             this.declaration = new Declaration(identifier,
@@ -152,9 +161,10 @@ public class Pattern
         declaration = (Declaration) in.readObject();
         declarations = (Map<String, Declaration>) in.readObject();
         behaviors = (List<Behavior>) in.readObject();
-        index = in.readInt();
+        patternId = in.readInt();
         source = (PatternSource) in.readObject();
-        offset = in.readInt();
+        tupleIndex = in.readInt();
+        objectIndex = in.readInt();
         listenedProperties = (Collection<String>) in.readObject();
         if ( source instanceof From ) {
             ((From)source).setResultPattern( this );
@@ -171,9 +181,10 @@ public class Pattern
         out.writeObject( declaration );
         out.writeObject( declarations );
         out.writeObject( behaviors );
-        out.writeInt( index );
+        out.writeInt(patternId);
         out.writeObject( source );
-        out.writeInt( offset );
+        out.writeInt(tupleIndex);
+        out.writeInt(objectIndex);
         out.writeObject(getListenedProperties());
         out.writeObject( annotations );
         out.writeBoolean( passive );
@@ -217,8 +228,9 @@ public class Pattern
     
     public Pattern clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
-        final Pattern clone = new Pattern( this.index,
-                                           this.offset,
+        final Pattern clone = new Pattern( this.patternId,
+                                           this.tupleIndex,
+                                           this.objectIndex,
                                            this.objectType,
                                            identifier,
                                            this.declaration != null && this.declaration.isInternalFact());
@@ -234,6 +246,7 @@ public class Pattern
             Declaration addedDeclaration = clone.addDeclaration( decl.getIdentifier() );
             addedDeclaration.setReadAccessor( decl.getExtractor() );
             addedDeclaration.setBindingName( decl.getBindingName() );
+            addedDeclaration.setxPathOffset( decl.getxPathOffset());
         }
 
         for ( Constraint oldConstr : this.constraints ) {
@@ -373,22 +386,32 @@ public class Pattern
         return this.declaration;
     }
 
-    public int getIndex() {
-        return this.index;
+    /**
+     * The index of the Pattern, in the list of patterns.
+     * @return the patternIndex
+     */
+    public int getPatternId() {
+        return this.patternId;
+    }
+
+    public int getObjectIndex() {
+        return objectIndex;
+    }
+
+    public void setObjectIndex(int objectIndex) {
+        this.objectIndex = objectIndex;
     }
 
     /**
-     * The offset of the fact related to this pattern
-     * inside the tuple
-     *
-     * @return the offset
+     * The index of pattern in the tuple chain.
+     * @return the tupleIndex
      */
-    public int getOffset() {
-        return this.offset;
+    public int getTupleIndex() {
+        return this.tupleIndex;
     }
 
-    public void setOffset(final int offset) {
-        this.offset = offset;
+    public void setTupleIndex(final int tupleIndex) {
+        this.tupleIndex = tupleIndex;
     }
 
     public Map<String, Declaration> getDeclarations() {
@@ -408,7 +431,7 @@ public class Pattern
     }
 
     public String toString() {
-        return "Pattern type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', index='" + this.index + "', offset='" + this.getOffset() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString())
+        return "Pattern type='" + ((this.objectType == null) ? "null" : this.objectType.toString()) + "', patternId='" + this.patternId + "', objectIndex='" + this.getObjectIndex() + "', identifer='" + ((this.declaration == null) ? "" : this.declaration.toString())
                + "'";
     }
 
@@ -417,10 +440,10 @@ public class Pattern
         int result = 1;
         result = PRIME * result + this.constraints.hashCode();
         result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
-        result = PRIME * result + this.index;
+        result = PRIME * result + this.patternId;
         result = PRIME * result + ((this.objectType == null) ? 0 : this.objectType.hashCode());
         result = PRIME * result + ((this.behaviors == null) ? 0 : this.behaviors.hashCode());
-        result = PRIME * result + this.offset;
+        result = PRIME * result + this.tupleIndex;
         result = PRIME * result + ((this.source == null) ? 0 : this.source.hashCode());
         return result;
     }
@@ -452,14 +475,14 @@ public class Pattern
             return false;
         }
 
-        if ( this.index != other.index ) {
+        if (this.patternId != other.patternId) {
             return false;
         }
 
         if ( !this.objectType.equals( other.objectType ) ) {
             return false;
         }
-        if ( this.offset != other.offset ) {
+        if (this.tupleIndex != other.tupleIndex) {
             return false;
         }
         return (this.source == null) ? other.source == null : this.source.equals( other.source );
