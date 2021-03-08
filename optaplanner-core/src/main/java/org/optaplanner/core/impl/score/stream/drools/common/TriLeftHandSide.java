@@ -307,7 +307,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
      */
     private <Out> AccumulateFunction createAccumulateFunction(TriConstraintCollector<A, B, C, ?, Out> collector,
             Variable<TriTuple<A, B, C>> in, Variable<Out> out) {
-        return accFunction(() -> new DroolsTriAccumulateFunction<>(collector), in).as(out);
+        return accFunction(() -> new TriAccumulateFunction<>(collector), in).as(out);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(TriFunction<A, B, C, NewA> keyMapping) {

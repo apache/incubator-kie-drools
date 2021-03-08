@@ -323,7 +323,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
      */
     private <Out> AccumulateFunction createAccumulateFunction(BiConstraintCollector<A, B, ?, Out> collector,
             Variable<BiTuple<A, B>> in, Variable<Out> out) {
-        return accFunction(() -> new DroolsBiAccumulateFunction<>(collector), in).as(out);
+        return accFunction(() -> new BiAccumulateFunction<>(collector), in).as(out);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(BiFunction<A, B, NewA> keyMapping) {

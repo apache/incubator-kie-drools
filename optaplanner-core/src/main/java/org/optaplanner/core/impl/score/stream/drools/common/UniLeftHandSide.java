@@ -291,7 +291,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
      */
     private <Out> AccumulateFunction createAccumulateFunction(UniConstraintCollector<A, ?, Out> collector,
             Variable<Out> out) {
-        return accFunction(() -> new DroolsUniAccumulateFunction<>(collector), patternVariable.getPrimaryVariable())
+        return accFunction(() -> new UniAccumulateFunction<>(collector), patternVariable.getPrimaryVariable())
                 .as(out);
     }
 

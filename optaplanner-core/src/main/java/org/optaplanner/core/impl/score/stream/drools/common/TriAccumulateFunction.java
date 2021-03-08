@@ -16,32 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Objects;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
-final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunction<ResultContainer_, TriTuple<A, B, C>, NewA> {
+final class TriAccumulateFunction<A, B, C, ResultContainer_, NewA>
+        extends AbstractAccumulateFunction<ResultContainer_, TriTuple<A, B, C>, NewA> {
 
-    private final Supplier<ResultContainer_> supplier;
     private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
-    private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsTriAccumulateFunction(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
-    }
-
-    public DroolsTriAccumulateFunction() {
-        throw new UnsupportedOperationException("Serialization is not supported.");
-    }
-
-    @Override
-    protected ResultContainer_ newContainer() {
-        return supplier.get();
+    public TriAccumulateFunction(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
+        super(collector.supplier(), collector.finisher());
+        this.accumulator = Objects.requireNonNull(collector.accumulator());
     }
 
     @Override
@@ -49,8 +36,4 @@ final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
         return accumulator.apply(container, tuple.a, tuple.b, tuple.c);
     }
 
-    @Override
-    protected NewA getResult(ResultContainer_ container) {
-        return finisher.apply(container);
-    }
 }

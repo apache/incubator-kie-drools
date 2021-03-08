@@ -16,32 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-final class DroolsUniAccumulateFunction<A, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunction<ResultContainer_, A, NewA> {
+final class UniAccumulateFunction<A, ResultContainer_, NewA>
+        extends AbstractAccumulateFunction<ResultContainer_, A, NewA> {
 
-    private final Supplier<ResultContainer_> supplier;
     private final BiFunction<ResultContainer_, A, Runnable> accumulator;
-    private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsUniAccumulateFunction(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
-    }
-
-    public DroolsUniAccumulateFunction() {
-        throw new UnsupportedOperationException("Serialization is not supported.");
-    }
-
-    @Override
-    protected ResultContainer_ newContainer() {
-        return supplier.get();
+    public UniAccumulateFunction(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
+        super(collector.supplier(), collector.finisher());
+        this.accumulator = Objects.requireNonNull(collector.accumulator());
     }
 
     @Override
@@ -49,8 +36,4 @@ final class DroolsUniAccumulateFunction<A, ResultContainer_, NewA>
         return accumulator.apply(container, tuple);
     }
 
-    @Override
-    protected NewA getResult(ResultContainer_ container) {
-        return finisher.apply(container);
-    }
 }

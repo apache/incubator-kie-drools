@@ -295,7 +295,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
      */
     private <Out> AccumulateFunction createAccumulateFunction(QuadConstraintCollector<A, B, C, D, ?, Out> collector,
             Variable<QuadTuple<A, B, C, D>> in, Variable<Out> out) {
-        return accFunction(() -> new DroolsQuadAccumulateFunction<>(collector), in).as(out);
+        return accFunction(() -> new QuadAccumulateFunction<>(collector), in).as(out);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMapping) {

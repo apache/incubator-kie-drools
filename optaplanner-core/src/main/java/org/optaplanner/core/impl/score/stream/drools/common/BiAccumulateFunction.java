@@ -16,32 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Objects;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
-final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunction<ResultContainer_, BiTuple<A, B>, NewA> {
+final class BiAccumulateFunction<A, B, ResultContainer_, NewA>
+        extends AbstractAccumulateFunction<ResultContainer_, BiTuple<A, B>, NewA> {
 
-    private final Supplier<ResultContainer_> supplier;
     private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
-    private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsBiAccumulateFunction(BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
-    }
-
-    public DroolsBiAccumulateFunction() {
-        throw new UnsupportedOperationException("Serialization is not supported.");
-    }
-
-    @Override
-    protected ResultContainer_ newContainer() {
-        return supplier.get();
+    public BiAccumulateFunction(BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+        super(collector.supplier(), collector.finisher());
+        this.accumulator = Objects.requireNonNull(collector.accumulator());
     }
 
     @Override
@@ -49,8 +36,4 @@ final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
         return accumulator.apply(container, tuple.a, tuple.b);
     }
 
-    @Override
-    protected NewA getResult(ResultContainer_ container) {
-        return finisher.apply(container);
-    }
 }
