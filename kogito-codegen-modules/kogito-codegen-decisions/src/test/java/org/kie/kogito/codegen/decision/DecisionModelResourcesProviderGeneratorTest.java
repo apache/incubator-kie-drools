@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DecisionModelResourcesProviderGeneratorTest {
 
     @Test
-    public void generateDecisionModelResourcesProvider() throws Exception {
+    public void generateDecisionModelResourcesProvider() {
 
         final KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
                 .withAddonsConfig(AddonsConfig.builder().withTracing(true).build())

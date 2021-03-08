@@ -37,7 +37,7 @@ public abstract class BaseModelEventEmitter implements EventEmitter {
                                     ModelEvent.GAV.from(resource.getGav()),
                                     resource.getModelName(),
                                     resource.getNamespace(),
-                                    resource.getModelType(),
+                                    resource.getModelMetadata(),
                                     resource.get()),
                             ModelEvent.class))
                     .flatMap(CloudEventUtils::encode)

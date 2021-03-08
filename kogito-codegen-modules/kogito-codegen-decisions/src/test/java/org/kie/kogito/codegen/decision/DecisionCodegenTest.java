@@ -46,7 +46,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void generateAllFiles(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void generateAllFiles(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
@@ -64,7 +64,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void doNotGenerateTypesafeInfo(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void doNotGenerateTypesafeInfo(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/alltypes/", contextBuilder);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
@@ -111,7 +111,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void resilientToDuplicateDMNIDs(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void resilientToDuplicateDMNIDs(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-test20200507", contextBuilder);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
@@ -122,7 +122,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void emptyName(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void emptyName(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-empty-name", contextBuilder);
         RuntimeException re = Assertions.assertThrows(RuntimeException.class, codeGenerator::generate);
         assertEquals("Model name should not be empty", re.getMessage());
@@ -130,7 +130,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void testNSEW_positive(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void testNSEW_positive(KogitoBuildContext.Builder contextBuilder) {
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton("org.eclipse.microprofile.openapi.models.OpenAPI"), emptyList()));
         // This test is meant to check that IFF Eclipse MP OpenAPI annotations are available on Build/CP of Kogito application, annotation is used with codegen
@@ -144,7 +144,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void testNSEW_negative(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void testNSEW_negative(KogitoBuildContext.Builder contextBuilder) {
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(emptyList(), singleton("org.eclipse.microprofile.openapi.models.OpenAPI")));
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW", contextBuilder);
@@ -157,7 +157,7 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void pmmlIntegrationTest(KogitoBuildContext.Builder contextBuilder) throws Exception {
+    public void pmmlIntegrationTest(KogitoBuildContext.Builder contextBuilder) {
         // with PMML in the classpath
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(DecisionContainerGenerator.PMML_ABSTRACT_CLASS), emptyList()));

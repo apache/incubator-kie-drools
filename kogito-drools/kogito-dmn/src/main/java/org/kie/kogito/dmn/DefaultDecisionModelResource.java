@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.kie.api.management.GAV;
+import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
-import org.kie.kogito.decision.DecisionModelType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +32,13 @@ public class DefaultDecisionModelResource implements DecisionModelResource {
     private final GAV gav;
     private final String namespace;
     private final String modelName;
-    private final DecisionModelType type;
+    private final DecisionModelMetadata type;
     private final InputStreamReader resourceReader;
 
     public DefaultDecisionModelResource(GAV gav,
             String namespace,
             String modelName,
-            DecisionModelType type,
+            DecisionModelMetadata type,
             InputStreamReader resourceReader) {
         this.gav = gav;
         this.namespace = namespace;
@@ -63,7 +63,7 @@ public class DefaultDecisionModelResource implements DecisionModelResource {
     }
 
     @Override
-    public DecisionModelType getModelType() {
+    public DecisionModelMetadata getModelMetadata() {
         return type;
     }
 

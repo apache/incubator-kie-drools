@@ -15,8 +15,33 @@
  */
 package org.kie.kogito.decision;
 
-public enum DecisionModelType {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    DMN
+public class DecisionModelMetadata {
 
+    @JsonProperty("type")
+    private Type type;
+
+    @JsonProperty("specVersion")
+    private String specVersion;
+
+    public DecisionModelMetadata() {
+    }
+
+    public DecisionModelMetadata(Type type, String specVersion) {
+        this.type = type;
+        this.specVersion = specVersion;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public String getSpecVersion() {
+        return specVersion;
+    }
+
+    public enum Type {
+        DMN
+    }
 }

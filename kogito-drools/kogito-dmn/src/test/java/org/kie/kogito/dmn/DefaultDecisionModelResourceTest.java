@@ -20,8 +20,8 @@ import java.io.InputStreamReader;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.management.GAV;
+import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
-import org.kie.kogito.decision.DecisionModelType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,13 +36,15 @@ public class DefaultDecisionModelResourceTest {
         final DecisionModelResource resource = new DefaultDecisionModelResource(GAV,
                 "namespace",
                 "name",
-                DecisionModelType.DMN,
+                new DecisionModelMetadata(
+                        DecisionModelMetadata.Type.DMN,
+                        "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
                 new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
-
         assertEquals(GAV, resource.getGav());
         assertEquals("name", resource.getModelName());
         assertEquals("namespace", resource.getNamespace());
-        assertEquals(DecisionModelType.DMN, resource.getModelType());
+        assertEquals(DecisionModelMetadata.Type.DMN, resource.getModelMetadata().getType());
+        assertEquals("http://www.omg.org/spec/DMN/20151101/dmn.xsd", resource.getModelMetadata().getSpecVersion());
     }
 
     @Test
@@ -50,9 +52,10 @@ public class DefaultDecisionModelResourceTest {
         final DecisionModelResource resource = new DefaultDecisionModelResource(GAV,
                 "namespace",
                 "name",
-                DecisionModelType.DMN,
+                new DecisionModelMetadata(
+                        DecisionModelMetadata.Type.DMN,
+                        "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
                 new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
-
         assertEquals(CONTENT, resource.get().trim());
     }
 }

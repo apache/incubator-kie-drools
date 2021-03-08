@@ -15,16 +15,21 @@
  */
 package org.kie.kogito.codegen.decision;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.kie.api.management.GAV;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.decision.DecisionModelType;
+import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -43,6 +48,8 @@ import static org.kie.kogito.codegen.core.CodegenUtils.newObject;
 import static org.kie.kogito.codegen.decision.ReadResourceUtil.getReadResourceMethod;
 
 public class DecisionModelResourcesProviderGenerator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionModelResourcesProviderGenerator.class);
 
     private final KogitoBuildContext context;
     private final String applicationCanonicalName;
@@ -103,7 +110,7 @@ public class DecisionModelResourcesProviderGenerator {
                     mockGAV(),
                     new StringLiteralExpr(resource.getDmnModel().getNamespace()),
                     new StringLiteralExpr(resource.getDmnModel().getName()),
-                    makeDMNType(),
+                    makeDecisionModelMetadata(resource),
                     isr));
             body.addStatement(body.getStatements().size() - 1, add);
         }
@@ -117,8 +124,27 @@ public class DecisionModelResourcesProviderGenerator {
                 new StringLiteralExpr("0.0"));
     }
 
+    private ObjectCreationExpr makeDecisionModelMetadata(DMNResource resource) {
+        return newObject(DecisionModelMetadata.class,
+                makeDMNType(),
+                new StringLiteralExpr(extractModelVersion(resource)));
+    }
+
+    private String extractModelVersion(DMNResource resource) {
+        Set<String> definitions = new HashSet<>(resource.getDmnModel().getDefinitions().getNsContext().values());
+        definitions.retainAll(Arrays.asList(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN,
+                org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN,
+                org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN));
+
+        if (definitions.size() != 1) {
+            LOGGER.error("Could not extract DMN version from DMN model {}", resource.getDmnModel().getName());
+            throw new IllegalStateException("The DMN model does not contain a unique model version in the metadata.");
+        }
+        return definitions.iterator().next();
+    }
+
     private FieldAccessExpr makeDMNType() {
-        NameExpr clazz = new NameExpr(DecisionModelType.class.getName());
+        NameExpr clazz = new NameExpr(DecisionModelMetadata.Type.class.getCanonicalName());
         return new FieldAccessExpr(clazz, "DMN");
     }
 }

@@ -17,7 +17,7 @@ package org.kie.kogito.tracing.decision.event.model;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.management.GAV;
-import org.kie.kogito.decision.DecisionModelType;
+import org.kie.kogito.decision.DecisionModelMetadata;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,14 +26,22 @@ public class ModelEventTest {
     @Test
     public void testGetters() {
         final GAV gav = new GAV("groupID", "artifactId", "version");
-        final ModelEvent e = new ModelEvent(ModelEvent.GAV.from(gav), "name", "namespace", DecisionModelType.DMN, "definition");
+        final ModelEvent e = new ModelEvent(
+                ModelEvent.GAV.from(gav),
+                "name",
+                "namespace",
+                new DecisionModelMetadata(
+                        DecisionModelMetadata.Type.DMN,
+                        "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
+                "definition");
 
         assertEquals(gav.getGroupId(), e.getGav().getGroupId());
         assertEquals(gav.getArtifactId(), e.getGav().getArtifactId());
         assertEquals(gav.getVersion(), e.getGav().getVersion());
         assertEquals("name", e.getName());
         assertEquals("namespace", e.getNamespace());
-        assertEquals(DecisionModelType.DMN, e.getType());
+        assertEquals(DecisionModelMetadata.Type.DMN, e.getDecisionModelMetadata().getType());
+        assertEquals("http://www.omg.org/spec/DMN/20151101/dmn.xsd", e.getDecisionModelMetadata().getSpecVersion());
         assertEquals("definition", e.getDefinition());
     }
 }
