@@ -44,7 +44,7 @@ public class Value
         } else {
             try {
                 return this.comparable.compareTo(value.comparable);
-            } catch (final ClassCastException cce) {
+            } catch (final Exception cce) {
                 return this.comparable.toString().compareTo(value.comparable.toString());
             }
         }
