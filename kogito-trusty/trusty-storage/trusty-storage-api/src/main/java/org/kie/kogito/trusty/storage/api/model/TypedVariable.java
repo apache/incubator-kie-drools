@@ -58,16 +58,28 @@ public class TypedVariable {
         this.components = components;
     }
 
+    public static TypedVariable buildCollection(String name, String typeRef, Collection<TypedVariable> components) {
+        return new TypedVariable(Kind.COLLECTION, name, typeRef, null, components);
+    }
+
+    public static TypedVariable buildStructure(String name, String typeRef, Collection<TypedVariable> components) {
+        return new TypedVariable(Kind.STRUCTURE, name, typeRef, null, components);
+    }
+
+    public static TypedVariable buildUnit(String name, String typeRef, JsonNode value) {
+        return new TypedVariable(Kind.UNIT, name, typeRef, value, null);
+    }
+
     public Kind getKind() {
         return kind;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setKind(Kind kind) {
         this.kind = kind;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -96,17 +108,5 @@ public class TypedVariable {
 
     public void setComponents(Collection<TypedVariable> components) {
         this.components = components;
-    }
-
-    public static TypedVariable buildCollection(String name, String typeRef, Collection<TypedVariable> components) {
-        return new TypedVariable(Kind.COLLECTION, name, typeRef, null, components);
-    }
-
-    public static TypedVariable buildStructure(String name, String typeRef, Collection<TypedVariable> components) {
-        return new TypedVariable(Kind.STRUCTURE, name, typeRef, null, components);
-    }
-
-    public static TypedVariable buildUnit(String name, String typeRef, JsonNode value) {
-        return new TypedVariable(Kind.UNIT, name, typeRef, value, null);
     }
 }

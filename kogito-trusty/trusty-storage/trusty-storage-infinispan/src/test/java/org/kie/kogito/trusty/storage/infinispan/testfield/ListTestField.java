@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 
 public class ListTestField<M, T> extends AbstractTestField<M, List<T>> {
+
     private final Class<T> elementClass;
 
     public ListTestField(String fieldName, List<T> fieldValue, Function<M, List<T>> getter, BiConsumer<M, List<T>> setter, Class<T> elementClass) {

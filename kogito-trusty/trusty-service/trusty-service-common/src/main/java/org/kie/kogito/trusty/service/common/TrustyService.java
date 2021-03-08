@@ -18,7 +18,9 @@ package org.kie.kogito.trusty.service.common;
 
 import java.time.OffsetDateTime;
 
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
+import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
@@ -94,22 +96,18 @@ public interface TrustyService {
     /**
      * Stores a Model definition.
      *
-     * @param groupId The Maven Group Id coordinate of the model.
-     * @param artifactId The Maven Artifact Id coordinate of the model.
-     * @param version The Maven version coordinate of the model.
-     * @param name The name of the model of the model.
-     * @param namespace The namespace of the model.
-     * @param definition The definition of the model.
+     * @param modelIdentifier The model identifier.
+     * @param dmnModelWithMetadata The DMNModel to be stored.
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the model is already present in the system.
      */
-    void storeModel(String groupId, String artifactId, String version, String name, String namespace, String definition);
+    void storeModel(ModelIdentifier modelIdentifier, DMNModelWithMetadata dmnModelWithMetadata);
 
     /**
-     * Gets a model by model ID.
+     * Gets a model by model id.
      *
-     * @param modelId The model ID.
+     * @param modelIdentifier The model identifier.
      * @return The model definition.
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the modelId is not present in the system.
      */
-    String getModelById(String modelId);
+    DMNModelWithMetadata getModelById(ModelIdentifier modelIdentifier);
 }

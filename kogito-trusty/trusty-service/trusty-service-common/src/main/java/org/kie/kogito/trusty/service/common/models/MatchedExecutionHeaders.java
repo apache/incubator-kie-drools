@@ -21,6 +21,7 @@ import java.util.List;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 
 public class MatchedExecutionHeaders {
+
     private List<Execution> executions;
 
     private int availableResults;

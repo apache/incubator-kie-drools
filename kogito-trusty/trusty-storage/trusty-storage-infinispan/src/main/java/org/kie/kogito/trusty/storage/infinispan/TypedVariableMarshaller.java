@@ -47,5 +47,4 @@ public class TypedVariableMarshaller extends AbstractModelMarshaller<TypedVariab
         writer.writeString(TypedVariable.VALUE_FIELD, stringFromJson(input.getValue()));
         writer.writeCollection(TypedVariable.COMPONENTS_FIELD, input.getComponents(), TypedVariable.class);
     }
-
 }

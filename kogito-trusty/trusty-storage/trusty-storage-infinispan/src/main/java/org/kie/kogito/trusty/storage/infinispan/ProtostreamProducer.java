@@ -83,4 +83,9 @@ public class ProtostreamProducer {
     org.infinispan.protostream.MessageMarshaller typedValueMarshaller() {
         return new TypedVariableMarshaller(mapper);
     }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller dmnModelMarshaller() {
+        return new DMNModelWithMetadataMarshaller(mapper);
+    }
 }

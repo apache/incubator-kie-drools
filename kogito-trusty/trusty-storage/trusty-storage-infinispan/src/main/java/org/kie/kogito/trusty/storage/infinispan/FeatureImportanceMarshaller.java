@@ -39,5 +39,4 @@ public class FeatureImportanceMarshaller extends AbstractModelMarshaller<Feature
         writer.writeString(FeatureImportance.FEATURE_NAME_FIELD, input.getFeatureName());
         writer.writeDouble(FeatureImportance.SCORE_FIELD, input.getScore());
     }
-
 }

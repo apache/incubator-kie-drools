@@ -160,3 +160,27 @@ message TypedVariable {
     /* @Field(store = Store.YES) */
     repeated TypedVariable components = 5;
 }
+
+/* @Indexed */
+message DMNModelWithMetadata {
+    /* @Field(store = Store.YES) */
+    optional string groupId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string artifactId = 2;
+
+    /* @Field(store = Store.YES) */
+    optional string modelVersion = 3;
+
+    /* @Field(store = Store.YES) */
+    optional string dmnVersion = 4;
+
+    /* @Field(store = Store.YES) */
+    optional string name = 5;
+
+    /* @Field(store = Store.YES) */
+    optional string namespace = 6;
+
+    /* @Field(store = Store.YES) */
+    optional string model = 7;
+}

@@ -46,5 +46,4 @@ public class ExplainabilityResultMarshaller extends AbstractModelMarshaller<Expl
         writer.writeString(ExplainabilityResult.STATUS_DETAILS_FIELD, input.getStatusDetails());
         writer.writeCollection(ExplainabilityResult.SALIENCIES_FIELD, input.getSaliencies(), Saliency.class);
     }
-
 }

@@ -43,5 +43,4 @@ public class SaliencyMarshaller extends AbstractModelMarshaller<Saliency> {
         writer.writeString(Saliency.OUTCOME_NAME_FIELD, input.getOutcomeName());
         writer.writeCollection(Saliency.FEATURE_IMPORTANCE_FIELD, input.getFeatureImportance(), FeatureImportance.class);
     }
-
 }

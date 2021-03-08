@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
+import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
@@ -41,7 +42,7 @@ public class TrustyStorageServiceImpl implements TrustyStorageService {
     }
 
     @Override
-    public Storage<String, String> getModelStorage() {
-        return storageService.getCache(MODELS_STORAGE, String.class);
+    public Storage<String, DMNModelWithMetadata> getModelStorage() {
+        return storageService.getCache(MODELS_STORAGE, DMNModelWithMetadata.class);
     }
 }

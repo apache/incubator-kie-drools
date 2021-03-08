@@ -43,6 +43,13 @@ public class MessageExceptionField {
         this.cause = cause;
     }
 
+    public static MessageExceptionField from(Throwable throwable) {
+        if (throwable == null) {
+            return null;
+        }
+        return new MessageExceptionField(throwable.getClass().getName(), throwable.getMessage(), from(throwable.getCause()));
+    }
+
     public String getClassName() {
         return className;
     }
@@ -65,12 +72,5 @@ public class MessageExceptionField {
 
     public void setCause(MessageExceptionField cause) {
         this.cause = cause;
-    }
-
-    public static MessageExceptionField from(Throwable throwable) {
-        if (throwable == null) {
-            return null;
-        }
-        return new MessageExceptionField(throwable.getClass().getName(), throwable.getMessage(), from(throwable.getCause()));
     }
 }

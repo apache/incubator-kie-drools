@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
 
 public class MessagingUtils {
 
+    private MessagingUtils() {
+    }
+
     public static org.kie.kogito.tracing.typedvalue.TypedValue modelToTracingTypedValue(org.kie.kogito.trusty.storage.api.model.TypedVariable value) {
         if (value == null) {
             return null;
@@ -53,8 +56,4 @@ public class MessagingUtils {
                 .filter(m -> m.getName() != null)
                 .collect(HashMap::new, (m, v) -> m.put(v.getName(), modelToTracingTypedValue(v)), HashMap::putAll);
     }
-
-    private MessagingUtils() {
-    }
-
 }

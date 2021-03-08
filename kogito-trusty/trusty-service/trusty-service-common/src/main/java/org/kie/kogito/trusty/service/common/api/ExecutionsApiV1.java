@@ -45,11 +45,12 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdCreator;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.common.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.service.common.responses.ResponseUtils;
+import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,11 +162,11 @@ public class ExecutionsApiV1 {
     @Path("/{executionId}/model")
     @APIResponses(value = {
             @APIResponse(description = "Gets the model associated with an execution.", responseCode = "200",
-                    content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(type = SchemaType.STRING))),
+                    content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(type = SchemaType.OBJECT, implementation = DMNModelWithMetadata.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
     })
     @Operation(summary = "Gets the model associated with an execution.")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getModel(
             @Parameter(
                     name = "executionId",
@@ -181,11 +182,11 @@ public class ExecutionsApiV1 {
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
     }
 
-    private Optional<String> retrieveModel(String executionId) {
+    private Optional<DMNModelWithMetadata> retrieveModel(String executionId) {
         try {
             Optional<Decision> decision = retrieveDecision(executionId);
             //TODO GAV components are provided but unused. See https://issues.redhat.com/browse/FAI-239
-            return decision.map(d -> executionService.getModelById(ModelIdCreator.makeIdentifier(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
+            return decision.map(d -> executionService.getModelById(new ModelIdentifier(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

@@ -22,12 +22,13 @@ import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
+import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -50,7 +51,7 @@ public class ModelEventConsumerIT {
 
         doThrow(new RuntimeException("Something really bad"))
                 .when(trustyService)
-                .storeModel(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+                .storeModel(any(ModelIdentifier.class), any(DMNModelWithMetadata.class));
 
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectModelEvent()),
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
@@ -58,6 +59,6 @@ public class ModelEventConsumerIT {
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
 
         verify(trustyService, timeout(3000).times(2))
-                .storeModel(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+                .storeModel(any(ModelIdentifier.class), any(DMNModelWithMetadata.class));
     }
 }

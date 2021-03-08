@@ -11,6 +11,7 @@ import {
 import { CubesIcon } from '@patternfly/react-icons';
 
 const DMN1_2: string = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd';
+const DMN1_3: string = 'http://www.omg.org/spec/DMN/20180521/MODEL/';
 
 type ModelDiagramProps = {
   model: ModelData;
@@ -18,11 +19,11 @@ type ModelDiagramProps = {
 
 const ModelDiagram = (props: ModelDiagramProps) => {
   const { model } = props;
-  const type: string = model.type;
+  const dmnVersion: string = model.dmnVersion;
 
   useEffect(() => {
     let editor: StandaloneEditorApi | undefined = undefined;
-    if (type === DMN1_2) {
+    if (dmnVersion === DMN1_2 || dmnVersion === DMN1_3) {
       editor = DmnEditor.open({
         container: document.getElementById('dmn-editor-container'),
         initialContent: Promise.resolve(model.model),
@@ -34,7 +35,9 @@ const ModelDiagram = (props: ModelDiagramProps) => {
     }
   }, [model]);
 
-  return type === DMN1_2 ? makeDMNEditor() : DEFAULT;
+  return dmnVersion === DMN1_2 || dmnVersion === DMN1_3
+    ? makeDMNEditor()
+    : DEFAULT;
 };
 
 function makeUnknownModel(): JSX.Element {

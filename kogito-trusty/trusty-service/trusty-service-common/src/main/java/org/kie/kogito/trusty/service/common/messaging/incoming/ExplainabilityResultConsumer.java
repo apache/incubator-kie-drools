@@ -62,35 +62,6 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<Explainabili
         super(service, mapper);
     }
 
-    @Override
-    @Incoming("trusty-explainability-result")
-    public CompletionStage<Void> handleMessage(Message<String> message) {
-        return super.handleMessage(message);
-    }
-
-    @Override
-    protected void internalHandleCloudEvent(CloudEvent cloudEvent, ExplainabilityResultDto payload) {
-        String executionId = payload.getExecutionId();
-        Decision decision = getDecisionById(executionId);
-        if (decision == null) {
-            LOG.warn("Can't find decision related to explainability result (executionId={})", executionId);
-        }
-        service.storeExplainabilityResult(executionId, explainabilityResultFrom(payload, decision));
-    }
-
-    @Override
-    protected TypeReference<ExplainabilityResultDto> getEventType() {
-        return CLOUD_EVENT_TYPE;
-    }
-
-    protected Decision getDecisionById(String executionId) {
-        try {
-            return service.getDecisionById(executionId);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
-
     protected static ExplainabilityResult explainabilityResultFrom(ExplainabilityResultDto dto, Decision decision) {
         if (dto == null) {
             return null;
@@ -133,5 +104,34 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<Explainabili
                 return ExplainabilityStatus.FAILED;
         }
         return null;
+    }
+
+    @Override
+    @Incoming("trusty-explainability-result")
+    public CompletionStage<Void> handleMessage(Message<String> message) {
+        return super.handleMessage(message);
+    }
+
+    @Override
+    protected void internalHandleCloudEvent(CloudEvent cloudEvent, ExplainabilityResultDto payload) {
+        String executionId = payload.getExecutionId();
+        Decision decision = getDecisionById(executionId);
+        if (decision == null) {
+            LOG.warn("Can't find decision related to explainability result (executionId={})", executionId);
+        }
+        service.storeExplainabilityResult(executionId, explainabilityResultFrom(payload, decision));
+    }
+
+    @Override
+    protected TypeReference<ExplainabilityResultDto> getEventType() {
+        return CLOUD_EVENT_TYPE;
+    }
+
+    protected Decision getDecisionById(String executionId) {
+        try {
+            return service.getDecisionById(executionId);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

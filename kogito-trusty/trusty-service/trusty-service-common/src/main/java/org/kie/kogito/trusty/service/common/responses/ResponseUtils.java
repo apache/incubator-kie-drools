@@ -45,6 +45,9 @@ public class ResponseUtils {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(JsonFormat.getCloudEventJacksonModule());
 
+    private ResponseUtils() {
+    }
+
     public static DecisionOutcomeResponse decisionOutcomeResponseFrom(DecisionOutcome outcome) {
         return outcome == null ? null
                 : new DecisionOutcomeResponse(
@@ -180,8 +183,4 @@ public class ResponseUtils {
     private static <T, U> Collection<U> collectionFrom(Collection<T> input, Function<T, U> mapper) {
         return input == null ? null : input.stream().map(mapper).collect(Collectors.toList());
     }
-
-    private ResponseUtils() {
-    }
-
 }

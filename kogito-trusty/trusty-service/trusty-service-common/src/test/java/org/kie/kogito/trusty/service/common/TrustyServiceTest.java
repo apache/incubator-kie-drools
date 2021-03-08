@@ -27,10 +27,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.mocks.StorageImplMock;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
+import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
@@ -246,49 +248,49 @@ public class TrustyServiceTest {
         when(storageMock.put(any(Object.class), any(Object.class))).thenReturn(model);
         when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
 
-        Assertions.assertDoesNotThrow(() -> trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model));
+        Assertions.assertDoesNotThrow(() -> trustyService.storeModel(buildDmnModelIdentifier(), buildDmnModel(model)));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void givenAModelWhenStoreModelIsCalledMoreThanOnceForSameModelThenExceptionIsThrown() {
-        String modelId = TEST_MODEL_ID;
+        ModelIdentifier modelIdentifier = buildDmnModelIdentifier();
         String model = TEST_MODEL;
         Storage storageMock = mock(Storage.class);
 
-        when(storageMock.containsKey(modelId)).thenReturn(true);
+        when(storageMock.containsKey(modelIdentifier.getIdentifier())).thenReturn(true);
         when(storageMock.put(any(Object.class), any(Object.class))).thenReturn(model);
         when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
 
-        assertThrows(IllegalArgumentException.class, () -> trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model));
+        assertThrows(IllegalArgumentException.class, () -> trustyService.storeModel(modelIdentifier, buildDmnModel(model)));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void givenAModelWhenAModelIsStoredAndRetrievedByIdThenTheOriginalObjectIsReturned() {
-        String modelId = TEST_MODEL_ID;
+        ModelIdentifier modelIdentifier = buildDmnModelIdentifier();
         String model = TEST_MODEL;
         Storage storageMock = new StorageImplMock(String.class);
 
         when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
 
-        trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model);
+        trustyService.storeModel(modelIdentifier, buildDmnModel(model));
 
-        String result = trustyService.getModelById(modelId);
+        DMNModelWithMetadata result = trustyService.getModelById(modelIdentifier);
 
-        Assertions.assertEquals(model, result);
+        Assertions.assertEquals(model, result.getModel());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void whenAModelIsNotStoredAndRetrievedByIdThenExceptionIsThrown() {
-        String modelId = TEST_MODEL_ID;
+        ModelIdentifier modelIdentifier = buildDmnModelIdentifier();
         Storage storageMock = mock(Storage.class);
 
-        when(storageMock.containsKey(modelId)).thenReturn(false);
+        when(storageMock.containsKey(modelIdentifier.getIdentifier())).thenReturn(false);
         when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
 
-        assertThrows(IllegalArgumentException.class, () -> trustyService.getModelById(modelId));
+        assertThrows(IllegalArgumentException.class, () -> trustyService.getModelById(modelIdentifier));
     }
 
     @Test
@@ -337,5 +339,13 @@ public class TrustyServiceTest {
         when(trustyStorageServiceMock.getExplainabilityResultStorage()).thenReturn(storageMock);
 
         assertThrows(IllegalArgumentException.class, () -> trustyService.getExplainabilityResultById(TEST_EXECUTION_ID));
+    }
+
+    private DMNModelWithMetadata buildDmnModel(String model) {
+        return new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", model);
+    }
+
+    private ModelIdentifier buildDmnModelIdentifier() {
+        return new ModelIdentifier("groupId", "artifactId", "version", "name", "namespace");
     }
 }

@@ -50,38 +50,6 @@ public class ExplainabilityApiV1 {
     @Inject
     TrustyService trustyService;
 
-    @GET
-    @Path("/{executionId}/explanations/saliencies")
-    @APIResponses(value = {
-            @APIResponse(description = "Gets the local explanation of a decision.", responseCode = "200",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
-            @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
-    })
-    @Operation(
-            summary = "Returns the saliencies for a decision.",
-            description = "Returns the saliencies for a particular decision calculated using the lime algorithm.")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getStructuredInputs(
-            @Parameter(
-                    name = "executionId",
-                    description = "The execution ID.",
-                    required = true,
-                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
-        return retrieveExplainabilityResult(executionId)
-                .map(ExplainabilityApiV1::explainabilityResultModelToResponse)
-                .map(Response::ok)
-                .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()))
-                .build();
-    }
-
-    private Optional<ExplainabilityResult> retrieveExplainabilityResult(String executionId) {
-        try {
-            return Optional.ofNullable(trustyService.getExplainabilityResultById(executionId));
-        } catch (IllegalArgumentException ex) {
-            return Optional.empty();
-        }
-    }
-
     static SalienciesResponse explainabilityResultModelToResponse(ExplainabilityResult model) {
         if (model == null) {
             return null;
@@ -113,5 +81,37 @@ public class ExplainabilityApiV1 {
                         .map(ExplainabilityApiV1::featureImportanceModelToResponse)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
+    }
+
+    @GET
+    @Path("/{executionId}/explanations/saliencies")
+    @APIResponses(value = {
+            @APIResponse(description = "Gets the local explanation of a decision.", responseCode = "200",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
+            @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    })
+    @Operation(
+            summary = "Returns the saliencies for a decision.",
+            description = "Returns the saliencies for a particular decision calculated using the lime algorithm.")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStructuredInputs(
+            @Parameter(
+                    name = "executionId",
+                    description = "The execution ID.",
+                    required = true,
+                    schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
+        return retrieveExplainabilityResult(executionId)
+                .map(ExplainabilityApiV1::explainabilityResultModelToResponse)
+                .map(Response::ok)
+                .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()))
+                .build();
+    }
+
+    private Optional<ExplainabilityResult> retrieveExplainabilityResult(String executionId) {
+        try {
+            return Optional.ofNullable(trustyService.getExplainabilityResultById(executionId));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
     }
 }

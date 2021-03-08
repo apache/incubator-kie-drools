@@ -26,6 +26,7 @@ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
+import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -59,10 +60,12 @@ public abstract class AbstractModelEventConsumerIT {
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
         await()
                 .atMost(5, SECONDS)
-                .untilAsserted(() -> assertDoesNotThrow(() -> trustyService.getModelById("name:namespace")));
+                .untilAsserted(() -> assertDoesNotThrow(() -> trustyService.getModelById(TrustyServiceTestUtils.getModelIdentifier())));
 
-        String storedDefinition = trustyService.getModelById("name:namespace");
+        DMNModelWithMetadata storedDefinition = trustyService.getModelById(TrustyServiceTestUtils.getModelIdentifier());
         assertNotNull(storedDefinition);
-        assertEquals("definition", storedDefinition);
+        assertEquals("definition", storedDefinition.getModel());
+        assertEquals("name", storedDefinition.getName());
+        assertEquals("namespace", storedDefinition.getNamespace());
     }
 }

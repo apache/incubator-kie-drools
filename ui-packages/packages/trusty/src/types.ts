@@ -95,7 +95,8 @@ export interface ModelData {
   modelId?: string;
   name: string;
   namespace: string;
-  type: string;
+  modelVersion: string;
+  dmnVersion: string;
   serviceIdentifier: ServiceIdentifier;
   model: string;
 }

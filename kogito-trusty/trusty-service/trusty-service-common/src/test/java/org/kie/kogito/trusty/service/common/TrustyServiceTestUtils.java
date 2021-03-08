@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.decision.DecisionModelType;
+import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.tracing.decision.event.message.Message;
 import org.kie.kogito.tracing.decision.event.message.MessageCategory;
 import org.kie.kogito.tracing.decision.event.message.MessageExceptionField;
@@ -42,6 +42,7 @@ import org.kie.kogito.tracing.decision.event.trace.TraceType;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
+import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
@@ -397,7 +398,17 @@ public class TrustyServiceTestUtils {
 
     public static ModelEvent buildCorrectModelEvent() {
         final ModelEvent.GAV gav = new ModelEvent.GAV("groupId", "artifactId", "version");
-        return new ModelEvent(gav, "name", "namespace", DecisionModelType.DMN, "definition");
+        return new ModelEvent(gav,
+                "name",
+                "namespace",
+                new DecisionModelMetadata(
+                        DecisionModelMetadata.Type.DMN,
+                        "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
+                "definition");
+    }
+
+    public static ModelIdentifier getModelIdentifier() {
+        return new ModelIdentifier("groupId", "artifactId", "version", "name", "namespace");
     }
 
     public static String buildCloudEventJsonString(ModelEvent modelEvent) {

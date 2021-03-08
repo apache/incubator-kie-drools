@@ -38,5 +38,4 @@ abstract class AbstractModelMarshaller<T> extends AbstractMarshaller implements 
     public String getTypeName() {
         return getJavaClass().getTypeName();
     }
-
 }
