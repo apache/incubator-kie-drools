@@ -16,12 +16,11 @@
 package org.drools.mvel.compiler.rule.builder.dialect.java;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
@@ -29,23 +28,37 @@ import org.drools.core.spi.Constraint;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.fail;
 
 
+@RunWith(Parameterized.class)
 public class JavaDialectBinaryEqualityTest{
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public JavaDialectBinaryEqualityTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs. Probably need to modify test code e.g. getPredicateConstraint()
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
     
     @Test
     public void test1() {
@@ -135,16 +148,8 @@ public class JavaDialectBinaryEqualityTest{
         str += "then\n";
         str += "   list.add( $p );\n";
         str += "end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         List<Person> list = new ArrayList<Person>();
         KieSession ksession = kbase.newKieSession();
@@ -154,7 +159,8 @@ public class JavaDialectBinaryEqualityTest{
         
         assertEquals( new Person( "darth", 34 ), list.get( 0 ) );
         
-        return kbase.getPackage( "org.drools.mvel.compiler.test" );
+        return kbase.getKiePackage( "org.drools.mvel.compiler.test" );
+
     }
     
     public KiePackage getKnowledgePackage2() {
@@ -172,16 +178,9 @@ public class JavaDialectBinaryEqualityTest{
         str += "   list.add( $p );\n";
         str += "end\n";
         
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+
         List<Person> list = new ArrayList<Person>();
         KieSession ksession = kbase.newKieSession();
         ksession.setGlobal( "list", list );
@@ -190,6 +189,6 @@ public class JavaDialectBinaryEqualityTest{
         
         assertEquals( new Person( "darth", 36 ), list.get( 0 ) );
 
-        return kbase.getPackage( "org.drools.mvel.compiler.test" );
+        return kbase.getKiePackage( "org.drools.mvel.compiler.test" );
     }
 }

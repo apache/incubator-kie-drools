@@ -16,22 +16,21 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.expr.MVELDebugHandler;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
@@ -39,18 +38,30 @@ import org.mvel2.debug.Frame;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This is a sample class to launch a rule.
  */
-public class HelloWorldTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class HelloWorldTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public HelloWorldTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        // not for exec-model
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testHelloWorld() throws Exception {
         // load up the knowledge base
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
         KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "target/test-tmp/testHelloWorld" );
@@ -82,7 +93,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
         KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "target/test-tmp/testHelloWorldDebug" );
@@ -104,16 +115,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
     }
 
     private KieBase readKnowledgeBase() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(
-            ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
-            ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-           fail( kbuilder.getErrors().toString() );
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        return kbase;
+        return KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "Sample.drl");
     }
 
 }

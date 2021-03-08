@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -145,7 +144,6 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedAccessors() throws Exception {
-        //final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NestedAccessors.drl"));
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_NestedAccessors.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
 

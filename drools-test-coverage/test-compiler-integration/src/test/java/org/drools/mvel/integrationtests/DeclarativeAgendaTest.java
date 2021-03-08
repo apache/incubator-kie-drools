@@ -15,14 +15,23 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.DeclarativeAgendaOption;
@@ -39,15 +48,24 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class DeclarativeAgendaTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DeclarativeAgendaTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DeclarativeAgendaTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        // Declarative Agenda is experimental. Not supported by exec-model
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
     
     @Test(timeout=10000)
     public void testSimpleBlockingUsingForall() {
@@ -71,10 +89,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -123,10 +141,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -333,10 +351,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
 
         return ksession;
     }
@@ -383,10 +400,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -475,10 +491,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.unblockAllMatches( $i ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -549,10 +564,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -676,10 +690,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.cancelMatch( $i ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
 
         final List cancelled = new ArrayList();
 
@@ -768,10 +781,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.halt( ); \n";
         str += "end \n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -816,10 +828,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "    kcontext.cancelMatch($i);\n" +
                 "end";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -860,10 +871,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "    kcontext.cancelMatch($i);\n" +
                 "end";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -931,7 +941,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         kfs.writeKModuleXML(kmodule.toXML());
         kfs.write("src/main/resources/block_rule.drl", drl);
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
@@ -1051,10 +1061,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                      "\n" +
                      "\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, drl );
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

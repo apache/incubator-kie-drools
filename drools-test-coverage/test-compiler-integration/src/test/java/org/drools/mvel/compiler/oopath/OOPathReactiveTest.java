@@ -17,6 +17,7 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -40,15 +41,17 @@ import org.drools.mvel.compiler.oopath.model.School;
 import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
 import org.drools.mvel.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 import static org.drools.mvel.compiler.oopath.model.BodyMeasurement.CHEST;
 import static org.drools.mvel.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
@@ -56,7 +59,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class OOPathReactiveTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathReactiveTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testReactiveOnLia() {
@@ -70,9 +86,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -114,8 +129,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final EntryPointNode epn = ( (InternalKnowledgeBase) ksession.getKieBase() ).getRete().getEntryPointNodes().values().iterator().next();
         final ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType(Man.class) );
@@ -180,9 +195,8 @@ public class OOPathReactiveTest {
                         "  insertLogical( $child );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Child charlie = new Child( "Charles", 15 );
         final Child debbie = new Child( "Debbie", 19 );
@@ -227,9 +241,8 @@ public class OOPathReactiveTest {
                         "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Adult ada = new Adult("Ada", 19);
         final Adult bea = new Adult("Bea", 19);
@@ -275,9 +288,8 @@ public class OOPathReactiveTest {
                         "  insertLogical( $disease );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Disease flu = new Disease("flu");
         final Disease asthma = new Disease("asthma");
@@ -347,9 +359,8 @@ public class OOPathReactiveTest {
                         "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                         "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         try {
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
@@ -404,9 +415,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -456,9 +466,8 @@ public class OOPathReactiveTest {
                         "  teenagers.add( $child.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> toyList = new ArrayList<>();
         ksession.setGlobal( "toyList", toyList );
@@ -510,9 +519,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -554,9 +562,8 @@ public class OOPathReactiveTest {
                         "  list.add( $disease.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -596,9 +603,8 @@ public class OOPathReactiveTest {
                         "  list.add( $bodyMeasurement.getValue() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<Integer> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -630,9 +636,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -674,9 +679,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -718,10 +722,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        final KieServices ks = KieServices.Factory.get();
-        final KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        final Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertTrue( results.hasMessages( Message.Level.ERROR ) );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        assertTrue(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
     }
 
     @Test
@@ -737,8 +739,8 @@ public class OOPathReactiveTest {
                         "  list.add( $toy );\n" +
                         "end\n";
 
-        final KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -783,9 +785,8 @@ public class OOPathReactiveTest {
                         "$child.setAge(12);" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Man bob = new Man("Bob", 40);
 
