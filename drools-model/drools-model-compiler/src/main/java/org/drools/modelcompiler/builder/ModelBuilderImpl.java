@@ -78,7 +78,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    public void buildPackages(Collection<CompositePackageDescr> packages) {
+    public void processPackages(Collection<CompositePackageDescr> packages) {
         this.compositePackages = packages;
     }
 

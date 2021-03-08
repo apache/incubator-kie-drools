@@ -106,7 +106,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         Collection<CompositePackageDescr> packages = buildPackageDescr();
         buildAssemblerResourcesBeforeRules();
         if(buildRules) {
-            kBuilder.buildPackages(packages);
+            kBuilder.processPackages(packages);
         } else {
             kBuilder.buildPackagesWithoutRules(packages);
         }
@@ -117,6 +117,12 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         if (buildException != null) {
             throw buildException;
         }
+    }
+
+    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+        kBuilder.processPackages(packages);
+        buildAssemblerResourcesAfterRules();
+        kBuilder.postBuild();
     }
 
     private void buildProcesses() {

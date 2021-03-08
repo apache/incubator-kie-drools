@@ -28,6 +28,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
+import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsError;
@@ -80,7 +81,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
         // Needed to compile Rules from PackageDescr
         CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
-        knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));
+        (( CompositeKnowledgeBuilderImpl ) knowledgeBuilder.batch()).buildPackages(Collections.singletonList(compositePackageDescr));
         return toReturn;
     }
 
