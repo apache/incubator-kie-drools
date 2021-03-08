@@ -22,18 +22,24 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.WorkUnit;
+import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class DefaultUnitOfWorkManagerTest {
 
     private UnitOfWorkManager unitOfWorkManager;
+    private UnitOfWorkEventListener listener = mock(UnitOfWorkEventListener.class);
 
     @BeforeEach
     public void setup() {
         this.unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
-
+        this.unitOfWorkManager.register(listener);
     }
 
     @Test
@@ -59,6 +65,9 @@ public class DefaultUnitOfWorkManagerTest {
         unit.end();
 
         assertThat(counter.get()).isEqualTo(1);
+        verify(listener).onBeforeStartEvent(any());
+        verify(listener).onAfterEndEvent(any());
+        verify(listener, never()).onAfterAbortEvent(any());
     }
 
     @Test
@@ -76,6 +85,9 @@ public class DefaultUnitOfWorkManagerTest {
         unit.abort();
 
         assertThat(counter.get()).isEqualTo(0);
+        verify(listener).onBeforeStartEvent(any());
+        verify(listener, never()).onAfterEndEvent(any());
+        verify(listener).onAfterAbortEvent(any());
     }
 
     @Test
@@ -104,7 +116,9 @@ public class DefaultUnitOfWorkManagerTest {
         WorkUnit<AtomicInteger> dummyWork = WorkUnit.create(counter, (d) -> d.incrementAndGet());
 
         assertThrows(IllegalStateException.class, () -> unit.intercept(dummyWork), "Cannot intercept on not started unit");
-
+        verify(listener, never()).onBeforeStartEvent(any());
+        verify(listener, never()).onAfterEndEvent(any());
+        verify(listener, never()).onAfterAbortEvent(any());
     }
 
     @Test

@@ -48,9 +48,8 @@ public class $Type$Resource {
                             .build();
                     }
                     return Response.status(Response.Status.NOT_FOUND).build();
-                })
-                .orElseThrow(() -> new NotFoundException());
-        });
+                });
+        }).orElseThrow(() -> new NotFoundException());
     }
 
     @POST
@@ -75,8 +74,8 @@ public class $Type$Resource {
                                 workItemId,
                                 HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
                         return pi.variables().toOutput();
-                    })
-                    .orElseThrow(() -> new NotFoundException()));
+                    }))
+                    .orElseThrow(() -> new NotFoundException());
     }
     
     
@@ -102,8 +101,8 @@ public class $Type$Resource {
                                             workItemId,
                                             HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
                                     return pi.variables().toOutput();
-                                })
-                                .orElseThrow(() -> new NotFoundException()));
+                                }))
+                                .orElseThrow(() -> new NotFoundException());
     }
     
     
@@ -123,8 +122,8 @@ public class $Type$Resource {
                                 .instances()
                                 .findById(id)
                                 .map(pi -> $TaskOutput$.fromMap(pi.updateWorkItem(workItemId, params,
-                                        Policies.of(user, groups))))
-                                .orElseThrow(() -> new NotFoundException()));
+                                        Policies.of(user, groups)))))
+                                .orElseThrow(() -> new NotFoundException());
     }
 
     @GET
@@ -181,7 +180,7 @@ public class $Type$Resource {
                                                                                              HumanTaskTransition.withoutModel(phase,
                                                                                                      Policies.of(user, groups)));
                                                                        return pi.variables().toOutput();
-                                                                   })
-                                                                   .orElseThrow(() -> new NotFoundException()));
+                                                                   }))
+                                                                   .orElseThrow(() -> new NotFoundException());
     }
 }

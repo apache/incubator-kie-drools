@@ -15,11 +15,18 @@
  */
 package org.kie.kogito.services.uow;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.kie.kogito.event.EventManager;
 import org.kie.kogito.services.event.impl.BaseEventManager;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkFactory;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.uow.events.UnitOfWorkAbortEvent;
+import org.kie.kogito.uow.events.UnitOfWorkEndEvent;
+import org.kie.kogito.uow.events.UnitOfWorkEventListener;
+import org.kie.kogito.uow.events.UnitOfWorkStartEvent;
 
 /**
  * Default implementation of the UnitOfWorkManager that is backed by
@@ -35,6 +42,8 @@ public class DefaultUnitOfWorkManager implements UnitOfWorkManager {
     private UnitOfWorkFactory factory;
 
     private EventManager eventManager = new BaseEventManager();
+
+    private Set<UnitOfWorkEventListener> listeners = new LinkedHashSet<>();
 
     public DefaultUnitOfWorkManager(UnitOfWorkFactory factory) {
         super();
@@ -59,8 +68,22 @@ public class DefaultUnitOfWorkManager implements UnitOfWorkManager {
 
     @Override
     public UnitOfWork newUnitOfWork() {
+        return new ManagedUnitOfWork(factory.create(eventManager), this::onStart, this::onEnd, this::onAbort);
+    }
 
-        return new ManagedUnitOfWork(factory.create(eventManager), this::associate, this::dissociate, this::dissociate);
+    protected void onStart(UnitOfWork unit) {
+        this.associate(unit);
+        listeners.forEach(l -> l.onBeforeStartEvent(new UnitOfWorkStartEvent(unit)));
+    }
+
+    protected void onEnd(UnitOfWork unit) {
+        this.dissociate(unit);
+        listeners.forEach(l -> l.onAfterEndEvent(new UnitOfWorkEndEvent(unit)));
+    }
+
+    protected void onAbort(UnitOfWork unit) {
+        this.dissociate(unit);
+        listeners.forEach(l -> l.onAfterAbortEvent(new UnitOfWorkAbortEvent(unit)));
     }
 
     protected void associate(UnitOfWork unit) {
@@ -74,5 +97,10 @@ public class DefaultUnitOfWorkManager implements UnitOfWorkManager {
     @Override
     public EventManager eventManager() {
         return eventManager;
+    }
+
+    @Override
+    public void register(UnitOfWorkEventListener listener) {
+        listeners.add(listener);
     }
 }

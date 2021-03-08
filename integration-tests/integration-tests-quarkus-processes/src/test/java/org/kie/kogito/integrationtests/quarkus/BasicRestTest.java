@@ -20,8 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.acme.travels.Traveller;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.integrationtests.UnitOfWorkTestEventListener;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -30,6 +34,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -42,6 +47,20 @@ class BasicRestTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
+    @Inject
+    UnitOfWorkTestEventListener uowEventListener;
+
+    @BeforeEach
+    void resetEventListener() {
+        uowEventListener.reset();
+    }
+
+    void assertExpectedUnitOfWorkEvents(Integer events) {
+        assertThat(uowEventListener.getStartEvents()).hasSize(events);
+        assertThat(uowEventListener.getEndEvents()).hasSize(events);
+        assertThat(uowEventListener.getAbortEvents()).isEmpty();
     }
 
     @Test
@@ -70,6 +89,8 @@ class BasicRestTest {
                 .statusCode(200)
                 .body("id", equalTo(id))
                 .body("var1", equalTo("Kermit"));
+
+        assertExpectedUnitOfWorkEvents(1);
     }
 
     @Test
@@ -95,6 +116,8 @@ class BasicRestTest {
                 .get("/approvals/{processId}/tasks")
                 .then()
                 .statusCode(200);
+
+        assertExpectedUnitOfWorkEvents(1);
     }
 
     @Test
@@ -130,6 +153,8 @@ class BasicRestTest {
                 .statusCode(200)
                 .body("id", equalTo(id))
                 .body("var1", equalTo("Kermit"));
+
+        assertExpectedUnitOfWorkEvents(1);
     }
 
     @Test
@@ -144,6 +169,8 @@ class BasicRestTest {
                 .get("/AdHocFragments/FOO")
                 .then()
                 .statusCode(404);
+
+        assertExpectedUnitOfWorkEvents(0);
     }
 
     @Test
@@ -175,6 +202,8 @@ class BasicRestTest {
                 .statusCode(200)
                 .body("id", equalTo(id))
                 .body("var1", equalTo("Gonzo"));
+
+        assertExpectedUnitOfWorkEvents(2);
     }
 
     @Test
@@ -213,6 +242,8 @@ class BasicRestTest {
                 .delete("/AdHocFragments/{id}", id)
                 .then()
                 .statusCode(404);
+
+        assertExpectedUnitOfWorkEvents(3);
     }
 
     @Test
@@ -238,5 +269,7 @@ class BasicRestTest {
                 .statusCode(200)
                 .body("$.size", is(1))
                 .body("[0].name", is("Task"));
+
+        assertExpectedUnitOfWorkEvents(1);
     }
 }

@@ -16,6 +16,7 @@
 package org.kie.kogito.uow;
 
 import org.kie.kogito.event.EventManager;
+import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 
 /**
  * Manager that controls and give access to UnitOfWork.
@@ -47,4 +48,11 @@ public interface UnitOfWorkManager {
      * @return event manager instance
      */
     EventManager eventManager();
+
+    /**
+     * Register a listener for UnitOfWorkEvent's
+     * 
+     * @param listener
+     */
+    void register(UnitOfWorkEventListener listener);
 }

@@ -115,8 +115,8 @@ public class $Type$Resource {
                                                                    .map(pi -> {
                                                                        pi.abort();
                                                                        return pi.checkError().variables().toOutput();
-                                                                   })
-                                                              .orElseThrow(() -> new NotFoundException()));
+                                                                   }))
+                                                              .orElseThrow(() -> new NotFoundException());
     }
 
     @PUT
@@ -129,8 +129,8 @@ public class $Type$Resource {
                                                       () -> process
                                                                    .instances()
                                                                    .findById(id)
-                                                                   .map(pi -> pi.updateVariables(resource).toOutput())
-                                                              .orElseThrow(() -> new NotFoundException()));
+                                                                   .map(pi -> pi.updateVariables(resource).toOutput()))
+                                                              .orElseThrow(() -> new NotFoundException());
     }
 
     @GET

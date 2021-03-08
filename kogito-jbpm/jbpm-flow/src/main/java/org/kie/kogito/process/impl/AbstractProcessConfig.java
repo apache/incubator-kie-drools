@@ -33,6 +33,7 @@ import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 import org.kie.services.signal.DefaultSignalManagerHub;
 
 public abstract class AbstractProcessConfig implements ProcessConfig {
@@ -50,7 +51,8 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
             Iterable<UnitOfWorkManager> unitOfWorkManager,
             Iterable<JobsService> jobsService,
             Iterable<EventPublisher> eventPublishers,
-            String kogitoService) {
+            String kogitoService,
+            Iterable<UnitOfWorkEventListener> unitOfWorkListeners) {
 
         this.workItemHandlerConfig = orDefault(workItemHandlerConfig, DefaultWorkItemHandlerConfig::new);
         this.processEventListenerConfig = merge(processEventListenerConfigs, processEventListeners);
@@ -60,6 +62,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
         this.jobsService = orDefault(jobsService, () -> null);
 
         eventPublishers.forEach(publisher -> unitOfWorkManager().eventManager().addPublisher(publisher));
+        unitOfWorkListeners.forEach(listener -> unitOfWorkManager().register(listener));
         unitOfWorkManager().eventManager().setService(kogitoService);
     }
 
