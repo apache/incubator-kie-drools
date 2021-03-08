@@ -40,7 +40,7 @@ public class ScenarioSimulationServerMessages {
     }
 
     public static String getCollectionFactExceptionMessage(String factName, List<String> pathToWrongValue, Object wrongValue) {
-        StringBuilder stringBuilder = new StringBuilder("Failed in \"").append(factName).append("\". ");
+        StringBuilder stringBuilder = new StringBuilder("Failed in \"").append(factName).append("\": ");
         if (pathToWrongValue.isEmpty()) {
             stringBuilder.append("Impossible to find elements in the collection to satisfy the conditions.");
         } else {

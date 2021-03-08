@@ -263,8 +263,7 @@ public abstract class AbstractRunnerHelper {
         return paramsForBean;
     }
 
-    protected void validateAssertion(List<ScenarioResult> scenarioResults,
-                                     ScesimModelDescriptor scesimModelDescriptor) {
+    protected void validateAssertion(List<ScenarioResult> scenarioResults, ScesimModelDescriptor scesimModelDescriptor) {
 
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
