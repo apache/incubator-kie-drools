@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.rules.KogitoPackageSources.getReflectConfigFile;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
@@ -57,6 +58,7 @@ public class PredictionCodegen extends AbstractGenerator {
     public static final String DMN_JPMML_CLASS = "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
     private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
+    private static final String DECLARED_TYPE_IDENTIFIER = "org.drools.core.factmodel.GeneratedFact";
     private final List<PMMLResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
@@ -112,6 +114,11 @@ public class PredictionCodegen extends AbstractGenerator {
         return generatedFiles;
     }
 
+    @Override
+    public int priority() {
+        return 40;
+    }
+
     private void addModels(final List<KiePMMLModel> kiepmmlModels, final PMMLResource resource) {
         for (KiePMMLModel model : kiepmmlModels) {
             if (model.getName() == null || model.getName().isEmpty()) {
@@ -132,9 +139,18 @@ public class PredictionCodegen extends AbstractGenerator {
             }
             Map<String, String> rulesSourceMap = ((HasSourcesMap) model).getRulesSourcesMap();
             if (rulesSourceMap != null) {
+                List<String> pojoClasses = new ArrayList<>();
                 for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
                     String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
                     storeFile(IncrementalRuleCodegen.RULE_TYPE, path, rulesSourceMapEntry.getValue());
+                    if (isDeclaredType(rulesSourceMapEntry.getValue())) {
+                        pojoClasses.add(rulesSourceMapEntry.getKey());
+                    }
+                }
+                if (!pojoClasses.isEmpty()) {
+                    final org.drools.modelcompiler.builder.GeneratedFile reflectConfigFile =
+                            getReflectConfigFile(model.getKModulePackageName(), pojoClasses);
+                    storeFile(GeneratedFileType.RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData()));
                 }
             }
             if (!(model instanceof KiePMMLFactoryModel)) {
@@ -161,8 +177,8 @@ public class PredictionCodegen extends AbstractGenerator {
         generatedFiles.add(new GeneratedFile(type, path, source));
     }
 
-    @Override
-    public int priority() {
-        return 40;
+    private boolean isDeclaredType(String source) {
+        return source.contains(DECLARED_TYPE_IDENTIFIER);
     }
+
 }

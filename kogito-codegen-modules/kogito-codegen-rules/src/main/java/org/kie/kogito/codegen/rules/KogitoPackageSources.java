@@ -36,15 +36,29 @@ import org.slf4j.LoggerFactory;
 public class KogitoPackageSources extends PackageSources {
 
     private static final Logger logger = LoggerFactory.getLogger(KogitoPackageSources.class);
-
+    private static final String REFLECTION_PERMISSIONS =
+            "        \"allDeclaredConstructors\": true,\n" +
+                    "        \"allPublicConstructors\": true,\n" +
+                    "        \"allDeclaredMethods\": true,\n" +
+                    "        \"allPublicMethods\": true,\n" +
+                    "        \"allDeclaredFields\": true,\n" +
+                    "        \"allPublicFields\": true\n";
+    private static final String JSON_PREFIX = "[\n" +
+            "    {\n" +
+            "        \"name\": \"";
+    private static final String JSON_DELIMITER = "\",\n" +
+            REFLECTION_PERMISSIONS +
+            "    },\n" +
+            "    {\n" +
+            "        \"name\": \"";
+    private static final String JSON_SUFFIX = "\",\n" +
+            REFLECTION_PERMISSIONS +
+            "    }\n" +
+            "]";
     private GeneratedFile reflectConfigSource;
-
     private Map<String, String> modelsByUnit = new HashMap<>();
-
     private Collection<RuleUnitDescription> ruleUnits;
-
     private String rulesFileName;
-
     private Map<String, Collection<QueryModel>> queries;
 
     public static KogitoPackageSources dumpSources(PackageModel pkgModel) {
@@ -74,15 +88,25 @@ public class KogitoPackageSources extends PackageSources {
         List<String> pojoClasses = new ArrayList<>();
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
         for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
-            sources.pojoSources.add(new GeneratedFile(declaredType.getName(), PackageSources.logSource(declaredType.getSource())));
+            sources.pojoSources.add(new GeneratedFile(declaredType.getName(),
+                    PackageSources.logSource(declaredType.getSource())));
             pojoClasses.add(declaredType.getClassName());
         }
 
         if (!pojoClasses.isEmpty()) {
-            sources.reflectConfigSource = new GeneratedFile("META-INF/native-image/" + pkgModel.getPathName() + "/reflect-config.json", reflectConfigSource(pojoClasses));
+            sources.reflectConfigSource = getReflectConfigFile(pkgModel.getPathName(), pojoClasses);
         }
 
         return sources;
+    }
+
+    public static GeneratedFile getReflectConfigFile(String pathName, List<String> pojoClasses) {
+        return new GeneratedFile("META-INF/native-image/" + pathName + "/reflect-config.json",
+                reflectConfigSource(pojoClasses));
+    }
+
+    private static String reflectConfigSource(List<String> pojoClasses) {
+        return pojoClasses.stream().collect(Collectors.joining(JSON_DELIMITER, JSON_PREFIX, JSON_SUFFIX));
     }
 
     public Map<String, String> getModelsByUnit() {
@@ -104,31 +128,4 @@ public class KogitoPackageSources extends PackageSources {
     public GeneratedFile getReflectConfigSource() {
         return reflectConfigSource;
     }
-
-    private static String reflectConfigSource(List<String> pojoClasses) {
-        return pojoClasses.stream().collect(Collectors.joining(JSON_DELIMITER, JSON_PREFIX, JSON_SUFFIX));
-    }
-
-    private static final String REFLECTION_PERMISSIONS =
-            "        \"allDeclaredConstructors\": true,\n" +
-                    "        \"allPublicConstructors\": true,\n" +
-                    "        \"allDeclaredMethods\": true,\n" +
-                    "        \"allPublicMethods\": true,\n" +
-                    "        \"allDeclaredFields\": true,\n" +
-                    "        \"allPublicFields\": true\n";
-
-    private static final String JSON_PREFIX = "[\n" +
-            "    {\n" +
-            "        \"name\": \"";
-
-    private static final String JSON_DELIMITER = "\",\n" +
-            REFLECTION_PERMISSIONS +
-            "    },\n" +
-            "    {\n" +
-            "        \"name\": \"";
-
-    private static final String JSON_SUFFIX = "\",\n" +
-            REFLECTION_PERMISSIONS +
-            "    }\n" +
-            "]";
 }

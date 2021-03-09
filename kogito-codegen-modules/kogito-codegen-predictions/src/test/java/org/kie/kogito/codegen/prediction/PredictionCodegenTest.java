@@ -35,15 +35,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PredictionCodegenTest {
 
-    private static final String SOURCE = "prediction/test_regression.pmml";
     private static final Path BASE_PATH = Paths.get("src/test/resources/").toAbsolutePath();
-    private static final Path FULL_SOURCE = BASE_PATH.resolve(SOURCE);
+    private static final String REGRESSION_SOURCE = "prediction/test_regression.pmml";
+    private static final Path REGRESSION_FULL_SOURCE = BASE_PATH.resolve(REGRESSION_SOURCE);
+    private static final String SCORECARD_SOURCE = "prediction/test_scorecard.pmml";
+    private static final Path SCORECARD_FULL_SOURCE = BASE_PATH.resolve(SCORECARD_SOURCE);
 
     @Test
-    void generateAllFiles() {
+    void generateAllFilesRegression() {
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 JavaKogitoBuildContext.builder().build(),
-                CollectedResourceProducer.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
+                CollectedResourceProducer.fromFiles(BASE_PATH, REGRESSION_FULL_SOURCE.toFile()));
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(5, generatedFiles.size());
@@ -58,6 +60,35 @@ class PredictionCodegenTest {
                         generatedFile.relativePath().endsWith(".json"))
                 .count());
 
+        Optional<ApplicationSection> optionalApplicationSection = codeGenerator.section();
+        assertTrue(optionalApplicationSection.isPresent());
+        CompilationUnit compilationUnit = optionalApplicationSection.get().compilationUnit();
+        assertNotNull(compilationUnit);
+    }
+
+    @Test
+    void generateAllFilesScorecard() {
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+                JavaKogitoBuildContext.builder().build(),
+                CollectedResourceProducer.fromFiles(BASE_PATH, SCORECARD_FULL_SOURCE.toFile()));
+
+        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertEquals(27, generatedFiles.size());
+        assertEquals(5, generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.SOURCE) &&
+                        generatedFile.type().name().equals("PMML") &&
+                        generatedFile.relativePath().endsWith(".java"))
+                .count());
+        assertEquals(2, generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.RESOURCE) &&
+                        generatedFile.type().name().equals(GeneratedFileType.RESOURCE.name()) &&
+                        generatedFile.relativePath().endsWith(".json"))
+                .count());
+        assertEquals(1, generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.RESOURCE) &&
+                        generatedFile.type().name().equals(GeneratedFileType.RESOURCE.name()) &&
+                        generatedFile.relativePath().equals("META-INF/native-image/testscorecard/reflect-config.json"))
+                .count());
         Optional<ApplicationSection> optionalApplicationSection = codeGenerator.section();
         assertTrue(optionalApplicationSection.isPresent());
         CompilationUnit compilationUnit = optionalApplicationSection.get().compilationUnit();
