@@ -77,7 +77,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    protected void processPackages(Collection<CompositePackageDescr> packages) { }
+    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages) { }
 
     @Override
     public void addPackage(final PackageDescr packageDescr) {
@@ -109,7 +109,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    protected void postBuild( Collection<CompositePackageDescr> compositePackages ) {
+    protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
         Collection<CompositePackageDescr> packages = findPackages(compositePackages);
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
