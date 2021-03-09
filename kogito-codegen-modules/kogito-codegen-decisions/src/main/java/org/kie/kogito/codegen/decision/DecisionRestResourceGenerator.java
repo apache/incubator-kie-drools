@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
 import org.kie.dmn.api.core.DMNModel;
@@ -179,8 +178,6 @@ public class DecisionRestResourceGenerator {
         //set the root path for the dmnMethod itself
         interpolateRequestPath("", dmnMethodUrlPlaceholder, dmnMethod);
 
-        interpolateOutputType(template);
-
         if (context.getAddonsConfig().useMonitoring()) {
             addMonitoringImports(clazz);
             addExceptionMetricsLogging(clazz, nameURL);
@@ -282,7 +279,7 @@ public class DecisionRestResourceGenerator {
         interpolateRequestPath(pathName, placeHolder, clonedDmnMethod);
 
         ReturnStmt returnStmt = clonedDmnMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
-        returnStmt.setExpression(new NameExpr("result"));
+        returnStmt.setExpression(new MethodCallExpr("buildDMNResultResponse").addArgument(new NameExpr("result")));
         return clonedDmnMethod;
     }
 
@@ -300,39 +297,6 @@ public class DecisionRestResourceGenerator {
         String inputType = isStronglyTyped ? "InputSet" : "java.util.Map<String, Object>";
         template.findAll(ClassOrInterfaceType.class, t -> t.asString().equals("$inputType$"))
                 .forEach(type -> type.setName(inputType));
-    }
-
-    private void interpolateOutputType(ClassOrInterfaceDeclaration template) {
-        String outputType = isStronglyTyped ? "OutputSet" : "Object";
-
-        List<ClassOrInterfaceType> outputTypeOccurrences = template.findAll(ClassOrInterfaceType.class, t -> t.asString().equals("$outputType$"));
-
-        // first, methods which return DMNResult shall just have DMNResult as the return type in signature (useful for GraalVM NI introspection)
-        List<ClassOrInterfaceType> dmnResultOuputTypes = outputTypeOccurrences
-                .stream()
-                .filter(t -> t.getParentNode().isPresent() && t.getParentNode().get() instanceof MethodDeclaration)
-                .filter(t -> {
-                    MethodDeclaration parent = (MethodDeclaration) t.getParentNode().get();
-                    return parent.getNameAsString().endsWith("dmnresult");
-                })
-                .collect(Collectors.toList());
-        dmnResultOuputTypes.forEach(type -> type.setName("org.kie.kogito.dmn.rest.KogitoDMNResult"));
-        outputTypeOccurrences.removeAll(dmnResultOuputTypes);
-
-        // then, *remaining* methods which belong to Decision Service(s) shall simply be returning Object, since strongly output typing is not supported for DS use case yet.
-        List<ClassOrInterfaceType> objectReturnTypes = outputTypeOccurrences
-                .stream()
-                .filter(t -> t.getParentNode().isPresent() && t.getParentNode().get() instanceof MethodDeclaration)
-                .filter(t -> {
-                    MethodDeclaration parent = (MethodDeclaration) t.getParentNode().get();
-                    return parent.getNameAsString().startsWith("decisionService_");
-                })
-                .collect(Collectors.toList());
-
-        objectReturnTypes.forEach(type -> type.setName("Object"));
-
-        outputTypeOccurrences.removeAll(objectReturnTypes);
-        outputTypeOccurrences.forEach(type -> type.setName(outputType));
     }
 
     private void interpolateInputData(ClassOrInterfaceDeclaration template) {
@@ -360,14 +324,19 @@ public class DecisionRestResourceGenerator {
     }
 
     private void addExceptionMetricsLogging(CompilationUnit clazz, String nameURL) {
-        MethodDeclaration method = clazz.findFirst(MethodDeclaration.class, x -> "toResponse".equals(x.getNameAsString()))
-                .orElseThrow(() -> new NoSuchElementException("Method toResponse not found, template has changed."));
+        MethodDeclaration method = clazz.findFirst(MethodDeclaration.class, x -> "buildFailedEvaluationResponse".equals(x.getNameAsString()))
+                .orElseThrow(() -> new NoSuchElementException("Method buildFailedEvaluationResponse not found, template has changed."));
 
         BlockStmt body = method.getBody().orElseThrow(() -> new NoSuchElementException("This method should be invoked only with concrete classes and not with abstract methods or interfaces."));
         ReturnStmt returnStmt = body.findFirst(ReturnStmt.class).orElseThrow(() -> new NoSuchElementException("Check for null dmn result not found, can't add monitoring to endpoint."));
         NodeList<Statement> statements = body.getStatements();
         String methodArgumentName = method.getParameters().get(0).getNameAsString();
-        statements.addBefore(parseStatement(String.format("SystemMetricsCollector.registerException(\"%s\", %s.getStackTrace()[0].toString());", nameURL, methodArgumentName)), returnStmt);
+        statements.addBefore(
+                parseStatement(String.format(
+                        "SystemMetricsCollector.registerException(\"%s\", %s.getMessages().stream().filter(x -> org.kie.dmn.api.core.DMNMessage.Severity.ERROR.equals(x.getSeverity())).map(x -> x.getMessage()).collect(Collectors.joining(\",\")));",
+                        nameURL,
+                        methodArgumentName)),
+                returnStmt);
     }
 
     private void addMonitoringImports(CompilationUnit cu) {

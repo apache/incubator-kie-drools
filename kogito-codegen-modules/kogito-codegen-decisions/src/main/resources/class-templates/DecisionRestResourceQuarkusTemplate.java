@@ -15,12 +15,15 @@
  */
 package org.kie.dmn.kogito.quarkus.example;
 
+import java.util.stream.Collectors;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
@@ -36,6 +39,14 @@ public class DMNRestResourceTemplate {
     private static final String KOGITO_DECISION_INFOWARN_HEADER = "X-Kogito-decision-messages";
     private static final String KOGITO_EXECUTION_ID_HEADER = "X-Kogito-execution-id";
 
+    private static final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper()
+            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+            .registerModule(new com.fasterxml.jackson.databind.module.SimpleModule()
+                                    .addSerializer(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.class,
+                                                   new org.kie.kogito.dmn.rest.DMNFEELComparablePeriodSerializer()))
+            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
+
     @javax.ws.rs.core.Context
     private org.jboss.resteasy.spi.HttpResponse httpResponse;
 
@@ -47,7 +58,7 @@ public class DMNRestResourceTemplate {
     @org.eclipse.microprofile.openapi.annotations.responses.APIResponse(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json", schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/OutputSet1")), description = "DMN output")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/InputSet1")), description = "DMN input")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/OutputSet1")), description = "DMN output")
-    public $outputType$ dmn($inputType$ variables) {
+    public Response dmn($inputType$ variables) {
         org.kie.kogito.decision.DecisionModel decision = application.get(org.kie.kogito.decision.DecisionModels.class).getDecisionModel("$modelNamespace$", "$modelName$");
         OutputSet outputSet = (OutputSet) StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
         org.kie.dmn.api.core.DMNResult decisionResult = decision.evaluateAll(DMNJSONUtils.ctx(decision, $inputData$));
@@ -65,50 +76,48 @@ public class DMNRestResourceTemplate {
                                                                         ".dmn_nologic")));
     }
 
-    @javax.ws.rs.ext.Provider
-    public static class DMNEvaluationErrorExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<org.kie.kogito.dmn.rest.DMNEvaluationErrorException> {
-        public javax.ws.rs.core.Response toResponse(org.kie.kogito.dmn.rest.DMNEvaluationErrorException e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(e.getResult()).build();
+    private Response extractContextIfSucceded(KogitoDMNResult result){
+        if (!result.hasErrors()) {
+            return Response.ok(buildResponse(result.getDmnContext())).build();
+        } else {
+            return buildFailedEvaluationResponse(result);
         }
     }
 
-    private Object extractContextIfSucceded(KogitoDMNResult result){
+    private Response buildFailedEvaluationResponse(KogitoDMNResult result){
+        return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+    }
+
+    private Response extractStronglyTypedContextIfSucceded(KogitoDMNResult result) {
         if (!result.hasErrors()) {
-            try {
-                return objectMapper.writeValueAsString(result.getDmnContext());
-            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            return Response.ok(buildResponse((OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class))).build();
         } else {
-            throw new DMNEvaluationErrorException(result);
+            return buildFailedEvaluationResponse(result);
         }
     }
 
-    private OutputSet extractStronglyTypedContextIfSucceded(KogitoDMNResult result) {
+    private Response extractSingletonDSIfSucceded(KogitoDMNResult result) {
         if (!result.hasErrors()) {
-            return (OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class);
+            return Response.ok(buildResponse(result.getDecisionResults().get(0).getResult())).build();
         } else {
-            throw new DMNEvaluationErrorException(result);
+            return buildFailedEvaluationResponse(result);
         }
     }
 
-    private static final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper()
-            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
-            .registerModule(new com.fasterxml.jackson.databind.module.SimpleModule()
-                            .addSerializer(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.class,
-                                           new org.kie.kogito.dmn.rest.DMNFEELComparablePeriodSerializer()))
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
-
-    private Object extractSingletonDSIfSucceded(KogitoDMNResult result) {
+    private Response buildDMNResultResponse(KogitoDMNResult result) {
         if (!result.hasErrors()) {
-            try {
-                return objectMapper.writeValueAsString(result.getDecisionResults().get(0).getResult());
-            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            return Response.ok(buildResponse(result)).build();
         } else {
-            throw new DMNEvaluationErrorException(result);
+            return buildFailedEvaluationResponse(result);
+        }
+    }
+
+    private String buildResponse(Object o){
+        try{
+            return objectMapper.writeValueAsString(o);
+        }
+        catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
