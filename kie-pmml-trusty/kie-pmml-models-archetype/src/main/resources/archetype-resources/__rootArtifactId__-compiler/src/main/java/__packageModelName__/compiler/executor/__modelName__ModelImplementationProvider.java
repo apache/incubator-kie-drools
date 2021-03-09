@@ -41,7 +41,7 @@ public class ${modelName}ModelImplementationProvider implements ModelImplementat
 private static final Logger logger = LoggerFactory.getLogger(${modelName}ModelImplementationProvider.class.getName());
 
 
-@Override
+    @Override
     public PMML_MODEL getPMMLModelType() {
         logger.trace("getPMMLModelType");
         return PMML_MODEL.${modelNameUppercase}_MODEL;

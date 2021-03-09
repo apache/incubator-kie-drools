@@ -16,32 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ${package}.${packageModelName}.compiler.executor;
+package  ${package}.${packageModelName}.evaluator;
 
-import org.kie.pmml.api.enums.PMML_MODEL;
+import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.api.enums.PMML_MODEL;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-public class ${modelName}ModelImplementationProviderTest {
+public class PMML${modelName}ModelEvaluatorTest {
 
-    private static final ${modelName}ModelImplementationProvider PROVIDER= new ${modelName}ModelImplementationProvider();
+    private PMML${modelName}ModelEvaluator evaluator;
+
+    @Before
+    public void setUp(){
+        evaluator = new PMML${modelName}ModelEvaluator();
+    }
 
     @Test
     public void getPMMLModelType(){
-        assertEquals(PMML_MODEL.${modelNameUppercase}_MODEL,PROVIDER.getPMMLModelType());
+        assertEquals(PMML_MODEL.${modelNameUppercase}_MODEL, evaluator.getPMMLModelType());
     }
 
-    @Test
-    public void getKiePMMLModel() throws Exception {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
-
-    @Test
-    public void getKiePMMLModelWithSources() throws Exception {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
 }
