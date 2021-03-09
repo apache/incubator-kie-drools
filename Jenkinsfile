@@ -128,5 +128,7 @@ void checkoutOptaplannerRepo() {
 MavenCommand getMavenCommand(String directory){
     return new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
+                // add timestamp to Maven logs
+                .withOptions(['-Dorg.slf4j.simpleLogger.showDateTime=true', '-Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS'])
                 .inDirectory(directory)
 }
