@@ -121,7 +121,8 @@ public abstract class AbstractScenarioRunner extends Runner {
         try {
             internalRunScenario(scenarioWithIndex, scenarioRunnerData, settings, background);
         } catch (Exception e) {
-            runNotifier.fireTestFailure(new Failure(descriptionForScenario, defineFailureException(e, index, scenarioName)));
+            runNotifier.fireTestFailure(new Failure(descriptionForScenario,
+                                                    defineFailureException(e, index, scenarioName)));
         }
 
         runNotifier.fireTestFinished(descriptionForScenario);
