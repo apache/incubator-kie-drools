@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.dmn.model.api;
 
-import java.util.List;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.xml.namespace.QName;
-
-/**
- * @since DMN v1.3
- */
-public interface FunctionItem extends DMNElement {
-
-    List<InformationItem> getParameters();
-
-    /**
-     * for consistency in the modeling, use QName
-     */
-    @GwtIncompatible
-    QName getOutputTypeRef();
-
-    @GwtIncompatible
-    void setOutputTypeRef(QName value);
-
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Documented
+public @interface GwtIncompatible {
+    String value() default "";
 }

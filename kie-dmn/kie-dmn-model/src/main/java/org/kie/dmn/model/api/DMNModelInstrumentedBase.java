@@ -34,8 +34,10 @@ public interface DMNModelInstrumentedBase {
 
     Optional<String> getPrefixForNamespaceURI(String namespaceURI);
 
+    @GwtIncompatible
     void setAdditionalAttributes(Map<QName, String> additionalAttributes);
 
+    @GwtIncompatible
     Map<QName, String> getAdditionalAttributes();
 
     DMNModelInstrumentedBase getParent();
@@ -52,8 +54,10 @@ public interface DMNModelInstrumentedBase {
 
     String getURIFEEL();
 
+    @GwtIncompatible
     void setLocation(Location location);
 
+    @GwtIncompatible
     Location getLocation();
 
     /**
