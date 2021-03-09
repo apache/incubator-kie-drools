@@ -122,11 +122,18 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         if (cls != null) {
             return cls;
         }
-        try {
-            cls = internalLoadClass(name, resolve);
-        } catch (ClassNotFoundException e2) {
+
+        if (containsInStore(ClassUtils.convertClassToResourcePath(name))) {
+            Class<?> clazz = findLoadedClass(name); // skip parent classloader
+            if (clazz != null) {
+                return clazz;
+            }
+            // if the class is stored in projectClassLoader, go straight to defineType
             cls = loadType(name, resolve);
+        } else {
+            cls = internalLoadClass(name, resolve);
         }
+
         loadedClasses.put(name, cls);
         return cls;
     }
@@ -145,7 +152,14 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         try {
             return super.loadClass(name, resolve);
         } catch (ClassNotFoundException e) {
-            return Class.forName(name, resolve, getParent());
+            try {
+                return Class.forName(name, resolve, getParent());
+            } catch (ClassNotFoundException e1) {
+                if (CACHE_NON_EXISTING_CLASSES) {
+                    nonExistingClasses.add(name);
+                }
+                throw e1;
+            }
         }
     }
 
@@ -329,6 +343,10 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public byte[] getBytecode(String resourceName) {
         return store == null ? null : store.get(resourceName);
+    }
+
+    public boolean containsInStore(String resourceName) {
+        return store == null ? false : store.containsKey(resourceName);
     }
 
     @Override

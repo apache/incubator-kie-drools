@@ -103,6 +103,14 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
         }
 
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (projectClassLoader.containsInStore(ClassUtils.convertClassToResourcePath(name))) {
+                Class<?> clazz = findLoadedClass(name); // skip parent classloader
+                if (clazz != null) {
+                    return clazz;
+                }
+                // if the class is stored in projectClassLoader, go straight to defineType
+                return projectClassLoader.tryDefineType(name, null);
+            }
             try {
                 return loadType(name, resolve);
             } catch (ClassNotFoundException cnfe) {
