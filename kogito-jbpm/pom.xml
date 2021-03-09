@@ -17,36 +17,13 @@
   <description>jBPM: a Business Process Management</description>
   <url>http://www.jbpm.org</url>
 
-  <properties>
-  </properties>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>jbpm-flow</module>
-        <module>jbpm-flow-builder</module>
-        <module>jbpm-bpmn2</module>
-        <module>jbpm-serverless-workflow</module>
-        <module>process-serialization-protobuf</module>
-        <module>process-workitems</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>productized</id>
-      <activation>
-        <property>
-          <name>productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>process-serialization-protobuf</module>
-        <module>process-workitems</module>
-      </modules>
-    </profile>
-  </profiles>
+  <modules>
+    <module>jbpm-flow</module>
+    <module>jbpm-flow-builder</module>
+    <module>jbpm-bpmn2</module>
+    <module>jbpm-serverless-workflow</module>
+    <module>process-serialization-protobuf</module>
+    <module>process-workitems</module>
+  </modules>
 
 </project>

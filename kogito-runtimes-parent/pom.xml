@@ -150,7 +150,10 @@
         </property>
       </activation>
       <modules>
+        <module>kogito-build-parent</module>
+        <module>kogito-bom</module>
         <module>api</module>
+        <module>drools</module>
         <module>jbpm</module>
         <module>kogito-codegen-modules</module>
         <module>kogito-springboot</module>
@@ -158,6 +161,8 @@
         <module>kogito-quarkus-parent</module>
         <module>archetypes</module>
         <module>grafana-api</module>
+        <module>addons</module>
+        <module>kogito-workitems</module>
       </modules>
     </profile>
   </profiles>

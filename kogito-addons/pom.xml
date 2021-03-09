@@ -15,7 +15,7 @@
 
   <profiles>
     <profile>
-      <id>community</id>
+      <id>default</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
