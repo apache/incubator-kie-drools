@@ -71,6 +71,9 @@ public final class DotNames {
     static final DotName CUSTOM_SHADOW_VARIABLE = DotName.createSimple(CustomShadowVariable.class.getName());
     static final DotName INVERSE_RELATION_SHADOW_VARIABLE = DotName.createSimple(InverseRelationShadowVariable.class.getName());
 
+    // Need to use String since optaplanner-test is not on the compile classpath
+    static final DotName CONSTRAINT_VERIFIER = DotName.createSimple("org.optaplanner.test.api.score.stream.ConstraintVerifier");
+
     static final DotName[] PLANNING_ENTITY_FIELD_ANNOTATIONS = {
             PLANNING_PIN,
             PLANNING_VARIABLE,

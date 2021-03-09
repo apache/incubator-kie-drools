@@ -45,6 +45,10 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
         return solutionDescriptor;
     }
 
+    public ConstraintStreamImplType getConstraintStreamImplType() {
+        return constraintStreamImplType;
+    }
+
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {

@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
@@ -42,6 +43,7 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.jboss.jandex.ParameterizedType;
 import org.jboss.jandex.Type;
 import org.jboss.logging.Logger;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
@@ -50,6 +52,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -75,6 +78,8 @@ import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.gizmo.MethodDescriptor;
+import io.quarkus.gizmo.ResultHandle;
 import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
@@ -180,6 +185,7 @@ class OptaPlannerProcessor {
         }
 
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
+        generateConstraintVerifier(solverConfig, syntheticBeanBuildItemBuildProducer);
         generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, transformers,
                 reflectiveClassSet);
 
@@ -197,6 +203,63 @@ class OptaPlannerProcessor {
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
 
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
+    }
+
+    private void generateConstraintVerifier(SolverConfig solverConfig,
+            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer) {
+        if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null &&
+                isClassDefined(DotNames.CONSTRAINT_VERIFIER.toString())) {
+            final Class<?> constraintProviderClass = solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass();
+            final Class<?> planningSolutionClass = solverConfig.getSolutionClass();
+            final List<Class<?>> planningEntityClasses = solverConfig.getEntityClassList();
+            final ConstraintStreamImplType constraintStreamImplType =
+                    ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
+                            ConstraintStreamImplType.DROOLS);
+            syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
+                    .scope(Singleton.class)
+                    .creator(methodCreator -> {
+                        ResultHandle constraintProviderResultHandle =
+                                methodCreator.newInstance(MethodDescriptor.ofConstructor(constraintProviderClass));
+                        ResultHandle planningSolutionClassResultHandle = methodCreator.loadClass(planningSolutionClass);
+
+                        ResultHandle planningEntityClassesResultHandle =
+                                methodCreator.newArray(Class.class, planningEntityClasses.size());
+                        for (int i = 0; i < planningEntityClasses.size(); i++) {
+                            ResultHandle planningEntityClassResultHandle =
+                                    methodCreator.loadClass(planningEntityClasses.get(i));
+                            methodCreator.writeArrayValue(planningEntityClassesResultHandle, i,
+                                    planningEntityClassResultHandle);
+                        }
+
+                        // Got incompatible class change error when trying to invoke static method on
+                        // ConstraintVerifier.build(ConstraintProvider, Class, Class...)
+                        ResultHandle solutionDescriptorResultHandle = methodCreator.invokeStaticMethod(
+                                MethodDescriptor.ofMethod(SolutionDescriptor.class, "buildSolutionDescriptor",
+                                        SolutionDescriptor.class, Class.class, Class[].class),
+                                planningSolutionClassResultHandle, planningEntityClassesResultHandle);
+                        ResultHandle constraintVerifierResultHandle = methodCreator.newInstance(
+                                MethodDescriptor.ofConstructor(
+                                        "org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier",
+                                        ConstraintProvider.class, SolutionDescriptor.class),
+                                constraintProviderResultHandle, solutionDescriptorResultHandle);
+
+                        ResultHandle constraintStreamImplTypeResultHandle = methodCreator.load(constraintStreamImplType);
+                        constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
+                                MethodDescriptor.ofMethod(DotNames.CONSTRAINT_VERIFIER.toString(),
+                                        "withConstraintStreamImplType",
+                                        DotNames.CONSTRAINT_VERIFIER.toString(),
+                                        ConstraintStreamImplType.class),
+                                constraintVerifierResultHandle, constraintStreamImplTypeResultHandle);
+                        methodCreator.returnValue(constraintVerifierResultHandle);
+                    })
+                    .addType(ParameterizedType.create(DotNames.CONSTRAINT_VERIFIER,
+                            new Type[] {
+                                    Type.create(DotName.createSimple(constraintProviderClass.getName()), Type.Kind.CLASS),
+                                    Type.create(DotName.createSimple(planningSolutionClass.getName()), Type.Kind.CLASS)
+                            }, null))
+                    .defaultBean()
+                    .done());
+        }
     }
 
     private void applySolverProperties(RecorderContext recorderContext,
