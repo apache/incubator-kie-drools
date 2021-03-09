@@ -267,14 +267,14 @@ public abstract class AbstractRunnerHelper {
 
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
-                thrownScenarioException(scenarioResult.getFactMappingValue(), scesimModelDescriptor);
+                throwScenarioException(scenarioResult.getFactMappingValue(), scesimModelDescriptor);
             }
         }
 
     }
 
-    private void thrownScenarioException(FactMappingValue factMappingValue,
-                                         ScesimModelDescriptor scesimModelDescriptor) {
+    private void throwScenarioException(FactMappingValue factMappingValue,
+                                        ScesimModelDescriptor scesimModelDescriptor) {
         FactMapping factMapping = scesimModelDescriptor.getFactMapping(factMappingValue.getFactIdentifier(),
                                                                        factMappingValue.getExpressionIdentifier())
                 .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
