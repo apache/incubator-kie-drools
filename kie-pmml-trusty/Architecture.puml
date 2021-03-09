@@ -9,20 +9,14 @@ component api [
         This component defines API common to all PMML submodules
         ]
 
-package "PMML Library" {
-    /'component library_marshaller [
-        PMML Marshaller
-        This component is only responsible of plain marshalling/unmarshalling,
-        generating kie-agnostic objects.
-        It may also be an already existing library (jpmml ?)
-        ]'/
-    component library_api [
-            PMML Library API
+package "PMML Trusty" {
+    component trusty_api [
+            PMML Trusty API
             Defines common objects shared by both Compiler and
             model Model implementations, to decouple them
             ]
-    component library_compiler [
-        PMML Library Compiler
+    component trusty_compiler [
+        PMML Trusty Compiler
         Translate original PMML model to the objects
         that will be stored inside kie knowledge base
         ]
@@ -59,14 +53,13 @@ package "PMML Runtime" {
 }
 
 
-/'library_compiler --> marshaller : use'/
-library_api .> api : depends
+trusty_api .> api : depends
 runtime_api .> api : depends
-library_compiler ..> library_api : depends
-implementations .> library_api : depends
-library_compiler -> implementations : use
+trusty_compiler ..> trusty_api : depends
+implementations .> trusty_api : depends
+trusty_compiler -> implementations : use
 runtime_core .> runtime_api : depends
-runtime_assembler -> library_compiler : use
+runtime_assembler -> trusty_compiler : use
 runtime_assembler .> runtime_api : depends
 }
 
