@@ -18,11 +18,14 @@ package org.kie.kogito.monitoring.core.common.decision;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder;
+
+import static org.kie.kogito.monitoring.core.common.Constants.SKIP_MONITORING;
 
 public class MonitoredDecisionModel implements DecisionModel {
 
@@ -45,19 +48,27 @@ public class MonitoredDecisionModel implements DecisionModel {
     @Override
     public DMNResult evaluateAll(DMNContext context) {
         DMNResult result = originalModel.evaluateAll(context);
-        DMNResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
+        if (!shouldSkipMonitoring(context.getMetadata())) {
+            DMNResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
+        }
         return result;
     }
 
     @Override
     public DMNResult evaluateDecisionService(DMNContext context, String decisionServiceName) {
         DMNResult result = originalModel.evaluateDecisionService(context, decisionServiceName);
-        DMNResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
+        if (!shouldSkipMonitoring(context.getMetadata())) {
+            DMNResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
+        }
         return result;
     }
 
     @Override
     public DMNModel getDMNModel() {
         return originalModel.getDMNModel();
+    }
+
+    private boolean shouldSkipMonitoring(DMNMetadata dmnMetadata) {
+        return dmnMetadata != null && (boolean) dmnMetadata.asMap().getOrDefault(SKIP_MONITORING, false);
     }
 }

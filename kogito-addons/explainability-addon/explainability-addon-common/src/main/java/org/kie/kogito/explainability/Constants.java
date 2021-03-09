@@ -22,4 +22,5 @@ public class Constants {
     }
 
     public static final String SKIP_TRACING = "skipTracing";
+    public static final String SKIP_MONITORING = "skipMonitoring";
 }

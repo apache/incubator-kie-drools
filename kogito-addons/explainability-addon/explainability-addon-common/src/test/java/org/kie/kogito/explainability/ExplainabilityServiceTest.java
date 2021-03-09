@@ -26,7 +26,6 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.StaticApplication;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DMNKogito;
-import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.model.ModelIdentifier;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
@@ -43,7 +42,7 @@ public class ExplainabilityServiceTest {
     final static String TEST_EXECUTION_ID = "test";
     final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(
             ExplainabilityServiceTest.class.getResourceAsStream(MODEL_RESOURCE)));
-    final static DmnDecisionModel decisionModel = new DmnDecisionModel(genericDMNRuntime, MODEL_NAMESPACE, MODEL_NAME, () -> TEST_EXECUTION_ID);
+    final static DmnDecisionModelSpy decisionModel = new DmnDecisionModelSpy(genericDMNRuntime, MODEL_NAMESPACE, MODEL_NAME, () -> TEST_EXECUTION_ID);
 
     @Test
     public void testPerturbedExecution() {
@@ -75,6 +74,8 @@ public class ExplainabilityServiceTest {
         Assertions.assertEquals("No", perturbedResult.get("Should the driver be suspended?"));
         Assertions.assertTrue(perturbedResult.containsKey("Fine"));
         Assertions.assertNull(perturbedResult.get("Fine"));
+
+        Assertions.assertTrue(decisionModel.getEvaluationSkipMonitoringHistory().stream().allMatch(x -> x.equals(true)));
     }
 
     private Map<String, Object> createRequest() {

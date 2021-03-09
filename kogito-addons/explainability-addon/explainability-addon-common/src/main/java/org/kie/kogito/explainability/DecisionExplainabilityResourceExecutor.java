@@ -27,6 +27,7 @@ import org.kie.kogito.explainability.model.ModelIdentifier;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
 
+import static org.kie.kogito.explainability.Constants.SKIP_MONITORING;
 import static org.kie.kogito.explainability.Constants.SKIP_TRACING;
 import static org.kie.kogito.explainability.model.ModelIdentifier.RESOURCE_ID_SEPARATOR;
 
@@ -42,19 +43,20 @@ public class DecisionExplainabilityResourceExecutor implements ExplainabilityRes
         DecisionModel decisionModel = getDecisionModel(application.get(DecisionModels.class), predictInput.getModelIdentifier());
         DMNContext dmnContext = decisionModel.newContext(convertDMNInput(predictInput));
         dmnContext.getMetadata().set(SKIP_TRACING, true);
+        dmnContext.getMetadata().set(SKIP_MONITORING, true);
         return convertDMNOutput(decisionModel.evaluateAll(dmnContext), predictInput);
     }
 
-    public DecisionModel getDecisionModel(DecisionModels decisionModels, ModelIdentifier modelIdentifier) {
+    protected DecisionModel getDecisionModel(DecisionModels decisionModels, ModelIdentifier modelIdentifier) {
         String[] namespaceAndName = extractNamespaceAndName(modelIdentifier.getResourceId());
         return decisionModels.getDecisionModel(namespaceAndName[0], namespaceAndName[1]);
     }
 
-    public Map<String, Object> convertDMNInput(PredictInput predictInput) {
+    private Map<String, Object> convertDMNInput(PredictInput predictInput) {
         return predictInput.getRequest();
     }
 
-    public PredictOutput convertDMNOutput(DMNResult dmnResult, PredictInput predictInput) {
+    private PredictOutput convertDMNOutput(DMNResult dmnResult, PredictInput predictInput) {
         String[] namespaceAndName = extractNamespaceAndName(predictInput.getModelIdentifier().getResourceId());
         KogitoDMNResult result = new KogitoDMNResult(
                 namespaceAndName[0],
