@@ -285,7 +285,7 @@ public abstract class AbstractRunnerHelper {
         } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
             throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(factMappingValue.getExceptionMessage()));
         } else {
-            throw new ScenarioException("Illegal FactMappingValue status");
+            throw new IllegalStateException("Illegal FactMappingValue status");
         }
     }
 
