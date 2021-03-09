@@ -28,13 +28,13 @@ under the License.
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/main/resources</directory>
         </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/test/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/test/resources</directory>
         </fileSet>
       </fileSets>
@@ -44,13 +44,13 @@ under the License.
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/main/resources</directory>
         </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/test/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/test/resources</directory>
         </fileSet>
       </fileSets>
@@ -60,13 +60,13 @@ under the License.
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/main/resources</directory>
         </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/test/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/test/resources</directory>
         </fileSet>
       </fileSets>
@@ -76,13 +76,13 @@ under the License.
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/main/resources</directory>
         </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/test/java</directory>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory>src/test/resources</directory>
         </fileSet>
       </fileSets>

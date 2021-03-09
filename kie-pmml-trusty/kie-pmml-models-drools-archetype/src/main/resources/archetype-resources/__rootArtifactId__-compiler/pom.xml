@@ -23,6 +23,10 @@
       <artifactId>kie-pmml-models-drools-${artifactModelName}-model</artifactId>
     </dependency>
     <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+    </dependency>
     <!-- TEST -->
     <dependency>
       <groupId>${groupId}</groupId>
@@ -33,6 +37,12 @@
     <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>kie-pmml-compiler-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-common</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
