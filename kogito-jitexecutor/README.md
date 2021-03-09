@@ -157,7 +157,6 @@ the response is
 ]
 ```
 
->>>>>>> upstream/master
 ## Native application
 
 The native mode is supported by this application. You can create the native Quarkus application for example with 
