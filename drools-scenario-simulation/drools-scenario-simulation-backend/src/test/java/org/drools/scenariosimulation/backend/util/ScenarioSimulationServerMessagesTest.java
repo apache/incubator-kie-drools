@@ -39,6 +39,11 @@ public class ScenarioSimulationServerMessagesTest {
     }
 
     @Test
+    public void getGenericScenarioExceptionMessage() {
+        assertEquals("Failure reason: An exception message", ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage("An exception message"));
+    }
+
+    @Test
     public void getCollectionFactExceptionMessage() {
         String factName = "Fact.name";
         String wrongValue = "value";

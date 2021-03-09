@@ -345,8 +345,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         try {
             runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
             fail();
-        } catch (ScenarioException exception) {
-            assertFalse(exception.isFailedAssertion());
+        } catch (IllegalStateException exception) {
             assertEquals("Illegal FactMappingValue status", exception.getMessage());
         }
 
