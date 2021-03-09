@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.model.api.GwtIncompatible;
 
 /**
  * FEEL expression language engine interface
@@ -50,6 +51,7 @@ public interface FEEL {
      *
      * @return a newly instantiated FEEL engine instance
      */
+    @GwtIncompatible
     static FEEL newInstance(ClassLoader cl) {
         return new FEELImpl(cl);
     }
@@ -68,6 +70,7 @@ public interface FEEL {
      *
      * @return a newly instantiated FEEL engine instance
      */
+    @GwtIncompatible
     static FEEL newInstance(ClassLoader cl, List<FEELProfile> profiles) {
         return new FEELImpl(cl, profiles);
     }

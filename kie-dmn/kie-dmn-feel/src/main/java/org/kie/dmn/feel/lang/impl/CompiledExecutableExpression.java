@@ -18,7 +18,9 @@ package org.kie.dmn.feel.lang.impl;
 
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class CompiledExecutableExpression implements CompiledFEELExpression {
 
     private final CompiledFEELExpression expr;
