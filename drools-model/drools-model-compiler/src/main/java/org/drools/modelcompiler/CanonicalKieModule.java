@@ -214,7 +214,7 @@ public class CanonicalKieModule implements InternalKieModule {
         checkStreamMode(kBaseModel, conf, kpkgs.getKiePackages());
         InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
 
-        registerNonNativeResources( kBaseModel, kieProject, kieBase );
+        registerNonNativeResources( kBaseModel, kieProject, kieBase, messages );
         return kieBase;
     }
 
@@ -253,9 +253,12 @@ public class CanonicalKieModule implements InternalKieModule {
         compositeUpdater.run();
     }
 
-    private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase ) {
+    private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, ResultsImpl messages ) {
         KnowledgeBuilder kbuilder = getKnowledgeBuilderForKieBase(kBaseModel.getName());
-        if ( kbuilder != null && !kbuilder.hasErrors() ) {
+        if (kbuilder == null) {
+            kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages, NON_MODEL_RESOURCES);
+        }
+        if ( !kbuilder.hasErrors() ) {
             for (KiePackage pk : kbuilder.getKnowledgePackages()) {
                 // Workaround to "mark" already compiled packages (as found inside the kjar and retrieved by createKiePackages(kieProject, kBaseModel, messages, kBaseConf))
                 // as "PMML" packages
