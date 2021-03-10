@@ -1,19 +1,38 @@
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
+
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class KieServicesTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class KieServicesTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieServicesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 	
 	private KieServices ks;
 
@@ -61,8 +80,8 @@ public class KieServicesTest extends CommonTestMethodBase {
 	@Test
 	public void testNewKieContainerIDs() {
 		ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete", "1.0.0");
-        createAndDeployJar( ks, releaseId, createDRL("ruleA") );
-        
+        KieModule km = KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, createDRL("ruleA"));
+
 		KieContainer c1 = ks.newKieContainer("id1", releaseId);
 		KieContainer c2 = ks.newKieClasspathContainer("id2");
 		try {
@@ -82,8 +101,8 @@ public class KieServicesTest extends CommonTestMethodBase {
 	@Test
 	public void testDisposeClearTheIDReference() {
 		ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete", "1.0.0");
-        createAndDeployJar( ks, releaseId, createDRL("ruleA") );
-        
+        KieModule km = KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, createDRL("ruleA"));
+
 		KieContainer c1 = ks.newKieContainer("id1", releaseId);
 		try {
 			ks.newKieClasspathContainer("id1");

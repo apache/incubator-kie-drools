@@ -1028,7 +1028,7 @@ public class OOPathTest {
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( drl, 1 );
+        assertDrlHasCompilationError( drl, 1, kieBaseTestConfiguration );
     }
 
     @Test

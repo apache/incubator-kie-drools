@@ -15,18 +15,37 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
+import java.util.Collection;
+
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.rule.ConsequenceMetaData;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class RuleMetadataTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class RuleMetadataTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RuleMetadataTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs. This test may not be necessary for exec-model
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testModify() {
@@ -222,7 +241,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
                     "\nend\n";
         }
 
-        return loadKnowledgeBaseFromString( rule );
+        return KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
     }
 
     private RuleImpl getRule(KieBase kbase, String ruleName) {

@@ -48,6 +48,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 public class SerializedPackageMergeTest {
+
+    // kpackage serialization is not supported. But leave it for standard-drl.
+
     private static final DateFormat DF   = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
     private static final String[]   DRLs = {"drl/HelloWorld.drl","test_Serialization1.drl"};
 

@@ -17,26 +17,26 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 import org.assertj.core.api.Assertions;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
 import org.drools.mvel.compiler.PersonInterface;
-import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.mvel.integrationtests.facts.ClassA;
 import org.drools.mvel.integrationtests.facts.ClassB;
 import org.drools.mvel.integrationtests.facts.InterfaceA;
 import org.drools.mvel.integrationtests.facts.InterfaceB;
-import org.drools.core.test.model.Cheese;
-import org.drools.core.test.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
@@ -48,7 +48,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class DeleteTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DeleteTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DeleteTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private static Logger logger = LoggerFactory.getLogger(DeleteTest.class);
 
@@ -58,20 +71,7 @@ public class DeleteTest extends CommonTestMethodBase {
 
     @Before
     public void setUp() {
-        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-        kfs.write(KieServices.Factory.get().getResources()
-                .newClassPathResource(DELETE_TEST_DRL, DeleteTest.class));
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll();
-
-        List<Message> res = kbuilder.getResults().getMessages(Level.ERROR);
-        Assertions.assertThat(res).isEmpty();
-
-        KieBase kbase = KieServices.Factory.get()
-                .newKieContainer(kbuilder.getKieModule().getReleaseId())
-                .getKieBase();
-
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, DELETE_TEST_DRL);
         ksession = kbase.newKieSession();
     }
 
@@ -181,7 +181,7 @@ public class DeleteTest extends CommonTestMethodBase {
                 "   delete( $b );\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new ClassA());
@@ -192,7 +192,7 @@ public class DeleteTest extends CommonTestMethodBase {
     @Test
     public void testAssertRetract() throws Exception {
         // postponed while I sort out KnowledgeHelperFixer
-        final KieBase kbase = loadKnowledgeBase("assert_retract.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "assert_retract.drl");
         final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
@@ -230,8 +230,8 @@ public class DeleteTest extends CommonTestMethodBase {
         str += "  list.add($s); \n";
         str += "end  \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -247,8 +247,8 @@ public class DeleteTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyRetractAndModifyInsert() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ModifyRetractInsert.drl" ) );
-        final KieSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ModifyRetractInsert.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -266,8 +266,8 @@ public class DeleteTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyRetractWithFunction() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_RetractModifyWithFunction.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RetractModifyWithFunction.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final org.drools.mvel.compiler.Cheese stilton = new org.drools.mvel.compiler.Cheese("stilton", 7);
         final org.drools.mvel.compiler.Cheese muzzarella = new org.drools.mvel.compiler.Cheese("muzzarella", 9);

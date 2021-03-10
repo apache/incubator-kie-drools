@@ -16,17 +16,35 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 
+import static org.junit.Assert.assertTrue;
+
+@RunWith(Parameterized.class)
 public class ParallelBuildTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ParallelBuildTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private final List<Class<?>> classes = Arrays.asList(
             java.util.List.class,
@@ -45,8 +63,6 @@ public class ParallelBuildTest {
 
     @Test
     public void testParallelBuild() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
         StringBuilder sb = new StringBuilder();
         int rc = 0;
         for (Class<?> c : classes) {
@@ -59,7 +75,9 @@ public class ParallelBuildTest {
             sb.append("\n");
         }
 
-        kbuilder.add(ResourceFactory.newByteArrayResource(sb.toString().getBytes(StandardCharsets.UTF_8)), ResourceType.DRL);
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, sb.toString());
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
 }

@@ -26,14 +26,11 @@ import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.compiler.StockTickInterface;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieModule;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
@@ -60,7 +57,7 @@ public class PseudoClockEventsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     private static final String evalFirePseudoClockDeclaration =
@@ -134,8 +131,7 @@ public class PseudoClockEventsTest {
 
     private int processStocks(int stockCount, AgendaEventListener agendaEventListener, String drlContentString)
             throws Exception {
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drlContentString);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drlContentString);
 
         KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.PSEUDO);

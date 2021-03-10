@@ -17,6 +17,7 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -25,24 +26,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class QueryInRHSCepTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public QueryInRHSCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
 	private KieSession ksession;
     private SessionPseudoClock clock;
 	private List<?> myGlobal;
@@ -89,7 +107,7 @@ public class QueryInRHSCepTest {
         kfs.write( ResourceFactory.newByteArrayResource(drl.getBytes())
                                   .setTargetPath("org/drools/compiler/integrationtests/"+this.getClass().getName()+".drl") );
 
-        assertTrue(ks.newKieBuilder(kfs).buildAll().getResults().getMessages().isEmpty());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         
         clock = ksession.getSessionClock();
@@ -164,7 +182,7 @@ public class QueryInRHSCepTest {
         kfs.write( ResourceFactory.newByteArrayResource(drl.getBytes())
                                   .setTargetPath("org/drools/compiler/integrationtests/"+this.getClass().getName()+".drl") );
 
-        assertTrue(ks.newKieBuilder(kfs).buildAll().getResults().getMessages().isEmpty());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         
         myGlobal = new ArrayList<>();
@@ -192,7 +210,9 @@ public class QueryInRHSCepTest {
                 "  myGlobal.add(drools.getKieRuntime().getQueryResults(\"myQuery\"));\n"+
                 "end\n";
 
-        KieSession kSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        kieBaseTestConfiguration.setStreamMode(false); // CLOUD
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kSession = kbase.newKieSession();
 
         myGlobal = new ArrayList<>();
         kSession.setGlobal("myGlobal", myGlobal);

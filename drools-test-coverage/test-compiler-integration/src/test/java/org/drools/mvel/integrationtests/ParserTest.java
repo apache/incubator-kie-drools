@@ -21,9 +21,7 @@ import java.io.InputStreamReader;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlParser;
-import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.ParserError;
-import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -31,6 +29,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,8 +37,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ParserTest extends CommonTestMethodBase {
+public class ParserTest {
 
+    // not for exec-model
+    
     @Test
     public void testErrorLineNumbers() throws Exception {
         // this test aims to test semantic errors

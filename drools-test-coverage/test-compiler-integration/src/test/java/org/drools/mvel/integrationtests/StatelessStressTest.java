@@ -15,16 +15,18 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.junit.Assert.assertFalse;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.compiler.Address;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.StatelessKieSession;
 
@@ -32,12 +34,26 @@ import org.kie.api.runtime.StatelessKieSession;
  * This is for testing possible PermSpace issues (leaking) when spawning lots of sessions in concurrent threads.
  * Normally this test will be XXX'ed out, as when running it will not terminate.
  */
-public class StatelessStressTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class StatelessStressTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public StatelessStressTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN}); // choose config
+        return parameters;
+    }
 
     @Ignore
     @Test
     public void testLotsOfStateless() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("thread_class_test.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "thread_class_test.drl");
 
         int numThreads = 100;
         Thread[] ts = new Thread[numThreads];
@@ -52,11 +68,12 @@ public class StatelessStressTest extends CommonTestMethodBase {
                     while (true) {
                         start = System.currentTimeMillis();
                         StatelessKieSession sess = kbase.newStatelessKieSession();
-                        try {
-                            sess    = SerializationHelper.serializeObject(sess);
-                        } catch (Exception ex) {
-                            throw new RuntimeException(ex);
-                        }
+                        // StatelessKieSession is not serializable
+//                        try {
+//                            sess    = SerializationHelper.serializeObject(sess);
+//                        } catch (Exception ex) {
+//                            throw new RuntimeException(ex);
+//                        }
                         Person p = new Person();
                         p.setName( "Michael" );
                         Address add1 = new Address();
