@@ -1,0 +1,9 @@
+<solver>
+  <scoreDirectorFactory>
+    <constraintStreamImplType>BAVET</constraintStreamImplType>
+    <constraintProviderClass>org.optaplanner.spring.boot.autoconfigure.normal.constraints.TestdataSpringConstraintProvider</constraintProviderClass>
+  </scoreDirectorFactory>
+  <termination>
+    <secondsSpentLimit>2</secondsSpentLimit>
+  </termination>
+</solver>

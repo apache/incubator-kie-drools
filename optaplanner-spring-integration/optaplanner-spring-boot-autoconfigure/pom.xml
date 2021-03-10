@@ -32,6 +32,14 @@
       <artifactId>optaplanner-core</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <!-- Need this so we can @Autowire ConstraintVerifier -->
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-test</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-jackson</artifactId>
