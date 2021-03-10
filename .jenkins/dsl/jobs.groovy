@@ -41,6 +41,7 @@ if (isMainBranch()) {
     folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
 
     setupOptaplannerPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    setupOptaplannerQuarkusLTSPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     setupOptawebEmployeeRosteringPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     setupOptawebVehicleRoutingPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
 
@@ -73,6 +74,13 @@ void setupOptaplannerPrJob(String jobFolder) {
     jobParams.job.folder = jobFolder
     jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
     KogitoJobTemplate.createPRJob(this, jobParams)
+}
+
+void setupOptaplannerQuarkusLTSPrJob(String jobFolder) {
+    def jobParams = getDefaultJobParams()
+    jobParams.job.folder = jobFolder
+    jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
+    KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
 void setupOptawebEmployeeRosteringPrJob(String jobFolder) {
@@ -126,7 +134,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-            
+
             if (jobType == KogitoJobType.PR) {
                 env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
                 env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
@@ -147,7 +155,6 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
                     env('NEXUS_STAGING_PROFILE_ID', "${MAVEN_NEXUS_STAGING_PROFILE_ID}")
                     env('NEXUS_BUILD_PROMOTION_PROFILE_ID', "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}")
                 }
-                
             }
         }
     }

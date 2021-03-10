@@ -1,8 +1,15 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
 changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
+
+optaplannerRepo = 'optaplanner'
+quickstartsRepo = 'optaplanner-quickstarts'
+kogitoRuntimesRepo = 'kogito-runtimes'
+quarkusRepo = 'quarkus'
 
 pipeline {
     agent {
@@ -25,8 +32,7 @@ pipeline {
                     mailer.buildLogScriptPR()
 
                     checkoutRuntimesRepo()
-                    checkoutRepo('optaplanner')
-                    String quickstartsRepo = 'optaplanner-quickstarts'
+                    checkoutRepo(optaplannerRepo)
                     dir(quickstartsRepo) {
                         // If the PR to OptaPlanner targets the 'master' branch, we assume the branch 'development' for quickstarts.
                         String quickstartsChangeTarget = changeTarget == 'master' ? 'development' : changeTarget
@@ -35,26 +41,58 @@ pipeline {
                 }
             }
         }
+        stage('Build quarkus') {
+            when {
+                expression { return getQuarkusBranch() }
+            }
+            steps {
+                script {
+                    checkoutQuarkusRepo()
+                    getMavenCommand(quarkusRepo, false)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+        }
         stage('Build Kogito Runtimes skipping tests') {
             steps {
-                mavenCleanInstall("kogito-runtimes", true, [])
+                script {
+                    getMavenCommand(kogitoRuntimesRepo)
+                        .skipTests(true)
+                        .withProperty('skipITs', true)
+                        .run('clean install')
+                }
             }
         }
         stage('Build OptaPlanner') {
             steps {
-                mavenCleanInstall('optaplanner', false, ['run-code-coverage'], '-Dfull')
+                script {
+                    getMavenCommand(optaplannerRepo)
+                        .withProfiles(['run-code-coverage'])
+                        .withProperty('full')
+                        .run('clean install')
+                }
             }
         }
         stage('Analyze OptaPlanner by SonarCloud') {
             steps {
-                withCredentials([string(credentialsId: 'SONARCLOUD_TOKEN', variable: 'SONARCLOUD_TOKEN')]) {
-                    runMaven("validate", "optaplanner", true, ["sonarcloud-analysis"], "-e -nsu -Dsonar.projectKey=org.optaplanner:optaplanner")
+                script {
+                    withCredentials([string(credentialsId: 'SONARCLOUD_TOKEN', variable: 'SONARCLOUD_TOKEN')]) {
+                        getMavenCommand(optaplannerRepo)
+                                .withOptions(['-e', '-nsu'])
+                                .withProperty('sonar.projectKey', 'org.optaplanner:optaplanner')
+                                .withProfiles(['sonarcloud-analysis'])
+                                .run('validate')
+                    }
                 }
             }
         }
         stage('Build OptaPlanner Quickstarts') {
             steps {
-                mavenCleanInstall("optaplanner-quickstarts", false, [])
+                script {
+                    getMavenCommand(quickstartsRepo)
+                        .run('clean install')
+                }
             }
         }
     }
@@ -96,32 +134,34 @@ void checkoutRepo(String repo, String dirName=repo) {
 void checkoutRuntimesRepo() {
     String targetBranch = changeTarget
     String [] versionSplit = targetBranch.split("\\.")
-    if(versionSplit.length == 3 
+    if (versionSplit.length == 3
         && versionSplit[0].isNumber()
         && versionSplit[1].isNumber()
        && versionSplit[2] == 'x') {
         targetBranch = "${Integer.parseInt(versionSplit[0]) - 7}.${versionSplit[1]}.x"
     } else {
         echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
-    }
-    dir('kogito-runtimes') {
-        githubscm.checkoutIfExists('kogito-runtimes', changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
+       }
+    dir(kogitoRuntimesRepo) {
+        githubscm.checkoutIfExists(kogitoRuntimesRepo, changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
     }
 }
 
-void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = "") {
-    runMaven("clean install", directory, skipTests, profiles, extraArgs)
+void checkoutQuarkusRepo() {
+    dir(quarkusRepo) {
+        checkout(githubscm.resolveRepository(quarkusRepo, 'quarkusio', getQuarkusBranch(), false))
+    }
 }
 
-void runMaven(String command, String directory, boolean skipTests = false, List profiles = [], String extraArgs = "") {
-    mvnCmd = command
-    if(profiles.size() > 0){
-        mvnCmd += " -P${profiles.join(',')}"
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
+    mvnCmd = new MavenCommand(this, ['-fae'])
+                .inDirectory(directory)
+    if (addQuarkusVersion && getQuarkusBranch()) {
+        mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
     }
-    if(extraArgs != ""){
-        mvnCmd += " ${extraArgs}"
-    }
-    dir(directory) {
-        maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
-    }
+    return mvnCmd
+}
+
+String getQuarkusBranch() {
+    return env['QUARKUS_BRANCH']
 }
