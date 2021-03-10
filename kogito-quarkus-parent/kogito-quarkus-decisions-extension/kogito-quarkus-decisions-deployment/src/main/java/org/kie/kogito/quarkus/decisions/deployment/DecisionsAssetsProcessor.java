@@ -23,6 +23,7 @@ import org.jboss.jandex.DotName;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
 
 /**
@@ -56,4 +57,12 @@ public class DecisionsAssetsProcessor {
         return result;
     }
 
+    @BuildStep
+    public List<ReflectiveClassBuildItem> reflectiveClassBuildItems() {
+        List<ReflectiveClassBuildItem> result = new ArrayList<>();
+        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNDecisionResult"));
+        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNMessage"));
+        result.add(new ReflectiveClassBuildItem(true, true, "org.kie.kogito.dmn.rest.KogitoDMNResult"));
+        return result;
+    }
 }
