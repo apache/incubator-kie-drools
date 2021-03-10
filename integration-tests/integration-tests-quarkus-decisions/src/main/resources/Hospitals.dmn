@@ -1,0 +1,553 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_933D467E-28C5-4A43-80AF-3A053B7E515F" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_44A229A6-CEDA-40ED-8AB6-BF5DD3A0238F" name="Hospitals" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_933D467E-28C5-4A43-80AF-3A053B7E515F">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_C726526C-B99A-4541-B38E-D31571372A5A" name="tPatient" isCollection="false">
+    <dmn:itemComponent id="_0151E283-33EE-43F8-908E-3240709C078B" name="Is Covid Positive" isCollection="false">
+      <dmn:typeRef>boolean</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_1665F674-BB40-4A5A-9BCC-5792777E4C92" name="Diagnosis" isCollection="false">
+      <dmn:typeRef>tDiagnosis</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_DE188EDA-060C-4C9E-A78E-F7B531B8E9ED" name="tHospital" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_EFCED32A-469B-4D23-8EE6-36848F428996">
+      <dmn:text>"National Hospital", "University Hospital", "Military Hospital", "Private Hospital"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_0314F4A1-E49A-47CE-BD5A-C1A97401DA9D" name="tHospitals" isCollection="true">
+    <dmn:typeRef>tHospital</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_A850D57A-8F06-4398-B3DA-01E91BB6475C" name="tDiagnosis" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_6AA1D1FD-6EF1-4C6B-B919-120FAF039922">
+      <dmn:text>"diabetes", "tumor", "broken leg"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F" name="Patient">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A73805B9-D27F-4FC1-8245-24DB7EC93BCA" name="Patient" typeRef="tPatient"/>
+  </dmn:inputData>
+  <dmn:decision id="_76E9BF51-2A42-4221-9F50-551408D8E406" name="Is National Suitable">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C8521BB7-C6D2-4337-A0D9-65F3AD13B1D8" name="Is National Suitable" typeRef="boolean"/>
+    <dmn:informationRequirement id="_AE7DB7D5-12D1-409F-9AF4-2F79FE473D84">
+      <dmn:requiredInput href="#_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_F556D0A5-03E7-4375-862F-3C5E49D57527" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_1ABD3AEE-A183-4A3D-9C20-8EE81DED7559">
+        <dmn:inputExpression id="_F4B100BE-5DE5-4C33-8DE5-5B83AFDBFDA3" typeRef="boolean">
+          <dmn:text>Patient.Is Covid Positive</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_0FD3BF23-919A-4FD9-BA53-CD21F49B29E9"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_7C579D5D-0D48-41E1-B62F-69B1B7D79F4E">
+        <dmn:inputEntry id="_23A66A3F-61FE-4C56-BFF9-DD8BF6369A8D">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B3EC5351-2D54-42E7-994D-7B3CA670BF6E">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_59868003-5C44-42ED-953C-81C118AA440C">
+        <dmn:inputEntry id="_8144BB87-9BBD-4C8F-A61D-D081BF883BC3">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_F2997332-F5C5-4766-88F8-D95416BC7E7E">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="_72607DA3-C627-406C-ADAC-EB28CB714196" name="Is Military Suitable">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0DC1C199-232F-4C34-9E7B-C99DE520614B" name="Is Military Suitable" typeRef="boolean"/>
+    <dmn:informationRequirement id="_8E28A8B1-F3C6-424D-A45A-7BDB44C78572">
+      <dmn:requiredInput href="#_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_D89255C6-CF69-428A-99B9-4816CA9A01A2" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_62FEBDB3-BED6-4DE7-A44B-C53182CBEA17">
+        <dmn:inputExpression id="_88605EB8-E4C7-40FA-9D9C-74FA47E25A12" typeRef="boolean">
+          <dmn:text>Patient.Is Covid Positive</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_88BED454-1BF6-4CEF-8A61-257058D1BA3A"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_608A755E-5DC9-4F36-B1B4-4A04B9355C9E">
+        <dmn:inputEntry id="_CFB3306F-D6C5-41E7-A189-12D312B35D48">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_43AC4D11-AE50-4CBD-BC18-DD74F8031E6A">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_F40562DC-8088-4005-8A74-778E6224A404">
+        <dmn:inputEntry id="_00C0FA84-5864-4C48-829A-0FC202F74F4E">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_809AFCB3-6FDB-43E8-AEFB-0452CADC2A9A">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="_E1D3EF78-A46A-4E4D-A289-29FF034C9ACC" name="Is Private Suitable">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E69C149A-6740-478F-94DF-AEB070E64595" name="Is Private Suitable" typeRef="boolean"/>
+    <dmn:informationRequirement id="_7C4D9146-B6C3-4BAF-87D1-9C5102FB1D18">
+      <dmn:requiredInput href="#_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_1FFAE577-CDE4-4CC0-AC39-88D6161F9A3A" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_33FA8136-EC42-46ED-932A-203DF02E21DE">
+        <dmn:inputExpression id="_37BB5629-254F-4AE1-B98A-85765A20C0BE" typeRef="tDiagnosis">
+          <dmn:text>Patient.Diagnosis</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_E98E7616-2B83-415A-B441-DDC274A41EFF">
+        <dmn:inputExpression id="_BD333389-5C77-4ED1-8A71-91005B779DFE" typeRef="boolean">
+          <dmn:text>Patient.Is Covid Positive</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_494DEE96-7083-4FA8-9377-6F49D12236ED"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_993899F1-6270-460B-8308-8EE0FF83C3F2">
+        <dmn:inputEntry id="_256340A7-EDAF-4D4F-866E-6440ABB09980">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F94FA62F-3BC2-4603-94A9-06C56BA95090">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_E0EBE8AA-2D1F-4642-919F-288F581ED8DA">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_B8BE2F6F-0A6D-42CE-A3E6-5279D09A2402">
+        <dmn:inputEntry id="_C62B84F7-CFCC-405B-A3CE-0CC1867CB86A">
+          <dmn:text>"broken leg"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_619074B8-4B95-46AA-862C-D9FEC01081E8">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_04DF3309-BB04-4212-877C-57F7E9A0B6BD">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="_D99B6D92-1148-421C-888B-586D65DB513D" name="Is University Suitable">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A996D991-CFD7-46BD-8AAF-4F76FC51FC38" name="Is University Suitable" typeRef="boolean"/>
+    <dmn:informationRequirement id="_863B8DBF-406B-43C9-9CA8-0C4147A0350F">
+      <dmn:requiredInput href="#_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_8A0C4DE0-AA60-4531-A91C-1E6D360FF691" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_6B83DE01-33B2-4A3E-BD6A-369A16C6F857">
+        <dmn:inputExpression id="_A6BAE511-CC44-4125-A62A-720280FC3C76" typeRef="tDiagnosis">
+          <dmn:text>Patient.Diagnosis</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_8595A0FB-8286-4C5B-B26E-4A9EF85DC82A">
+        <dmn:inputExpression id="_5BBB70B4-765D-49A9-80A0-F5EA2B117A81" typeRef="boolean">
+          <dmn:text>Patient.Is Covid Positive</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_93F38688-5F61-4E7D-918D-39A939E40FE5"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_268E7A40-56A3-4B44-9B14-39F19C29E8D9">
+        <dmn:inputEntry id="_6A1DC8D9-12EE-4A6F-B21A-ADE83AF554B7">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_C1256222-8EC4-4BA8-9B8C-79A609EDC3F9">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6204594A-838D-49BF-9E2E-69B477427E8B">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_0A5CB6D6-000D-44C9-8DA8-DF153C4F81CA">
+        <dmn:inputEntry id="_83AC6EE1-C10D-4016-99E5-3EDDA7A6A988">
+          <dmn:text>"broken leg"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_73CA36DF-B89E-4BEF-AB57-F6097D73CD00">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_46D46E80-D33C-4308-8E70-E1D2D546655A">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_AA32E769-457D-4AEA-B3CB-3D5F2235BB9F">
+        <dmn:inputEntry id="_D3AE5D3A-D0E2-49F6-9F00-C9052385B98C">
+          <dmn:text>"diabetes"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_62205E6A-D936-4C56-8159-28610EE7EA9C">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_88160C3F-C00F-42D3-B5B5-DA3EA1162265">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="_4E2D7F13-7FBB-4EB7-B455-951B0E04E037" name="Suitable Hospitals">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5D2D083F-C368-4407-BAC8-140B55906489" name="Suitable Hospitals" typeRef="tHospitals"/>
+    <dmn:informationRequirement id="_A59A109B-91FB-4293-AA88-325B13138414">
+      <dmn:requiredDecision href="#_76E9BF51-2A42-4221-9F50-551408D8E406"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_5B52728E-83D0-4630-B7BE-744130C89C1B">
+      <dmn:requiredDecision href="#_72607DA3-C627-406C-ADAC-EB28CB714196"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_236E71CE-4C3F-4D0B-A276-EEFF420ADE63">
+      <dmn:requiredDecision href="#_E1D3EF78-A46A-4E4D-A289-29FF034C9ACC"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_E10B9077-19E7-44B1-8620-64BC67DB06C7">
+      <dmn:requiredDecision href="#_D99B6D92-1148-421C-888B-586D65DB513D"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_A69C5316-1836-4AED-9FF4-B540318555D2" hitPolicy="COLLECT" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_C9D421A4-6118-4A55-9711-2FA3BD6EB04E">
+        <dmn:inputExpression id="_FC3085AE-AF05-4CDA-B6F1-6BC84676AD3B" typeRef="boolean">
+          <dmn:text>Is Military Suitable</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_121E9808-D97F-4FF4-86A1-E4B3CF67CE99">
+        <dmn:inputExpression id="_ABB6C3DF-CD21-43E0-9886-F6B1A603DA66" typeRef="boolean">
+          <dmn:text>Is National Suitable</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_9D7EFC48-8812-47B3-9B69-55D293017C01">
+        <dmn:inputExpression id="_94A65A77-3D42-43D6-B43E-AA64CE15016C" typeRef="boolean">
+          <dmn:text>Is Private Suitable</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_C840EE96-7EE3-4B7B-A6BE-4BCE0E3B7E5B">
+        <dmn:inputExpression id="_6CAD69E0-713C-45E2-A0A3-7862827EA646" typeRef="boolean">
+          <dmn:text>Is University Suitable</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_02B5C18C-B5EE-43BE-A606-810E5DB65D62"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_6930B4B0-FC65-42EA-93D8-2F6A3F7BAB25">
+        <dmn:inputEntry id="_E8CD3043-DE42-4808-88E0-E7C9D64B5B5C">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_06E94360-504C-4E91-9261-A238C6FD7145">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_CBD7825F-27A2-4CA7-B5B0-4A615B935506">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_6A1BF43A-0A05-4013-A9A0-B6363E138074">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_196A00A8-0B81-42B0-A6C6-43BF909C034D">
+          <dmn:text>"Military Hospital"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_CC5D3D4F-E686-4E9A-BBF2-D1587185C1B0">
+        <dmn:inputEntry id="_9AB722DC-E5A6-4522-943B-BCF06824D6F8">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_3CE8A385-2076-4992-A38C-0F2F1D053425">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8022E0D5-71F0-446A-9C73-168F85507A7F">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F5238B5E-9638-4D90-A80C-859C7CB6DAFE">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_D4FBB1AF-C44B-4E55-B4A5-E8FFF3D96DBF">
+          <dmn:text>"National Hospital"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_CE355874-AEE1-4394-889B-06A1B7828FC0">
+        <dmn:inputEntry id="_F522E836-38DB-4EFA-A6D4-E2C0612E91B0">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F1C965C7-26F9-43F6-9B61-239FE117B605">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_63F8913B-82ED-4BAE-9121-4033E37EC114">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_590A19D9-7545-452D-AFCE-10F9442A7922">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0C7D7790-F090-4C67-B7A6-7D3D0278484E">
+          <dmn:text>"Private Hospital"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_9A233A55-26F5-4B14-A044-6689708B764A">
+        <dmn:inputEntry id="_CC1835AA-9186-4E5C-98F9-C1A47B7258E6">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_C5393184-7E8A-4E7F-8A0E-25BF8A4B6E19">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_E7DB86D3-E945-4A21-9A8B-BB84EFBE7635">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_FEAA52AC-D8E7-4386-B1B0-452C204E8462">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B6C2930C-EA4E-4053-A80D-BEFFC34CD949">
+          <dmn:text>"University Hospital"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_D956480B-14F3-4533-BD8D-B91A02BFCCE6" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_F556D0A5-03E7-4375-862F-3C5E49D57527">
+            <kie:width>50</kie:width>
+            <kie:width>198</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D89255C6-CF69-428A-99B9-4816CA9A01A2">
+            <kie:width>50</kie:width>
+            <kie:width>199</kie:width>
+            <kie:width>191</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1FFAE577-CDE4-4CC0-AC39-88D6161F9A3A">
+            <kie:width>50</kie:width>
+            <kie:width>182</kie:width>
+            <kie:width>211</kie:width>
+            <kie:width>186</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8A0C4DE0-AA60-4531-A91C-1E6D360FF691">
+            <kie:width>50</kie:width>
+            <kie:width>169</kie:width>
+            <kie:width>211</kie:width>
+            <kie:width>153</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_A69C5316-1836-4AED-9FF4-B540318555D2">
+            <kie:width>50</kie:width>
+            <kie:width>147</kie:width>
+            <kie:width>146</kie:width>
+            <kie:width>144</kie:width>
+            <kie:width>164</kie:width>
+            <kie:width>186</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F" dmnElementRef="_E1B628A3-2C80-4D09-A1E6-AB4BAEA4B54F" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="419" y="539" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_76E9BF51-2A42-4221-9F50-551408D8E406" dmnElementRef="_76E9BF51-2A42-4221-9F50-551408D8E406" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="171" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_72607DA3-C627-406C-ADAC-EB28CB714196" dmnElementRef="_72607DA3-C627-406C-ADAC-EB28CB714196" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="350" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_E1D3EF78-A46A-4E4D-A289-29FF034C9ACC" dmnElementRef="_E1D3EF78-A46A-4E4D-A289-29FF034C9ACC" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="529" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_D99B6D92-1148-421C-888B-586D65DB513D" dmnElementRef="_D99B6D92-1148-421C-888B-586D65DB513D" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="716" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_4E2D7F13-7FBB-4EB7-B455-951B0E04E037" dmnElementRef="_4E2D7F13-7FBB-4EB7-B455-951B0E04E037" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="419" y="176" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_AE7DB7D5-12D1-409F-9AF4-2F79FE473D84" dmnElementRef="_AE7DB7D5-12D1-409F-9AF4-2F79FE473D84">
+        <di:waypoint x="469" y="564"/>
+        <di:waypoint x="221" y="380"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_8E28A8B1-F3C6-424D-A45A-7BDB44C78572" dmnElementRef="_8E28A8B1-F3C6-424D-A45A-7BDB44C78572">
+        <di:waypoint x="469" y="539"/>
+        <di:waypoint x="400" y="430"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_7C4D9146-B6C3-4BAF-87D1-9C5102FB1D18" dmnElementRef="_7C4D9146-B6C3-4BAF-87D1-9C5102FB1D18">
+        <di:waypoint x="469" y="539"/>
+        <di:waypoint x="579" y="430"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_863B8DBF-406B-43C9-9CA8-0C4147A0350F" dmnElementRef="_863B8DBF-406B-43C9-9CA8-0C4147A0350F">
+        <di:waypoint x="469" y="539"/>
+        <di:waypoint x="766" y="430"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_A59A109B-91FB-4293-AA88-325B13138414" dmnElementRef="_A59A109B-91FB-4293-AA88-325B13138414">
+        <di:waypoint x="271" y="405"/>
+        <di:waypoint x="419" y="201"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_5B52728E-83D0-4630-B7BE-744130C89C1B" dmnElementRef="_5B52728E-83D0-4630-B7BE-744130C89C1B">
+        <di:waypoint x="400" y="405"/>
+        <di:waypoint x="469" y="226"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_236E71CE-4C3F-4D0B-A276-EEFF420ADE63" dmnElementRef="_236E71CE-4C3F-4D0B-A276-EEFF420ADE63">
+        <di:waypoint x="579" y="405"/>
+        <di:waypoint x="469" y="226"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_E10B9077-19E7-44B1-8620-64BC67DB06C7" dmnElementRef="_E10B9077-19E7-44B1-8620-64BC67DB06C7">
+        <di:waypoint x="766" y="405"/>
+        <di:waypoint x="469" y="226"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id="_E023890C-741D-4807-9BFF-B7F5FC815858" name="National">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_F556D0A5-03E7-4375-862F-3C5E49D57527">
+            <kie:width>50</kie:width>
+            <kie:width>198</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-national-_76E9BF51-2A42-4221-9F50-551408D8E406" dmnElementRef="_76E9BF51-2A42-4221-9F50-551408D8E406" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="171" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id="_A73B9DD1-A36E-4100-9904-E9AFB9F4621D" name="Military">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_D89255C6-CF69-428A-99B9-4816CA9A01A2">
+            <kie:width>50</kie:width>
+            <kie:width>199</kie:width>
+            <kie:width>191</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-military-_72607DA3-C627-406C-ADAC-EB28CB714196" dmnElementRef="_72607DA3-C627-406C-ADAC-EB28CB714196" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="350" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id="_224A2FB3-6081-4BA5-9620-FF30997520DF" name="Private">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_1FFAE577-CDE4-4CC0-AC39-88D6161F9A3A">
+            <kie:width>50</kie:width>
+            <kie:width>182</kie:width>
+            <kie:width>211</kie:width>
+            <kie:width>186</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-private-_E1D3EF78-A46A-4E4D-A289-29FF034C9ACC" dmnElementRef="_E1D3EF78-A46A-4E4D-A289-29FF034C9ACC" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="529" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id="_CF246A66-5A07-4216-AF0B-32505903F520" name="University">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_8A0C4DE0-AA60-4531-A91C-1E6D360FF691">
+            <kie:width>50</kie:width>
+            <kie:width>169</kie:width>
+            <kie:width>211</kie:width>
+            <kie:width>153</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-university-_D99B6D92-1148-421C-888B-586D65DB513D" dmnElementRef="_D99B6D92-1148-421C-888B-586D65DB513D" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="716" y="380" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

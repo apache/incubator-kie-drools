@@ -1,0 +1,120 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_8B8651DA-2BD0-4D6E-9AC7-76720D595625" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0D6CFD1C-A69F-45A9-BF99-388000A3C7C6" name="StatusService" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_8B8651DA-2BD0-4D6E-9AC7-76720D595625">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_72A20134-A942-423F-AD4C-1B5295EB4F6B" name="tHospitalStatus" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_79CB9D46-AB92-43EB-AD51-6B2776650211">
+      <dmn:text>"red", "orange", "green"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:decisionService id="_053221CA-9CD9-4A67-82F0-7A499D381F9C" name="Status">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A3402A6F-EE5A-4C51-BE10-34A067777687" name="Status" typeRef="tHospitalStatus"/>
+    <dmn:outputDecision href="#_2E6D197A-9EBB-49B9-B9F1-502621FAB63A"/>
+    <dmn:inputData href="#_85054156-635B-4CDE-B6DE-1BFD55F1FA3E"/>
+  </dmn:decisionService>
+  <dmn:decision id="_2E6D197A-9EBB-49B9-B9F1-502621FAB63A" name="Current Status">
+    <dmn:extensionElements/>
+    <dmn:variable id="_75EFC3C6-B226-4D5D-82B5-F0DC1EC48BD9" name="Current Status" typeRef="tHospitalStatus"/>
+    <dmn:informationRequirement id="_FD0789BC-45AE-4280-8735-D16CB5D7B50B">
+      <dmn:requiredInput href="#_85054156-635B-4CDE-B6DE-1BFD55F1FA3E"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_B10E7863-E643-43B4-8930-45F30E69927B" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_A7EFE90E-8588-421C-8E73-86C8C1F744B8">
+        <dmn:inputExpression id="_27BFFEA8-5113-4089-8C74-9EC2EBB94292" typeRef="string">
+          <dmn:text>Hospital</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues kie:constraintType="enumeration" id="_46F55BC1-D6FC-48C0-AC00-843FAE04A060">
+          <dmn:text>"Military", "Non-Military", "National"</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:output id="_1D730DE9-84A0-4349-8C03-86D6E703570A"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_800A2C62-D4D7-44FB-BC11-B1F2B705C4D9">
+        <dmn:inputEntry id="_2EC9DD56-7576-4F18-B4EF-86563220B3F3">
+          <dmn:text>"Military"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_45396C71-94D5-46E3-87D2-EC9D74AFAF48">
+          <dmn:text>"red"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_31DEC8A2-8A41-46AB-964A-9804F33CC7DA">
+        <dmn:inputEntry id="_CCEB8E66-E225-40A0-86AD-99CDAF5B6BB7">
+          <dmn:text>"Non-Military"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_81E554A1-7AF5-48E6-B58B-422100601AAA">
+          <dmn:text>"orange"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_313096A5-AF5F-4380-B8D5-847FD4EBD6A9">
+        <dmn:inputEntry id="_603BB8F4-B66D-4C41-97EF-D8E10F2DD25D">
+          <dmn:text>"National"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_4922F2A0-D2F3-4D91-9AFA-32D8C97B8A29">
+          <dmn:text>"red"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_85054156-635B-4CDE-B6DE-1BFD55F1FA3E" name="Hospital">
+    <dmn:extensionElements/>
+    <dmn:variable id="_DE89DDA9-D82C-4867-AF4A-C93BDEB58421" name="Hospital" typeRef="string"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_F245617E-B123-4ECD-87ED-1C3EC46FC702" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_B10E7863-E643-43B4-8930-45F30E69927B">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>133</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_053221CA-9CD9-4A67-82F0-7A499D381F9C" dmnElementRef="_053221CA-9CD9-4A67-82F0-7A499D381F9C" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="486" y="239" width="200" height="200"/>
+        <dmndi:DMNLabel/>
+        <dmndi:DMNDecisionServiceDividerLine>
+          <di:waypoint x="486" y="339"/>
+          <di:waypoint x="686" y="339"/>
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_2E6D197A-9EBB-49B9-B9F1-502621FAB63A" dmnElementRef="_2E6D197A-9EBB-49B9-B9F1-502621FAB63A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="536" y="277" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_85054156-635B-4CDE-B6DE-1BFD55F1FA3E" dmnElementRef="_85054156-635B-4CDE-B6DE-1BFD55F1FA3E" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="535" y="524" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_FD0789BC-45AE-4280-8735-D16CB5D7B50B" dmnElementRef="_FD0789BC-45AE-4280-8735-D16CB5D7B50B">
+        <di:waypoint x="585" y="549"/>
+        <di:waypoint x="586" y="302"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

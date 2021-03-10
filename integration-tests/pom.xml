@@ -10,6 +10,10 @@
   <name>Kogito :: Integration Tests</name>
   <packaging>pom</packaging>
 
+  <properties>
+    <sonar.exclusions>**/*</sonar.exclusions>
+  </properties>
+
   <modules>
     <module>integration-tests-quarkus-rules</module>
     <module>integration-tests-quarkus-processes</module>
@@ -18,4 +22,5 @@
     <module>integration-tests-springboot</module>
     <module>integration-tests-kogito-plugin</module>
   </modules>
+
 </project>

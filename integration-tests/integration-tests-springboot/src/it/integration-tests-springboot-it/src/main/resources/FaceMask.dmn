@@ -1,0 +1,269 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_E598E245-A7AF-433B-A10F-FE17427A4A36" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_F49A207A-D2D5-4316-992E-3E6436EA61CC" name="FaceMask" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_E598E245-A7AF-433B-A10F-FE17427A4A36">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_2FDA4BF1-7E27-400E-BE72-BCEC0ADE6BA6" name="tHuman" isCollection="false">
+    <dmn:itemComponent id="_8F55833C-D7C7-4209-80BD-9859A1542D25" name="Name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_9BB94F18-61E6-4BEB-BA3B-20BAD6422DA0" name="Age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_966A5973-5895-4707-9499-77A148075C02" name="tHumans" isCollection="true">
+    <dmn:typeRef>tHuman</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_872EEEBF-F6EE-42C9-B0D8-0498897D76A4" name="People with breathing trouble">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6C9EEF74-349A-46DE-8D63-CEFB0550D6B8" name="People with breathing trouble" typeRef="tHumans"/>
+    <dmn:relation id="_A0D86A53-FB05-4F55-8627-19FA94D31148">
+      <dmn:column id="_6CEE8566-8E91-406C-8C0C-DF5F4C6E21E1" name="Name" typeRef="string"/>
+      <dmn:column id="_DBC9A1E3-513C-4516-A532-606C2D6DAF6B" name="Age" typeRef="number"/>
+      <dmn:row id="_3C446377-6909-4272-A09C-A6E161640BFC">
+        <dmn:literalExpression id="_0B34B18F-EDBE-40E9-999E-86597A969428">
+          <dmn:text>"John Snow"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_AAEBA501-6C2D-4BCC-8C74-B5DA9160BCE7">
+          <dmn:text>50</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_9016B3F3-000E-4545-A312-773FD15E7BE6">
+        <dmn:literalExpression id="_810FD052-8BD4-4781-B0C9-9C1F94022CCF">
+          <dmn:text>"Anna Clark"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_94BC9529-53D6-42C4-A943-59898010D7E9">
+          <dmn:text>40</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_5C8EA7E8-85D0-44A3-84A8-FFD260D83E01">
+        <dmn:literalExpression id="_241CDD28-ABD5-46F3-94A2-3C1C92BC50DB">
+          <dmn:text>"Jane Morison"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_E1460127-A48A-44B3-8C09-9C8305060CAA">
+          <dmn:text>38</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+    </dmn:relation>
+  </dmn:decision>
+  <dmn:inputData id="_91AF1F4A-5D50-4D9F-AD97-AAF22E796932" name="Human">
+    <dmn:extensionElements/>
+    <dmn:variable id="_027B2C5B-67C3-458F-ACAD-F22F4B38492D" name="Human" typeRef="tHuman"/>
+  </dmn:inputData>
+  <dmn:inputData id="_E2DAF913-7C72-4330-B5CC-894E2D5D9F2B" name="Location">
+    <dmn:extensionElements/>
+    <dmn:variable id="_34378A8B-327F-41D4-89DE-F810C811A408" name="Location" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:decision id="_93589A72-3CD1-43E9-A3EA-C7B7A539A52C" name="Face Mask Needed">
+    <dmn:extensionElements/>
+    <dmn:variable id="_8732E3DA-D978-4F65-8254-8F978BAD364F" name="Face Mask Needed" typeRef="string"/>
+    <dmn:informationRequirement id="_E232E511-21A2-4C8F-BCFE-C51F98758105">
+      <dmn:requiredInput href="#_E2DAF913-7C72-4330-B5CC-894E2D5D9F2B"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_A68B20A1-9103-4ADD-B08A-9ED52B9EBF37">
+      <dmn:requiredInput href="#_91AF1F4A-5D50-4D9F-AD97-AAF22E796932"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_4C589119-AC58-4B7C-9058-A0BCBDA6B2E0">
+      <dmn:requiredDecision href="#_872EEEBF-F6EE-42C9-B0D8-0498897D76A4"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_D2CEA37F-1314-4749-BE10-8F62EBE5A0E7" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_79681B7D-1C84-4B87-A9D3-567D928EC4EE">
+        <dmn:inputExpression id="_A9BDAC22-653E-4A6D-998C-A2911AC93DAF" typeRef="number">
+          <dmn:text>Human.Age</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues kie:constraintType="expression" id="_88C6722C-F636-4578-9C8D-D9FB4CFF89E9">
+          <dmn:text>&gt; 0</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:input id="_30D00697-AB0F-4AC7-9407-B96E96324CC2">
+        <dmn:inputExpression id="_6A0D7E01-4F32-46D1-8329-96ECEB095EA6" typeRef="string">
+          <dmn:text>Location</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues kie:constraintType="enumeration" id="_90DF252F-F03F-4106-B12C-3A14C372C531">
+          <dmn:text>"Building", "City", "Nature"</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:input id="_C2B4AD9A-5083-4B01-98E5-10D20295D882">
+        <dmn:inputExpression id="_0D90A3B2-4818-4DAD-A9B1-83DD9D547A7A" typeRef="boolean">
+          <dmn:text>list contains(People with breathing trouble.Name, Human.Name)</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_77A0A2F3-DB7C-4058-BEA1-696A8ECBBE54"/>
+      <dmn:annotation name="Explanation"/>
+      <dmn:rule id="_7048B358-9B93-4282-90DE-A4C51CC3CA0D">
+        <dmn:inputEntry id="_6C3DC71E-2EC1-456E-9730-C172C024522B">
+          <dmn:text>&lt;3</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_3FCB13C1-EC41-4F35-A31E-6B303F680D11">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_7BFEC069-7A71-4FA6-9657-831EFD3A0272">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_44B1F646-9E59-4D4C-B8CD-6190B9981771">
+          <dmn:text>"No"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_03C269EC-3DF8-4607-92AB-791D9A2E1596">
+        <dmn:inputEntry id="_F337AF3C-CC9B-4B1F-A6F6-1792CEB6A18E">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_B6099C5D-617F-4A7B-BD63-AE8A892DEC19">
+          <dmn:text>"Building"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_B3D6A364-BBB8-45E8-A590-988E76142503">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_28756918-F7D8-407B-9839-76D2746337A9">
+          <dmn:text>"Textile Mask"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_89B7CBEA-6108-4D27-A092-F5D56955158C">
+        <dmn:inputEntry id="_62A8C568-32B6-4740-9B3B-C8C3FF1BAC6C">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_790235C7-8D60-4CF0-95E9-26FEE239C7A4">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_4DAFE31C-C745-44C3-92EB-FDD46DF668D4">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_41ED7069-A4B8-4FA6-BBC9-39A9EA24082C">
+          <dmn:text>"No"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_1EE54C44-B996-4788-BD16-719705B35392">
+        <dmn:inputEntry id="_E4F2A34E-8F34-45AB-AB42-148B3E6F402C">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_A73F8238-0932-4AF0-9895-B6932863E92F">
+          <dmn:text>"Building"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_6C2BDE19-8024-4F28-A162-0B490F28DB65">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_CB0B19A7-AE2B-4CCB-A26A-E17970EF991F">
+          <dmn:text>"Respirator"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_F206DEAD-DC84-429B-A20F-ADD239F734D8">
+        <dmn:inputEntry id="_07AD8C92-ECAD-494C-AC61-02BBF56EFBB6">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_10389DD2-D8B1-4639-B4D1-A0D384197D54">
+          <dmn:text>"City"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_88885869-2BC2-4B12-BCDD-AC16EDE77B52">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_5FDDD511-255A-4D4B-A0AD-BA26FA641DA2">
+          <dmn:text>"Surgical Mask"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_182C729F-46CA-4C2D-9D81-FC595365BB97">
+        <dmn:inputEntry id="_E0F8841E-3319-414C-93C2-90BCB94B0216">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_16D4DBE0-F223-4C18-8F14-949B52F0F35C">
+          <dmn:text>"Nature"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_3D224940-5EE3-449E-A659-A4A4E6300772">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_74235C92-3D2C-48D8-AD9B-20E81295F522">
+          <dmn:text>"Textile Mask"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_0233A1C8-6EAB-44E7-B746-A9EE3DF2B927" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_A0D86A53-FB05-4F55-8627-19FA94D31148">
+            <kie:width>50</kie:width>
+            <kie:width>137</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_0B34B18F-EDBE-40E9-999E-86597A969428"/>
+          <kie:ComponentWidths dmnElementRef="_AAEBA501-6C2D-4BCC-8C74-B5DA9160BCE7"/>
+          <kie:ComponentWidths dmnElementRef="_810FD052-8BD4-4781-B0C9-9C1F94022CCF"/>
+          <kie:ComponentWidths dmnElementRef="_94BC9529-53D6-42C4-A943-59898010D7E9"/>
+          <kie:ComponentWidths dmnElementRef="_241CDD28-ABD5-46F3-94A2-3C1C92BC50DB"/>
+          <kie:ComponentWidths dmnElementRef="_E1460127-A48A-44B3-8C09-9C8305060CAA"/>
+          <kie:ComponentWidths dmnElementRef="_D2CEA37F-1314-4749-BE10-8F62EBE5A0E7">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>466</kie:width>
+            <kie:width>153</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_872EEEBF-F6EE-42C9-B0D8-0498897D76A4" dmnElementRef="_872EEEBF-F6EE-42C9-B0D8-0498897D76A4" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="260" y="180" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_91AF1F4A-5D50-4D9F-AD97-AAF22E796932" dmnElementRef="_91AF1F4A-5D50-4D9F-AD97-AAF22E796932" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="324" y="340" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_E2DAF913-7C72-4330-B5CC-894E2D5D9F2B" dmnElementRef="_E2DAF913-7C72-4330-B5CC-894E2D5D9F2B" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="566" y="340" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_93589A72-3CD1-43E9-A3EA-C7B7A539A52C" dmnElementRef="_93589A72-3CD1-43E9-A3EA-C7B7A539A52C" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="180" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_E232E511-21A2-4C8F-BCFE-C51F98758105" dmnElementRef="_E232E511-21A2-4C8F-BCFE-C51F98758105">
+        <di:waypoint x="616" y="365"/>
+        <di:waypoint x="496" y="205"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_A68B20A1-9103-4ADD-B08A-9ED52B9EBF37" dmnElementRef="_A68B20A1-9103-4ADD-B08A-9ED52B9EBF37">
+        <di:waypoint x="374" y="365"/>
+        <di:waypoint x="496" y="230"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_4C589119-AC58-4B7C-9058-A0BCBDA6B2E0" dmnElementRef="_4C589119-AC58-4B7C-9058-A0BCBDA6B2E0">
+        <di:waypoint x="310" y="205"/>
+        <di:waypoint x="496" y="205"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
