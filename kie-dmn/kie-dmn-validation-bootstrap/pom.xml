@@ -43,4 +43,14 @@ This is not an user dependency, hence is not added to the boms</description>
       <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
+  
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding the entire module from coverage statistics. The module content is used during Maven Build itself, see description. -->
+        <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
+      </properties>
+    </profile>
+  </profiles>
 </project>
