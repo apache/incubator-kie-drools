@@ -96,12 +96,12 @@ public abstract class AbstractScenarioRunner extends Runner {
     public void run(RunNotifier notifier) {
         simulationRunMetadataBuilder = SimulationRunMetadataBuilder.create();
 
-        notifier.fireTestSuiteStarted(getDescription());
+        notifier.fireTestStarted(getDescription());
         for (ScenarioWithIndex scenarioWithIndex : scenarioRunnerDTO.getScenarioWithIndices()) {
             singleRunScenario(scenarioWithIndex, notifier, scenarioRunnerDTO.getSettings(), scenarioRunnerDTO.getBackground())
                     .ifPresent(simulationRunMetadataBuilder::addScenarioResultMetadata);
         }
-        notifier.fireTestSuiteFinished(getDescription());
+        notifier.fireTestStarted(getDescription());
     }
 
     @Override

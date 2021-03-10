@@ -138,11 +138,9 @@ public class AbstractScenarioRunnerTest {
         abstractScenarioRunnerLocal.run(runNotifier);
 
         assertNotNull(abstractScenarioRunnerLocal.simulationRunMetadataBuilder);
-        verify(runNotifier, times(1)).fireTestSuiteStarted(isA(Description.class));
-        verify(runNotifier, times(SCENARIO_DATA)).fireTestStarted(isA(Description.class));
+        verify(runNotifier, times(SCENARIO_DATA + 2)).fireTestStarted(isA(Description.class));
         verify(runNotifier, times(SCENARIO_DATA)).fireTestFailure(failureArgumentCaptor.capture());
         verify(runNotifier, times(SCENARIO_DATA)).fireTestFinished(isA(Description.class));
-        verify(runNotifier, times(1)).fireTestSuiteFinished(isA(Description.class));
 
         List<Failure> capturedFailures = failureArgumentCaptor.getAllValues();
         assertEquals(ScenarioSimulationServerMessages.getIndexedScenarioMessage("Failed assertion", 1, "INDEX-0", "test"),
