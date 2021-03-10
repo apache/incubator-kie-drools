@@ -709,6 +709,34 @@ from the given facts.
 Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
 remains consistent as your code base evolves.
 
+[[constraintStreamsTestingQuarkus]]
+=== Testing in Quarkus
+
+If you are using the `optaplanner-quarkus` extension, you can inject the `ConstraintVerifier` in your tests.
+
+[source,java,options="nowrap"]
+----
+@QuarkusTest
+public class MyConstraintProviderTest {
+    @Inject
+    ConstraintVerifier<MyConstraintProvider, MyPlanningSolution> constraintProvider;
+}
+----
+
+[[constraintStreamsTestingSpringBoot]]
+=== Testing in Spring Boot
+
+If you are using the `optaplanner-spring-boot-starter` module, you can autowire the `ConstraintVerifier` in your tests.
+
+[source,java,options="nowrap"]
+----
+@SpringBootTest
+public class MyConstraintProviderTest {
+    @Autowired
+    ConstraintVerifier<MyConstraintProvider, MyPlanningSolution> constraintProvider;
+}
+----
+
 [[constraintStreamsImplementations]]
 == Variant implementation types
 
