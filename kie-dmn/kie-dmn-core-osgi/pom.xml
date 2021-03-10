@@ -194,4 +194,13 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding the entire module from coverage statistics. This module like other OSGi bundles is tested in droolsjbpm-integration and Sonar does not support cross-repos. -->
+        <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
+      </properties>
+    </profile>
+  </profiles>
 </project>
