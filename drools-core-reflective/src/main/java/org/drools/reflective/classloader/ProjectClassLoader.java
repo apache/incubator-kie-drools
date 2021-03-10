@@ -128,8 +128,14 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
             if (clazz != null) {
                 return clazz;
             }
+            if (typesClassLoader != null) {
+                clazz = typesClassLoader.findLoadedClassWithoutParent(name);
+                if (clazz != null) {
+                    return clazz;
+                }
+            }
             // if the class is stored in projectClassLoader, go straight to defineType
-            cls = loadType(name, resolve);
+            cls = tryDefineType(name, null);
         } else {
             cls = internalLoadClass(name, resolve);
         }
@@ -161,18 +167,6 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
                 throw e1;
             }
         }
-    }
-
-    private Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
-        ClassNotFoundException cnfe = null;
-        if (typesClassLoader != null) {
-            try {
-                return typesClassLoader.loadType(name, resolve);
-            } catch (ClassNotFoundException e) {
-                cnfe = e;
-            }
-        }
-        return tryDefineType(name, cnfe);
     }
 
     // This method has to be public because is also used by the android ClassLoader
@@ -406,6 +400,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     public interface InternalTypesClassLoader extends KieTypeResolver {
         Class<?> defineClass( String name, byte[] bytecode );
         Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
+        Class<?> findLoadedClassWithoutParent( String name );
     }
 
     public synchronized List<String> reinitTypes() {
