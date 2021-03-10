@@ -561,6 +561,7 @@ def disableForcePushes(String repo, String protectedBranch) {
 }
 
 boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "../gh") {
+    assertGithubCLI(ghPath)
     boolean isProtected = true // Suppose it is protected by default
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         // get current branch protection
