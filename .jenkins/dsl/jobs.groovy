@@ -3,9 +3,6 @@ import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
-// move later into specific configuration that can be easily changed ?
-String quarkusLTSVersion = '1.11'
-
 boolean isMainBranch() {
     return "${GIT_BRANCH}" == "${GIT_MAIN_BRANCH}"
 }
@@ -44,6 +41,7 @@ if (isMainBranch()) {
     folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
 
     setupPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    setupQuarkusLTSPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
 
     // For BDD runtimes PR job
     folder(bddRuntimesPrFolder)
@@ -54,11 +52,11 @@ if (isMainBranch()) {
 // Nightly jobs
 folder(KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER)
 folder(nightlyBranchFolder)
-if(isMainBranch()){
+if (isMainBranch()) {
     setupDroolsJob(nightlyBranchFolder)
-    
+
     setupQuarkusJob(nightlyBranchFolder, 'master')
-    setupQuarkusJob(nightlyBranchFolder, quarkusLTSVersion)
+    setupQuarkusJob(nightlyBranchFolder, "${QUARKUS_LTS_VERSION}")
 }
 setupSonarCloudJob(nightlyBranchFolder)
 setupNativeJob(nightlyBranchFolder)
@@ -69,7 +67,7 @@ setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 if (!isMainBranch()) {
     folder(KogitoConstants.KOGITO_DSL_RELEASE_FOLDER)
     folder(releaseBranchFolder)
-    
+
     setupDeployJob(releaseBranchFolder, KogitoJobType.RELEASE)
     setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
 }
@@ -82,6 +80,12 @@ void setupPrJob(String jobFolder) {
     def jobParams = getDefaultJobParams()
     jobParams.job.folder = jobFolder
     KogitoJobTemplate.createPRJob(this, jobParams)
+}
+
+void setupQuarkusLTSPrJob(String jobFolder) {
+    def jobParams = getDefaultJobParams()
+    jobParams.job.folder = jobFolder
+    KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
 void setupDroolsJob(String jobFolder) {
@@ -171,7 +175,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
             env('MAVEN_SETTINGS_CONFIG_FILE_ID', "${MAVEN_SETTINGS_FILE_ID}")
-            
+
             if (jobType == KogitoJobType.PR) {
                 env('MAVEN_DEPENDENCIES_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
                 env('MAVEN_DEPLOY_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
@@ -192,7 +196,6 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
                     env('NEXUS_STAGING_PROFILE_ID', "${MAVEN_NEXUS_STAGING_PROFILE_ID}")
                     env('NEXUS_BUILD_PROMOTION_PROFILE_ID', "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}")
                 }
-                
             }
         }
     }
