@@ -42,6 +42,7 @@ if (isMainBranch()) {
 
     setupOptaplannerPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     setupOptaplannerQuarkusLTSPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    setupOptaplannerNativePrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     setupOptawebEmployeeRosteringPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     setupOptawebVehicleRoutingPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
 
@@ -81,6 +82,13 @@ void setupOptaplannerQuarkusLTSPrJob(String jobFolder) {
     jobParams.job.folder = jobFolder
     jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
+}
+
+void setupOptaplannerNativePrJob(String jobFolder) {
+    def jobParams = getDefaultJobParams()
+    jobParams.job.folder = jobFolder
+    jobParams.pr = [ blackListTargetBranches: ['7.x'] ]
+    KogitoJobTemplate.createNativePRJob(this, jobParams)
 }
 
 void setupOptawebEmployeeRosteringPrJob(String jobFolder) {

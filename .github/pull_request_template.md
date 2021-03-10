@@ -36,4 +36,5 @@ How to retest this PR or trigger a specific build:
 * for a <b>full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
 * for an <b>upstream build</b> please add comment: <b>Jenkins run upstream</b>
 * for a <b>Quarkus LTS check</b> please add comment: <b>Jenkins run LTS</b>
+* for a <b>Native check</b> please add comment: <b>Jenkins run native</b>
 </details>

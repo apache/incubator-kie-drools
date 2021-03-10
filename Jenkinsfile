@@ -67,14 +67,19 @@ pipeline {
         stage('Build OptaPlanner') {
             steps {
                 script {
-                    getMavenCommand(optaplannerRepo)
-                        .withProfiles(['run-code-coverage'])
+                    mvnCmd = getMavenCommand(optaplannerRepo, true, true)
                         .withProperty('full')
-                        .run('clean install')
+                    if(!isSpecificPRCheck()) {
+                        mvnCmd.withProfiles(['run-code-coverage'])
+                    }
+                    mvnCmd.run('clean install')
                 }
             }
         }
         stage('Analyze OptaPlanner by SonarCloud') {
+            when {
+                expression { !isSpecificPRCheck() }
+            }
             steps {
                 script {
                     withCredentials([string(credentialsId: 'SONARCLOUD_TOKEN', variable: 'SONARCLOUD_TOKEN')]) {
@@ -90,7 +95,7 @@ pipeline {
         stage('Build OptaPlanner Quickstarts') {
             steps {
                 script {
-                    getMavenCommand(quickstartsRepo)
+                    getMavenCommand(quickstartsRepo, true, true)
                         .run('clean install')
                 }
             }
@@ -153,15 +158,26 @@ void checkoutQuarkusRepo() {
     }
 }
 
-MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true, boolean canNative = false) {
     mvnCmd = new MavenCommand(this, ['-fae'])
                 .inDirectory(directory)
     if (addQuarkusVersion && getQuarkusBranch()) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
+    }
+    if(canNative && isNative()) {
+        mvnCmd.withProfiles(['native'])
     }
     return mvnCmd
 }
 
 String getQuarkusBranch() {
     return env['QUARKUS_BRANCH']
+}
+
+boolean isNative() {
+    return env['NATIVE'] && env['NATIVE'].toBoolean()
+}
+
+boolean isSpecificPRCheck() {
+    return getQuarkusBranch() || isNative()
 }
