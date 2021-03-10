@@ -18,27 +18,57 @@
 */
 package ${package}.${packageModelName}.compiler.executor;
 
+import java.util.Map;
+
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.${packageModelName}.${modelName}Model;
+import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.clustering.ClusteringModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import ${package}.${packageModelName}.compiler.factories.KiePMML${modelName}ModelFactory;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
-
-import static ${package}.${packageModelName}.model.KiePMML${modelName}Model.PMML_MODEL_TYPE;
+import ${package}.${packageModelName}.model.KiePMML${modelName}ModelWithSources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>${modelName}</b>
  */
 public class ${modelName}ModelImplementationProvider implements ModelImplementationProvider<${modelName}Model,KiePMML${modelName}Model>{
 
+private static final Logger logger = LoggerFactory.getLogger(${modelName}ModelImplementationProvider.class.getName());
+
+
     @Override
     public PMML_MODEL getPMMLModelType() {
-        return PMML_MODEL_TYPE;
+        logger.trace("getPMMLModelType");
+        return PMML_MODEL.${modelNameUppercase}_MODEL;
     }
 
     @Override
-    public KiePMML${modelName}Model getKiePMMLModel(DataDictionary dataDictionary,${modelName}Model model, Object kBuilder) {
-        return KiePMML${modelName}ModelFactory.getKiePMML${modelName}Model(dataDictionary, model);
+    public KiePMML${modelName}Model getKiePMMLModel(final String packageName,
+                                                    final DataDictionary dataDictionary,
+                                                    final TransformationDictionary transformationDictionary,
+                                                    final ${modelName}Model model,
+                                                    final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModel {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
+        return KiePMML${modelName}ModelFactory.getKiePMML${modelName}Model(dataDictionary, transformationDictionary, model, packageName, hasClassloader);
+    }
+
+    @Override
+    public KiePMML${modelName}Model getKiePMMLModelWithSources(final String packageName,
+                                                             final DataDictionary dataDictionary,
+                                                             final TransformationDictionary transformationDictionary,
+                                                             final ${modelName}Model  model,
+                                                             final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
+        try {
+            final Map<String, String> sourcesMap = KiePMML${modelName}ModelFactory.getKiePMML${modelName}ModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
+            return new KiePMML${modelName}ModelWithSources(model.getModelName(), packageName, sourcesMap);
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 }

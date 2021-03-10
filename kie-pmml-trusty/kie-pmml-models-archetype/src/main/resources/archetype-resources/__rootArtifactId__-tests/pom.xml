@@ -13,39 +13,66 @@
   <description>PMML ${modelName} Tests</description>
 
   <dependencies>
+    <!-- TEST -->
     <!-- PMML -->
     <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>kie-pmml-models-${artifactModelName}-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>kie-pmml-models-${artifactModelName}-compiler</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>kie-pmml-models-${artifactModelName}-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-tests</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- KIE -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
-    </dependency>
-    <!-- TEST -->
-    <!-- PMML -->
-    <dependency>
-      <groupId>${groupId}</groupId>
-      <artifactId>kie-pmml-commons</artifactId>
-      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${groupId}</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
-      <classifier>tests</classifier>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- EXTERNAL -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -59,7 +86,7 @@
   </dependencies>
 
   <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
+    <!-- TODO MOVE TO kie-pmml-trusty/kie-pmml-dependencies/pom.xml -->
     <dependencies>
       <dependency>
         <groupId>${groupId}</groupId>
@@ -74,12 +101,6 @@
       <dependency>
         <groupId>${groupId}</groupId>
         <artifactId>kie-pmml-models-${artifactModelName}-evaluator</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>${groupId}</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

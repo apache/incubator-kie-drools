@@ -13,25 +13,43 @@
   <description>PMML ${modelName} Tests</description>
 
   <dependencies>
+    <!-- TEST -->
     <!-- PMML -->
     <dependency>
-      <groupId>${groupId}</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-${artifactModelName}-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>${groupId}</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-${artifactModelName}-compiler</artifactId>
     </dependency>
     <dependency>
-      <groupId>${groupId}</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-${artifactModelName}-evaluator</artifactId>
     </dependency>
-    <!-- EXTERNAL -->
     <dependency>
-      <groupId>org.jpmml</groupId>
-      <artifactId>pmml-model</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-tests</artifactId>
+      <scope>test</scope>
     </dependency>
-    <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- KIE -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
@@ -47,20 +65,12 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- PMML -->
-    <dependency>
-      <groupId>${groupId}</groupId>
-      <artifactId>kie-pmml-commons</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${groupId}</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
     <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

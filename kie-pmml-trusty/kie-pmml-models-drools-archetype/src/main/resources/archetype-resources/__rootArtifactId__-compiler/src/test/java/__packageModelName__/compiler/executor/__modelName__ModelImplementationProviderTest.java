@@ -38,4 +38,10 @@ public class ${modelName}ModelImplementationProviderTest {
         // TODO
         throw new UnsupportedOperationException();
     }
+
+    @Test
+    public void getKiePMMLModelWithSources() throws Exception {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
 }

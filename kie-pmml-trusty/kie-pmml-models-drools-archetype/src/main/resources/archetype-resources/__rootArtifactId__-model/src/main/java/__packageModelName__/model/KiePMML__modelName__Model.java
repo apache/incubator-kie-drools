@@ -44,7 +44,7 @@ public class KiePMML${modelName}Model extends KiePMMLDroolsModel {
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
         // TODO
         throw new UnsupportedOperationException();
     }
