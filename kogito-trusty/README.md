@@ -59,7 +59,7 @@ export QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD=mypassword
 ### Explainability service
 
 The explainability service provides local and global explaination. 
-- The local explaination aims to find the most relevant features that contributed to take that particular decision. In order to do that, the explainability service interacts with the kogito-runtime application to re-execute the decision with perturbed features. At the moment, the communication between explainability service and the kogito application is performed via HTTP calls. 
+- The local explanation aims to find the most relevant features that contributed to take that particular decision. In order to do that, the explainability service interacts with the kogito-runtime application to re-execute the decision with perturbed features. At the moment, the communication between explainability service and the kogito application is performed via HTTP calls. 
 - The global explainability is still under development. 
 
 As a consequence, the dependencies of the explainability service are Kafka and the availability of the kogito application. 
