@@ -17,14 +17,13 @@
 package org.drools.modelcompiler;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +36,6 @@ import org.drools.modelcompiler.domain.StockFact;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.StockTickEx;
 import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
@@ -45,9 +43,11 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.drools.modelcompiler.util.EvaluationUtil.convertDate;
 import static org.junit.Assert.assertEquals;
 
 public class CepTest extends BaseModelTest {
@@ -1200,4 +1200,64 @@ public class CepTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
-}
+
+    @Test
+    public void testCalendarsWithCronAndStartAndEnd() throws Exception {
+        final Locale defaultLoc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK); // Because of the date strings in the DRL, fixable with JBRULES-3444
+            final String str =
+                    "package org.simple \n" +
+                            "global java.util.List list \n" +
+                            "rule xxx \n" +
+                            "  date-effective \"02-Jan-2010\"\n" +
+                            "  date-expires \"06-Jan-2010\"\n" +
+                            "  calendars \"cal1\"\n" +
+                            "  timer (cron: 0 0 0 * * ?) " +
+                            "when \n" +
+                            "then \n" +
+                            "  list.add(\"fired\"); \n" +
+                            "end  \n";
+
+            KieSession ksession = getKieSession(getCepKieModuleModel(), str);
+            try {
+                final List list = new ArrayList();
+                final PseudoClockScheduler timeService = ksession.getSessionClock();
+                final Date date = convertDate("01-Jan-2010");
+
+                final Calendar cal1 = timestamp -> true;
+
+                final long oneDay = 60 * 60 * 24;
+                ksession.getCalendars().set("cal1", cal1);
+                ksession.setGlobal("list", list);
+
+                timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
+                ksession.fireAllRules();
+                assertEquals(0, list.size());
+
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS);
+                ksession.fireAllRules();
+                assertEquals(0, list.size());
+
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
+                ksession.fireAllRules();
+                assertEquals(1, list.size());
+
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS);
+                ksession.fireAllRules();
+                assertEquals(2, list.size());
+
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
+                ksession.fireAllRules();
+                assertEquals(3, list.size());
+
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS);
+                ksession.fireAllRules();
+                assertEquals(3, list.size());
+            } finally {
+                ksession.dispose();
+            }
+        } finally {
+            Locale.setDefault(defaultLoc);
+        }
+    }}

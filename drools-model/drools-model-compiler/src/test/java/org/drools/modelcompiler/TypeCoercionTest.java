@@ -524,15 +524,31 @@ public class TypeCoercionTest extends BaseModelTest {
     public void testCompareLocalDateTimeLiteral() throws Exception {
         String str =
                 "import " + DateTimeHolder.class.getCanonicalName() + ";" +
-                     "rule R when\n" +
-                     "    DateTimeHolder( localDateTime > \"01-Jan-1970\" )\n" +
-                     "then\n" +
-                     "end\n";
+                 "rule R when\n" +
+                 "    DateTimeHolder( localDateTime > \"01-Jan-1970\" )\n" +
+                 "then\n" +
+                 "end\n";
 
         KieSession ksession = getKieSession(str);
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testCompareLocalDateTimeLiteral2() throws Exception {
+        String str =
+                "import " + DateTimeHolder.class.getCanonicalName() + ";" +
+                 "rule R when\n" +
+                 "    DateTimeHolder( localDateTime in (\"01-Jan-1970\") )\n" +
+                 "then\n" +
+                 "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
+
+        assertEquals(0, ksession.fireAllRules());
     }
 }

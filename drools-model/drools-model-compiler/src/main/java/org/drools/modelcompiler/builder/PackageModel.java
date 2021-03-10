@@ -72,18 +72,20 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
+import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -96,9 +98,6 @@ import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 public class PackageModel {
 
     public static final String DATE_TIME_FORMATTER_FIELD = "DATE_TIME_FORMATTER";
-    public static final String STRING_TO_DATE_METHOD = "string_2_date";
-    public static final String STRING_TO_LOCAL_DATE_METHOD = "string_2_localDate";
-    public static final String STRING_TO_LOCAL_DATE_TIME_METHOD = "string_2_localDateTime";
 
     private static final String RULES_FILE_NAME = "Rules";
 
@@ -154,6 +153,8 @@ public class PackageModel {
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
 
     private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
+
+    private Map<String, TypedExpression> dateFields = new HashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -245,6 +246,10 @@ public class PackageModel {
 
     public Method getStaticMethod(String methodName) {
         return getStaticMethods().get(methodName);
+    }
+
+    public void addDateField(String fieldName, TypedExpression expression) {
+        dateFields.put( fieldName, expression );
     }
 
     private Map<String, Method> getStaticMethods() {
@@ -462,32 +467,13 @@ public class PackageModel {
                 "public final static java.time.format.DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = java.time.format.DateTimeFormatter.ofPattern(org.drools.core.util.DateUtils.getDateFormatMask(), java.util.Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
-        BodyDeclaration<?> string2dateMethodMethod = parseBodyDeclaration(
+        BodyDeclaration<?> getNameMethod = parseBodyDeclaration(
                 "    @Override\n" +
                 "    public String getName() {\n" +
                 "        return \"" + name + "\";\n" +
                 "    }\n"
                 );
-        rulesClass.addMember(string2dateMethodMethod);
-
-        BodyDeclaration<?> getNameMethod = parseBodyDeclaration(
-                "    public static java.util.Date " + STRING_TO_DATE_METHOD + "(String s) {\n" +
-                "        return java.util.GregorianCalendar.from(" + STRING_TO_LOCAL_DATE_METHOD + "(s).atStartOfDay(java.time.ZoneId.systemDefault())).getTime();\n" +
-                "    }\n"
-                );
         rulesClass.addMember(getNameMethod);
-
-        BodyDeclaration<?> string2localDateMethod = parseBodyDeclaration(
-                "    public static java.time.LocalDate " + STRING_TO_LOCAL_DATE_METHOD + "(String s) {\n" +
-                "        return java.time.LocalDate.parse(s, DATE_TIME_FORMATTER);\n" +
-                "    }\n");
-        rulesClass.addMember(string2localDateMethod);
-
-        BodyDeclaration<?> string2localDateTimeMethod = parseBodyDeclaration(
-                "    public static java.time.LocalDateTime " + STRING_TO_LOCAL_DATE_TIME_METHOD + "(String s) {\n" +
-                "        return " + STRING_TO_LOCAL_DATE_METHOD + "(s).atStartOfDay();\n" +
-                "    }\n");
-        rulesClass.addMember(string2localDateTimeMethod);
 
         String entryPointsBuilder = entryPoints.isEmpty() ?
                 "java.util.Collections.emptyList()" :
@@ -517,8 +503,12 @@ public class PackageModel {
 
         // end of fixed part
 
+        for ( Map.Entry<String, TypedExpression> dateField : dateFields.entrySet() ) {
+            FieldDeclaration f = rulesClass.addField(dateField.getValue().getJPType(), dateField.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
+            f.getVariables().get(0).setInitializer(dateField.getValue().getExpression());
+        }
 
-        for(Map.Entry<String, MethodCallExpr> windowReference : windowReferences.entrySet()) {
+        for ( Map.Entry<String, MethodCallExpr> windowReference : windowReferences.entrySet() ) {
             FieldDeclaration f = rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
             f.getVariables().get(0).setInitializer(windowReference.getValue());
         }
