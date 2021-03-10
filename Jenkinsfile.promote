@@ -10,6 +10,7 @@ String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String employeeRosteringRepository = 'optaweb-employee-rostering'
 String quickstartsRepository = 'optaplanner-quickstarts'
+String stableBranchName = 'stable'
 
 pipeline {
     agent {
@@ -105,7 +106,7 @@ pipeline {
             }
         }
 
-        stage('Merge Quickstarts PR, tag and reset the stable branch') {
+        stage('Merge OptaPlanner Quickstarts PR and tag') {
             when {
                 expression { return isRelease() }
             }
@@ -115,8 +116,21 @@ pipeline {
                         checkoutRepo(quickstartsRepository)
                         mergeAndPush(getDeployPrLink(quickstartsRepository))
                         tagLatest()
+                    }
+                }
+            }
+        }
 
-                        updateAndResetBranch(quickstartsRepository, 'stable')
+        stage('Reset Quickstarts stable branch') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    dir(quickstartsRepository) {
+                        checkoutTag(quickstartsRepository, getGitTag(), stableBranchName)
+                        removeJbossNexusFromMavenAndGradle()
+                        commitAndForcePushProtectedBranch(quickstartsRepository, stableBranchName)
                     }
                 }
             }
@@ -403,6 +417,13 @@ void checkoutRepo(String repo) {
     checkoutRepo(repo, getBuildBranch())
 }
 
+void checkoutTag(String repo, String tagName, String localBranchName) {
+    deleteDir()
+    checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout tags/${tagName} -b ${localBranchName}"
+}
+
 void mergeAndPush(String prLink, String targetBranch) {
     if (prLink != '') {
         githubscm.mergePR(prLink, getGitAuthorCredsID())
@@ -433,6 +454,14 @@ String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch
     githubscm.commitChanges(commitMsg, precommit)
     githubscm.pushObject('origin', localBranch, getBotAuthorCredsID())
     return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
+}
+
+void commitAndForcePushProtectedBranch(String repo, String branch){
+    githubscm.commitChanges("[${getBuildBranch()}] Update ${branch} to ${getProjectVersion()}", {
+        githubscm.findAndStageNotIgnoredFiles('pom.xml')
+        githubscm.findAndStageNotIgnoredFiles('build.gradle')
+    })
+    forcePushProtectedBranch(repo, branch)
 }
 
 String commitAndCreatePR(String commitMsg) {
@@ -486,18 +515,6 @@ void runMavenDeploy(MavenCommand mvnCmd) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
-}
-
-def updateAndResetBranch(String repo, String branchToReset) {
-    githubscm.createBranch(branchToReset)
-
-    removeJbossNexusFromMavenAndGradle()
-
-    githubscm.commitChanges("[${getBuildBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
-        githubscm.findAndStageNotIgnoredFiles('pom.xml')
-        githubscm.findAndStageNotIgnoredFiles('build.gradle')
-    })
-    forcePushProtectedBranch(repo, branchToReset)
 }
 
 void removeJbossNexusFromMavenAndGradle() {
