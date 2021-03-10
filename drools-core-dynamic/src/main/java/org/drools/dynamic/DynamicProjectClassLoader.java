@@ -126,6 +126,10 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
             return super.loadClass(name, resolve);
         }
 
+        public Class<?> findLoadedClassWithoutParent( String name ) {
+            return findLoadedClass(name);
+        }
+
         @Override
         public URL getResource(String name) {
             return projectClassLoader.getResource(name);
