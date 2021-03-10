@@ -66,7 +66,6 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final boolean oneClassPerRule;
     private final Collection<T> packageSources = new ArrayList<>();
 
-    private Collection<CompositePackageDescr> compositePackages;
     private Map<String, CompositePackageDescr> compositePackagesMap;
 
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
@@ -78,22 +77,12 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    public void buildPackages(Collection<CompositePackageDescr> packages) {
-        this.compositePackages = packages;
-    }
+    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages) { }
 
     @Override
     public void addPackage(final PackageDescr packageDescr) {
         if (compositePackagesMap == null) {
             compositePackagesMap = new HashMap<>();
-            if(compositePackages != null) {
-                for (CompositePackageDescr pkg : compositePackages) {
-                    compositePackagesMap.put(pkg.getNamespace(), pkg);
-                }
-            } else {
-                compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr(packageDescr.getResource(), packageDescr));
-            }
-            compositePackages = null;
         }
 
         CompositePackageDescr pkgDescr = compositePackagesMap.get(packageDescr.getNamespace());
@@ -120,8 +109,8 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     @Override
-    public void postBuild() {
-        Collection<CompositePackageDescr> packages = findPackages();
+    protected void doSecondBuildStep( Collection<CompositePackageDescr> compositePackages ) {
+        Collection<CompositePackageDescr> packages = findPackages(compositePackages);
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
@@ -137,9 +126,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             processWindowDeclarations( pkgRegistry, packageDescr );
         }
         processFunctions(pkgRegistry, packageDescr);
-        processGlobals(pkgRegistry, packageDescr);    }
+        processGlobals(pkgRegistry, packageDescr);
+    }
 
-    private Collection<CompositePackageDescr> findPackages() {
+    private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
         Collection<CompositePackageDescr> packages;
         if (compositePackages != null && !compositePackages.isEmpty()) {
             packages = compositePackages;
