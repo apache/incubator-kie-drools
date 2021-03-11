@@ -46,13 +46,15 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 import org.drools.modelcompiler.util.ClassUtil;
 
-import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
-import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_LOCAL_DATE_METHOD;
-import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_LOCAL_DATE_TIME_METHOD;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
 public class CoercedExpression {
+
+    public static final String STRING_TO_DATE_FIELD_START = "org_drools_modelcompiler_util_EvaluationUtil_convertDate";
+    private static final String STRING_TO_DATE_METHOD = "org.drools.modelcompiler.util.EvaluationUtil.convertDate";
+    private static final String STRING_TO_LOCAL_DATE_METHOD = "org.drools.modelcompiler.util.EvaluationUtil.convertDateLocal";
+    private static final String STRING_TO_LOCAL_DATE_TIME_METHOD = "org.drools.modelcompiler.util.EvaluationUtil.convertDateTimeLocal";
 
     private static final List<Class<?>> LITERAL_NUMBER_CLASSES = Arrays.asList(int.class, long.class, double.class, Integer.class, Long.class, Double.class);
 
@@ -100,6 +102,8 @@ public class CoercedExpression {
         final boolean leftIsPrimitive = leftClass.isPrimitive() || Number.class.isAssignableFrom( leftClass );
         final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
 
+        boolean rightAsStaticField = false;
+
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
@@ -112,10 +116,13 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
             coercedRight = coerceToDate(right);
+            rightAsStaticField = true;
         } else if (leftClass == LocalDate.class && rightClass == String.class) {
             coercedRight = coerceToLocalDate(right);
+            rightAsStaticField = true;
         } else if (leftClass == LocalDateTime.class && rightClass == String.class) {
             coercedRight = coerceToLocalDateTime(right);
+            rightAsStaticField = true;
         } else if (shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
         } else if (isBoolean(leftClass) && !isBoolean(rightClass)) {
@@ -131,7 +138,7 @@ public class CoercedExpression {
             coercedLeft = left;
         }
 
-        return new CoercedExpressionResult(coercedLeft, coercedRight);
+        return new CoercedExpressionResult(coercedLeft, coercedRight, rightAsStaticField);
     }
 
     private boolean isBoolean(Class<?> leftClass) {
@@ -267,10 +274,16 @@ public class CoercedExpression {
 
         private final TypedExpression coercedLeft;
         private final TypedExpression coercedRight;
+        private final boolean rightAsStaticField;
 
         CoercedExpressionResult(TypedExpression left, TypedExpression coercedRight) {
+            this(left, coercedRight, false);
+        }
+
+        CoercedExpressionResult(TypedExpression left, TypedExpression coercedRight, boolean rightAsStaticField) {
             this.coercedLeft = left;
             this.coercedRight = coercedRight;
+            this.rightAsStaticField = rightAsStaticField;
         }
 
         TypedExpression getCoercedLeft() {
@@ -279,6 +292,10 @@ public class CoercedExpression {
 
         public TypedExpression getCoercedRight() {
             return coercedRight;
+        }
+
+        public boolean isRightAsStaticField() {
+            return rightAsStaticField;
         }
     }
 
