@@ -99,5 +99,13 @@
       </plugin>
     </plugins>
   </build>
-
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding the XML DTOs from duplicate statistics. These naturally presents duplication due to the representation of the several versions of the DMN standard. -->
+        <sonar.cpd.exclusions>src/main/java/org/kie/dmn/model/v1_*</sonar.cpd.exclusions>
+      </properties>
+    </profile>
+  </profiles>
 </project>
