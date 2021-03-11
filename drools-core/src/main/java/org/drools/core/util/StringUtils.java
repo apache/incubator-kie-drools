@@ -25,12 +25,16 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+
+import org.kie.api.builder.ReleaseId;
 
 import static java.lang.Character.isWhitespace;
 
@@ -915,6 +919,50 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Retrieve a package unique identifier. It uses both <b>releaseId</b> and <b>packageName</b>
+     * if the former is not null and not a <b>Snapshot</b>; otherwise a <b>randomly</b> generated one
+     * @param releaseId
+     * @param packageName
+     * @return
+     */
+    public static String getPkgUUID(ReleaseId releaseId, String packageName) {
+        return (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+packageName) :  generateUUID();
+    }
+
+    /**
+     * Retrieve a consistently reproducible package unique identifier. It uses both <b>gav</b> and <b>packageName</b>
+     *
+     * @param gav
+     * @param packageName
+     * @return
+     */
+    public static String getPkgUUID(String gav, String packageName) {
+        return md5Hash(gav+packageName);
+    }
+
+    public static String md5Hash(String s) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(s.getBytes());
+            return bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private static final char[] HEX_ARRAY = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
     public static String generateUUID() {
         char[] uuid = new char[32];
         char[] chars = UUID.randomUUID().toString().toCharArray();
@@ -968,7 +1016,7 @@ public class StringUtils {
         return codeAwareSplitOnChar(string, trimArgs, ',');
     }
 
-    private static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
+    public static List<String> codeAwareSplitOnChar(CharSequence string, boolean trimArgs, char... chs) {
         List<String> args = new ArrayList<String>();
         int lastStart = 0;
         int nestedParam = 0;
@@ -1105,6 +1153,52 @@ public class StringUtils {
                     break;
 
                 case ')':
+                    if (!isDoubleQuoted && !isSingleQuoted) {
+                        nestingLevel--;
+                        if (nestingLevel == 0) {
+                            return charIndex;
+                        }
+                    }
+                    break;
+
+                case '"':
+                    if (isCurrentCharEscaped || isSingleQuoted) {
+                        // ignore escaped double quote and double quote inside single quotes (e.g 'text " text')
+                        continue;
+                    }
+                    isDoubleQuoted = !isDoubleQuoted;
+                    break;
+
+                case '\'':
+                    if (isCurrentCharEscaped || isDoubleQuoted) {
+                        // ignore escaped single quote and single quote inside double quotes (e.g. "text ' text")
+                        continue;
+                    }
+                    isSingleQuoted = !isSingleQuoted;
+                    break;
+
+                default:
+                    // nothing to do, just continue with next character
+            }
+        }
+
+        return -1;
+    }
+
+    public static int findEndOfBlockIndex(CharSequence string, int startOfMethodArgsIndex) {
+        boolean isDoubleQuoted = false;
+        boolean isSingleQuoted = false;
+        int nestingLevel = 0;
+        for (int charIndex = startOfMethodArgsIndex; charIndex < string.length(); charIndex++) {
+            boolean isCurrentCharEscaped = charIndex > 0 && string.charAt(charIndex - 1) == '\\';
+            switch (string.charAt(charIndex)) {
+                case '{':
+                    if (!isDoubleQuoted && !isSingleQuoted) {
+                        nestingLevel++;
+                    }
+                    break;
+
+                case '}':
                     if (!isDoubleQuoted && !isSingleQuoted) {
                         nestingLevel--;
                         if (nestingLevel == 0) {

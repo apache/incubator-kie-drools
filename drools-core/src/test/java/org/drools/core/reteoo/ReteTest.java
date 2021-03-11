@@ -144,11 +144,11 @@ public class ReteTest extends DroolsTestCase {
                                                                null),
                           ksession);
 
-        ClassObjectTypeConf conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
+        ClassObjectTypeConf conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
         assertLength(3,
                      conf.getObjectTypeNodes());
 
-        conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
+        conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
         assertLength(3,
                      conf.getObjectTypeNodes());
 
@@ -258,7 +258,7 @@ public class ReteTest extends DroolsTestCase {
                    rete.getObjectTypeNodes(EntryPointId.DEFAULT).get(new ClassObjectType(List.class)));
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
-        ClassObjectTypeConf arrayConf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
+        ClassObjectTypeConf arrayConf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals(2,
                      arrayConf.getObjectTypeNodes().length);

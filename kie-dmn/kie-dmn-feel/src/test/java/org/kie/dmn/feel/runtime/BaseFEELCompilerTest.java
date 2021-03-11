@@ -34,7 +34,7 @@ import org.kie.dmn.feel.runtime.BaseFEELTest.FEEL_TARGET;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Parameterized.class)
 public abstract class BaseFEELCompilerTest {

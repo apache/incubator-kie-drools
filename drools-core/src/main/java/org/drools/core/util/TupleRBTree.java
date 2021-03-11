@@ -216,7 +216,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         }
 
         if ( lowerNearest.key.compareTo( upperNearest.key  ) > 0 ) {
-            upperNearest = lowerNearest;
+            return FastIterator.EMPTY;
         }
 
         return new RangeFastIterator( lowerNearest, upperNearest );
@@ -528,7 +528,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         RED, BLACK
     }
 
-    public static class Node<K extends Comparable< ? super K>> extends TupleList implements Entry<TupleList>, Comparable<Node<K>> {
+    public static class Node<K extends Comparable< ? super K>> extends TupleList<Object> implements Entry<TupleList<Object>>, Comparable<Node<K>> {
         public  K       key;
         private Node<K> left;
         private Node<K> right;

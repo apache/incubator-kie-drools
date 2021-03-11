@@ -32,4 +32,8 @@ public abstract class AbstractConstraint implements Constraint {
     public AndConstraints and(Constraint constraint) {
         return new AndConstraints(this, constraint);
     }
+
+    public AbstractConstraint cloneConstraint() {
+        return this;
+    }
 }

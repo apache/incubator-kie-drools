@@ -1,0 +1,20 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_7B82BF58-74D1-4727-820F-9925FA3F7812" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_88AFD821-7C7F-4655-8591-F4C749815F87" name="arithmeticSub1" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_7B82BF58-74D1-4727-820F-9925FA3F7812">
+    <dmn:inputData id="Input.var4" name="var4">
+        <dmn:variable id="InputVar.var4" name="var4" typeRef="number"/>
+    </dmn:inputData>
+    <dmn:inputData id="Input.var3" name="var3">
+        <dmn:variable id="InputVar.var3" name="var3" typeRef="number"/>
+    </dmn:inputData>
+    <dmn:decision id="Decision.ExpressionTest" name="ExpressionTest">
+        <dmn:variable id="DecisionVar.ExpressionTest" name="ExpressionTest"/>
+        <dmn:informationRequirement>
+            <dmn:requiredInput href="#Input.var4"/>
+        </dmn:informationRequirement>
+        <dmn:informationRequirement>
+            <dmn:requiredInput href="#Input.var3"/>
+        </dmn:informationRequirement>
+        <dmn:literalExpression id="literalExpression_4baf595e-fa38-4e15-9bf1-c553038543c1">
+            <dmn:text>-sum(var3, var4, 2, 1)</dmn:text>
+        </dmn:literalExpression>
+    </dmn:decision>
+</dmn:definitions>

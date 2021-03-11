@@ -32,6 +32,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -76,7 +77,9 @@ public class KiePMMLScorecardModelFactoryTest {
         KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(pmml.getDataDictionary(),
                                                                                                 pmml.getTransformationDictionary(),
                                                                                                 scorecardModel,
-                                                                                                fieldTypeMap);
+                                                                                                fieldTypeMap,
+                                                                                                PACKAGE_NAME,
+                                                                                                new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
@@ -112,6 +115,7 @@ public class KiePMMLScorecardModelFactoryTest {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
         KiePMMLScorecardModelFactory.setConstructor(scorecardModel,
+                                                    pmml.getDataDictionary(),
                                                     constructorDeclaration,
                                                     simpleName);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();

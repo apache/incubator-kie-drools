@@ -37,12 +37,12 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.JavaRuleClassBuilder;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.dialect.java.JavaAccumulateBuilder;
-import org.drools.compiler.rule.builder.dialect.java.JavaRuleClassBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
@@ -64,17 +64,14 @@ public class LegacyAccumulate {
     private final AccumulateDescr descr;
     private final PatternDescr basePattern;
     private final RuleBuildContext ruleBuildContext;
-    private final JavaAccumulateBuilder javaAccumulateBuilder = new JavaAccumulateBuilder();
     private final RuleContext context;
     private final PackageModel packageModel;
-    private final Set<String> externalDeclrs;
 
     public LegacyAccumulate(RuleContext context, AccumulateDescr descr, PatternDescr basePattern, Set<String> externalDeclrs) {
         this.descr = descr;
         this.basePattern = basePattern;
         this.context = context;
         this.packageModel = context.getPackageModel();
-        this.externalDeclrs = externalDeclrs;
 
         final DialectCompiletimeRegistry dialectCompiletimeRegistry = packageModel.getDialectCompiletimeRegistry();
         final Dialect defaultDialect = dialectCompiletimeRegistry.getDialect("java");
@@ -90,7 +87,8 @@ public class LegacyAccumulate {
 
     public void build() {
 
-        new PatternBuilder().build(ruleBuildContext, basePattern);
+        Pattern pattern = (Pattern) new PatternBuilder().build(ruleBuildContext, basePattern);
+        Accumulate accumulate = (Accumulate) pattern.getSource();
 
         final Set<String> imports = ruleBuildContext.getPkg().getImports().keySet();
         final String packageName = ruleBuildContext.getPkg().getName();
@@ -119,10 +117,10 @@ public class LegacyAccumulate {
         Expression accExpr = new MethodReferenceExpr(new NameExpr( typeWithPackage ), new NodeList<Type>(), "new");
         MethodCallExpr accFunctionCall = new MethodCallExpr(null, ACC_FUNCTION_CALL, nodeList(accExpr));
 
-        if (!externalDeclrs.isEmpty()) {
+        if (accumulate.getRequiredDeclarations().length > 0) {
             accFunctionCall = new MethodCallExpr(accFunctionCall, ACC_WITH_EXTERNAL_DECLRS_CALL);
-            for (String externalDeclr : externalDeclrs) {
-                accFunctionCall.addArgument( context.getVar(externalDeclr) );
+            for (Declaration requiredDeclaration : accumulate.getRequiredDeclarations()) {
+                accFunctionCall.addArgument( context.getVar(requiredDeclaration.getIdentifier()) );
             }
         }
 

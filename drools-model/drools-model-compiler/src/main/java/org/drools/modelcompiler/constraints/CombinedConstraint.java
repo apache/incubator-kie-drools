@@ -19,6 +19,7 @@ package org.drools.modelcompiler.constraints;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ContextEntry;
@@ -52,7 +53,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isIndexable( short nodeType ) {
+    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
         return false;
     }
 
@@ -73,6 +74,11 @@ public class CombinedConstraint extends AbstractConstraint {
 
     @Override
     public InternalReadAccessor getFieldExtractor() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Declaration getIndexExtractor() {
         throw new UnsupportedOperationException();
     }
 

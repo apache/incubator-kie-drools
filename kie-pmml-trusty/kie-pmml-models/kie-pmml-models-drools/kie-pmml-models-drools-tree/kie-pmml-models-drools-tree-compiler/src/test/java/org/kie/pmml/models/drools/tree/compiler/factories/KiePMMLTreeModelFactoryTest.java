@@ -34,6 +34,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
@@ -74,7 +75,12 @@ public class KiePMMLTreeModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(),pmml.getTransformationDictionary(), treeModel, fieldTypeMap);
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(),
+                                                                                 pmml.getTransformationDictionary(),
+                                                                                 treeModel,
+                                                                                 fieldTypeMap,
+                                                                                 PACKAGE_NAME,
+                                                                                 new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
@@ -112,6 +118,7 @@ public class KiePMMLTreeModelFactoryTest {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
         KiePMMLTreeModelFactory.setConstructor(treeModel,
+                                               pmml.getDataDictionary(),
                                                constructorDeclaration,
                                                simpleName);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();

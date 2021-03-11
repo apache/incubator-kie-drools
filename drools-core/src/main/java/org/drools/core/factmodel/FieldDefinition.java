@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.ClassFieldAccessor;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.factmodel.traits.Alias;
-import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
@@ -326,7 +326,7 @@ public class FieldDefinition
     }
 
     public String getDefaultValueAsString() {
-        return MVELSafeHelper.getEvaluator().eval( initExpr, String.class );
+        return CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, String.class );
     }
 
 
@@ -339,7 +339,7 @@ public class FieldDefinition
             } else if ( "false".equalsIgnoreCase( initExpr ) ) {
                 return false;
             } else {
-                return MVELSafeHelper.getEvaluator().eval( initExpr, Boolean.class );
+                return CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Boolean.class );
             }
         }
     }
@@ -347,7 +347,7 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0 : Byte.parseByte(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Byte.class );
+            return StringUtils.isEmpty( initExpr ) ? 0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Byte.class );
         }
     }
     public Character getDefaultValueAsChar() {
@@ -357,7 +357,7 @@ public class FieldDefinition
             if ( initExpr.length() == 1 ) {
                 return initExpr.charAt(0);
             } else {
-                return MVELSafeHelper.getEvaluator().eval( initExpr, Character.class );
+                return CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Character.class );
             }
         }
     }
@@ -365,35 +365,35 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0 : MVELSafeHelper.getEvaluator().eval( initExpr, Double.class );
+            return StringUtils.isEmpty( initExpr ) ? 0.0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Double.class );
         }
     }
     public Float getDefaultValueAsFloat( ) {
         try {
             return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0f : MVELSafeHelper.getEvaluator().eval( initExpr, Float.class );
+            return StringUtils.isEmpty( initExpr ) ? 0.0f : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Float.class );
         }
     }
     public Integer getDefaultValueAsInt( ) {
         try {
             return initExpr == null ? 0 : Integer.parseInt(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Integer.class );
+            return StringUtils.isEmpty( initExpr ) ? 0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Integer.class );
         }
     }
     public Long getDefaultValueAsLong( ) {
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0L : MVELSafeHelper.getEvaluator().eval( initExpr, Long.class );
+            return StringUtils.isEmpty( initExpr ) ? 0L : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Long.class );
         }
     }
     public Short getDefaultValueAsShort( ) {
         try {
             return initExpr == null ? 0 : Short.parseShort(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Short.class );
+            return StringUtils.isEmpty( initExpr ) ? 0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Short.class );
         }
     }
 
@@ -407,7 +407,7 @@ public class FieldDefinition
             } else if ( "false".equalsIgnoreCase( initExpr ) ) {
                 return false;
             } else {
-                return MVELSafeHelper.getEvaluator().eval( initExpr, Boolean.class );
+                return CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Boolean.class );
             }
         }
     }
@@ -415,7 +415,7 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0 : Byte.parseByte(initExpr);
         } catch (NumberFormatException nfe) {
-             return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Byte.class );
+             return StringUtils.isEmpty( initExpr ) ? 0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Byte.class );
         }
     }
     public char getDefaultValueAs_char() {
@@ -425,7 +425,7 @@ public class FieldDefinition
             if ( initExpr.length() == 1 ) {
                 return initExpr.charAt(0);
             } else {
-                return MVELSafeHelper.getEvaluator().eval( initExpr, Character.class );
+                return CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Character.class );
             }
         }
     }
@@ -433,35 +433,35 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0 : MVELSafeHelper.getEvaluator().eval( initExpr, Double.class );
+            return StringUtils.isEmpty( initExpr ) ? 0.0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Double.class );
         }
     }
     public float getDefaultValueAs_float() {
         try {
             return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0f : MVELSafeHelper.getEvaluator().eval( initExpr, Float.class );
+            return StringUtils.isEmpty( initExpr ) ? 0.0f : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Float.class );
         }
     }
     public int getDefaultValueAs_int() {
         try {
             return initExpr == null ? 0 : Integer.parseInt(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Integer.class );
+            return StringUtils.isEmpty( initExpr ) ? 0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Integer.class );
         }
     }
     public long getDefaultValueAs_long() {
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0L : MVELSafeHelper.getEvaluator().eval( initExpr, Long.class );
+            return StringUtils.isEmpty( initExpr ) ? 0L : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Long.class );
         }
     }
     public short getDefaultValueAs_short() {
         try {
             return initExpr == null ? 0 : Short.parseShort(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Short.class );
+            return StringUtils.isEmpty( initExpr ) ? 0 : CoreComponentsBuilder.get().getMVELExecutor().eval( initExpr, Short.class );
         }
     }
 

@@ -30,11 +30,6 @@
     <dependencies>
       <dependency>
         <groupId>${groupId}</groupId>
-        <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>${groupId}</groupId>
         <artifactId>kie-pmml-models-${artifactModelName}-model</artifactId>
         <version>${version.org.kie}</version>
       </dependency>

@@ -15,11 +15,11 @@
 
 package org.drools.core.rule.constraint;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AcceptsReadAccessor;
@@ -60,7 +60,7 @@ public class QueryNameConstraint implements
         return false;
     }
 
-    public boolean isIndexable(short nodeType) {
+    public boolean isIndexable(short nodeType, RuleBaseConfiguration config) {
         return true;
     }
 
@@ -85,6 +85,11 @@ public class QueryNameConstraint implements
 
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
+    }
+
+    @Override
+    public Declaration getIndexExtractor() {
+        throw new UnsupportedOperationException();
     }
 
     public Declaration[] getRequiredDeclarations() {

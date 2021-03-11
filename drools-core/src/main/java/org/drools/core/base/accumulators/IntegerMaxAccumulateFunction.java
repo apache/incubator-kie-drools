@@ -73,7 +73,16 @@ public class IntegerMaxAccumulateFunction extends AbstractAccumulateFunction<Int
                         Object value) {
     }
 
-    public Object getResult(MaxData data) {
+    @Override
+    public boolean tryReverse( MaxData data, Object value ) {
+        if (value != null) {
+            Integer number = (Integer)value;
+            return data.max > number;
+        }
+        return true;
+    }
+
+    public Object getResult( MaxData data) {
         return data.max;
     }
 

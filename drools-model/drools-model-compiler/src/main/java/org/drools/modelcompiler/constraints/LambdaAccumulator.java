@@ -17,14 +17,8 @@
 
 package org.drools.modelcompiler.constraints;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Objects;
 
 import org.drools.core.WorkingMemory;
@@ -68,26 +62,20 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Serializable createContext() {
-        try {
-            return new LambdaAccContext(accumulateFunction.createContext(), supportsReverse());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public Object createContext() {
+        return accumulateFunction.createContext();
     }
 
     @Override
-    public void init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.init( (( LambdaAccContext ) context).context );
+    public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+        context = accumulateFunction.initContext( (Serializable) context );
+        return context;
     }
 
     @Override
-    public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
+    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
         final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
-        if (supportsReverse()) {
-            (( LambdaAccContext ) context).reverseSupport.put(handle.getId(), accumulatedObject);
-        }
-        accumulateFunction.accumulate( (( LambdaAccContext ) context).context, accumulatedObject);
+        return accumulateFunction.accumulateValue( (Serializable) context, accumulatedObject);
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
@@ -98,20 +86,28 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.reverse( (( LambdaAccContext ) context).context, (( LambdaAccContext ) context).reverseSupport.remove(handle.getId()));
+    public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
+                              Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+        if (value == null) {
+            throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
+        }
+        return accumulateFunction.tryReverse( (Serializable) context, value);
     }
 
     @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        return accumulateFunction.getResult( (( LambdaAccContext ) context).context );
+    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+        try {
+            return accumulateFunction.getResult( (Serializable) context );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     public static class BindingAcc extends LambdaAccumulator {
         private final BindingEvaluator binding;
-        private final List<String> sourceVariables;
+        private final Collection<String> sourceVariables;
 
-        public BindingAcc(AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
+        public BindingAcc(AccumulateFunction accumulateFunction, Collection<String> sourceVariables, BindingEvaluator binding) {
             super(accumulateFunction);
             this.binding = binding;
             this.sourceVariables = sourceVariables;
@@ -125,20 +121,20 @@ public abstract class LambdaAccumulator implements Accumulator {
                 Object[] args;
                 if (bindingDeclarations == null || bindingDeclarations.length == 0) {
                     args = new Object[ sourceVariables.size() ];
-                    for (int i = 0; i < sourceVariables.size(); i++) {
-                        String sourceVariable = sourceVariables.get(i);
+                    int i = 0;
+                    for (String sourceVariable : sourceVariables) {
                         for (Declaration d : innerDeclarations) {
                             if (d.getIdentifier().equals( sourceVariable )) {
-                                args[i] = (( SubnetworkTuple ) accumulateObject).getObject(d);
+                                args[i] = d.getValue( ( SubnetworkTuple ) accumulateObject );
                                 break;
                             }
                         }
+                        i++;
                     }
                 } else { // Return values in the order required by the binding.
                     args = new Object[ bindingDeclarations.length ];
                     for (int i = 0; i < bindingDeclarations.length; i++) {
-                        Declaration d = bindingDeclarations[i];
-                        args[i] = ((SubnetworkTuple) accumulateObject).getObject(d);
+                        args[i] = bindingDeclarations[i].getValue( ( SubnetworkTuple ) accumulateObject );
                     }
                 }
                 return binding.evaluate(args);
@@ -178,7 +174,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple && declarations.length > 0) {
-                return (((SubnetworkTuple) accumulateObject)).getObject(declarations[0]);
+                return declarations[0].getValue( ( SubnetworkTuple ) accumulateObject );
             } else {
                 return accumulateObject;
             }
@@ -200,32 +196,4 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
     }
 
-    private static class LambdaAccContext implements Externalizable {
-        private Serializable context;
-        private Map<Long, Object> reverseSupport;
-
-        public LambdaAccContext() { }
-
-        public LambdaAccContext( Serializable context, boolean supportReverse) {
-            this.context = context;
-            if (supportReverse) {
-                reverseSupport = new HashMap<>();
-            }
-        }
-
-        public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {
-            context = (Externalizable) in.readObject();
-            reverseSupport = (Map<Long, Object>) in.readObject();
-        }
-
-        public void writeExternal( ObjectOutput out) throws IOException {
-            out.writeObject( context );
-            out.writeObject( reverseSupport );
-        }
-
-        @Override
-        public String toString() {
-            return context.toString();
-        }
-    }
 }

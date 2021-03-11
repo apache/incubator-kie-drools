@@ -21,13 +21,14 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
  */
 public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
+    private static final long serialVersionUID = 2408750585433339543L;
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
     private String targetField = null;
     private Integer rank;

@@ -26,4 +26,11 @@ public class FeelValue {
     public Object getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "FeelValue{" +
+                "value=" + value +
+                '}';
+    }
 }

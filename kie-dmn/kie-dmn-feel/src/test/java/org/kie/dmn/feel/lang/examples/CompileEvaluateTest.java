@@ -1,7 +1,7 @@
 package org.kie.dmn.feel.lang.examples;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.*;
 
 import java.util.AbstractMap;

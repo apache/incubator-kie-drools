@@ -26,7 +26,6 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -75,12 +74,12 @@ public class SingleBetaConstraints
         if ((disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory())) {
             this.indexed = false;
         } else {
-            initIndexes(config.getCompositeKeyDepth(), betaNodeType);
+            initIndexes(config.getCompositeKeyDepth(), betaNodeType, config);
         }
     }
 
-    public void initIndexes(int depth, short betaNodeType) {
-        indexed = depth >= 1 && IndexUtil.isIndexableForNode(betaNodeType, constraint);
+    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+        indexed = depth >= 1 && IndexUtil.isIndexableForNode(betaNodeType, constraint, config);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -218,8 +217,6 @@ public class SingleBetaConstraints
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {
-        if (this.constraint instanceof MvelConstraint) {
-            ((MvelConstraint) this.constraint).registerEvaluationContext(buildContext);
-        }
+        this.constraint.registerEvaluationContext(buildContext);
     }
 }

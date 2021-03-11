@@ -18,9 +18,10 @@ package org.kie.pmml.compiler.api.provider;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 
 /**
  * API for actual PMML model implementations
@@ -30,15 +31,17 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
     PMML_MODEL getPMMLModelType();
 
     /**
+     * Method to be called for a <b>runtime</b> compilation
      *
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
+    E getKiePMMLModel(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
 
     /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
@@ -47,9 +50,9 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
+    E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
 }

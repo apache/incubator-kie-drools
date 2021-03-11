@@ -73,6 +73,15 @@ public class NumericMaxAccumulateFunction extends AbstractAccumulateFunction<Num
                         Object value) {
     }
 
+    @Override
+    public boolean tryReverse( MaxData data, Object value ) {
+        if (value != null) {
+            Number number = (Number)value;
+            return data.max.doubleValue() > number.doubleValue();
+        }
+        return true;
+    }
+
     public Object getResult(MaxData data) {
         return data.max;
     }

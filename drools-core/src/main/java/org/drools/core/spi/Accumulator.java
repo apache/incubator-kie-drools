@@ -19,6 +19,7 @@ package org.drools.core.spi;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
 import org.drools.core.WorkingMemory;
@@ -42,7 +43,7 @@ public interface Accumulator
      * 
      * @return
      */
-    public Object createWorkingMemoryContext();
+    Object createWorkingMemoryContext();
     
     /**
      * Creates the context object for an accumulator session.
@@ -51,7 +52,7 @@ public interface Accumulator
      * 
      * @return
      */
-    public Serializable createContext();
+    Object createContext();
 
     /**
      * Executes the initialization block of code
@@ -61,11 +62,11 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception;
+    Object init(Object workingMemoryContext,
+                Object context,
+                Tuple leftTuple,
+                Declaration[] declarations,
+                WorkingMemory workingMemory);
 
     /**
      * Executes the accumulate (action) code for the given fact handle
@@ -77,20 +78,20 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void accumulate(Object workingMemoryContext,
-                           Object context,
-                           Tuple leftTuple,
-                           InternalFactHandle handle,
-                           Declaration[] declarations,
-                           Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception;
+    Object accumulate(Object workingMemoryContext,
+                      Object context,
+                      Tuple leftTuple,
+                      InternalFactHandle handle,
+                      Declaration[] declarations,
+                      Declaration[] innerDeclarations,
+                      WorkingMemory workingMemory);
     
     /**
      * Returns true if this accumulator supports operation reversal
      * 
      * @return
      */
-    public boolean supportsReverse();
+    boolean supportsReverse();
     
     /**
      * Reverses the accumulate action for the given fact handle
@@ -103,13 +104,14 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception;
+    boolean tryReverse(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       InternalFactHandle handle,
+                       Object value,
+                       Declaration[] declarations,
+                       Declaration[] innerDeclarations,
+                       WorkingMemory workingMemory);
 
     /**
      * Gets the result of the accummulation
@@ -120,18 +122,17 @@ public interface Accumulator
      * @return
      * @throws Exception
      */
-    public Object getResult(Object workingMemoryContext,
-                            Object context, 
-                            Tuple leftTuple,
-                            Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception;
-    
-    
+    Object getResult(Object workingMemoryContext,
+                     Object context,
+                     Tuple leftTuple,
+                     Declaration[] declarations,
+                     WorkingMemory workingMemory);
+
     /**
      * This class is used as a wrapper delegate when a security 
      * policy is in place.
      */
-    public static class SafeAccumulator implements Accumulator, Serializable {
+    class SafeAccumulator implements Accumulator, Serializable {
         private static final long serialVersionUID = -2845820209337318924L;
         private Accumulator delegate;
 
@@ -149,43 +150,50 @@ public interface Accumulator
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public Serializable createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Serializable>() {
+        public Object createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
-                public Serializable run() {
+                public Object run() {
                     return delegate.createContext();
                 }
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public void init(final Object workingMemoryContext, 
-                final Object context, 
-                final Tuple leftTuple, 
-                final Declaration[] declarations, 
-                final WorkingMemory workingMemory) throws Exception {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    delegate.init(workingMemoryContext, context, leftTuple, declarations, workingMemory);
-                    return null;
-                }
-            }, KiePolicyHelper.getAccessContext());
+        public Object init(final Object workingMemoryContext,
+                           final Object context,
+                           final Tuple leftTuple,
+                           final Declaration[] declarations,
+                           final WorkingMemory workingMemory) {
+            try {
+                return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    @Override
+                    public Object run() throws Exception {
+                        return delegate.init(workingMemoryContext, context, leftTuple, declarations, workingMemory);
+                    }
+                }, KiePolicyHelper.getAccessContext());
+            } catch (PrivilegedActionException e) {
+                throw new RuntimeException( e );
+            }
         }
 
-        public void accumulate(final Object workingMemoryContext, 
+        public Object accumulate(final Object workingMemoryContext,
                 final Object context, 
                 final Tuple leftTuple, 
                 final InternalFactHandle handle, 
                 final Declaration[] declarations, 
                 final Declaration[] innerDeclarations, 
-                final WorkingMemory workingMemory) throws Exception {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
-                    return null;
-                }
-            }, KiePolicyHelper.getAccessContext());
+                final WorkingMemory workingMemory) {
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    @Override
+                    public Object run() throws Exception {
+                        return delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
+                    }
+                }, KiePolicyHelper.getAccessContext());
+            } catch (PrivilegedActionException e) {
+                throw new RuntimeException( e );
+            }
+            throw new IllegalStateException("Should not reach here, as it should return from the prior 'run'");
         }
 
         public boolean supportsReverse() {
@@ -198,33 +206,42 @@ public interface Accumulator
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public void reverse(final Object workingMemoryContext, 
+        public boolean tryReverse(final Object workingMemoryContext,
                 final Object context, 
                 final Tuple leftTuple, 
-                final InternalFactHandle handle, 
+                final InternalFactHandle handle,
+                final Object value,
                 final Declaration[] declarations, 
                 final Declaration[] innerDeclarations, 
-                final WorkingMemory workingMemory) throws Exception {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    delegate.reverse(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
-                    return null;
-                }
-            }, KiePolicyHelper.getAccessContext());
+                final WorkingMemory workingMemory) {
+            try {
+                return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                    @Override
+                    public Boolean run() throws Exception {
+                        return delegate.tryReverse(workingMemoryContext, context, leftTuple, handle, value,
+                                         declarations, innerDeclarations, workingMemory);
+                    }
+                }, KiePolicyHelper.getAccessContext());
+            } catch (PrivilegedActionException e) {
+                throw new RuntimeException( e );
+            }
         }
 
         public Object getResult(final Object workingMemoryContext, 
                 final Object context, 
                 final Tuple leftTuple, 
                 final Declaration[] declarations, 
-                final WorkingMemory workingMemory) throws Exception {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    return delegate.getResult(workingMemoryContext, context, leftTuple, declarations, workingMemory);
-                }
-            }, KiePolicyHelper.getAccessContext());
+                final WorkingMemory workingMemory) {
+            try {
+                return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    @Override
+                    public Object run() throws Exception {
+                        return delegate.getResult(workingMemoryContext, context, leftTuple, declarations, workingMemory);
+                    }
+                }, KiePolicyHelper.getAccessContext());
+            } catch (PrivilegedActionException e) {
+                throw new RuntimeException( e );
+            }
         }
         
         public boolean wrapsCompiledInvoker() {
@@ -232,7 +249,7 @@ public interface Accumulator
         }
     }
 
-    public static boolean isCompiledInvoker(final Accumulator accumulator) {
+    static boolean isCompiledInvoker(final Accumulator accumulator) {
         return (accumulator instanceof CompiledInvoker)
                 || (accumulator instanceof SafeAccumulator && ((SafeAccumulator) accumulator).wrapsCompiledInvoker());
     }

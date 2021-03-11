@@ -16,36 +16,35 @@
 package org.drools.core.util.index;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.TupleValueExtractor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
-import static org.drools.core.util.ClassUtils.getter2property;
-
 public class IndexUtil {
 
-    private static final boolean USE_COMPARISON_INDEX = true;
-    private static final boolean USE_RANGE_INDEX = USE_COMPARISON_INDEX && false;
+    // package private for test convenience
+    static boolean USE_COMPARISON_INDEX = true;
+    static boolean USE_COMPARISON_INDEX_JOIN = true;
 
-    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints, short betaNodeType) {
+    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints, short betaNodeType, RuleBaseConfiguration config) {
         // 1) If there is 1 or more unification restrictions it cannot be composite
         // 2) Ensures any non unification restrictions are first
         int firstUnification = -1;
         int firstNonUnification = -1;
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
-            if ( isIndexable(constraints[i], betaNodeType) ) {
+            if ( isIndexable(constraints[i], betaNodeType, config) ) {
                 final boolean isUnification = ((IndexableConstraint) constraints[i]).isUnification();
                 if ( isUnification && firstUnification == -1 ) {
                     firstUnification = i;
@@ -58,7 +57,7 @@ public class IndexUtil {
             }
         }
 
-        if (firstNonUnification != -1 && firstNonUnification > 0) {
+        if ( firstNonUnification > 0 ) {
             // Make sure a nonunification indexable constraint is first
             swap(constraints, 0, firstNonUnification);
         }
@@ -66,45 +65,82 @@ public class IndexUtil {
         return (firstUnification == -1);
     }
 
-    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType) {
-        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType);
+    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType, RuleBaseConfiguration config) {
+        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config);
     }
 
-    private static boolean canHaveRangeIndex(short nodeType) {
-        return USE_COMPARISON_INDEX && ( nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode );
+    private static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint, RuleBaseConfiguration config) {
+        return canHaveRangeIndexForNodeType(nodeType, config) && areRangeIndexCompatibleOperands(constraint);
     }
 
-    public static boolean isIndexableForNode(short nodeType, BetaNodeFieldConstraint constraint) {
+    private static boolean canHaveRangeIndexForNodeType(short nodeType, RuleBaseConfiguration config) {
+        if (USE_COMPARISON_INDEX_JOIN && config.isBetaNodeRangeIndexEnabled()) {
+            return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
+        } else {
+            return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode);
+        }
+    }
+
+    private static boolean areRangeIndexCompatibleOperands(IndexableConstraint constraint) {
+        InternalReadAccessor fieldExtractor = null;
+        TupleValueExtractor indexingDeclaration = null;
+        try {
+            fieldExtractor = constraint.getFieldExtractor();
+            indexingDeclaration = constraint.getIndexExtractor();
+        } catch (UnsupportedOperationException uoe) {
+            return false;
+        }
+        if (fieldExtractor == null || indexingDeclaration == null) {
+            return false;
+        }
+
+        ValueType leftValueType = fieldExtractor.getValueType();
+        ValueType rightValueType = indexingDeclaration.getValueType();
+
+        if (leftValueType != null && rightValueType != null) {
+            if (leftValueType.isNumber() && rightValueType.isNumber()) {
+                return true; // Number vs Number
+            }
+            Class<?> leftClass = leftValueType.getClassType();
+            Class<?> rightClass = rightValueType.getClassType();
+            if (leftClass != null && rightClass != null && Comparable.class.isAssignableFrom(leftClass) && leftClass.equals(rightClass)) {
+                return true; // Same Comparable class
+            }
+        }
+        return false;
+    }
+
+    public static boolean isIndexableForNode(short nodeType, BetaNodeFieldConstraint constraint, RuleBaseConfiguration config) {
         if ( !(constraint instanceof IndexableConstraint) ) {
             return false;
         }
 
         ConstraintType constraintType = ((IndexableConstraint)constraint).getConstraintType();
-        return constraintType.isIndexableForNode(nodeType);
+        return constraintType.isIndexableForNode(nodeType, (IndexableConstraint)constraint, config);
     }
 
-    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
+    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         if (keyDepth < 1) {
             return new boolean[constraints.length];
         }
 
         return indexPrecedenceOption == IndexPrecedenceOption.EQUALITY_PRIORITY ?
-                findIndexableWithEqualityPriority(nodeType, keyDepth, constraints) :
-                findIndexableWithPatternOrder(nodeType, keyDepth, constraints);
+                findIndexableWithEqualityPriority(nodeType, keyDepth, constraints, config) :
+                findIndexableWithPatternOrder(nodeType, keyDepth, constraints, config);
     }
 
-    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
+    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         if (hasEqualIndexable(keyDepth, indexable, constraints)) {
             return indexable;
         }
 
-        if (!canHaveRangeIndex(nodeType)) {
+        if (!canHaveRangeIndexForNodeType(nodeType, config)) {
             return indexable;
         }
 
         for (int i = 0; i < constraints.length; i++) {
-            if (isIndexable(constraints[i], nodeType)) {
+            if (isIndexable(constraints[i], nodeType, config)) {
                 sortRangeIndexable(constraints, indexable, i);
                 break;
             }
@@ -113,10 +149,10 @@ public class IndexUtil {
         return indexable;
     }
 
-    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
+    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         for (int i = 0; i < constraints.length; i++) {
-            if (isIndexable(constraints[i], nodeType)) {
+            if (isIndexable(constraints[i], nodeType, config)) {
                 if (isEqualIndexable(constraints[i])) {
                     sortEqualIndexable(keyDepth, indexable, constraints, i);
                 } else {
@@ -149,30 +185,8 @@ public class IndexUtil {
     }
 
     private static void sortRangeIndexable(BetaNodeFieldConstraint[] constraints, boolean[] indexable, int i) {
-        int dualConstraintPosition = findDualConstraint(constraints, i);
         swap(constraints, i, 0);
         indexable[0] = true;
-        if (dualConstraintPosition > 0) {
-            swap(constraints, dualConstraintPosition, 1);
-            indexable[1] = true;
-        }
-    }
-
-    private static int findDualConstraint(BetaNodeFieldConstraint[] constraints, int comparisonPos) {
-        if ( !(USE_RANGE_INDEX && constraints[comparisonPos] instanceof MvelConstraint) ) {
-            return -1;
-        }
-        MvelConstraint firstConstraint = (MvelConstraint) constraints[comparisonPos];
-        String leftValue = getLeftValueInExpression(firstConstraint.getExpression());
-        for (int i = comparisonPos+1; i < constraints.length; i++) {
-            if (constraints[i] instanceof MvelConstraint) {
-                MvelConstraint dualConstraint = (MvelConstraint) constraints[i];
-                if (isDual(firstConstraint, leftValue, dualConstraint)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
     }
 
     private static boolean isEqualIndexable(BetaNodeFieldConstraint constraint) {
@@ -200,7 +214,7 @@ public class IndexUtil {
         private final boolean indexable;
         private final String operator;
 
-        private ConstraintType(boolean indexable, String operator) {
+        ConstraintType( boolean indexable, String operator ) {
             this.indexable = indexable;
             this.operator = operator;
         }
@@ -233,7 +247,7 @@ public class IndexUtil {
             return this.operator;
         }
 
-        public boolean isIndexableForNode(short nodeType) {
+        public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint, RuleBaseConfiguration config) {
             switch (this) {
                 case EQUAL:
                     return true;
@@ -241,7 +255,7 @@ public class IndexUtil {
                 case UNKNOWN:
                     return false;
                 default:
-                    return canHaveRangeIndex(nodeType);
+                    return canHaveRangeIndex(nodeType, constraint, config);
             }
         }
 
@@ -310,24 +324,8 @@ public class IndexUtil {
         }
     }
 
-    public static List<String> getIndexedProperties(BetaNode betaNode, RuleBaseConfiguration config) {
-        int keyDepth = config.getCompositeKeyDepth();
-        if (config.getCompositeKeyDepth() < 1) {
-            return Collections.emptyList();
-        }
-
-        Factory.IndexSpec indexSpec = new Factory.IndexSpec(config.getIndexPrecedenceOption(), keyDepth, betaNode.getType(), betaNode.getConstraints());
-        List<String> indexedProps = new ArrayList<String>();
-        for (FieldIndex fieldIndex : indexSpec.indexes) {
-            indexedProps.add( getter2property(fieldIndex.getExtractor().getNativeReadMethodName()) );
-        }
-
-        return indexedProps;
-    }
-
     public static class Factory {
         public static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaNodeFieldConstraint... constraints) {
-            int keyDepth = config.getCompositeKeyDepth();
             if (config.getCompositeKeyDepth() < 1) {
                 return new BetaMemory( config.isSequential() ? null : new TupleList(),
                                        new TupleList(),
@@ -335,7 +333,7 @@ public class IndexUtil {
                                        nodeType );
             }
 
-            IndexSpec indexSpec = new IndexSpec(config.getIndexPrecedenceOption(), keyDepth, nodeType, constraints);
+            IndexSpec indexSpec = new IndexSpec(nodeType, constraints, config);
             return new BetaMemory( createLeftMemory(config, indexSpec),
                                    createRightMemory(config, indexSpec),
                                    createContext(constraints),
@@ -353,12 +351,6 @@ public class IndexUtil {
 
             if (indexSpec.constraintType.isComparison()) {
                 return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], false );
-            }
-
-            if (indexSpec.constraintType == ConstraintType.RANGE) {
-                // missing TreeMap based implementation for range indexes
-                return new RightTupleIndexRangeRBTree( indexSpec.ascendingConstraintType, indexSpec.indexes[0],
-                                                       indexSpec.descendingConstraintType, indexSpec.indexes[1] );
             }
 
             return new TupleList();
@@ -380,12 +372,6 @@ public class IndexUtil {
                 return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], true );
             }
 
-            if (indexSpec.constraintType == ConstraintType.RANGE) {
-                // missing TreeMap based implementation for range indexes
-                return new LeftTupleIndexRangeRBTree( indexSpec.ascendingConstraintType, indexSpec.indexes[0],
-                                                      indexSpec.descendingConstraintType, indexSpec.indexes[1] );
-            }
-
             return new TupleList();
         }
 
@@ -401,20 +387,19 @@ public class IndexUtil {
             private ConstraintType constraintType = ConstraintType.UNKNOWN;
             private FieldIndex[] indexes;
 
-            private ConstraintType ascendingConstraintType = null;
-            private ConstraintType descendingConstraintType = null;
-
-            private IndexSpec(IndexPrecedenceOption indexPrecedenceOption, int keyDepth, short nodeType, BetaNodeFieldConstraint[] constraints) {
-                init(indexPrecedenceOption, keyDepth, nodeType, constraints);
+            private IndexSpec(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+                init(nodeType, constraints, config);
             }
 
-            private void init(IndexPrecedenceOption indexPrecedenceOption, int keyDepth, short nodeType, BetaNodeFieldConstraint[] constraints) {
+            private void init(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+                int keyDepth = config.getCompositeKeyDepth();
+                IndexPrecedenceOption indexPrecedenceOption = config.getIndexPrecedenceOption();
                 int firstIndexableConstraint = indexPrecedenceOption == IndexPrecedenceOption.EQUALITY_PRIORITY ?
-                        determineTypeWithEqualityPriority(nodeType, constraints) :
-                        determineTypeWithPatternOrder(nodeType, constraints);
+                        determineTypeWithEqualityPriority(nodeType, constraints, config) :
+                        determineTypeWithPatternOrder(nodeType, constraints, config);
 
                 if (constraintType == ConstraintType.EQUAL) {
-                    List<FieldIndex> indexList = new ArrayList<FieldIndex>();
+                    List<FieldIndex> indexList = new ArrayList<>();
                     indexList.add(((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex());
 
                     // look for other EQUAL constraint to eventually add them to the index
@@ -427,34 +412,11 @@ public class IndexUtil {
 
                 } else if (constraintType.isComparison()) {
                     // look for a dual constraint to create a range index
-                    if (USE_RANGE_INDEX && constraints[firstIndexableConstraint] instanceof MvelConstraint) {
-                        MvelConstraint firstConstraint = (MvelConstraint) constraints[firstIndexableConstraint];
-                        String leftValue = getLeftValueInExpression(firstConstraint.getExpression());
-                        for (int i = firstIndexableConstraint+1; i < constraints.length; i++) {
-                            if (constraints[i] instanceof MvelConstraint) {
-                                MvelConstraint dualConstraint = (MvelConstraint) constraints[i];
-                                if (isDual(firstConstraint, leftValue, dualConstraint)) {
-                                    constraintType = ConstraintType.RANGE;
-                                    if (firstConstraint.getConstraintType().isAscending()) {
-                                        ascendingConstraintType = firstConstraint.getConstraintType();
-                                        descendingConstraintType = dualConstraint.getConstraintType();
-                                        indexes = new FieldIndex[]{ firstConstraint.getFieldIndex(), dualConstraint.getFieldIndex() };
-                                    } else {
-                                        ascendingConstraintType = dualConstraint.getConstraintType();
-                                        descendingConstraintType = firstConstraint.getConstraintType();
-                                        indexes = new FieldIndex[]{ dualConstraint.getFieldIndex(), firstConstraint.getFieldIndex() };
-                                    }
-                                    return;
-                                }
-                            }
-                        }
-                    }
-
                     indexes = new FieldIndex[]{ ((IndexableConstraint)constraints[firstIndexableConstraint]).getFieldIndex() };
                 }
             }
 
-            private int determineTypeWithEqualityPriority(short nodeType, BetaNodeFieldConstraint[] constraints) {
+            private int determineTypeWithEqualityPriority(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
                 int indexedConstraintPos = 0;
                 for (int i = 0; i < constraints.length; i++) {
                     if (constraints[i] instanceof IndexableConstraint) {
@@ -463,7 +425,7 @@ public class IndexUtil {
                         if (type == ConstraintType.EQUAL) {
                             constraintType = type;
                             return i;
-                        } else if (constraintType == ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType)) {
+                        } else if (constraintType == ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType, indexableConstraint, config)) {
                             constraintType = type;
                             indexedConstraintPos = i;
                         }
@@ -472,10 +434,10 @@ public class IndexUtil {
                 return indexedConstraintPos;
             }
 
-            private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints) {
+            private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
                 for (int i = 0; i < constraints.length; i++) {
                     ConstraintType type = ConstraintType.getType(constraints[i]);
-                    if ( type.isIndexableForNode(nodeType) ) {
+                    if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i], config) ) {
                         constraintType = type;
                         return i;
                     }
@@ -484,21 +446,5 @@ public class IndexUtil {
             }
 
         }
-    }
-
-    private static boolean isDual(MvelConstraint firstConstraint, String leftValue, MvelConstraint dualConstraint) {
-        return dualConstraint.getConstraintType().isComparison() &&
-                dualConstraint.getConstraintType().isAscending() != firstConstraint.getConstraintType().isAscending() &&
-                leftValue.equals( getLeftValueInExpression(dualConstraint.getExpression()) );
-    }
-
-    private static String getLeftValueInExpression(String expression) {
-        for (int i = 0; i < expression.length(); i++) {
-            char ch = expression.charAt(i);
-            if ( !Character.isJavaIdentifierPart(ch) && ch != '.' ) {
-                return expression.substring(0, i);
-            }
-        }
-        return expression;
     }
 }

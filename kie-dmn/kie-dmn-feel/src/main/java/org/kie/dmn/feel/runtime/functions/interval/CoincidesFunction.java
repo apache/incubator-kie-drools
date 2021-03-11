@@ -32,19 +32,19 @@ public class CoincidesFunction
         super( "coincides" );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value1" ) Comparable value1, @ParameterName( "value2" ) Comparable value2) {
-        if ( value1 == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value1", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "point1" ) Comparable point1, @ParameterName( "point2" ) Comparable point2) {
+        if ( point1 == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point1", "cannot be null"));
         }
-        if ( value2 == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value2", "cannot be null"));
+        if ( point2 == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point2", "cannot be null"));
         }
         try {
-            boolean result = value1.compareTo( value2 ) == 0;
+            boolean result = point1.compareTo( point2 ) == 0;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value1", "cannot be compared to value2"));
+            // points are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point1", "cannot be compared to point2"));
         }
     }
 
@@ -59,7 +59,7 @@ public class CoincidesFunction
             boolean result = range1.equals( range2 );
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
+            // points are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }

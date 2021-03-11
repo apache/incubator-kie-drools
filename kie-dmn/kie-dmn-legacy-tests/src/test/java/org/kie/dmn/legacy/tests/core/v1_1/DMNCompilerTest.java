@@ -16,8 +16,6 @@
 
 package org.kie.dmn.legacy.tests.core.v1_1;
 
-import java.util.Map;
-
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -26,11 +24,9 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
-import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -45,7 +41,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -173,12 +169,6 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
         }
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
-
-        if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
-            Map<String, Object> allProperties = outputSet.allFEELProperties();
-            assertThat(allProperties.get("Greeting"), is("Hello John!"));
-        }
     }
 
 }

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.workbench.models.commons.backend.rule;
 
@@ -98,12 +98,12 @@ public class ActionCallMethodBuilder {
         return splits.size() == 2;
     }
 
-    public ActionCallMethod get(String variable,
-                                String methodName,
-                                String[] parameters) {
+    public ActionCallMethod get(final String variable,
+                                final String methodName,
+                                final String line) {
         this.variable = variable;
         this.methodName = methodName;
-        this.parameters = parameters;
+        this.parameters = makeParameters(line);
 
         ActionCallMethod actionCallMethod = new ActionCallMethod();
         actionCallMethod.setMethodName(methodName);
@@ -115,6 +115,39 @@ public class ActionCallMethodBuilder {
         }
 
         return actionCallMethod;
+    }
+
+    private String[] makeParameters(final String line) {
+
+        final List<String> result = new ArrayList<>();
+        final StringBuilder parameterBuilder = new StringBuilder();
+
+        boolean quoteOpen = false;
+
+        for (int i = 0; i < line.length(); i++) {
+
+            if (isActualQuote(line, i)) {
+                quoteOpen = !quoteOpen;
+            }
+
+            if (line.charAt(i) == ',' && !quoteOpen) {
+                result.add(parameterBuilder.toString());
+                parameterBuilder.setLength(0); // reset the builder
+            } else {
+                parameterBuilder.append(line.charAt(i));
+            }
+        }
+
+        if (parameterBuilder.length() > 0) {
+            result.add(parameterBuilder.toString());
+        }
+
+        return result.toArray(new String[result.size()]);
+    }
+
+    private boolean isActualQuote(final String line, final int i) {
+        final boolean isEscaped = (i > 0 && line.charAt(i - 1) == '\\');
+        return !isEscaped && line.charAt(i) == '"';
     }
 
     private List<ActionFieldFunction> getActionFieldFunctions() {
@@ -156,7 +189,6 @@ public class ActionCallMethodBuilder {
             default:
                 paramValue = adjustParam(dataType,
                                          param,
-                                         boundParams,
                                          isJavaDialect);
         }
         ActionFieldFunction actionField = new ActionFieldFunction(methodName,
@@ -258,7 +290,6 @@ public class ActionCallMethodBuilder {
                     new SimpleDateFormat(DateUtils.getDateFormatMask(),
                                          Locale.ENGLISH).parse(adjustParam(methodParamDataType,
                                                                            paramValue,
-                                                                           Collections.EMPTY_MAP,
                                                                            isJavaDialect));
                     return methodParamDataType;
                 } catch (ParseException e) {
@@ -276,7 +307,6 @@ public class ActionCallMethodBuilder {
                 try {
                     new BigDecimal(adjustParam(methodParamDataType,
                                                paramValue,
-                                               Collections.EMPTY_MAP,
                                                isJavaDialect));
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
@@ -286,7 +316,6 @@ public class ActionCallMethodBuilder {
                 try {
                     new BigInteger(adjustParam(methodParamDataType,
                                                paramValue,
-                                               Collections.EMPTY_MAP,
                                                isJavaDialect));
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
@@ -294,42 +323,42 @@ public class ActionCallMethodBuilder {
                 }
             } else if (DataType.TYPE_NUMERIC_BYTE.equals(methodParamDataType)) {
                 try {
-                    new Byte(paramValue);
+                    Byte.parseByte(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(methodParamDataType)) {
                 try {
-                    new Double(paramValue);
+                    Double.parseDouble(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_FLOAT.equals(methodParamDataType)) {
                 try {
-                    new Float(paramValue);
+                    Float.parseFloat(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_INTEGER.equals(methodParamDataType)) {
                 try {
-                    new Integer(paramValue);
+                    Integer.parseInt(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_LONG.equals(methodParamDataType)) {
                 try {
-                    new Long(paramValue);
+                    Long.parseLong(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_SHORT.equals(methodParamDataType)) {
                 try {
-                    new Short(paramValue);
+                    Short.parseShort(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;

@@ -15,74 +15,110 @@
  */
 package org.kie.pmml.compiler.commons.implementations;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.Output;
 import org.dmg.pmml.TransformationDictionary;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
+import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KiePMMLModelRetriever {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLModelRetriever.class.getName());
-    private static final ModelImplementationProviderFinder modelImplementationProviderFinder = new ModelImplementationProviderFinderImpl();
+    private static final ModelImplementationProviderFinder modelImplementationProviderFinder =
+            new ModelImplementationProviderFinderImpl();
 
     private KiePMMLModelRetriever() {
     }
 
     /**
-     * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;KiePMMLModel&gt;</code>
+     * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;
+     * KiePMMLModel&gt;</code>
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModel(final String packageName,
+                                                                                              final DataDictionary dataDictionary,
                                                                                               final TransformationDictionary transformationDictionary,
                                                                                               final Model model,
-                                                                                              final Object kBuilder) {
+                                                                                              final HasClassLoader hasClassloader) {
         logger.trace("getFromCommonDataAndTransformationDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
-                .map(implementation -> implementation.getKiePMMLModel(dataDictionary, transformationDictionary, model, kBuilder))
+                .map(implementation -> implementation.getKiePMMLModel(packageName,
+                                                                      dataDictionary,
+                                                                      transformationDictionary,
+                                                                      model,
+                                                                      hasClassloader))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
     }
 
     /**
-     * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;KiePMMLModel&gt;</code>
-     * @param packageName the package into which put all the generated classes out of the given <code>InputStream</code>
+     * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;
+     * KiePMMLModel&gt;</code>
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(final String packageName,
-                                                                                                        final DataDictionary dataDictionary,
-                                                                                                        final TransformationDictionary transformationDictionary,
-                                                                                                        final Model model,
-                                                                                                        final Object kBuilder) {
-        logger.trace("getFromCommonDataAndTransformationDictionaryAndModelFromPlugin {}", model);
+    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModelWithSources(final String packageName,
+                                                                                                         final DataDictionary dataDictionary,
+                                                                                                         final TransformationDictionary transformationDictionary,
+                                                                                                         final Model model,
+                                                                                                         final HasClassLoader hasClassloader) {
+        logger.trace("getFromCommonDataAndTransformationDictionaryAndModelWithSources {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
-                .map(implementation -> implementation.getKiePMMLModelFromPlugin(packageName, dataDictionary, transformationDictionary, model, kBuilder))
+                .map(implementation -> implementation.getKiePMMLModelWithSources(packageName,
+                                                                                 dataDictionary,
+                                                                                 transformationDictionary,
+                                                                                 model,
+                                                                                 hasClassloader))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
     }
 
+    static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate,
+                                                        final DataDictionary dataDictionary,
+                                                        final MiningSchema miningSchema,
+                                                        final Output output) {
+        if (miningSchema != null) {
+            final List<org.kie.pmml.api.models.MiningField> converted = ModelUtils.convertToKieMiningFieldList(miningSchema, dataDictionary);
+            toPopulate.setMiningFields(converted);
+        }
+        if (output != null) {
+            final List<org.kie.pmml.api.models.OutputField> converted = ModelUtils.convertToKieOutputFieldList(output, dataDictionary);
+            toPopulate.setOutputFields(converted);
+        }
+        return toPopulate;
+    }
+
     /**
-     * Returns a <code>Stream</code> with <code>ModelImplementationProvider</code> targeting the given <code>Model</code>
+     * Returns a <code>Stream</code> with <code>ModelImplementationProvider</code> targeting the given
+     * <code>Model</code>
      * @param model
      * @return
      */

@@ -59,8 +59,8 @@ public class UnificationTypedExpression extends TypedExpression {
     @Override
     public String toString() {
         return "UnificationTypedExpression{" +
-                ", type=" + type +
-                ", fieldName='" + fieldName + '\'' +
+                ", type=" + getType() +
+                ", fieldName='" + getFieldName() + '\'' +
                 ", unificationVariable=" + unificationVariable +
                 ", unificationName=" + unificationName +
                 '}';
@@ -75,14 +75,14 @@ public class UnificationTypedExpression extends TypedExpression {
             return false;
         }
         UnificationTypedExpression that = (UnificationTypedExpression) o;
-        return Objects.equals(type, that.type) &&
-                Objects.equals(fieldName, that.fieldName) &&
+        return Objects.equals(getType(), that.getType()) &&
+                Objects.equals(getFieldName(), that.getFieldName()) &&
                 Objects.equals(unificationVariable, that.unificationVariable) &&
                 Objects.equals(unificationName, that.unificationName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, fieldName, unificationVariable, unificationName);
+        return Objects.hash(getType(), getFieldName(), unificationVariable, unificationName);
     }
 }

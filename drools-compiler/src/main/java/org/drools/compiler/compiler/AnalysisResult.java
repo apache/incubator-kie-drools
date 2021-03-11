@@ -27,27 +27,28 @@ public interface AnalysisResult {
      * 
      * @return
      */
-    public Set<String> getIdentifiers();
+    Set<String> getIdentifiers();
 
     /**
      * Returns the array of lists<String> of bound identifiers
      * 
      * @return
      */
-    public BoundIdentifiers getBoundIdentifiers();
+    BoundIdentifiers getBoundIdentifiers();
 
     /**
      * Returns the Set<String> of not bounded identifiers
      * 
      * @return
      */
-    public Set<String> getNotBoundedIdentifiers();
+    Set<String> getNotBoundedIdentifiers();
 
     /**
      * Returns the Set<String> of declared local variables
      * 
      * @return
      */
-    public Set<String> getLocalVariables();
+    Set<String> getLocalVariables();
 
+    Class<?> getReturnType();
 }

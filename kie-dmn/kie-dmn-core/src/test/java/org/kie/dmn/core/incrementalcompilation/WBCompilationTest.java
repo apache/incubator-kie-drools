@@ -80,7 +80,7 @@ public class WBCompilationTest {
 
     @Test
     public void testSteppedCompilation() {
-        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getInstance().get(KieAssemblers.class);
+        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
         assemblers.accept(new DMNAssemblerService());
 
         KieServices ks = KieServices.Factory.get();
@@ -106,7 +106,7 @@ public class WBCompilationTest {
     @Test
     public void testSteppedCompilationFromEmptyKbuilder() {
         // DROOLS-5584
-        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getInstance().get(KieAssemblers.class);
+        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
         assemblers.accept(new DMNAssemblerService());
 
         KieServices ks = KieServices.Factory.get();

@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.FileSystemItem;
+import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
@@ -50,7 +50,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AbstractKnowledgeTest {
 
@@ -133,16 +135,16 @@ public class AbstractKnowledgeTest {
 
         kieBaseModel1.newKieSessionModel( namespace + ".KSession1" )
                      .setType( KieSessionType.STATELESS )
-                     .setClockType( ClockTypeOption.get( "realtime" ) )
+                     .setClockType( ClockTypeOption.REALTIME )
                      .setDefault( true );
 
         kieBaseModel1.newKieSessionModel( namespace + ".KSession2")
                      .setType( KieSessionType.STATEFUL )
-                     .setClockType( ClockTypeOption.get( "pseudo" ) );
+                     .setClockType( ClockTypeOption.PSEUDO );
 
         kieBaseModel1.newKieSessionModel( namespace + ".KSessionDefault")
                      .setType( KieSessionType.STATEFUL )
-                     .setClockType( ClockTypeOption.get( "pseudo" ) )
+                     .setClockType( ClockTypeOption.PSEUDO )
                      .setDefault( true );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel( namespace + ".KBase2")
@@ -152,7 +154,7 @@ public class AbstractKnowledgeTest {
 
         kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
                 .setType( KieSessionType.STATEFUL )
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.PSEUDO );
 
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
                 .addInclude( kieBaseModel1.getName() )
@@ -162,7 +164,7 @@ public class AbstractKnowledgeTest {
 
         kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( KieSessionType.STATELESS )
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.PSEUDO );
 
         KieServices ks = KieServices.Factory.get();
 
@@ -298,10 +300,7 @@ public class AbstractKnowledgeTest {
 
         copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
 
-        EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
-        settings.setSourceVersion( "1.5" );
-        settings.setTargetVersion( "1.5" );
-        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, "" );
+        JavaCompiler compiler = new NativeJavaCompiler();
         CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), trgMfs, trgMfs );
 
         if ( res.getErrors().length > 0 ) {

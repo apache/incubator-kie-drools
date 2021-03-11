@@ -20,7 +20,7 @@ package org.drools.workbench.models.testscenarios.backend.executors;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.shared.CallFieldValue;
 import org.drools.workbench.models.testscenarios.shared.CallMethod;
 

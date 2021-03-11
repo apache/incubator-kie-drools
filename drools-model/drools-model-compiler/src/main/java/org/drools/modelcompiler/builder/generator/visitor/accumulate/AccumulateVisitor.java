@@ -37,7 +37,6 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -52,7 +51,6 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.ToMethodCall;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
@@ -62,6 +60,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -94,15 +93,10 @@ public abstract class AccumulateVisitor {
     }
 
     protected BaseDescr input;
-    private PatternDescr basePattern;
-    private AccumulateDescr descr;
 
     Optional<NewBinding> optNewBinding;
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
-        this.basePattern = basePattern;
-        this.descr = descr;
-
         final MethodCallExpr accumulateDSL = new MethodCallExpr(null, ACCUMULATE_CALL);
         context.addExpression(accumulateDSL);
         final MethodCallExpr accumulateExprs = new MethodCallExpr(null, AND_CALL);
@@ -122,10 +116,10 @@ public abstract class AccumulateVisitor {
             }
 
             if ( !descr.getFunctions().isEmpty() ) {
-                if ( validateBindings() ) {
+                if ( validateBindings(descr) ) {
                     return;
                 }
-                classicAccumulate( accumulateDSL );
+                classicAccumulate( descr, basePattern, accumulateDSL );
             } else if ( descr.getFunctions().isEmpty() && descr.getInitCode() != null ) {
                 new AccumulateInlineVisitor( context, packageModel ).inlineAccumulate( descr, basePattern, accumulateDSL, externalDeclrs, input );
             } else {
@@ -139,22 +133,22 @@ public abstract class AccumulateVisitor {
 
     protected abstract void pushAccumulateContext( MethodCallExpr accumulateExprs );
 
-    private void classicAccumulate(MethodCallExpr accumulateDSL) {
+    private void classicAccumulate(AccumulateDescr descr, PatternDescr basePattern, MethodCallExpr accumulateDSL) {
         for (AccumulateDescr.AccumulateFunctionCallDescr function : descr.getFunctions()) {
             try {
-                visit(function, accumulateDSL);
+                visit(function, basePattern, accumulateDSL);
             } catch (AccumulateNonExistingFunction e) {
                 addNonExistingFunctionError(context, e.function);
                 return;
             } catch (AccumulateParsingFailedException e) {
-                context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage()));
+                context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage(), Optional.of(context.getRuleDescr())));
                 return;
             }
             processNewBinding(accumulateDSL);
         }
     }
 
-    private boolean validateBindings() {
+    private boolean validateBindings(AccumulateDescr descr) {
         final List<String> allBindings = descr
                 .getFunctions()
                 .stream()
@@ -167,7 +161,7 @@ public abstract class AccumulateVisitor {
         return invalidExpressionErrorResult.isPresent();
     }
 
-    protected void visit(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr accumulateDSL) {
+    protected void visit(AccumulateDescr.AccumulateFunctionCallDescr function, PatternDescr basePattern, MethodCallExpr accumulateDSL) {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
@@ -181,9 +175,9 @@ public abstract class AccumulateVisitor {
 
             if ( function.getParams().length == 0 ) {
                 final AccumulateFunction optAccumulateFunction = getAccumulateFunction( function, Object.class );
-                zeroParameterFunction( functionDSL, bindingId, optAccumulateFunction );
+                zeroParameterFunction( basePattern, functionDSL, bindingId, optAccumulateFunction );
             } else {
-                parseFirstParameter( function, functionDSL, bindingId );
+                parseFirstParameter( basePattern, function, functionDSL, bindingId );
             }
 
             if ( bindingId != null ) {
@@ -196,25 +190,25 @@ public abstract class AccumulateVisitor {
         }
     }
 
-    private void parseFirstParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId) {
+    private void parseFirstParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId) {
         final String accumulateFunctionParameterStr = function.getParams()[0];
         final Expression accumulateFunctionParameter = DrlxParseUtil.parseExpression(accumulateFunctionParameterStr).getExpr();
 
         if (accumulateFunctionParameter instanceof BinaryExpr) {
-            optNewBinding = binaryExprParameter(function, functionDSL, bindingId, accumulateFunctionParameterStr);
+            optNewBinding = binaryExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameterStr);
         } else if (parameterNeedsConvertionToMethodCallExpr(accumulateFunctionParameter)) {
-            methodCallExprParameter(function, functionDSL, bindingId, accumulateFunctionParameter);
+            optNewBinding = methodCallExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameter);
         } else if (accumulateFunctionParameter instanceof DrlNameExpr) {
-            nameExprParameter(function, functionDSL, bindingId, accumulateFunctionParameter);
+            nameExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameter);
         } else if (accumulateFunctionParameter instanceof LiteralExpr) {
-            literalExprParameter(function, functionDSL, bindingId, accumulateFunctionParameter);
+            literalExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameter);
         } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr));
+            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr, Optional.of(context.getRuleDescr())));
             throw new AccumulateParsingFailedException();
         }
     }
 
-    private void literalExprParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
+    private void literalExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         final Class<?> declarationClass = getLiteralExpressionType((LiteralExpr) accumulateFunctionParameter);
 
         AccumulateFunction accumulateFunction = getAccumulateFunction(function, declarationClass);
@@ -226,7 +220,7 @@ public abstract class AccumulateVisitor {
         addBindingAsDeclaration(context, bindingId, accumulateFunction);
     }
 
-    private void nameExprParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
+    private void nameExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         final Class<?> declarationClass = context
                 .getDeclarationById(printConstraint(accumulateFunctionParameter))
                 .orElseThrow(RuntimeException::new)
@@ -242,12 +236,11 @@ public abstract class AccumulateVisitor {
         addBindingAsDeclaration(context, bindingId, accumulateFunction);
     }
 
-    private void methodCallExprParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
+    private Optional<NewBinding> methodCallExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         final Expression parameterConverted = convertParameter(accumulateFunctionParameter);
         final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
 
         String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
-
         Optional<DeclarationSpec> decl = context.getDeclarationById(rootNodeName);
 
         Class<?> clazz = decl.map(DeclarationSpec::getDeclarationClass)
@@ -259,7 +252,14 @@ public abstract class AccumulateVisitor {
                     }
                 } );
 
-        final TypedExpression typedExpression = new ToMethodCall(context).toMethodCallWithClassCheck(methodCallWithoutRootNode.getWithoutRootNode(), null, clazz);
+        final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+        final ExpressionTyper expressionTyper = new ExpressionTyper(context, clazz, bindingId, false, expressionTyperContext);
+
+        TypedExpression typedExpression =
+                expressionTyper
+                        .toTypedExpression(methodCallWithoutRootNode.getWithoutRootNode())
+                        .typedExpressionOrException();
+
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
@@ -274,10 +274,11 @@ public abstract class AccumulateVisitor {
 
         String paramExprBindingId = rootNodeName;
         Class<?> patternType = clazz;
-        if (input instanceof PatternDescr) {
-            String inputId = ((PatternDescr)input).getIdentifier();
+        PatternDescr inputPattern = decl.isPresent() ? null : findInputPattern();
+        if (inputPattern != null) {
+            String inputId = inputPattern.getIdentifier();
             Optional<DeclarationSpec> accumulateClassDeclOpt = context.getDeclarationById(inputId);
-            if (!decl.isPresent() && accumulateClassDeclOpt.isPresent()) {
+            if (accumulateClassDeclOpt.isPresent()) {
                 // when static method is used in accumulate function, "_this" is a pattern input
                 // Note that DrlxParseUtil.generateLambdaWithoutParameters() takes the patternType as a class of "_this"
                 paramExprBindingId = inputId;
@@ -288,11 +289,26 @@ public abstract class AccumulateVisitor {
         SingleDrlxParseSuccess drlxParseResult = (SingleDrlxParseSuccess) new ConstraintParser(context, context.getPackageModel())
                 .drlxParse(patternType, paramExprBindingId, printConstraint(parameterConverted));
 
-        if (!decl.isPresent() && input instanceof PatternDescr) {
-            drlxParseResult.setAccumulateBinding( ((PatternDescr)input).getIdentifier() );
+        if (inputPattern != null) {
+            drlxParseResult.setAccumulateBinding( inputPattern.getIdentifier() );
         }
 
-        optNewBinding = drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, drlxParseResult));
+        return drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, drlxParseResult));
+    }
+
+    private PatternDescr findInputPattern() {
+        if ( input instanceof PatternDescr ) {
+            return (PatternDescr) input;
+        }
+        if ( input instanceof AndDescr ) {
+            List<BaseDescr> childDescrs = (( AndDescr ) input).getDescrs();
+            for (int i = childDescrs.size()-1; i >= 0; i--) {
+                if ( childDescrs.get(i) instanceof PatternDescr ) {
+                    return (( PatternDescr ) childDescrs.get( i ));
+                }
+            }
+        }
+        return null;
     }
 
     private class ReplaceBindingVisitor implements  ParseResultVisitor<Optional<NewBinding>> {
@@ -351,8 +367,6 @@ public abstract class AccumulateVisitor {
                     .toTypedExpression(accumulateFunctionParameter)
                     .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call" + accumulateFunctionParameter))
                     .getExpression();
-        } else if (accumulateFunctionParameter.isMethodCallExpr()) {
-            parameterConverted = (MethodCallExpr) accumulateFunctionParameter;
         } else if (accumulateFunctionParameter.isFieldAccessExpr()) {
             parameterConverted = new ExpressionTyper(context, Object.class, null, false)
                     .toTypedExpression(accumulateFunctionParameter)
@@ -368,7 +382,7 @@ public abstract class AccumulateVisitor {
         return accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr() || accumulateFunctionParameter.isFieldAccessExpr();
     }
 
-    private Optional<NewBinding> binaryExprParameter(AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
+    private Optional<NewBinding> binaryExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
         final DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, accumulateFunctionParameterStr);
 
         optNewBinding = parseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<NewBinding>>() {
@@ -401,7 +415,7 @@ public abstract class AccumulateVisitor {
         return optNewBinding;
     }
 
-    private void zeroParameterFunction(MethodCallExpr functionDSL, String bindingId, AccumulateFunction accumulateFunction) {
+    private void zeroParameterFunction(PatternDescr basePattern, MethodCallExpr functionDSL, String bindingId, AccumulateFunction accumulateFunction) {
         validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
         functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
         Class accumulateFunctionResultType = accumulateFunction.getResultType();
@@ -431,7 +445,7 @@ public abstract class AccumulateVisitor {
                             "Pattern of type: '[ClassObjectType class=%s]' " +
                                     "on rule '%s' " +
                                     "is not compatible with type %s returned by accumulate function."
-                            , expectedResultType.getCanonicalName(), context.getRuleName(), actualResultType.getCanonicalName())));
+                            , expectedResultType.getCanonicalName(), context.getRuleName(), actualResultType.getCanonicalName()), Optional.of(context.getRuleDescr())));
         }
     }
 
@@ -442,7 +456,7 @@ public abstract class AccumulateVisitor {
     }
 
     private void addNonExistingFunctionError(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function) {
-        context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName())));
+        context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName()), Optional.of(context.getRuleDescr())));
     }
 
     private void addBindingAsDeclaration(RuleContext context, String bindingId, AccumulateFunction accumulateFunction) {

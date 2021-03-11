@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.HitPolicy;
@@ -50,13 +51,14 @@ public class DTAnalysis {
     private final List<Hyperrectangle> gaps = new ArrayList<>();
     private final List<Overlap> overlaps = new ArrayList<>();
     private final List<MaskedRule> maskedRules = new ArrayList<>();
-    private final List<MisleadingRule> misleadingRules = new ArrayList<>();
+    private final Set<MisleadingRule> misleadingRules = new HashSet<>();
     private final List<Subsumption> subsumptions = new ArrayList<>();
     private final List<Contraction> contractions = new ArrayList<>();
     private final Map<Integer, Collection<Integer>> cacheNonContractingRules = new HashMap<>();
     private boolean c1stNFViolation = false;
     private Collection<Collection<Integer>> cOfDuplicateRules = Collections.emptyList();
     private Collection<Contraction> contractionsViolating2ndNF = new ArrayList<>();
+    private Collection<RuleColumnCoordinate> cellsViolating2ndNF = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
@@ -288,6 +290,15 @@ public class DTAnalysis {
                                                                        c.impactedRules()),
                                                  Msg.DTANALYSIS_2NDNFVIOLATION.getType(), c.impactedRules()));
         }
+        for (RuleColumnCoordinate c : getCellsViolating2ndNF()) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_2NDNFVIOLATION_WAS_DASH,
+                                                                       c.feelText,
+                                                                       c.rule,
+                                                                       c.column),
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), Arrays.asList(c.rule)));
+        }
         return results;
     }
 
@@ -451,14 +462,18 @@ public class DTAnalysis {
                     boolean isOutputLowestPriority = curOutputIdx == curOutputClause.getOutputOrder().size() - 1;
                     if (!isOutputLowestPriority) {
                         List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
-                        boolean isRuleContainsHypen = inputEntry.stream().flatMap(ie -> ie.getUts().stream()).anyMatch(DashNode.class::isInstance);
-                        if (isRuleContainsHypen) {
-                            List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
-                            for (Integer otherRuleID : otherRules) {
-                                List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
-                                int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
-                                if (otherOutputIdx > curOutputIdx) {
-                                    misleadingRules.add(new MisleadingRule(ruleId, otherRuleID));
+                        for (int col = 0; col < inputEntry.size(); col++) {
+                            boolean thisColIsHypen = inputEntry.get(col).getUts().stream().anyMatch(DashNode.class::isInstance);
+                            if (thisColIsHypen) {
+                                List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
+                                for (Integer otherRuleID : otherRules) {
+                                    List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
+                                    int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
+                                    List<DDTAInputEntry> otherRuleInputEntry = ddtaTable.getRule().get(otherRuleID - 1).getInputEntry();
+                                    boolean thatColIsHypen = otherRuleInputEntry.get(col).getUts().stream().anyMatch(DashNode.class::isInstance);
+                                    if (otherOutputIdx > curOutputIdx && !thatColIsHypen) {
+                                        misleadingRules.add(new MisleadingRule(ruleId, otherRuleID));
+                                    }
                                 }
                             }
                         }
@@ -474,8 +489,8 @@ public class DTAnalysis {
         return others;
     }
 
-    public List<MisleadingRule> getMisleadingRules() {
-        return Collections.unmodifiableList(misleadingRules);
+    public Collection<MisleadingRule> getMisleadingRules() {
+        return Collections.unmodifiableSet(misleadingRules);
     }
 
     public void computeSubsumptions() {
@@ -667,7 +682,7 @@ public class DTAnalysis {
             LOG.debug("Violated already at 1st NF.");
             return;
         }
-        for (Contraction c : contractions) {
+        for (Contraction c : contractions) { // is a contraction resulting in a 2NF violation?
             if (c.dimensionAsContracted.size() == 1) {
                 Interval domainMinMax = ddtaTable.getInputs().get(c.adjacentDimension - 1).getDomainMinMax();
                 if (domainMinMax.equals(c.dimensionAsContracted.get(0))) {
@@ -676,16 +691,40 @@ public class DTAnalysis {
                 }
             }
         }
-
+        for (int r = 0; r < ddtaTable.getRule().size(); r++) { // is a cell equivalent to a Dash `-` in DMN decision table?
+            DDTARule rule = ddtaTable.getRule().get(r);
+            for (int c = 0; c < ddtaTable.getInputs().size(); c++) {
+                if (rule.getInputEntry().get(c).getIntervals().size() != 1) {
+                    continue;
+                }
+                Interval int0 = rule.getInputEntry().get(c).getIntervals().get(0);
+                if (!(rule.getInputEntry().get(c).getUts().get(0) instanceof DashNode) &&
+                    int0.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED &&
+                    int0.getUpperBound().getBoundaryType() == RangeBoundary.CLOSED &&
+                    !int0.getLowerBound().getValue().equals(int0.getUpperBound().getValue())) { // a normalized closed-interval, but not a `-`: but is it equivalent to it?
+                    DDTAInputClause col = ddtaTable.getInputs().get(c);
+                    boolean includes = int0.includes(col.getDomainMinMax());
+                    if (includes) {
+                        RuleColumnCoordinate rc = new RuleColumnCoordinate(r + 1, c + 1, sourceDT.getRule().get(r).getInputEntry().get(c).getText());
+                        LOG.debug("compute2ndNFViolations() Cell: {} violates 2NF", rc);
+                        cellsViolating2ndNF.add(rc);
+                    }
+                }
+            }
+        }
         LOG.debug("compute2ndNFViolations() c2ndNFViolation result: {}", is2ndNFViolation());
     }
 
     public boolean is2ndNFViolation() {
-        return !contractionsViolating2ndNF.isEmpty();
+        return !contractionsViolating2ndNF.isEmpty() || !cellsViolating2ndNF.isEmpty();
     }
 
     public Collection<Contraction> getContractionsViolating2ndNF() {
         return Collections.unmodifiableCollection(contractionsViolating2ndNF);
+    }
+
+    public Collection<RuleColumnCoordinate> getCellsViolating2ndNF() {
+        return Collections.unmodifiableCollection(cellsViolating2ndNF);
     }
 
     public void computeHitPolicyRecommender() {
@@ -728,7 +767,7 @@ public class DTAnalysis {
         return hp == HitPolicy.UNIQUE || hp == HitPolicy.ANY || hp == HitPolicy.PRIORITY || hp == HitPolicy.FIRST;
     }
 
-    private String nameOrIDOfTable() {
+    public String nameOrIDOfTable() {
         if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
             return sourceDT.getOutputLabel();
         } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.

@@ -28,11 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLRegressionTest {
+public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "LinearRegressionSampleWithTransformations.pmml";
     private static final String MODEL_NAME = "LinearRegressionSampleWithTransformations";
     private static final String TARGET_FIELD = "number_of_claims";
     private static final String OUT_NUMBER_OF_CLAIMS = "Number of Claims";
@@ -61,9 +63,9 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLR
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters

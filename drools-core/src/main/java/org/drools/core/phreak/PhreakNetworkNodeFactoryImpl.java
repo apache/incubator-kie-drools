@@ -54,6 +54,11 @@ public class PhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFactory {
     }
 
     @Override
+    public PhreakGroupByNode createPhreakGroupByNode() {
+        return new PhreakGroupByNode();
+    }
+
+    @Override
     public PhreakBranchNode createPhreakBranchNode() {
         return new PhreakBranchNode();
     }

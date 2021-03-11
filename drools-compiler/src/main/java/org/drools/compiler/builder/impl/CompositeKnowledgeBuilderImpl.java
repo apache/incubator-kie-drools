@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.builder.impl;
 
@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.api.internal.assembler.KieAssemblers;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -101,14 +103,16 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildException = null;
         kBuilder.registerBuildResources(getResources());
         buildResources();
-        if(buildRules) {
-            kBuilder.buildPackages(buildPackageDescr());
+        Collection<CompositePackageDescr> packages = buildPackageDescr();
+        buildAssemblerResourcesBeforeRules();
+        if (buildRules) {
+            kBuilder.doFirstBuildStep(packages);
         } else {
-            kBuilder.buildPackagesWithoutRules(buildPackageDescr() );
+            kBuilder.buildPackagesWithoutRules(packages);
         }
         buildProcesses();
-        buildOthers();
-        kBuilder.postBuild();
+        buildAssemblerResourcesAfterRules();
+        kBuilder.doSecondBuildStep(packages);
         resourcesByType.clear();
         if (buildException != null) {
             throw buildException;
@@ -116,8 +120,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildProcesses() {
-    	buildResourceType(ResourceBuilder.BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
-    	buildResourceType(ResourceBuilder.CMMN_RESOURCE_BUILDER, ResourceType.CMMN);
+        buildResourceType(ResourceBuilder.BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
+        buildResourceType(ResourceBuilder.CMMN_RESOURCE_BUILDER, ResourceType.CMMN);
     }
 
     private void buildResources() {
@@ -152,19 +156,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildOthers() {
-        try {
-            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
-                List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
-                kBuilder.addPackageForExternalType(entry.getKey(), rds);
-            }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-    }
-
     private static ResourceWithConfiguration descrToResourceWithConfiguration(ResourceDescr rd) {
         return new ResourceWithConfigurationImpl(rd.resource,
                                                  rd.configuration,
@@ -186,7 +177,43 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.TEMPLATE, ResourceToPkgDescrMapper.TEMPLATE_TO_PKG_DESCR);
         buildResource(packages, ResourceType.GDST, ResourceToPkgDescrMapper.GUIDED_DTABLE_TO_PKG_DESCR);
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
+
         return packages.values();
+    }
+
+    private void buildAssemblerResourcesBeforeRules() {
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        try {
+            for (Map.Entry<ResourceType, List<ResourceDescr>> resourceTypeListEntry : resourcesByType.entrySet()) {
+                ResourceType type = resourceTypeListEntry.getKey();
+                List<ResourceDescr> descrs = resourceTypeListEntry.getValue();
+                for (ResourceDescr descr : descrs) {
+                    assemblers.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
+                }
+            }
+        } catch (RuntimeException e) {
+            if (buildException == null) {
+                buildException = e;
+            }
+        } catch (Exception e) {
+            if (buildException == null) {
+                buildException = new RuntimeException(e);
+            }
+        }
+    }
+
+    private void buildAssemblerResourcesAfterRules() {
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
+        try {
+            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
+                List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
+                assemblers.addResourcesAfterRules(kBuilder, rds, entry.getKey());
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void buildResource(Map<String, CompositePackageDescr> packages, ResourceType resourceType, ResourceToPkgDescrMapper mapper) {
@@ -213,8 +240,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
             if (compositePackageDescr == null) {
                 compositePackageDescr = packageDescr instanceof CompositePackageDescr ?
-                                        ( (CompositePackageDescr) packageDescr ) :
-                                        new CompositePackageDescr(resource, packageDescr);
+                        ( (CompositePackageDescr) packageDescr ) :
+                        new CompositePackageDescr(resource, packageDescr);
                 packages.put(packageDescr.getNamespace(), compositePackageDescr);
             } else {
                 compositePackageDescr.addPackageDescr(resource, packageDescr);
@@ -298,7 +325,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         ResourceBuilder BPMN2_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
             kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.BPMN2, resourceDescr.configuration );
         };
-        
+
         ResourceBuilder CMMN_RESOURCE_BUILDER = ( kBuilder, resourceDescr ) -> {
             kBuilder.addKnowledgeResource( resourceDescr.resource, ResourceType.CMMN, resourceDescr.configuration );
         };

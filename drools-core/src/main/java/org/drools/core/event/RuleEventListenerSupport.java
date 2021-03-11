@@ -22,18 +22,26 @@ import org.kie.internal.event.rule.RuleEventListener;
 public class RuleEventListenerSupport extends AbstractEventSupport<RuleEventListener> {
 
     public void onBeforeMatchFire(Match match) {
-        notifyAllListeners( l -> l.onBeforeMatchFire(match) );
+        if ( hasListeners() ) {
+            notifyAllListeners( match, (l, m) -> l.onBeforeMatchFire( m ) );
+        }
     }
 
     public void onAfterMatchFire(Match match) {
-        notifyAllListeners( l -> l.onAfterMatchFire(match) );
+        if ( hasListeners() ) {
+            notifyAllListeners( match, (l, m) -> l.onAfterMatchFire( m ) );
+        }
     }
 
     public void onDeleteMatch(Match match) {
-        notifyAllListeners( l -> l.onDeleteMatch(match) );
+        if ( hasListeners() ) {
+            notifyAllListeners( match, (l, m) -> l.onDeleteMatch( m ) );
+        }
     }
 
     public void onUpdateMatch(Match match) {
-        notifyAllListeners( l -> l.onUpdateMatch(match) );
+        if ( hasListeners() ) {
+            notifyAllListeners( match, (l, m) ->l.onUpdateMatch( m ) );
+        }
     }
 }

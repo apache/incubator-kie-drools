@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<package name="foo" xmlns="http://drools.org/drools-5.2"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
+ <import name="java.util.HashMap" />
+ <import name="java.util.HashSet" />
+ <import name="java.utilArrayList" />
+
+ <global identifier="m" type="HashMap" />
+ <global identifier="s" type="HashSet" />
+ <global identifier="p" type="org.drools.compiler.Person" />
+
+ <importfunction name="org.drools.core.xml.DumperTest.testStaticMethod1" />
+ <importfunction name="org.drools.core.xml.DumperTest.testStaticMethod2" />
+ <importfunction name="org.drools.core.xml.DumperTest.testStaticMethod3" />
+
+
+
+<rule name="simple_rule">
+<rule-attribute name="salience" value="10" />
+<rule-attribute name="no-loop" value="true" />
+<rule-attribute name="agenda-group" value="agenda-group" />
+<rule-attribute name="activation-group" value="activation-group" />
+<rule-attribute name="ruleflow-group" value="xxx" />
+<rule-attribute name="lock-on-active" value="true" />
+<rule-attribute name="auto-focus" value="true" />
+<rule-attribute name="date-effective" value="01-Jan-2007" />
+<rule-attribute name="date-expires" value="01-Feb-2007" />
+
+<lhs><pattern identifier="foo2" object-type="Bar" >
+<expr>
+((a (&gt; 60 &amp;&amp; &lt; 70) || (&gt; 50 &amp;&amp; &lt; 55)) &amp;&amp; (a3 == &quot;black&quot;)) || ((a == 40) &amp;&amp; (a3 == &quot;pink&quot;)) || ((a == 12) &amp;&amp; (a3 == &quot;yellow&quot;)) || (a3 == &quot;blue&quot;)
+</expr>
+
+
+</pattern>
+
+<pattern identifier="foo3" object-type="Bar" >
+<expr>
+a == 3 || == 4
+</expr>
+<expr>
+a3 == &quot;hello&quot;
+</expr>
+<expr>
+a4 == null
+</expr>
+
+
+</pattern>
+
+<pattern identifier="foo4" object-type="Bar" >
+<expr>
+a != 4 &amp;&amp; != 5
+</expr>
+
+
+<field-binding field-name="a" identifier="a4" />
+</pattern>
+
+<pattern identifier="foo5" object-type="Bar" >
+<expr>
+b == (a4
+       + 1) || &gt; a4
+</expr>
+
+
+</pattern>
+
+<pattern identifier="foo6" object-type="Bar" >
+<expr>
+b == 6
+</expr>
+
+
+<field-binding field-name="a" identifier="a4" />
+</pattern>
+
+<pattern identifier="foo7" object-type="Bar" >
+
+
+<field-binding field-name="a" identifier="a4" />
+<field-binding field-name="b" identifier="b4" />
+</pattern>
+
+<pattern identifier="$cheeseList" object-type="ArrayList" >
+<expr>
+size &gt; 2
+</expr>
+
+
+<from> <collect><pattern object-type="Cheese" >
+<expr>
+type == $likes
+</expr>
+
+
+</pattern>
+ </collect> </from> </pattern>
+
+<pattern object-type="Baz" >
+
+
+</pattern>
+
+
+</lhs><rhs> if ( a == b ) {
+   assert( foo3 );
+   } else {
+   retract( foo4 );
+   }
+   System.out.println( a4 );
+   testStaticMethod1();
+   testStaticMethod2();
+   testStaticMethod3();
+</rhs>
+</rule><rule name="simple_rule2">
+<rule-attribute name="salience" value="(10 + a)" />
+<rule-attribute name="dialect" value="mvel" />
+
+<lhs><pattern identifier="foo4" object-type="Bar" >
+<expr>
+a != 4 &amp;&amp; != 5
+</expr>
+
+
+<field-binding field-name="a" identifier="a4" />
+</pattern>
+
+
+</lhs><rhs> if ( a == b ) {
+   assert( foo3 );
+   } else {
+   retract( foo4 );
+   }
+   System.out.println( a4 );
+   testStaticMethod1();
+   testStaticMethod2();
+   testStaticMethod3();  
+</rhs>
+</rule>
+
+</package>

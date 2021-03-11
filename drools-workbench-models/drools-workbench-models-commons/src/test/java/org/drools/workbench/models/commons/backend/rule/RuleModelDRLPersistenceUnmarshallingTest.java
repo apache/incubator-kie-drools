@@ -1075,6 +1075,34 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEquals("eval( true )",
                      ((FreeFormLine) m.lhs[0]).getText());
     }
+    @Test
+    public void testInsertFreeFormLine() {
+        String drl = "package com.myspace;\n" +
+                "\n" +
+                "import java.util.logging.Logger;\n" +
+                "\n" +
+                "rule \"initialize\"\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\tthen\n" +
+                "\t\tinsert(Logger log = Logger.getLogger(\"com.somepkg\"));\n" +
+                "\t\tinsert(new String(\"hello\"));\n" +
+                "end\n";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals(2,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof FreeFormLine);
+        assertEquals("insert(Logger log = Logger.getLogger(\"com.somepkg\"));",
+                     ((FreeFormLine) m.rhs[0]).getText());
+        assertTrue(m.rhs[1] instanceof FreeFormLine);
+        assertEquals("insert(new String(\"hello\"));",
+                     ((FreeFormLine) m.rhs[1]).getText());
+    }
 
     @Test
     public void testEval2() {
@@ -1139,6 +1167,113 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertTrue(m.rhs[1] instanceof FreeFormLine);
         assertEquals("System.out.println( \"Hello Mario!\" );",
                      ((FreeFormLine) m.rhs[1]).getText());
+    }
+
+    @Test
+    public void testDotInString() {
+        String drl = "import java.lang.Number;\n"
+                + "import java.util.ArrayList;\n"
+                + "rule rule1\n"
+                + "when\n"
+                + "a : ArrayList( )\n"
+                + "bar : Number( )\n"
+                + "foo : Number( )\n"
+                + "then\n"
+                + "a.add( foo + \", \" + bar );\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+        assertNotNull(m);
+        assertEquals(1,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof ActionCallMethod);
+        ActionCallMethod actionCallMethod = (ActionCallMethod) m.rhs[0];
+        assertEquals("add",
+                     actionCallMethod.getMethodName());
+        assertEquals("a",
+                     actionCallMethod.getVariable());
+        assertEquals(1,
+                     actionCallMethod.getFieldValues().length);
+        assertEquals("add",
+                     actionCallMethod.getFieldValues()[0].getField());
+        assertEquals("foo + \", \" + bar",
+                     actionCallMethod.getFieldValues()[0].getValue());
+    }
+
+    @Test
+    public void testDotInStringWithEscapedQuotes() {
+        String drl = "import java.lang.Number;\n"
+                + "import java.util.ArrayList;\n"
+                + "rule rule1\n"
+                + "when\n"
+                + "a : ArrayList( )\n"
+                + "bar : Number( )\n"
+                + "foo : Number( )\n"
+                + "then\n"
+                + "a.add( \"\\\"foo, bar\\\"\" );\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+        assertNotNull(m);
+        assertEquals(1,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof ActionCallMethod);
+        ActionCallMethod actionCallMethod = (ActionCallMethod) m.rhs[0];
+        assertEquals("add",
+                     actionCallMethod.getMethodName());
+        assertEquals("a",
+                     actionCallMethod.getVariable());
+        assertEquals(1,
+                     actionCallMethod.getFieldValues().length);
+        assertEquals("add",
+                     actionCallMethod.getFieldValues()[0].getField());
+        assertEquals("\\\"foo, bar\\\"",
+                     actionCallMethod.getFieldValues()[0].getValue());
+    }
+
+    @Test
+    public void testDotInStringComplex() {
+        String drl = "import java.lang.Number;\n"
+                + "import java.util.ArrayList;\n"
+                + "rule rule1\n"
+                + "when\n"
+                + "a : ArrayList( )\n"
+                + "bar : Number( )\n"
+                + "foo : Number( )\n"
+                + "then\n"
+                + "a.add( bar, foo + \", \" + bar ,  foo);\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+        assertNotNull(m);
+        assertEquals(1,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof ActionCallMethod);
+        ActionCallMethod actionCallMethod = (ActionCallMethod) m.rhs[0];
+        assertEquals("add",
+                     actionCallMethod.getMethodName());
+        assertEquals("a",
+                     actionCallMethod.getVariable());
+        assertEquals(3,
+                     actionCallMethod.getFieldValues().length);
+        assertEquals("add",
+                     actionCallMethod.getFieldValues()[0].getField());
+        assertEquals("bar",
+                     actionCallMethod.getFieldValues()[0].getValue());
+        assertEquals("add",
+                     actionCallMethod.getFieldValues()[1].getField());
+        assertEquals("foo + \", \" + bar",
+                     actionCallMethod.getFieldValues()[1].getValue());
+        assertEquals("add",
+                     actionCallMethod.getFieldValues()[2].getField());
+        assertEquals("foo",
+                     actionCallMethod.getFieldValues()[2].getValue());
     }
 
     @Test
@@ -8522,6 +8657,52 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    public void testDoNotAddEqualsToExpressionValues() {
+        String drl = "rule \"TestRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "t1 : Transaction( $transactiontime1 : transactiontime)\n" +
+                "Transaction( newtransactiontime.isBefore($transactiontime1))\n" +
+                "then\n" +
+                "end\n";
+
+        addModelField("Transaction",
+                      "this",
+                      "Transaction1",
+                      DataType.TYPE_THIS);
+        addModelField("Transaction",
+                      "newtransactiontime",
+                      "Transaction",
+                      DataType.TYPE_OBJECT);
+        addMethodInformation("Transaction",
+                             "isBefore",
+                             new ArrayList<String>() {{
+                                 add("Comparable");
+                             }},
+                             "boolean",
+                             null,
+                             DataType.TYPE_BOOLEAN);
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                Collections.emptyList(),
+                                                                                dmo);
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[1] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[1];
+        assertEquals("Transaction",
+                     pattern.getFactType());
+        assertTrue(pattern.getConstraint(0) instanceof SingleFieldConstraintEBLeftSide);
+        SingleFieldConstraintEBLeftSide fieldConstraint = (SingleFieldConstraintEBLeftSide) pattern.getConstraint(0);
+        assertTrue(fieldConstraint.getExpressionLeftSide().getParts().get(2) instanceof ExpressionMethod);
+        ExpressionMethod expressionMethod = (ExpressionMethod) fieldConstraint.getExpressionLeftSide().getParts().get(2);
+        ExpressionFormLine expressionFormLine = expressionMethod.getParams().values().iterator().next();
+        assertEquals("$transactiontime1",
+                     expressionFormLine.getParts().get(0).getName());
+    }
+
+    @Test
     public void testStringReplaceExpression() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1264321
         String drl = "rule \"Replace_condition_Issue\"\n" +
@@ -9901,7 +10082,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         Assertions.assertThat(actions)
                 .as("SimpleDateFormat and DateTimeFormatter boiler plates shouldn't be unmarshaled")
                 .filteredOn(action -> action instanceof FreeFormLine)
-                .noneMatch(action -> ((FreeFormLine)action).getText().contains("SimpleDateFormat"))
-                .noneMatch(action -> ((FreeFormLine)action).getText().contains("DateTimeFormatter"));
+                .noneMatch(action -> ((FreeFormLine) action).getText().contains("SimpleDateFormat"))
+                .noneMatch(action -> ((FreeFormLine) action).getText().contains("DateTimeFormatter"));
     }
 }

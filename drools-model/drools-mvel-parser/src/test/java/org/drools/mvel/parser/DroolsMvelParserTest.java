@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
@@ -48,7 +50,6 @@ import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
@@ -57,6 +58,8 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class DroolsMvelParserTest {
@@ -100,7 +103,6 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(" + newLine() + "addresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -109,7 +111,6 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineEnd() {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + newLine() + ")").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -119,12 +120,15 @@ public class DroolsMvelParserTest {
     }
 
     @Test
-    @Ignore
     public void testBinaryWithNewLineBeforeOperator() {
-        Expression and2 = parseExpression(parser, "(addresses == 2" + newLine() + "&& addresses == 3  )").getExpr();
+        String andExpr = "(addresses == 2" + newLine() + "&& addresses == 3  )";
+        MvelParser mvelParser1 = new MvelParser(new ParserConfiguration(), true);
+        Expression and2 = mvelParser1.parse(GeneratedMvelParser::Expression, new StringProvider(andExpr)).getResult().get();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
 
-        Expression or2 = parseExpression(parser, "(addresses == 2" + newLine() + "|| addresses == 3  )").getExpr();
+        String orExpr = "(addresses == 2" + newLine() + "|| addresses == 3  )";
+        MvelParser mvelParser2 = new MvelParser(new ParserConfiguration(), false);
+        Expression or2 = mvelParser2.parse(GeneratedMvelParser::Expression, new StringProvider(orExpr)).getResult().get();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
     }
 
@@ -369,7 +373,6 @@ public class DroolsMvelParserTest {
         String expr = "value > -2 && < -1";
         Expression expression = parseExpression( parser, expr ).getExpr();
 
-
         BinaryExpr comboExpr = ( (BinaryExpr) expression );
         assertEquals(Operator.AND, comboExpr.getOperator());
 
@@ -381,6 +384,109 @@ public class DroolsMvelParserTest {
         HalfBinaryExpr second = (HalfBinaryExpr) comboExpr.getRight();
         assertEquals("-1", toString(second.getRight()));
         assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+    }
+
+    @Test
+    public void testAndWithImplicitParameterAndParenthesis() {
+        String expr = "value (> 1 && < 2)";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.AND, comboExpr.getOperator());
+
+        BinaryExpr first = (BinaryExpr) comboExpr.getLeft();
+        assertEquals("value", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.GREATER, first.getOperator());
+
+        HalfBinaryExpr second = (HalfBinaryExpr) comboExpr.getRight();
+        assertEquals("2", toString(second.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+    }
+
+    @Test
+    public void testAndWithImplicitParameterAndParenthesisComplex() {
+        String expr = "value ((> 1 && < 2) || (> 3 && < 4))";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.OR, comboExpr.getOperator());
+
+        BinaryExpr comboExprLeft = ( (BinaryExpr) comboExpr.getLeft() );
+        assertEquals(Operator.AND, comboExprLeft.getOperator());
+
+        BinaryExpr first = (BinaryExpr) comboExprLeft.getLeft();
+        assertEquals("value", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.GREATER, first.getOperator());
+
+        HalfBinaryExpr second = (HalfBinaryExpr) comboExprLeft.getRight();
+        assertEquals("2", toString(second.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+
+        BinaryExpr comboExprRight = ( (BinaryExpr) comboExpr.getRight() );
+        assertEquals(Operator.AND, comboExprRight.getOperator());
+
+        BinaryExpr third = (BinaryExpr) comboExprRight.getLeft();
+        assertEquals("value", toString(third.getLeft()));
+        assertEquals("3", toString(third.getRight()));
+        assertEquals(Operator.GREATER, third.getOperator());
+
+        HalfBinaryExpr forth = (HalfBinaryExpr) comboExprRight.getRight();
+        assertEquals("4", toString(forth.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, forth.getOperator());
+    }
+
+    @Test
+    public void testAndWithImplicitParameterAndParenthesisMixedLeft() {
+        String expr = "value ((> 1 && < 2) || > 3)";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.OR, comboExpr.getOperator());
+
+        BinaryExpr comboExprLeft = ( (BinaryExpr) comboExpr.getLeft() );
+        assertEquals(Operator.AND, comboExprLeft.getOperator());
+
+        BinaryExpr first = (BinaryExpr) comboExprLeft.getLeft();
+        assertEquals("value", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.GREATER, first.getOperator());
+
+        HalfBinaryExpr second = (HalfBinaryExpr) comboExprLeft.getRight();
+        assertEquals("2", toString(second.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+
+        BinaryExpr third = ( (BinaryExpr) comboExpr.getRight() );
+        assertEquals("value", toString(third.getLeft()));
+        assertEquals("3", toString(third.getRight()));
+        assertEquals(Operator.GREATER, third.getOperator());
+    }
+
+    @Test
+    public void testAndWithImplicitParameterAndParenthesisMixedRight() {
+        String expr = "value (< 1 || (> 2 && < 3))";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.OR, comboExpr.getOperator());
+
+        BinaryExpr first = ( (BinaryExpr) comboExpr.getLeft() );
+        assertEquals("value", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.LESS, first.getOperator());
+
+        BinaryExpr comboExprRight = ( (BinaryExpr) comboExpr.getRight() );
+        assertEquals(Operator.AND, comboExprRight.getOperator());
+
+        BinaryExpr third = (BinaryExpr) comboExprRight.getLeft();
+        assertEquals("value", toString(third.getLeft()));
+        assertEquals("2", toString(third.getRight()));
+        assertEquals(Operator.GREATER, third.getOperator());
+
+        HalfBinaryExpr forth = (HalfBinaryExpr) comboExprRight.getRight();
+        assertEquals("3", toString(forth.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, forth.getOperator());
     }
 
     @Test
@@ -716,14 +822,14 @@ public class DroolsMvelParserTest {
     @Test
     public void testWithoutSemicolon() {
         String expr = "{             " +
-                        "a" + newLine() +
-                        "b" + newLine() +
+                        "a()" + newLine() +
+                        "b()" + newLine() +
                         "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
-                             "    a;" + newLine() +
-                             "    b;" + newLine() +
+                             "    a();" + newLine() +
+                             "    b();" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -815,8 +921,6 @@ public class DroolsMvelParserTest {
 
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
-                             "    ;" + newLine() +
-                             "    ;" + newLine() +
                              "    setAge(47);" + newLine() +
                              "}", printConstraint(expression));
     }
@@ -903,6 +1007,31 @@ public class DroolsMvelParserTest {
         assertEquals(expr, printConstraint(expression));
     }
 
+    @Test
+    public void testSpecialNewlineHandling() {
+        String expr = "{ a() \nprint(1) }";
+
+        assertEquals("There should be 2 statements",
+                     2, MvelParser.parseBlock(expr).getStatements().size());
+
+        MvelParser mvelParser = new MvelParser(new ParserConfiguration(), false);
+        ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
+        assertFalse("Parsing should break at newline", r.isSuccessful());
+    }
+
+        @Test
+        public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
+            String expr =
+                    "{  Person p2 = new Person(\"John\");\n" +
+                    "  p2.age = 30\n" + // a line break at the end of the statement without a semicolon
+                    "insert(p2);\n }";
+
+            MvelParser mvelParser = new MvelParser(new ParserConfiguration(), true);
+            ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
+            BlockStmt blockStmt = r.getResult().get();
+            assertEquals("Should parse 3 statements", 3, blockStmt.getStatements().size());
+
+        }
 
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;

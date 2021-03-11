@@ -16,6 +16,9 @@
 
 package org.kie.dmn.core.pmml;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -30,12 +33,16 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.DMNRuntimeKB;
+import org.kie.dmn.core.impl.DMNRuntimeKBWrappingIKB;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
@@ -44,6 +51,8 @@ import org.slf4j.LoggerFactory;
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
+
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
 
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
@@ -103,13 +112,31 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     /**
-     *
      * @param eventManager
      * @return
      */
     private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager) {
-        KieRuntimeFactory kieFactory = ((DMNRuntimeImpl) eventManager.getRuntime()).getKieRuntimeFactory(model);
-        return kieFactory.get(PMMLRuntime.class);
+        DMNRuntimeImpl dmnRuntime = (DMNRuntimeImpl) eventManager.getRuntime();
+        final DMNRuntimeKB runtimeKB = dmnRuntime.getRuntimeKB();
+        if (runtimeKB instanceof DMNRuntimeKBWrappingIKB) { // We are in drools
+            return getPMMLRuntimeFromDMNRuntimeKBWrappingIKB((DMNRuntimeKBWrappingIKB)runtimeKB);
+        } else { // we are in kogito
+            KieRuntimeFactory kieFactory = dmnRuntime.getKieRuntimeFactory(model);
+            return kieFactory.get(PMMLRuntime.class);
+        }
+    }
+
+    private PMMLRuntime getPMMLRuntimeFromDMNRuntimeKBWrappingIKB(DMNRuntimeKBWrappingIKB runtimeKB) {
+        String pmmlFilePath = documentResource.getSourcePath();
+        String pmmlFileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf('/')+1) : pmmlFilePath;
+        PMMLRuntime toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFileNameModelNameAndKieBase(pmmlFileName,
+                                                                                                  model,
+                                                                                                  runtimeKB.getInternalKnowledgeBase());
+        if (!toReturn.getPMMLModel(model).isPresent()) {
+            File pmmlFile = getPMMLFile();
+            toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
+        }
+        return toReturn;
     }
 
     private PMMLContext getPMMLPMMLContext(String correlationId, String modelName, DMNResult dmnr) {
@@ -120,5 +147,44 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
             pmmlRequestDataBuilder.addParameter(p.name, pValue, class1);
         }
         return new PMMLContextImpl(pmmlRequestDataBuilder.build());
+    }
+
+    private File getPMMLFile() {
+        try (InputStream inputStream = documentResource.getInputStream()) {
+            return getPMMLFile(model, inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Load a <code>File</code> with the given <b>fullFileName</b> from the given
+     * <code>InputStream</code>
+     * @param fileName <b>full path</b> of file to load
+     * @param inputStream
+     * @return
+     */
+    private File getPMMLFile(String fileName, InputStream inputStream) {
+        FileOutputStream outputStream = null;
+        try {
+            File toReturn = File.createTempFile(fileName, null);
+            outputStream = new FileOutputStream(toReturn);
+            byte[] byteArray = new byte[1024];
+            int i;
+            while ((i = inputStream.read(byteArray)) > 0) {
+                outputStream.write(byteArray, 0, i);
+            }
+            return toReturn;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (Exception e) {
+                LOG.warn("Failed to close outputStream", e);
+            }
+        }
     }
 }

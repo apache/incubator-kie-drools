@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.StaticJavaParser;
@@ -54,9 +55,11 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -64,6 +67,7 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
 import org.drools.model.WindowReference;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -73,28 +77,28 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
-import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.model.bitmask.BitMaskUtil.getAccessibleProperties;
+import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
+import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 
 public class PackageModel {
 
     public static final String DATE_TIME_FORMATTER_FIELD = "DATE_TIME_FORMATTER";
     public static final String STRING_TO_DATE_METHOD = "string_2_date";
+    public static final String STRING_TO_LOCAL_DATE_METHOD = "string_2_localDate";
+    public static final String STRING_TO_LOCAL_DATE_TIME_METHOD = "string_2_localDateTime";
 
     private static final String RULES_FILE_NAME = "Rules";
 
@@ -133,6 +137,7 @@ public class PackageModel {
     private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private Set<Class<?>> domainClasses = new HashSet<>();
+    private Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
 
     private List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
@@ -148,21 +153,21 @@ public class PackageModel {
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
 
+    private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
+
     private boolean oneClassPerRule;
 
     public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this.name = name;
-        this.pkgUUID = (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+name) : generateUUID();
-        this.isPattern = isPattern;
-        this.rulesFileName = RULES_FILE_NAME + pkgUUID;
-        this.configuration = configuration;
-        this.exprIdGenerator = exprIdGenerator;
-        this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
+    }
+
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
         this.name = name;
-        this.pkgUUID = md5Hash(gav+name);
+        this.pkgUUID = pkgUUID;
         this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
@@ -467,10 +472,22 @@ public class PackageModel {
 
         BodyDeclaration<?> getNameMethod = parseBodyDeclaration(
                 "    public static java.util.Date " + STRING_TO_DATE_METHOD + "(String s) {\n" +
-                "        return java.util.GregorianCalendar.from(java.time.LocalDate.parse(s, DATE_TIME_FORMATTER).atStartOfDay(java.time.ZoneId.systemDefault())).getTime();\n" +
+                "        return java.util.GregorianCalendar.from(" + STRING_TO_LOCAL_DATE_METHOD + "(s).atStartOfDay(java.time.ZoneId.systemDefault())).getTime();\n" +
                 "    }\n"
                 );
         rulesClass.addMember(getNameMethod);
+
+        BodyDeclaration<?> string2localDateMethod = parseBodyDeclaration(
+                "    public static java.time.LocalDate " + STRING_TO_LOCAL_DATE_METHOD + "(String s) {\n" +
+                "        return java.time.LocalDate.parse(s, DATE_TIME_FORMATTER);\n" +
+                "    }\n");
+        rulesClass.addMember(string2localDateMethod);
+
+        BodyDeclaration<?> string2localDateTimeMethod = parseBodyDeclaration(
+                "    public static java.time.LocalDateTime " + STRING_TO_LOCAL_DATE_TIME_METHOD + "(String s) {\n" +
+                "        return " + STRING_TO_LOCAL_DATE_METHOD + "(s).atStartOfDay();\n" +
+                "    }\n");
+        rulesClass.addMember(string2localDateTimeMethod);
 
         String entryPointsBuilder = entryPoints.isEmpty() ?
                 "java.util.Collections.emptyList()" :
@@ -815,9 +832,16 @@ public class PackageModel {
     public boolean registerDomainClass(Class<?> domainClass) {
         if (!domainClass.isPrimitive() && !domainClass.isArray()) {
             domainClasses.add( domainClass );
+            classDefinitionsMap.put(domainClass, createClassDefinition(domainClass));
             return true;
         }
         return false;
+    }
+
+    private ClassDefinition createClassDefinition(Class<?> domainClass) {
+        ClassDefinition classDef = new ClassDefinition(domainClass);
+        TypeDeclarationUtils.processModifiedProps(domainClass, classDef);
+        return classDef;
     }
 
     public String getDomainClassesMetadataSource() {
@@ -862,4 +886,21 @@ public class PackageModel {
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
         return lambdaReturnTypes;
     }
+
+    public void indexConstraint(String exprId, PredicateInformation predicateInformation) {
+        allConstraintsMap.put(exprId, predicateInformation);
+    }
+
+    public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
+        return Optional.ofNullable(allConstraintsMap.get(exprId));
+    }
+
+    public Map<String, PredicateInformation> getAllConstraintsMap() {
+        return Collections.unmodifiableMap(allConstraintsMap);
+    }
+
+    public ClassDefinition getClassDefinition(Class<?> cls) {
+        return classDefinitionsMap.get(cls);
+    }
+
 }

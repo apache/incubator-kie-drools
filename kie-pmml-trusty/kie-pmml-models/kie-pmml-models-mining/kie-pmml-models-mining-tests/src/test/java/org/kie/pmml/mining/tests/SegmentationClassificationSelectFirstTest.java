@@ -27,10 +27,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class SegmentationClassificationSelectFirstTest extends AbstractPMMLMiningTest {
+public class SegmentationClassificationSelectFirstTest extends AbstractPMMLTest {
+
+    private static final String FILE_NAME = "segmentationClassificationSelectFirst.pmml";
     private static final String MODEL_NAME = "SegmentationClassificationSelectFirst";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -47,9 +50,9 @@ public class SegmentationClassificationSelectFirstTest extends AbstractPMMLMinin
         this.result = result;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters
@@ -58,13 +61,13 @@ public class SegmentationClassificationSelectFirstTest extends AbstractPMMLMinin
                 {0, -1, 0, "classB1"},
                 {2, 20, 90, "classC1"},
                 {4, 20, 0, "classA1"},
-                {15, -1, 0, "classC2"}, // <<<
+                {15, -1, 0, "classC2"},
                 {17, 20, 90, "classA2"},
-                {18, 20, 0, "classB2"}, // <<<
+                {18, 20, 0, "classB2"},
                 {55, -1, 0, "classA3"},
-                {57, 20, 90, "classB3"}, // <<<
-                {58, 20, 0, "classC3"}, // <<<
-                {58, 20, -1, "classC3"}, // <<<
+                {57, 20, 90, "classB3"},
+                {58, 20, 0, "classC3"},
+                {58, 20, -1, "classC3"},
         });
     }
 

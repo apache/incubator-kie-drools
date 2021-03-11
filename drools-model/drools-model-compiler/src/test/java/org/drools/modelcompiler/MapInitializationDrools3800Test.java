@@ -7,7 +7,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MapInitializationDrools3800Test extends BaseModelTest {
 
@@ -85,12 +86,8 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
                 "      calc([\"src\":name, \"target\":\"TEST\"])\n" +
                 "    )\n" +
                 "  then\n" +
-                "    if ($fact.getResult() != null) {\n" +
-                "        $fact.setResult(\"OK\");\n" +
-                "    } else {\n" +
-                "        modify ($fact) {\n" +
-                "            setResult(\"FIRST\")\n" +
-                "        }\n" +
+                "    modify ($fact) {\n" +
+                "        setResult(\"OK\")\n" +
                 "    }\n" +
                 "end";
 
@@ -100,7 +97,7 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
         fact.setName("TEST");
         ksession.insert(fact);
 
-        ksession.fireAllRules();
+        assertEquals(1, ksession.fireAllRules(3));
 
         assertThat(fact.getResult(), is("OK"));
     }

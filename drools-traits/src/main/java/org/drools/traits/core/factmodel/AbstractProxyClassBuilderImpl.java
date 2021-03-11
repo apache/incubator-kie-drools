@@ -34,6 +34,7 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.mvel.asm.AsmUtil;
 import org.mvel2.MVEL;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;
@@ -195,11 +196,11 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		                    false );
 
 		for ( int j = 0; j < m.getParameterTypes().length; j++ ) {
-			mv.visitVarInsn( BuildUtils.varType( m.getParameterTypes()[ j ].getName() ), j + 1 );
+			mv.visitVarInsn( AsmUtil.varType( m.getParameterTypes()[ j ].getName() ), j + 1 );
 		}
 		mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( core.getDefinedClass() ), m.getName(), Type.getMethodDescriptor( m ), core.getDefinedClass().isInterface() );
 
-		mv.visitInsn( BuildUtils.returnType( m.getReturnType().getName() ) );
+		mv.visitInsn( AsmUtil.returnType( m.getReturnType().getName() ) );
 
 		mv.visitMaxs( 0, 0 );
 		mv.visitEnd();
@@ -298,7 +299,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 			Label l1 = new Label();
 			mv.visitJumpInsn( GOTO, l1 );
 			mv.visitLabel( l0 );
-			mv.visitInsn( BuildUtils.zero( coreField.getTypeName() ) );
+			mv.visitInsn( AsmUtil.zero( coreField.getTypeName() ) );
 			mv.visitLabel( l1 );
 		} else {
 			mv.visitTypeInsn( CHECKCAST, Type.getInternalName( coreField.getType() ) );
@@ -476,7 +477,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 		mv.visitLdcInsn( field.resolveAlias() );
 		if ( BuildUtils.isPrimitive( fieldType ) ) {
-			mv.visitVarInsn( BuildUtils.varType( fieldType ), 1 );
+			mv.visitVarInsn( AsmUtil.varType( fieldType ), 1 );
 			mv.visitMethodInsn( Opcodes.INVOKESTATIC,
 			                    BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
 			                    "valueOf",
@@ -511,7 +512,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 			Label l1 = new Label();
 			mv.visitJumpInsn( GOTO, l1 );
 			mv.visitLabel( l0 );
-			mv.visitInsn( BuildUtils.zero( fieldType ) );
+			mv.visitInsn( AsmUtil.zero( fieldType ) );
 			mv.visitMethodInsn( Opcodes.INVOKESTATIC,
 			                    BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
 			                    "valueOf",
@@ -525,7 +526,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 			                    BuildUtils.numericMorph( BuildUtils.box( fieldType ) ),
 			                    Type.getMethodDescriptor( Type.getType( field.getType() ) ),
 			                    false );
-			mv.visitVarInsn( BuildUtils.storeType( fieldType ), 1 );
+			mv.visitVarInsn( AsmUtil.storeType( fieldType ), 1 );
 		}
 
 	}
@@ -572,7 +573,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 			Label l1 = new Label();
 			mv.visitJumpInsn( GOTO, l1 );
 			mv.visitLabel( l0 );
-			mv.visitInsn( BuildUtils.zero( fieldType ) );
+			mv.visitInsn( AsmUtil.zero( fieldType ) );
 			mv.visitMethodInsn( Opcodes.INVOKESTATIC,
 			                    BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
 			                    "valueOf",
@@ -586,7 +587,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 			                    BuildUtils.numericMorph( BuildUtils.box( fieldType ) ),
 			                    Type.getMethodDescriptor( Type.getType( field.getType() ) ),
 			                    false );
-			mv.visitInsn( BuildUtils.returnType( fieldType ) );
+			mv.visitInsn( AsmUtil.returnType( fieldType ) );
 		} else {
 			mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldType ) );
 			mv.visitInsn( ARETURN );

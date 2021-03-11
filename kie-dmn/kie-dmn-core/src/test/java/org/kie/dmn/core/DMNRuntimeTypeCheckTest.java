@@ -16,7 +16,9 @@
 
 package org.kie.dmn.core;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -41,10 +43,11 @@ import org.kie.dmn.core.util.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -215,6 +218,26 @@ public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
                 at org.kie.dmn.core.DMNRuntimeTypeCheckTest.testMisleadingNPEbyAPIusage(DMNRuntimeTypeCheckTest.java:199)
              */
         }
+    }
+
+    @Test
+    public void testSqrtString() {
+        // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
+                                                                    ks.getResources().newClassPathResource("notypecheck/sqrtstring.dmn", this.getClass()));
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_476F07A1-F787-4079-9A68-EF1C6030A3EF", "sqrtstring");
+
+        final DMNContext ctx = runtime.newContext();
+        ctx.set("value", "47");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).isTrue();
+
+        List<String> messages = dmnResult.getMessages().stream().map(DMNMessage::getText).collect(Collectors.toList());
+        LOG.info("{}", messages);
+        assertThat(messages.get(0)).contains("Error invoking function SQRT").contains("Unable to coerce parameter");
     }
 }
 

@@ -30,6 +30,7 @@ import java.util.Set;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.mvel.asm.AsmUtil;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
@@ -37,7 +38,7 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
 public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 	
@@ -190,7 +191,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
                 mv.visitLdcInsn( field.getName() );
-                mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+                mv.visitInsn( AsmUtil.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactoryImpl.valueOf(mv, field.getTypeName() );
                 }
@@ -238,7 +239,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
 
                 mv.visitVarInsn( ALOAD, varNum );
                 mv.visitLdcInsn( field.resolveAlias() );
-                mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+                mv.visitInsn( AsmUtil.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactoryImpl.valueOf(mv, field.getTypeName() );
                 }

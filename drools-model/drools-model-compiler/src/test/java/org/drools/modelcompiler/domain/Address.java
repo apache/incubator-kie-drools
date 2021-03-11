@@ -97,4 +97,14 @@ public class Address {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "street='" + street + '\'' +
+                ", number=" + number +
+                ", shortNumber=" + shortNumber +
+                ", city='" + city + '\'' +
+                '}';
+    }
 }

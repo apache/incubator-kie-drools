@@ -11,16 +11,17 @@ import org.drools.Person;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.hamcrest.MatcherAssert;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertThat;
 
 interface CompilerTest {
 
     default void test(Consumer<MvelCompilerContext> testFunction,
-                      String actualExpression,
+                      String inputExpression,
                       String expectedResult,
-                      Consumer<ParsingResult> resultAssert) {
+                      Consumer<CompiledBlockResult> resultAssert) {
         Set<String> imports = new HashSet<>();
         imports.add("java.util.List");
         imports.add("java.util.ArrayList");
@@ -33,33 +34,41 @@ interface CompilerTest {
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
-        assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        CompiledBlockResult compiled = new MvelCompiler(mvelCompilerContext).compileStatement(inputExpression);
+        verifyBodyWithBetterDiff(expectedResult, compiled.resultAsString());
         resultAssert.accept(compiled);
     }
 
-    default void test(String actualExpression,
+    default void verifyBodyWithBetterDiff(Object expected, Object actual) {
+        try {
+            MatcherAssert.assertThat(actual.toString(), equalToIgnoringWhiteSpace(expected.toString()));
+        } catch (AssertionError e) {
+            MatcherAssert.assertThat(actual, equalTo(expected));
+        }
+    }
+
+    default void test(String inputExpression,
                       String expectedResult,
-                      Consumer<ParsingResult> resultAssert) {
+                      Consumer<CompiledBlockResult> resultAssert) {
         test(id -> {
-        }, actualExpression, expectedResult, resultAssert);
+        }, inputExpression, expectedResult, resultAssert);
     }
 
     default void test(Consumer<MvelCompilerContext> testFunction,
-                      String actualExpression,
+                      String inputExpression,
                       String expectedResult) {
-        test(testFunction, actualExpression, expectedResult, t -> {
+        test(testFunction, inputExpression, expectedResult, t -> {
         });
     }
 
-    default void test(String actualExpression,
+    default void test(String inputExpression,
                       String expectedResult) {
         test(d -> {
-        }, actualExpression, expectedResult, t -> {
+        }, inputExpression, expectedResult, t -> {
         });
     }
 
-    default Collection<String> allUsedBindings(ParsingResult result) {
+    default Collection<String> allUsedBindings(CompiledBlockResult result) {
         return new ArrayList<>(result.getUsedBindings());
     }
 }

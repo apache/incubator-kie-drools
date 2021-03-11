@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

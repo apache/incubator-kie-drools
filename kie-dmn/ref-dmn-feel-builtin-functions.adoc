@@ -1,8 +1,9 @@
-// If changing name, location, and structure of this document, align with Docs team
+// If changing name, location, and structure of this document, align with Docs team; the golden master of this file is the one available at https://github.com/kiegroup/drools/blob/master/kie-dmn/ref-dmn-feel-builtin-functions.adoc
 
-[id='ref-dmn-feel-builtin-functions_{context}']
+[id="ref-dmn-feel-builtin-functions_{context}"]
 = Built-in functions in FEEL
 
+[role="_abstract"]
 To promote interoperability with other platforms and systems, Friendly Enough Expression Language (FEEL) includes a library of built-in functions. The built-in FEEL functions are implemented in the Drools Decision Model and Notation (DMN) engine so that you can use the functions in your DMN decision services.
 
 The following sections describe each built-in FEEL function, listed in the format `__NAME__( __PARAMETERS__ )`. For more information about FEEL functions in DMN, see the OMG https://www.omg.org/spec/DMN[Decision Model and Notation specification].
@@ -1359,12 +1360,18 @@ Returns a number with the specified scale.
 |`number` in the range `[−6111..6176]`
 |===
 
+NOTE: This function is implemented to be consistent with the `FEEL:number` definition for rounding decimal numbers to the nearest even decimal number.
+
 .Examples
 [source,FEEL]
 ----
 decimal( 1/3, 2 ) = .33
 decimal( 1.5, 0 ) = 2
 decimal( 2.5, 0 ) = 2
+decimal( 1.035, 2 ) = 1.04
+decimal( 1.045, 2 ) = 1.04
+decimal( 1.055, 2 ) = 1.06
+decimal( 1.065, 2 ) = 1.06
 ----
 --
 // ----------------------------------------------------------------------------

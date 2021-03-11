@@ -66,46 +66,49 @@ public class MockAccumulator
         return this.workingMemory;
     }
 
-    public Serializable createContext() {
+    public Object createContext() {
         return this;
     }
 
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
         this.leftTuple = leftTuple;
         this.matchingObjects = new ArrayList();
         this.workingMemory = workingMemory;
+        return context;
     }
 
-    public void accumulate(Object workingMemoryContext,
+    public Object accumulate(Object workingMemoryContext,
                            Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
+                           WorkingMemory workingMemory) {
         this.matchingObjects.add( handle.getObject() );
+        return handle.getObject();
     }
 
     public Object getResult(Object workingMemoryContext,
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
+                            WorkingMemory workingMemory) {
         return this.matchingObjects;
     }
 
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception {
-        // nothing to do yet
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) {
+        return false;
     }
 
     public boolean supportsReverse() {

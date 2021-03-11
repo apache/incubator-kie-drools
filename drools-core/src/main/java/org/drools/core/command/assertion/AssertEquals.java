@@ -19,7 +19,7 @@ package org.drools.core.command.assertion;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.util.StringUtils;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
@@ -60,7 +60,7 @@ public class AssertEquals
         Object actualObject = ((ExecutableCommand) command).execute( context );
 
         if ( this.mvelString != null ) {
-            actualObject = MVELSafeHelper.getEvaluator().eval( this.mvelString,
+            actualObject = CoreComponentsBuilder.get().getMVELExecutor().eval( this.mvelString,
                                       actualObject );
         }
 
@@ -74,7 +74,7 @@ public class AssertEquals
         vars.put( "actual",
                   actualObject );
 
-        if ( ((Boolean) MVELSafeHelper.getEvaluator().eval( "expected != actual",
+        if ( ((Boolean) CoreComponentsBuilder.get().getMVELExecutor().eval( "expected != actual",
                                    vars )) ) {
             throw new AssertionError( format( this.message,
                                               expectedObject,

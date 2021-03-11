@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
@@ -45,6 +44,8 @@ public class EvalCondition extends ConditionalElement
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
     private List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
+
+    private Map<String, Declaration> outerDeclarations = Collections.EMPTY_MAP;
 
     public EvalCondition() {
         this( null );
@@ -97,9 +98,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     private void wireClone(EvalExpression expression) {
-        setEvalExpression( this.expression instanceof MVELEvalExpression && expression instanceof MVELEvalExpression ?
-                           ( (MVELEvalExpression) expression ).clonePreservingDeclarations( (MVELEvalExpression) this.expression ) :
-                           expression );
+        setEvalExpression( expression.clonePreservingDeclarations( this.expression ) );
         for ( EvalCondition clone : this.cloned ) {
             clone.wireClone( expression );
         }
@@ -181,9 +180,12 @@ public class EvalCondition extends ConditionalElement
     }
 
     public Map<String, Declaration> getOuterDeclarations() {
-        return Collections.EMPTY_MAP;
+        return outerDeclarations;
     }
-    
+
+    public void setOuterDeclarations( Map<String, Declaration> outerDeclarations ) {
+        this.outerDeclarations = outerDeclarations;
+    }
 
     public List<? extends RuleConditionElement> getNestedElements() {
         return Collections.EMPTY_LIST;
@@ -202,13 +204,12 @@ public class EvalCondition extends ConditionalElement
 
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
+        this.expression.replaceDeclaration( declaration, resolved );
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
             if ( this.requiredDeclarations[i].equals( declaration ) ) {
                 this.requiredDeclarations[i] = resolved;
             }
         }
-        this.expression.replaceDeclaration( declaration,
-                                            resolved );
     }
 
     public List<EvalCondition> getCloned() {

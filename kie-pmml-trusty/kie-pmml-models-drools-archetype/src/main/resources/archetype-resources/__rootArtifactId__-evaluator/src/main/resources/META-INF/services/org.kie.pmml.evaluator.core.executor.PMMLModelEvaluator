@@ -1,0 +1,2 @@
+# SPI implementation
+${package}.${artifactModelName}.evaluator.PMML${modelName}ModelEvaluator

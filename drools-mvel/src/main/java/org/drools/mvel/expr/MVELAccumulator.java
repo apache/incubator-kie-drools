@@ -1,0 +1,320 @@
+/*
+ * Copyright (c) 2020. Red Hat, Inc. and/or its affiliates.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.mvel.expr;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.MvelAccumulator;
+import org.drools.core.spi.Tuple;
+import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.MVELSafeHelper;
+import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
+import org.mvel2.integration.VariableResolverFactory;
+
+/**
+ * An MVEL accumulator implementation
+ */
+public class MVELAccumulator
+    implements MVELCompileable, MvelAccumulator, Externalizable {
+
+    private static final long serialVersionUID = 510l;
+
+    MVELCompilationUnit       initUnit;
+    MVELCompilationUnit       actionUnit;
+    MVELCompilationUnit       reverseUnit;
+    MVELCompilationUnit       resultUnit;
+    
+    private Serializable      init;
+    private Serializable      action;
+    private Serializable      reverse;
+    private Serializable      result;
+
+    public MVELAccumulator() {
+    }
+
+    public MVELAccumulator(final MVELCompilationUnit initUnit,
+                           final MVELCompilationUnit actionUnit,
+                           final MVELCompilationUnit reverseUnit,
+                           final MVELCompilationUnit resultUnit) {
+        super();
+        this.initUnit = initUnit;
+        this.actionUnit = actionUnit;
+        this.reverseUnit = reverseUnit;
+        this.resultUnit = resultUnit;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        initUnit = (MVELCompilationUnit) in.readObject();
+        actionUnit = (MVELCompilationUnit) in.readObject();
+        reverseUnit = (MVELCompilationUnit) in.readObject();
+        resultUnit = (MVELCompilationUnit) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( initUnit );
+        out.writeObject( actionUnit );
+        out.writeObject( reverseUnit );
+        out.writeObject( resultUnit );
+    }
+
+    public void compile( MVELDialectRuntimeData runtimeData) {
+        compile(runtimeData, null);
+    }
+
+    public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule) {
+        init = initUnit.getCompiledExpression( runtimeData );
+        action = actionUnit.getCompiledExpression( runtimeData );
+        result = resultUnit.getCompiledExpression( runtimeData );
+                
+        if ( reverseUnit != null ) {
+            reverse = reverseUnit.getCompiledExpression( runtimeData, rule != null ? rule.toRuleNameAndPathString() : null );
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.spi.Accumulator#createContext()
+     */
+    public Object createContext() {
+        return new MVELAccumulatorContext( );
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
+     */
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple tuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
+        Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
+        
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        VariableResolverFactory factory = factoryContext.getInitFactory();
+        initUnit.updateFactory( null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
+
+        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }
+
+        MVELSafeHelper.getEvaluator().executeExpression( this.init,
+                                null,
+                                factory );
+        
+        
+        DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
+        if ( localVars.length > 0 ) {
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
+            }
+        }
+        
+        ((MVELAccumulatorContext) context).setVariables( localVars );
+        return context;
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
+     */
+    public Object accumulate(Object workingMemoryContext,
+                           Object context,
+                           Tuple tuple,
+                           InternalFactHandle handle,
+                           Declaration[] declarations,
+                           Declaration[] innerDeclarations,
+                           WorkingMemory workingMemory) {
+        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        VariableResolverFactory factory = factoryContext.getActionFactory();
+        actionUnit.updateFactory( handle, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
+
+        DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
+
+        Object[] shadow = null;
+        if ( reverse != null ) {
+            shadow = new Object [df.getOtherVarsPos()];
+            for ( int i = 0; i < df.getOtherVarsPos(); i++ ) {
+                shadow[i] = factory.getIndexedVariableResolver( i ).getValue();
+            }
+        }
+        MVELSafeHelper.getEvaluator().executeExpression( this.action,
+                                null,
+                                factory );
+        
+        
+        if ( localVars.length > 0 ) {
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
+            }
+        }
+        
+        ((MVELAccumulatorContext) context).setVariables( localVars );
+
+        return shadow;
+    }
+
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) {
+
+        if (!supportsReverse()) {
+            return false;
+        }
+
+        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        
+        VariableResolverFactory factory = factoryContext.getActionFactory();
+        DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
+        
+        Object[] vars = (Object[]) value;
+        for ( int i = 0; i < df.getOtherVarsPos(); i++ ) {
+            factory.getIndexedVariableResolver( i ).setValue(vars[i]);  
+        }
+
+        if ( localVars.length > 0 ) {
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).setValue( localVars[i] );
+            }
+        }
+
+        MVELSafeHelper.getEvaluator().executeExpression( this.reverse,
+                                null,
+                                factory );
+        
+        if ( localVars.length > 0 ) {
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
+            }
+        }
+        
+        ((MVELAccumulatorContext) context).setVariables( localVars );
+
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.spi.Accumulator#getResult(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
+     */
+    public Object getResult(Object workingMemoryContext,
+                            Object context,
+                            Tuple tuple,
+                            Declaration[] declarations,
+                            WorkingMemory workingMemory) {
+        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
+        
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        VariableResolverFactory factory = factoryContext.getResultFactory();
+        resultUnit.updateFactory( null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
+
+        return MVELSafeHelper.getEvaluator().executeExpression( this.result, null, factory );
+    }
+
+    public boolean supportsReverse() {
+        return this.reverse != null;
+    }
+
+    public Object createWorkingMemoryContext() {        
+        return new MVELAccumulatorFactoryContext(initUnit.createFactory(), 
+                                                 actionUnit.createFactory(),
+                                                 resultUnit.createFactory() );
+    }
+
+    @Override
+    public Declaration[] getRequiredDeclarations() {
+        Set<Declaration> declarationSet = new HashSet<>();
+        if ( initUnit != null ) {
+            declarationSet.addAll( Arrays.asList( initUnit.getPreviousDeclarations() ) );
+        }
+        if ( actionUnit != null ) {
+            declarationSet.addAll( Arrays.asList( actionUnit.getPreviousDeclarations() ) );
+        }
+        if ( resultUnit != null ) {
+            declarationSet.addAll( Arrays.asList( resultUnit.getPreviousDeclarations() ) );
+        }
+        if ( reverseUnit != null ) {
+            declarationSet.addAll( Arrays.asList( reverseUnit.getPreviousDeclarations() ) );
+        }
+        if ( ! declarationSet.isEmpty() ) {
+            return declarationSet.toArray( new Declaration[ declarationSet.size() ] );
+        } else {
+            return new Declaration[ 0 ];
+        }
+    }
+
+    private static class MVELAccumulatorFactoryContext {
+        VariableResolverFactory initFactory;
+        VariableResolverFactory actionFactory;
+        VariableResolverFactory resultFactory;
+        public MVELAccumulatorFactoryContext(VariableResolverFactory initFactory,
+                                             VariableResolverFactory actionFactory,
+                                             VariableResolverFactory resultFactory) {
+            this.initFactory = initFactory;
+            this.actionFactory = actionFactory;
+            this.resultFactory = resultFactory;
+        }
+        public VariableResolverFactory getInitFactory() {
+            return initFactory;
+        }
+        public VariableResolverFactory getActionFactory() {
+            return actionFactory;
+        }
+
+        public VariableResolverFactory getResultFactory() {
+            return resultFactory;
+        }
+    }
+
+    private static class MVELAccumulatorContext
+        implements
+        Serializable {
+
+        private static final long serialVersionUID = 510l;
+
+        private Object[]          variables;
+
+        public MVELAccumulatorContext() {
+        }
+
+        public Object[] getVariables() {
+            return variables;
+        }
+
+        public void setVariables(Object[] variables) {
+            this.variables = variables;
+        }
+    }
+
+}

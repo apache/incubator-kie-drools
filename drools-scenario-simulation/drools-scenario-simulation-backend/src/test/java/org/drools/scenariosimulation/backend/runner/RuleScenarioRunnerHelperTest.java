@@ -64,7 +64,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.feel.codegen.feel11.Constants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -78,8 +78,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -220,7 +220,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .map(elem -> (Dispute) elem.getValue())
                 .findFirst();
         assertTrue(disputeGivenOptional.isPresent());
-        assertEquals(disputeGivenOptional.get().getDescription(), "dispute description");
+        assertEquals("dispute description", disputeGivenOptional.get().getDescription());
 
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
         assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),

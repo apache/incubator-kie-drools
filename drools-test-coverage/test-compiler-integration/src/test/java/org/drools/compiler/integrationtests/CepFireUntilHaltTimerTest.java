@@ -86,7 +86,7 @@ public class CepFireUntilHaltTimerTest {
                                          .setEventProcessingMode(EventProcessingOption.STREAM);
         defaultBase.newKieSessionModel("defaultKSession")
                    .setDefault(true)
-                   .setClockType(ClockTypeOption.get("pseudo"));
+                   .setClockType(ClockTypeOption.PSEUDO);
 
         final KieFileSystem kfs = ks.newKieFileSystem()
                               .write("src/main/resources/r1.drl", drl);

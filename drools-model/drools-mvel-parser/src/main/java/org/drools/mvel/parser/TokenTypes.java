@@ -59,6 +59,7 @@ import static org.drools.mvel.parser.GeneratedMvelParserConstants.DECIMAL_LITERA
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.DECR;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.DO;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.DOT;
+import static org.drools.mvel.parser.GeneratedMvelParserConstants.DOT_DOT_SLASH;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.DOUBLE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.DOUBLECOLON;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.ELLIPSIS;
@@ -67,6 +68,7 @@ import static org.drools.mvel.parser.GeneratedMvelParserConstants.ENTER_JAVADOC_
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.ENTER_MULTILINE_COMMENT;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.EOF;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.EQ;
+import static org.drools.mvel.parser.GeneratedMvelParserConstants.EXCL_DOT;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.EXPORTS;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.EXTENDS;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.FALSE;
@@ -78,6 +80,7 @@ import static org.drools.mvel.parser.GeneratedMvelParserConstants.FOR;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.GE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.GOTO;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.GT;
+import static org.drools.mvel.parser.GeneratedMvelParserConstants.HASHMARK;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.HEXADECIMAL_EXPONENT;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.HEXADECIMAL_FLOATING_POINT_LITERAL;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.HEX_DIGITS;
@@ -171,10 +174,12 @@ import static org.drools.mvel.parser.GeneratedMvelParserConstants.TRANSITIVE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.TRUE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.TRY;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.UNICODE_ESCAPE;
+import static org.drools.mvel.parser.GeneratedMvelParserConstants.UNIT;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.UNIX_EOL;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.USES;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.VOID;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.VOLATILE;
+import static org.drools.mvel.parser.GeneratedMvelParserConstants.WHEN;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.WHILE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.WINDOWS_EOL;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.WITH;
@@ -259,7 +264,9 @@ public class TokenTypes {
      */
     public static JavaToken.Category getCategory(int kind) {
         switch (kind) {
+            case UNIT:
             case RULE:
+            case WHEN:
                 return JavaToken.Category.KEYWORD;
             case WINDOWS_EOL:
             case UNIX_EOL:
@@ -373,10 +380,9 @@ public class TokenTypes {
             case MVEL_ENDS_WITH:
             case MVEL_LENGTH:
             case NOT:
-            case 151:
-            case 152:
-            case 153:
-            // The following are tokens that are only used internally by the lexer
+            case DOT_DOT_SLASH:
+            case HASHMARK:
+            case EXCL_DOT:
             case ASSIGN:
             case LT:
             case BANG:
@@ -419,7 +425,6 @@ public class TokenTypes {
             case GT:
             case MODIFY:
                 return JavaToken.Category.OPERATOR;
-            // These are DRLX tokens, They don't have the constants generated
             case ENTER_JAVADOC_COMMENT:
             case ENTER_MULTILINE_COMMENT:
             case COMMENT_CONTENT:

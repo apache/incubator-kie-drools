@@ -30,19 +30,19 @@ public interface ReturnValueExpression
     extends
     Invoker {
     
-    public Object createContext();
+    Object createContext();
     
-    public FieldValue evaluate(InternalFactHandle handle,
+    FieldValue evaluate(InternalFactHandle handle,
                                Tuple tuple,
                                Declaration[] previousDeclarations,
                                Declaration[] localDeclarations,
                                WorkingMemory workingMemory,
                                Object context ) throws Exception;
     
-    public void replaceDeclaration(Declaration declaration,
+    void replaceDeclaration(Declaration declaration,
                                    Declaration resolved);
 
-    public static class SafeReturnValueExpression implements ReturnValueExpression, Serializable {
+    class SafeReturnValueExpression implements ReturnValueExpression, Serializable {
         private static final long serialVersionUID = -5616989474935380093L;
         private ReturnValueExpression delegate;
         public SafeReturnValueExpression(ReturnValueExpression delegate) {
@@ -81,7 +81,7 @@ public interface ReturnValueExpression
         }
     }
 
-    public static boolean isCompiledInvoker(final ReturnValueExpression expression) {
+    static boolean isCompiledInvoker(final ReturnValueExpression expression) {
         return (expression instanceof CompiledInvoker)
                 || (expression instanceof SafeReturnValueExpression && ((SafeReturnValueExpression) expression).wrapsCompiledInvoker());
     }

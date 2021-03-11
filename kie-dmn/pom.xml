@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.44.0-SNAPSHOT</version>
+    <version>7.52.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -24,6 +24,7 @@
     <module>kie-dmn-core</module>
     <module>kie-dmn-validation-bootstrap</module>
     <module>kie-dmn-validation</module>
+    <module>kie-dmn-openapi</module>
     <module>kie-dmn-tck</module>
     <module>kie-dmn-signavio</module>
     <module>kie-dmn-core-osgi</module>

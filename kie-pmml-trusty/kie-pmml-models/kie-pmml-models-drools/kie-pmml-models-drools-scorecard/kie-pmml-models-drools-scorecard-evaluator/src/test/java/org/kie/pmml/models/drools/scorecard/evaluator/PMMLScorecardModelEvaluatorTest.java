@@ -24,6 +24,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,13 +34,14 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.ResultCode;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.scorecard.compiler.executor.ScorecardModelImplementationProvider;
+import org.kie.pmml.models.drools.scorecard.evaluator.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,7 @@ public class PMMLScorecardModelEvaluatorTest {
     private static final String SOURCE_1 = "ScorecardSample.pmml";
     private static final Logger logger = LoggerFactory.getLogger(PMMLScorecardModelEvaluatorTest.class);
     private static final String modelName = "Sample Score";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
     private static final ScorecardModelImplementationProvider provider = new ScorecardModelImplementationProvider();
     private static KieBase kieBase;
@@ -88,11 +91,15 @@ public class PMMLScorecardModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (Scorecard) pmml.getModels().get(0), knowledgeBuilder);
+        kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
+                                                pmml.getDataDictionary(),
+                                                pmml.getTransformationDictionary(),
+                                                (Scorecard) pmml.getModels().get(0),
+                                                new HasKnowledgeBuilderMock(knowledgeBuilder));
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
-                .build();
+                .build( ExecutableModelProject.class );
         assertNotNull(kieBase);
     }
 

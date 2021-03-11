@@ -53,6 +53,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
+import org.drools.core.util.index.IndexTestUtil;
 import org.drools.ruleunit.DataSource;
 import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.RuleUnitExecutor;
@@ -1549,32 +1550,38 @@ public class RuleUnitTest {
                         "    list.add($p.getName() + \">\" + minAge);\n" +
                         "end";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("rule-unit-test", kieBaseTestConfiguration, drl1, drl2);
-        final RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
         try {
-            final DataSource<Object> ds = executor.newDataSource("ds");
-            executor.newDataSource("persons",
-                                   new Person("Mario", 42),
-                                   new Person("Sofia", 4));
+            IndexTestUtil.disableRangeIndexForJoin(); // See comment in DROOLS-5910
 
-            final List<String> list = new ArrayList<>();
-            executor.bindVariable("list", list);
+            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("rule-unit-test", kieBaseTestConfiguration, drl1, drl2);
+            final RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
+            try {
+                final DataSource<Object> ds = executor.newDataSource("ds");
+                executor.newDataSource("persons",
+                                       new Person("Mario", 42),
+                                       new Person("Sofia", 4));
 
-            ds.insert("test");
-            ds.insert(3);
-            ds.insert(4);
-            executor.run(Unit0.class);
+                final List<String> list = new ArrayList<>();
+                executor.bindVariable("list", list);
 
-            assertEquals(3, list.size());
-            assertTrue(list.containsAll(asList("Mario>4", "Mario>3", "Sofia>3")));
+                ds.insert("test");
+                ds.insert(3);
+                ds.insert(4);
+                executor.run(Unit0.class);
 
-            list.clear();
-            ds.insert("xxx");
-            ds.insert("yyyy");
-            executor.run(Unit0.class);
-            assertEquals(0, list.size());
+                assertEquals(3, list.size());
+                assertTrue(list.containsAll(asList("Mario>4", "Mario>3", "Sofia>3")));
+
+                list.clear();
+                ds.insert("xxx");
+                ds.insert("yyyy");
+                executor.run(Unit0.class);
+                assertEquals(0, list.size());
+            } finally {
+                executor.dispose();
+            }
         } finally {
-            executor.dispose();
+            IndexTestUtil.enableRangeIndexForJoin();
         }
     }
 

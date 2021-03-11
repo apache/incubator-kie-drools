@@ -190,6 +190,8 @@ public class KnowledgeBaseImpl
 
     private KieSessionsPool sessionPool;
 
+    private boolean mutable = true;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -219,6 +221,8 @@ public class KnowledgeBaseImpl
         if (this.config.getSessionPoolSize() > 0) {
             sessionPool = newKieSessionsPool( this.config.getSessionPoolSize() );
         }
+
+        mutable = this.config.isMutabilityEnabled();
     }
 
     @Override
@@ -934,7 +938,7 @@ public class KnowledgeBaseImpl
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-                KieWeavers weavers = ServiceRegistry.getInstance().get( KieWeavers.class );
+                KieWeavers weavers = ServiceRegistry.getService( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                     weavers.weave( this, newPkg, rtkKpg );
                 }
@@ -1009,7 +1013,7 @@ public class KnowledgeBaseImpl
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
                 if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {
                     otn.setObjectSinkPropagator( ( (CompositePartitionAwareObjectSinkAdapter) sink )
-                                                         .asNonPartitionedSinkPropagator( config.getAlphaNodeHashingThreshold() ) );
+                                                         .asNonPartitionedSinkPropagator( config.getAlphaNodeHashingThreshold(), config.getAlphaNodeRangeIndexThreshold() ) );
                 }
             }
         }
@@ -1313,7 +1317,7 @@ public class KnowledgeBaseImpl
         }
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-            KieWeavers weavers = ServiceRegistry.getInstance().get(KieWeavers.class);
+            KieWeavers weavers = ServiceRegistry.getService(KieWeavers.class);
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                 weavers.merge( this, pkg, rtkKpg );
             }
@@ -1663,10 +1667,16 @@ public class KnowledgeBaseImpl
     }
 
     public void executeQueuedActions() {
-        DialectRuntimeRegistry registry;
-        while (( registry = reloadPackageCompilationData.poll() ) != null) {
-            registry.onBeforeExecute();
+        if (mutable) {
+            DialectRuntimeRegistry registry;
+            while ((registry = reloadPackageCompilationData.poll()) != null) {
+                registry.onBeforeExecute();
+            }
         }
+    }
+
+    private void addReloadDialectDatas( DialectRuntimeRegistry registry ) {
+        this.reloadPackageCompilationData.offer( registry );
     }
 
     public RuleBasePartitionId createNewPartitionId() {
@@ -1687,10 +1697,6 @@ public class KnowledgeBaseImpl
         } finally {
             readUnlock();
         }
-    }
-
-    private void addReloadDialectDatas( DialectRuntimeRegistry registry ) {
-        this.reloadPackageCompilationData.offer( registry );
     }
 
     public ClassFieldAccessorCache getClassFieldAccessorCache() {

@@ -26,7 +26,6 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -64,8 +63,8 @@ public class TripleNonIndexSkipBetaConstraints
         constraints.init(context, betaNodeType);
     }
 
-    public void initIndexes(int depth, short betaNodeType) {
-        constraints.initIndexes(depth, betaNodeType);
+    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+        constraints.initIndexes(depth, betaNodeType, config);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -164,14 +163,8 @@ public class TripleNonIndexSkipBetaConstraints
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {
-        if (constraint0 instanceof MvelConstraint) {
-            ((MvelConstraint) constraint0).registerEvaluationContext(buildContext);
-        }
-        if (constraint1 instanceof MvelConstraint) {
-            ((MvelConstraint) constraint1).registerEvaluationContext(buildContext);
-        }
-        if (constraint2 instanceof MvelConstraint) {
-            ((MvelConstraint) constraint2).registerEvaluationContext(buildContext);
-        }
+        this.constraint0.registerEvaluationContext(buildContext);
+        this.constraint1.registerEvaluationContext(buildContext);
+        this.constraint2.registerEvaluationContext(buildContext);
     }
 }

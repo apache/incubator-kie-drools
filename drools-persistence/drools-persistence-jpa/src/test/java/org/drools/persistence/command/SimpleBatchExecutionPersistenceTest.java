@@ -15,8 +15,12 @@
  */
 package org.drools.persistence.command;
 
-import org.drools.compiler.command.SimpleBatchExecutionTest;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.mvel.compiler.command.SimpleBatchExecutionTest;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.runner.RunWith;
@@ -28,10 +32,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTest {

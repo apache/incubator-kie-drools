@@ -43,7 +43,7 @@ public class KieSessionModelImpl
 
     private KieSessionType                   type =  KieSessionType.STATEFUL;
 
-    private ClockTypeOption                  clockType = ClockTypeOption.get( "realtime" );
+    private ClockTypeOption                  clockType = ClockTypeOption.REALTIME;
 
     private BeliefSystemTypeOption           beliefSystem = BeliefSystemTypeOption.get(BeliefSystemType.SIMPLE.toString());
 

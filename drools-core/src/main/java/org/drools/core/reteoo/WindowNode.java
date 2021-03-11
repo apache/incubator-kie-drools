@@ -85,7 +85,8 @@ public class WindowNode extends ObjectSource
               context.getPartitionId(),
               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
               objectSource,
-              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold());
+              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold(),
+              context.getKnowledgeBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
         // needs to be cloned as the list is managed externally
         this.constraints = new ArrayList<AlphaNodeFieldConstraint>(constraints);
         this.behavior = new BehaviorManager(behaviors);

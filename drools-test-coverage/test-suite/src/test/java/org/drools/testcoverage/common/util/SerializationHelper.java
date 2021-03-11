@@ -20,9 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.assertj.core.api.Assertions;
-import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.serialization.protobuf.ProtobufMarshaller;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.EnvironmentName;

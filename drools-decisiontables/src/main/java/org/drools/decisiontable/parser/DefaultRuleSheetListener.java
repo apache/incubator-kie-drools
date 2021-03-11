@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
@@ -84,6 +85,7 @@ implements RuleSheetListener {
     public static final String            VARIABLES_TAG          = "Variables";
     public static final String            RULE_TABLE_TAG         = "ruletable";
     public static final String            RULESET_TAG            = "RuleSet";
+    public static final String            DIALECT_TAG            = "Dialect";
     private static final int              ACTION_ROW             = 1;
     private static final int              OBJECT_TYPE_ROW        = 2;
     private static final int              CODE_ROW               = 3;
@@ -174,6 +176,11 @@ implements RuleSheetListener {
         List<String> units = getProperties().getProperty( UNIT_TAG );
         if (units != null && !units.isEmpty()) {
             ruleset.setRuleUnit( units.get( 0 ) );
+        }
+
+        List<String> dialects = getProperties().getProperty( DIALECT_TAG );
+        if (dialects != null && !dialects.isEmpty()) {
+            ruleset.setDialect( dialects.get( 0 ) );
         }
 
         final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );
@@ -443,7 +450,7 @@ implements RuleSheetListener {
             final int column,
             final String value) {
         String testVal = value.trim().toLowerCase();
-        if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
+        if (isRuleTable(testVal)) {
             initRuleTable( row, column, value.trim(), true );
         } else {
             this._propertiesListener.newCell( row, column, value, RuleSheetListener.NON_MERGED );
@@ -456,7 +463,7 @@ implements RuleSheetListener {
             final int mergedColStart) {
         String trimVal = trimCell ? value.trim() : value;
         String testVal = trimVal.toLowerCase();
-        if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
+        if (isRuleTable(testVal)) {
             finishRuleTable();
             initRuleTable( row, column, trimVal, false );
             return;
@@ -493,6 +500,10 @@ implements RuleSheetListener {
             nextDataCell( row, column, trimVal );
             break;
         }
+    }
+
+    private boolean isRuleTable(final String testVal) {
+        return Objects.equals(RULE_TABLE_TAG, testVal) || testVal.startsWith(RULE_TABLE_TAG + " ");
     }
 
     /**

@@ -27,6 +27,8 @@ public interface Predicate6<A, B, C, D, E, F> extends Serializable {
         return (a, b, c, d, e, f) -> !test( a, b, c, d, e, f );
     }
 
+    default PredicateInformation predicateInformation() { return PredicateInformation.EMPTY_PREDICATE_INFORMATION; }
+
     class Impl<A, B, C, D, E, F> extends IntrospectableLambda implements Predicate6<A, B, C, D, E, F> {
 
         private final Predicate6<A, B, C, D, E, F> predicate;
@@ -43,6 +45,11 @@ public interface Predicate6<A, B, C, D, E, F> extends Serializable {
         @Override
         public Object getLambda() {
             return predicate;
+        }
+
+        @Override
+        public PredicateInformation predicateInformation() {
+            return predicate.predicateInformation();
         }
     }
 }

@@ -43,8 +43,10 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
             return;
         }
         DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
-        if ( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
+        if (bkm.getVariable().getTypeRef() != null) { // variable must be present, otherwise error was already reported above.
             type = compiler.resolveTypeRef(model, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef());
+        } else if (bkm.getVariable().getTypeRef() == null && bkm.getEncapsulatedLogic() != null && bkm.getEncapsulatedLogic().getTypeRef() != null) {
+            type = compiler.resolveTypeRef(model, bkm, bkm.getEncapsulatedLogic(), bkm.getEncapsulatedLogic().getTypeRef());
         } else {
             // for now the call bellow will return type UNKNOWN
             type = compiler.resolveTypeRef(model, bkm, bkm, null);

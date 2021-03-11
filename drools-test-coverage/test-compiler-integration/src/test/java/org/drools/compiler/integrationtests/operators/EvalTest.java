@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.FactA;
@@ -37,7 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieContainer;
@@ -64,15 +62,6 @@ public class EvalTest {
 
     @Test
     public void testEvalDefaultCompiler() {
-        testEval(false);
-    }
-
-    @Test
-    public void testEvalJaninoCompiler() {
-        testEval(true);
-    }
-
-    private void testEval(final boolean useJaninoCompiler) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -88,13 +77,7 @@ public class EvalTest {
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("eval-test", kieBaseTestConfiguration, drl);
         final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         final KieBase kbase;
-        if (useJaninoCompiler) {
-            final KieBaseConfiguration kieBaseConfiguration = kieBaseTestConfiguration.getKieBaseConfiguration();
-            kieBaseConfiguration.setProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, "JANINO");
-            kbase = kieContainer.newKieBase(kieBaseConfiguration);
-        } else {
-            kbase = kieContainer.getKieBase();
-        }
+        kbase = kieContainer.getKieBase();
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.setGlobal("five", 5);

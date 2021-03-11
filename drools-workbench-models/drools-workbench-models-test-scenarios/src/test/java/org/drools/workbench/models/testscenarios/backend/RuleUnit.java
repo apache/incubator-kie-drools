@@ -69,7 +69,7 @@ public abstract class RuleUnit {
 
         kieBaseModel1.newKieSessionModel("KSession1")
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType(ClockTypeOption.get("pseudo"))
+                .setClockType(ClockTypeOption.PSEUDO)
                 .setDefault(true);
 
         return kproj;

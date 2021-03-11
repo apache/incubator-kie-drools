@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Collection;
 
 import org.drools.core.WorkingMemory;
@@ -67,44 +66,46 @@ public class CollectAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#createContext()
      */
-    public Serializable createContext() {
-        return new CollectContext();
+    public Object createContext() {
+        return null; // this is always instantiated in init - for now, can we fix this? (mdp)
     }
 
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
-        ((CollectContext) context).result = this.collect.instantiateResultObject( (InternalWorkingMemory) workingMemory );
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
+        return this.collect.instantiateResultObject( (InternalWorkingMemory) workingMemory );
     }
 
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void accumulate(Object workingMemoryContext,
-                           Object context,
-                           Tuple leftTuple,
-                           InternalFactHandle handle,
-                           Declaration[] declarations,
-                           Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
+    public Object accumulate(Object workingMemoryContext,
+                             Object context,
+                             Tuple leftTuple,
+                             InternalFactHandle handle,
+                             Declaration[] declarations,
+                             Declaration[] innerDeclarations,
+                             WorkingMemory workingMemory) {
         Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
-        ((CollectContext) context).result.add( value );
+        ((Collection) context).add( value );
+        return value;
     }
 
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception {
-        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
-        ((CollectContext) context).result.remove( value );
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) {
+        ((Collection) context).remove( value );
+        return true;
     }
 
     /* (non-Javadoc)
@@ -114,8 +115,8 @@ public class CollectAccumulator
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
-        return ((CollectContext) context).result;
+                            WorkingMemory workingMemory) {
+        return context;
     }
 
     public boolean supportsReverse() {
@@ -125,23 +126,5 @@ public class CollectAccumulator
     public Object createWorkingMemoryContext() {
         // no working memory context needed
         return null;
-    }
-
-    private static class CollectContext
-        implements
-        Externalizable {
-        public Collection<Object> result;
-        
-        public CollectContext() {}
-
-        @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            result = (Collection<Object>) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( result );
-        }
     }
 }

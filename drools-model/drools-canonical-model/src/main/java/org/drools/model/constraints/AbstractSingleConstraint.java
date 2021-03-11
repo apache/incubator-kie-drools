@@ -24,6 +24,7 @@ import org.drools.model.BitMask;
 import org.drools.model.Constraint;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
@@ -37,8 +38,11 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
 
     private ReactivitySpecs reactivitySpecs = ReactivitySpecs.EMPTY;
 
-    protected AbstractSingleConstraint(String exprId) {
+    protected PredicateInformation predicateInformation;
+
+    protected AbstractSingleConstraint(String exprId, PredicateInformation predicateInformation) {
         this.exprId = exprId;
+        this.predicateInformation = predicateInformation;
     }
 
     @Override
@@ -72,6 +76,11 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
     @Override
     public String getExprId() {
         return exprId;
+    }
+
+    @Override
+    public PredicateInformation predicateInformation() {
+        return predicateInformation;
     }
 
     @Override

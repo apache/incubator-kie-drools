@@ -18,24 +18,29 @@ package org.kie.pmml.models.drools.commons.model;
 import java.util.Collections;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.HasRule;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
  */
-public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasSourcesMap {
+public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasRule {
 
     protected Map<String, String> sourcesMap;
+    protected Map<String, String> rulesSourceMap;
     private final String kmodulePackageName;
-    private final PackageDescr packageDescr;
+    private final String pkgUUID;
 
-    public KiePMMLDroolsModelWithSources(String name, String kmodulePackageName, Map<String, String> sourcesMap, PackageDescr packageDescr) {
+    public KiePMMLDroolsModelWithSources(String name,
+                                         String kmodulePackageName,
+                                         String pkgUUID,
+                                         Map<String, String> sourcesMap,
+                                         Map<String, String> rulesSourceMap) {
         super(name, Collections.emptyList());
-        this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
+        this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
-        this.packageDescr = packageDescr;
+        this.pkgUUID = pkgUUID;
+        this.rulesSourceMap = rulesSourceMap;
     }
 
     @Override
@@ -50,7 +55,12 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     @Override
     public Map<String, String> getSourcesMap() {
-        return sourcesMap;
+        return Collections.unmodifiableMap(sourcesMap);
+    }
+
+    @Override
+    public void addSourceMap(String key, String value) {
+        sourcesMap.put(key, value);
     }
 
     @Override
@@ -58,7 +68,14 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
         return kmodulePackageName;
     }
 
-    public PackageDescr getPackageDescr() {
-        return packageDescr;
+    @Override
+    public String getPkgUUID() {
+        return pkgUUID;
     }
+
+    @Override
+    public Map<String, String> getRulesSourcesMap() {
+        return rulesSourceMap;
+    }
+
 }

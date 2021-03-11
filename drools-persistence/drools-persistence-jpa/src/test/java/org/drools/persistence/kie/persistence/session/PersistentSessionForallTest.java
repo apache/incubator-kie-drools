@@ -15,7 +15,13 @@
  */
 package org.drools.persistence.kie.persistence.session;
 
-import org.drools.compiler.Person;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.mvel.compiler.Person;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -33,13 +39,10 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -125,7 +128,7 @@ public class PersistentSessionForallTest {
         TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         kieSession.addEventListener(listener);
 
-        Person owner = new Person("cat lady"); 
+        Person owner = new Person("dog lady");
         Pet dog = new Pet(Pet.PetType.dog, owner);
 
         kieSession.insert(dog);

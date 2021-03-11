@@ -20,26 +20,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.rule.QueryImpl;
-import org.drools.model.BitMask;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
+import org.drools.model.PatternDSL;
 import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
-import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.view.ViewItem;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -51,7 +51,6 @@ import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.dsl.pattern.D;
-import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -88,7 +87,7 @@ import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PatternDSLTest {
 
@@ -560,7 +559,6 @@ public class PatternDSLTest {
     @Test
     public void testWatch() {
         Variable<Person> var_$p = declarationOf(Person.class, "$p");
-        BitMask mask_$p = BitMask.getPatternMask(org.drools.modelcompiler.domain.Person.class, "age");
 
         Rule rule = rule("R").build(
                 pattern(var_$p)
@@ -570,7 +568,7 @@ public class PatternDSLTest {
                 .watch("!age"),
                 on(var_$p).execute((drools, $p) -> {
                     $p.setAge($p.getAge() + 1);
-                    drools.update($p, mask_$p);
+                    drools.update($p, "age");
                 }));
 
         Model model = new ModelImpl().addRule( rule );
@@ -912,5 +910,71 @@ public class PatternDSLTest {
         ksession.insert( new StockTick( "ACME" ) );
 
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testTwoAccumulatesWithVarBindingModel() {
+        Variable<Person> a = PatternDSL.declarationOf(Person.class);
+        Variable<Pair> accSource = PatternDSL.declarationOf(Pair.class);
+        Variable<Collection> accResult = PatternDSL.declarationOf(Collection.class);
+        Variable<Collection> accResult2 = PatternDSL.declarationOf(Collection.class);
+        Variable<Pair> wrapped = PatternDSL.declarationOf(Pair.class, PatternDSL.from(accResult));
+        Variable<Object> unwrapped1 = PatternDSL.declarationOf(Object.class);
+
+        PatternDSL.PatternDef aPattern = PatternDSL.pattern(a)
+                .bind(accSource, v -> Pair.create(v.getName(), v.getAge()));
+        ViewItem accumulate = PatternDSL.accumulate(aPattern, DSL.accFunction( CollectSetAccumulateFunction::new, accSource).as(accResult));
+
+        PatternDSL.PatternDef secondPattern = PatternDSL.pattern(accResult);
+        PatternDSL.PatternDef thirdPattern = PatternDSL.pattern(wrapped)
+                .bind(unwrapped1, Pair::getKey); // If binding removed, test will pass.
+        ViewItem accumulate2 = PatternDSL.accumulate(PatternDSL.and(secondPattern, thirdPattern),
+                DSL.accFunction(CollectSetAccumulateFunction::new, wrapped).as(accResult2));
+        Rule rule = PatternDSL.rule("R")
+                .build(accumulate, accumulate2, PatternDSL.on(accResult2).execute(obj -> {
+                    boolean works = obj.contains(Pair.create("Lukas", 35));
+                    if (!works) {
+                        throw new IllegalStateException("Why is " + obj + " not Set<" + Pair.class + ">?");
+                    }
+                }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession session = kieBase.newKieSession();
+
+        session.insert(new Person("Lukas", 35));
+        session.fireAllRules();
+    }
+
+    @Test
+    public void testBetaIndexOn2ValuesOnLeftTuple() {
+        final Variable<Integer> var_$integer = D.declarationOf(Integer.class);
+        final Variable<Integer> var_$i = D.declarationOf(Integer.class);
+        final Variable<String> var_$string = D.declarationOf(String.class);
+        final Variable<Integer> var_$l = D.declarationOf(Integer.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+
+        Rule rule = D.rule("R1").build(D.pattern(var_$integer).bind(var_$i,
+                (Integer _this) -> _this),
+                D.pattern(var_$string).bind(var_$l,
+                        (String _this) -> _this.length()),
+                D.pattern(var_$p).expr("8EF302358D7EE770A4D874DF4B3327D2",
+                        var_$l,
+                        var_$i,
+                        (_this, $l, $i) -> org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), $l + $i),
+                        D.betaIndexedBy(int.class, Index.ConstraintType.EQUAL, 3, Person::getAge, ($l, $i) -> $l + $i, int.class),
+                        D.reactOn("age")),
+                D.execute(() -> { })
+        );
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

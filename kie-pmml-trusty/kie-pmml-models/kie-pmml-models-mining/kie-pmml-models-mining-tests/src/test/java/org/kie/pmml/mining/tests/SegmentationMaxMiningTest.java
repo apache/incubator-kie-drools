@@ -22,18 +22,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class SegmentationMaxMiningTest extends AbstractPMMLMiningTest {
+public class SegmentationMaxMiningTest extends AbstractPMMLTest {
+
+    private static final String FILE_NAME = "segmentationMaxMining.pmml";
     private static final String MODEL_NAME = "SegmentationMaxMining";
     private static final String TARGET_FIELD = "result";
-    private static PMMLRuntime pmmlRuntime;
+    private PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
@@ -45,19 +48,19 @@ public class SegmentationMaxMiningTest extends AbstractPMMLMiningTest {
         this.result = result;
     }
 
-    @BeforeClass
-    public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+    @Before
+    public void setupClass() {
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { 0, 0, 50},
-                { 1, 1, 55},
-                { 20, 30, 121004},
-                { 25, 31, 167502},
-                { 5, 5, 1004}
+                {0, 0, 50},
+                {1, 1, 55},
+                {20, 30, 121004},
+                {25, 31, 167502},
+                {5, 5, 1004}
         });
     }
 

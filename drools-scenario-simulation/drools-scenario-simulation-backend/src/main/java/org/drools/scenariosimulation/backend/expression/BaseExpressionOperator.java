@@ -46,7 +46,7 @@ public enum BaseExpressionOperator {
             List<Boolean> results = Arrays.stream(expressionParts.length == 0 ? new String[]{""} : expressionParts)
                     .map(elem -> findOperator(elem.trim()).eval(elem.trim(), resultValue, resultClass, classLoader))
                     .collect(Collectors.toList());
-            return results.size() != 0 && results.stream().allMatch(a -> a);
+            return !results.isEmpty() && results.stream().allMatch(a -> a);
         }
 
         @Override
@@ -88,7 +88,7 @@ public enum BaseExpressionOperator {
 
         @Override
         public boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
-            Object parsedResults = evaluateLiteralExpression(resultClass != null ? resultClass.getCanonicalName() : null, rawValue, classLoader);
+            Object parsedResults = evaluateLiteralExpression(resultClass != null ? resultClass.getName() : null, rawValue, classLoader);
 
             return compareValues(parsedResults, resultValue);
         }
@@ -121,7 +121,7 @@ public enum BaseExpressionOperator {
 
             String operator = match(rawValue).orElseThrow(() -> new IllegalStateException("Cannot determine operator!"));
             String cleanValue = removeOperator(rawValue);
-            Object stepValue = convertValue(resultClass.getCanonicalName(), cleanValue, classLoader);
+            Object stepValue = convertValue(resultClass.getName(), cleanValue, classLoader);
             if (!areComparable(stepValue, resultValue)) {
                 return false;
             }

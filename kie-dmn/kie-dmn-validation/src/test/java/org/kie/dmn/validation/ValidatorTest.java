@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message.Level;
@@ -44,8 +45,8 @@ import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -464,6 +465,16 @@ public class ValidatorTest extends AbstractValidatorTest {
                                              .theseModels(getReader("Recommended Loan Products.dmn", DMN13specificTest.class),
                                                           getReader("Loan info.dmn", DMN13specificTest.class));
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
+
+    @Test
+    public void test_dttyperef() {
+        List<DMNMessage> validate = validator.validate(getReader("wrongxml/dttyperef.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        DMNMessage v0 = validate.get(0);
+        Assertions.assertThat(v0.getLevel()).isEqualTo(Level.ERROR);
+        Assertions.assertThat(v0.getMessageType()).isEqualTo(DMNMessageType.MISSING_TYPE_REF);
+        Assertions.assertThat(v0.getSourceId()).isEqualTo("_99FC159F-0D94-45C3-A9BD-F1388017A5D4");
     }
 
     @Test

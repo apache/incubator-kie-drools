@@ -668,6 +668,10 @@ public class FromTest extends BaseModelTest {
         public List<String> getListOfCodes() {
             return Arrays.asList("a", "b", "c");
         }
+
+        public Object getSomethingBy(Object o) {
+            return o;
+        }
      }
 
     @Test
@@ -943,6 +947,44 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
+    public void tesFromMethodCall() {
+        // DROOLS-5641
+        String str =
+                "package com.sample;" +
+                "global java.util.Set controlSet;\n" +
+                "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
+                "import " + DummyService.class.getCanonicalName() + ";\n" +
+                "import " + Measurement.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "import " + Map.class.getCanonicalName() + ";\n" +
+                "" +
+                "rule \"test\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " $m: Measurement( id == \"color\", $colorVal : val )\n" +
+                " $p: Person()\n" +
+                " String() from dummyService.dummy($m.getSomethingBy($p.age), $p)\n" +
+                "then\n" +
+                " controlSet.add($colorVal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+        ksession.setGlobal("dummyService", new DummyService());
+
+        ksession.insert(new Measurement("color", "red"));
+        ksession.insert(new Person("Luca"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
+    @Test
     public void testFromStringConcatenation() {
         // DROOLS-5640
         String str =
@@ -964,5 +1006,22 @@ public class FromTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("AA", "AB", "BA", "BB");
+    }
+
+    @Test
+    public void testFromBoolean() {
+        // DROOLS-5830
+        String str =
+                "rule R when\n" +
+                "  $a : String()\n" +
+                "  $b : String()\n" +
+                "  Boolean(booleanValue) from $a == $b\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "A" );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

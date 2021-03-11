@@ -1,0 +1,110 @@
+@code{
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+}
+
+@comment{
+************************************************************************
+                       DRL FILE TEMPLATE
+************************************************************************ }
+@declare{"drl"}package @{pkg.namespace} @if{!pkg.imports.isEmpty()}
+
+@foreach{ imp : pkg.imports }import @{imp.target}@end{"\n"}@end{}@if{!pkg.functionImports.isEmpty()}
+
+@foreach{ imp : pkg.functionImports }import function @{imp.target}@end{"\n"}@end{}@if{!pkg.accumulateImports.isEmpty()}
+
+@foreach{ imp : pkg.accumulateImports }import accumulate @{imp.target} @{imp.functionName}@end{"\n"}@end{}@if{!pkg.globals.isEmpty()}
+
+@foreach{ global : pkg.globals }global @{global.type} @{global.identifier}@end{"\n"}@end{}@if{!pkg.attributes.isEmpty()}
+
+@foreach{ attr : pkg.attributes }@{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{!pkg.typeDeclarations.isEmpty()}
+
+@foreach{ decl : pkg.typeDeclarations }declare @if{ decl.trait }trait@end{} @{decl.fullTypeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
+@foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
+@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
+end
+@end{"\n"}@end{}@if{!pkg.enumDeclarations.isEmpty()}
+
+@foreach{ decl : pkg.enumDeclarations }declare enum @{ decl.fullTypeName }
+@foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
+@foreach{ lit : decl.literals }@{lit.name}@if{ ! lit.constructorArgs.isEmpty()}( @foreach{ arg : lit.constructorArgs } @{arg}@end{","} )
+@end{}@end{","};
+@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
+end
+@end{"\n"}@end{}@if{!pkg.functions.isEmpty()}
+
+@foreach{func : pkg.functions}function @{func.returnType!=null?func.returnType:""} @{func.name}( @foreach{n:func.parameterNames,t:func.parameterTypes}@{t} @{n}@end{", "} ) {
+    @{func.body}
+}
+@end{"\n"}@end{}@if{!pkg.rules.isEmpty()}
+
+@foreach{rule : pkg.rules}@{rule.isRule()?"rule":"query"} "@{rule.name}"@if{!rule.isRule() && rule.getParameters().length > 0} ( @foreach{n:rule.parameters,t:rule.parameterTypes}@{t} @{n}@end{", "} ) @end{}@if{rule.parentName!=null} extends "@{rule.parentName}"@end{}@if{!rule.annotations.isEmpty()}
+@foreach{ ann : rule.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}@end{}@if{!rule.attributes.isEmpty()}
+@foreach{attr : rule.attributes.values() }    @{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{rule.isRule()}
+when@end{}@includeNamed{"ced"; base=rule.lhs; root=true; inAcc=false}@if{rule.isRule()}
+then
+@{rule.consequence}@end{}
+@foreach{namedCons : rule.namedConsequences.keySet()}then[@{namedCons}]
+@{rule.namedConsequences[namedCons]}@end{}
+end
+@end{"\n"}@end{}
+
+@end{}
+
+@comment{***************************************************************
+                       ANNOTATIONS TEMPLATE
+************************************************************************ }
+@declare{"annotation"}@@@{ann.name}@code{count=ann.values.size()}@if{count>0}( @foreach{entry:ann.values.entrySet()}@if{count>1 || !entry.key.equals("value")}@{entry.key}=@end{}@{entry.value}@end{", "} )@end{}@end{}
+
+@comment{***************************************************************
+                       CONDITIONAL ELEMENT TEMPLATE
+************************************************************************ }
+@declare{"ced"}@if{ base instanceof AndDescr }@code{conn=root?"":"and"}@includeNamed{"cedchildren"; list=base.descrs; connect=conn}@elseif{base instanceof OrDescr}@comment{
+}@includeNamed{"cedchildren"; list=base.descrs; connect="or"}@elseif{ base instanceof NotDescr }@comment{
+}not( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof ExistsDescr }@comment{    
+}exists( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof ForallDescr }@comment{    
+}forall( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof EvalDescr }@comment{    
+}eval( @{base.content} )@elseif{ base instanceof ConditionalBranchDescr }@comment{
+}@{base}@elseif{ base instanceof NamedConsequenceDescr }@comment{
+}@if{base.breaking}break@else{}do@end{}[@{base.text}] @elseif{ base instanceof PatternDescr }@comment{
+}@if{base.identifier!=null}@{base.identifier} :@if{base.unification}=@end{} @end{}@code{topAcc=(base.source instanceof AccumulateDescr && ("Object".equals(base.objectType) || "Object[]".equals(base.objectType)))}@if{!topAcc}@{base.objectType}( @foreach{constr:base.positionalConstraints}@{constr}@end{", "}@if{base.positionalConstraints.size()>0}; @end{}@foreach{constr:base.slottedConstraints}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.parameters}@{p}@end{", "})@end{}@end{}@includeNamed{"psource";source=base.source;topLevelAcc=topAcc;constrs=base.descrs}@end{}@end{}
+
+@comment{***************************************************************
+                       CONDITIONAL ELEMENT CHILD TEMPLATE
+************************************************************************ }
+@declare{"cedchildren"}@if{connect!="" && list.size() > 1 && !inAcc}(@end{}@foreach{child : list}
+    @includeNamed{"ced"; base=child; root=false} @end{connect}@if{connect!="" && list.size() > 1 && !inAcc})@end{}@end{}
+
+@comment{***************************************************************
+                       PATTERN SOURCE TEMPLATE
+************************************************************************ }
+@declare{"psource"}@if{source!=null}@if{(source instanceof FromDescr) || (source instanceof EntryPointDescr)}@{source.toString()}@comment{
+}@elseif{source instanceof CollectDescr}from collect( @includeNamed{"ced"; base=source.inputPattern; root=false; inAcc=false} )@comment{
+}@elseif{source instanceof AccumulateDescr}@code{isFunc=source.isExternalFunction()}@code{cp=source}@if{!topLevelAcc}from @end{}accumulate(     @includeNamed{"ced"; base=source.input; root=false; inAcc=true},
+        @if{isFunc}@includeNamed{"accFunctions"; functions=cp.functions}@else{}@includeNamed{"accCustom";acc=cp}@end{} @if{topLevelAcc}@if{!constrs.isEmpty()};@end{}
+        @foreach{constr:constrs}@{constr}@end{", "}@end{} )@end{}@end{}@end{}
+
+@comment{***************************************************************
+                       ACCUMULATE FUNCTIONS TEMPLATE
+************************************************************************ }
+@declare{"accFunctions"}@foreach{func:functions}@if{func.bind!=null}@{func.bind} @if{func.unification}:=@else{}:@end{} @end{}@{func.function}( @foreach{p:func.params}@{p}@end{", "} )@end{",\n        "}@end{}
+
+@comment{***************************************************************
+                       CUSTOM ACCUMULATE TEMPLATE
+************************************************************************ }
+@declare{"accCustom"}init( @{acc.initCode} ),
+        action( @{acc.actionCode} ),@if{acc.reverseCode!=null}
+        reverse( @{acc.reverseCode} ),@end{}
+        result( @{acc.resultCode} )@end{}
+

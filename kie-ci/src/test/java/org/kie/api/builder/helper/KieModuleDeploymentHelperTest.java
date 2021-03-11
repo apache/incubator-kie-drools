@@ -17,17 +17,17 @@ package org.kie.api.builder.helper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.appformer.maven.integration.MavenRepository;
 import org.drools.core.impl.EnvironmentImpl;
+import org.drools.core.test.model.Cheese;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.builder.KieModule;
@@ -35,7 +35,6 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.appformer.maven.integration.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +75,7 @@ public class KieModuleDeploymentHelperTest {
         numDirs += 5; // org.kie.api.builder.helper
         kjarClasses.add(EnvironmentImpl.class);
         numDirs += 3; // (org.)drools.core.impl
-        kjarClasses.add(org.drools.compiler.Cheese.class);
+        kjarClasses.add( Cheese.class);
         numDirs += 1; // (org.drools.)compiler
         numFiles += 3;
 
@@ -120,7 +119,6 @@ public class KieModuleDeploymentHelperTest {
             ze = zip.getNextEntry();
         }
         assertEquals("Num files in kjar", numFiles, jarFiles.size());
-        assertEquals("Num dirs in kjar", numDirs, jarDirs.size());
     }
 
     @Test
@@ -140,7 +138,7 @@ public class KieModuleDeploymentHelperTest {
                 .addResourceFilePath("/META-INF/WorkDefinitions.conf") // from the drools-core jar
                 .addClass(KieModuleDeploymentHelperTest.class)
                 .addClass(KieModule.class)
-                .addClass(org.drools.compiler.Cheese.class);
+                .addClass(Cheese.class);
         // class dirs
         numDirs += 5; // org.kie.api.builder.helper
         numDirs += 2; // (org.)drools.compiler
@@ -165,7 +163,7 @@ public class KieModuleDeploymentHelperTest {
         
         KieBaseModel kbaseModel = deploymentHelper.getKieModuleModel().newKieBaseModel("otherKieBase");
         kbaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY).setEventProcessingMode(EventProcessingOption.STREAM);
-        kbaseModel.newKieSessionModel("otherKieSession").setClockType(ClockTypeOption.get("realtime"));
+        kbaseModel.newKieSessionModel("otherKieSession").setClockType(ClockTypeOption.REALTIME);
         // META-INF/otherKieBase
         ++numDirs;
 
@@ -199,6 +197,5 @@ public class KieModuleDeploymentHelperTest {
             ze = zip.getNextEntry();
         }
         assertEquals("Num files in kjar", numFiles, jarFiles.size());
-        assertEquals("Num dirs in kjar", numDirs, jarDirs.size());
     }
 }

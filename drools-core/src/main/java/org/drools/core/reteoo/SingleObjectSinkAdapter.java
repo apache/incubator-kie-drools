@@ -50,10 +50,10 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
         out.writeObject( sink );
     }
 
-    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
-        final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( alphaNodeHashingThreshold );
-        sinkAdapter.addObjectSink( this.sink, alphaNodeHashingThreshold );
-        sinkAdapter.addObjectSink( sink, alphaNodeHashingThreshold );
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold) {
+        final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold );
+        sinkAdapter.addObjectSink( this.sink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold );
+        sinkAdapter.addObjectSink( sink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold );
         return sinkAdapter;
     }
 

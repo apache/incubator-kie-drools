@@ -27,19 +27,14 @@ import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.errors.SrcError;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.DescrBuildWarning;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.util.ClassUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
@@ -50,15 +45,19 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.jci.CompilationProblem;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMMLResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -67,61 +66,31 @@ public class PMMLAssemblerService implements KieAssemblerService {
     private KnowledgeBuilderImpl kbuilder;
     private static final String JAVA_ROOT = "src/main/java/";
     private static final PMML4Compiler pmmlCompiler = new PMML4Compiler();
-    private static final Logger log = LoggerFactory.getLogger( PMMLAssemblerService.class );
-
-    private static boolean isOtherImplementationPresent() {
-        try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService");
-            return true;
-        } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    private static boolean isToEnable() {
-        if (isjPMMLAvailableToClassLoader()) {
-            return false;
-        }
-        if (!isOtherImplementationPresent()) {
-            return true;
-        } else {
-            final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
-            return property.equals(LEGACY.getName());
-        }
-    }
-
-    private static boolean isjPMMLAvailableToClassLoader() {
-        try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
-            log.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
 
     @Override
     public ResourceType getResourceType() {
-        return isToEnable() ? ResourceType.PMML : ResourceType.NOOP;
+        return LEGACY.equals(toEnable(Thread.currentThread().getContextClassLoader())) ? ResourceType.PMML : ResourceType.NOOP;
     }
 
     @Override
-    public synchronized void addResource(Object kbuilder, Resource resource, ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
+    public synchronized void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type,
+                                         ResourceConfiguration configuration) throws Exception {
         this.kbuilder = (KnowledgeBuilderImpl) kbuilder;
         this.configuration = this.kbuilder.getBuilderConfiguration();
         this.rootClassLoader = this.kbuilder.getRootClassLoader();
-        addPackage(resource);
+        if (!isjPMMLAvailableToClassLoader(rootClassLoader)) {
+            addPackage(resource);
+        }
     }
 
     @Override
-    public synchronized void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources,
+    public synchronized void addResourcesAfterRules(Object kbuilder, Collection<ResourceWithConfiguration> resources,
             ResourceType type) throws Exception {
         for (ResourceWithConfiguration rd : resources) {
             if (rd.getBeforeAdd() != null) {
                 rd.getBeforeAdd().accept(kbuilder);
             }
-            addResource(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
+            addResourceAfterRules(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
             if (rd.getAfterAdd() != null) {
                 rd.getAfterAdd().accept(kbuilder);
             }
@@ -280,8 +249,8 @@ public class PMMLAssemblerService implements KieAssemblerService {
         return javaFileNames;
     }
 
-    private void compileJavaClasses(JavaDialectConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles,
-            String rootFolder, ResourceReader source, MemoryFileSystem trgMfs) {
+    private void compileJavaClasses( JavaDialectConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles,
+                                     String rootFolder, ResourceReader source, MemoryFileSystem trgMfs) {
         if (!javaFiles.isEmpty()) {
             String[] sourceFiles = javaFiles.toArray(new String[javaFiles.size()]);
             File dumpDir = javaConf.getPackageBuilderConfiguration().getDumpDir();
@@ -319,12 +288,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private JavaCompiler createCompiler(JavaDialectConfiguration javaConf, String prefix) {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler(javaConf);
-        if (javaCompiler instanceof EclipseJavaCompiler) {
-            ((EclipseJavaCompiler) javaCompiler).setPrefix(prefix);
-        }
+    private JavaCompiler createCompiler( JavaConfiguration javaConf, String sourceFolder ) {
+        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( javaConf );
+        javaCompiler.setSourceFolder( sourceFolder );
         return javaCompiler;
     }
-
 }

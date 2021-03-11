@@ -33,9 +33,7 @@ import java.util.Set;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.Constraint;
@@ -52,7 +50,6 @@ import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.reflective.util.ClassUtils.isFinal;
 import static org.drools.reflective.util.ClassUtils.isInterface;
-
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class Pattern
@@ -68,7 +65,7 @@ public class Pattern
     private int                      index;
     private PatternSource            source;
     private List<Behavior>           behaviors;
-    private Collection<String>       listenedProperties;
+    private Collection<String>       listenedProperties = new HashSet<>();
     private boolean                  hasNegativeConstraint;
 
     private transient XpathBackReference backRefDeclarations;
@@ -225,7 +222,7 @@ public class Pattern
                                            this.objectType,
                                            identifier,
                                            this.declaration != null && this.declaration.isInternalFact());
-        clone.setListenedProperties( getListenedProperties() );
+        clone.listenedProperties = listenedProperties;
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
             if ( source instanceof From ) {
@@ -333,25 +330,6 @@ public class Pattern
         this.constraints.remove(constraint);
     }
 
-    public List<MvelConstraint> getCombinableConstraints() {
-        if (constraints.size() < 2) {
-            return null;
-        }
-        List<MvelConstraint> combinableConstraints = new ArrayList<MvelConstraint>();
-        for (Constraint constraint : constraints) {
-            if (constraint instanceof MvelConstraint &&
-                    !((MvelConstraint)constraint).isUnification() && !((MvelConstraint)constraint).isDynamic() &&
-            // at the moment it is not possible to determine the exact type of node which this
-                    // constraint belongs to so use ExistsNode being the less restrictive in terms of index usage
-                    !((MvelConstraint)constraint).isIndexable(NodeTypeEnums.ExistsNode) &&
-                    // don't combine alpha nodes to allow nodes sharing
-                    constraint.getType() == ConstraintType.BETA) {
-                combinableConstraints.add((MvelConstraint)constraint);
-            }
-        }
-        return combinableConstraints;
-    }
-    
     public boolean hasXPath() {
         return xPath != null;
     }
@@ -537,8 +515,18 @@ public class Pattern
         return listenedProperties;
     }
 
-    public void setListenedProperties(Collection<String> listenedProperties) {
-        this.listenedProperties = listenedProperties;
+    public void addBoundProperty(String boundProperty) {
+        if ( !listenedProperties.contains( "!*" ) ) {
+            this.listenedProperties.add( boundProperty );
+        }
+    }
+
+    public void addWatchedProperty(String watchedProperty) {
+        this.listenedProperties.add( watchedProperty );
+    }
+
+    public void addWatchedProperties(Collection<String> watchedProperties) {
+        this.listenedProperties.addAll( watchedProperties );
     }
 
     public List<String> getAccessibleProperties(InternalKnowledgeBase kBase) {

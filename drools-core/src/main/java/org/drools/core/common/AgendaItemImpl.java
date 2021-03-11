@@ -404,7 +404,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     public Object getDeclarationValue(String variableName) {
         Declaration decl = this.rtn.getSubRule().getOuterDeclarations().get(variableName);
         // need to double check, but the working memory reference is only used for resolving globals, right?
-        return decl.getValue(null, tuple.getObject(decl));
+        return decl.getValue(tuple);
     }
 
     @Override

@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -107,8 +106,8 @@ public class Rete extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
-                                                                                                                                                                                               factHandle.getObject() );
+        ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() ))
+                .getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( entryPoint, factHandle.getObject() );
         node.assertObject( factHandle,
                            context,
                            typeConf,
@@ -129,8 +128,8 @@ public class Rete extends ObjectSource
                               final InternalWorkingMemory workingMemory) {
         EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
-                                                                                                                                                                                                       handle.getObject() );
+        ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() ))
+                .getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
         node.retractObject( handle,
                             context,
                             typeConf,

@@ -18,8 +18,9 @@ package org.drools.traits.core.factmodel;
 
 import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
+import org.mvel2.asm.Opcodes;
 
-public interface TraitProxyClassBuilder extends ClassBuilder {
+public interface TraitProxyClassBuilder extends ClassBuilder, Opcodes {
 
     void init( ClassDefinition trait, Class<?> proxyBaseClass, TraitRegistryImpl traitRegistryImpl);
 

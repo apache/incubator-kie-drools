@@ -82,12 +82,16 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
      * @return the literal value as an long while respecting different number representations
      */
     public BigDecimal asBigDecimal() {
+        return new BigDecimal(getValue());
+    }
+
+    public String getValue() {
         String result = value.replaceAll("_", "");
         char lastChar = result.charAt(result.length() - 1);
         if (lastChar == 'B') {
             result = result.substring(0, result.length() - 1);
         }
-        return new BigDecimal(result);
+        return result;
     }
 
     public BigDecimalLiteralExpr setLong(long value) {

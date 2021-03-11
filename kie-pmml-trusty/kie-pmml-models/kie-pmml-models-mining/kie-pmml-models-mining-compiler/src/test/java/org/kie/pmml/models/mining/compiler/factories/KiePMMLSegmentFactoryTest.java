@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.xml.bind.JAXBException;
 
@@ -39,6 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.xml.sax.SAXException;
 
@@ -67,10 +67,11 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegments() {
         final List<Segment> segments = MINING_MODEL.getSegmentation().getSegments();
-        final List<KiePMMLSegment> retrieved = KiePMMLSegmentFactory.getSegments(DATA_DICTIONARY,
+        final List<KiePMMLSegment> retrieved = KiePMMLSegmentFactory.getSegments(PACKAGE_NAME,
+                                                                                 DATA_DICTIONARY,
                                                                                  TRANSFORMATION_DICTIONARY,
                                                                                  segments,
-                                                                                 KNOWLEDGE_BUILDER);
+                                                                                 new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(segments.size(), retrieved.size());
         for (int i = 0; i < segments.size(); i++) {
@@ -81,24 +82,24 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegment() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final KiePMMLSegment retrieved = KiePMMLSegmentFactory.getSegment(DATA_DICTIONARY,
+        final KiePMMLSegment retrieved = KiePMMLSegmentFactory.getSegment(PACKAGE_NAME,
+                                                                          DATA_DICTIONARY,
                                                                           TRANSFORMATION_DICTIONARY,
                                                                           segment,
-                                                                          KNOWLEDGE_BUILDER);
+                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         commonEvaluateSegment(retrieved, segment);
     }
 
     @Test
     public void getSegmentsSourcesMap() {
         final List<Segment> segments = MINING_MODEL.getSegmentation().getSegments();
-        final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
-                packageName,
+                PACKAGE_NAME,
                 DATA_DICTIONARY,
                 TRANSFORMATION_DICTIONARY,
                 segments,
-                KNOWLEDGE_BUILDER,
+                new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
                 nestedModels);
         assertNotNull(retrieved);
         commonEvaluateNestedModels(nestedModels);
@@ -110,13 +111,12 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegmentSourcesMap() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(PACKAGE_NAME,
                                                                                          DATA_DICTIONARY,
                                                                                          TRANSFORMATION_DICTIONARY,
                                                                                          segment,
-                                                                                         KNOWLEDGE_BUILDER,
+                                                                                         new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
                                                                                          nestedModels);
         commonEvaluateNestedModels(nestedModels);
         commonEvaluateMap(retrieved, segment);
@@ -125,12 +125,11 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegmentSourcesMapHasSourcesWithKiePMMLModelClass() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final String packageName = "packagename";
         final String regressionModelName = "CategoricalVariablesRegression";
-        final String kiePMMLModelClass = packageName + "." + regressionModelName;
+        final String kiePMMLModelClass = PACKAGE_NAME + "." + regressionModelName;
         final Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
-        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(PACKAGE_NAME,
                                                                                          DATA_DICTIONARY,
                                                                                          segment);
         commonEvaluateMap(retrieved, segment);

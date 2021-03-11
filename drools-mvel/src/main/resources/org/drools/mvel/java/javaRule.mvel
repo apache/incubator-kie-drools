@@ -1,0 +1,120 @@
+@declare{"returnValueMethod"}
+public static org.drools.core.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+                                                      @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+                                                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
+    return org.drools.core.base.FieldFactory.getInstance().getFieldValue( @{text} );
+}
+@end{}
+
+@declare{"predicateMethod"}
+public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+                                                      @foreach{declr : localDeclarations } @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+                                                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
+    Boolean $predicate$result$ = ( @{text} );
+    return $predicate$result$ == null ? false : $predicate$result$.booleanValue();
+}
+@end{}
+
+@declare{"evalMethod"}
+public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
+                                    @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
+    Boolean $eval$result$ = ( @{text} );
+    return $eval$result$ == null ? false : $eval$result$.booleanValue();
+}
+@end{}
+
+@declare{"accumulateInnerClass"}
+public static class @{className} implements java.io.Serializable {
+
+    private static final long    serialVersionUID = 510l;
+    
+    @foreach{type : attributesTypes, attr : attributes} private @{type} @{attr};
+    @end{}    
+    
+    public @{className}() {
+    }
+
+    public void init(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+                     @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
+                     ) throws java.lang.Exception {
+        @{initCode}
+    }
+    
+    public Object accumulate(org.drools.core.WorkingMemory workingMemory,
+                           org.drools.core.common.InternalFactHandle handle,
+                           org.drools.core.rule.Declaration[] innerDeclarations@if{declarations != empty}, @end{}
+                           @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+                           @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
+                           @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
+                           ) throws java.lang.Exception {
+
+        @if{supportsReverse == "true"}
+        Object value = new ReverseSnapshot(
+                           @foreach{declr : declarations}@{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
+                           @foreach{declr : innerDeclarations}@{declr.identifier}@end{","});
+        @else{}
+        Object value = null;
+        @end{}
+        @{actionCode}
+
+        return value;
+    }
+    
+    public void reverse(org.drools.core.WorkingMemory workingMemory,
+                           org.drools.core.common.InternalFactHandle handle,
+                           Object value@if{globals != empty},@end{}
+                           @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
+                           ) throws java.lang.Exception {
+        @if{supportsReverse == "true"}
+        ReverseSnapshot snapshot = (ReverseSnapshot) value;
+        @foreach{declr : declarations}@{declr.typeName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
+        @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
+        @end{}
+        @{reverseCode}
+    }
+    
+    public Object getResult(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+                            @foreach{type : globalTypes, identifier : globals}@{type} @{identifier} @end{","}
+                           ) throws java.lang.Exception {
+        return ( @{resultCode} );
+    }
+    
+    public boolean supportsReverse() {
+        return @{supportsReverse};
+    }
+    
+    @if{supportsReverse == "true"}
+    private static class ReverseSnapshot implements java.io.Serializable {
+        @foreach{declr : declarations} public final @{declr.typeName} @{declr.identifier};@end{}
+        @foreach{declr : innerDeclarations}public final @{declr.extractor.extractToClassName} @{declr.identifier};@end{}
+        
+        public ReverseSnapshot(@foreach{declr : declarations}final @{declr.typeName} @{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
+                               @foreach{declr : innerDeclarations}final @{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
+                              ) {
+            @foreach{declr : declarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+            @foreach{declr : innerDeclarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+        }
+    } 
+    @end{}
+}
+@end{}
+
+@declare{"consequenceMethod"}
+public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.kie.api.runtime.rule.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws java.lang.Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
+    @{text}
+}
+@end{}
+
+@declare{"actionMethod"}
+public static void @{methodName}(KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","}, ProcessContext context ) throws java.lang.Exception {
+    org.kie.api.runtime.process.ProcessContext kcontext = context;
+    @{text}
+}
+@end{}
+
+@declare{"returnValueEvaluatorMethod"}
+public static Object @{methodName}(ProcessContext context@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws java.lang.Exception {
+    org.kie.api.runtime.process.ProcessContext kcontext = context;
+    @{text}
+}
+@end{}

@@ -31,7 +31,11 @@ public class StringNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        return EvalHelper.unescapeString( getText() );
+        return getValue();
+    }
+
+    public String getValue() {
+        return EvalHelper.unescapeString(getText());
     }
 
     @Override

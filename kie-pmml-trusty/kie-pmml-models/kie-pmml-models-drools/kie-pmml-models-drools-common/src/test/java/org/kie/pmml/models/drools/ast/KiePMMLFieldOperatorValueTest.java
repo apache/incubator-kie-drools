@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;

@@ -74,6 +74,14 @@ public class MaxAccumulateFunction extends AbstractAccumulateFunction<MaxAccumul
                         Object value) {
     }
 
+    @Override
+    public boolean tryReverse( MaxData data, Object value ) {
+        if (value != null) {
+            return data.max.compareTo( value ) > 0;
+        }
+        return true;
+    }
+
     public Object getResult(MaxData data) {
         return data.max;
     }

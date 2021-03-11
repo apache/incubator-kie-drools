@@ -44,7 +44,8 @@ import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
-import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.mvel.asm.AsmUtil;
+import org.drools.mvel.asm.ClassFieldInspectorImpl;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
@@ -314,7 +315,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     }
 
     public ClassDefinition buildClassDefinition(Class<?> klazz, Class<?> wrapperClass) throws IOException {
-        ClassFieldInspector inspector = new ClassFieldInspector(klazz);
+        ClassFieldInspectorImpl inspector = new ClassFieldInspectorImpl(klazz);
 
         ClassFieldAccessorStore store = getClassFieldAccessorStore();
 
@@ -455,9 +456,9 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                           BuildUtils.getTypeDescriptor(core.getName()));
 
         if (toNull) {
-            mv.visitInsn(BuildUtils.zero(field.getTypeName()));
+            mv.visitInsn( AsmUtil.zero(field.getTypeName()));
         } else {
-            mv.visitVarInsn(BuildUtils.varType(fieldType), pointer);
+            mv.visitVarInsn(AsmUtil.varType(fieldType), pointer);
         }
 
         if (!BuildUtils.isPrimitive(fieldType)) {

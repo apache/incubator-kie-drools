@@ -22,6 +22,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -29,13 +30,14 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.ResultCode;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
+import org.kie.pmml.models.drools.tree.evaluator.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ import static org.junit.Assert.assertTrue;
 public class PMMLTreeModelEvaluatorTest {
 
     private static final String SOURCE_1 = "TreeSample.pmml";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluatorTest.class);
     private static final String modelName = "golfing";
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
@@ -77,11 +80,15 @@ public class PMMLTreeModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (TreeModel) pmml.getModels().get(0), knowledgeBuilder);
+        kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
+                                                pmml.getDataDictionary(),
+                                                pmml.getTransformationDictionary(),
+                                                (TreeModel) pmml.getModels().get(0),
+                                                new HasKnowledgeBuilderMock(knowledgeBuilder));
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
-                .build();
+                .build( ExecutableModelProject.class );
         assertNotNull(kieBase);
     }
 

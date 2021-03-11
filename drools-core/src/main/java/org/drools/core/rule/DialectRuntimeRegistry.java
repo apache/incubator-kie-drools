@@ -74,10 +74,8 @@ public class DialectRuntimeRegistry
         }
     }
 
-    public void setDialectData(String name,
-                               DialectRuntimeData data) {
-        this.dialects.put( name,
-                           data );
+    public void setDialectData(String name, DialectRuntimeData data) {
+        this.dialects.put( name, data );
     }
 
     public DialectRuntimeData getDialectData(String dialect) {

@@ -32,7 +32,7 @@ public class SingleConstraint3<A, B, C> extends AbstractSingleConstraint {
     private final Predicate3<A, B, C> predicate;
 
     public SingleConstraint3(Variable<A> var1, Variable<B> var2, Variable<C> var3, Predicate3<A, B, C> predicate) {
-        super( LambdaPrinter.print(predicate) );
+        super( LambdaPrinter.print(predicate), predicate.predicateInformation());
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;
@@ -40,7 +40,7 @@ public class SingleConstraint3<A, B, C> extends AbstractSingleConstraint {
     }
 
     public SingleConstraint3(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Predicate3<A, B, C> predicate) {
-        super(exprId);
+        super(exprId, predicate.predicateInformation());
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;
@@ -49,6 +49,7 @@ public class SingleConstraint3<A, B, C> extends AbstractSingleConstraint {
 
     public SingleConstraint3(Expr3ViewItemImpl<A, B, C> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getPredicate());
+        setIndex( expr.getIndex() );
         setReactivitySpecs( expr.getReactivitySpecs() );
     }
 

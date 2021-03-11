@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 /**
  * An implementation of an accumulator capable of calculating maximum values
  */
-public class IntegerMinAccumulateFunction extends AbstractAccumulateFunction<IntegerMinAccumulateFunction.MaxData> {
+public class IntegerMinAccumulateFunction extends AbstractAccumulateFunction<IntegerMinAccumulateFunction.MinData> {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
@@ -34,10 +34,10 @@ public class IntegerMinAccumulateFunction extends AbstractAccumulateFunction<Int
 
     }
 
-    protected static class MaxData implements Externalizable {
+    protected static class MinData implements Externalizable {
         public Integer min = null;
 
-        public MaxData() {}
+        public MinData() {}
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             min = (Integer) in.readObject();
@@ -53,27 +53,36 @@ public class IntegerMinAccumulateFunction extends AbstractAccumulateFunction<Int
         }
     }
 
-    public MaxData createContext() {
-        return new MaxData();
+    public MinData createContext() {
+        return new MinData();
     }
 
-    public void init(MaxData data) {
+    public void init( MinData data) {
         data.min = null;
     }
 
-    public void accumulate(MaxData data,
-                           Object value) {
+    public void accumulate( MinData data,
+                            Object value) {
         if (value != null) {
             Integer number = (Integer)value;
             data.min = data.min == null || data.min > number ? number : data.min;
         }
     }
 
-    public void reverse(MaxData data,
-                        Object value) {
+    public void reverse( MinData data,
+                         Object value) {
     }
 
-    public Object getResult(MaxData data) {
+    @Override
+    public boolean tryReverse( MinData data, Object value ) {
+        if (value != null) {
+            Integer number = (Integer)value;
+            return data.min < number;
+        }
+        return true;
+    }
+
+    public Object getResult( MinData data ) {
         return data.min;
     }
 

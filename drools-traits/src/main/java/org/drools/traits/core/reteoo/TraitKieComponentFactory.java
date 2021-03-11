@@ -92,9 +92,11 @@ public class TraitKieComponentFactory extends KieComponentFactory {
         return traitClassBuilderFactory;
     }
 
+    private TraitFactHandleFactory traitFactHandleFactory = new TraitFactHandleFactory();
+
     @Override
     public FactHandleFactory getFactHandleFactoryService() {
-        return new TraitFactHandleFactory();
+        return traitFactHandleFactory;
     }
 
     @Override

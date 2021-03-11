@@ -20,14 +20,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 public class KiePMMLDroolsModelWithSourcesTest {
@@ -35,21 +35,25 @@ public class KiePMMLDroolsModelWithSourcesTest {
     private static final KieBase KIE_BASE = new KnowledgeBaseImpl("PMML", null);
     private final static String MODEL_NAME = "modelNaMe";
     private final static String KMODULEPACKAGENAME = getSanitizedPackageName(MODEL_NAME);
+    private final static String PKGUUID = "PKGUUID";
     private final static Map<String, String> SOURCES_MAP = new HashMap<>();
-    private final static PackageDescr PACKAGE_DESCR = new PackageDescr();
+    private final static Map<String, String> RULES_SOURCES_MAP = new HashMap<>();
 
     private KiePMMLDroolsModelWithSources kiePMMLDroolsModelWithSources;
 
     @Before
     public void setup() {
-        kiePMMLDroolsModelWithSources = new KiePMMLDroolsModelWithSources(MODEL_NAME, KMODULEPACKAGENAME, SOURCES_MAP, PACKAGE_DESCR);
+        kiePMMLDroolsModelWithSources = new KiePMMLDroolsModelWithSources(MODEL_NAME,
+                                                                          KMODULEPACKAGENAME,
+                                                                          PKGUUID,
+                                                                          SOURCES_MAP,
+                                                                          RULES_SOURCES_MAP);
     }
 
     @Test
     public void constructor() {
         assertEquals(MODEL_NAME, kiePMMLDroolsModelWithSources.getName());
     }
-
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
@@ -66,13 +70,24 @@ public class KiePMMLDroolsModelWithSourcesTest {
         assertEquals(SOURCES_MAP, kiePMMLDroolsModelWithSources.getSourcesMap());
     }
 
-    @Test
-    public void getKModulePackageName() {
-        assertEquals(KMODULEPACKAGENAME, kiePMMLDroolsModelWithSources.getKModulePackageName());
+    @Test(expected = UnsupportedOperationException.class)
+    public void addToGetSourcesMap() {
+        Map<String, String> retrieved = kiePMMLDroolsModelWithSources.getSourcesMap();
+        retrieved.put("KEY", "VALUE");
     }
 
     @Test
-    public void getPackageDescr() {
-        assertEquals(PACKAGE_DESCR, kiePMMLDroolsModelWithSources.getPackageDescr());
+    public void addSourceMap() {
+        Map<String, String> retrieved = kiePMMLDroolsModelWithSources.getSourcesMap();
+        assertTrue(retrieved.isEmpty());
+        kiePMMLDroolsModelWithSources.addSourceMap("KEY", "VALUE");
+        retrieved = kiePMMLDroolsModelWithSources.getSourcesMap();
+        assertTrue(retrieved.containsKey("KEY"));
+        assertEquals("VALUE", retrieved.get("KEY"));
+    }
+
+    @Test
+    public void getKModulePackageName() {
+        assertEquals(KMODULEPACKAGENAME, kiePMMLDroolsModelWithSources.getKModulePackageName());
     }
 }

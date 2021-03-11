@@ -35,9 +35,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segmentation;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -71,13 +71,18 @@ public class KiePMMLSegmentationFactory {
                                                       final TransformationDictionary transformationDictionary,
                                                       final Segmentation segmentation,
                                                       final String segmentationName,
-                                                      final KnowledgeBuilder kBuilder) {
+                                                      final String parentPackageName,
+                                                      final HasClassLoader hasClassloader) {
         logger.debug("getSegmentation {}", segmentation);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         return KiePMMLSegmentation.builder(segmentationName,
                                            getKiePMMLExtensions(segmentation.getExtensions()),
                                            MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
-                .withSegments(getSegments(dataDictionary, transformationDictionary, segmentation.getSegments(),
-                                          kBuilder))
+                .withSegments(getSegments(packageName,
+                                          dataDictionary,
+                                          transformationDictionary,
+                                          segmentation.getSegments(),
+                                          hasClassloader))
                 .build();
     }
 
@@ -86,7 +91,7 @@ public class KiePMMLSegmentationFactory {
                                                                 final TransformationDictionary transformationDictionary,
                                                                 final Segmentation segmentation,
                                                                 final String segmentationName,
-                                                                final KnowledgeBuilder kBuilder,
+                                                                final HasClassLoader hasClassloader,
                                                                 final List<KiePMMLModel> nestedModels) {
         logger.debug("getSegmentationSourcesMap {}", segmentation);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
@@ -94,7 +99,7 @@ public class KiePMMLSegmentationFactory {
                                                                    dataDictionary,
                                                                    transformationDictionary,
                                                                    segmentation.getSegments(),
-                                                                  kBuilder,
+                                                                   hasClassloader,
                                                                    nestedModels);
         String className = getSanitizedClassName(segmentationName);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
@@ -129,7 +134,7 @@ public class KiePMMLSegmentationFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "multipleModelMethod",
                                                                     multipleModelMethod.getClass().getCanonicalName() + "." + multipleModelMethod.name());
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);

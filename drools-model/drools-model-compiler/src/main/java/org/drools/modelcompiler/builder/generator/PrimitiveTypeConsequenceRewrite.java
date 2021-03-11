@@ -7,10 +7,15 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.Node;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.unEncloseExpr;
 
 public class PrimitiveTypeConsequenceRewrite {
 
@@ -23,32 +28,58 @@ public class PrimitiveTypeConsequenceRewrite {
     }
 
     public String rewrite(String consequence) {
-
-        BlockStmt blockStmt;
+        Node blockStmt;
         try {
             blockStmt = StaticJavaParser.parseBlock(consequence);
         } catch (ParseProblemException e) {
             logger.warn(String.format("Cannot post process consequence: %s", consequence));
             return consequence;
         }
-        for (Statement t : blockStmt.getStatements()) {
-            t.findAll(CastExpr.class, ce -> ce.getExpression().isNameExpr()).forEach(this::convertStatement);
-        }
 
+        convertNode( blockStmt );
         return blockStmt.toString();
     }
 
+    public static <T extends Node> T rewriteNode( RuleContext context, T node ) {
+        if (node instanceof CastExpr) {
+            return (T) convertCast(context, (( CastExpr ) node));
+        }
+        new PrimitiveTypeConsequenceRewrite(context).convertNode( node );
+        return node;
+    }
+
+    private void convertNode( Node node ) {
+        node.findAll(CastExpr.class).forEach(this::convertStatement);
+    }
+
     private void convertStatement(CastExpr ce) {
+        ce.replace(convertCast(context, ce));
+    }
+
+    private static Expression convertCast(RuleContext context, CastExpr ce) {
         Expression innerExpr = ce.getExpression();
         Optional<Class<?>> castType = context.resolveType(ce.getType().asString());
 
-        String nameExprDeclaration = innerExpr.asNameExpr().toString();
-        Optional<DeclarationSpec> declarationById = context.getDeclarationById(nameExprDeclaration);
+        TypedExpressionResult typedExpressionResult =
+                new ExpressionTyper(context)
+                .toTypedExpression(innerExpr);
 
-        if (castType.isPresent() && declarationById.isPresent()) {
-            if (castType.get().equals(short.class) && declarationById.get().getDeclarationClass().equals(int.class)) {
-                ce.replace(new MethodCallExpr(innerExpr.asNameExpr(), "shortValue"));
+        Optional<TypedExpression> optTypeExpression = typedExpressionResult.getTypedExpression();
+
+        return optTypeExpression.map(typedExpression -> {
+            if (castType.isPresent() &&
+                    castType.get().equals(short.class) &&
+                    !typedExpression.isNumberLiteral() &&
+                    typedExpression.getRawClass().equals(int.class)
+            ) {
+                Expression unenclosedExpression = unEncloseExpr(typedExpression.getExpression());
+                Expression scope = StaticJavaParser.parseExpression(unenclosedExpression.toString());
+
+                MethodCallExpr integerValueOf = new MethodCallExpr(new NameExpr(Integer.class.getCanonicalName()), "valueOf", nodeList(scope));
+                MethodCallExpr shortValue = new MethodCallExpr(integerValueOf, "shortValue");
+                return shortValue;
             }
-        }
+            return ce;
+        }).orElse( ce );
     }
 }

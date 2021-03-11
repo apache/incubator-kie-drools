@@ -7,12 +7,12 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie" level="info"/>
-  <logger name="org.drools" level="info"/>
+  <logger name="org.kie" level="warn"/>
+  <logger name="org.drools" level="warn"/>
   
   <logger name="org.drools.core.management" level="debug"/>
   <logger name="org.kie.api.internal.utils" level="debug"/>
-  <!--<logger name="org.drools.compiler.reteoo.compiled" level="debug"/>-->
+  <!--<logger name="org.drools.ancompiler" level="debug"/>-->
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

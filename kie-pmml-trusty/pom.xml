@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.44.0-SNAPSHOT</version>
+    <version>7.52.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -41,6 +41,8 @@
     <module>kie-pmml-models</module>
     <module>kie-pmml-benchmarks</module>
     <module>kie-pmml-dependencies</module>
+    <module>kie-pmml-api</module>
+    <module>kie-pmml-kie-internal</module>
   </modules>
 
   <dependencyManagement>

@@ -33,8 +33,9 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segment;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
@@ -53,7 +54,7 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.ge
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicate;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicateSourcesMap;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
@@ -69,27 +70,34 @@ public class KiePMMLSegmentFactory {
     private KiePMMLSegmentFactory() {
     }
 
-    public static List<KiePMMLSegment> getSegments(final DataDictionary dataDictionary,
+    public static List<KiePMMLSegment> getSegments(final String parentPackageName,
+                                                   final DataDictionary dataDictionary,
                                                    final TransformationDictionary transformationDictionary,
                                                    final List<Segment> segments,
-                                                   final KnowledgeBuilder kBuilder) {
+                                                   final HasClassLoader hasClassloader) {
         logger.debug(GET_SEGMENTS, segments);
-        return segments.stream().map(segment -> getSegment(dataDictionary, transformationDictionary, segment,
-                                                           kBuilder)).collect(Collectors.toList());
+        return segments.stream().map(segment -> getSegment(parentPackageName,
+                                                           dataDictionary,
+                                                           transformationDictionary,
+                                                           segment,
+                                                           hasClassloader)).collect(Collectors.toList());
     }
 
-    public static KiePMMLSegment getSegment(final DataDictionary dataDictionary,
+    public static KiePMMLSegment getSegment(final String parentPackageName,
+                                            final DataDictionary dataDictionary,
                                             final TransformationDictionary transformationDictionary,
                                             final Segment segment,
-                                            final KnowledgeBuilder kBuilder) {
+                                            final HasClassLoader hasClassloader) {
         logger.debug(GET_SEGMENT, segment);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
         return KiePMMLSegment.builder(segment.getId(),
                                       getKiePMMLExtensions(segment.getExtensions()),
                                       getPredicate(segment.getPredicate(), dataDictionary),
-                                      getFromCommonDataAndTransformationDictionaryAndModel(dataDictionary,
+                                      getFromCommonDataAndTransformationDictionaryAndModel(packageName,
+                                                                                           dataDictionary,
                                                                                            transformationDictionary,
                                                                                            segment.getModel(),
-                                                                                           kBuilder).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName())))
+                                                                                           hasClassloader).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName())))
                 .withWeight(segment.getWeight().doubleValue())
                 .build();
     }
@@ -98,14 +106,14 @@ public class KiePMMLSegmentFactory {
                                                             final DataDictionary dataDictionary,
                                                             final TransformationDictionary transformationDictionary,
                                                             final List<Segment> segments,
-                                                            final KnowledgeBuilder kBuilder,
+                                                            final HasClassLoader hasClassloader,
                                                             final List<KiePMMLModel> nestedModels) {
         logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> toReturn.putAll(getSegmentSourcesMap(parentPackageName,
                                                                          dataDictionary,
                                                                          transformationDictionary, segment,
-                                                                         kBuilder,
+                                                                         hasClassloader,
                                                                          nestedModels)));
 
         return toReturn;
@@ -116,16 +124,16 @@ public class KiePMMLSegmentFactory {
             final DataDictionary dataDictionary,
             final TransformationDictionary transformationDictionary,
             final Segment segment,
-            final KnowledgeBuilder kBuilder,
+            final HasClassLoader hasClassloader,
             final List<KiePMMLModel> nestedModels) {
         logger.debug(GET_SEGMENT, segment);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
-        final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
+        final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelWithSources(
                 packageName,
                 dataDictionary,
                 transformationDictionary,
                 segment.getModel(),
-                kBuilder)
+                hasClassloader)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
         if (!(nestedModel instanceof HasSourcesMap)) {
             throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +

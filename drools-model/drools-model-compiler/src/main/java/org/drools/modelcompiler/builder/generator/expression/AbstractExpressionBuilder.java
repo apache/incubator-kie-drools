@@ -21,14 +21,15 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -43,8 +44,10 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
+import org.drools.model.functions.PredicateInformation;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -53,15 +56,19 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
 
-import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
+import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenceRewrite.rewriteNode;
+import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -176,8 +183,32 @@ public abstract class AbstractExpressionBuilder {
 
         return left != null && left.getFieldName() != null &&
                 drlxParseResult.getDecodeConstraintType() != null &&
-                !isThisExpression( left.getExpression() ) &&
-                ( isAlphaIndex( usedDeclarations ) || isBetaIndex( usedDeclarations, drlxParseResult.getRight() ) );
+                drlxParseResult.getPatternType() != null &&
+                isLeftIndexableExpression( left.getExpression() ) &&
+                areIndexableDeclaration( usedDeclarations );
+    }
+
+    private boolean isLeftIndexableExpression( Expression expr ) {
+        if (expr instanceof MethodCallExpr) {
+            if ( !getMethodChainScope(( MethodCallExpr ) expr).map( DrlxParseUtil::isThisExpression ).orElse( false ) ) {
+                return false;
+            }
+        }
+        return !isThisExpression( expr );
+    }
+
+    private Optional<Expression> getMethodChainScope(MethodCallExpr expr) {
+        Optional<Expression> scope = expr.getScope();
+        return scope.isPresent() && scope.get() instanceof MethodCallExpr ? getMethodChainScope( (MethodCallExpr) scope.get()) : scope;
+    }
+
+    private boolean areIndexableDeclaration( Collection<String> usedDeclarations ) {
+        if (usedDeclarations.size() > 4) {
+            return false;
+        }
+        return !usedDeclarations.stream()
+                .map( context::getDeclarationById )
+                .anyMatch( optDecl -> optDecl.isPresent() && optDecl.get().isGlobal() );
     }
 
     // See PatternBuilder:1198 (buildConstraintForPattern) Pattern are indexed only when the root of the right part
@@ -186,7 +217,10 @@ public abstract class AbstractExpressionBuilder {
     protected boolean shouldIndexConstraintWithRightScopePatternBinding(SingleDrlxParseSuccess result) {
         TypedExpression right = result.getRight();
 
-        if(right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+        if (right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+            if (isStringToDateExpression(right.getExpression())) {
+                return true;
+            }
             NodeWithOptionalScope<?> e = (NodeWithOptionalScope<?>) (right.getExpression());
             return e.getScope()
                     .map(Object::toString)
@@ -197,26 +231,16 @@ public abstract class AbstractExpressionBuilder {
         return true;
     }
 
-    boolean isAlphaIndex( Collection<String> usedDeclarations ) {
-        return usedDeclarations.isEmpty();
-    }
-
-    private boolean isBetaIndex( Collection<String> usedDeclarations, TypedExpression right ) {
-        // a Beta node should NOT create the index when the "right" is not just-a-symbol, the "right" is not a declaration referenced by name
-        return usedDeclarations.size() == 1 && context.getDeclarationById( getExpressionSymbolForBetaIndex( right.getExpression() ) ).isPresent();
-    }
-
-    private static String getExpressionSymbolForBetaIndex(Expression expr) {
-        Expression scope;
-        if (expr instanceof MethodCallExpr) {
-            Optional<Expression> scopeExpression = (( MethodCallExpr ) expr).getScope();
-            scope = scopeExpression.orElse(expr);
-        } else if (expr instanceof FieldAccessExpr ) {
-            scope = (( FieldAccessExpr ) expr).getScope();
-        } else {
-            scope = expr;
+    protected boolean isStringToDateExpression(Expression expression) {
+        if (expression instanceof MethodCallExpr) {
+            String methodName = ((MethodCallExpr) expression).getNameAsString();
+            if (methodName.equals(PackageModel.STRING_TO_DATE_METHOD)
+                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_METHOD)
+                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_TIME_METHOD)) {
+                return true;
+            }
         }
-        return scope instanceof NameExpr ? (( NameExpr ) scope).getNameAsString() : null;
+        return false;
     }
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
@@ -288,41 +312,17 @@ public abstract class AbstractExpressionBuilder {
                                            java.lang.reflect.Type leftType,
                                            SingleDrlxParseSuccess drlxParseResult) {
         LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
-        final TypedExpression expression;
-        String declarationName = usedDeclarations.iterator().next();
-        Type type;
-        if (leftContainsThis) {
-            expression = right;
-        } else {
-            expression = left;
+        for (String declarationName : usedDeclarations) {
+            DeclarationSpec declarationById = context.getDeclarationByIdWithException( declarationName );
+            indexedByRightOperandExtractor.addParameter( new Parameter( declarationById.getBoxedType(), declarationName ) );
         }
 
-        DeclarationSpec declarationById = context.getDeclarationByIdWithException(declarationName);
-        type = declarationById.getBoxedType();
-        indexedByRightOperandExtractor.addParameter(new Parameter(type, declarationName));
+        TypedExpression expression = leftContainsThis ? right : left;
         indexedByRightOperandExtractor.setEnclosingParameters(true);
-        final Expression narrowed = narrowExpressionToType(expression, leftType);
+        Expression narrowed = rewriteNode( context, narrowExpressionToType(expression, leftType) );
         indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
-    }
-
-    protected Class<?> getIndexType(TypedExpression left, TypedExpression right) {
-        Optional<Class<?>> leftType = ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
-        Optional<Class<?>> rightType = ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
-
-        // Use Number.class if they're both Numbers but different in order to use best possible type in the index
-        Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {
-            if ((Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r)) && !l.equals(r)) {
-                return Number.class;
-            } else {
-                return l;
-            }
-        }));
-
-        return numberType.orElseGet(() -> Stream.of(left, right).map(TypedExpression::getType)
-                .filter(Objects::nonNull)
-                .map(ClassUtil::toRawClass)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!")));
+        indexedByDSL.addArgument(new ClassExpr(StaticJavaParser.parseType(expression.getRawClass().getCanonicalName())));
     }
 
     String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {
@@ -419,5 +419,29 @@ public abstract class AbstractExpressionBuilder {
             return false;
         }
         return opt.get().equals(THIS_PLACEHOLDER);
+    }
+
+    protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {
+        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+
+        context.getPackageModel().indexConstraint(exprId, new PredicateInformation(
+                drlxParseResult.getOriginalDrlConstraint(),
+                context.getRuleName(),
+                Optional.ofNullable(context.getRuleDescr())
+                    .map(RuleDescr::getResource)
+                    .map(Resource::getSourcePath)
+                    .orElse("")
+        ));
+        return exprId;
+    }
+
+    protected void sortUsedDeclarations(SingleDrlxParseSuccess drlxParseResult) {
+        // Binding parameters have to be sorted as when they're sorted lexicographically when invoked
+        // See Accumulate.initInnerDeclarationCache()
+        List<String> sorted = drlxParseResult.getUsedDeclarationsOnLeft()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
+        drlxParseResult.setUsedDeclarationsOnLeft(sorted);
     }
 }

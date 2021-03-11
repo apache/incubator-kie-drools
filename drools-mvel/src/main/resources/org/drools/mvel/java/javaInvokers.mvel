@@ -1,0 +1,390 @@
+@declare{"getMethodBytecode"}
+    public String getMethodBytecode() {
+        return org.drools.mvel.asm.MethodComparator.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
+    }
+@end{}
+
+
+@declare{"equals"}
+    public boolean equals(Object object) {
+        if ( object == null || !(object instanceof  org.drools.core.spi.CompiledInvoker) ) {
+            return false;
+        }
+        return org.drools.mvel.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.core.spi.CompiledInvoker ) object).getMethodBytecode() );
+    }
+@end{}
+
+@declare{"hashCode"}
+    public int hashCode() {
+        return @{hashCode};
+    }
+@end{}
+
+@declare{"replaceDeclaration"}
+    public void replaceDeclaration(org.drools.core.rule.Declaration declaration,
+                                   org.drools.core.rule.Declaration resolved) {
+        // this class does not cache declarations
+    }
+@end{}
+
+
+@declare{"returnValueInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpression, org.drools.core.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public Object createContext() { return null; }
+
+    public org.drools.core.spi.FieldValue evaluate(org.drools.core.common.InternalFactHandle handle,
+                            org.drools.core.spi.Tuple tuple,
+                            org.drools.core.rule.Declaration[] previousDeclarations,
+                            org.drools.core.rule.Declaration[] localDeclarations,
+                            org.drools.core.WorkingMemory workingMemory,
+                            Object context ) throws Exception {
+
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+        @code{i0++}
+        @end{}
+        @if{readLocalsFromTuple}
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+          @code{i0++}
+          @end{}
+        @else{}
+          @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+          @code{i0++}
+          @end{}
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        return @{ruleClassName}.@{methodName}(
+            @foreach{declr : declarations} @{declr.identifier}
+            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}
+            @foreach{declr :localDeclarations} @{declr.identifier}
+            @end{","}@if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+            @foreach{identifier : globals}@{identifier}
+            @end{","} );
+    }
+
+    @includeNamed{"replaceDeclaration"}
+
+    @includeNamed{"hashCode"}
+
+    @includeNamed{"getMethodBytecode"}
+
+    @includeNamed{"equals"}
+}
+@end{}
+
+@declare{"predicateInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.drools.core.spi.PredicateExpression, org.drools.core.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public Object createContext() { return null; }
+
+    public boolean evaluate(org.drools.core.common.InternalFactHandle handle,
+                            org.drools.core.spi.Tuple tuple,
+                            org.drools.core.rule.Declaration[] previousDeclarations,
+                            org.drools.core.rule.Declaration[] localDeclarations,
+                            org.drools.core.WorkingMemory workingMemory,
+                            Object context ) throws Exception {
+
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple ) );
+          @code{i0++}
+        @end{}
+        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+          @code{i0++}
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        return @{ruleClassName}.@{methodName}(
+            @foreach{declr : declarations} @{declr.identifier}
+            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}
+            @foreach{declr : localDeclarations} @{declr.identifier}
+            @end{","}@if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+            @foreach{identifier : globals}@{identifier}
+            @end{","} );
+    }
+
+    @includeNamed{"hashCode"}
+
+    @includeNamed{"getMethodBytecode"}
+
+    @includeNamed{"equals"}
+}
+@end{}
+
+@declare{"evalInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, org.drools.core.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    // no need for context
+    public Object createContext() { return null; }
+
+    public boolean evaluate(org.drools.core.spi.Tuple tuple,
+                            org.drools.core.rule.Declaration[] declarations,
+                            org.drools.core.WorkingMemory workingMemory,
+                            Object context ) throws Exception {
+
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple ) );
+            @code{i0++}
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        return @{ruleClassName}.@{methodName}(
+            @foreach{declr : declarations} @{declr.identifier}
+            @end{","} @if{globals != empty && declarations != empty},@end{}
+            @foreach{identifier : globals}@{identifier}
+            @end{","} );
+    }
+
+    public org.drools.core.spi.EvalExpression clone() {
+        // this class is stateless, so no cloning needed
+        return this;
+    }
+
+    @includeNamed{"replaceDeclaration"}
+
+    @includeNamed{"hashCode"}
+
+    @includeNamed{"getMethodBytecode"}
+
+    @includeNamed{"equals"}
+}
+@end{}
+
+
+@declare{"accumulateInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org.drools.core.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public java.io.Serializable createContext() {
+        return new @{ruleClassName}.@{className}();
+    }
+
+    public Object init(java.lang.Object workingMemoryContext,
+                     java.lang.Object context,
+                     org.drools.core.spi.Tuple tuple,
+                     org.drools.core.rule.Declaration[] declarations,
+                     org.drools.core.WorkingMemory workingMemory) {
+        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+            @code{i0++}
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        try {
+            ((@{ruleClassName}.@{className})context).init(
+                @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+                @foreach{identifier : globals} @{identifier}@end{","} );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return context;
+    }
+
+    public Object accumulate(java.lang.Object workingMemoryContext,
+                           java.lang.Object context,
+                           org.drools.core.spi.Tuple tuple,
+                           org.drools.core.common.InternalFactHandle handle,
+                           org.drools.core.rule.Declaration[] declarations,
+                           org.drools.core.rule.Declaration[] innerDeclarations,
+                           org.drools.core.WorkingMemory workingMemory) {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+            @code{ i0++ }
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+        @if{isMultiPattern}
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+            @code{ i0++ }
+          @end{}
+        @else{}
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+            @code{ i0++ }
+          @end{}
+        @end{}
+
+        try {
+            return ((@{ruleClassName}.@{className})context).accumulate(
+                workingMemory,
+                handle,
+                innerDeclarations@if{declarations != empty},@end{}
+                @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+                @foreach{identifier: globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
+                @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean tryReverse(java.lang.Object workingMemoryContext,
+                           java.lang.Object context,
+                           org.drools.core.spi.Tuple tuple,
+                           org.drools.core.common.InternalFactHandle handle,
+                           java.lang.Object value,
+                           org.drools.core.rule.Declaration[] declarations,
+                           org.drools.core.rule.Declaration[] innerDeclarations,
+                           org.drools.core.WorkingMemory workingMemory) {
+        if (!supportsReverse()) {
+            return false;
+        }
+
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+            @code{ i0++ }
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+        @if{isMultiPattern}
+          @code{ i0 = 0}@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+            @code{ i0++ }
+          @end{}
+        @else{}
+          @code{ i0 = 0 }@foreach{declr : innerDeclarations} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, handle );
+            @code{ i0++ }
+          @end{}
+        @end{}
+
+        try {
+            ((@{ruleClassName}.@{className})context).reverse(
+                workingMemory,
+                handle,
+                value@if{globals != empty},@end{}
+                @foreach{identifier : globals} @{identifier}@end{","});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return true;
+    }
+
+    public Object getResult(java.lang.Object workingMemoryContext,
+                            java.lang.Object context,
+                            org.drools.core.spi.Tuple tuple,
+                            org.drools.core.rule.Declaration[] declarations,
+                            org.drools.core.WorkingMemory workingMemory) {
+        @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
+            @code{ i0++ }
+        @end{}
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        try {
+            return ((@{ruleClassName}.@{className})context).getResult(
+                @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+                @foreach{identifier : globals} @{identifier}@end{","} );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean supportsReverse() {
+        return @{supportsReverse};
+    }
+
+    public Object createWorkingMemoryContext() {
+        return null;
+    }
+
+    @includeNamed{"hashCode"}
+
+    @includeNamed{"equals"}
+
+    public String getMethodBytecode() {
+        java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + "@{'$'}@{className}" + ".class" );
+
+        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int byteCount;
+        try {
+            while ( (byteCount = is.read( data,
+                                 0,
+                                 1024 )) > -1 )
+            {
+                bos.write(data, 0, byteCount);
+            }
+        } catch ( java.io.IOException e ) {
+            throw new RuntimeException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
+        }
+        return bos.toString();
+    }
+}
+@end{}
+
+@declare{"actionInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.drools.core.spi.Action, org.drools.core.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public void execute(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
+                        org.drools.core.WorkingMemory workingMemory) throws Exception {
+        execute(knowledgeHelper, workingMemory, null);
+    }
+
+    public void execute(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
+                        org.drools.core.WorkingMemory workingMemory, org.drools.core.spi.ProcessContext context ) throws Exception {
+
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
+        @end{}
+
+        @{processClassName}.@{methodName} (
+            knowledgeHelper@if{globals != empty},@end{}
+            @foreach{identifier : globals} @{identifier}
+            @end{","}@if{variables != empty},@end{}
+            @foreach{identifier : variables} @{identifier}
+            @end{","}, context );
+    }
+    
+    public String getMethodBytecode() {
+        return null;
+    }    
+}
+@end{}
+
+@declare{"returnValueEvaluatorInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.drools.core.spi.ReturnValueEvaluator, org.drools.core.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public Object evaluate(org.drools.core.WorkingMemory workingMemory, org.drools.core.spi.ProcessContext processContext) throws Exception {
+
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );
+        @end{}
+
+        return @{processClassName}.@{methodName} (
+            processContext@if{globals != empty},@end{}
+            @foreach{identifier : globals} @{identifier}
+            @end{","}@if{variables != empty},@end{}
+            @foreach{identifier : variables} @{identifier}
+            @end{","} );
+    }
+    
+    public String getMethodBytecode() {
+        return null;
+    }
+}
+@end{}

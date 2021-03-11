@@ -46,7 +46,7 @@ import org.dmg.pmml.TextIndex;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;

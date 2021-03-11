@@ -19,8 +19,6 @@ package org.drools.compiler.lang.dsl;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.mvel2.util.ParseTools;
-
 /**
  * An ANTLR-driven implementation for the DSL Mapping Entry interface
  */
@@ -49,12 +47,8 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
         setValuePattern( valuePattern );
     }
 
-    /**
-     * @param KEY
-     *            the key to set
-     */
     public void setKeyPattern(final String keyPat) {
-        //the "key" in this case is already mostly formed into 
+        //the "key" in this case is already mostly formed into
         //a pattern by ANTLR, and just requires a bit of post-processing.
 
         if ( keyPat != null ) {
@@ -120,7 +114,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
                 break;
             case '{' :
                 if ( insideCurly ) {
-                    i = ParseTools.balancedCapture( input,
+                    i = balancedCapture( input,
                             i,
                     '{' );
                 } else {
@@ -168,5 +162,94 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
             super.setValuePattern( pat );
         }
 
+    }
+
+    private static int balancedCapture(char[] chars, int start, char type) {
+        return balancedCapture(chars, start, chars.length, type);
+    }
+
+    private static int balancedCapture(char[] chars, int start, int end, char type) {
+        int depth = 1;
+        char term = type;
+        switch (type) {
+            case '[':
+                term = ']';
+                break;
+            case '{':
+                term = '}';
+                break;
+            case '(':
+                term = ')';
+                break;
+        }
+
+        if (type == term) {
+            for (start++; start < end; start++) {
+                if (chars[start] == type) {
+                    return start;
+                }
+            }
+        }
+        else {
+            for (start++; start < end; start++) {
+                if (start < end && chars[start] == '/') {
+                    if (start + 1 == end) return start;
+                    if (chars[start + 1] == '/') {
+                        start++;
+                        while (start < end && chars[start] != '\n') start++;
+                    }
+                    else if (chars[start + 1] == '*') {
+                        start += 2;
+                        SkipComment:
+                        while (start < end) {
+                            switch (chars[start]) {
+                                case '*':
+                                    if (start + 1 < end && chars[start + 1] == '/') {
+                                        break SkipComment;
+                                    }
+                                case '\r':
+                                case '\n':
+
+                                    break;
+                            }
+                            start++;
+                        }
+                    }
+                }
+                if (start == end) return start;
+                if (chars[start] == '\'' || chars[start] == '"') {
+                    start = captureStringLiteral(chars[start], chars, start, end);
+                }
+                else if (chars[start] == type) {
+                    depth++;
+                }
+                else if (chars[start] == term && --depth == 0) {
+                    return start;
+                }
+            }
+        }
+
+        switch (type) {
+            case '[':
+                throw new RuntimeException("unbalanced braces [ ... ]");
+            case '{':
+                throw new RuntimeException("unbalanced braces { ... }");
+            case '(':
+                throw new RuntimeException("unbalanced braces ( ... )");
+            default:
+                throw new RuntimeException("unterminated string literal");
+        }
+    }
+
+    private static int captureStringLiteral(final char type, final char[] expr, int cursor, int end) {
+        while (++cursor < end && expr[cursor] != type) {
+            if (expr[cursor] == '\\') cursor++;
+        }
+
+        if (cursor >= end || expr[cursor] != type) {
+            throw new RuntimeException("unterminated string literal");
+        }
+
+        return cursor;
     }
 }

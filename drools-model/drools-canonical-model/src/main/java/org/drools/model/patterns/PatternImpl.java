@@ -98,8 +98,12 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         return constraint;
     }
 
+    public boolean hasConstraints() {
+        return this.constraint != SingleConstraint.TRUE;
+    }
+
     public void addConstraint( Constraint constraint ) {
-        this.constraint = this.constraint == SingleConstraint.TRUE ? constraint : ( (AbstractConstraint) this.constraint ).with( constraint );
+        this.constraint = hasConstraints() ? ( (AbstractConstraint) this.constraint ).with( constraint ) : constraint;
     }
 
     public void addBinding(Binding binding) {
@@ -178,6 +182,6 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
 
     @Override
     public PatternImpl cloneCondition() {
-        return new PatternImpl(variable, constraint, bindings == null ? null : new ArrayList<>(bindings), type);
+        return new PatternImpl(variable, (( AbstractConstraint ) constraint).cloneConstraint(), bindings == null ? null : new ArrayList<>(bindings), type);
     }
 }

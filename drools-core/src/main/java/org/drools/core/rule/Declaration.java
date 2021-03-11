@@ -24,18 +24,18 @@ import java.lang.reflect.Method;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.TupleValueExtractor;
 
 import static org.drools.core.util.ClassUtils.canonicalName;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
-public class Declaration
-    implements
-    Externalizable,
-    AcceptsReadAccessor,
-    Cloneable {
+public class Declaration implements Externalizable, AcceptsReadAccessor, TupleValueExtractor {
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -173,6 +173,7 @@ public class Declaration
      *
      * @return The ValueType.
      */
+    @Override
     public ValueType getValueType() {
         return this.readAccessor.getValueType();
     }
@@ -192,6 +193,11 @@ public class Declaration
 
     public int getOffset() {
         return pattern.getOffset() + xPathOffset;
+    }
+
+    @Override
+    public void setOffset(int offset) {
+        pattern.setOffset(offset);
     }
 
     public void setxPathOffset( int xPathOffset ) {
@@ -229,6 +235,15 @@ public class Declaration
 
     public void setDeclarationClass( Class<?> declarationClass ) {
         this.declarationClass = declarationClass;
+    }
+
+    @Override
+    public Object getValue(InternalWorkingMemory workingMemory, Tuple tuple) {
+        return getValue( workingMemory, tuple.get( this ) );
+    }
+
+    public Object getValue(InternalWorkingMemory workingMemory, InternalFactHandle fh) {
+        return getValue( workingMemory, fh.getObject() );
     }
 
     public Object getValue(InternalWorkingMemory workingMemory,
@@ -356,19 +371,21 @@ public class Declaration
         return internalFact;
     }
 
+    @Override
     public Declaration clone() {
-        return new Declaration( this.identifier,
-                                this.readAccessor,
-                                this.pattern );
+        return new Declaration( this.identifier, this.readAccessor, this.pattern );
     }
 
+    @Override
     public Declaration cloneWithPattern() {
-        return new Declaration( this.identifier,
-                                this.readAccessor,
-                                new Pattern( this.pattern.getIndex(),
+        return cloneWithPattern( new Pattern( this.pattern.getIndex(),
                                              this.pattern.getOffset(),
                                              this.pattern.getObjectType(),
                                              getIdentifier(),
                                              isInternalFact()) );
+    }
+
+    public Declaration cloneWithPattern(Pattern pattern) {
+        return new Declaration( this.identifier, this.readAccessor, pattern );
     }
 }

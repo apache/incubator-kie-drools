@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,10 +28,9 @@ import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.FactHandleClassStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -40,25 +38,13 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterEnums;
-import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer;
-import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
-import org.drools.core.marshalling.impl.TimersInputMarshaller;
-import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
@@ -96,13 +82,9 @@ public class ObjectTypeNode extends ObjectSource
 
     private boolean objectMemoryEnabled;
 
-    private static final transient ExpireJob job = new ExpireJob();
-
     private long                            expirationOffset = -1;
 
     private boolean queryNode;
-
-    protected CompiledNetwork compiledNetwork;
 
     /* always dirty after serialisation */
     private transient volatile boolean dirty;
@@ -133,7 +115,8 @@ public class ObjectTypeNode extends ObjectSource
               RuleBasePartitionId.MAIN_PARTITION,
               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
               source,
-              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold());
+              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold(),
+              context.getKnowledgeBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
         this.objectType = objectType;
         idGenerator = new IdGenerator(id);
 
@@ -270,16 +253,6 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.isAssignableFrom(objectType);
     }
 
-    public CompiledNetwork getCompiledNetwork() {
-        return this.compiledNetwork;
-    }
-
-    public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
-        this.compiledNetwork = compiledNetwork;
-
-        this.compiledNetwork.setObjectTypeNode(this);
-    }
-
     public void assertInitialFact(final InternalFactHandle factHandle,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
@@ -321,15 +294,9 @@ public class ObjectTypeNode extends ObjectSource
 
     public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory) {
         checkDirty();
-        if (compiledNetwork != null) {
-            compiledNetwork.assertObject(factHandle,
-                                         context,
-                                         workingMemory);
-        } else {
-            this.sink.propagateAssertObject(factHandle,
-                                            context,
-                                            workingMemory);
-        }
+        this.sink.propagateAssertObject(factHandle,
+                                        context,
+                                        workingMemory);
     }
 
     /**
@@ -426,17 +393,10 @@ public class ObjectTypeNode extends ObjectSource
                              InternalWorkingMemory workingMemory) {
         checkDirty();
 
-        if (compiledNetwork != null) {
-            compiledNetwork.modifyObject(factHandle,
-                                         modifyPreviousTuples,
-                                         context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                         workingMemory);
-        } else {
-            this.sink.propagateModifyObject(factHandle,
-                                            modifyPreviousTuples,
-                                            context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                            workingMemory);
-        }
+        this.sink.propagateModifyObject(factHandle,
+                                        modifyPreviousTuples,
+                                        context.adaptModificationMaskForObjectType(objectType, workingMemory),
+                                        workingMemory);
     }
 
     @Override
@@ -666,88 +626,6 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public static class ExpireJobContextTimerOutputMarshaller
-            implements
-            TimersOutputMarshaller {
-
-        public void write(JobContext jobCtx,
-                          MarshallerWriteContext outputCtx) throws IOException {
-            // ExpireJob, no state
-            ExpireJobContext ejobCtx = (ExpireJobContext) jobCtx;
-            DefaultJobHandle jobHandle = (DefaultJobHandle) ejobCtx.getJobHandle();
-            PointInTimeTrigger trigger = (PointInTimeTrigger) jobHandle.getTimerJobInstance().getTrigger();
-            // There is no reason to serialize a timer when it has no future execution time.
-            Date nextFireTime = trigger.hasNextFireTime();
-            if (nextFireTime != null) {
-                outputCtx.writeShort(PersisterEnums.EXPIRE_TIMER);
-                outputCtx.writeLong(ejobCtx.getExpireAction().getFactHandle().getId());
-                outputCtx.writeLong(nextFireTime.getTime());
-            }
-        }
-
-        @Override
-        public ProtobufMessages.Timers.Timer serialize(JobContext jobCtx,
-                                                       MarshallerWriteContext outputCtx) {
-            // ExpireJob, no state
-            ExpireJobContext ejobCtx = (ExpireJobContext) jobCtx;
-            WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
-            DefaultJobHandle jobHandle = (DefaultJobHandle) ejobCtx.getJobHandle();
-            PointInTimeTrigger trigger = (PointInTimeTrigger) jobHandle.getTimerJobInstance().getTrigger();
-            Date nextFireTime = trigger.hasNextFireTime();
-            if (nextFireTime != null) {
-                return ProtobufMessages.Timers.Timer.newBuilder()
-                        .setType(ProtobufMessages.Timers.TimerType.EXPIRE)
-                        .setExpire(ProtobufMessages.Timers.ExpireTimer.newBuilder()
-                                           .setHandleId(expireAction.getFactHandle().getId())
-                                           .setNextFireTimestamp(nextFireTime.getTime())
-                                           .build())
-                        .build();
-            } else {
-                // There is no reason to serialize a timer when it has no future execution time.
-                return null;
-            }
-        }
-    }
-
-    public static class ExpireJobContextTimerInputMarshaller
-            implements
-            TimersInputMarshaller {
-        public void read(MarshallerReaderContext inCtx) throws IOException,
-                                                               ClassNotFoundException {
-
-            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readLong() );
-
-            long nextTimeStamp = inCtx.readLong();
-
-            TimerService clock = inCtx.wm.getTimerService();
-
-            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) factHandle ),
-                                                      inCtx.wm );
-            JobHandle handle = clock.scheduleJob( job,
-                                                  jobctx,
-                                                  PointInTimeTrigger.createPointInTimeTrigger( nextTimeStamp, null ) );
-            jobctx.setJobHandle( handle );
-
-        }
-
-        @Override
-        public void deserialize(MarshallerReaderContext inCtx,
-                                Timer timer) throws ClassNotFoundException {
-            ExpireTimer expire = timer.getExpire();
-            InternalFactHandle factHandle = inCtx.handles.get( expire.getHandleId() );
-
-            TimerService clock = inCtx.wm.getTimerService();
-
-            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction((EventFactHandle)factHandle),
-                                                      inCtx.wm );
-            JobHandle jobHandle = clock.scheduleJob( job,
-                                                     jobctx,
-                                                     PointInTimeTrigger.createPointInTimeTrigger( expire.getNextFireTimestamp(), null ) );
-            jobctx.setJobHandle( jobHandle );
-            ((EventFactHandle) factHandle).addJob(jobHandle);
-        }
-    }
-
     @Override
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                        ModifyPreviousTuples modifyPreviousTuples,
@@ -758,7 +636,7 @@ public class ObjectTypeNode extends ObjectSource
 
 
     public static class ObjectTypeNodeMemory implements Memory {
-        private ClassAwareObjectStore.SingleClassStore store;
+        private FactHandleClassStore store;
         private Class<?> classType;
 
         ObjectTypeNodeMemory(Class<?> classType) {
@@ -767,7 +645,7 @@ public class ObjectTypeNode extends ObjectSource
 
         ObjectTypeNodeMemory(Class<?> classType, InternalWorkingMemory wm) {
             this(classType);
-            store = ((ClassAwareObjectStore) wm.getObjectStore()).getOrCreateClassStore(classType);
+            store = wm.getStoreForClass(classType);
         }
 
         @Override
@@ -776,7 +654,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public Iterator<InternalFactHandle> iterator() {
-            return store.factHandlesIterator(true);
+            return store.iterator();
         }
 
         @Override

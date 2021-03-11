@@ -16,17 +16,53 @@
 
 package org.drools.model.functions;
 
-public abstract class IntrospectableLambda {
+import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class IntrospectableLambda implements Supplier<Object> {
+    private static final Logger logger = LoggerFactory.getLogger(IntrospectableLambda.class);
+
     private String lambdaFingerprint;
+
+    // Duplicated from CoreComponentsBuilder to avoid dependency on drools-core in drools-canonical-model
+    static boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
 
     public abstract Object getLambda();
 
+    protected IntrospectableLambda() { }
+
+    protected IntrospectableLambda(String lambdaFingerprint) {
+        this.lambdaFingerprint = lambdaFingerprint;
+    }
+
+    @Override
+    public final Object get() {
+        return getLambda();
+    }
+
     @Override
     public String toString() {
-        if(lambdaFingerprint == null) {
-            lambdaFingerprint = LambdaPrinter.print(getLambda());
+        if (lambdaFingerprint == null) {
+            lambdaFingerprint = generateFingerprint();
         }
+
         return lambdaFingerprint;
+    }
+
+    private String generateFingerprint() {
+        if(this.getLambda() instanceof HashedExpression) {
+            logger.debug("The constraint supports org.drools.model.functions.HashedExpression, node sharing is enabled and compile-time fingerprint is used");
+            return ((HashedExpression) this.getLambda()).getExpressionHash();
+        } else if(!IS_NATIVE_IMAGE) {
+            // LambdaIntrospector is not supported on native image (it uses MVEL and reflection)
+            logger.debug("No HashedExpression provided, generating fingerprint using reflection via org.drools.mvel.asm.LambdaIntrospector, node sharing enabled");
+            return LambdaPrinter.print(getLambda());
+        } else {
+            logger.warn("No HashedExpression provided with lambda, using System.identityHashCode as the lambda fingerprint, this will impact performances as node sharing won't work correctly");
+            return "HASHCODE-FINGEPRINT" + System.identityHashCode(this);
+        }
     }
 
     @Override

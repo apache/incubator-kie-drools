@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.builder.impl;
 
@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -313,13 +314,17 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private TypeDeclarationBuilder createTypeDeclarationBuilder() {
         TypeDeclarationBuilderFactory typeDeclarationBuilderFactory =
-                Optional.ofNullable(ServiceRegistry.getInstance().get(TypeDeclarationBuilderFactory.class))
+                Optional.ofNullable(ServiceRegistry.getService(TypeDeclarationBuilderFactory.class))
                         .orElse(new DefaultTypeDeclarationBuilderFactory());
 
         return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
     }
 
-    public void setReleaseId( ReleaseId releaseId ) {
+    public ReleaseId getReleaseId() {
+        return releaseId;
+    }
+
+    public void setReleaseId(ReleaseId releaseId ) {
         this.releaseId = releaseId;
     }
 
@@ -462,7 +467,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    protected static File createDumpDrlFile(File dumpDir, String fileName, String extension) {
+    public static File createDumpDrlFile(File dumpDir, String fileName, String extension) {
         return new File(dumpDir, fileName.replaceAll("[^a-zA-Z0-9\\.\\-_]+", "_") + extension);
     }
 
@@ -773,19 +778,19 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
-        assemblers.addResource(this,
-                              resource,
-                              type,
-                              configuration);
+        assemblers.addResourceAfterRules(this,
+                               resource,
+                               type,
+                               configuration);
     }
 
     @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
-        assemblers.addResources(this, resources, type);
+        assemblers.addResourcesAfterRules(this, resources, type);
     }
 
     void addPackageFromXSD(Resource resource, ResourceConfiguration configuration) throws IOException {
@@ -896,20 +901,20 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     /**
-     * This adds a package from a Descr/AST This will also trigger a compile, if
-     * there are any generated classes to compile of course.
+     * Adds a package from a Descr/AST also triggering its compilation
+     * and the generation of the corresponding rete/phreak network
      */
     @Override
     public void addPackage(final PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
+        PackageRegistry pkgRegistry = getOrCreatePackageRegistry( packageDescr );
         if (pkgRegistry == null) {
             return;
         }
 
         // merge into existing package
-        mergePackage(pkgRegistry, packageDescr);
+        mergePackage(pkgRegistry, packageDescr );
 
-        compileKnowledgePackages(packageDescr, pkgRegistry);
+        compileKnowledgePackages( packageDescr, pkgRegistry);
         wireAllRules();
         compileRete(packageDescr);
     }
@@ -1017,6 +1022,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         return pkgRegistry;
     }
 
+    public void registerPackage(PackageDescr packageDescr) {
+        if (isEmpty(packageDescr.getNamespace())) {
+            packageDescr.setNamespace(this.configuration.getDefaultPackageName());
+        }
+        initPackage(packageDescr);
+    }
+
     private void initPackage(PackageDescr packageDescr) {
         //Gather all imports for all PackageDescrs for the current package and replicate into
         //all PackageDescrs for the current package, thus maintaining a complete list of
@@ -1117,19 +1129,19 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
             try {
                 ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
-                rules.stream().parallel()
-                        .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
-                        .forEach(ruleDescr -> {
-                            initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
-                            RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
-                            ruleCxts.put(ruleDescr.getName(), context);
-                            List<? extends KnowledgeBuilderResult> results = addRule(context);
-                            if (!results.isEmpty()) {
-                            synchronized (this.results) {
-                                    this.results.addAll(results);
-                                }
-                            }
-                        })
+                                                                rules.stream().parallel()
+                                                                        .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
+                                                                        .forEach(ruleDescr -> {
+                                                                            initRuleDescr(packageDescr, pkgRegistry, ruleDescr);
+                                                                            RuleBuildContext context = buildRuleBuilderContext(pkgRegistry, ruleDescr);
+                                                                            ruleCxts.put(ruleDescr.getName(), context);
+                                                                            List<? extends KnowledgeBuilderResult> results = addRule(context);
+                                                                            if (!results.isEmpty()) {
+                                                                                synchronized (this.results) {
+                                                                                    this.results.addAll(results);
+                                                                                }
+                                                                            }
+                                                                        })
                 ).get();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException("Rules compilation failed or interrupted", e);
@@ -1638,14 +1650,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         normalizeRuleAnnotations(packageDescr, pkgRegistry.getTypeResolver());
     }
 
-    void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         processAccumulateFunctions(pkgRegistry, packageDescr);
         processWindowDeclarations(pkgRegistry, packageDescr);
         processFunctions(pkgRegistry, packageDescr);
         processGlobals(pkgRegistry, packageDescr);
     }
 
-    private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    protected void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         Set<String> existingGlobals = new HashSet<>(pkg.getGlobals().keySet());
 
@@ -1686,8 +1698,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    private void processAccumulateFunctions(PackageRegistry pkgRegistry,
-                                            PackageDescr packageDescr) {
+    protected void processAccumulateFunctions(PackageRegistry pkgRegistry,
+                                              PackageDescr packageDescr) {
         for (final AccumulateImportDescr aid : packageDescr.getAccumulateImports()) {
             AccumulateFunction af = loadAccumulateFunction(pkgRegistry,
                                                            aid.getFunctionName(),
@@ -1702,11 +1714,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                                                       String className) {
         try {
             Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>) pkgRegistry.getTypeResolver().resolveType(className);
-            return clazz.newInstance();
+            return clazz.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
                                        e);
-        } catch (InstantiationException e) {
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
                                        e);
         } catch (IllegalAccessException e) {
@@ -1715,8 +1727,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    private void processFunctions(PackageRegistry pkgRegistry,
-                                  PackageDescr packageDescr) {
+    protected void processFunctions(PackageRegistry pkgRegistry,
+                                    PackageDescr packageDescr) {
         for (FunctionDescr function : packageDescr.getFunctions()) {
             Function existingFunc = pkgRegistry.getPackage().getFunctions().get(function.getName());
             if (existingFunc != null && function.getNamespace().equals(existingFunc.getNamespace())) {
@@ -1753,8 +1765,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    private void processWindowDeclarations(PackageRegistry pkgRegistry,
-                                           PackageDescr packageDescr) {
+    protected void processWindowDeclarations(PackageRegistry pkgRegistry,
+                                             PackageDescr packageDescr) {
         for (WindowDeclarationDescr wd : packageDescr.getWindowDeclarations()) {
             WindowDeclaration window = new WindowDeclaration(wd.getName(), packageDescr.getName());
             // TODO: process annotations
@@ -1989,11 +2001,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
      * there were errors on items that a rule depends on (eg functions), then
      * you will get spurious errors which will not be that helpful.
      */
-    protected void resetErrors() {
+    public void resetErrors() {
         resetProblemType(ResultSeverity.ERROR);
     }
 
-    protected void resetWarnings() {
+    public void resetWarnings() {
         resetProblemType(ResultSeverity.WARNING);
     }
 
@@ -2007,7 +2019,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         this.results.removeAll(toBeDeleted);
     }
 
-    protected void resetProblems() {
+    public void resetProblems() {
         this.results.clear();
         if (this.processBuilder != null) {
             this.processBuilder.getErrors().clear();
@@ -2387,14 +2399,27 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
+    public final void buildPackages( Collection<CompositePackageDescr> packages ) {
+        // this 2 build steps are called in sequence here, but are interleaved by processes and assemblers compilation
+        // during the build lifecycle of the CompositeKnowledgeBuilderImpl
+        doFirstBuildStep(packages);
+        doSecondBuildStep(packages);
+    }
+
     // composite build lifecycle
 
-    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+    /**
+     * Performs the actual building of rules, but may be empty in subclasses
+     */
+    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages ) {
         buildPackagesWithoutRules(packages);
         buildRules(packages);
     }
 
-    public void postBuild() { }
+    /**
+     * Used by subclasses that need to perform the build after the assemblers
+     */
+    protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);

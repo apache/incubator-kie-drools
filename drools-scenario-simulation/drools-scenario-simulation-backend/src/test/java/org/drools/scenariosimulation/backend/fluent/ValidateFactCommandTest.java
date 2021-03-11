@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.internal.command.RegistryContext;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.any;
@@ -69,7 +69,6 @@ public class ValidateFactCommandTest {
 
         when(kieSession.getObjects(any(ObjectFilter.class))).thenReturn(Collections.emptyList());
         when(scenarioResult.getFactMappingValue()).thenReturn(factMappingValue);
-        when(factMappingValue.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
         validateFactCommand.execute(registryContext);
         verify(scenarioResult, times(0)).setResult(anyBoolean());
     }

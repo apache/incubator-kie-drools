@@ -28,7 +28,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -98,18 +97,18 @@ public class DefaultBetaConstraints
             indexed = 0;
         } else {
             int depth = config.getCompositeKeyDepth();
-            if ( !compositeAllowed( constraints, betaNodeType ) ) {
+            if ( !compositeAllowed( constraints, betaNodeType, config ) ) {
                 // UnificationRestrictions cannot be allowed in composite indexes
                 // We also ensure that if there is a mixture that standard restriction is first
                 depth = 1;
             }
-            initIndexes( depth, betaNodeType );
+            initIndexes( depth, betaNodeType, config );
         }
     }
 
-    public void initIndexes(int depth, short betaNodeType) {
+    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
         indexed = 0;
-        boolean[] indexable = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints);
+        boolean[] indexable = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints, config);
         for (boolean i : indexable) {
             if (i) {
                 indexed++;
@@ -287,9 +286,7 @@ public class DefaultBetaConstraints
 
     public void registerEvaluationContext(BuildContext buildContext) {
         for (int i = 0; i < constraints.length; i++) {
-            if (constraints[i] instanceof MvelConstraint) {
-                ((MvelConstraint) constraints[i]).registerEvaluationContext(buildContext);
-            }
+            constraints[i].registerEvaluationContext(buildContext);
         }
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.dmg.pmml.True;
 import org.junit.Test;
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
 import static org.junit.Assert.assertEquals;

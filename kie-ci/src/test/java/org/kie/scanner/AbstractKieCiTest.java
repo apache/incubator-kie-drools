@@ -146,7 +146,7 @@ public class AbstractKieCiTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(ksessionName).setDefault(isdefault)
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType(ClockTypeOption.get("realtime"));
+                .setClockType(ClockTypeOption.REALTIME);
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
@@ -314,7 +314,7 @@ public class AbstractKieCiTest {
         return km;
     }
 
-    protected File createKPom(FileManager fileManager, ReleaseId releaseId, ReleaseId... dependencies) throws IOException {
+    protected File createKPom( FileManager fileManager, ReleaseId releaseId, ReleaseId... dependencies) throws IOException {
         File pomFile = fileManager.newFile("pom.xml");
         fileManager.write(pomFile, getPom(releaseId, dependencies));
         return pomFile;

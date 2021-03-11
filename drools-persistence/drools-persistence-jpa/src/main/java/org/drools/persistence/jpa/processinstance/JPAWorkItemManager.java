@@ -128,7 +128,11 @@ public class JPAWorkItemManager implements WorkItemManager {
             if ( workItems != null ) {
                 workItems.remove( id );
             }
-            context.remove( workItemInfo );
+            // work item may have been aborted while calling handler.abortWorkItem above
+            workItemInfo = (WorkItemInfo) context.findWorkItem( id );
+            if ( workItemInfo != null ) {
+                context.remove( workItemInfo );
+            }
         }
     }
 

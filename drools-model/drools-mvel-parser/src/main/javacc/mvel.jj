@@ -84,13 +84,45 @@ import static com.github.javaparser.Range.*;
 import static com.github.javaparser.Position.*;
 import static com.github.javaparser.ast.type.ArrayType.*;
 import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
+import static org.drools.mvel.parser.utils.AstUtils.*;
 
 import com.github.javaparser.JavaToken;
 
-import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
-
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
+    private boolean optionalSemicolon = true;
+    private int nestedBlocks = 0;
+    private boolean isWithOrModify = false;
+
+    public void setOptionalSemicolon(boolean optionalSemicolon) {
+        this.optionalSemicolon = optionalSemicolon;
+    }
+
+    public boolean shouldTerminateStatement() {
+        Token token = getToken(1);
+        return (this.optionalSemicolon && (
+                    ( token.kind == RBRACE ) ||
+                    ( token.kind == IDENTIFIER ) ||
+                    ( this.isWithOrModify && token.kind == COMMA ) ||
+                    ( token.specialToken != null &&
+                        ( token.specialToken.kind == UNIX_EOL ||
+                          token.specialToken.kind == WINDOWS_EOL ||
+                          token.specialToken.kind == SINGLE_LINE_COMMENT ) ) ) );
+
+    }
+
+    public boolean inBlock() {
+        return nestedBlocks > 0;
+    }
+
+    public void enterBlock() {
+        this.nestedBlocks++;
+    }
+
+    public void leaveBlock() {
+        this.nestedBlocks--;
+    }
+
     /* Returns the JavaParser specific token type of the last matched token */
     JavaToken token() {
         if(token.toString() == null) {
@@ -130,6 +162,12 @@ SPECIAL_TOKEN :
   <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
       "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u200b", "\u200c", "\u200d", "\u2028", "\u2029", "\u202f", "\u205f", "\u2060", "\u3000", "\ufeff"]>
 | <OLD_MAC_EOL: "\r">
+}
+
+SPECIAL_TOKEN :
+{
+<UNIX_EOL: "\n">
+| <WINDOWS_EOL : "\r\n">
 }
 
 TOKEN_MGR_DECLS :
@@ -296,15 +334,17 @@ TOKEN :
 | < EXPORTS: "exports" >
 | < PROVIDES: "provides" >
 | < TRANSITIVE: "transitive" >
+| < UNIT: "unit" >
 | < RULE: "rule" >
+| < WHEN: "when" >
 | < NOT: "not" >
 | < MODIFY: "modify" >
 | < MVEL_STARTS_WITH: "str[startsWith]" >
 | < MVEL_ENDS_WITH: "str[endsWith]" >
 | < MVEL_LENGTH: "str[length]" >
-| <UNIX_EOL: "\n">
-| <WINDOWS_EOL : "\r\n">
-
+| < DOT_DOT_SLASH: "../" >
+| < HASHMARK: "#" >
+| < EXCL_DOT: "!." >
 }
 
 /* LITERALS */
@@ -1490,7 +1530,7 @@ Expression ConditionalOrExpression():
 }
 {
   ret = ConditionalAndExpression()
-  ( "||" (EOL())* right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
+  ( "||"  right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
   { return ret; }
 }
 
@@ -1500,7 +1540,7 @@ Expression ConditionalAndExpression():
 	Expression right;
 }
 {
-  ret = InclusiveOrExpression() ( "&&" (EOL())* right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
+  ret = InclusiveOrExpression() ( "&&"  right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
   { return ret; }
 }
 
@@ -1646,7 +1686,6 @@ Expression UnaryExpression():
 	  ( "+" { op = UnaryExpr.Operator.PLUS; begin=token();} |
 	    "-" { op = UnaryExpr.Operator.MINUS; begin=token();}
 	  ) ret = UnaryExpression()
-	  (EOL())*
 	  {
         ret = new UnaryExpr(range(begin, token()), ret, op);
 	  }
@@ -1655,6 +1694,9 @@ Expression UnaryExpression():
 	|
       LOOKAHEAD(MapCreationLiteralExpression())
         ret = MapCreationLiteralExpression()
+    |
+      LOOKAHEAD(ListCreationLiteralExpression())
+        ret = ListCreationLiteralExpression()
   )
   { return ret; }
 }
@@ -1904,7 +1946,7 @@ Expression PrimaryPrefix():
 	  	{
 
 	  		if (hasArgs) {
-	  			ret = new MethodCallExpr(range(begin, token()), null, null, name, args);
+	  			ret = parseMethodExprOrHalfBinary(range(begin, token()), name, args);
 			} else {
 	  			ret = new DrlNameExpr(name, numberOfBackReferences );
 			}
@@ -2069,10 +2111,8 @@ NodeList<Expression> ArgumentList():
 	Expression expr;
 }
 {
-  (EOL())*
   expr = Expression() { ret.add(expr); }
-  (EOL())*
-  ( "," (EOL())* expr = Expression() { ret.add(expr); } )*
+  ( ","  expr = Expression() { ret.add(expr); } )*
   { return ret; }
 }
 
@@ -2210,6 +2250,7 @@ BlockStmt Block():
 {
 	NodeList<Statement> stmts = emptyList();
 	JavaToken begin;
+	this.enterBlock();
 }
 {
     "{" {begin=token();}
@@ -2222,6 +2263,8 @@ BlockStmt Block():
         BlockStmt block = new BlockStmt(range(begin, token()), new NodeList<Statement>());
         block.setParsed(UNPARSABLE);
         return block;
+    } finally {
+        this.leaveBlock();
     }
 }
 
@@ -2241,7 +2284,7 @@ Statement BlockStatement():
             modifier = Modifiers()
             typeDecl = ClassOrInterfaceDeclaration(modifier) { ret = new LocalClassDeclarationStmt(range(typeDecl, token()), typeDecl); }
         | LOOKAHEAD(VariableDeclarationExpression() )
-            expr = VariableDeclarationExpression() ";"
+            expr = VariableDeclarationExpression() EOS()
             { ret = new ExpressionStmt(range(expr, token()), expr); }
         |
             ret = Statement()
@@ -2271,7 +2314,7 @@ VariableDeclarationExpr VariableDeclarationExpression():
 EmptyStmt EmptyStatement():
 {}
 {
-    (";"|EOL())
+    ";"
     { return new EmptyStmt(tokenRange()); }
 }
 
@@ -2317,8 +2360,7 @@ ExpressionStmt StatementExpression():
             op = AssignmentOperator() value = Expression() { expr = new AssignExpr(range(expr, token()), expr, value, op); }
         ]
     )
-    (";")*
-    (EOL())* // TODO: should support also windows EOL
+    (EOS())// TODO: should support also windows EOL
     { return new ExpressionStmt(range(expr, token()), expr); }
 }
 
@@ -2611,17 +2653,19 @@ ModifyStatement ModifyStatement():
     Expression modifyObject = null;
 }
 {
+    { this.isWithOrModify = true; }
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)?)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>)*(EOL())*
+                          (<COMMA>)*
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|EOL())*
+            (<SEMICOLON>)?
             {
+                this.isWithOrModify = false;
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
 
@@ -2639,17 +2683,19 @@ WithStatement WithStatement():
     Expression withObject = null;
 }
 {
+    { this.isWithOrModify = true; }
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)*)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>|EOL())
+                          <COMMA>
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|EOL())*
+            (<SEMICOLON>)?
             {
+                this.isWithOrModify = false;
                 return new WithStatement(range(begin, token()), withObject, all);
             }
 
@@ -2987,6 +3033,51 @@ NodeList<Expression> Expressions():
   { return ret; }
 }
 
+
+
+CompilationUnit DrlxCompilationUnit():
+{
+	PackageDeclaration pakage = null;
+	NodeList<ImportDeclaration> imports = emptyList();
+	ImportDeclaration in = null;
+	NodeList<TypeDeclaration<?>> types = emptyList();
+    ModifierHolder modifier;
+	TypeDeclaration<?> tn = null;
+	ModuleDeclaration module = null;
+	SimpleName unit = null;
+}
+{
+    try {
+        ( LOOKAHEAD(2)";" )*
+        [ LOOKAHEAD(PackageDeclaration()) pakage = PackageDeclaration() ]
+        (
+            in = ImportDeclaration() { imports = add(imports, in); }
+        |
+            unit = UnitDeclaration() // FIXME keep name around
+            modifier = Modifiers()
+            ( tn = RuleDeclaration(modifier) { types = add(types, tn); } )*
+        )*
+        (<EOF> | <CTRL_Z>)
+        { return new CompilationUnit(range(token_source.getHomeToken(), token()), pakage, imports, types, new ModuleDeclaration().setName(unit.getIdentifier())); }
+    } catch (ParseException e) {
+        recover(EOF, e);
+        final CompilationUnit compilationUnit = new CompilationUnit(range(token_source.getHomeToken(), token()), null, new NodeList<ImportDeclaration>(), new NodeList<TypeDeclaration<?>>(), null);
+        compilationUnit.setParsed(UNPARSABLE);
+        return compilationUnit;
+    }
+}
+
+SimpleName UnitDeclaration():
+{
+    SimpleName name;
+}
+{
+    <UNIT>
+    name = SimpleName()
+    ";"
+    { return name; }
+}
+
 RuleDeclaration RuleDeclaration(ModifierHolder modifier):
 {
     SimpleName name;
@@ -2994,7 +3085,7 @@ RuleDeclaration RuleDeclaration(ModifierHolder modifier):
     RuleBody body;
 }
 {
-  "rule"
+  <RULE>
   name = SimpleName()
   body = RuleBody()
 
@@ -3007,11 +3098,9 @@ RuleBody RuleBody():
     JavaToken begin;
 }
 {
-  "{" { begin=token(); }
+  { begin=token(); }
   items = RuleItems()
-  "}"
-
-    { return new RuleBody(range(begin, token()), items); }
+  { return new RuleBody(range(begin, token()), items); }
 }
 
 NodeList<RuleItem> RuleItems():
@@ -3022,11 +3111,14 @@ NodeList<RuleItem> RuleItems():
 }
 {
   (
+      <WHEN> "{"
+      (
     item = RulePattern() { items.add(item); }
-  |
+      )*
+      "}"
+      <DO>
     item = RuleConsequence() { items.add(item); }
-  )*
-
+  )+
     { return items; }
 }
 
@@ -3053,7 +3145,7 @@ RuleConsequence RuleConsequence():
     BlockStmt block;
 }
 {
-  "do" { begin=token(); }
+  { begin=token(); }
   block = Block()
 
     { return new RuleConsequence(range(begin, token()), block); }
@@ -3151,6 +3243,47 @@ Expression MapCreationLiteralExpressionKeyValuePair():
     )
 }
 
+Expression ListCreationLiteralExpression():
+{
+    JavaToken begin = null;
+    Expression first = null;
+    Expression other = null;
+    NodeList<Expression> all = emptyList();
+}
+{
+    (
+        (
+            <LBRACKET>
+            (first = ListCreationLiteralExpressionElement() { begin=token(); all.add(first); })*
+            (
+                          <COMMA>
+                          other = ListCreationLiteralExpressionElement() { all.add(other); }
+            )*
+            <RBRACKET>
+            {
+                begin = token();
+                return new ListCreationLiteralExpression(range(begin, token()), all);
+            }
+
+        )
+    )
+}
+
+Expression ListCreationLiteralExpressionElement():
+{
+        JavaToken begin;
+        Expression key = null;
+        Expression value = null;
+}
+{
+    (
+        value = PrimaryPrefix()
+        {
+            begin = token();
+            return new ListCreationLiteralExpressionElement(range(begin, token()), value);
+        }
+    )
+}
 
 Expression PointFreeExpr():
 {
@@ -3165,7 +3298,15 @@ Expression PointFreeExpr():
 {
     (
         (
-            left = PrimaryExpression() { begin=token(); }
+            left = PrimaryExpression()
+            {
+                // if we are in a Block {} we short-circuit;
+                // a PointFreeExpr is invalid in that case
+                if (this.inBlock()) {
+                    return left;
+                }
+                begin=token();
+            }
             (
                           <NOT>
                           { negated = true; }
@@ -3361,9 +3502,9 @@ TemporalLiteralChunkExpr TemporalLiteralChunk():
   { return ret; }
 }
 
-void EOL():
+void EOS():
 {
 }
 {
-    <UNIX_EOL>|<WINDOWS_EOL>
+   <SEMICOLON> | <EOF> | LOOKAHEAD( { this.shouldTerminateStatement() } ) {}
 }

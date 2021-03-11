@@ -29,16 +29,16 @@ import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
-import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.persistence.api.PersistentWorkItem;
-import org.drools.persistence.api.Transformable;
+import org.drools.serialization.protobuf.ProtobufInputMarshaller;
+import org.drools.serialization.protobuf.ProtobufMarshallerReaderContext;
+import org.drools.serialization.protobuf.ProtobufMarshallerWriteContext;
+import org.drools.serialization.protobuf.ProtobufOutputMarshaller;
 import org.kie.api.runtime.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +116,7 @@ public class WorkItemInfo implements PersistentWorkItem {
         if ( workItem == null ) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( workItemByteArray );
-                MarshallerReaderContext context = new MarshallerReaderContext( bais,
+                MarshallerReaderContext context = new ProtobufMarshallerReaderContext( bais,
                                                                                kBase,
                                                                                null,
                                                                                null,
@@ -129,7 +129,7 @@ public class WorkItemInfo implements PersistentWorkItem {
                     try {
                         context.close();
                         bais = new ByteArrayInputStream( workItemByteArray );
-                        context = new MarshallerReaderContext( bais,
+                        context = new ProtobufMarshallerReaderContext( bais,
                                                                kBase,
                                                                null,
                                                                null,
@@ -164,7 +164,7 @@ public class WorkItemInfo implements PersistentWorkItem {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            MarshallerWriteContext context = new MarshallerWriteContext( baos,
+            MarshallerWriteContext context = new ProtobufMarshallerWriteContext( baos,
                                                                          null,
                                                                          null,
                                                                          null,

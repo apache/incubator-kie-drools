@@ -56,7 +56,7 @@ public class OverlapsBeforeFunction
 
             return FEELFnResult.ofResult(result);
         } catch( Exception e ) {
-            // values are not comparable
+            // points are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }

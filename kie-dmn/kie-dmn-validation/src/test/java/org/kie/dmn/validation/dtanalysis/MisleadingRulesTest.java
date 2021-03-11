@@ -32,7 +32,7 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -75,5 +75,18 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
         assertTrue("This test case is not a Masked rule example",
                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+    }
+
+    @Test
+    public void testMisleadingRules2() {
+        List<DMNMessage> validate = validator.validate(getReader("MisleadingRules2.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_0cffdf05-071b-423b-94b9-182c2cc2435c");
+
+        assertThat(analysis.getGaps(), hasSize(0));
+
+        // no need for assert overlaps.
+
+        // MisleadingRules count.
+        assertThat(analysis.getMisleadingRules(), hasSize(0));
     }
 }

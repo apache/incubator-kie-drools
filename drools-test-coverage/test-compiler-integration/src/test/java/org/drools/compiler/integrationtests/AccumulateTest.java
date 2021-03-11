@@ -55,7 +55,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -63,7 +62,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -72,7 +70,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -301,7 +299,7 @@ public class AccumulateTest {
 
     }
 
-    @Test(timeout = 10000)
+    @Test()
     public void testAccumulateReverseModify() {
 
         final String drl = "package org.drools.compiler.test;\n" +
@@ -1666,7 +1664,7 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test //(timeout = 10000)
     public void testAccumulateWithPreviouslyBoundVariables() {
 
         final String drl = "package org.drools.compiler\n" +
@@ -3684,8 +3682,7 @@ public class AccumulateTest {
                         "   list.add($sum); \n" +
                         "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration,
-                                                                           drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
         try {
             final List<Integer> list = new ArrayList<>();
@@ -3778,7 +3775,7 @@ public class AccumulateTest {
                         "   list.add($avg); \n" +
                         "end\n";
 
-        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
 
         final List<Integer> list = new ArrayList<>();
@@ -3812,7 +3809,7 @@ public class AccumulateTest {
                 "    resultList.add($ave);\n" +
                 "end";
 
-        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
         final List<BigDecimal> resultList = new ArrayList<>();
         kieSession.setGlobal("resultList", resultList);
@@ -3846,7 +3843,7 @@ public class AccumulateTest {
                 "then\n " +
                 "end";
 
-        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
 
         try {
@@ -3875,7 +3872,7 @@ public class AccumulateTest {
                 "then\n " +
                 "end";
 
-        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
 
         try {
