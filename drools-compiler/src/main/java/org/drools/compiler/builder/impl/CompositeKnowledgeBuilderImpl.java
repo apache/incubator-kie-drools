@@ -105,14 +105,14 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResources();
         Collection<CompositePackageDescr> packages = buildPackageDescr();
         buildAssemblerResourcesBeforeRules();
-        if(buildRules) {
-            kBuilder.buildPackages(packages);
+        if (buildRules) {
+            kBuilder.doFirstBuildStep(packages);
         } else {
             kBuilder.buildPackagesWithoutRules(packages);
         }
         buildProcesses();
         buildAssemblerResourcesAfterRules();
-        kBuilder.postBuild();
+        kBuilder.doSecondBuildStep(packages);
         resourcesByType.clear();
         if (buildException != null) {
             throw buildException;

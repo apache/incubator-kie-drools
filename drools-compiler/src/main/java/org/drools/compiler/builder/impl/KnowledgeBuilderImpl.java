@@ -2399,14 +2399,27 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
+    public final void buildPackages( Collection<CompositePackageDescr> packages ) {
+        // this 2 build steps are called in sequence here, but are interleaved by processes and assemblers compilation
+        // during the build lifecycle of the CompositeKnowledgeBuilderImpl
+        doFirstBuildStep(packages);
+        doSecondBuildStep(packages);
+    }
+
     // composite build lifecycle
 
-    public void buildPackages( Collection<CompositePackageDescr> packages ) {
+    /**
+     * Performs the actual building of rules, but may be empty in subclasses
+     */
+    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages ) {
         buildPackagesWithoutRules(packages);
         buildRules(packages);
     }
 
-    public void postBuild() { }
+    /**
+     * Used by subclasses that need to perform the build after the assemblers
+     */
+    protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);

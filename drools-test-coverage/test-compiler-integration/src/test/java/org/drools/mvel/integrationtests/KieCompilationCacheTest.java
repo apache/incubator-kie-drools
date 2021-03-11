@@ -15,15 +15,22 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
+
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Message;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -42,7 +49,20 @@ import static org.junit.Assert.assertNotNull;
 /**
  * This is a sample class to launch a rule.
  */
-public class KieCompilationCacheTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class KieCompilationCacheTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieCompilationCacheTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testCompilationCache() throws Exception {
@@ -58,7 +78,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         
         ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
         InternalKieModule kieModule = (InternalKieModule) ks.getRepository().getKieModule( releaseId );
@@ -118,7 +138,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeKModuleXML(createKieProjectWithPackagesAnd2KieBases(ks).toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         
         InternalKieModule kieModule = (InternalKieModule) ks.getRepository().getKieModule( releaseId );
         byte[] jar = kieModule.getBytes();
@@ -177,7 +197,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
                 .generateAndWritePomXML(releaseId)
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .writeKModuleXML(createKieProjectWithPackagesAnd2KieBases(ks).toXML());
-        ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         
         InternalKieModule kieModule = (InternalKieModule) ks.getRepository().getKieModule( releaseId );
         byte[] jar = kieModule.getBytes();

@@ -158,9 +158,6 @@ public class TypeDeclarationTest {
 
     @Test
     public void testNoAnnotationUpdateIfError(){
-        // Note: Didn't applied new APIs because kieModule.getKnowledgePackagesForKieBase("defaultKieBase").size() returns 2.
-        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
-
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
         		"declare org.drools.EventA \n" +
@@ -194,6 +191,19 @@ public class TypeDeclarationTest {
 
         //just 1 package was created
         assertEquals(0, kbuilder.getKnowledgePackages().size());
+
+        // TODO: Odd behavior with new APIs (an error found for single test method. But no error for running the test class or parameterized)
+        // File a JIRA to revisit and write a valid test for new APIs and exec-model
+
+//        final Resource drlResource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str1));
+//        drlResource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1x.drl");
+//        final Resource drlResource2 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str2));
+//        drlResource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule2x.drl");
+//
+//        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, drlResource1, drlResource2);
+//        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+//        System.out.println(errors);
+//        assertFalse("Errors Expected", errors.isEmpty());
     }
 
     /**
@@ -612,7 +622,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should fail", errors.isEmpty());
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -627,7 +637,7 @@ public class TypeDeclarationTest {
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should fail", errors.isEmpty());
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -704,7 +714,7 @@ public class TypeDeclarationTest {
         assertTrue(errors.toString(), errors.isEmpty());
 
         InternalKieModule kieModule = (InternalKieModule)kieBuilder.getKieModule();
-        KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl)kieModule.getKnowledgeBuilderForKieBase("defaultKieBase");
+        KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl)kieModule.getKnowledgeBuilderForKieBase(KieBaseTestConfiguration.KIE_BASE_MODEL_NAME);
 
         for( KiePackage kp : kbuilder.getKnowledgePackages() ) {
             if ( kp.getName().equals( "org.drools" ) ) {

@@ -17,21 +17,38 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class DroolsFromRHSTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DroolsFromRHSTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DroolsFromRHSTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testHalt() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_halt.drl" ) );
-        final KieSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_halt.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal( "results",
@@ -48,8 +65,8 @@ public class DroolsFromRHSTest extends CommonTestMethodBase {
 
     @Test
     public void testFireLimit() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_fireLimit.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_fireLimit.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);

@@ -73,7 +73,7 @@ public class AbductionTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testBindNonAbductiveQueryError etc. File JIRAs
+        // Abduction is experimental. And not supported for exec-model
         return TestParametersUtil.getKieBaseCloudConfigurations(false, true);
     }
 
