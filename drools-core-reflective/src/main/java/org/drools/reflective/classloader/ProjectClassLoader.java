@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +61,8 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     private InternalTypesClassLoader typesClassLoader;
 
     private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
+
+    private Set<String> generatedClassNames = new HashSet<>();
 
     private ResourceProvider resourceProvider;
 
@@ -123,7 +126,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
             return cls;
         }
 
-        if (containsInStore(ClassUtils.convertClassToResourcePath(name))) {
+        if (generatedClassNames.contains(name)) {
             Class<?> clazz = findLoadedClass(name); // skip parent classloader
             if (clazz != null) {
                 return clazz;
@@ -134,10 +137,15 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
                     return clazz;
                 }
             }
-            // if the class is stored in projectClassLoader, go straight to defineType
+            // if generated class, go straight to defineType
             cls = tryDefineType(name, null);
         } else {
-            cls = internalLoadClass(name, resolve);
+            try {
+                cls = internalLoadClass(name, resolve);
+            } catch (ClassNotFoundException e2) {
+                // for stored classes which are not in generatedClassNames
+                cls = loadType(name, resolve);
+            }
         }
 
         loadedClasses.put(name, cls);
@@ -167,6 +175,18 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
                 throw e1;
             }
         }
+    }
+
+    private Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
+        ClassNotFoundException cnfe = null;
+        if (typesClassLoader != null) {
+            try {
+                return typesClassLoader.loadType(name, resolve);
+            } catch (ClassNotFoundException e) {
+                cnfe = e;
+            }
+        }
+        return tryDefineType(name, cnfe);
     }
 
     // This method has to be public because is also used by the android ClassLoader
@@ -309,6 +329,14 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return resources;
     }
 
+    public Set<String> getGeneratedClassNames() {
+        return generatedClassNames;
+    }
+
+    public void setGeneratedClassNames(Set<String> generatedClassNames) {
+        this.generatedClassNames = generatedClassNames;
+    }
+
     private static class ResourcesEnum implements Enumeration<URL> {
 
         private URL providedResource;
@@ -337,10 +365,6 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public byte[] getBytecode(String resourceName) {
         return store == null ? null : store.get(resourceName);
-    }
-
-    public boolean containsInStore(String resourceName) {
-        return store == null ? false : store.containsKey(resourceName);
     }
 
     @Override

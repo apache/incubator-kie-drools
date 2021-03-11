@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,6 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.builder.ModelSourceClass.getProjectModelClassNameNameWithReleaseId;
@@ -122,6 +122,7 @@ public class CanonicalKieModule implements InternalKieModule {
     private final Map<String, Model> models = new HashMap<>();
     private Collection<String> ruleClassesNames;
     private boolean incrementalUpdate = false;
+    private Set<String> generatedClassNames = new HashSet<>();
 
     private ProjectClassLoader moduleClassLoader;
 
@@ -197,6 +198,11 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public Map<String, byte[]> getClassesMap() {
         return internalKieModule.getClassesMap();
+    }
+
+    @Override
+    public void addGeneratedClassNames(Set<String> classNames) {
+        generatedClassNames.addAll(classNames);
     }
 
     @Override
@@ -372,6 +378,7 @@ public class CanonicalKieModule implements InternalKieModule {
         if (moduleClassLoader == null) {
             moduleClassLoader = createModuleClassLoader(null);
             moduleClassLoader.storeClasses(getClassesMap());
+            moduleClassLoader.setGeneratedClassNames(generatedClassNames);
         }
         return moduleClassLoader;
     }

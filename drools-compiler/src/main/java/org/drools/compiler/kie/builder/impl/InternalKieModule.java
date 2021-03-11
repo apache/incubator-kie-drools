@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -193,9 +194,9 @@ public interface InternalKieModule extends KieModule, Serializable {
         }
     }
 
-    default void updateKieModule(InternalKieModule newKM) {
+    default void updateKieModule(InternalKieModule newKM) {}
 
-    }
+    default void addGeneratedClassNames(Set<String> classNames) {}
 
     class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;
