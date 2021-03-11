@@ -10,18 +10,18 @@
       }
     }
   ],
-  "states":[
+  "states": [
     {
-      "name":"HelloWorld",
-      "type":"operation",
+      "name": "HelloWorld",
+      "type": "operation",
       "start": true,
-      "actionMode":"sequential",
-      "actions":[
+      "actionMode": "sequential",
+      "actions": [
         {
           "functionRef": {
             "refName": "helloWorld",
-            "parameters" : {
-              "script" : "System.out.println(\"Hello Serverless Workflow World\");"
+            "parameters": {
+              "script": "System.out.println(\"Hello Serverless Workflow World\");"
             }
           }
         }
@@ -32,7 +32,7 @@
     },
     {
       "name": "SmallDelay",
-      "type":"delay",
+      "type": "delay",
       "timeDelay": "PT1S",
       "end": {
         "terminate": "true"

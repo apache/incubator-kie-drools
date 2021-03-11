@@ -30,7 +30,8 @@
       "onEvents": [
         {
           "eventRefs": [
-            "TestKafkaEvent", "TestKafkaEvent2"
+            "TestKafkaEvent",
+            "TestKafkaEvent2"
           ],
           "eventDataFilter": {
             "dataOutputPath": "{{ $.data.greet }}"

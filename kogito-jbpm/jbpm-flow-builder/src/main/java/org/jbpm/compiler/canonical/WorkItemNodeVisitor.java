@@ -19,12 +19,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
+import org.jbpm.compiler.canonical.descriptors.TaskDescriptorBuilder;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -81,17 +82,14 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
         Work work = node.getWork();
         String workName = node.getWork().getName();
 
-        if (workName.equals("Service Task")) {
-            ServiceTaskDescriptor d = new ServiceTaskDescriptor(node, contextClassLoader);
-            String mangledName = d.mangledName();
-            CompilationUnit generatedHandler = d.generateHandlerClassForService();
-            metadata.getGeneratedHandlers().put(mangledName, generatedHandler);
-            workName = mangledName;
-        } else if (workName.equals("Rest Task")) {
-            workName = RestTaskDescriptor.getClassName(metadata);
-            metadata
-                    .getGeneratedHandlers()
-                    .computeIfAbsent(workName, RestTaskDescriptor::generateHandlerClassForService);
+        if (TaskDescriptorBuilder.isBuilderSupported(workName)) {
+            final TaskDescriptor taskDescriptor = new TaskDescriptorBuilder(workName)
+                    .withProcessMetadata(metadata)
+                    .withWorkItemNode(node)
+                    .withClassloader(contextClassLoader)
+                    .build();
+            workName = taskDescriptor.getName();
+            metadata.getGeneratedHandlers().put(workName, taskDescriptor.generateHandlerClassForService());
         }
 
         body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))

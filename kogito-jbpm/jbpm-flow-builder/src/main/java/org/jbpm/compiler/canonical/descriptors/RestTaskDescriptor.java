@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.compiler.canonical;
+package org.jbpm.compiler.canonical.descriptors;
+
+import org.jbpm.compiler.canonical.ProcessMetaData;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -21,16 +23,29 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
-public class RestTaskDescriptor {
+public class RestTaskDescriptor implements TaskDescriptor {
 
-    private RestTaskDescriptor() {
+    public static final String TYPE = "Rest Task";
+
+    private final ProcessMetaData processMetadata;
+
+    protected RestTaskDescriptor(final ProcessMetaData processMetadata) {
+        this.processMetadata = processMetadata;
     }
 
-    public static String getClassName(ProcessMetaData processMetadata) {
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
+    @Override
+    public String getName() {
         return processMetadata.getProcessId() + "RestWorkItemHandler";
     }
 
-    public static CompilationUnit generateHandlerClassForService(String className) {
+    @Override
+    public CompilationUnit generateHandlerClassForService() {
+        final String className = this.getName();
         CompilationUnit compilationUnit =
                 parse(RestTaskDescriptor.class.getResourceAsStream("/class-templates/RestWorkItemHandlerTemplate.java"));
         compilationUnit.setPackageDeclaration("org.kie.kogito.handlers");

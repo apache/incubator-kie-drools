@@ -12,7 +12,7 @@
       "name": "helloTwo",
       "metadata": {
         "type": "script"
-      }    
+      }
     },
     {
       "name": "helloThree",
@@ -21,18 +21,18 @@
       }
     }
   ],
-  "states":[
+  "states": [
     {
-      "name":"HelloWorld",
-      "type":"operation",
+      "name": "HelloWorld",
+      "type": "operation",
       "start": true,
-      "actionMode":"sequential",
-      "actions":[
+      "actionMode": "sequential",
+      "actions": [
         {
           "functionRef": {
             "refName": "helloOne",
-            "parameters" : {
-              "script" : "System.out.println(\"First Serverless Workflow World\");"
+            "parameters": {
+              "script": "System.out.println(\"First Serverless Workflow World\");"
             }
           }
         }
@@ -42,19 +42,19 @@
       }
     },
     {
-      "name":"UpdateArg",
-      "type":"operation",
-      "actionMode":"sequential",
+      "name": "UpdateArg",
+      "type": "operation",
+      "actionMode": "sequential",
       "stateDataFilter": {
         "dataInputPath": "{{ $.trace }}",
         "dataOutputPath": "{{ $.trace }}"
       },
-      "actions":[
+      "actions": [
         {
           "functionRef": {
             "refName": "helloTwo",
-            "parameters" : {
-              "script" : "System.out.println(\"Second Serverless Workflow World\");"
+            "parameters": {
+              "script": "System.out.println(\"Second Serverless Workflow World\");"
             }
           }
         }
@@ -64,15 +64,15 @@
       }
     },
     {
-      "name":"SaveResult",
-      "type":"operation",
-      "actionMode":"sequential",
-      "actions":[
+      "name": "SaveResult",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
         {
           "functionRef": {
             "refName": "helloThree",
-            "parameters" : {
-              "script" : "System.out.println(\"Third Serverless Workflow World\");"
+            "parameters": {
+              "script": "System.out.println(\"Third Serverless Workflow World\");"
             }
           }
         }

@@ -106,6 +106,13 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- OpenApi Required Libraries for Codegen Test -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-openapi-workitem</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

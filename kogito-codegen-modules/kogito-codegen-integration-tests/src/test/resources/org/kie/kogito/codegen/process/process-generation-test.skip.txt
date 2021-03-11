@@ -24,3 +24,4 @@ links/DifferentLinkProcess.bpmn2
 links/EmptyLinkProcess.bpmn2
 links/MultipleCatchLinkProcess.bpmn2
 links/UnconnectedLinkProcess.bpmn2
+openapi/petstore-classpath.sw.json

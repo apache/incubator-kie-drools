@@ -20,6 +20,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -47,6 +50,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final ClassLoader classLoader;
     protected final AppPaths appPaths;
     protected final String contextName;
+    protected final Map<String, Object> contextAttributes;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
 
@@ -61,6 +65,21 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         this.classLoader = builder.classLoader;
         this.appPaths = builder.appPaths;
         this.contextName = contextName;
+        this.contextAttributes = new HashMap<>();
+    }
+
+    protected static Properties load(File... resourcePaths) {
+        Properties applicationProperties = new Properties();
+
+        for (File resourcePath : resourcePaths) {
+            try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
+                applicationProperties.load(fileReader);
+            } catch (IOException ioe) {
+                LOGGER.debug("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
+            }
+        }
+
+        return applicationProperties;
     }
 
     @Override
@@ -118,18 +137,26 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         return appPaths;
     }
 
-    protected static Properties load(File... resourcePaths) {
-        Properties applicationProperties = new Properties();
+    @Override
+    public Map<String, Object> getContextAttributes() {
+        return Collections.unmodifiableMap(contextAttributes);
+    }
 
-        for (File resourcePath : resourcePaths) {
-            try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
-                applicationProperties.load(fileReader);
-            } catch (IOException ioe) {
-                LOGGER.debug("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
-            }
+    @Override
+    public <T> T getContextAttribute(String key, Class<T> asClass) {
+        final Object output = this.contextAttributes.get(key);
+        if (output == null) {
+            return null;
         }
+        if (asClass.isAssignableFrom(output.getClass())) {
+            return asClass.cast(output);
+        }
+        throw new AssertionError("Impossible to cast '" + key + "' key value as " + asClass.getName() + ", found " + output.getClass().getCanonicalName());
+    }
 
-        return applicationProperties;
+    @Override
+    public void addContextAttribute(String key, Object value) {
+        this.contextAttributes.put(key, value);
     }
 
     protected abstract static class AbstractBuilder implements Builder {
@@ -137,9 +164,9 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         protected String packageName = DEFAULT_PACKAGE_NAME;
         protected Properties applicationProperties = new Properties();
         protected AddonsConfig addonsConfig;
-        protected Predicate<String> classAvailabilityResolver = this::hasClass;
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath());
+        protected Predicate<String> classAvailabilityResolver = this::hasClass;
+        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath(), classLoader);
 
         protected AbstractBuilder() {
         }

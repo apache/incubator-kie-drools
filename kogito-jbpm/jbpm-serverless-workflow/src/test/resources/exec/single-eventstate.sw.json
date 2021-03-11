@@ -2,40 +2,49 @@
   "id": "function",
   "name": "test-wf",
   "version": "1.0",
-  "events": [{
-    "name": "TestKafkaEvent",
-    "source": "testtopic",
-    "type": "kafka"
-  }],
-  "functions": [{
-    "name": "greetFunction",
-    "metadata": {
-      "type": "script"
+  "events": [
+    {
+      "name": "TestKafkaEvent",
+      "source": "testtopic",
+      "type": "kafka"
     }
-  }],
-  "states": [{
-    "name": "WaitForGreeting",
-    "type": "event",
-    "start": true,
-    "onEvents": [
-      {
-        "eventRefs": ["TestKafkaEvent"],
-        "eventDataFilter": {
-          "dataOutputPath": "{{ $.data.greet }}"
-        },
-        "actions":[
-          {
-            "functionRef": {
-              "refName": "greetFunction",
-              "parameters": {
-                "script": "System.out.println(\"Hello:\" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"testtopicVar\")).get(\"firstName\"));"
+  ],
+  "functions": [
+    {
+      "name": "greetFunction",
+      "metadata": {
+        "type": "script"
+      }
+    }
+  ],
+  "states": [
+    {
+      "name": "WaitForGreeting",
+      "type": "event",
+      "start": true,
+      "onEvents": [
+        {
+          "eventRefs": [
+            "TestKafkaEvent"
+          ],
+          "eventDataFilter": {
+            "dataOutputPath": "{{ $.data.greet }}"
+          },
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "greetFunction",
+                "parameters": {
+                  "script": "System.out.println(\"Hello:\" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"testtopicVar\")).get(\"firstName\"));"
+                }
               }
             }
-          }
-        ]
-      }],
-    "end": {
-      "terminate": "true"
+          ]
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
     }
-  }]
+  ]
 }

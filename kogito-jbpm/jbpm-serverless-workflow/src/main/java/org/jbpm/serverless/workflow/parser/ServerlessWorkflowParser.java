@@ -67,6 +67,7 @@ import io.serverlessworkflow.api.transitions.Transition;
 import io.serverlessworkflow.api.workflow.Functions;
 
 public class ServerlessWorkflowParser {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowParser.class);
 
     private static final String SCRIPT_TYPE = "script";
@@ -88,11 +89,6 @@ public class ServerlessWorkflowParser {
     public ServerlessWorkflowParser(String workflowFormat) {
         this.objectMapper = ServerlessWorkflowUtils.getObjectMapper(workflowFormat);
         this.factory = new ServerlessWorkflowFactory(WorkflowAppContext.ofAppResources());
-    }
-
-    public ServerlessWorkflowParser(String workflowFormat, WorkflowAppContext workflowAppContext) {
-        this.objectMapper = ServerlessWorkflowUtils.getObjectMapper(workflowFormat);
-        this.factory = new ServerlessWorkflowFactory(workflowAppContext);
     }
 
     public Process parseWorkFlow(Reader workflowFile) throws JsonProcessingException {
@@ -208,7 +204,6 @@ public class ServerlessWorkflowParser {
                 startEndMap.put(NODETOID_START, timerNode.getId());
                 startEndMap.put(NODETOID_END, timerNode.getId());
                 nameToNodeId.put(state.getName(), startEndMap);
-
             }
 
             if (state.getType().equals(DefaultState.Type.INJECT)) {
@@ -304,7 +299,6 @@ public class ServerlessWorkflowParser {
 
                     factory.connect(parallelSplit.getId(), callActivityNode.getId(), parallelSplit.getId() + "_" + callActivityNode.getId(), process);
                     factory.connect(callActivityNode.getId(), parallelJoin.getId(), callActivityNode.getId() + "_" + parallelJoin.getId(), process);
-
                 }
 
                 if (state.getStart() != null) {
@@ -342,6 +336,7 @@ public class ServerlessWorkflowParser {
                         for (ProduceEvent p : transition.getProduceEvents().subList(1, transition.getProduceEvents().size())) {
                             ActionNode newActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
                                     ServerlessWorkflowUtils.getWorkflowEventFor(workflow, p.getEventRef()), process);
+
                             if (lastActionNode == null) {
                                 lastActionNode = newActionNode;
                                 factory.connect(firstActionNode.getId(), lastActionNode.getId(), firstActionNode.getId() + "_" + lastActionNode.getId(), process);
@@ -394,12 +389,10 @@ public class ServerlessWorkflowParser {
 
                     factory.connect(eventSplit.getId(), eventNode.getId(), eventSplit.getId() + "_" + eventNode, process);
                     factory.connect(eventNode.getId(), targetId, eventNode.getId() + "_" + targetId, process);
-
                 }
             } else {
                 LOGGER.warn("switch state has no event conditions: {}", switchState.getName());
             }
-
         } else {
             LOGGER.error("unable to get event split node for switch state: {}", switchState.getName());
         }
@@ -500,7 +493,6 @@ public class ServerlessWorkflowParser {
                     ConstraintImpl constraintImpl = factory.splitConstraint(xorSplit.getId() + "_" + targetId,
                             "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getCondition()), 0, isDefaultConstraint);
                     xorSplit.addConstraint(new ConnectionRef(xorSplit.getId() + "_" + targetId, targetId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
-
                 }
             } else {
                 LOGGER.warn("switch state has no conditions: {}", switchState.getName());
@@ -527,7 +519,7 @@ public class ServerlessWorkflowParser {
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
                                         "cannot find function " + action.getFunctionRef().getRefName()));
-                if (actionFunction.getMetadata().get("type") != null) {
+                if (actionFunction.getMetadata() != null && actionFunction.getMetadata().get("type") != null) {
                     switch (actionFunction.getMetadata().get("type").toLowerCase()) {
                         case SCRIPT_TYPE:
                             current = factory
@@ -574,6 +566,13 @@ public class ServerlessWorkflowParser {
                         default:
                             current = unsupportedNode(action, embeddedSubProcess);
                     }
+                } else if (ServerlessWorkflowUtils.isOpenApiOperation(actionFunction)) {
+                    current = factory
+                            .openApiNode(
+                                    idCounter.getAndIncrement(),
+                                    action.getFunctionRef(),
+                                    actionFunction,
+                                    embeddedSubProcess);
                 } else {
                     current = unsupportedNode(action, embeddedSubProcess);
                 }
@@ -596,9 +595,7 @@ public class ServerlessWorkflowParser {
     }
 
     private org.kie.api.definition.process.Node unsupportedNode(Action action, CompositeContextNode embeddedSubProcess) {
-        LOGGER
-                .warn(
-                        "currently unsupported function type, supported types are 'script', 'sysout', 'service', 'decision', 'rule', 'integration', 'rest'");
+        LOGGER.warn("currently unsupported function type, supported types are 'script', 'sysout', 'service', 'rest'");
         LOGGER.warn("defaulting to script type");
         return factory.scriptNode(
                 idCounter.getAndIncrement(),
@@ -606,5 +603,4 @@ public class ServerlessWorkflowParser {
                 ServerlessWorkflowUtils.scriptFunctionScript(""),
                 embeddedSubProcess);
     }
-
 }

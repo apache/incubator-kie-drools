@@ -34,9 +34,20 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-rest-workitem</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-openapi-workitem</artifactId>
+      <!-- These dependencies is meant to be used only in the end user project -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

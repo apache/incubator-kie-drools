@@ -2,10 +2,10 @@
   "id": "function",
   "name": "test-wf",
   "version": "1.0",
-  "states":[
+  "states": [
     {
-      "name":"SimpleInject",
-      "type":"inject",
+      "name": "SimpleInject",
+      "type": "inject",
       "start": true,
       "data": {
         "name": "john"

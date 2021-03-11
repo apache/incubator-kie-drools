@@ -53,10 +53,10 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
     protected File outputDirectory;
 
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/kogito")
+    @Parameter(defaultValue = "${project.build.directory}/" + GeneratedFileWriter.DEFAULT_SOURCES_DIR)
     protected File generatedSources;
 
-    @Parameter(defaultValue = "${project.build.directory}/generated-resources/kogito")
+    @Parameter(defaultValue = "${project.build.directory}/" + GeneratedFileWriter.DEFAULT_RESOURCE_PATH)
     protected File generatedResources;
 
     @Parameter(property = "kogito.codegen.persistence", defaultValue = "true")

@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.sample.generator;
+package org.kie.kogito.codegen.openapi.client.io;
 
-import java.nio.file.Paths;
+import org.kie.kogito.codegen.openapi.client.OpenApiSpecDescriptor;
 
-import org.drools.core.io.impl.FileSystemResource;
-import org.kie.kogito.codegen.api.io.CollectedResource;
+/**
+ * Tries to resolve the specification file as defined in the source.
+ * <p>
+ * It will try to resolve it based on the given {@link OpenApiSpecDescriptor}. Supported schemas are:
+ * <ol>
+ * <li>file</li>
+ * <li>http</li>
+ * <li>classpath</li>
+ * </ol>
+ * <p>
+ * It defaults to <code>classpath</code> of the end user project if schema is empty.
+ */
+public interface PathResolver {
 
-public class Utils {
-
-    private Utils() {
-        // utility class
-    }
-
-    public static CollectedResource toCollectedResource(String path) {
-        return new CollectedResource(Paths.get(path), new FileSystemResource(path));
-    }
+    String resolve(OpenApiSpecDescriptor resource);
 }

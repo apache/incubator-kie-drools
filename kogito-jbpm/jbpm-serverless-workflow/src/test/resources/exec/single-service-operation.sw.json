@@ -12,13 +12,13 @@
       }
     }
   ],
-  "states":[
+  "states": [
     {
-      "name":"HelloWorld",
-      "type":"operation",
+      "name": "HelloWorld",
+      "type": "operation",
       "start": true,
-      "actionMode":"sequential",
-      "actions":[
+      "actionMode": "sequential",
+      "actions": [
         {
           "functionRef": {
             "refName": "helloWorld"

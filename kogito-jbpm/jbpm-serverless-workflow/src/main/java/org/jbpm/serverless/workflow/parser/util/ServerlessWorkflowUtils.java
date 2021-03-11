@@ -53,6 +53,8 @@ public class ServerlessWorkflowUtils {
     private static final String APP_PROPERTIES_EVENTS_BASE = "events.";
     private static final String APP_PROPERTIES_STATES_BASE = "states.";
 
+    public static final String OPENAPI_OPERATION_SEPARATOR = "#";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
 
     private ServerlessWorkflowUtils() {
@@ -268,6 +270,43 @@ public class ServerlessWorkflowUtils {
 
         LOGGER.warn("Could not resolve state metadata: {}", metadataKey);
         return "";
+    }
+
+    /**
+     * @see <a href="https://github.com/serverlessworkflow/specification/blob/master/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
+     *      Invocations</a>
+     * @param function to extract the OpenApi URI
+     * @return the OpenApi URI if found, or an empty string if not
+     */
+    public static String getOpenApiURI(FunctionDefinition function) {
+        if (isOpenApiOperation(function)) {
+            return function.getOperation().substring(0, function.getOperation().indexOf(OPENAPI_OPERATION_SEPARATOR));
+        }
+        return "";
+    }
+
+    /**
+     * @see <a href="https://github.com/serverlessworkflow/specification/blob/master/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
+     *      Invocations</a>
+     * @param function to extract the OpenApi operationId
+     * @return the OpenApi operationId if found, otherwise an empty string
+     */
+    public static String getOpenApiOperationId(FunctionDefinition function) {
+        final String uri = getOpenApiURI(function);
+        if (uri.isEmpty()) {
+            return "";
+        }
+        return function.getOperation().substring(uri.length() + 1);
+    }
+
+    /**
+     * Checks whether or not the Function definition is an OpenApi operation
+     *
+     * @param function to verify
+     * @return true if the given function refers to an OpenApi operation
+     */
+    public static boolean isOpenApiOperation(FunctionDefinition function) {
+        return function.getOperation() != null && function.getOperation().contains(OPENAPI_OPERATION_SEPARATOR);
     }
 
 }

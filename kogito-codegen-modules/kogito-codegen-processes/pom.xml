@@ -20,6 +20,11 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-codegen-core</artifactId>
         </dependency>
+        <!-- OpenAPI codegen is required to have access to the descriptors in the BuildContext -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-openapi</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jbpm-flow</artifactId>
@@ -47,11 +52,15 @@
             <artifactId>protostream</artifactId>
         </dependency>
 
-
         <!-- test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

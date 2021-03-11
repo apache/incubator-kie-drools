@@ -25,6 +25,7 @@
             <module>kogito-codegen-core</module>
             <module>kogito-codegen-api</module>
             <module>kogito-codegen-processes</module>
+            <module>kogito-codegen-openapi</module>
             <module>kogito-codegen-rules</module>
             <module>kogito-codegen-decisions</module>
             <module>kogito-codegen-predictions</module>

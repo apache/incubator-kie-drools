@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.mvel.java.JavaDialect;
+import org.jbpm.compiler.canonical.descriptors.OpenApiTaskDescriptor;
+import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -55,6 +57,10 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kogito.workitem.openapi.JsonNodeParameterResolver;
+import org.kogito.workitem.openapi.JsonNodeResultHandler;
+import org.kogito.workitem.openapi.suppliers.JsonNodeParameterExprSupplier;
+import org.kogito.workitem.openapi.suppliers.JsonNodeResultHandlerExprSupplier;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathExprSupplier;
 import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathResultExprSupplier;
@@ -86,7 +92,6 @@ public class ServerlessWorkflowFactory {
     public static final String SERVICE_INTERFACE_KEY = "interface";
     public static final String SERVICE_OPERATION_KEY = "operation";
     public static final String SERVICE_IMPL_KEY = "implementation";
-    public static final String SERVICE_ENDPOINT = "endpoint";
     public static final String DEFAULT_HT_TASKNAME = "workflowhtask";
     public static final String DEFAULT_HT_SKIPPABLE = "true";
     public static final String HT_TASKNAME = "taskname";
@@ -95,8 +100,16 @@ public class ServerlessWorkflowFactory {
     public static final String HT_ACTORID = "actorid";
     public static final String RF_GROUP = "ruleflowgroup";
     public static final String SERVICE_TASK_TYPE = "Service Task";
+    public static final String WORKITEM_INTERFACE = "Interface";
+    public static final String WORKITEM_OPERATION = "Operation";
+    public static final String WORKITEM_INTERFACE_IMPL = "interfaceImplementationRef";
+    public static final String WORKITEM_OPERATION_IMPL = "operationImplementationRef";
+    public static final String WORKITEM_PARAM_TYPE = "ParameterType";
+    public static final String WORKITEM_PARAM = "Parameter";
+    public static final String WORKITEM_RESULT = "Result";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowFactory.class);
-    private WorkflowAppContext workflowAppContext;
+    private final WorkflowAppContext workflowAppContext;
 
     public ServerlessWorkflowFactory(WorkflowAppContext workflowAppContext) {
         this.workflowAppContext = workflowAppContext;
@@ -360,28 +373,47 @@ public class ServerlessWorkflowFactory {
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setId(id);
         workItemNode.setName(name);
-        workItemNode.setMetaData("Type", SERVICE_TASK_TYPE);
+        workItemNode.setMetaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE);
 
         Work work = new WorkImpl();
         workItemNode.setWork(work);
 
         work.setName(SERVICE_TASK_TYPE);
-        work.setParameter("Interface", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_INTERFACE_KEY, workflowAppContext));
-        work.setParameter("Operation", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_OPERATION_KEY, workflowAppContext));
-        work.setParameter("interfaceImplementationRef", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_INTERFACE_KEY, workflowAppContext));
-        work.setParameter("operationImplementationRef", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_OPERATION_KEY, workflowAppContext));
-        work.setParameter("ParameterType", JSON_NODE);
+        work.setParameter(WORKITEM_INTERFACE, ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_INTERFACE_KEY, workflowAppContext));
+        work.setParameter(WORKITEM_OPERATION, ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_OPERATION_KEY, workflowAppContext));
+        work.setParameter(WORKITEM_INTERFACE_IMPL, ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_INTERFACE_KEY, workflowAppContext));
+        work.setParameter(WORKITEM_OPERATION_IMPL, ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_OPERATION_KEY, workflowAppContext));
+        work.setParameter(WORKITEM_PARAM_TYPE, JSON_NODE);
         String metaImpl = ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_IMPL_KEY, workflowAppContext);
         if (metaImpl == null || metaImpl.isEmpty()) {
             metaImpl = DEFAULT_SERVICE_IMPL;
         }
         work.setParameter(SERVICE_IMPL_KEY, metaImpl);
 
-        workItemNode.addInMapping("Parameter", DEFAULT_WORKFLOW_VAR);
-        workItemNode.addOutMapping("Result", DEFAULT_WORKFLOW_VAR);
+        workItemNode.addInMapping(WORKITEM_PARAM, DEFAULT_WORKFLOW_VAR);
+        workItemNode.addOutMapping(WORKITEM_RESULT, DEFAULT_WORKFLOW_VAR);
 
         nodeContainer.addNode(workItemNode);
 
+        return workItemNode;
+    }
+
+    public WorkItemNode openApiNode(long id, FunctionRef functionRef, FunctionDefinition function, NodeContainer nodeContainer) {
+        final OpenApiTaskDescriptor.WorkItemBuilder builder =
+                OpenApiTaskDescriptor.builderFor(ServerlessWorkflowUtils.getOpenApiURI(function), ServerlessWorkflowUtils.getOpenApiOperationId(function))
+                        .withParamResolverType(JsonNodeParameterResolver.class.getCanonicalName())
+                        .withResultHandlerType(JsonNodeResultHandler.class.getCanonicalName())
+                        .withResultHandler(new JsonNodeResultHandlerExprSupplier());
+
+        functionRef.getParameters().forEach((k, v) -> builder.addParamResolver(k, new JsonNodeParameterExprSupplier(v)));
+
+        final WorkItemNode workItemNode = builder.build();
+        workItemNode.setId(id);
+        workItemNode.setName(functionRef.getRefName());
+        workItemNode.addInMapping(WORKITEM_PARAM, DEFAULT_WORKFLOW_VAR);
+        workItemNode.addOutMapping(WORKITEM_RESULT, DEFAULT_WORKFLOW_VAR);
+
+        nodeContainer.addNode(workItemNode);
         return workItemNode;
     }
 

@@ -1,0 +1,50 @@
+{
+  "id": "petstore",
+  "version": "1.0",
+  "name": "Send CloudEvent after fetching inventory",
+  "events": [
+    {
+      "name": "FetchComplete",
+      "type": "fetchComplete",
+      "kind": "produced"
+    }
+  ],
+  "functions": [
+    {
+      "name": "getInventory",
+      "operation": "openapi/specs/petstore.json#getInventory"
+    },
+    {
+      "name": "uploadFile",
+      "operation": "openapi/specs/petstore.json#uploadFile"
+    },
+    {
+      "name": "addPet",
+      "operation": "openapi/specs/petstore.json#addPet"
+    }
+  ],
+  "states": [
+    {
+      "name": "ProvisionOrdersState",
+      "type": "operation",
+      "start": true,
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "addPet",
+            "parameters": {
+              "body": "{\"name\": \"pluto\"}"
+            }
+          }
+        }
+      ],
+      "end": {
+        "produceEvents": [
+          {
+            "eventRef": "FetchComplete"
+          }
+        ]
+      }
+    }
+  ]
+}

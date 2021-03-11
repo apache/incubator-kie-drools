@@ -1,0 +1,32 @@
+package {{invokerPackage}};
+
+import java.util.Optional;
+
+{{>generatedAnnotation}}
+public class KogitoApiClient extends ApiClient {
+
+    Optional<String> username;
+    Optional<String> password;
+    Optional<String> apiKey;
+    Optional<String> apiKeyPrefix;
+    Optional<String> basePath;
+
+    @javax.annotation.PostConstruct
+    public void init() {
+        if (username.isPresent()) {
+            super.setUsername(username.get());
+        }
+        if (password.isPresent()) {
+            super.setPassword(password.get());
+        }
+        if (apiKey.isPresent()) {
+            super.setApiKey(apiKey.get());
+        }
+        if (apiKeyPrefix.isPresent()) {
+            super.setApiKeyPrefix(apiKeyPrefix.get());
+        }
+        if (basePath.isPresent()) {
+            super.setBasePath(basePath.get());
+        }
+    }
+}

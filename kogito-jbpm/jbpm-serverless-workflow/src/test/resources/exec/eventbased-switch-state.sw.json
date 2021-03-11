@@ -19,9 +19,9 @@
       "type": "kafka"
     }
   ],
-  "states":[
+  "states": [
     {
-      "name":"AddRandomInfo",
+      "name": "AddRandomInfo",
       "type": "inject",
       "start": true,
       "data": {
@@ -56,16 +56,16 @@
       ]
     },
     {
-      "name":"ApprovedVisa",
-      "type":"inject",
+      "name": "ApprovedVisa",
+      "type": "inject",
       "data": {
         "decision": "Approved"
       },
       "end": true
     },
     {
-      "name":"DeniedVisa",
-      "type":"inject",
+      "name": "DeniedVisa",
+      "type": "inject",
       "data": {
         "decision": "Denied"
       },

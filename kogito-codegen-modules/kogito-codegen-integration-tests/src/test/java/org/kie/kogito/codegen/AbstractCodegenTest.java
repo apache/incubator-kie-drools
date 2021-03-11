@@ -42,6 +42,7 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
+import org.kie.kogito.codegen.openapi.client.OpenApiClientCodegen;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
@@ -68,11 +69,13 @@ public class AbstractCodegenTest {
         RULES,
         DECISION,
         JAVA,
-        PREDICTION
+        PREDICTION,
+        OPENAPI
     }
 
     private TestClassLoader classloader;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
+    private final KogitoBuildContext context = this.newContext();
 
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler(JavaConfiguration.CompilerType.NATIVE, "11");
     private static final String TEST_JAVA = "src/test/java/";
@@ -127,6 +130,7 @@ public class AbstractCodegenTest {
 
         generatorTypeMap.put(TYPE.JAVA, (context, strings) -> IncrementalRuleCodegen.ofJavaResources(context, toCollectedResources(TEST_JAVA, strings)));
         generatorTypeMap.put(TYPE.PREDICTION, (context, strings) -> PredictionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
+        generatorTypeMap.put(TYPE.OPENAPI, (context, strings) -> OpenApiClientCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
     }
 
     private static Collection<CollectedResource> toCollectedResources(String basePath, List<String> strings) {
@@ -135,6 +139,10 @@ public class AbstractCodegenTest {
                 .map(resource -> new File(basePath, resource))
                 .toArray(File[]::new);
         return CollectedResourceProducer.fromFiles(Paths.get(basePath), files);
+    }
+
+    public static Collection<CollectedResource> toCollectedResources(List<String> strings) {
+        return toCollectedResources(TEST_RESOURCES, strings);
     }
 
     private static List<File> toFiles(List<String> strings, String path) {
@@ -175,16 +183,6 @@ public class AbstractCodegenTest {
     }
 
     protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap) throws Exception {
-        return generateCode(resourcesTypeMap, this.getClass().getPackage().getName());
-    }
-
-    protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap, String packageName) throws Exception {
-        KogitoBuildContext context = JavaKogitoBuildContext.builder()
-                .withApplicationProperties(new File(TEST_RESOURCES))
-                .withPackageName(packageName)
-                .withAddonsConfig(addonsConfig)
-                .build();
-
         ApplicationGenerator appGen =
                 new ApplicationGenerator(context);
 
@@ -232,10 +230,17 @@ public class AbstractCodegenTest {
         classloader = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 
         @SuppressWarnings("unchecked")
-        Class<Application> app = (Class<Application>) Class.forName(packageName + ".Application", true, classloader);
+        Class<Application> app = (Class<Application>) Class.forName(context.getPackageName() + ".Application", true, classloader);
 
-        Application application = app.getDeclaredConstructor().newInstance();
-        return application;
+        return app.getDeclaredConstructor().newInstance();
+    }
+
+    protected KogitoBuildContext newContext() {
+        return JavaKogitoBuildContext.builder()
+                .withApplicationProperties(new File(TEST_RESOURCES))
+                .withPackageName(this.getClass().getPackage().getName())
+                .withAddonsConfig(addonsConfig)
+                .build();
     }
 
     protected ClassLoader testClassLoader() {
@@ -277,6 +282,5 @@ public class AbstractCodegenTest {
             }
             return super.findClass(name);
         }
-
     }
 }

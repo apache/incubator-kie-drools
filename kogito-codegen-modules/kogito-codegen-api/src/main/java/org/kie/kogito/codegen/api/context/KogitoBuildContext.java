@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.api.context;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
@@ -72,6 +73,29 @@ public interface KogitoBuildContext {
     ClassLoader getClassLoader();
 
     AppPaths getAppPaths();
+
+    /**
+     * <strong>Note: This method is on experimental phase. Can disappear in future releases.</strong>
+     * <p>
+     * Attributes shared among generators and client code.
+     * Any generator can write or read from this context.
+     * </p>
+     * 
+     * @see ContextAttributesConstants for a list of possible attributes
+     * @return An unmodifiable map with all attributes. If you need to write to the context, use {@link #addContextAttribute(String, Object)}
+     */
+    Map<String, Object> getContextAttributes();
+
+    void addContextAttribute(String key, Object value);
+
+    /**
+     * Get an attribute by a given key
+     *
+     * @see ContextAttributesConstants for a list of possible attributes
+     * @param key the named key to retrieve from the context
+     * @return The value in the context or null if it does not exist
+     */
+    <T> T getContextAttribute(String key, Class<T> asClass);
 
     /**
      * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions

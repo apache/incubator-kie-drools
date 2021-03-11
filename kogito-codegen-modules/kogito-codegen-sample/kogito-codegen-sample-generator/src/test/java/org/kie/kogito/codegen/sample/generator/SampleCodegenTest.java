@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.codegen.sample.generator;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -25,6 +29,7 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.kie.kogito.codegen.api.utils.CollectedResourcesTestUtils;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -32,7 +37,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
-import static org.kie.kogito.codegen.sample.generator.Utils.toCollectedResource;
 
 class SampleCodegenTest {
 
@@ -48,8 +52,8 @@ class SampleCodegenTest {
     void generate(KogitoBuildContext.Builder contextBuilder) {
         KogitoBuildContext context = contextBuilder.build();
         Collection<CollectedResource> resources = Arrays.asList(
-                toCollectedResource("src/test/resources/sampleFile1.txt"),
-                toCollectedResource("src/test/resources/sampleFile2.txt"));
+                CollectedResourcesTestUtils.toCollectedResource("/sampleFile1.txt"),
+                CollectedResourcesTestUtils.toCollectedResource("/sampleFile2.txt"));
 
         SampleCodegen codegen = SampleCodegen.ofCollectedResources(context, resources);
 
@@ -79,5 +83,4 @@ class SampleCodegenTest {
         assertThat(sampleCodegen.configGenerator())
                 .isNotEmpty();
     }
-
 }

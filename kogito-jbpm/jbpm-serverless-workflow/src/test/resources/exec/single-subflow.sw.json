@@ -2,13 +2,13 @@
   "id": "function",
   "name": "test-wf",
   "version": "1.0",
-  "states":[
+  "states": [
     {
-      "name":"SimpleSubFlow",
-      "type":"subflow",
+      "name": "SimpleSubFlow",
+      "type": "subflow",
       "start": true,
       "workflowId": "abc",
-      "waitForCompletion":true,
+      "waitForCompletion": true,
       "end": {
         "terminate": "true"
       }
