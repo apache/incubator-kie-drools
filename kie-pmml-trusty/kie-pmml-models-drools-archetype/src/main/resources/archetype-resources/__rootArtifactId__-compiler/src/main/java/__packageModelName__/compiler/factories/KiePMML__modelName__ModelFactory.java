@@ -18,22 +18,55 @@
  */
 package  ${package}.${packageModelName}.compiler.factories;
 
+import java.util.List;
+import java.util.Map;
+
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.${packageModelName}.${modelName}Model;
+import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
+import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class used to generate <code>KiePMML${modelName}</code> out of a <code>DataDictionary</code> and a <code>${modelName}Model</code>
  */
 public class KiePMML${modelName}ModelFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(KiePMML${modelName}ModelFactory.class.getName());
 
-    public static KiePMML${modelName}Model getKiePMML${modelName}Model(DataDictionary dataDictionary, ${modelName}Model model) {
+    private KiePMML${modelName}ModelFactory(){
+        // Avoid instantiation
+    }
+
+    public static KiePMML${modelName}Model getKiePMML${modelName}Model(final DataDictionary dataDictionary,
+                                                                       final TransformationDictionary transformationDictionary,
+                                                                       final ${modelName}Model model,
+                                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                                       final String packageName,
+                                                                       final HasClassLoader hasClassLoader) {
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    private KiePMML${modelName}ModelFactory(){
-        // Avoid instantiation
+    public static Map<String, String> getKiePMML${modelName}ModelSourcesMap(final DataDictionary dataDictionary,
+                                                                         final TransformationDictionary transformationDictionary,
+                                                                         final ${modelName}Model model,
+                                                                         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                                         final String packageName) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+                                                       final ${modelName}Model model,
+                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                       final List<KiePMMLDroolsType> types) {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 }

@@ -22,6 +22,7 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.ForNodeLink;
 import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.Style;
@@ -30,8 +31,9 @@ import guru.nidi.graphviz.engine.Graphviz;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.ReactivityType;
 
-import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
+import static guru.nidi.graphviz.attribute.Rank.RankDir.TOP_TO_BOTTOM;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static guru.nidi.graphviz.model.Factory.to;
@@ -65,16 +67,21 @@ public class GraphImageGenerator {
 
     public void generatePng(Graph g) {
         guru.nidi.graphviz.model.Graph graph = graph(graphName).directed()
-                                      .graphAttr().with(Rank.dir(LEFT_TO_RIGHT));
+                                      .graphAttr().with(Rank.dir(TOP_TO_BOTTOM));
 
         List<Node> nodeList = g.getNodeMap().values().stream().collect(Collectors.toList());
         for (Node n : nodeList) {
             guru.nidi.graphviz.model.Node node = node(n.getRuleName());
+            if (n.getStatus() == Node.Status.CHANGED) {
+                node = node.with(Color.RED, Style.FILLED);
+            } else if (n.getStatus() == Node.Status.IMPACTED) {
+                node = node.with(Color.YELLOW, Style.FILLED);
+            }
             for (Link l : n.getOutgoingLinks()) {
                 Style<ForNodeLink> style;
-                if (l.getType() == Link.Type.POSITIVE) {
+                if (l.getReactivityType() == ReactivityType.POSITIVE) {
                     style = Style.SOLID;
-                } else if (l.getType() == Link.Type.NEGATIVE) {
+                } else if (l.getReactivityType() == ReactivityType.NEGATIVE) {
                     style = Style.DASHED;
                 } else {
                     // UNKNOWN

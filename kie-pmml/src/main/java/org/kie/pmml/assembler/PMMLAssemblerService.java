@@ -73,7 +73,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public synchronized void addResource(Object kbuilder, Resource resource, ResourceType type,
+    public synchronized void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type,
                                          ResourceConfiguration configuration) throws Exception {
         this.kbuilder = (KnowledgeBuilderImpl) kbuilder;
         this.configuration = this.kbuilder.getBuilderConfiguration();
@@ -84,13 +84,13 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public synchronized void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources,
+    public synchronized void addResourcesAfterRules(Object kbuilder, Collection<ResourceWithConfiguration> resources,
             ResourceType type) throws Exception {
         for (ResourceWithConfiguration rd : resources) {
             if (rd.getBeforeAdd() != null) {
                 rd.getBeforeAdd().accept(kbuilder);
             }
-            addResource(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
+            addResourceAfterRules(kbuilder, rd.getResource(), type, rd.getResourceConfiguration());
             if (rd.getAfterAdd() != null) {
                 rd.getAfterAdd().accept(kbuilder);
             }

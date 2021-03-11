@@ -57,7 +57,9 @@ import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.kie.memorycompiler.StoreClassLoader;
+import org.kie.memorycompiler.WritableClassLoader;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -65,17 +67,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
     public JavaCompilerSettings createDefaultSettings() {
         return new JavaCompilerSettings();
-    }
-
-    private static class InternalClassLoader extends ClassLoader {
-
-        InternalClassLoader(ClassLoader classLoader) {
-            super(classLoader);
-        }
-
-        Class<?> defineClass(String name, byte[] b) {
-            return defineClass(name, b, 0, b.length);
-        }
     }
 
     @Override
@@ -86,6 +77,9 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        if (compiler == null) {
+            throw new KieMemoryCompilerException("Cannot find the System's Java compiler. Please use JDK instead of JRE or add drools-ecj dependency to use in memory Eclipse compiler");
+        }
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             try {

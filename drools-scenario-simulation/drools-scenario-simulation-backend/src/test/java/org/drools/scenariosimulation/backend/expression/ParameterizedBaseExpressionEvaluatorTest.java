@@ -35,63 +35,63 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     @Parameterized.Parameters(name = "{index}: Expr \"{0} {1}\" should be true")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {true, 1, "1", int.class},
-                {true, 2, "!= 1", int.class},
-                {true, -1, "- 1", int.class},
-                {true, -2, "< -  1", int.class},
-                {true, -2L, "< -  1", long.class},
-                {true, -2D, "< -  1", double.class},
-                {true, -2F, "< -  1", float.class},
-                {true, (short) -2, "< - 1", short.class},
-                {true, "String", "<> Test", String.class},
-                {true, "Test", "= Test", String.class},
-                {true, 1, "<2", int.class},
-                {true, 1, "<2; >0", int.class},
-                {true, 2, " <= 2 ", int.class},
-                {true, 2, " >= 2", int.class},
-                {true, 1, "[ 1, 2 ,3]", int.class},
-                {true, 2, "[ 1, 2 ,3]", int.class},
-                {true, "3", "[ 1, 2 ,3]", String.class},
-                {true, 4, "![ 1, 2 ,3]", int.class},
-                {true, 4, "! < 1", int.class},
-                {true, 1, "> -1", int.class},
-                {true, 10, "!= <10;!= >11", int.class},
-                {true, 10, "= 10; >9", int.class},
-                {true, null, null, Integer.class},
-                {true, null, "!1", Integer.class},
-                {true, 'b', "!a", Character.class},
-                {true, "0".getBytes()[0], "![47, 49, 50]", byte.class},
-                {true, "0".getBytes()[0], ">40; <60", byte.class},
-                {true, "0".getBytes()[0], ">30; <100", Byte.class},
-                {true, "0".getBytes()[0], "[48, 49, 50]", Byte.class},
-                {true, (short) 1, ">0", Short.class},
-                {true, null, "[ !false]", boolean.class},
-                {true, null, "[! false, ! true]", boolean.class},
-                {true, 10, "[> 1]", int.class},
-                {true, 10, "[< 1, > 1]", int.class},
-                {true, "", ";", String.class},
-                {false, null, ";", String.class},
-                {false, null, "=", String.class},
-                {false, null, "[]", String.class},
-                {true, Error.class, ";", boolean.class},
-                {true, Error.class, "[]", boolean.class},
-                {true, Error.class, "=", boolean.class},
-                {true, Error.class, "!= false; <> false, ! false", boolean.class},
-                {true, Error.class, "<> false, ! false", boolean.class},
-                {true, Error.class, "! tru", void.class},
-                {true, Error.class, "fals", void.class},
-                {true, Error.class, "!= fals", void.class},
-                {true, Error.class, "tru", void.class},
-                {true, Error.class, "<> fals", void.class},
-                {true, Error.class, "tru", void.class},
-                {true, Error.class, "!m= false", void.class},
-                {true, Error.class, ">> 3", void.class},
-                {true, Error.class, "< - 1 1", int.class}
+                {ExpressionEvaluatorResult.ofSuccessful(), 1, "1", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 2, "!= 1", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), -1, "- 1", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), -2, "< -  1", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), -2L, "< -  1", long.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), -2D, "< -  1", double.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), -2F, "< -  1", float.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), (short) -2, "< - 1", short.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "String", "<> Test", String.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "Test", "= Test", String.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 1, "<2", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 1, "<2; >0", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 2, " <= 2 ", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 2, " >= 2", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 1, "[ 1, 2 ,3]", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 2, "[ 1, 2 ,3]", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "3", "[ 1, 2 ,3]", String.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 4, "![ 1, 2 ,3]", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 4, "! < 1", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 1, "> -1", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 10, "!= <10;!= >11", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 10, "= 10; >9", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), null, null, Integer.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), null, "!1", Integer.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 'b', "!a", Character.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "0".getBytes()[0], "![47, 49, 50]", byte.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "0".getBytes()[0], ">40; <60", byte.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "0".getBytes()[0], ">30; <100", Byte.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "0".getBytes()[0], "[48, 49, 50]", Byte.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), (short) 1, ">0", Short.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), null, "[ !false]", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), null, "[! false, ! true]", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 10, "[> 1]", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), 10, "[< 1, > 1]", int.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), "", ";", String.class},
+                {ExpressionEvaluatorResult.ofFailed(), null, ";", String.class},
+                {ExpressionEvaluatorResult.ofFailed(), null, "=", String.class},
+                {ExpressionEvaluatorResult.ofFailed(), null, "[]", String.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, ";", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "[]", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "=", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "!= false; <> false, ! false", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "<> false, ! false", boolean.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "! tru", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "fals", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "!= fals", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "tru", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "<> fals", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "tru", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "!m= false", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, ">> 3", void.class},
+                {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "< - 1 1", int.class}
         });
     }
 
     @Parameterized.Parameter(0)
-    public Boolean expectedResult;
+    public ExpressionEvaluatorResult expectedResult;
 
     @Parameterized.Parameter(1)
     public Object resultValue;
@@ -106,10 +106,10 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     public void evaluateUnaryExpression() {
 
         if (!(resultValue instanceof Class)) {
-            assertEquals(expectedResult, baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz));
+            assertEquals(expectedResult.isSuccessful(), baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz).isSuccessful());
         } else {
             try {
-                baseExpressionEvaluator.evaluateUnaryExpression((String) exprToTest, true, clazz);
+                baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, true, clazz);
                 fail();
             } catch (Exception ignored) {
             }

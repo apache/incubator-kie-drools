@@ -16,6 +16,9 @@
 package org.drools.compiler.builder.impl;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -25,8 +28,10 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.factmodel.BuildUtils;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
+import org.kie.api.definition.type.Modifies;
 
 public class TypeDeclarationUtils {
 
@@ -291,8 +296,20 @@ public class TypeDeclarationUtils {
 
         return prefix + coreType;
     }
+
+    public static void processModifiedProps(Class<?> cls,
+                                      ClassDefinition clsDef) {
+        for (Method method : cls.getDeclaredMethods()) {
+            Modifies modifies = method.getAnnotation(Modifies.class);
+            if (modifies != null) {
+                String[] props = modifies.value();
+                List<String> properties = new ArrayList<>(props.length);
+                for (String prop : props) {
+                    properties.add(prop.trim());
+                }
+                clsDef.addModifiedPropsByMethod(method,
+                                                properties);
+            }
+        }
+    }
 }
-
-
-
-

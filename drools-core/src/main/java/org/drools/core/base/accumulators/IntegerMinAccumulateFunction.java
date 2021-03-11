@@ -74,7 +74,7 @@ public class IntegerMinAccumulateFunction extends AbstractAccumulateFunction<Int
     }
 
     @Override
-    public boolean tryReverse( MinData data, Object value ) throws Exception {
+    public boolean tryReverse( MinData data, Object value ) {
         if (value != null) {
             Integer number = (Integer)value;
             return data.min < number;

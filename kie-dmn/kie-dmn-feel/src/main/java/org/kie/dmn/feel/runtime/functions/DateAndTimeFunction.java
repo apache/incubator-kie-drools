@@ -36,6 +36,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class DateAndTimeFunction
         extends BaseFEELFunction {
 
+    public static final DateAndTimeFunction INSTANCE = new DateAndTimeFunction();
+
     public static final DateTimeFormatter FEEL_DATE_TIME;
     public static final DateTimeFormatter REGION_DATETIME_FORMATTER;
     static {

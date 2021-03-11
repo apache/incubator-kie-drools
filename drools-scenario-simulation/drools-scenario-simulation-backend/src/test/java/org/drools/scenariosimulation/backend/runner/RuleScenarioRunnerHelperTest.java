@@ -57,14 +57,14 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.feel.codegen.feel11.Constants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -78,8 +78,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -340,18 +340,60 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     @Test
     public void validateAssertionTest() {
-
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            runnerHelper.validateAssertion(scenarioFailResult, scenario2);
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
             fail();
-        } catch (ScenarioException ignored) {
+        } catch (IllegalStateException exception) {
+            assertEquals("Illegal FactMappingValue status", exception.getMessage());
+        }
+
+        amountNameExpectedFactMappingValue.resetStatus();
+        amountNameExpectedFactMappingValue.setErrorValue("Error");
+        scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
+        try {
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
+            fail();
+        } catch (ScenarioException exception) {
+            assertTrue(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage("Fact 2.amount",
+                                                                                                amountNameExpectedFactMappingValue.getErrorValue(),
+                                                                                                amountNameExpectedFactMappingValue.getRawValue()),
+                         exception.getMessage());
+        }
+
+        String exceptionMessage = "Message";
+        amountNameExpectedFactMappingValue.resetStatus();
+        amountNameExpectedFactMappingValue.setExceptionMessage(exceptionMessage);
+        scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
+        try {
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
+            fail();
+        } catch (ScenarioException exception) {
+            assertFalse(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(exceptionMessage),
+                         exception.getMessage());
+        }
+
+        List<String> pathToValue = Arrays.asList("Item #2");
+        amountNameExpectedFactMappingValue.resetStatus();
+        amountNameExpectedFactMappingValue.setCollectionPathToValue(pathToValue);
+        scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
+        try {
+            runnerHelper.validateAssertion(scenarioFailResult, simulation.getScesimModelDescriptor());
+            fail();
+        } catch (ScenarioException exception) {
+            assertTrue(exception.isFailedAssertion());
+            assertEquals(ScenarioSimulationServerMessages.getCollectionFactExceptionMessage("Fact 2.amount",
+                                                                                            pathToValue,
+                                                                                            amountNameExpectedFactMappingValue.getErrorValue()),
+                         exception.getMessage());
         }
 
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
-        runnerHelper.validateAssertion(scenarioSuccessResult, scenario2);
+        runnerHelper.validateAssertion(scenarioSuccessResult, simulation.getScesimModelDescriptor());
     }
 
     @Test
@@ -633,7 +675,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        verify(ruleScenarioExecutableBuilderMock, times(1)).setActiveRuleFlowGroup(eq(ruleFlowGroup));
+        verify(ruleScenarioExecutableBuilderMock, times(1)).setActiveRuleFlowGroup(ruleFlowGroup);
 
         verify(ruleScenarioExecutableBuilderMock, times(inputObjects)).insert(insertCaptor.capture());
         for (Object value : insertCaptor.getAllValues()) {

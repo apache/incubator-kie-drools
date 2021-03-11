@@ -1,0 +1,33 @@
+package org.drools.modelcompiler.drlx;
+
+import java.time.LocalDate;
+import java.time.Month;
+
+/** with this comment I must not break **/
+
+unit Example;
+
+rule year2020
+when {
+    LocalDate foo = /dates[ year > 2020 ];
+} do {
+    System.out.println("finally " + foo);
+    int a = 1
+    + 1;
+}
+
+rule newyear2020
+when {
+    LocalDate foo = /dates[ year == 2021, dayOfMonth == 1, month == Month.JANUARY ];
+} do {
+    System.out.println("Happy new year 🎉 " + foo);
+}
+
+rule join
+when {
+    LocalDate a = /dates[ year == 2021 ];
+    LocalDate b = /dates[ year == a.year, dayOfMonth == 1, month == Month.JANUARY ];
+} do {
+    // silly match;
+    System.out.println("Happy new year 🎉 " + b);
+}

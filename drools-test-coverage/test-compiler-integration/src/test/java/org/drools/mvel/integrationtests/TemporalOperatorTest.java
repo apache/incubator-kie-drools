@@ -50,8 +50,7 @@ public class TemporalOperatorTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testAfterWithZonedDateTime. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -140,55 +139,55 @@ public class TemporalOperatorTest {
 
     @Test
     public void testAfterWithConstant() {
-        checkConstantTemporalConstraint( "date after \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "date after \"01-Jan-1970\"" );
     }
 
     @Test
     public void testAfterWithConstantUsingOR() {
         // RHBRMS-2799
-        checkConstantTemporalConstraint( "date == null || date after \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "date == null || date after \"01-Jan-1970\"" );
     }
 
     @Test
     public void testAfterWithLocalDateTimeUsingOr() {
         // RHBRMS-2799
-        checkConstantTemporalConstraint( "localDateTime == null || localDateTime after \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "localDateTime == null || localDateTime after \"01-Jan-1970\"" );
     }
 
     @Test
     public void testAfterWithLocalDateTimeWithLiteral() {
         // RHBRMS-2799
-        checkConstantTemporalConstraint( "localDateTime after \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "localDateTime after \"01-Jan-1970\"" );
     }
 
     @Test
     public void testDateAfterWithLiteral() {
-        checkConstantTemporalConstraint( "date after \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "date after \"01-Jan-1970\"" );
     }
 
     @Test
     public void testAfterWithLocalDateWithLiteral() {
-        checkConstantTemporalConstraint( "localDate after \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "localDate after \"01-Jan-1970\"" );
     }
 
     @Test
     public void testComparisonWithLocalDateTimeAndLiteral() {
-        checkConstantTemporalConstraint( "localDate > \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "localDate > \"01-Jan-1970\"" );
     }
 
     @Test
     public void testComparisonWithLocalDate() {
-        checkConstantTemporalConstraint( "localDate > org.drools.mvel.integrationtests.TemporalOperatorTest.parseDateAsLocal(\"1-Jan-1970\")" );
+        checkConstantTemporalConstraint( "localDate > org.drools.mvel.integrationtests.TemporalOperatorTest.parseDateAsLocal(\"01-Jan-1970\")" );
     }
 
     @Test
     public void testComparisonWithLocalDateAndLiteral() {
-        checkConstantTemporalConstraint( "localDateTime > \"1-Jan-1970\"" );
+        checkConstantTemporalConstraint( "localDateTime > \"01-Jan-1970\"" );
     }
 
     @Test
     public void testComparisonWithLocalDateTime() {
-        checkConstantTemporalConstraint( "localDateTime > org.drools.mvel.integrationtests.TemporalOperatorTest.parseTimeAsLocal(\"1-Jan-1970\")" );
+        checkConstantTemporalConstraint( "localDateTime > org.drools.mvel.integrationtests.TemporalOperatorTest.parseTimeAsLocal(\"01-Jan-1970\")" );
     }
 
     public void checkConstantTemporalConstraint(String constraint) {

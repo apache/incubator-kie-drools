@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.api.models;
 
+import java.util.List;
+
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
@@ -29,17 +31,20 @@ public class OutputField {
     private final DATA_TYPE dataType;
     private final String targetField;
     private final RESULT_FEATURE resultFeature;
+    private final List<String> allowedValues;
 
     public OutputField(final String name,
                        final OP_TYPE opType,
                        final DATA_TYPE dataType,
                        final String targetField,
-                       final RESULT_FEATURE resultFeature) {
+                       final RESULT_FEATURE resultFeature,
+                       List<String> allowedValues) {
         this.name = name;
         this.opType = opType;
         this.dataType = dataType;
         this.targetField = targetField;
         this.resultFeature = resultFeature;
+        this.allowedValues = allowedValues;
     }
 
     public String getName() {
@@ -60,5 +65,9 @@ public class OutputField {
 
     public RESULT_FEATURE getResultFeature() {
         return resultFeature;
+    }
+
+    public List<String> getAllowedValues() {
+        return allowedValues;
     }
 }

@@ -28,7 +28,11 @@ public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
 
     KiePMMLModel getModelByName(String name);
 
+    KiePMMLModel getModelByFullClassName(String fullClassName);
+
     Map<String, KiePMMLModel> getAllModels();
+
+    Map<String, KiePMMLModel> getAllModelsByFullClassName();
 
     void addAll(Collection<KiePMMLModel> toAdd);
 }

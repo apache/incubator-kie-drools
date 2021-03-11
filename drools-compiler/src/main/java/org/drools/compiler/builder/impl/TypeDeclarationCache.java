@@ -16,7 +16,6 @@
 package org.drools.compiler.builder.impl;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +35,6 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.rule.Annotated;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
-import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.Match;
@@ -155,7 +153,7 @@ public class TypeDeclarationCache {
         }
 
         if (typeDeclaration.isPropertyReactive()) {
-            processModifiedProps(cls, clsDef);
+            TypeDeclarationUtils.processModifiedProps(cls, clsDef);
         }
 
 
@@ -236,22 +234,6 @@ public class TypeDeclarationCache {
             if (fld != null) {
                 // it's null if there is no @Position
                 clsDef.addField(fld);
-            }
-        }
-    }
-
-    private void processModifiedProps(Class<?> cls,
-                                      ClassDefinition clsDef) {
-        for (Method method : cls.getDeclaredMethods()) {
-            Modifies modifies = method.getAnnotation(Modifies.class);
-            if (modifies != null) {
-                String[] props = modifies.value();
-                List<String> properties = new ArrayList<String>(props.length);
-                for (String prop : props) {
-                    properties.add(prop.trim());
-                }
-                clsDef.addModifiedPropsByMethod(method,
-                                                properties);
             }
         }
     }

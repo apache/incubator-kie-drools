@@ -18,19 +18,36 @@
  */
 package  ${package}.${packageModelName}.compiler.factories;
 
+import java.util.Map;
+
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.${packageModelName}.${modelName}Model;
+import org.kie.pmml.commons.model.HasClassLoader;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
 
 public class KiePMML${modelName}ModelFactory {
 
+    private KiePMML${modelName}ModelFactory(){
+        // Avoid instantiation
+    }
 
-    public static KiePMML${modelName}Model getKiePMML${modelName}Model(DataDictionary dataDictionary, ${modelName}Model model) {
+    public static KiePMML${modelName}Model getKiePMML${modelName}Model(final DataDictionary dataDictionary,
+                                                                       final TransformationDictionary transformationDictionary,
+                                                                       final ${modelName}Model model,
+                                                                       final String packageName,
+                                                                       final HasClassLoader hasClassLoader) {
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    private KiePMML${modelName}ModelFactory(){
-        // Avoid instantiation
+    public static Map<String, String> getKiePMML${modelName}ModelSourcesMap(final DataDictionary dataDictionary,
+                                                                                 final TransformationDictionary transformationDictionary,
+                                                                                 final ${modelName}Model model,
+                                                                                 final String packageName) {
+        // TODO
+        throw new UnsupportedOperationException();
     }
+
+
 }

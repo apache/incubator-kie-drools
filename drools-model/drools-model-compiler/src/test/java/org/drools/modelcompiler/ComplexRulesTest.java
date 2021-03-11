@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -742,5 +743,39 @@ public class ComplexRulesTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         ksession.insert( new Person( "Mario", 45 ) );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testGlobalAsFunctionArgument() {
+        // DROOLS-5999
+        String str =
+                "import java.util.*;\n"+
+                "import java.time.*;\n"+
+                "global List result;\n"+
+                "global LocalDateTime $CURRENT_DATE\n"+
+                "declare Job\n"+
+                "    createdDate: LocalDateTime\n"+
+                "end\n"+
+                "rule \"init1\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        Job job = new Job();\n" +
+                "        job.setCreatedDate(LocalDateTime.now());\n" +
+                "        insert(job);\n"+
+                "end\n" +
+                "rule \"Date check\"\n"+
+                "    dialect \"mvel\"\n"+
+                "    when\n"+
+                "        $Job: Job(createdDate.compareTo($CURRENT_DATE)>0)\n"+
+                "    then\n"+
+                "        result.add(Integer.valueOf(42));\n"+
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+        ksession.setGlobal("$CURRENT_DATE", LocalDateTime.of(1961, 5, 24, 9, 0));
+        ksession.fireAllRules();
     }
 }

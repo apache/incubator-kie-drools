@@ -39,10 +39,10 @@ public class SubKlassImpl
         this.subProp = value;
     }
 
-    private final SubKlass_ _ = new SubKlass_( this );
+    private final SubKlass_ _k = new SubKlass_( this );
 
     public SubKlass_ get_() {
-        return _;
+        return _k;
     }
 
     public List<AnotherKlass> getLinks() {

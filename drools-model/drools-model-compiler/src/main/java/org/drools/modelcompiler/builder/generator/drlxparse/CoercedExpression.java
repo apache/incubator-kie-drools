@@ -18,6 +18,8 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +47,8 @@ import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
+import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_LOCAL_DATE_METHOD;
+import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_LOCAL_DATE_TIME_METHOD;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
@@ -99,6 +103,7 @@ public class CoercedExpression {
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
+            coercedRight.setType( leftClass );
         } else if (shouldCoerceBToString(left, right)) {
             coercedRight = coerceToString(right);
         } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass) && right.isNumberLiteral()) {
@@ -107,6 +112,10 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
             coercedRight = coerceToDate(right);
+        } else if (leftClass == LocalDate.class && rightClass == String.class) {
+            coercedRight = coerceToLocalDate(right);
+        } else if (leftClass == LocalDateTime.class && rightClass == String.class) {
+            coercedRight = coerceToLocalDateTime(right);
         } else if (shouldCoerceBToMap()) {
             coercedRight = castToClass(toNonPrimitiveType(leftClass));
         } else if (isBoolean(leftClass) && !isBoolean(rightClass)) {
@@ -176,6 +185,18 @@ public class CoercedExpression {
         return new TypedExpression(methodCallExpr, Date.class);
     }
 
+    private static TypedExpression coerceToLocalDate(TypedExpression typedExpression) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr(null, STRING_TO_LOCAL_DATE_METHOD);
+        methodCallExpr.addArgument(typedExpression.getExpression());
+        return new TypedExpression(methodCallExpr, LocalDate.class);
+    }
+
+    private static TypedExpression coerceToLocalDateTime(TypedExpression typedExpression) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr(null, STRING_TO_LOCAL_DATE_TIME_METHOD);
+        methodCallExpr.addArgument(typedExpression.getExpression());
+        return new TypedExpression(methodCallExpr, LocalDateTime.class);
+    }
+
     private static TypedExpression coerceBoolean(TypedExpression typedExpression) {
         if (typedExpression.getType() == ClassUtil.NullType.class) {
             return typedExpression;
@@ -204,11 +225,12 @@ public class CoercedExpression {
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
         boolean aIsString = a.getType() == String.class;
         boolean bIsNotString = b.getType() != String.class;
+        boolean bIsNotObject = b.getType() != Object.class; // Don't coerce Object yet. EvaluationUtil will handle it dynamically later
         boolean bIsNotMap = !(Map.class.isAssignableFrom(b.getRawClass()));
         boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
         boolean bIsNotSerializable = b.getType() != Serializable.class;
         boolean bExpressionExists = b.getExpression() != null;
-        return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotMap && bIsNotNull && bIsNotSerializable);
+        return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotMap && bIsNotNull && bIsNotSerializable && bIsNotObject);
     }
 
     private static boolean isNotBinaryExpression(TypedExpression e) {

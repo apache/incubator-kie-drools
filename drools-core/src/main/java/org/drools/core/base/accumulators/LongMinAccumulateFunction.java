@@ -74,7 +74,7 @@ public class LongMinAccumulateFunction extends AbstractAccumulateFunction<LongMi
     }
 
     @Override
-    public boolean tryReverse( MinData data, Object value ) throws Exception {
+    public boolean tryReverse( MinData data, Object value ) {
         if (value != null) {
             Long number = (Long)value;
             return data.min < number;

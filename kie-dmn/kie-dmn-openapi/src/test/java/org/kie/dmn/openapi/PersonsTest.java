@@ -39,4 +39,17 @@ public class PersonsTest extends BaseDMNOASTest {
         assertThat(validateUsing(validator, "{ \"an order\":123 }")).isNotEmpty();
         assertThat(validateUsing(validator, "{ \"ps1\": [{\"name\":\"John Doe\", \"age\": 47}], \"ps2\": [{\"name\":\"John Doe\", \"age\": 47}] }")).isEmpty();
     }
+
+    @Test
+    public void testForPrefix() throws Exception {
+        final DMNRuntime runtime = createRuntime("persons.dmn", this.getClass());
+        DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels(), "#/definitions/").build();
+
+        DMNModel modelUnderTest = runtime.getModel("https://kiegroup.org/dmn/_4766A842-0524-4727-979B-45BF678F2F36", "persons");
+        ObjectNode syntheticJSONSchema = synthesizeSchema(result, modelUnderTest);
+        JsonSchema validator = getJSONSchema(syntheticJSONSchema);
+
+        assertThat(validateUsing(validator, "{ \"an order\":123 }")).isNotEmpty();
+        assertThat(validateUsing(validator, "{ \"ps1\": [{\"name\":\"John Doe\", \"age\": 47}], \"ps2\": [{\"name\":\"John Doe\", \"age\": 47}] }")).isEmpty();
+    }
 }

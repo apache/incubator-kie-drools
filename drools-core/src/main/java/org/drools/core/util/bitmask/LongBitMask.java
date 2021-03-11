@@ -62,18 +62,16 @@ public class LongBitMask extends SingleLongBitMask implements BitMask {
     public BitMask resetAll(BitMask mask) {
         if (mask instanceof LongBitMask) {
             this.mask &= (-1L - ((LongBitMask) mask).asLong());
-            return this;
         } else if (mask instanceof AllSetBitMask) {
-            return EmptyBitMask.get();
+            this.mask &= 0;
         } else if (mask instanceof AllSetButLastBitMask) {
             this.mask &= Long.MIN_VALUE;
-            return this;
         } else if (mask instanceof EmptyButLastBitMask) {
-            return reset(0);
-        } else if (mask instanceof EmptyBitMask) {
-            return this;
+            reset(0);
+        } else if (!(mask instanceof EmptyBitMask)) {
+            throw new RuntimeException("Cannot resetAll a LongBitMask with a " + mask.getClass().getSimpleName());
         }
-        throw new RuntimeException("Cannot resetAll a LongBitMask with a " + mask.getClass().getSimpleName());
+        return this;
     }
 
     @Override

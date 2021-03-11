@@ -17,18 +17,23 @@
 
 package org.drools.model.view;
 
+import org.drools.model.BetaIndex3;
 import org.drools.model.Condition.Type;
+import org.drools.model.Index;
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function3;
 import org.drools.model.functions.Predicate4;
+import org.drools.model.index.BetaIndex3Impl;
 
-public class Expr4ViewItemImpl<A, B, C, D> extends AbstractExprViewItem<A> implements ExprNViewItem<A> {
+public class Expr4ViewItemImpl<A, B, C, D> extends AbstractExprViewItem<A> implements Expr4ViewItem<A, B, C, D> {
 
     private final Variable<B> var2;
     private final Variable<C> var3;
     private final Variable<D> var4;
     private final Predicate4<A, B, C, D> predicate;
 
-    // with 3 elements we don't implement INDEXes
+    private BetaIndex3<A, B, C, D, ?> index;
 
     public Expr4ViewItemImpl( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
         super(predicate.toString(), var1);
@@ -72,4 +77,19 @@ public class Expr4ViewItemImpl<A, B, C, D> extends AbstractExprViewItem<A> imple
         return Type.PATTERN;
     }
 
+    public BetaIndex3<A, B, C, D, ?> getIndex() {
+        return index;
+    }
+
+    @Override
+    public <V> Expr4ViewItemImpl<A, B, C, D> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function3<B, C, D, ?> rightOperandExtractor ) {
+        index = new BetaIndex3Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, Object.class );
+        return this;
+    }
+
+    @Override
+    public <V> Expr4ViewItemImpl<A, B, C, D> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function3<B, C, D, ?> rightOperandExtractor, Class<?> rightReturnType ) {
+        index = new BetaIndex3Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
+        return this;
+    }
 }

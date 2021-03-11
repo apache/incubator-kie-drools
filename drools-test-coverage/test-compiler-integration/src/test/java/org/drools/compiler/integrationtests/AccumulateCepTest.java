@@ -107,7 +107,7 @@ public class AccumulateCepTest {
         kbase.addPackages(TestUtil.createKnowledgeBuilder(null, drl).getKnowledgePackages());
 
         final KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption(ClockTypeOption.get("pseudo"));
+        ksConf.setOption(ClockTypeOption.PSEUDO);
         final KieSession ksession = kbase.newKieSession(ksConf, null);
         try {
             final ArrayList list = new ArrayList();

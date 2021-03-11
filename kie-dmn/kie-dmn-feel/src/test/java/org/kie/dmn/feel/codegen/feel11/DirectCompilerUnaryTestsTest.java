@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DirectCompilerUnaryTestsTest {
 
@@ -102,6 +102,11 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate("[1..2], [2..3]", 1), is(Arrays.asList(true, false)));
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 1), is(Arrays.asList(false, false)));
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 2), is(Arrays.asList(true, true)));
+    }
+
+    @Test
+    public void t2() {
+        assertThat(parseCompileEvaluate("\"asd\"", "asd"), is(Collections.singletonList(true)));
     }
 
     private CompiledFEELUnaryTests parse(String input, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {

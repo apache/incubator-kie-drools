@@ -62,12 +62,14 @@ public class CompiledNetworkSource {
         return sourceName;
     }
 
-    public void setCompiledNetwork(Class<?> compiledNetworkClass) {
+    public CompiledNetwork createInstanceAndSet(Class<?> compiledNetworkClass) {
         CompiledNetwork compiledNetwork = newCompiledNetworkInstance(compiledNetworkClass);
         compiledNetwork.setNetwork(objectTypeNode);
         logger.debug("Updating {} with instance of class: {}",
                      objectTypeNode,
                      compiledNetworkClass.getName());
+
+        return compiledNetwork;
     }
 
     public CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {

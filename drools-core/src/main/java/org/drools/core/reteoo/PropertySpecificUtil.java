@@ -73,7 +73,7 @@ public class PropertySpecificUtil {
     }
 
     private static BitMask calculatePatternMask(Class modifiedClass, Collection<String> listenedProperties, List<String> accessibleProperties, boolean isPositive) {
-        if (listenedProperties == null) {
+        if (listenedProperties.isEmpty()) {
             return EmptyBitMask.get();
         }
 

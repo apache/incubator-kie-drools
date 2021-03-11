@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-drools</artifactId>
-    <version>7.49.0-SNAPSHOT</version>
+    <version>7.52.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -45,6 +45,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <dependency>

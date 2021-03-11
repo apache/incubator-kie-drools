@@ -75,30 +75,29 @@ public class MultiAccumulate extends Accumulate {
         return this.accumulators;
     }
 
-    public Serializable[] createFunctionContext() {
-        Serializable[] ctxs = new Serializable[this.accumulators.length];
+    public Object[] createFunctionContext() {
+        Object[] ctxs = new Object[this.accumulators.length];
         for ( int i = 0; i < ctxs.length; i++ ) {
             ctxs[i] = this.accumulators[i].createContext();
         }
         return ctxs;
     }
 
-    public void init(final Object workingMemoryContext,
-                     final Object context,
-                     final Tuple leftTuple,
-                     final WorkingMemory workingMemory) {
-        try {
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
-                this.accumulators[i].init( ((Object[])workingMemoryContext)[i],
-                                           functionContext[i],
-                                           leftTuple,
-                                           this.requiredDeclarations,
-                                           workingMemory );
-            }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+    public Object init(final Object workingMemoryContext,
+                       final Object accContext,
+                       Object funcContext,
+                       final Tuple leftTuple,
+                       final WorkingMemory workingMemory) {
+        Object[] functionContext = (Object[]) funcContext;
+
+        for ( int i = 0; i < this.accumulators.length; i++ ) {
+            functionContext[i] = this.accumulators[i].init( ((Object[])workingMemoryContext)[i],
+                                                            functionContext[i],
+                                                            leftTuple,
+                                                            this.requiredDeclarations,
+                                                            workingMemory );
         }
+        return funcContext;
     }
 
     public Object accumulate(final Object workingMemoryContext,
@@ -106,22 +105,18 @@ public class MultiAccumulate extends Accumulate {
                              final Tuple match,
                              final InternalFactHandle handle,
                              final WorkingMemory workingMemory) {
-        try {
-            Object[] values = new Object[accumulators.length];
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
-                values[i] = this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
-                                                             functionContext[i],
-                                                             match,
-                                                             handle,
-                                                             this.requiredDeclarations,
-                                                             getInnerDeclarationCache(),
-                                                             workingMemory );
-            }
-            return values;
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        Object[] values = new Object[accumulators.length];
+        for ( int i = 0; i < this.accumulators.length; i++ ) {
+            Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
+            values[i] = this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
+                                                         functionContext[i],
+                                                         match,
+                                                         handle,
+                                                         this.requiredDeclarations,
+                                                         getInnerDeclarationCache(),
+                                                         workingMemory );
         }
+        return values;
     }
 
     @Override
@@ -138,26 +133,21 @@ public class MultiAccumulate extends Accumulate {
                               final RightTuple rightParent,
                               final LeftTuple match,
                               final WorkingMemory workingMemory) {
-        try {
-            Object[] values = (Object[]) match.getContextObject();
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
-                boolean reversed = this.accumulators[i].tryReverse( ((Object[])workingMemoryContext)[i],
-                                                                    functionContext[i],
-                                                                    leftTuple,
-                                                                    handle,
-                                                                    values[i],
-                                                                    this.requiredDeclarations,
-                                                                    getInnerDeclarationCache(),
-                                                                    workingMemory );
-                if (!reversed) {
-                    return false;
-                }
+        Object[] values = (Object[]) match.getContextObject();
+        for ( int i = 0; i < this.accumulators.length; i++ ) {
+            Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
+            boolean reversed = this.accumulators[i].tryReverse( ((Object[])workingMemoryContext)[i],
+                                                                functionContext[i],
+                                                                leftTuple,
+                                                                handle,
+                                                                values[i],
+                                                                this.requiredDeclarations,
+                                                                getInnerDeclarationCache(),
+                                                                workingMemory );
+            if (!reversed) {
+                return false;
             }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
         }
-
         return true;
     }
 
@@ -174,20 +164,16 @@ public class MultiAccumulate extends Accumulate {
                               final Object context,
                               final Tuple leftTuple,
                               final WorkingMemory workingMemory) {
-        try {
-            Object[] results = new Object[this.accumulators.length];
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
-                results[i] = this.accumulators[i].getResult( ((Object[])workingMemoryContext)[i],
-                                                             functionContext[i],
-                                                             leftTuple,
-                                                             this.requiredDeclarations,
-                                                             workingMemory );
-            }
-            return results;
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        Object[] results = new Object[this.accumulators.length];
+        for ( int i = 0; i < this.accumulators.length; i++ ) {
+            Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
+            results[i] = this.accumulators[i].getResult( ((Object[])workingMemoryContext)[i],
+                                                         functionContext[i],
+                                                         leftTuple,
+                                                         this.requiredDeclarations,
+                                                         workingMemory );
         }
+        return results;
     }
 
     public void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
@@ -257,8 +243,9 @@ public class MultiAccumulate extends Accumulate {
         if ( !Arrays.equals( accumulators, other.accumulators ) ) return false;
         if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
         if ( source == null ) {
-            if ( other.source != null ) return false;
-        } else if ( !source.equals( other.source ) ) return false;
-        return true;
+            return other.source == null;
+        } else {
+            return source.equals( other.source );
+        }
     }
 }

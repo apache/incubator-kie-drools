@@ -38,6 +38,7 @@ import org.drools.testcoverage.common.model.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -986,5 +987,35 @@ public class AlphaNodeRangeIndexingTest {
         ksession.insert(new Person("Paul", 60));
         ksession.fireAllRules();
         Assertions.assertThat(results).containsOnly("test1", "test3", "test4", "test7");
+    }
+
+    @Ignore("No need to test. Fails with standard-drl")
+    @Test
+    public void testCoercionStringToNumber() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "rule test1\n when\n" +
+                           "   Person( name >= 20 )\n" +
+                           "then\n end\n" +
+                           "rule test2\n when\n" +
+                           "   Person( name < 40 )\n" +
+                           "then\n end\n" +
+                           "rule test3\n when\n" +
+                           "   Person( name > 50 )\n" +
+                           "then\n end\n";
+
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+        final KieSession ksession = kbase.newKieSession();
+
+        assertSinks(kbase, Person.class, 3, 3, 0, 0);
+
+        ksession.insert(new Person("30"));
+        int fired = ksession.fireAllRules();
+        assertEquals(2, fired);
+
+        ksession.insert(new Person("10"));
+        fired = ksession.fireAllRules();
+        assertEquals(1, fired);
     }
 }

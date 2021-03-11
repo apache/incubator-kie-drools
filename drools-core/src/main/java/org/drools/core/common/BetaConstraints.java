@@ -67,7 +67,7 @@ public interface BetaConstraints
     BitMask getListenedPropertyMask(Class modifiedClass, List<String> settableProperties);
 
     void init(BuildContext context, short betaNodeType);
-    void initIndexes(int depth, short betaNodeType);
+    void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config);
 
     BetaConstraints cloneIfInUse();
 

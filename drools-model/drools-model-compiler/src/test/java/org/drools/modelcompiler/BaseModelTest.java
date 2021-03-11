@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Rete;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,32 +40,38 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
+
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public enum RUN_TYPE {
-        FLOW_DSL( false ),
-        PATTERN_DSL( false ),
-        STANDARD_FROM_DRL( false ),
-        STANDARD_WITH_ALPHA_NETWORK( true ),
-        PATTERN_WITH_ALPHA_NETWORK( true ),
-        FLOW_WITH_ALPHA_NETWORK( true );
+        FLOW_DSL( true, false ),
+        PATTERN_DSL( true, false ),
+        STANDARD_FROM_DRL( false, false ),
+        STANDARD_WITH_ALPHA_NETWORK( false, true ),
+        PATTERN_WITH_ALPHA_NETWORK( true, true ),
+        FLOW_WITH_ALPHA_NETWORK( true, true );
 
+        private boolean executableModel;
         private boolean alphaNetworkCompiler;
 
-        RUN_TYPE( boolean isAlphaNetworkCompiler ) {
+        RUN_TYPE( boolean executableModel, boolean isAlphaNetworkCompiler ) {
+            this.executableModel = executableModel;
             this.alphaNetworkCompiler = isAlphaNetworkCompiler;
         }
 
         public boolean isAlphaNetworkCompiler() {
             return alphaNetworkCompiler;
+        }
+
+        public boolean isExecutableModel() {
+            return executableModel;
         }
     }
 
@@ -217,5 +223,15 @@ public abstract class BaseModelTest {
         KieModuleModel model = KieServices.get().newKieModuleModel();
         model.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
         return model;
+    }
+
+    protected ObjectTypeNode getObjectTypeNodeForClass( KieSession ksession, Class<?> clazz ) {
+        EntryPointNode epn = (( InternalKnowledgeBase ) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
+        for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
+            if (otn.getObjectType().isAssignableFrom( clazz )) {
+                return otn;
+            }
+        }
+        return null;
     }
 }

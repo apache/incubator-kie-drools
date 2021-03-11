@@ -473,6 +473,14 @@ public abstract class ClassUtils {
     }
 
     public static String ucFirst(final String s) {
+        if (s == null) {
+            return null;
+        }
+
+        if (s.length() == 1) {
+            return s.toUpperCase();
+        }
+
         return Character.isLowerCase(s.charAt( 0 )) ? Character.toUpperCase( s.charAt( 0 ) ) + s.substring( 1 ) : s;
     }
 

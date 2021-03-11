@@ -17,8 +17,10 @@
 package org.drools.ancompiler;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
@@ -60,7 +62,14 @@ public class ObjectTypeNodeParser {
      * OTN we are parsing/traversing
      */
     private final ObjectTypeNode objectTypeNode;
-    private IndexableConstraint indexableConstraint;
+    private LinkedHashSet<IndexableConstraint> indexableConstraints = new LinkedHashSet<>();
+
+    // When we have more than one indexable constraints we disable traversing of HashedAlphaNode
+    private boolean traverseHashedAlphaNodes = true;
+
+    public void setTraverseHashedAlphaNodes(boolean traverseHashedAlphaNodes) {
+        this.traverseHashedAlphaNodes = traverseHashedAlphaNodes;
+    }
 
     /**
      * Creates a new parser for the specified ObjectTypeNode
@@ -86,12 +95,11 @@ public class ObjectTypeNodeParser {
         ObjectSinkPropagator propagator = objectTypeNode.getObjectSinkPropagator();
 
         handler.startObjectTypeNode(objectTypeNode);
-        indexableConstraint = traversePropagator(propagator, handler);
+        traversePropagator(propagator, handler);
         handler.endObjectTypeNode(objectTypeNode);
     }
 
-    private IndexableConstraint traversePropagator(ObjectSinkPropagator propagator, NetworkHandler handler) {
-        IndexableConstraint foundIndexableConstraint = null;
+    private void traversePropagator(ObjectSinkPropagator propagator, NetworkHandler handler) {
         if (propagator instanceof SingleObjectSinkAdapter) {
             // we know there is only a single child sink for this propagator
             ObjectSink sink = propagator.getSinks()[0];
@@ -100,18 +108,21 @@ public class ObjectTypeNodeParser {
         } else if (propagator instanceof CompositeObjectSinkAdapter) {
             CompositeObjectSinkAdapter composite = (CompositeObjectSinkAdapter) propagator;
 
-            traverseSinkLisk(composite.getRangeIndexableSinks(), handler);
-            traverseSinkLisk(composite.getHashableSinks(), handler);
-            traverseSinkLisk(composite.getOthers(), handler);
-            traverseRangeIndexedAlphaNodes(composite.getRangeIndexMap(), handler);
-            foundIndexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
+            if(traverseHashedAlphaNodes) {
+                traverseSinkList(composite.getRangeIndexableSinks(), handler);
+                traverseSinkList(composite.getHashableSinks(), handler);
+                traverseSinkList(composite.getOthers(), handler);
+                traverseRangeIndexedAlphaNodes(composite.getRangeIndexMap(), handler);
+                traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
+            } else {
+                traverseSinkList(composite.getSinks(), handler);
+            }
         } else if (propagator instanceof CompositePartitionAwareObjectSinkAdapter) {
             CompositePartitionAwareObjectSinkAdapter composite = (CompositePartitionAwareObjectSinkAdapter) propagator;
-            traverseSinkLisk(composite.getSinks(), handler);
+            traverseSinkList(composite.getSinks(), handler);
         }
-        return foundIndexableConstraint;
     }
-    private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
+    private void traverseSinkList(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
                 traverseSink(sink, handler);
@@ -119,7 +130,7 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private void traverseSinkLisk(ObjectSink[] sinks, NetworkHandler handler) {
+    private void traverseSinkList(ObjectSink[] sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSink sink : sinks) {
                 traverseSink(sink, handler);
@@ -127,11 +138,11 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private IndexableConstraint traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
-        IndexableConstraint hashedFieldReader = null;
+    private void traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
         if (hashedAlphaNodes != null && hashedAlphaNodes.size() > 0) {
             AlphaNode firstAlpha = getFirstAlphaNode(hashedAlphaNodes);
-            hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
+            IndexableConstraint hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
+            indexableConstraints.add(hashedFieldReader);
 
             // start the hashed alphas
             handler.startHashedAlphaNodes(hashedFieldReader);
@@ -162,7 +173,6 @@ public class ObjectTypeNodeParser {
                 handler.nullCaseAlphaNodeEnd(optionalNullAlphaNodeCase);
             }
         }
-        return hashedFieldReader;
     }
 
     private void traverseRangeIndexedAlphaNodes(Map<CompositeObjectSinkAdapter.FieldIndex, AlphaRangeIndex> rangeIndexMap, NetworkHandler handler) {
@@ -190,7 +200,7 @@ public class ObjectTypeNodeParser {
 
             handler.startNonHashedAlphaNode(alphaNode);
 
-            traversePropagator( alphaNode.getObjectSinkPropagator(), handler );
+            traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
 
             handler.endNonHashedAlphaNode(alphaNode);
         } else if (NodeTypeEnums.isBetaNode( sink ) ) {
@@ -251,7 +261,15 @@ public class ObjectTypeNodeParser {
         return (IndexableConstraint) fieldConstraint;
     }
 
+    public Set<IndexableConstraint> getIndexableConstraints() {
+        return indexableConstraints;
+    }
+
     public IndexableConstraint getIndexableConstraint() {
-        return indexableConstraint;
+        IndexableConstraint[] constraintsArray = indexableConstraints
+                .toArray(new IndexableConstraint[0]);
+
+        return indexableConstraints.isEmpty() ? null :
+                constraintsArray[constraintsArray.length - 1];
     }
 }

@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.mining.MiningModel;
 import org.junit.BeforeClass;
@@ -56,6 +57,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
 
     private static final String TEMPLATE_SOURCE = "Template.tmpl";
     private static final String TEMPLATE_CLASS_NAME = "Template";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
@@ -72,6 +74,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(DATA_DICTIONARY,
                                                                                              TRANSFORMATION_DICTIONARY,
                                                                                              MINING_MODEL,
+                                                                                             PACKAGE_NAME,
                                                                                              new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(MINING_MODEL.getAlgorithmName(), retrieved.getAlgorithmName());
@@ -106,6 +109,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         String segmentationClass = "SEGMENTATIONCLASS";
         KiePMMLMiningModelFactory.setConstructor(model,
+                                                 new DataDictionary(),
                                                  constructorDeclaration,
                                                  targetField,
                                                  segmentationClass);

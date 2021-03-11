@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,9 +61,9 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
@@ -3091,5 +3092,344 @@ public class AccumulateTest extends BaseModelTest {
 
         assertEquals(1, result.size());
         assertEquals(Pair.create("Lukas", 35), result.get(0));
+    }
+
+    @Test
+    public void testBindingOrderWithInlineAccumulate() {
+        // RHDM-1551
+        String str =
+                "import " + Aclass.class.getCanonicalName() + ";\n" +
+                "import " + Bclass.class.getCanonicalName() + ";\n" +
+                "import " + Cclass.class.getCanonicalName() + ";\n" +
+                "import " + Dclass.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "import java.util.List\n" +
+                "import java.util.Set\n" +
+                "import java.util.Map\n" +
+                "import java.util.HashMap\n" +
+                "\n" +
+                "dialect \"java\"\n" +
+                "\n" +
+                "rule \"rule5a\"\n" +
+                "    when\n" +
+                "        $b : Bclass()\n" +
+                "        $c : Cclass()\n" +
+                "        $d : Dclass()\n" +
+                "        $eSet : Set() from accumulate( $a : Aclass(),\n" +
+                "                                       init( Map map = new HashMap(); ),\n" +
+                "                                       action( $a.method(map, $b, $c, $d); ),\n" +
+                "                                       result( map.keySet() ) )\n" +
+                "    then\n" +
+                "        result.add($eSet.iterator().next());" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<String> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert(new Aclass("A180"));
+        kSession.insert(new Bclass("B180"));
+        kSession.insert(new Cclass("C200"));
+        kSession.insert(new Dclass("D250"));
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "B180", result.get(0) );
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testBindingOrderWithInlineAccumulateAndLists() {
+        // RHDM-1551
+        String str =
+                "import " + Aclass.class.getCanonicalName() + ";\n" +
+                "import " + Bclass.class.getCanonicalName() + ";\n" +
+                "import " + Cclass.class.getCanonicalName() + ";\n" +
+                "import " + Dclass.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "import java.util.List\n" +
+                "import java.util.Set\n" +
+                "import java.util.Map\n" +
+                "import java.util.HashMap\n" +
+                "\n" +
+                "dialect \"java\"\n" +
+                "\n" +
+                "rule \"rule5a\"\n" +
+                "    when\n" +
+                "        $bList : List() from collect( Bclass() )\n" +
+                "        $cList : List() from collect( Cclass() )\n" +
+                "        $dList : List() from collect( Dclass() )\n" +
+                "        $eSet : Set() from accumulate( $a : Aclass(),\n" +
+                "                                       init( Map map = new HashMap(); ),\n" +
+                "                                       action( $a.methodOnList(map, $bList, $cList, $dList); ),\n" +
+                "                                       result( map.keySet() ) )\n" +
+                "    then\n" +
+                "        result.add($eSet.iterator().next());" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<String> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert(new Aclass("A180"));
+        kSession.insert(new Bclass("B180"));
+        kSession.insert(new Cclass("C200"));
+        kSession.insert(new Dclass("D250"));
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "B180", result.get(0) );
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testBindingOrderWithInlineAccumulateAndListsAndFrom() {
+        // RHDM-1551
+        String str =
+                "import " + Aclass.class.getCanonicalName() + ";\n" +
+                "import " + Bclass.class.getCanonicalName() + ";\n" +
+                "import " + Cclass.class.getCanonicalName() + ";\n" +
+                "import " + Dclass.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "import java.util.List\n" +
+                "import java.util.Set\n" +
+                "import java.util.Map\n" +
+                "import java.util.HashMap\n" +
+                "\n" +
+                "dialect \"java\"\n" +
+                "\n" +
+                "rule \"rule5a\"\n" +
+                "    when\n" +
+                "        $aList : List() from collect( Aclass() )\n" +
+                "        $bList : List() from collect( Bclass() )\n" +
+                "        $cList : List() from collect( Cclass() )\n" +
+                "        $dList : List() from collect( Dclass() )\n" +
+                "        $eSet : Set() from accumulate( $a : Aclass() from $aList,\n" +
+                "                                       init( Map map = new HashMap(); ),\n" +
+                "                                       action( $a.methodOnList(map, $bList, $cList, $dList); ),\n" +
+                "                                       result( map.keySet() ) )\n" +
+                "    then\n" +
+                "        result.add($eSet.iterator().next());" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<String> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert(new Aclass("A180"));
+        kSession.insert(new Bclass("B180"));
+        kSession.insert(new Cclass("C200"));
+        kSession.insert(new Dclass("D250"));
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "B180", result.get(0) );
+
+        kSession.dispose();
+    }
+
+    public static class Aclass {
+        private String name;
+
+        public Aclass() { }
+
+        public Aclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void method(Map map, Bclass b, Cclass c, Dclass d) {
+            map.put(b.getName(), c.getName());
+        }
+
+        public void methodOnList(Map map, Collection<Bclass> bs, Collection<Cclass> cs, Collection<Dclass> ds) {
+            map.put( bs.iterator().next().getName(), cs.iterator().next().getName());
+        }
+    }
+
+    public static class Bclass {
+        private String name;
+
+        public Bclass() { }
+
+        public Bclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class Cclass {
+        private String name;
+
+        public Cclass() { }
+
+        public Cclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class Dclass {
+        private String name;
+
+        public Dclass() { }
+
+        public Dclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    @Test
+    public void testMultiAccumulate() {
+        // RHDM-1572
+        String str =
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "    accumulate ( $s : String( $name : toString, $length : length );\n" +
+                "                 $count : count($name),\n" +
+                "                 $sum : sum($length),\n" +
+                "                 $list : collectList($s) )\n" +
+                "    then\n" +
+                "        result.add($count);\n" +
+                "        result.add($sum);\n" +
+                "        result.addAll($list);\n" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<Object> result = new ArrayList<>();
+        kSession.setGlobal( "result", result );
+
+        kSession.insert( "test" );
+        kSession.insert( "mytest" );
+        kSession.insert( "anothertest" );
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 5, result.size() );
+        assertEquals( 3L, result.get( 0 ) );
+        assertEquals( 21, result.get( 1 ) );
+        assertTrue( result.contains( "test" ) );
+        assertTrue( result.contains( "mytest" ) );
+        assertTrue( result.contains( "anothertest" ) );
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testAccumulateWithExists() {
+        // RHDM-1571
+        String str =
+                "import " + Car.class.getCanonicalName() + ";" +
+                "import " + Aclass.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "        $list : List() from accumulate ( $car : Car( $name : name )\n" +
+                "                                         and exists Aclass( name == $name );\n" +
+                "                                         collectList($car) )\n" +
+                "    then\n" +
+                "        result.addAll($list);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Car> result = new ArrayList<>();
+        ksession.setGlobal( "result", result );
+
+        ksession.insert(new Car("A180"));
+        ksession.insert(new Aclass("A180"));
+        ksession.insert(new Aclass("A180"));
+        ksession.insert(new Aclass("A180"));
+
+        assertEquals( 1, ksession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "A180", result.get(0).getName() );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testAccumulateWithForAll() {
+        // DROOLS-6025
+        String str =
+                "import " + GrandChild.class.getCanonicalName() + ";\n" +
+                "import " + GrandParent.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "        accumulate ( " +
+                "        $gp: GrandParent() and\n" +
+                "        forall( $gc: GrandChild( ) from $gp.grandChild " +
+                "                GrandChild( this == $gc, name == \"A\" ) );\n" +
+                "        $count : count())\n" +
+                "    then\n" +
+                "        System.out.println(\"exec \" + $count);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        GrandParent grandParent = new GrandParent();
+        GrandChild grandChild = new GrandChild();
+        grandChild.setName("A");
+        grandParent.setGrandChild( Collections.singletonList( grandChild ));
+
+        ksession.insert(grandParent);
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static class GrandChild {
+
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class GrandParent {
+        private List<GrandChild> grandChild;
+
+        public List<GrandChild> getGrandChild() {
+            return grandChild;
+        }
+
+        public void setGrandChild(List<GrandChild> grandChild) {
+            this.grandChild = grandChild;
+        }
     }
 }

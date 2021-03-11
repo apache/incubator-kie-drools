@@ -32,6 +32,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
@@ -427,9 +428,11 @@ public class AccumulateNode extends BetaNode {
                 TupleList<AccumulateContextEntry> tupleList = new TupleList<>(entry);
                 entry.setTupleList(tupleList);
                 addTupleList(tupleList);
-                Object functionContext = accumulate.createFunctionContext();
-                entry.setFunctionContext(functionContext);
-                accumulate.init( workingMemoryContext, entry, leftTuple, wm );
+
+                Object funcContext = accumulate.createFunctionContext();
+                funcContext = accumulate.init(workingMemoryContext, entry, funcContext, leftTuple, wm);
+                entry.setFunctionContext(funcContext);
+                PhreakAccumulateNode.initContext(workingMemoryContext, (InternalWorkingMemory) wm, accumulate, leftTuple, entry);
 
                 return tupleList;
             });

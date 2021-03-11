@@ -28,7 +28,6 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -442,6 +441,101 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalModuloConsequence() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money)\n" +
+                "then\n" +
+                "    results.add($m % 70);\n" +
+                "    BigDecimal moduloPromotedToBigDecimal = 12 % 10; "+
+                "    results.add(moduloPromotedToBigDecimal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 71 ) );
+
+        ksession.insert(john);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
+    }
+
+    @Test
+    public void testBigDecimalModulo() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money % 2 == 0 )\n" +
+                "then\n" +
+                "    results.add($m);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        Person mark = new Person("Mark", 40);
+        mark.setMoney( new BigDecimal( 70001 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 70000 ), results.iterator().next());
+    }
+
+    @Test
+    public void testBigDecimalModuloBetweenFields() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money % age == 20 )\n" +
+                "then\n" +
+                "    results.add($m);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 80 ), results.iterator().next());
+    }
+
+    @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
         // DROOLS-5894
         String drl =
@@ -742,5 +836,117 @@ public class MvelDialectTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
         Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
         Assertions.assertThat(addresses).contains("Milan");
+    }
+
+    @Test
+    public void testSetOnMvel() {
+        // RHDM-1550
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"use subtypes in nested fors\"\n" +
+                "when\n" +
+                "    $person: Person()\n" +
+                "then\n" +
+                "    $person.setNameAndAge( \"Mario\", 46\n" +
+                ");\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person mario = new Person();
+        ksession.insert( mario );
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals("Mario", mario.getName());
+        assertEquals(46, mario.getAge());
+    }
+
+    @Test
+    public void testCompoundOperator() throws Exception {
+        // DROOLS-5894 // DROOLS-5901 // DROOLS-5897
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    BigDecimal result = 0B;" +
+                "    $p.money += 50000;\n" + // 50000
+                "    $p.money -= 10000;\n" + // 40000
+                "    $p.money /= 10;\n" + // 4000
+                "    $p.money *= 10;\n" + // 40000
+                "    $p.money += $p.money;\n" + // 80000
+                "    $p.money /= $p.money;\n" + // 1
+                "    $p.money *= $p.money;\n" + // 1
+                "    $p.money -= $p.money;\n" + // 0
+                "    BigDecimal anotherVar = 10B;" +
+                "    $p.money += anotherVar;\n" + // 10
+                "    $p.money /= anotherVar;\n" + // 1
+                "    $p.money *= anotherVar;\n" + // 1
+                "    $p.money -= anotherVar;\n" + // 0
+                "    int intVar = 20;" +
+                "    $p.money += intVar;\n" + // 20
+                "    $p.money /= intVar;\n" + // 1
+                "    $p.money *= intVar;\n" + // 1
+                "    $p.money -= intVar;\n" + // 0
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 0 ), john.getMoney());
+    }
+
+    @Test
+    public void testKcontext() {
+        String str =
+                "global java.util.List result;" +
+                     "rule R\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  Integer()\n" +
+                     "then\n" +
+                     "  result.add(kcontext.getRule().getName());\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(47);
+        ksession.fireAllRules();
+
+        assertTrue(result.contains("R"));
+    }
+
+    @Test
+    public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "\n" +
+                           "rule R\n" +
+                           "dialect \"mvel\"\n" +
+                           "when\n" +
+                           "  Person(name == \"Mario\")\n" +
+                           "then\n" +
+                           "  Person p2 = new Person(\"John\");\n" +
+                           "  p2.age = 30\n" + // a line break at the end of the statement without a semicolon
+                           "  insert(p2);\n" +
+                           "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mario", 40);
+        ksession.insert(p);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
     }
 }

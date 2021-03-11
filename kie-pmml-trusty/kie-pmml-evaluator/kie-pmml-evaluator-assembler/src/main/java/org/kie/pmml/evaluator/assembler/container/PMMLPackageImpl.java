@@ -28,10 +28,16 @@ import org.kie.pmml.evaluator.api.container.PMMLPackage;
 public class PMMLPackageImpl implements PMMLPackage {
 
     private Map<String, KiePMMLModel> kiePMMLModelsMap = new HashMap<>();
+    private Map<String, KiePMMLModel> kiePMMLModelsByFullClassNameMap = new HashMap<>();
 
     @Override
     public KiePMMLModel getModelByName(String name) {
         return kiePMMLModelsMap.get(name);
+    }
+
+    @Override
+    public KiePMMLModel getModelByFullClassName(String fullClassName) {
+        return kiePMMLModelsByFullClassNameMap.get(fullClassName);
     }
 
     /**
@@ -43,6 +49,11 @@ public class PMMLPackageImpl implements PMMLPackage {
     }
 
     @Override
+    public Map<String, KiePMMLModel> getAllModelsByFullClassName() {
+        return Collections.unmodifiableMap(kiePMMLModelsMap);
+    }
+
+    @Override
     public ResourceType getResourceType() {
         return ResourceType.PMML;
     }
@@ -50,6 +61,7 @@ public class PMMLPackageImpl implements PMMLPackage {
     @Override
     public void add(KiePMMLModel toAdd) {
         kiePMMLModelsMap.put(toAdd.getName(), toAdd);
+        kiePMMLModelsByFullClassNameMap.put(toAdd.getClass().getName(), toAdd);
     }
 
     @Override

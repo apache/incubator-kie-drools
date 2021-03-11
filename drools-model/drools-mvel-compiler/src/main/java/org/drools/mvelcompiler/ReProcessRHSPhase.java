@@ -5,9 +5,11 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
@@ -36,6 +38,11 @@ public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpres
     @Override
     public Optional<TypedExpression> defaultMethod(Node n, Void context) {
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<TypedExpression> visit(BinaryExpr n, Void arg) {
+        return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n));
     }
 
     @Override

@@ -99,21 +99,23 @@ public class FromTest {
 
     @Test
     public void testFromSharing() {
-        testFromSharingCommon(kieBaseTestConfiguration);
+        testFromSharingCommon(kieBaseTestConfiguration, new HashMap<>(), 2, 2);
     }
 
-    public static void testFromSharingCommon(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public static void testFromSharingCommon(KieBaseTestConfiguration kieBaseTestConfiguration,
+                                             Map<String, String> configurationProperties,
+                                             int expectedNumberOfFromNode,
+                                             int numberOfSinksInSecondFromNode) {
         // Keeping original test as non-property reactive by default, just allowed.
         final String drl = fromSharingRule();
 
         final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "from-test", "1");
-        final Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
-        kieModuleConfigurationProperties.put(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.toString());
+        configurationProperties.put(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.toString());
 
         final KieModule kieModule = KieUtil.getKieModuleFromDrls(releaseId1,
                                                                  kieBaseTestConfiguration,
                                                                  KieSessionTestConfiguration.STATEFUL_REALTIME,
-                                                                 kieModuleConfigurationProperties,
+                                                                 configurationProperties,
                                                                  drl);
         final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         final KieBase kbase = kieContainer.getKieBase();
@@ -126,15 +128,17 @@ public class FromTest {
             assertEquals( 1, otn.getObjectSinkPropagator().size() );
             final LeftInputAdapterNode lian = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
 
-            // There are only 2 FromNodes since R2 and R3 are sharing the second From
+            // There are only 2 FromNodes since R2 and R3 with the sharing the second From
+            // There will be 3 FromNodes without the sharing, that is with exec model with plain lambda and native image
             final LeftTupleSink[] sinks = lian.getSinkPropagator().getSinks();
-            assertEquals( 2, sinks.length );
+            assertEquals(expectedNumberOfFromNode, sinks.length );
 
             // The first from has R1 has sink
             assertEquals( 1, sinks[0].getSinkPropagator().size() );
 
-            // The second from has both R2 and R3 as sinks
-            assertEquals( 2, sinks[1].getSinkPropagator().size() );
+            // The second from has both R2 and R3 as sinks when node sharing
+            // When node sharing is disabled, it will only have one
+            assertEquals(numberOfSinksInSecondFromNode, sinks[1].getSinkPropagator().size() );
         } finally {
             ksession.dispose();
         }

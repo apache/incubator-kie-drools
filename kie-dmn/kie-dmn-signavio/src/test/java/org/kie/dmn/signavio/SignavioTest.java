@@ -32,17 +32,20 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class SignavioTest {
@@ -63,6 +66,22 @@ public class SignavioTest {
         LOG.info("{}", evaluateAll);
         
         assertThat( (List<?>) evaluateAll.getContext().get( "Greeting for each Person in Persons" ), contains( "Hello p1", "Hello p2" ) );
+    }
+    
+    @Test
+    public void test_unmarshall() {
+        DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
+        DMNModel model0 = runtime.getModels().get(0);
+        Definitions definitions = model0.getDefinitions();
+        DRGElement decision = definitions.getDrgElement().stream().filter(e -> e.getName().equals("greetingForEachPersonInPersons")).findFirst().orElseThrow(IllegalStateException::new);
+        Object extElement = decision.getExtensionElements().getAny().get(0);
+        assertThat(extElement, is(instanceOf(MultiInstanceDecisionLogic.class)));
+        MultiInstanceDecisionLogic mid = (MultiInstanceDecisionLogic) extElement;
+        LOG.info("{}", mid);
+        assertThat(mid.getIterationExpression(), is("persons"));
+        assertThat(mid.getIteratorShapeId(), is("id-707bbdf74438414623ac5d7067805b38"));
+        assertThat(mid.getAggregationFunction(), is("COLLECT"));
+        assertThat(mid.getTopLevelDecisionId(), is("id-7a23e2f201e3e0db3c991313cff5cd2b"));
     }
 
     @Test

@@ -15,17 +15,19 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.TupleValueExtractor;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.index.IndexUtil;
 
 public interface IndexableConstraint extends Constraint {
 
     boolean isUnification();
 
-    boolean isIndexable(short nodeType);
+    boolean isIndexable(short nodeType, RuleBaseConfiguration config);
 
     IndexUtil.ConstraintType getConstraintType();
 
@@ -36,4 +38,6 @@ public interface IndexableConstraint extends Constraint {
     InternalReadAccessor getFieldExtractor();
 
     default void unsetUnification() { }
+
+    TupleValueExtractor getIndexExtractor();
 }

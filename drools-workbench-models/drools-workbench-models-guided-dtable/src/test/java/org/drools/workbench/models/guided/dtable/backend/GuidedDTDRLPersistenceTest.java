@@ -19,7 +19,6 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -74,6 +73,7 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1726,6 +1726,58 @@ public class GuidedDTDRLPersistenceTest {
     }
 
     @Test
+    public void testNoOperatorContainsWhitespacesLiteralValue() {
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("p1");
+        p1.setFactType("Person");
+
+        ConditionCol52 col1 = new ConditionCol52();
+        col1.setFactField("name");
+        col1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        col1.setOperator("");
+        p1.getChildColumns().add(col1);
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.getConditions().add(p1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][] {
+                new String[]{"1", "contains test", "desc", "contains \"abc efg\""},
+                new String[]{"2", "not contains test", "desc", "not contains \"x y z\""}
+        }));
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal(dt);
+        assertTrue(drl.indexOf("name contains \"abc efg\"") > 0);
+        assertTrue(drl.indexOf("name not contains \"x y z\"") > 0);
+    }
+
+    @Test
+    public void testNoOperatorContainsWhitespacesFormula() {
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("p1");
+        p1.setFactType("Person");
+
+        ConditionCol52 col1 = new ConditionCol52();
+        col1.setFactField("name");
+        col1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_RET_VALUE);
+        col1.setOperator("");
+        p1.getChildColumns().add(col1);
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.getConditions().add(p1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][] {
+                new String[]{"1", "contains test", "desc", "contains \"abc efg\""},
+                new String[]{"2", "not contains test", "desc", "not contains \"x y z\""}
+        }));
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal(dt);
+        assertTrue(drl.indexOf("name contains ( \"abc efg\" )") > 0);
+        assertTrue(drl.indexOf("name not contains ( \"x y z\" )") > 0);
+    }
+
+    @Test
     public void testRHS() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "a condition", "actionsetfield1", "actionupdatefield2", "retract", "actioninsertfact1", "actioninsertfact2"};
@@ -2807,20 +2859,82 @@ public class GuidedDTDRLPersistenceTest {
         p1.getChildColumns().add(cc2);
 
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "", "desc", "Pupa, Brains, \"John, Snow\"", "55, 66"},
-                new Object[]{2l, "", "desc", "", ""}
+                new Object[]{1l, "", "desc", "Pupa, Brains, \"John, Snow\", \" \"", "55, 66"},
+                new Object[]{2l, "", "desc", "Pupa, Brains, \" \", \"John, Snow\"", "55, 66"},
+                new Object[]{3l, "", "desc", "\" \", Pupa, Brains, \"John, Snow\"", "55, 66"},
+                new Object[]{4l, "", "desc", "", ""}
+        }));
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal(dt);
+
+        assertThat(drl)
+                .containsSubsequence(
+                        "Smurf( name in ( \"Pupa\", \"Brains\", \"John, Snow\", \" \" ) , age in ( 55, 66 ) )",
+                        "Smurf( name in ( \"Pupa\", \"Brains\", \" \", \"John, Snow\" ) , age in ( 55, 66 ) )",
+                        "Smurf( name in ( \" \", \"Pupa\", \"Brains\", \"John, Snow\" ) , age in ( 55, 66 ) )");
+        assertThat(drl)
+                .doesNotContain("Smurf( )");
+    }
+
+    @Test
+    public void testLHSContainsOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        dt.setTableName("extended-entry");
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("p1");
+        p1.setFactType("Smurf");
+        dt.getConditions().add(p1);
+
+        ConditionCol52 cc1 = new ConditionCol52();
+        cc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        cc1.setFieldType(DataType.TYPE_STRING);
+        cc1.setFactField("name");
+        cc1.setOperator("contains");
+        p1.getChildColumns().add(cc1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][]{
+                new Object[]{1l, "", "desc", "a b"},
         }));
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal(dt);
 
         int index = -1;
-        index = drl.indexOf("Smurf( name in ( \"Pupa\", \"Brains\", \"John, Snow\" ) , age in ( 55, 66 ) )");
+        index = drl.indexOf("Smurf( name contains \"a b\" )");
         assertTrue(index > -1);
+    }
 
-        index = drl.indexOf("Smurf( )",
-                            index + 1);
-        assertFalse(index > -1);
+    @Test
+    public void testLHSNotContainsOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        dt.setTableName("extended-entry");
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("p1");
+        p1.setFactType("Smurf");
+        dt.getConditions().add(p1);
+
+        ConditionCol52 cc1 = new ConditionCol52();
+        cc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        cc1.setFieldType(DataType.TYPE_STRING);
+        cc1.setFactField("name");
+        cc1.setOperator("not contains");
+        p1.getChildColumns().add(cc1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][]{
+                new Object[]{1l, "", "desc", "a b"},
+        }));
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal(dt);
+
+        int index = -1;
+        index = drl.indexOf("Smurf( name not contains \"a b\" )");
+        assertTrue(index > -1);
     }
 
     @Test
@@ -5286,6 +5400,6 @@ public class GuidedDTDRLPersistenceTest {
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }

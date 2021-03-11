@@ -16,16 +16,12 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -56,6 +52,7 @@ import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
+import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
@@ -66,46 +63,18 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
     
-    private ScopeHelper scopeHelper;
+    private ScopeHelper<Type> scopeHelper;
     private FEELTypeRegistry typeRegistry;
-
-    private static class ScopeHelper {
-        Deque<Map<String, Type>> stack;
-        
-        public ScopeHelper() {
-            this.stack = new ArrayDeque<>();
-            this.stack.push(new HashMap<>());
-        }
-        
-        public void addTypes(Map<String, Type> inputTypes) {
-            stack.peek().putAll(inputTypes);
-        }
-        
-        public void addType(String name, Type type) {
-            stack.peek().put(name, type);
-        }
-        
-        public void pushScope() {
-            stack.push(new HashMap<>());
-        }
-        
-        public void popScope() {
-            stack.pop();
-        }
-        
-        public Optional<Type> resolveType(String name) {
-            return stack.stream()
-                .map( scope -> Optional.ofNullable( scope.get( name )) )
-                .flatMap( o -> o.isPresent() ? Stream.of( o.get() ) : Stream.empty() )
-                .findFirst()
-                ;
-        }
-    }
+    private boolean visitedTemporalCandidate = false;
 
     public ASTBuilderVisitor(Map<String, Type> inputTypes, FEELTypeRegistry typeRegistry) {
-        this.scopeHelper = new ScopeHelper();
-        this.scopeHelper.addTypes(inputTypes);
+        this.scopeHelper = new ScopeHelper<>();
+        this.scopeHelper.addInScope(inputTypes);
         this.typeRegistry = typeRegistry != null ? typeRegistry : DefaultBuiltinFEELTypeRegistry.INSTANCE;
+    }
+
+    public boolean isVisitedTemporalCandidate() {
+        return visitedTemporalCandidate;
     }
 
     @Override
@@ -350,7 +319,7 @@ public class ASTBuilderVisitor
             ContextEntryNode visited = (ContextEntryNode) visit( c ); // forced cast similarly to visitFunctionDefinition() method
             if (visited != null) {
                 nodes.add( visited );
-                scopeHelper.addType( visited.getName().getText() , visited.getResultType() );
+                scopeHelper.addInScope(visited.getName().getText(), visited.getResultType());
             }
         }
         scopeHelper.popScope();
@@ -425,7 +394,7 @@ public class ASTBuilderVisitor
         for ( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
             String originalText = ParserHelper.getOriginalText(t);
             if ( typeCursor == null ) {
-                typeCursor = scopeHelper.resolveType( originalText ).orElse( BuiltInType.UNKNOWN );
+                typeCursor = scopeHelper.resolve(originalText).orElse(BuiltInType.UNKNOWN);
             } else if ( typeCursor instanceof CompositeType ) {
                 typeCursor = ((CompositeType) typeCursor).getFields().get(originalText);
             } else {
@@ -509,6 +478,9 @@ public class ASTBuilderVisitor
     public BaseNode visitFnInvocation(FEEL_1_1Parser.FnInvocationContext ctx) {
         BaseNode name = visit(ctx.unaryExpression());
         ListNode params = (ListNode) visit(ctx.parameters());
+        if (ASTTemporalConstantVisitor.TEMPORAL_FNS_NAMES.contains(name.getText())) {
+            visitedTemporalCandidate = true;
+        }
         return buildFunctionCall(ctx, name, params);
     }
 

@@ -26,7 +26,7 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 
 public class FEELNumberCoercionTest {

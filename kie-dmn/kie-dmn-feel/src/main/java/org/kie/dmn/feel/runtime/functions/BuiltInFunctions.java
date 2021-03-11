@@ -37,11 +37,11 @@ import org.kie.dmn.feel.runtime.functions.interval.StartsFunction;
 public class BuiltInFunctions {
 
     protected static final FEELFunction[] FUNCTIONS = new FEELFunction[]{
-            new DateFunction(),
-            new TimeFunction(),
-            new DateAndTimeFunction(),
-            new DurationFunction(),
-            new YearsAndMonthsFunction(),
+            DateFunction.INSTANCE,
+            TimeFunction.INSTANCE,
+            DateAndTimeFunction.INSTANCE,
+            DurationFunction.INSTANCE,
+            YearsAndMonthsFunction.INSTANCE,
             new StringFunction(),
             new NumberFunction(),
             new SubstringFunction(),

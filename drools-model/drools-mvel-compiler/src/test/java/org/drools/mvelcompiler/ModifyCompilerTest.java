@@ -63,8 +63,8 @@ public class ModifyCompilerTest implements CompilerTest {
     public void test(Consumer<MvelCompilerContext> testFunction,
                       String inputExpression,
                       String expectedResult,
-                      Consumer<ParsingResult> resultAssert) {
-        ParsingResult compiled = new ModifyCompiler().compile(inputExpression);
+                      Consumer<CompiledBlockResult> resultAssert) {
+        CompiledBlockResult compiled = new ModifyCompiler().compile(inputExpression);
         assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
         resultAssert.accept(compiled);
     }

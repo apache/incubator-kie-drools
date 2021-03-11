@@ -38,6 +38,7 @@ public class Person extends AbstractReactiveObject {
 
     private Map<Integer, Integer> items = new HashMap<>();
     private Map<String, String> itemsString = new HashMap<>();
+    private Map<String, Person> childrenMap = new HashMap<>();
 
     private Date birthDay;
 
@@ -92,6 +93,11 @@ public class Person extends AbstractReactiveObject {
         this.name = name;
     }
 
+    public void setNameAndAge(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
     public int getAge() {
         return age;
     }
@@ -104,9 +110,10 @@ public class Person extends AbstractReactiveObject {
         return (short)age;
     }
 
-    public void setAge(int age) {
+    public Person setAge(int age) {
         this.age = age;
         notifyModification();
+        return this;
     }
 
     public Address getAddress() {
@@ -238,6 +245,14 @@ public class Person extends AbstractReactiveObject {
         this.birthDay = birthDay;
     }
 
+    public Map<String, Person> getChildrenMap() {
+        return childrenMap;
+    }
+
+    public void setChildrenMap(Map<String, Person> childrenMap) {
+        this.childrenMap = childrenMap;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -257,5 +272,9 @@ public class Person extends AbstractReactiveObject {
 
     public static int sumAges(Person p1, Person p2) {
         return p1.getAge() + p2.getAge();
+    }
+
+    public static Person identityFunction(Person p) {
+        return p;
     }
 }

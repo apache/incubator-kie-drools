@@ -61,7 +61,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -75,7 +75,7 @@ public class PropertySpecificTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM caused infinite loop with some tests e.g. testNodeSharing. Need to clarify and file JIRAs
+        // TODO: EM caused infinite loop with some tests e.g. testNoConstraint, testFrom, testNodeSharing. Need to clarify and file JIRAs
         return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 

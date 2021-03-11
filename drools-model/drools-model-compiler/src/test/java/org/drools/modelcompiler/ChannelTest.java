@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ChannelTest extends BaseModelTest {
 
@@ -35,11 +34,11 @@ public class ChannelTest extends BaseModelTest {
         super(testRunType);
     }
 
-    @Test
-    public void testChannel() {
+    public void testChannel(boolean isMvel) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R \n" +
+                     (isMvel ? "dialect \"mvel\"\n" : "dialect \"java\"\n") +
                      "when\n" +
                      "    $p: Person()\n" +
                      "then\n" +
@@ -56,6 +55,16 @@ public class ChannelTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertThat(testChannel.getChannelMessages(), hasItem("Test Message"));
+    }
+
+    @Test
+    public void testChannelWithJava() {
+        testChannel(false);
+    }
+
+    @Test
+    public void testChannelWithMvel() {
+        testChannel(true);
     }
 
     public static class TestChannel implements Channel {

@@ -16,11 +16,13 @@
 
 package org.drools.scenariosimulation.backend.runner.model;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * Utility class to wrap a value with the possibility to specify error message or propose valid value.
+ * - collectionPathToValue: In case of a failure with a collection value type, it holds the path to reach the wrong value
  * Note: null can be used as value.
  * @param <T>
  */
@@ -31,28 +33,34 @@ public class ValueWrapper<T> {
     private final T value;
     private final T expected;
     private final String errorMessage;
+    private final List<String> collectionPathToValue;
 
-    private ValueWrapper(T value, T expected, boolean valid, String errorMessage) {
+    private ValueWrapper(T value, T expected, boolean valid, String errorMessage, List<String> collectionPathToValue) {
         this.valid = valid;
         this.value = value;
         this.expected = expected;
         this.errorMessage = errorMessage;
+        this.collectionPathToValue = collectionPathToValue;
     }
 
     public static <T> ValueWrapper<T> of(T value) {
-        return new ValueWrapper<>(value, null, true, null);
+        return new ValueWrapper<>(value, null, true, null, null);
     }
 
     public static <T> ValueWrapper<T> errorWithValidValue(T value, T expected) {
-        return new ValueWrapper<>(value, expected, false, null);
+        return new ValueWrapper<>(value, expected, false, null, null);
     }
 
     public static <T> ValueWrapper<T> errorWithMessage(String message) {
-        return new ValueWrapper<>(null, null, false, message);
+        return new ValueWrapper<>(null, null, false, message, null);
     }
 
     public static <T> ValueWrapper<T> errorEmptyMessage() {
-        return new ValueWrapper<>(null, null, false, null);
+        return new ValueWrapper<>(null, null, false, null, null);
+    }
+
+    public static <T> ValueWrapper<T> errorWithCollectionPathToValue(T value, List<String> path) {
+        return new ValueWrapper<>(value, null, false, null, path);
     }
 
     public boolean isValid() {
@@ -69,6 +77,10 @@ public class ValueWrapper<T> {
 
     public Optional<String> getErrorMessage() {
         return Optional.ofNullable(errorMessage);
+    }
+
+    public List<String> getCollectionPathToValue() {
+        return collectionPathToValue;
     }
 
     public T orElse(T defaultValue) {

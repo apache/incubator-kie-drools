@@ -17,7 +17,9 @@
 package org.drools.ancompiler;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.NamedEntryPoint;
@@ -34,6 +36,7 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AlphaNetworkCompilerTest extends BaseModelTest {
 
@@ -50,6 +53,413 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
 
         public String getValue() {
             return value;
+        }
+    }
+
+    @Test
+    public void testNonHashedAlphaNode() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List resultsM;\n" +
+                        "global java.util.List resultsL;\n" +
+                        "rule M when\n" +
+                        "  $p : Person( name.startsWith(\"M\"))\n" +
+                        "then\n" +
+                        "  resultsM.add($p);\n" +
+                        "end\n" +
+                        "rule L when\n" +
+                        "  $p : Person( name.startsWith(\"L\"))\n" +
+                        "then\n" +
+                        "  resultsL.add($p);\n" +
+                        "end";
+
+        final List<Person> resultsM = new ArrayList<>();
+        final List<Person> resultsL = new ArrayList<>();
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal("resultsM", resultsM);
+        ksession.setGlobal("resultsL", resultsL);
+
+        final Person mario = new Person("Mario", 40);
+        final Person luca = new Person("Luca", 33);
+
+        ksession.insert(mario);
+        ksession.insert(luca);
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, resultsM.size() );
+        assertEquals( mario, resultsM.iterator().next() );
+
+        assertEquals( 1, resultsL.size() );
+        assertEquals( luca, resultsL.iterator().next() );
+    }
+
+    @Test
+    public void testNormalizationForAlphaIndexing() {
+        final String str =
+                "package org.drools.test;\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R1 when \n" +
+                        " $p : Person(\"Toshiya\" == name)\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R2 when \n" +
+                        " $p : Person(\"Mario\" == name)\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R3 when \n" +
+                        " $p : Person(\"Luca\" == name)\n" +
+                        "then\n" +
+                        "end\n";
+
+        final KieSession ksession = getKieSession(str);
+
+        ObjectTypeNode otn = ((NamedEntryPoint) ksession.getEntryPoint("DEFAULT")).getEntryPointNode().getObjectTypeNodes().entrySet()
+                .stream()
+                .filter(e -> e.getKey().getClassName().equals(Person.class.getCanonicalName()))
+                .map(e -> e.getValue())
+                .findFirst()
+                .get();
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        if(this.testRunType.isAlphaNetworkCompiler()) {
+            objectSinkPropagator = ((CompiledNetwork)objectSinkPropagator).getOriginalSinkPropagator();
+        }
+        CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
+
+        assertNotNull(sinkAdaptor.getHashedSinkMap());
+        assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
+
+        final Person p = new Person("Toshiya", 45);
+        ksession.insert(p);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNodeHashingWithMultipleConditions() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List results;\n" +
+                        "rule r1 when\n" +
+                        "  $p : Person( name == \"Luca\", likes == \"food\", age >= 33)\n" +
+                        "then\n" +
+                        "  results.add($p);\n" +
+                        "end\n" +
+                        "rule r2 when\n" +
+                        "  $p : Person( name == \"Luca\", likes == \"videogames\", age < 19)\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule r3 when\n" +
+                        "  $p : Person( name == \"Luca\", likes == \"music\", age == 20)\n" +
+                        "then\n" +
+                        "end";
+
+        final List<Person> results = new ArrayList<>();
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal("results", results);
+
+        final Person luca33 = new Person("Luca", 33).setLikes("food");
+        final Person luca20 = new Person("Luca", 20).setLikes("music");
+        final Person luca18 = new Person("Luca", 18).setLikes("videogames");
+
+        ksession.insert(luca33);
+        ksession.insert(luca20);
+        ksession.insert(luca18);
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( luca33, results.iterator().next() );
+
+    }
+
+    @Test
+    public void testHashedInteger() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List resultsM;\n" +
+                        "global java.util.List resultsL;\n" +
+                        "rule M when\n" +
+                        "  $p : Person( age == 40)\n" +
+                        "then\n" +
+                        "  resultsM.add($p);\n" +
+                        "end\n" +
+                        "rule L when\n" +
+                        "  $p : Person( age == 33)\n" +
+                        "then\n" +
+                        "  resultsL.add($p);\n" +
+                        "end";
+
+        final List<Person> resultsM = new ArrayList<>();
+        final List<Person> resultsL = new ArrayList<>();
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.setGlobal("resultsM", resultsM);
+        ksession.setGlobal("resultsL", resultsL);
+
+        final Person mario = new Person("Mario", 40);
+        final Person luca = new Person("Luca", 33);
+
+        ksession.insert(mario);
+        ksession.insert(luca);
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, resultsM.size() );
+        assertEquals( mario, resultsM.iterator().next() );
+
+        assertEquals( 1, resultsL.size() );
+        assertEquals( luca, resultsL.iterator().next() );
+    }
+
+    @Test
+    public void testAlphaConstraint() {
+        String str =
+                "rule \"Bind\"\n" +
+                        "when\n" +
+                        "  $s : String( length > 4, length < 10)\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("Luca");
+        ksession.insert("Asdrubale");
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAlphaConstraintsSwitchString() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Luca\") \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Mario\") \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( name == \"Matteo\") \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("Asdrubale"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    /*
+        This generates the switch but not the inlining
+     */
+    @Test
+    public void testAlphaConstraintsSwitchBigDecimal() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + BigDecimal.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( money == new BigDecimal(0)) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( money == new BigDecimal(1)) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( money == new BigDecimal(2)) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Luca", new BigDecimal(0)));
+        ksession.insert(new Person("Asdrubale", new BigDecimal(10)));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAlphaConstraintsSwitchPerson() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : Person( this == new Person(\"Luca\")) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : Person( this == new Person(\"Mario\")) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : Person( this == new Person(\"Matteo\")) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("Asdrubale"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAlphaConstraintsSwitchIntegers() {
+        String str =
+                "rule \"Bind1\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 4) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind2\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 5) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule \"Bind3\"\n" +
+                        "when\n" +
+                        "  $s : String( length == 6) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("Luca");
+        ksession.insert("Asdrubale");
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testEnum() {
+        String str =
+                "import " + EnumFact1.class.getCanonicalName() + ";\n" +
+                        "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "    $factWithEnum : ChildFactWithEnum1(  enumValue == EnumFact1.FIRST ) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R2 when\n" +
+                        "    $factWithEnum : ChildFactWithEnum1(  enumValue == EnumFact1.SECOND ) \n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R3 when\n" +
+                        "    $factWithEnum : ChildFactWithEnum1(  enumValue == EnumFact1.THIRD ) \n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+        ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.FIRST));
+        ksession.insert(new ChildFactWithEnum1(1, 3, EnumFact1.SECOND));
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAlphaConstraintWithModification() {
+        String str =
+                        "global java.util.List results;\n" +
+                        "rule \"Bind\"\n" +
+                        "when\n" +
+                        "  $s : String( length > 4, length < 10)\n" +
+                        "then\n" +
+                        "  results.add($s + \" is greater than 4 and smaller than 10\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("Luca");
+        ksession.insert("Asdrubale");
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        ksession.fireAllRules();
+        assertEquals("Asdrubale is greater than 4 and smaller than 10", results.iterator().next());
+    }
+
+    @Test
+    public void testModify() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule \"Modify\"\n" +
+                        "when\n" +
+                        "  $p : Person( age == 30 )\n" +
+                        "then\n" +
+                        "   modify($p) { setName($p.getName() + \"30\"); }" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        final Person luca = new Person("Luca", 30);
+        ksession.insert(luca);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        ksession.fireAllRules();
+        assertEquals("Luca30", luca.getName());
+    }
+
+    @Test
+    public void testModify2() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "global java.util.List results;\n" +
+                        "rule \"Modify\"\n" +
+                        "when\n" +
+                        "  $p : Person( age < 40 )\n" +
+                        "then\n" +
+                        "   modify($p) { setAge($p.getAge() + 1); }" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        final Person luca = new Person("Luca", 30);
+        ksession.insert(luca);
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        assertEquals(10, ksession.fireAllRules());
+
+        ksession.fireAllRules();
+        assertTrue(luca.getAge() == 40);
+    }
+
+    @Test
+    public void testAlphaConstraintNagate() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R1 when\n" +
+                        "    Person( !(age > 18) )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        try {
+            ksession.insert(new Person("Mario", 45));
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
         }
     }
 
@@ -136,43 +546,4 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
         assertEquals( "Hello World", list.get(0) );
     }
 
-    @Test
-    public void testNormalizationForAlphaIndexing() {
-        final String str =
-                "package org.drools.test;\n" +
-                        "import " + Person.class.getCanonicalName() + ";\n" +
-                        "rule R1 when \n" +
-                        " $p : Person(\"Toshiya\" == name)\n" +
-                        "then\n" +
-                        "end\n" +
-                        "rule R2 when \n" +
-                        " $p : Person(\"Mario\" == name)\n" +
-                        "then\n" +
-                        "end\n" +
-                        "rule R3 when \n" +
-                        " $p : Person(\"Luca\" == name)\n" +
-                        "then\n" +
-                        "end\n";
-
-        final KieSession ksession = getKieSession(str);
-
-        ObjectTypeNode otn = ((NamedEntryPoint) ksession.getEntryPoint("DEFAULT")).getEntryPointNode().getObjectTypeNodes().entrySet()
-                .stream()
-                .filter(e -> e.getKey().getClassName().equals(Person.class.getCanonicalName()))
-                .map(e -> e.getValue())
-                .findFirst()
-                .get();
-        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
-        if(this.testRunType.isAlphaNetworkCompiler()) {
-            objectSinkPropagator = ((CompiledNetwork)objectSinkPropagator).getOriginalSinkPropagator();
-        }
-        CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
-
-        assertNotNull(sinkAdaptor.getHashedSinkMap());
-        assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
-
-        final Person p = new Person("Toshiya", 45);
-        ksession.insert(p);
-        assertEquals(1, ksession.fireAllRules());
-    }
 }
