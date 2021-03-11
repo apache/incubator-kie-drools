@@ -33,6 +33,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -46,6 +47,7 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +100,7 @@ public abstract class AbstractRunnerHelper {
                          requestContext);
 
         validateAssertion(scenarioRunnerData.getResults(),
-                          scenario);
+                          scesimModelDescriptor);
     }
 
     protected List<InstanceGiven> extractBackgroundValues(Background background,
@@ -261,18 +263,41 @@ public abstract class AbstractRunnerHelper {
         return paramsForBean;
     }
 
-    protected void validateAssertion(List<ScenarioResult> scenarioResults, Scenario scenario) {
-        boolean scenarioFailed = false;
+    protected void validateAssertion(List<ScenarioResult> scenarioResults, ScesimModelDescriptor scesimModelDescriptor) {
+
         for (ScenarioResult scenarioResult : scenarioResults) {
             if (!scenarioResult.getResult()) {
-                scenarioFailed = true;
-                break;
+                throwScenarioException(scenarioResult.getFactMappingValue(), scesimModelDescriptor);
             }
         }
 
-        if (scenarioFailed) {
-            throw new ScenarioException("Scenario '" + scenario.getDescription() + "' failed");
+    }
+
+    private void throwScenarioException(FactMappingValue factMappingValue,
+                                        ScesimModelDescriptor scesimModelDescriptor) {
+        FactMapping factMapping = scesimModelDescriptor.getFactMapping(factMappingValue.getFactIdentifier(),
+                                                                       factMappingValue.getExpressionIdentifier())
+                .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
+        String factName = String.join(".", factMapping.getExpressionElements().stream()
+                .map(ExpressionElement::getStep).collect(Collectors.toList()));
+        if (FactMappingValueStatus.FAILED_WITH_ERROR == factMappingValue.getStatus()) {
+            throw new ScenarioException(determineExceptionMessage(factMappingValue, factName), true);
+        } else if (FactMappingValueStatus.FAILED_WITH_EXCEPTION == factMappingValue.getStatus()) {
+            throw new ScenarioException(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(factMappingValue.getExceptionMessage()));
+        } else {
+            throw new IllegalStateException("Illegal FactMappingValue status");
         }
+    }
+
+    private String determineExceptionMessage(FactMappingValue factMappingValue, String factName) {
+        if (factMappingValue.getCollectionPathToValue() == null) {
+            return ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
+                                                                                          factMappingValue.getErrorValue(),
+                                                                                          factMappingValue.getRawValue());
+        }
+        return ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName,
+                                                                                  factMappingValue.getCollectionPathToValue(),
+                                                                                  factMappingValue.getErrorValue());
     }
 
     protected ScenarioResult fillResult(FactMappingValue expectedResult,

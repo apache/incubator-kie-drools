@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package org.drools.scenariosimulation.backend.runner;
 
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
 
-public class IndexedScenarioException extends ScenarioException {
+public class IndexedScenarioAssertionError extends AssertionError {
 
     private final int index;
     private final String scenarioDescription;
     private final String fileName;
 
-    public IndexedScenarioException(int index, String scenarioDescription, String fileName, Throwable cause) {
+    public IndexedScenarioAssertionError(int index, String scenarioDescription, String fileName, Throwable cause) {
         super(cause);
         this.index = index;
         this.scenarioDescription = scenarioDescription;
@@ -33,8 +33,8 @@ public class IndexedScenarioException extends ScenarioException {
 
     @Override
     public String getMessage() {
-        String exceptionMessage = getCause() != null ? getCause().getMessage() : super.getMessage();
-        return ScenarioSimulationServerMessages.getIndexedScenarioMessage(exceptionMessage,
+        String assertionError = getCause() != null ? getCause().getMessage() : super.getMessage();
+        return ScenarioSimulationServerMessages.getIndexedScenarioMessage(assertionError,
                                                                           index,
                                                                           scenarioDescription,
                                                                           fileName);
