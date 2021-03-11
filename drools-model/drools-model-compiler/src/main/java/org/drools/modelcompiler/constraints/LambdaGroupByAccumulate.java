@@ -102,21 +102,15 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
         TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
                                                                               match, handle, key, wm);
-        Object value = accumulate(workingMemoryContext, (LeftTuple) match, handle, groupByContext, tupleList, wm);
 
-        return value;
+        return accumulate(workingMemoryContext, (LeftTuple) match, handle, groupByContext, tupleList, wm);
     }
 
     @Override
     public Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle handle,
                              GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
         groupByContext.moveToPropagateTupleList(tupleList);
-
-        Object value = innerAccumulate.accumulate(workingMemoryContext, tupleList.getContext(),
-                                                  match, handle, wm);
-
-        groupByContext.setLastTupleList(tupleList);
-        return value;
+        return innerAccumulate.accumulate(workingMemoryContext, tupleList.getContext(), match, handle, wm);
     }
 
     @Override
@@ -133,6 +127,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
             memory.remove( match );
             if ( memory.isEmpty() ) {
                 groupByContext.removeGroup( entry.getKey() );
+                memory.getContext().setEmpty( true );
             }
         }
 
@@ -142,7 +137,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     @Override
     public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
         AccumulateContextEntry entry = (AccumulateContextEntry) context;
-        return entry.getTupleList().isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
+        return entry.isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
     }
 
     @Override
