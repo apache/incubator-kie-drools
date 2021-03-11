@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,19 @@ package org.kie.kogito.grafana.model.functions;
 
 import java.util.List;
 
-public class IncreaseFunction implements GrafanaFunction {
+public class SumByFunction implements GrafanaFunction {
 
-    private static final String RENDER_TEMPLATE = "increase(%s[%s])";
-
-    private String timeParameter;
-
+    private static final String RENDER_TEMPLATE = "sum by (%s) (%s)";
     private GrafanaFunction grafanaFunction;
+    private String sumByLabel;
 
-    public IncreaseFunction(GrafanaFunction grafanaFunction, String timeParameter) {
-        if (timeParameter == null) {
-            throw new IllegalArgumentException("timeParameter for Increase function can't be null");
-        }
+    public SumByFunction(GrafanaFunction grafanaFunction, String sumByLabel) {
         this.grafanaFunction = grafanaFunction;
-        this.timeParameter = timeParameter;
+        this.sumByLabel = sumByLabel;
     }
 
     @Override
     public String render(String metricBody, List<Label> labels) {
-        return String.format(RENDER_TEMPLATE, grafanaFunction.render(metricBody, labels), timeParameter);
+        return String.format(RENDER_TEMPLATE, sumByLabel, grafanaFunction.render(metricBody, labels));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,28 @@
  */
 package org.kie.kogito.grafana.model.functions;
 
-import java.util.SortedMap;
+import org.junit.jupiter.api.Test;
 
-public class ExprBuilder {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    private ExprBuilder() {
+public class LabelTest {
+
+    @Test
+    public void testLabelGetters() {
+        // Arrange
+        Label label = new Label("key", "value");
+
+        // Act and Assert
+        assertEquals("key", label.getKey());
+        assertEquals("value", label.getValue());
     }
 
-    public static String apply(String expr, SortedMap<Integer, GrafanaFunction> functions) {
-        if (functions != null) {
-            for (GrafanaFunction function : functions.values()) {
-                if (function.hasTimeParameter()) {
-                    expr = String.format("%s[%s]", expr, function.getTimeParameter());
-                }
-                expr = String.format("%s(%s)", function.getFunction(), expr);
-            }
-        }
+    @Test
+    public void testLabelRender() {
+        // Arrange
+        Label label = new Label("key", "value");
 
-        return expr;
+        // Act and Assert
+        assertEquals("key=value", label.render());
     }
 }

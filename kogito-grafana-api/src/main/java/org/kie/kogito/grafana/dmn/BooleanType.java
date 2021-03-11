@@ -15,18 +15,18 @@
  */
 package org.kie.kogito.grafana.dmn;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.kie.kogito.grafana.model.functions.GrafanaFunction;
+import org.kie.kogito.grafana.model.functions.BaseExpression;
 import org.kie.kogito.grafana.model.functions.IncreaseFunction;
+import org.kie.kogito.grafana.model.functions.SumByFunction;
 
 public class BooleanType extends AbstractDmnType {
 
+    private static final String DMN_TYPE = "boolean";
+    private static final String NAME_SUFFIX = "total";
+
     public BooleanType() {
-        super(Boolean.class, "boolean", "_total");
-        SortedMap<Integer, GrafanaFunction> grafanaFunctionsToApply = new TreeMap<>();
-        grafanaFunctionsToApply.put(1, new IncreaseFunction("10m"));
-        addFunctions(grafanaFunctionsToApply);
+        super(Boolean.class, DMN_TYPE, NAME_SUFFIX);
+        BaseExpression baseExpression = new BaseExpression(DMN_TYPE, NAME_SUFFIX);
+        setGrafanaFunction(new SumByFunction(new IncreaseFunction(baseExpression, "1m"), "identifier"));
     }
 }

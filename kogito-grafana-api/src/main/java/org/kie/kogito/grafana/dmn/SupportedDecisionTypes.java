@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.kie.kogito.grafana.model.functions.GrafanaFunction;
 import org.kie.kogito.grafana.model.panel.common.YAxis;
@@ -62,14 +60,14 @@ public class SupportedDecisionTypes {
         return dmnInternalClassToDmnStandardMap.get(c);
     }
 
-    public static SortedMap<Integer, GrafanaFunction> getGrafanaFunction(String dmnType) {
+    public static Optional<GrafanaFunction> getGrafanaFunction(String dmnType) {
         if (isSupported(dmnType)) {
             Optional<AbstractDmnType> type = supportedDmnTypes.stream().filter(x -> x.getDmnType().equalsIgnoreCase(dmnType)).findFirst();
             if (type.isPresent()) {
-                return type.get().getGrafanaFunctions();
+                return Optional.ofNullable(type.get().getGrafanaFunction());
             }
         }
-        return new TreeMap<>();
+        return Optional.empty();
     }
 
     public static List<YAxis> getYAxis(String dmnType) {
@@ -80,16 +78,6 @@ public class SupportedDecisionTypes {
             }
         }
         return new ArrayList<>();
-    }
-
-    public static String getNameSuffix(String dmnType) {
-        if (isSupported(dmnType)) {
-            Optional<AbstractDmnType> type = supportedDmnTypes.stream().filter(x -> x.getDmnType().equalsIgnoreCase(dmnType)).findFirst();
-            if (type.isPresent()) {
-                return type.get().getNameSuffix();
-            }
-        }
-        return "";
     }
 
     public static Collection<String> getSupportedDMNTypes() {

@@ -201,7 +201,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "api_execution_elapsed_seconds{endpoint=\"$handlerName$\"}",
+          "expr": "sum(increase(api_execution_elapsed_seconds_sum{endpoint=\"$handlerName$\"}[1m]))/sum(increase(api_execution_elapsed_seconds_count{endpoint=\"$handlerName$\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -292,7 +292,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(api_http_response_code_total{endpoint=\"$handlerName$\"}[1m])",
+          "expr": "sum by (identifier) (increase(api_http_response_code_total{endpoint=\"$handlerName$\"}[1m]))",
           "instant": false,
           "intervalFactor": 2,
           "refId": "A"
@@ -378,7 +378,7 @@
       ],
       "targets": [
         {
-          "expr": "increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\"}[1d])",
+          "expr": "sum by (identifier) (increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\"}[1d]))",
           "format": "table",
           "instant": true,
           "intervalFactor": 2,

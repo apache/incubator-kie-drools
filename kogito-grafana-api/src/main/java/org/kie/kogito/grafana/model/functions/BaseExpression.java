@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,21 @@
 package org.kie.kogito.grafana.model.functions;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class IncreaseFunction implements GrafanaFunction {
+public class BaseExpression implements GrafanaFunction {
 
-    private static final String RENDER_TEMPLATE = "increase(%s[%s])";
+    private static final String RENDER_TEMPLATE = "%s_%s_%s{%s}";
+    private String prefix;
+    private String suffix;
 
-    private String timeParameter;
-
-    private GrafanaFunction grafanaFunction;
-
-    public IncreaseFunction(GrafanaFunction grafanaFunction, String timeParameter) {
-        if (timeParameter == null) {
-            throw new IllegalArgumentException("timeParameter for Increase function can't be null");
-        }
-        this.grafanaFunction = grafanaFunction;
-        this.timeParameter = timeParameter;
+    public BaseExpression(String prefix, String suffix) {
+        this.prefix = prefix;
+        this.suffix = suffix;
     }
 
     @Override
     public String render(String metricBody, List<Label> labels) {
-        return String.format(RENDER_TEMPLATE, grafanaFunction.render(metricBody, labels), timeParameter);
+        return String.format(RENDER_TEMPLATE, prefix, metricBody, suffix, labels.stream().map(Label::render).collect(Collectors.joining(",")));
     }
 }

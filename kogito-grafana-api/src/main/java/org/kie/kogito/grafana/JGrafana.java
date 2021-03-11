@@ -20,14 +20,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.SortedMap;
 import java.util.UUID;
 
 import org.kie.kogito.grafana.factories.GridPosFactory;
 import org.kie.kogito.grafana.factories.PanelFactory;
 import org.kie.kogito.grafana.model.GrafanaDashboard;
-import org.kie.kogito.grafana.model.functions.ExprBuilder;
-import org.kie.kogito.grafana.model.functions.GrafanaFunction;
 import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.panel.PanelType;
@@ -109,7 +106,7 @@ public class JGrafana {
      * @return: The grafana panel added to the dashboard.
      */
     public GrafanaPanel addPanel(PanelType type, String title, String expr) {
-        return addPanel(type, title, expr, null, null);
+        return addPanel(type, title, expr, null);
     }
 
     /**
@@ -128,15 +125,11 @@ public class JGrafana {
      * @param type: The type of the panel to be added.
      * @param title: Title of the panel.
      * @param expr: Prompql expression of the panel.
-     * @param functions: The Grafana functions to be applied to the PrompQL query.
      * @param yaxes: The YAxis of the panel.
      * @return: The grafana panel added to the dashboard.
      */
-    public GrafanaPanel addPanel(PanelType type, String title, String expr, SortedMap<Integer, GrafanaFunction> functions, List<YAxis> yaxes) {
+    public GrafanaPanel addPanel(PanelType type, String title, String expr, List<YAxis> yaxes) {
         int id = this.dashboard.panels.size() + 1;
-        if (functions != null && functions.size() != 0) {
-            expr = ExprBuilder.apply(expr, functions);
-        }
         GrafanaPanel panel = PanelFactory.createPanel(type, id, title, expr, yaxes);
         this.dashboard.panels.add(panel);
         return panel;

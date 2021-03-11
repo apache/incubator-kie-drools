@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -28,6 +29,8 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.Decision;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
+import org.kie.kogito.grafana.model.functions.GrafanaFunction;
+import org.kie.kogito.grafana.model.functions.Label;
 import org.kie.kogito.grafana.model.panel.PanelType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,14 +106,17 @@ public class GrafanaConfigurationWriter {
                 logger.warn(String.format("DMN typeref for the decision \"%s\" with node id \"%s\" is null.", decision.getName(), decision.getId()));
             } else {
                 if (SupportedDecisionTypes.isSupported(type.getLocalPart())) {
+                    String metricBody = "dmn_result";
+                    List<Label> labels = new ArrayList<>();
+                    labels.add(new Label("endpoint", "\"" + endpoint + "\""));
+                    labels.add(new Label("decision", "\"" + decision.getName() + "\""));
+
+                    GrafanaFunction grafanaFunction = SupportedDecisionTypes.getGrafanaFunction(type.getLocalPart())
+                            .orElseThrow(() -> new RuntimeException("Mismatch between supported Grafana DMN Types and defined functions"));
+
                     jgrafana.addPanel(PanelType.GRAPH,
                             "Decision " + decision.getName(),
-                            String.format("%s_dmn_result%s{endpoint = \"%s\", decision = \"%s\"}",
-                                    type.toString().replace(" ", "_"),
-                                    SupportedDecisionTypes.getNameSuffix(type.getLocalPart()),
-                                    endpoint,
-                                    decision.getName()),
-                            SupportedDecisionTypes.getGrafanaFunction(type.getLocalPart()),
+                            grafanaFunction.render(metricBody, labels),
                             SupportedDecisionTypes.getYAxis(type.getLocalPart()));
                 }
             }

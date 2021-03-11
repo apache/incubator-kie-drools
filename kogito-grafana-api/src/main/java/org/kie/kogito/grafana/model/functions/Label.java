@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,24 @@
  */
 package org.kie.kogito.grafana.model.functions;
 
-import java.util.List;
+public class Label {
+    private String key;
+    private String value;
 
-public class SumFunction implements GrafanaFunction {
-
-    private static final String RENDER_TEMPLATE = "sum(%s)";
-    private GrafanaFunction grafanaFunction;
-
-    public SumFunction(GrafanaFunction grafanaFunction) {
-        this.grafanaFunction = grafanaFunction;
+    public Label(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
-    @Override
-    public String render(String metricBody, List<Label> labels) {
-        return String.format(RENDER_TEMPLATE, grafanaFunction.render(metricBody, labels));
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String render() {
+        return String.format("%s=%s", key, value);
     }
 }
