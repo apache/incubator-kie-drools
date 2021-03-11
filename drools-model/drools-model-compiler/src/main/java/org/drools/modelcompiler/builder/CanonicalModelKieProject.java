@@ -16,23 +16,27 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -40,7 +44,6 @@ import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 
 import static java.util.stream.Collectors.groupingBy;
-
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
@@ -95,6 +98,8 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes());
         sourceFiles.add( projectSourcePath );
 
+        Set<String> origFileNames = new HashSet<>(trgMfs.getFileNames());
+
         String[] sources = sourceFiles.toArray(new String[sourceFiles.size()]);
         if (sources.length != 0) {
             CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
@@ -113,6 +118,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                 messages.addMessage(new CompilationProblemAdapter(problem));
             }
         }
+
+        Set<String> generatedClassPaths = new HashSet<>(trgMfs.getFileNames());
+        generatedClassPaths.removeAll(origFileNames);
+        kieModule.addGeneratedClassPaths(generatedClassPaths);
 
         modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
     }

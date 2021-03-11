@@ -229,16 +229,35 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     }
 
     public void storeClasses(Map<String, byte[]> classesMap) {
+        storeClasses(classesMap, true);
+    }
+
+    public void storeClasses(Map<String, byte[]> classesMap, boolean checkParentClassLoader) {
         for ( Map.Entry<String, byte[]> entry : classesMap.entrySet() ) {
             if ( entry.getValue() != null ) {
                 String resourceName = entry.getKey();
                 String className = ClassUtils.convertResourceToClassName( resourceName );
-                storeClass( className, resourceName, entry.getValue() );
+                storeClass( className, resourceName, entry.getValue(), checkParentClassLoader );
             }
         }
     }
 
     public void storeClass(String name, String resourceName, byte[] bytecode) {
+        storeClass(name, resourceName, bytecode, true);
+    }
+
+    public void storeClass(String name, String resourceName, byte[] bytecode, boolean checkParentClassLoader) {
+        if (checkParentClassLoader) {
+            try {
+                // don't check (loadedClasses.get(name) != null) because we may overwrite the class on incremental compilation
+                // don't check with internalLoadClass() because we may overwrite the class on incremental compilation
+                Class<?> cls = Class.forName(name, false, getParent()); // Note: parent can be KieURLClassLoader
+                loadedClasses.put(name, cls);
+                return; // if found in parent classloader, don't store
+            } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                // if not found, store it
+            }
+        }
         if (store == null) {
             store = new HashMap<String, byte[]>();
         }
