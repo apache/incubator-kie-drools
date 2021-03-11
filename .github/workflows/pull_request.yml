@@ -12,6 +12,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Maven Build
     steps:
+      - name: Support longpaths
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: git config --system core.longpaths true
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
