@@ -82,7 +82,7 @@ Java models
 Code generation is made directly. Creates one or more abstract classes to contain as much code as possible, and code-generate actual implementations just to pass parameters.
 
 Drools models
-_____________
+-------------
 
 Such models require an additional step, i.e creation of rules files. To do that, AST files have to be generated and transformed in packages.
 _kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-commons_ module contains a lot of already written/tested functionalities, especially for AST-generation.
@@ -91,3 +91,6 @@ Since this models must live in different kiebases, but the user must not be conc
 for each of them, even because we may choose to change the kiebase name policy.
 To allow that, two additional classes are generated: _PMMLRuleMappersImpl_ and _PMMLRuleMapperImpl_: those are needed to load drools-rules at runtime, without the needs of _kmodule.xml_.
 
+Good citizen policy
+===================
+Please keep updated [Release](./Release.md) and [CurrentLimitations](./CurrentLimitations.md) file while implementing new features or discovering missing ones.
