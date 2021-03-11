@@ -59,10 +59,6 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
         return context;
     }
 
-    public void setContext(C context) {
-        this.context = context;
-    }
-
     public boolean isEmpty() {
         return size == 0;
     }
