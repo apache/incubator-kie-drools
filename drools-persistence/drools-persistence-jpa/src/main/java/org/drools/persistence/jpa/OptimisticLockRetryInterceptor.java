@@ -45,9 +45,9 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(OptimisticLockRetryInterceptor.class);
 
-    private int retries = 3;
-    private long delay = 50;
-    private long delayFactor = 4;
+    private int retries = Integer.getInteger("org.kie.optlock.retries", 3);
+    private long delay = Long.getLong("org.kie.optlock.delay", 50L);
+    private long delayFactor = Long.getLong("org.kie.optlock.delayFactor", 4L);
 
     protected Class<?> targetExceptionClass;
 
