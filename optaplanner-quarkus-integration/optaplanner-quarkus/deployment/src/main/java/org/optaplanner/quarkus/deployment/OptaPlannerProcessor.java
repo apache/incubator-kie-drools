@@ -276,7 +276,7 @@ class OptaPlannerProcessor {
         optaPlannerBuildTimeConfig.solver.moveThreadCount.ifPresent(solverConfig::setMoveThreadCount);
         optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
         if (solverConfig.getDomainAccessType() == null) {
-            solverConfig.setDomainAccessType(DomainAccessType.GIZMO);
+            solverConfig.setDomainAccessType(DomainAccessType.REFLECTION);
         }
         applyTerminationProperties(solverConfig);
     }
