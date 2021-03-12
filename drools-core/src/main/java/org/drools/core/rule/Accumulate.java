@@ -201,6 +201,6 @@ public abstract class Accumulate extends ConditionalElement
         return false;
     }
 
-    public abstract Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle childHandle,
+    public abstract Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle childHandle,
                                       GroupByContext groupByContext, TupleList<AccumulateNode.AccumulateContextEntry> tupleList, WorkingMemory wm);
 }

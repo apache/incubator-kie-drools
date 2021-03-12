@@ -85,6 +85,10 @@ public class BindViewItem1<T> implements ViewItem<T>, Binding, ModelComponent {
         return bindingFunction.apply(args[0]);
     }
 
+    public Object eval(Object arg) {
+        return bindingFunction.apply(arg);
+    }
+
     @Override
     public boolean isEqualTo( ModelComponent o ) {
         if ( this == o ) return true;

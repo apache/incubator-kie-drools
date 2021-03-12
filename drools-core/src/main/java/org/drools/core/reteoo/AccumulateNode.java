@@ -170,10 +170,9 @@ public class AccumulateNode extends BetaNode {
         }
         if (handle == null) {
             handle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                               result ),
+                                                                         null, // no need to retrieve the ObjectTypeConf, acc result is never an event or a trait
                                                                          workingMemory,
-                                                                         null ); // so far, result is not an event
+                                                                         null );
         }
         return handle;
     }
@@ -318,7 +317,6 @@ public class AccumulateNode extends BetaNode {
         private boolean            propagated;
         private Object             functionContext;
         private boolean            toPropagate;
-        private Object             value;
         private boolean            empty = true;
 
         public AccumulateContextEntry(Object key) {
@@ -369,14 +367,6 @@ public class AccumulateNode extends BetaNode {
             return this.key;
         }
 
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
         public boolean isEmpty() {
             return empty;
         }
@@ -421,7 +411,7 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
-                                                          InternalFactHandle handle, Object key, WorkingMemory wm) {
+                                                          Object key, WorkingMemory wm) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
                 entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, wm) );
