@@ -225,6 +225,10 @@ public class KogitoAssetsProcessor {
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.tracing.decision.event.model.ModelEvent$GAV"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.decision.DecisionModelType"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.decision.DecisionModelMetadata"));
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, true, "org.kie.kogito.decision.DecisionModelMetadata$Type"));
     }
 
     private void registerExplainabilityAddonClasses(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
