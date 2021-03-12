@@ -248,7 +248,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
         public void execute( EntryPoint entryPoint ) {
             WorkingMemoryEntryPoint ep = (WorkingMemoryEntryPoint) entryPoint;
             ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry()
-                                        .getObjectTypeConf( ep.getEntryPoint(), object );
+                                        .getObjectTypeConf( object );
 
             RuleUnit.Identity ruleUnitIdentity = (( RuleUnit ) ep.getRuleUnit()).getUnitIdentity();
             InternalFactHandle handle = dsFactHandle.childHandles.get( ruleUnitIdentity );
@@ -282,7 +282,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
         public void execute( EntryPoint entryPoint ) {
             WorkingMemoryEntryPoint ep = (WorkingMemoryEntryPoint) entryPoint;
             ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry()
-                                        .getObjectTypeConf( ep.getEntryPoint(), dsFactHandle.getObject() );
+                                        .getObjectTypeConf( dsFactHandle.getObject() );
 
             RuleUnit.Identity ruleUnitIdentity = (( RuleUnit ) ep.getRuleUnit()).getUnitIdentity();
             InternalFactHandle handle = dsFactHandle.childHandles.get( ruleUnitIdentity );

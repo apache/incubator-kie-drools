@@ -346,8 +346,7 @@ public class DefaultAgenda
     public void insertAndStageActivation(final AgendaItem activation) {
         if ( activationObjectTypeConf == null ) {
             EntryPointId ep = workingMemory.getEntryPoint();
-            activationObjectTypeConf = workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() ).getObjectTypeConfigurationRegistry().getObjectTypeConf(ep,
-                                                                                                                                                               activation );
+            activationObjectTypeConf = workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() ).getObjectTypeConfigurationRegistry().getObjectTypeConf(activation );
         }
 
         InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );

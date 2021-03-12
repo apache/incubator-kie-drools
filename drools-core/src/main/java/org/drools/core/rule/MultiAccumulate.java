@@ -120,7 +120,7 @@ public class MultiAccumulate extends Accumulate {
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle childHandle,
+    public Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle childHandle,
                              GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
         throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
     }

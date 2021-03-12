@@ -129,7 +129,7 @@ public class Rete extends ObjectSource
         EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
         ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() ))
-                .getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
+                .getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getObject() );
         node.retractObject( handle,
                             context,
                             typeConf,

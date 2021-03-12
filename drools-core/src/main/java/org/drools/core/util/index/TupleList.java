@@ -82,8 +82,24 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
     }    
     
     public void removeAdd(Tuple tuple) {
-        remove(tuple);
-        add(tuple);
+        if (this.last == tuple) {
+            return;
+        }
+
+        Tuple previous = tuple.getPrevious();
+        Tuple next = tuple.getNext();
+        if (previous == null) {
+            next.setPrevious( null );
+            this.first = next;
+        } else {
+            previous.setNext( next );
+            next.setPrevious( previous );
+        }
+
+        this.last.setNext( tuple );
+        tuple.setPrevious( this.last );
+        tuple.setNext( null );
+        this.last = tuple;
     }
 
     public void add(final Tuple tuple) {
