@@ -15,8 +15,11 @@
  */
 package org.kie.kogito.quarkus.dmn;
 
+import org.junit.jupiter.api.Disabled;
+
 import io.quarkus.test.junit.NativeImageTest;
 
+@Disabled("Blocked by because of https://issues.redhat.com/browse/KOGITO-4662 (classes not registed for reflection)")
 @NativeImageTest
 public class NativeDMNIT extends DMNTest {
 }
