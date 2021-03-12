@@ -420,7 +420,7 @@ void checkoutRepo(String repo) {
 void checkoutTag(String repo, String tagName, String localBranchName) {
     deleteDir()
     checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
-    // need to manually checkout branch since on a detached branch after checkout command
+    // Need to manually checkout branch since we are in 'detached HEAD' state after the git checkout command.
     sh "git checkout tags/${tagName} -b ${localBranchName}"
 }
 
