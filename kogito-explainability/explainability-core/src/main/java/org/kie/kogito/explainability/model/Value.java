@@ -31,22 +31,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Wrapper class for any kind of value part of a prediction input or output.
  *
- * @param <S>
  */
-public class Value<S> {
+public class Value {
 
-    private final S underlyingObject;
+    private final Object underlyingObject;
 
-    public Value(S underlyingObject) {
+    public Value(Object underlyingObject) {
         this.underlyingObject = underlyingObject;
     }
 
     public String asString() {
         if (underlyingObject instanceof List) {
             try {
+                @SuppressWarnings("unchecked")
                 List<Feature> composite = (List<Feature>) underlyingObject;
                 return composite.stream().map(f -> f.getValue().asString()).collect(Collectors.joining(" "));
             } catch (ClassCastException ignored) {
+                // ignored
             }
         }
         if (underlyingObject instanceof ByteBuffer) {
@@ -59,7 +60,11 @@ public class Value<S> {
     public double asNumber() {
         if (underlyingObject != null) {
             try {
-                return underlyingObject instanceof Boolean ? (Boolean) underlyingObject ? 1d : 0d : Double.parseDouble(asString());
+                if (underlyingObject instanceof Boolean) {
+                    return (boolean) underlyingObject ? 1d : 0d;
+                } else {
+                    return Double.parseDouble(asString());
+                }
             } catch (NumberFormatException nfe) {
                 return Double.NaN;
             }
@@ -68,7 +73,7 @@ public class Value<S> {
         }
     }
 
-    public S getUnderlyingObject() {
+    public Object getUnderlyingObject() {
         return underlyingObject;
     }
 
@@ -128,7 +133,7 @@ public class Value<S> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Value<?> value = (Value<?>) o;
+        Value value = (Value) o;
         return Objects.equals(underlyingObject, value.underlyingObject);
     }
 

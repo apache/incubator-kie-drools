@@ -93,9 +93,12 @@ public class ExplainabilityMetrics {
         try {
             predictionOutputs = model.predictAsync(List.of(predictionInput))
                     .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOGGER.error("Impossible to obtain prediction {}", e.getMessage());
-            throw e;
+            throw new IllegalStateException("Impossible to obtain prediction", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Impossible to obtain prediction (Thread interrupted)", e);
         }
         double impact = 0d;
         for (PredictionOutput predictionOutput : predictionOutputs) {

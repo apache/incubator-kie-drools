@@ -78,6 +78,7 @@ public class CounterfactualConfigurationFactory {
             localSearchPhaseConfig.setAcceptorConfig(acceptorConfig);
             localSearchPhaseConfig.setForagerConfig(localSearchForagerConfig);
 
+            @SuppressWarnings("rawtypes")
             List<PhaseConfig> phaseConfigs = new ArrayList<>();
             phaseConfigs.add(localSearchPhaseConfig);
 

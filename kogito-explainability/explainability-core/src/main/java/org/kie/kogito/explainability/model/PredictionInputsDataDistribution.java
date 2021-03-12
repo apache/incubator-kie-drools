@@ -77,16 +77,16 @@ public class PredictionInputsDataDistribution implements DataDistribution {
             List<FeatureDistribution> featureDistributions = new ArrayList<>(shape);
             for (int i = 0; i < shape; i++) {
                 Feature firstInputIthfeature = linearizedFeatures.get(i);
-                List<Value<?>> values = new ArrayList<>(inputs.size());
+                List<Value> values = new ArrayList<>(inputs.size());
                 for (PredictionInput input : inputs) {
                     List<Feature> currentInputLinearizedFeatures = DataUtils.getLinearizedFeatures(input.getFeatures());
                     if (currentInputLinearizedFeatures.size() > i) {
                         values.add(currentInputLinearizedFeatures.get(i).getValue());
                     } else {
-                        values.add(new Value<>(null));
+                        values.add(new Value(null));
                     }
                 }
-                Feature feature = FeatureFactory.copyOf(firstInputIthfeature, new Value<>(null));
+                Feature feature = FeatureFactory.copyOf(firstInputIthfeature, new Value(null));
                 featureDistributions.add(new GenericFeatureDistribution(feature, values));
             }
             return featureDistributions;

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.model.Feature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SampleWeighterTest {
@@ -33,7 +34,8 @@ class SampleWeighterTest {
     void testSamplingEmptyDataset() {
         Collection<Pair<double[], Double>> trainingSet = new LinkedList<>();
         List<Feature> features = new LinkedList<>();
-        SampleWeighter.getSampleWeights(features, trainingSet, 0.5);
+        double[] sampleWeights = SampleWeighter.getSampleWeights(features, trainingSet, 0.5);
+        assertEquals(0, sampleWeights.length);
     }
 
     @Test

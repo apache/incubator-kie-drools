@@ -17,7 +17,6 @@ package org.kie.kogito.explainability.global.pdp;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
@@ -46,6 +44,7 @@ import org.kie.kogito.explainability.utils.DataUtils;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -72,7 +71,7 @@ class PartialDependencePlotExplainerTest {
             @Override
             public PredictionOutput getOutputShape() {
                 List<Output> outputs = new LinkedList<>();
-                outputs.add(new Output("sum-but0", Type.BOOLEAN, new Value<>(false), 0d));
+                outputs.add(new Output("sum-but0", Type.BOOLEAN, new Value(false), 0d));
                 return new PredictionOutput(outputs);
             }
         };
@@ -122,40 +121,39 @@ class PartialDependencePlotExplainerTest {
         PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
         PredictionProvider brokenProvider = inputs -> supplyAsync(
                 () -> {
-                    try {
-                        Thread.sleep(1000);
-                        return Collections.emptyList();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("this is a test");
-                    }
+                    await().atLeast(1, TimeUnit.SECONDS).until(() -> false);
+                    throw new RuntimeException("this should never happen");
                 });
 
-        Assertions.assertThrows(TimeoutException.class,
-                () -> partialDependencePlotProvider.explainFromMetadata(brokenProvider, getMetadata(random)));
-        Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
-        Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
+        try {
+            Assertions.assertThrows(TimeoutException.class,
+                    () -> partialDependencePlotProvider.explainFromMetadata(brokenProvider, getMetadata(random)));
+
+        } finally {
+            Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
+            Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
+        }
     }
 
-    @Test
-    void testTextClassifier() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void testTextClassifier(int seed) throws Exception {
         Random random = new Random();
-        for (int seed = 0; seed < 5; seed++) {
-            random.setSeed(seed);
-            PartialDependencePlotExplainer partialDependencePlotExplainer = new PartialDependencePlotExplainer();
-            PredictionProvider model = TestUtils.getDummyTextClassifier();
-            Collection<Prediction> predictions = new ArrayList<>(3);
+        random.setSeed(seed);
+        PartialDependencePlotExplainer partialDependencePlotExplainer = new PartialDependencePlotExplainer();
+        PredictionProvider model = TestUtils.getDummyTextClassifier();
+        Collection<Prediction> predictions = new ArrayList<>(3);
 
-            List<String> texts = List.of("we want your money", "please reply quickly", "you are the lucky winner",
-                    "huge donation for you!", "bitcoin for you");
-            for (String text : texts) {
-                List<Feature> features = new ArrayList<>();
-                features.add(FeatureFactory.newFulltextFeature("text", text));
-                PredictionInput predictionInput = new PredictionInput(features);
-                PredictionOutput predictionOutput = model.predictAsync(List.of(predictionInput)).get().get(0);
-                predictions.add(new Prediction(predictionInput, predictionOutput));
-            }
-            List<PartialDependenceGraph> pdps = partialDependencePlotExplainer.explainFromPredictions(model, predictions);
-            assertThat(pdps).isNotEmpty();
+        List<String> texts = List.of("we want your money", "please reply quickly", "you are the lucky winner",
+                "huge donation for you!", "bitcoin for you");
+        for (String text : texts) {
+            List<Feature> features = new ArrayList<>();
+            features.add(FeatureFactory.newFulltextFeature("text", text));
+            PredictionInput predictionInput = new PredictionInput(features);
+            PredictionOutput predictionOutput = model.predictAsync(List.of(predictionInput)).get().get(0);
+            predictions.add(new Prediction(predictionInput, predictionOutput));
         }
+        List<PartialDependenceGraph> pdps = partialDependencePlotExplainer.explainFromPredictions(model, predictions);
+        assertThat(pdps).isNotEmpty();
     }
 }

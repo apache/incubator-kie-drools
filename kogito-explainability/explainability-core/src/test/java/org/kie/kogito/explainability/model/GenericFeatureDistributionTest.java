@@ -32,7 +32,7 @@ class GenericFeatureDistributionTest {
     void testNumericSamples() {
         Feature feature = TestUtils.getMockedNumericFeature();
         double[] doubles = DataUtils.generateSamples(0, 10, 10);
-        List<Value<?>> values = Arrays.stream(doubles).mapToObj(Value::new).collect(Collectors.toList());
+        List<Value> values = Arrays.stream(doubles).mapToObj(Value::new).collect(Collectors.toList());
         GenericFeatureDistribution numericFeatureDistribution = new GenericFeatureDistribution(feature, values);
         assertEquals(10, numericFeatureDistribution.getAllSamples().size());
         assertEquals(3, numericFeatureDistribution.sample(3).size());
@@ -44,7 +44,7 @@ class GenericFeatureDistributionTest {
     void testStringSample() {
         Feature feature = TestUtils.getMockedNumericFeature();
         String[] words = "a b c d e f g h i j k l m n o p q r s t u v w x y z".split(" ");
-        List<Value<?>> values = Arrays.stream(words).map(Value::new).collect(Collectors.toList());
+        List<Value> values = Arrays.stream(words).map(Value::new).collect(Collectors.toList());
         GenericFeatureDistribution stringFeatureDistribution = new GenericFeatureDistribution(feature, values);
         assertEquals(26, stringFeatureDistribution.getAllSamples().size());
         assertEquals(3, stringFeatureDistribution.sample(3).size());

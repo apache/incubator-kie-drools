@@ -72,7 +72,7 @@ class AggregatedLimeExplainerTest {
             @Override
             public PredictionOutput getOutputShape() {
                 List<Output> outputs = new LinkedList<>();
-                outputs.add(new Output("sum-but1", Type.BOOLEAN, new Value<>(false), 0d));
+                outputs.add(new Output("sum-but1", Type.BOOLEAN, new Value(false), 0d));
                 return new PredictionOutput(outputs);
             }
         };

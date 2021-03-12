@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.util.Random;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -22,66 +24,66 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MatrixUtilsTest {
     // === Make some matrices to use in tests ===
-    double[][] matOneElem = {
+    private static final double[][] matOneElem = {
             { 5. },
     };
-    double[][] matRowVector = {
+    private static final double[][] matRowVector = {
             { 5., 6., 7, },
     };
-    double[][] matColVector = {
+    private static final double[][] matColVector = {
             { 5. },
             { 6. },
             { 7, },
     };
 
-    double[][] vectorProdRowCol = { { 110. } };
-    double[][] vectorProdColRow = {
+    private static final double[][] vectorProdRowCol = { { 110. } };
+    private static final double[][] vectorProdColRow = {
             { 25., 30., 35. },
             { 30., 36., 42. },
             { 35., 42., 49. }
     };
 
-    double[][] mat4X3 = {
+    private static final double[][] mat4X3 = {
             { 1., 2., 3. },
             { 10., 5., -3. },
             { 14., -6.6, 7. },
             { 0., 5., -3. }
     };
-    double[][] mat3X4 = {
+    private static final double[][] mat3X4 = {
             { 1., 10., 14., 0. },
             { 2, 5., -6.6, 5. },
             { 3., -3, 7., -3 }
     };
-    double[][] mat3X5 = {
+    private static final double[][] mat3X5 = {
             { 1., 10., 3., -4., 0. },
             { 10., 5., -3., 3.7, 1. },
             { 14., -6.6, 7., 14., 3. },
     };
 
-    double[][] mat43X35Product = {
+    private static final double[][] mat43X35Product = {
             { 63., .2, 18., 45.4, 11. },
             { 18., 144.8, -6., -63.5, -4. },
             { 46., 60.8, 110.8, 17.58, 14.4 },
             { 8., 44.8, -36., -23.5, -4. }
     };
 
-    double[][] matSquareNonSingular = {
+    private static final double[][] matSquareNonSingular = {
             { 1., 2., 3. },
             { 10., 5., -3. },
             { 14., -6.6, 7. },
     };
-    double[][] matSNSInv = {
+    private static final double[][] matSNSInv = {
             { -0.02464332, 0.05479896, 0.03404669 },
             { 0.18158236, 0.05674449, -0.05350195 },
             { 0.22049287, -0.05609598, 0.02431907 }
     };
 
-    double[][] matSquareSingular = {
+    private static final double[][] matSquareSingular = {
             { 1., 2., 3. },
             { 4., 5., 6. },
             { 7., 8., 9. },
     };
-    double[][] identity = {
+    private static final double[][] identity = {
             { 1., 0., 0. },
             { 0., 1., 0. },
             { 0., 0., 1. },
@@ -182,7 +184,9 @@ class MatrixUtilsTest {
     void testJitterInvert() {
         // since there's some randomness in jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
-            double[][] inv = MatrixUtils.jitterInvert(matSquareSingular, 10, 1e-9);
+            Random random = new Random();
+            random.setSeed(run);
+            double[][] inv = MatrixUtils.jitterInvert(matSquareSingular, 10, 1e-9, random);
 
             // since the output of jitterInvert is non-deterministic for singular matrices, check to make sure
             // key properties of the inverse matrix hold true; namely M*M_inv = Identity

@@ -34,6 +34,7 @@ public abstract class AbstractPMMLExecutor {
         return pmmlRuntime.evaluate(modelName, pmmlContext);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";
         PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);

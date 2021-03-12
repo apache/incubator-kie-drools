@@ -27,22 +27,14 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
  * Mapping between a boolean feature an OptaPlanner {@link PlanningEntity}
  */
 @PlanningEntity
-public class BooleanEntity implements CounterfactualEntity {
-    @PlanningVariable(valueRangeProviderRefs = { "booleanRange" })
-    private Boolean proposedValue;
-
-    private boolean constrained;
-    private Boolean originalValue;
-    private String featureName;
+public class BooleanEntity extends AbstractEntity<Boolean> {
 
     public BooleanEntity() {
+        super();
     }
 
     private BooleanEntity(Boolean originalValue, String featureName, boolean constrained) {
-        this.proposedValue = originalValue;
-        this.originalValue = originalValue;
-        this.featureName = featureName;
-        this.constrained = constrained;
+        super(originalValue, featureName, constrained);
     }
 
     /**
@@ -72,6 +64,7 @@ public class BooleanEntity implements CounterfactualEntity {
      *
      * @return Numerical distance
      */
+    @Override
     public double distance() {
         return proposedValue.equals(originalValue) ? 0.0 : 1.0;
     }
@@ -86,29 +79,17 @@ public class BooleanEntity implements CounterfactualEntity {
         return FeatureFactory.newBooleanFeature(this.featureName, this.proposedValue);
     }
 
-    @Override
-    public boolean isConstrained() {
-        return constrained;
-    }
-
-    /**
-     * Returns whether the {@link BooleanEntity} new value is different from the reference
-     * {@link Feature} value.
-     *
-     * @return boolean
-     */
-    @Override
-    public boolean isChanged() {
-        return !this.originalValue.equals(this.proposedValue);
-    }
-
     @ValueRangeProvider(id = "booleanRange")
-    public ValueRange getValueRange() {
+    public ValueRange<Boolean> getValueRange() {
         return ValueRangeFactory.createBooleanValueRange();
     }
 
-    @Override
-    public String toString() {
-        return "BooleanEntity{" + "value=" + proposedValue + ", id='" + featureName + '\'' + '}';
+    @PlanningVariable(valueRangeProviderRefs = { "booleanRange" })
+    public Boolean getProposedValue() {
+        return proposedValue;
+    }
+
+    public void setProposedValue(Boolean proposedValue) {
+        this.proposedValue = proposedValue;
     }
 }

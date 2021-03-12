@@ -201,11 +201,11 @@ public class DataUtils {
         for (Feature sourceFeature : features) {
             String sourceFeatureName = sourceFeature.getName();
             Type sourceFeatureType = sourceFeature.getType();
-            Value<?> sourceFeatureValue = sourceFeature.getValue();
+            Value sourceFeatureValue = sourceFeature.getValue();
             Feature f;
             if (target.getName().equals(sourceFeatureName)) {
                 if (target.getType().equals(sourceFeatureType) && target.getValue().equals(sourceFeatureValue)) {
-                    Value<?> droppedValue = sourceFeatureType.drop(sourceFeatureValue);
+                    Value droppedValue = sourceFeatureType.drop(sourceFeatureValue);
                     f = FeatureFactory.copyOf(sourceFeature, droppedValue);
                 } else {
                     f = dropOnLinearizedFeatures(target, sourceFeature);
@@ -450,12 +450,12 @@ public class DataUtils {
      */
     public static void toCSV(PartialDependenceGraph partialDependenceGraph, Path path) throws IOException {
         try (OutputStream outputStream = Files.newOutputStream(path)) {
-            List<Value<?>> xAxis = partialDependenceGraph.getX();
-            List<Value<?>> yAxis = partialDependenceGraph.getY();
+            List<Value> xAxis = partialDependenceGraph.getX();
+            List<Value> yAxis = partialDependenceGraph.getY();
             outputStream.write("feature,output\n".getBytes(StandardCharsets.UTF_8));
             for (int i = 0; i < xAxis.size(); i++) {
-                String line = xAxis.get(i).asString().replaceAll(",", "") + ',' +
-                        yAxis.get(i).asString().replaceAll(",", "") + '\n';
+                String line = xAxis.get(i).asString().replace(",", "") + ',' +
+                        yAxis.get(i).asString().replace(",", "") + '\n';
                 outputStream.write(line.getBytes(StandardCharsets.UTF_8));
             }
             outputStream.flush();

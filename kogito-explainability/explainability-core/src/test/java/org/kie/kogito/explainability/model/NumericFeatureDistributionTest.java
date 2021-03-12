@@ -33,7 +33,7 @@ class NumericFeatureDistributionTest {
     void testNumericFeatureDistributionSampling() {
         Feature feature = TestUtils.getMockedNumericFeature();
         double[] doubles = DataUtils.generateSamples(0, 10, 10);
-        List<Value<?>> values = Arrays.stream(doubles).mapToObj(Value::new).collect(Collectors.toList());
+        List<Value> values = Arrays.stream(doubles).mapToObj(Value::new).collect(Collectors.toList());
         GenericFeatureDistribution numericFeatureDistribution = new GenericFeatureDistribution(feature, values);
         assertEquals(10, numericFeatureDistribution.getAllSamples().size());
         assertEquals(3, numericFeatureDistribution.sample(3).size());
@@ -45,10 +45,10 @@ class NumericFeatureDistributionTest {
         Feature feature = TestUtils.getMockedNumericFeature();
         double[] doubles = DataUtils.generateSamples(0, 10, 10);
         NumericFeatureDistribution numericFeatureDistribution = new NumericFeatureDistribution(feature, doubles);
-        List<Value<?>> samples = numericFeatureDistribution.sample(21);
+        List<Value> samples = numericFeatureDistribution.sample(21);
         assertNotNull(samples);
         assertEquals(21, samples.size());
-        for (Value<?> sample : samples) {
+        for (Value sample : samples) {
             assertNotNull(sample);
             assertNotNull(sample.getUnderlyingObject());
             assertThat(sample.asNumber()).isBetween(0d, 10d);

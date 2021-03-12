@@ -99,7 +99,8 @@ class IndependentFeaturesDataDistributionTest {
         enumerations.add(Arrays.stream(DataUtils.generateSamples(0, 1, 3)).boxed().collect(Collectors.toList()));
         Collection<List<Double>> lists = IndependentFeaturesDataDistribution.cartesianProduct(enumerations);
         assertNotNull(lists);
-        assertThat(lists).isNotEmpty();
-        assertThat(lists).hasSize(27);
+        assertThat(lists)
+                .isNotEmpty()
+                .hasSize(27);
     }
 }

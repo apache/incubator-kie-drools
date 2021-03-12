@@ -42,63 +42,63 @@ public enum Type {
 
     TEXT("text") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>("");
+        public Value drop(Value value) {
+            return new Value("");
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
-            return new Value<>("");
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
+            return new Value("");
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(randomString(perturbationContext.getRandom()));
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(randomString(perturbationContext.getRandom()));
         }
     },
 
     CATEGORICAL("categorical") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>("");
+        public Value drop(Value value) {
+            return new Value("");
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             String category = value.asString();
             if (!"0".equals(category)) {
                 category = "0";
             } else {
                 category = "1";
             }
-            return new Value<>(category);
+            return new Value(category);
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(String.valueOf(perturbationContext.getRandom().nextInt(4)));
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(String.valueOf(perturbationContext.getRandom().nextInt(4)));
         }
     },
 
     BINARY("binary") {
         @Override
-        public Value<?> drop(Value<?> value) {
+        public Value drop(Value value) {
             ByteBuffer byteBuffer = ByteBuffer.allocate(0);
-            return new Value<>(byteBuffer);
+            return new Value(byteBuffer);
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             if (value.getUnderlyingObject() instanceof ByteBuffer) {
                 ByteBuffer currentBuffer = (ByteBuffer) value.getUnderlyingObject();
                 byte[] copy = new byte[currentBuffer.array().length];
@@ -109,41 +109,39 @@ public enum Type {
                 for (int index : indexes) {
                     copy[index] = 0;
                 }
-                return new Value<>(ByteBuffer.wrap(copy));
+                return new Value(ByteBuffer.wrap(copy));
             } else {
                 ByteBuffer byteBuffer = ByteBuffer.allocate(0);
-                return new Value<>(byteBuffer);
+                return new Value(byteBuffer);
             }
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
+        public Value randomValue(PerturbationContext perturbationContext) {
             byte[] bytes = new byte[8];
             perturbationContext.getRandom().nextBytes(bytes);
-            return new Value<>(ByteBuffer.wrap(bytes));
+            return new Value(ByteBuffer.wrap(bytes));
         }
     },
 
     NUMBER("number") {
-        private static final double CLUSTER_THRESHOLD = 1e-1;
-
         @Override
-        public Value<?> drop(Value<?> value) {
+        public Value drop(Value value) {
             if (value.asNumber() == 0) {
-                value = new Value<>(Double.NaN);
+                value = new Value(Double.NaN);
             } else {
-                value = new Value<>(0d);
+                value = new Value(0d);
             }
             return value;
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             double originalFeatureValue = value.asNumber();
             boolean intValue = originalFeatureValue % 1 == 0;
 
@@ -159,15 +157,15 @@ public enum Type {
                     normalDistributionSample = (int) normalDistributionSample + 1d;
                 }
             }
-            return new Value<>(normalDistributionSample);
+            return new Value(normalDistributionSample);
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             // find maximum and minimum values
             double[] doubles = new double[values.length + 1];
             int valueIndex = 0;
-            for (Value<?> v : values) {
+            for (Value v : values) {
                 doubles[valueIndex] = Double.isNaN(v.asNumber()) ? 0 : v.asNumber();
                 valueIndex++;
             }
@@ -192,41 +190,41 @@ public enum Type {
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(perturbationContext.getRandom().nextDouble());
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(perturbationContext.getRandom().nextDouble());
         }
     },
 
     BOOLEAN("boolean") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>(null);
+        public Value drop(Value value) {
+            return new Value(null);
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
-            return new Value<>(!Boolean.parseBoolean(value.asString()));
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
+            return new Value(!Boolean.parseBoolean(value.asString()));
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(perturbationContext.getRandom().nextBoolean());
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(perturbationContext.getRandom().nextBoolean());
         }
     },
 
     URI("uri") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>(java.net.URI.create(""));
+        public Value drop(Value value) {
+            return new Value(java.net.URI.create(""));
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             String uriAsString = value.asString();
             java.net.URI uri = java.net.URI.create(uriAsString);
             String scheme = uri.getScheme();
@@ -259,58 +257,58 @@ public enum Type {
             } catch (URISyntaxException e) {
                 newURI = java.net.URI.create("");
             }
-            return new Value<>(newURI);
+            return new Value(newURI);
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
+        public Value randomValue(PerturbationContext perturbationContext) {
             String uriString = "http://" + randomString(perturbationContext.getRandom()) + ".com";
             URI uri = java.net.URI.create(uriString);
-            return new Value<>(uri);
+            return new Value(uri);
         }
     },
 
     TIME("time") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>(null);
+        public Value drop(Value value) {
+            return new Value(null);
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             LocalTime featureValue;
             try {
                 featureValue = LocalTime.parse(value.asString());
             } catch (DateTimeException dateTimeException) {
                 featureValue = LocalTime.now();
             }
-            return new Value<>(featureValue.minusHours(1L + perturbationContext.getRandom().nextInt(23)));
+            return new Value(featureValue.minusHours(1L + perturbationContext.getRandom().nextInt(23)));
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(LocalTime.of(perturbationContext.getRandom().nextInt(23), perturbationContext.getRandom().nextInt(59)));
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(LocalTime.of(perturbationContext.getRandom().nextInt(23), perturbationContext.getRandom().nextInt(59)));
         }
     },
 
     DURATION("duration") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>(null);
+        public Value drop(Value value) {
+            return new Value(null);
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             Duration duration;
             try {
                 duration = Duration.parse(value.asString());
@@ -318,32 +316,32 @@ public enum Type {
                 duration = Duration.of(0, ChronoUnit.HOURS);
             }
             duration = duration.plus(1L + perturbationContext.getRandom().nextInt(23), ChronoUnit.HOURS);
-            return new Value<>(duration);
+            return new Value(duration);
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(Duration.ofDays(perturbationContext.getRandom().nextInt(30)));
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(Duration.ofDays(perturbationContext.getRandom().nextInt(30)));
         }
     },
 
     VECTOR("vector") {
         @Override
-        public Value<?> drop(Value<?> value) {
+        public Value drop(Value value) {
             double[] values = value.asVector();
             if (values.length > 0) {
                 Arrays.fill(values, 0);
             }
-            return new Value<>(values);
+            return new Value(values);
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             // set a number of non zero values to zero (or decrease them by 1)
             double[] vector = value.asVector();
             double[] values = Arrays.copyOf(vector, vector.length);
@@ -359,72 +357,72 @@ public enum Type {
                     }
                 }
             }
-            return new Value<>(values);
+            return new Value(values);
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
+        public Value randomValue(PerturbationContext perturbationContext) {
             double[] vector = new double[5];
             for (int i = 0; i < vector.length; i++) {
                 vector[i] = perturbationContext.getRandom().nextDouble();
             }
-            return new Value<>(vector);
+            return new Value(vector);
         }
     },
 
     UNDEFINED("undefined") {
         @Override
-        public Value<?> drop(Value<?> value) {
+        public Value drop(Value value) {
             if (value.getUnderlyingObject() instanceof Feature) {
                 Feature underlyingObject = (Feature) value.getUnderlyingObject();
-                value = new Value<>(FeatureFactory.copyOf(underlyingObject, underlyingObject.getType().drop(underlyingObject.getValue())));
+                value = new Value(FeatureFactory.copyOf(underlyingObject, underlyingObject.getType().drop(underlyingObject.getValue())));
             } else {
-                value = new Value<>(null);
+                value = new Value(null);
             }
             return value;
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             if (value.getUnderlyingObject() instanceof Feature) {
                 Feature underlyingObject = (Feature) value.getUnderlyingObject();
                 Type type = underlyingObject.getType();
-                Value<?> perturbedValue = type.perturb(underlyingObject.getValue(), perturbationContext);
-                value = new Value<>(FeatureFactory.copyOf(underlyingObject, perturbedValue));
+                Value perturbedValue = type.perturb(underlyingObject.getValue(), perturbationContext);
+                value = new Value(FeatureFactory.copyOf(underlyingObject, perturbedValue));
             } else {
-                value = new Value<>(null);
+                value = new Value(null);
             }
             return value;
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
-            return new Value<>(new Object());
+        public Value randomValue(PerturbationContext perturbationContext) {
+            return new Value(new Object());
         }
     },
 
     COMPOSITE("composite") {
         @Override
-        public Value<?> drop(Value<?> value) {
+        public Value drop(Value value) {
             List<Feature> composite = getFeatures(value);
             List<Feature> newFeatures = new ArrayList<>(composite.size());
             for (Feature f : composite) {
                 newFeatures.add(FeatureFactory.copyOf(f, f.getType().drop(f.getValue())));
             }
-            return new Value<>(newFeatures);
+            return new Value(newFeatures);
         }
 
-        private List<Feature> getFeatures(Value<?> value) {
+        private List<Feature> getFeatures(Value value) {
             List<Feature> features;
             try {
                 features = (List<Feature>) value.getUnderlyingObject();
@@ -435,14 +433,14 @@ public enum Type {
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             List<Feature> composite = getFeatures(value);
             List<Feature> newList = DataUtils.perturbFeatures(composite, perturbationContext);
-            return new Value<>(newList);
+            return new Value(newList);
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             List<Feature> composite = getFeatures(target);
             int i = 0;
             List<List<double[]>> multiColumns = new LinkedList<>();
@@ -450,7 +448,7 @@ public enum Type {
                 int finalI = i;
                 List<double[]> subColumn = f.getType().encode(params, f.getValue(), Arrays.stream(values)
                         .map(v -> (List<Feature>) v.getUnderlyingObject())
-                        .map(l -> l.get(finalI).getValue()).toArray(Value<?>[]::new));
+                        .map(l -> l.get(finalI).getValue()).toArray(Value[]::new));
                 multiColumns.add(subColumn);
                 i++;
             }
@@ -472,7 +470,7 @@ public enum Type {
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
+        public Value randomValue(PerturbationContext perturbationContext) {
             Type[] types = Type.values();
             List<Object> values = new LinkedList<>();
             Type nestedType = types[perturbationContext.getRandom().nextInt(types.length - 1)];
@@ -480,41 +478,41 @@ public enum Type {
                 Feature f = new Feature("f_" + i, nestedType, nestedType.randomValue(perturbationContext));
                 values.add(f);
             }
-            return new Value<>(values);
+            return new Value(values);
         }
     },
 
     CURRENCY("currency") {
         @Override
-        public Value<?> drop(Value<?> value) {
-            return new Value<>(null);
+        public Value drop(Value value) {
+            return new Value(null);
         }
 
         @Override
-        public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
+        public Value perturb(Value value, PerturbationContext perturbationContext) {
             List<Currency> availableCurrencies = new ArrayList<>(Currency.getAvailableCurrencies());
             if (value.getUnderlyingObject() instanceof Currency) {
                 Currency current = (Currency) value.getUnderlyingObject();
                 availableCurrencies.removeIf(current::equals);
             }
-            return new Value<>(availableCurrencies.get(perturbationContext.getRandom().nextInt(availableCurrencies.size())));
+            return new Value(availableCurrencies.get(perturbationContext.getRandom().nextInt(availableCurrencies.size())));
         }
 
         @Override
-        public List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values) {
+        public List<double[]> encode(EncodingParams params, Value target, Value... values) {
             return encodeEquals(target, values);
         }
 
         @Override
-        public Value<?> randomValue(PerturbationContext perturbationContext) {
+        public Value randomValue(PerturbationContext perturbationContext) {
             ArrayList<Currency> currencies = new ArrayList<>(Currency.getAvailableCurrencies());
-            return new Value<>(currencies.get(perturbationContext.getRandom().nextInt(currencies.size() - 1)));
+            return new Value(currencies.get(perturbationContext.getRandom().nextInt(currencies.size() - 1)));
         }
     };
 
-    static List<double[]> encodeEquals(Value<?> target, Value<?>[] values) {
+    static List<double[]> encodeEquals(Value target, Value[] values) {
         List<double[]> result = new ArrayList<>(values.length);
-        for (Value<?> value : values) {
+        for (Value value : values) {
             double[] data = new double[1];
             if (target.getUnderlyingObject().equals(value.getUnderlyingObject())) {
                 data[0] = 1d;
@@ -544,7 +542,7 @@ public enum Type {
      * @param value the value to drop
      * @return the dropped value
      */
-    public abstract Value<?> drop(Value<?> value);
+    public abstract Value drop(Value value);
 
     /**
      * Perturb a {@code Value}. Implementations of this method should generate a new {@code Value} whose
@@ -554,7 +552,7 @@ public enum Type {
      * @param perturbationContext the context holding metadata about how perturbations should be performed
      * @return the perturbed value
      */
-    public abstract Value<?> perturb(Value<?> value, PerturbationContext perturbationContext);
+    public abstract Value perturb(Value value, PerturbationContext perturbationContext);
 
     /**
      * Encode some {@code Value}s with respect to a target value. Implementations of this method should generate a list
@@ -566,7 +564,7 @@ public enum Type {
      * @param values the values to be encoded
      * @return a list of vectors
      */
-    public abstract List<double[]> encode(EncodingParams params, Value<?> target, Value<?>... values);
+    public abstract List<double[]> encode(EncodingParams params, Value target, Value... values);
 
     /**
      * Generate a random {@code Value} (depending on the underlying {@code Type}).
@@ -574,7 +572,7 @@ public enum Type {
      * @param perturbationContext context object used to randomize values
      * @return a random Value
      */
-    public abstract Value<?> randomValue(PerturbationContext perturbationContext);
+    public abstract Value randomValue(PerturbationContext perturbationContext);
 
     private static String randomString(Random random) {
         return Long.toHexString(Double.doubleToLongBits(random.nextDouble()));

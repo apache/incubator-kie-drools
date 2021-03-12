@@ -28,14 +28,14 @@ import org.kie.kogito.explainability.utils.DataUtils;
 public class GenericFeatureDistribution implements FeatureDistribution {
 
     private final Feature feature;
-    private final List<Value<?>> values;
+    private final List<Value> values;
     private final Random random;
 
-    public GenericFeatureDistribution(Feature feature, List<Value<?>> values) {
+    public GenericFeatureDistribution(Feature feature, List<Value> values) {
         this(feature, values, new SecureRandom());
     }
 
-    public GenericFeatureDistribution(Feature feature, List<Value<?>> values, Random random) {
+    public GenericFeatureDistribution(Feature feature, List<Value> values, Random random) {
         this.feature = feature;
         this.values = Collections.unmodifiableList(values);
         this.random = random;
@@ -47,13 +47,13 @@ public class GenericFeatureDistribution implements FeatureDistribution {
     }
 
     @Override
-    public Value<?> sample() {
+    public Value sample() {
         if (values.isEmpty()) {
-            return new Value<>(null);
+            return new Value(null);
         } else {
-            List<Value<?>> samples = sample(1);
+            List<Value> samples = sample(1);
             if (samples.isEmpty()) {
-                return new Value<>(null);
+                return new Value(null);
             } else {
                 return samples.get(0);
             }
@@ -61,13 +61,13 @@ public class GenericFeatureDistribution implements FeatureDistribution {
     }
 
     @Override
-    public List<Value<?>> sample(int sampleSize) {
+    public List<Value> sample(int sampleSize) {
         return DataUtils.sampleWithReplacement(values, sampleSize, random);
     }
 
     @Override
-    public List<Value<?>> getAllSamples() {
-        List<Value<?>> copy = new java.util.ArrayList<>(values);
+    public List<Value> getAllSamples() {
+        List<Value> copy = new java.util.ArrayList<>(values);
         Collections.shuffle(copy);
         return copy;
     }

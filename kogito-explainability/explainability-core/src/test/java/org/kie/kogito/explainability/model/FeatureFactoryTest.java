@@ -168,7 +168,7 @@ class FeatureFactoryTest {
     @Test
     void testCopySame() {
         for (Type type : Type.values()) {
-            Value<?> v = new Value<>("1");
+            Value v = new Value("1");
             Feature feature = new Feature("name", type, v);
             Feature copy = FeatureFactory.copyOf(feature, v);
             assertEquals(feature, copy);
@@ -178,9 +178,9 @@ class FeatureFactoryTest {
     @Test
     void testCopyDifferent() {
         for (Type type : Type.values()) {
-            Value<?> v = new Value<>("1");
+            Value v = new Value("1");
             Feature feature = new Feature("name", type, v);
-            Feature copy = FeatureFactory.copyOf(feature, new Value<>("2"));
+            Feature copy = FeatureFactory.copyOf(feature, new Value("2"));
             assertNotEquals(feature, copy);
         }
     }

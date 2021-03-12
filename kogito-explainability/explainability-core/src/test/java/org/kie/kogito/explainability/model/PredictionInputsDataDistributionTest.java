@@ -82,7 +82,7 @@ class PredictionInputsDataDistributionTest {
         assertEquals(2, featureDistributions.size());
         for (FeatureDistribution featureDistribution : featureDistributions) {
             assertNotNull(featureDistribution.getFeature());
-            List<Value<?>> allSamples = featureDistribution.getAllSamples();
+            List<Value> allSamples = featureDistribution.getAllSamples();
             assertNotNull(allSamples);
             assertEquals(3, allSamples.size());
         }

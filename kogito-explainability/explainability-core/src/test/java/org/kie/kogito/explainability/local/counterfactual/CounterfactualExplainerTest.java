@@ -76,7 +76,7 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("class", Type.BOOLEAN, new Value<>(false), 0.0d));
+        final List<Output> goal = List.of(new Output("class", Type.BOOLEAN, new Value(false), 0.0d));
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
@@ -119,7 +119,7 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value<>(true), 0.0d));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0d));
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
@@ -166,7 +166,7 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value<>(true), 0.0));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
@@ -215,7 +215,7 @@ class CounterfactualExplainerTest {
     void testCounterfactualConstrainedMatchScaled(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value<>(true), 0.0d));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0d));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
@@ -279,7 +279,7 @@ class CounterfactualExplainerTest {
     void testCounterfactualBoolean(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value<>(true), 0.0d));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0d));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
@@ -322,7 +322,7 @@ class CounterfactualExplainerTest {
     void testCounterfactualCategorical(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
-        final List<Output> goal = List.of(new Output("result", Type.NUMBER, new Value<>(25.0), 0.0d));
+        final List<Output> goal = List.of(new Output("result", Type.NUMBER, new Value(25.0), 0.0d));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
@@ -392,7 +392,7 @@ class CounterfactualExplainerTest {
         random.setSeed(seed);
         final double scoreThreshold = 0.9;
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value<>(true), scoreThreshold));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), scoreThreshold));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
@@ -452,7 +452,7 @@ class CounterfactualExplainerTest {
         random.setSeed(seed);
         final double scoreThreshold = 0.0;
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value<>(true), scoreThreshold));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), scoreThreshold));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();

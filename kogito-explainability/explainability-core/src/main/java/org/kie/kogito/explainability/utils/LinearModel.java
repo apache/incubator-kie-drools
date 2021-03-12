@@ -54,39 +54,43 @@ public class LinearModel {
         double finalLoss = Double.NaN;
         if (trainingSet.isEmpty()) {
             logger.warn("fitting an empty training set");
-        } else {
-            double lr = INITIAL_LEARNING_RATE;
-            int e = 0;
-            while ((Double.isNaN(finalLoss) || finalLoss > GOOD_LOSS_THRESHOLD) && e < MAX_NO_EPOCHS) {
-                double loss = 0;
-                int i = 0;
-                for (Pair<double[], Double> sample : trainingSet) {
-                    double[] doubles = sample.getLeft();
-                    double predictedOutput = predict(doubles);
-                    double targetOutput = sample.getRight();
-                    double diff = finiteOrZero(targetOutput - predictedOutput);
-                    if (diff != 0) { // avoid null updates to save computation
-                        loss += Math.abs(diff) / trainingSet.size();
-                        for (int j = 0; j < weights.length; j++) {
-                            double v = lr * diff * doubles[j];
-                            if (trainingSet.size() == sampleWeights.length) {
-                                v *= sampleWeights[i];
-                            }
-                            v = finiteOrZero(v);
-                            weights[j] += v;
-                            bias += lr * diff * sampleWeights[i];
+            return finalLoss;
+        }
+        double lr = INITIAL_LEARNING_RATE;
+        int e = 0;
+        while (checkFinalLoss(finalLoss) && e < MAX_NO_EPOCHS) {
+            double loss = 0;
+            int i = 0;
+            for (Pair<double[], Double> sample : trainingSet) {
+                double[] doubles = sample.getLeft();
+                double predictedOutput = predict(doubles);
+                double targetOutput = sample.getRight();
+                double diff = finiteOrZero(targetOutput - predictedOutput);
+                if (diff != 0) { // avoid null updates to save computation
+                    loss += Math.abs(diff) / trainingSet.size();
+                    for (int j = 0; j < weights.length; j++) {
+                        double v = lr * diff * doubles[j];
+                        if (trainingSet.size() == sampleWeights.length) {
+                            v *= sampleWeights[i];
                         }
+                        v = finiteOrZero(v);
+                        weights[j] += v;
+                        bias += lr * diff * sampleWeights[i];
                     }
-                    i++;
                 }
-                lr *= (1d / (1d + DECAY_RATE * e)); // learning rate decay
-
-                finalLoss = loss;
-                e++;
-                logger.debug("epoch {}, loss: {}", e, loss);
+                i++;
             }
+            lr *= (1d / (1d + DECAY_RATE * e)); // learning rate decay
+
+            finalLoss = loss;
+            e++;
+            logger.debug("epoch {}, loss: {}", e, loss);
         }
         return finalLoss;
+    }
+
+    private boolean checkFinalLoss(double finalLoss) {
+        return (Double.isNaN(finalLoss) || finalLoss > GOOD_LOSS_THRESHOLD);
     }
 
     private double finiteOrZero(double diff) {

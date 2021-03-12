@@ -28,6 +28,10 @@ import org.kie.kogito.explainability.utils.DataUtils;
  */
 class SampleWeighter {
 
+    private SampleWeighter() {
+        // utility class
+    }
+
     /**
      * Obtain sample weights for a training set, given a list of target input features to compare with.
      * 

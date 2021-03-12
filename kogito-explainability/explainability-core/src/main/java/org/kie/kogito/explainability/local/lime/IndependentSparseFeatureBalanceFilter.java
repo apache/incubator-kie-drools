@@ -52,38 +52,40 @@ class IndependentSparseFeatureBalanceFilter {
      */
     void apply(double[] coefficients, List<Feature> linearizedTargetInputFeatures,
             List<Pair<double[], Double>> trainingSet) {
-        if (coefficients.length == linearizedTargetInputFeatures.size()) {
-            int ts = linearizedTargetInputFeatures.size();
-            if (!trainingSet.isEmpty()) {
-                // calculate per feature class balance
-                double[] zeroPredicted = new double[ts];
-                double[] onePredicted = new double[ts];
-                for (Pair<double[], Double> sample : trainingSet) {
-                    double[] sparseVector = sample.getKey();
-                    for (int i = 0; i < sparseVector.length; i++) {
-                        double inputValue = sparseVector[i];
-                        Double outputValue = sample.getValue();
-                        if (1 == outputValue) {
-                            onePredicted[i] += inputValue;
-                        } else {
-                            zeroPredicted[i] += inputValue;
-                        }
-                    }
-                }
-                zeroPredicted = Arrays.stream(zeroPredicted).map(d -> d / trainingSet.size()).toArray();
-                onePredicted = Arrays.stream(onePredicted).map(d -> d / trainingSet.size()).toArray();
-                for (int i = 0; i < coefficients.length; i++) {
-                    // calculate distance from the perfect balance (high is good)
-                    double zeroDistance = Math.abs(0.5 - zeroPredicted[i]);
-                    double oneDistance = Math.abs(0.5 - onePredicted[i]);
-                    // coefficient is proportional to distance and to the number of features (between 0 and 1)
-                    double zm = Math.tanh((1e-2 + zeroDistance + oneDistance) + ts / 10d);
-                    coefficients[i] *= zm;
-                }
-            }
-        } else {
+        if (coefficients.length != linearizedTargetInputFeatures.size()) {
             LOGGER.warn("coefficients size {} ≠ features size {}, not filtering", coefficients.length,
                     linearizedTargetInputFeatures.size());
+            return;
+        }
+        if (trainingSet.isEmpty()) {
+            LOGGER.debug("trainingSet is empty");
+            return;
+        }
+        int ts = linearizedTargetInputFeatures.size();
+        // calculate per feature class balance
+        double[] zeroPredicted = new double[ts];
+        double[] onePredicted = new double[ts];
+        for (Pair<double[], Double> sample : trainingSet) {
+            double[] sparseVector = sample.getKey();
+            for (int i = 0; i < sparseVector.length; i++) {
+                double inputValue = sparseVector[i];
+                Double outputValue = sample.getValue();
+                if (1 == outputValue) {
+                    onePredicted[i] += inputValue;
+                } else {
+                    zeroPredicted[i] += inputValue;
+                }
+            }
+        }
+        zeroPredicted = Arrays.stream(zeroPredicted).map(d -> d / trainingSet.size()).toArray();
+        onePredicted = Arrays.stream(onePredicted).map(d -> d / trainingSet.size()).toArray();
+        for (int i = 0; i < coefficients.length; i++) {
+            // calculate distance from the perfect balance (high is good)
+            double zeroDistance = Math.abs(0.5 - zeroPredicted[i]);
+            double oneDistance = Math.abs(0.5 - onePredicted[i]);
+            // coefficient is proportional to distance and to the number of features (between 0 and 1)
+            double zm = Math.tanh((1e-2 + zeroDistance + oneDistance) + ts / 10d);
+            coefficients[i] *= zm;
         }
     }
 }

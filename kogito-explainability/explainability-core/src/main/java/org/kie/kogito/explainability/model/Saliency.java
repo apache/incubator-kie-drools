@@ -90,7 +90,7 @@ public class Saliency {
         for (Map.Entry<Output, List<Saliency>> saliencyEntry : flatten.entrySet()) {
             List<FeatureImportance> result = new ArrayList<>();
             List<FeatureImportance> fis = saliencyEntry.getValue().stream().map(s -> s.perFeatureImportance).flatMap(Collection::stream).collect(Collectors.toList());
-            Map<Feature, List<FeatureImportance>> collect = fis.stream().collect(Collectors.groupingBy(fi -> FeatureFactory.copyOf(fi.getFeature(), new Value<>(null))));
+            Map<Feature, List<FeatureImportance>> collect = fis.stream().collect(Collectors.groupingBy(fi -> FeatureFactory.copyOf(fi.getFeature(), new Value(null))));
             for (Map.Entry<Feature, List<FeatureImportance>> entry : collect.entrySet()) {
                 double meanScore = entry.getValue().stream().map(FeatureImportance::getScore).flatMapToDouble(DoubleStream::of).average().orElse(0);
                 result.add(new FeatureImportance(entry.getKey(), meanScore));

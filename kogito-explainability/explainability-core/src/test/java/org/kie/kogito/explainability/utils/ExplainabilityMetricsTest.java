@@ -32,6 +32,7 @@ import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
@@ -41,6 +42,7 @@ import org.kie.kogito.explainability.model.Saliency;
 import static java.util.Collections.emptyList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -149,18 +151,17 @@ class ExplainabilityMetricsTest {
         Prediction emptyPrediction = new Prediction(new PredictionInput(emptyList()), new PredictionOutput(emptyList()));
         PredictionProvider brokenProvider = inputs -> supplyAsync(
                 () -> {
-                    try {
-                        Thread.sleep(1000);
-                        return emptyList();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("this is a test");
-                    }
+                    await().atLeast(1, TimeUnit.SECONDS).until(() -> false);
+                    throw new RuntimeException("this should never happen");
                 });
 
-        Assertions.assertThrows(TimeoutException.class,
-                () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyList()));
-
-        Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
-        Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
+        List<FeatureImportance> emptyFeatures = emptyList();
+        try {
+            Assertions.assertThrows(IllegalStateException.class,
+                    () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyFeatures));
+        } finally {
+            Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
+            Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
+        }
     }
 }

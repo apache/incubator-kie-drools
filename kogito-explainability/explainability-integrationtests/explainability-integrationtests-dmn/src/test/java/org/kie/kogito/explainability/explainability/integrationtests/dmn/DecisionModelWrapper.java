@@ -56,7 +56,7 @@ class DecisionModelWrapper implements PredictionProvider {
             DMNResult dmnResult = decisionModel.evaluateAll(context);
             List<Output> outputs = new LinkedList<>();
             for (DMNDecisionResult decisionResult : dmnResult.getDecisionResults()) {
-                Value<Object> value = new Value<>(decisionResult.getResult());
+                Value value = new Value(decisionResult.getResult());
                 Type type;
                 if (Double.isNaN(value.asNumber())) {
                     type = Type.TEXT;

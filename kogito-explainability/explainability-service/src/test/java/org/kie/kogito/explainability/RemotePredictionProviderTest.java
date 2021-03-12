@@ -64,9 +64,9 @@ class RemotePredictionProviderTest {
     @Test
     void toMap() {
         // simple test
-        Feature simple = new Feature("simple", Type.NUMBER, new Value<>(10));
-        Feature undefined = new Feature("undefined", Type.UNDEFINED, new Value<>(simple));
-        Feature composite = new Feature("composite", Type.COMPOSITE, new Value<>(asList(simple, undefined)));
+        Feature simple = new Feature("simple", Type.NUMBER, new Value(10));
+        Feature undefined = new Feature("undefined", Type.UNDEFINED, new Value(simple));
+        Feature composite = new Feature("composite", Type.COMPOSITE, new Value(asList(simple, undefined)));
         List<Feature> features1 = asList(simple, undefined, composite);
 
         Map<String, Object> result1 = predictionProvider.toMap(features1);
@@ -80,8 +80,8 @@ class RemotePredictionProviderTest {
         assertTrue(result1.get("composite") instanceof Map);
 
         // context test
-        Feature context = new Feature("context", Type.COMPOSITE, new Value<>(singletonList(simple)));
-        Feature simple2 = new Feature("simple2", Type.BOOLEAN, new Value<>(true));
+        Feature context = new Feature("context", Type.COMPOSITE, new Value(singletonList(simple)));
+        Feature simple2 = new Feature("simple2", Type.BOOLEAN, new Value(true));
         List<Feature> features2 = asList(simple2, context);
 
         Map<String, Object> result2 = predictionProvider.toMap(features2);
@@ -92,7 +92,7 @@ class RemotePredictionProviderTest {
         assertFalse(result2.containsKey("simple2"));
 
         // multiple nesting test
-        Feature nestedComposite = new Feature("nestedComposite", Type.COMPOSITE, new Value<>(asList(simple, composite)));
+        Feature nestedComposite = new Feature("nestedComposite", Type.COMPOSITE, new Value(asList(simple, composite)));
         List<Feature> features3 = asList(simple, nestedComposite);
         Map<String, Object> result3 = predictionProvider.toMap(features3);
 

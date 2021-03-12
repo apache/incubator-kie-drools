@@ -98,7 +98,7 @@ public class RemotePredictionProvider implements PredictionProvider {
                         .filter(output -> request.getOutputs().containsKey(output.getName())),
                 request.getOutputs().keySet().stream()
                         .filter(key -> !resultOutputNames.contains(key))
-                        .map(key -> new Output(key, Type.UNDEFINED, new Value<>(null), 1d)))
+                        .map(key -> new Output(key, Type.UNDEFINED, new Value(null), 1d)))
                 .collect(toList());
 
         return new PredictionOutput(outputs);

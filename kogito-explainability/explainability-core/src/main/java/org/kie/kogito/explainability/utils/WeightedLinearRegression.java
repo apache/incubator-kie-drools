@@ -16,6 +16,8 @@
 
 package org.kie.kogito.explainability.utils;
 
+import java.util.Random;
+
 /**
  * Performs a weighted linear regression over the provided features, observations, and weights
  * The algorithm is modified from modified from Dr. Walt Fair's WLR algorithm here:
@@ -37,13 +39,14 @@ public class WeightedLinearRegression {
      *        each row contains one datapoint of size [nfeatures]
      * @param observations An {@code nsamples} array, where y[n] is the observation for features point n.
      * @param sampleWeights An {@code nsamples} array, where sampleWeights[n] is the weighting of features point n.
+     * @param random Random generator used inside jitterInvert
      *
      * @return C, an {@code nfeatures} array of coefficients as computed by the regression.
      *         In the case where {@code intercept} is true, the last value of {@code C} is the intercept.
      *
      */
     public static WeightedLinearRegressionResults fit(
-            double[][] features, double[] observations, double[] sampleWeights, boolean intercept)
+            double[][] features, double[] observations, double[] sampleWeights, boolean intercept, Random random)
             throws IllegalArgumentException, ArithmeticException {
         // if we want to compute an intercept, add a dummy feature at last column.
         int nfeatures = intercept ? features[0].length + 1 : features[0].length;
@@ -81,7 +84,7 @@ public class WeightedLinearRegression {
 
         //invert the coefficient matrix
         try {
-            x = MatrixUtils.jitterInvert(x, 10, 1e-9);
+            x = MatrixUtils.jitterInvert(x, 10, 1e-9, random);
         } catch (ArithmeticException e) {
             throw new ArithmeticException(
                     "Weighted Linear Regression: Matrix cannot be inverted! " +

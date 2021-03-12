@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -55,8 +54,6 @@ class PmmlScorecardCategoricalLimeExplainerTest {
     @BeforeAll
     static void setUpBefore() throws URISyntaxException {
         scorecardCategoricalRuntime = getPMMLRuntime(ResourceReaderUtils.getResourceAsFile("simplescorecardcategorical/SimpleScorecardCategorical.pmml"));
-        Config.INSTANCE.setAsyncTimeout(5000);
-        Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
     }
 
     @Test
@@ -83,9 +80,9 @@ class PmmlScorecardCategoricalLimeExplainerTest {
                 String reason1 = "" + result.getResultVariables().get(SimpleScorecardCategoricalExecutor.REASON_CODE1_FIELD);
                 String reason2 = "" + result.getResultVariables().get(SimpleScorecardCategoricalExecutor.REASON_CODE2_FIELD);
                 PredictionOutput predictionOutput = new PredictionOutput(List.of(
-                        new Output("score", Type.TEXT, new Value<>(score), 1d),
-                        new Output("reason1", Type.TEXT, new Value<>(reason1), 1d),
-                        new Output("reason2", Type.TEXT, new Value<>(reason2), 1d)));
+                        new Output("score", Type.TEXT, new Value(score), 1d),
+                        new Output("reason1", Type.TEXT, new Value(reason1), 1d),
+                        new Output("reason2", Type.TEXT, new Value(reason2), 1d)));
                 outputs.add(predictionOutput);
             }
             return outputs;
@@ -93,8 +90,9 @@ class PmmlScorecardCategoricalLimeExplainerTest {
 
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        assertThat(predictionOutputs).isNotNull();
-        assertThat(predictionOutputs).isNotEmpty();
+        assertThat(predictionOutputs)
+                .isNotNull()
+                .isNotEmpty();
         PredictionOutput output = predictionOutputs.get(0);
         assertThat(output).isNotNull();
         Prediction prediction = new Prediction(input, output);

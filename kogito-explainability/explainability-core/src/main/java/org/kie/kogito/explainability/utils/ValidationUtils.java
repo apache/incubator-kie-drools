@@ -29,6 +29,10 @@ import org.kie.kogito.explainability.model.Saliency;
  */
 public class ValidationUtils {
 
+    private ValidationUtils() {
+        // utility class
+    }
+
     /**
      * Validate local saliency stability scores.
      * 

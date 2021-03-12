@@ -32,14 +32,14 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-public class ExplainabilityApiV1Test {
+class ExplainabilityApiV1Test {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String executionId = "test";
     private static final String serviceUrl = "http://localhost:8080";
 
     @Test
-    public void testEndpointWithRequest() throws JsonProcessingException {
+    void testEndpointWithRequest() throws JsonProcessingException {
         ModelIdentifierDto modelIdentifierDto = new ModelIdentifierDto("dmn", "namespace:name");
 
         String body = MAPPER.writeValueAsString(new ExplainabilityRequestDto(executionId, serviceUrl, modelIdentifierDto, Collections.emptyMap(), Collections.emptyMap()));
@@ -55,7 +55,7 @@ public class ExplainabilityApiV1Test {
     }
 
     @Test
-    public void testEndpointWithBadRequests() throws JsonProcessingException {
+    void testEndpointWithBadRequests() throws JsonProcessingException {
         ExplainabilityRequestDto[] badRequests = new ExplainabilityRequestDto[] {
                 new ExplainabilityRequestDto(null, serviceUrl, new ModelIdentifierDto("test", "test"), Collections.emptyMap(), Collections.emptyMap()),
                 new ExplainabilityRequestDto(executionId, serviceUrl, new ModelIdentifierDto("", "test"), Collections.emptyMap(), Collections.emptyMap()),

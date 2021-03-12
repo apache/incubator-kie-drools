@@ -238,7 +238,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
             Map<Double, Long> rawClassesBalance;
 
             // calculate the no. of samples belonging to each output class
-            Value<?> fv = currentOutput.getValue();
+            Value fv = currentOutput.getValue();
             rawClassesBalance = getClassBalance(perturbedOutputs, fv, o);
             Long max = rawClassesBalance.values().stream().max(Long::compareTo).orElse(1L);
             double separationRatio = (double) max / (double) perturbedInputs.size();
@@ -263,18 +263,29 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         }
     }
 
-    private Map<Double, Long> getClassBalance(List<PredictionOutput> perturbedOutputs, Value<?> fv, int finalO) {
+    private Map<Double, Long> getClassBalance(List<PredictionOutput> perturbedOutputs, Value fv, int finalO) {
         Map<Double, Long> rawClassesBalance;
         rawClassesBalance = perturbedOutputs.stream()
                 .map(p -> p.getOutputs().get(finalO)) // get the (perturbed) output value corresponding to the one to be explained
-                .map(output -> (Type.NUMBER.equals(output.getType())) ? output.getValue().asNumber() : // if numeric use it as it is
-                        (((output.getValue().getUnderlyingObject() == null // otherwise check if target and perturbed outputs are both null
-                                && fv.getUnderlyingObject() == null)
-                                || (output.getValue().getUnderlyingObject() != null // if not null, check for underlying value equality
-                                        && output.getValue().asString().equals(fv.asString()))) ? 1d : 0d))
+                .map(output -> toDouble(output, fv))
                 .collect(Collectors.groupingBy(Double::doubleValue, Collectors.counting())); // then group-count distinct output values
         LOGGER.debug("raw samples per class: {}", rawClassesBalance);
         return rawClassesBalance;
+    }
+
+    private double toDouble(Output output, Value fv) {
+        // if numeric use it as it is
+        if (Type.NUMBER.equals(output.getType())) {
+            return output.getValue().asNumber();
+        }
+        // otherwise check if target and perturbed outputs are both null
+        boolean nullValues = output.getValue().getUnderlyingObject() == null
+                && fv.getUnderlyingObject() == null;
+        // if not null, check for underlying value equality
+        boolean equalityCheck = output.getValue().getUnderlyingObject() != null
+                && output.getValue().asString().equals(fv.asString());
+
+        return nullValues || equalityCheck ? 1d : 0d;
     }
 
     private List<PredictionInput> getPerturbedInputs(List<Feature> features, PerturbationContext perturbationContext) {

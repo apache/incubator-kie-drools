@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -55,8 +54,6 @@ class PmmlRegressionCategoricalLimeExplainerTest {
     @BeforeAll
     static void setUpBefore() throws URISyntaxException {
         categoricalVariableRegressionRuntime = getPMMLRuntime(ResourceReaderUtils.getResourceAsFile("categoricalvariablesregression/categoricalVariablesRegression.pmml"));
-        Config.INSTANCE.setAsyncTimeout(5000);
-        Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
     }
 
     @Test
@@ -80,15 +77,16 @@ class PmmlRegressionCategoricalLimeExplainerTest {
                         features1.get(0).getValue().asString(), features1.get(1).getValue().asString());
                 PMML4Result result = pmmlModel.execute(categoricalVariableRegressionRuntime);
                 String score = result.getResultVariables().get("result").toString();
-                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("result", Type.NUMBER, new Value<>(score), 1d)));
+                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("result", Type.NUMBER, new Value(score), 1d)));
                 outputs.add(predictionOutput);
             }
             return outputs;
         });
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        assertThat(predictionOutputs).isNotNull();
-        assertThat(predictionOutputs).isNotEmpty();
+        assertThat(predictionOutputs)
+                .isNotNull()
+                .isNotEmpty();
         PredictionOutput output = predictionOutputs.get(0);
         assertThat(output).isNotNull();
         Prediction prediction = new Prediction(input, output);

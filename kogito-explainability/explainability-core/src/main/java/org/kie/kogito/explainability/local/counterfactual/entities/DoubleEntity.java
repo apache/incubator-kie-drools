@@ -17,9 +17,6 @@ package org.kie.kogito.explainability.local.counterfactual.entities;
 
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
-import org.kie.kogito.explainability.model.FeatureFactory;
-import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.utils.DataUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
@@ -30,38 +27,14 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
  * Mapping between a Double feature an OptaPlanner {@link PlanningEntity}
  */
 @PlanningEntity
-public class DoubleEntity implements CounterfactualEntity {
-    @PlanningVariable(valueRangeProviderRefs = { "doubleRange" })
-    public Double proposedValue;
-
-    double doubleRangeMinimum;
-    double doubleRangeMaximum;
-    private Double stdDev = null;
-
-    private Double originalValue;
-
-    private boolean constrained;
-    private String featureName;
+public class DoubleEntity extends AbstractNumericEntity<Double> {
 
     public DoubleEntity() {
-    }
-
-    private DoubleEntity(Double originalValue, String featureName, double minimum, double maximum, boolean constrained) {
-        this(originalValue, featureName, minimum, maximum, null, constrained);
+        super();
     }
 
     private DoubleEntity(Double originalValue, String featureName, double minimum, double maximum, FeatureDistribution featureDistribution, boolean constrained) {
-        this.proposedValue = originalValue;
-        this.originalValue = originalValue;
-        this.featureName = featureName;
-        this.doubleRangeMinimum = minimum;
-        this.doubleRangeMaximum = maximum;
-        this.constrained = constrained;
-        if (featureDistribution != null) {
-            final double[] samples = featureDistribution.getAllSamples().stream().mapToDouble(Value::asNumber).toArray();
-            final double mean = DataUtils.getMean(samples);
-            this.stdDev = DataUtils.getStdDev(samples, mean);
-        }
+        super(originalValue, featureName, minimum, maximum, featureDistribution, constrained);
     }
 
     /**
@@ -119,66 +92,16 @@ public class DoubleEntity implements CounterfactualEntity {
     }
 
     @ValueRangeProvider(id = "doubleRange")
-    public ValueRange getValueRange() {
-        return ValueRangeFactory.createDoubleValueRange(doubleRangeMinimum, doubleRangeMaximum);
+    public ValueRange<Double> getValueRange() {
+        return ValueRangeFactory.createDoubleValueRange(rangeMinimum, rangeMaximum);
     }
 
-    @Override
-    public String toString() {
-        return "DoubleFeature{"
-                + "value="
-                + proposedValue
-                + ", doubleRangeMinimum="
-                + doubleRangeMinimum
-                + ", doubleRangeMaximum="
-                + doubleRangeMaximum
-                + ", id='"
-                + featureName
-                + '\''
-                + '}';
+    @PlanningVariable(valueRangeProviderRefs = { "doubleRange" })
+    public Double getProposedValue() {
+        return proposedValue;
     }
 
-    /**
-     * Calculates the distance between the current planning value and the reference value
-     * for this feature.
-     * If the feature distribution is specified, this will return a scaled distance, otherwise
-     * it returns an unscaled distance.
-     *
-     * @return Numerical distance
-     */
-    @Override
-    public double distance() {
-        double distance = Math.abs(this.proposedValue - originalValue);
-        if (this.stdDev != null) {
-            return distance / (this.stdDev * this.stdDev);
-        } else {
-            return distance;
-        }
-    }
-
-    /**
-     * Returns the {@link BooleanEntity} as a {@link Feature}
-     *
-     * @return {@link Feature}
-     */
-    @Override
-    public Feature asFeature() {
-        return FeatureFactory.newNumericalFeature(featureName, this.proposedValue);
-    }
-
-    @Override
-    public boolean isConstrained() {
-        return constrained;
-    }
-
-    /**
-     * Returns whether the {@link BooleanEntity} new value is different from the reference
-     * {@link Feature} value.
-     *
-     * @return boolean
-     */
-    @Override
-    public boolean isChanged() {
-        return !originalValue.equals(this.proposedValue);
+    public void setProposedValue(Double proposedValue) {
+        this.proposedValue = proposedValue;
     }
 }

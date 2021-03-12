@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -55,8 +54,6 @@ class PmmlCompoundScorecardLimeExplainerTest {
     @BeforeAll
     static void setUpBefore() throws URISyntaxException {
         compoundScoreCardRuntime = getPMMLRuntime(ResourceReaderUtils.getResourceAsFile("compoundnestedpredicatescorecard/CompoundNestedPredicateScorecard.pmml"));
-        Config.INSTANCE.setAsyncTimeout(5000);
-        Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
     }
 
     @Test
@@ -84,8 +81,8 @@ class PmmlCompoundScorecardLimeExplainerTest {
                     String score = "" + resultVariables.get(CompoundNestedPredicateScorecardExecutor.TARGET_FIELD);
                     String reason1 = "" + resultVariables.get(CompoundNestedPredicateScorecardExecutor.REASON_CODE1_FIELD);
                     PredictionOutput predictionOutput = new PredictionOutput(List.of(
-                            new Output("score", Type.TEXT, new Value<>(score), 1d),
-                            new Output("reason1", Type.TEXT, new Value<>(reason1), 1d)));
+                            new Output("score", Type.TEXT, new Value(score), 1d),
+                            new Output("reason1", Type.TEXT, new Value(reason1), 1d)));
                     outputs.add(predictionOutput);
                 }
                 return outputs;

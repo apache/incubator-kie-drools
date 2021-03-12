@@ -27,26 +27,17 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
  * Mapping between a categorical feature an OptaPlanner {@link PlanningEntity}
  */
 @PlanningEntity
-public class CategoricalEntity implements CounterfactualEntity {
-    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
-    public String proposedValue;
-
-    private String originalValue;
-
-    private boolean constrained;
-    private String featureName;
+public class CategoricalEntity extends AbstractEntity<String> {
 
     private Set<String> allowedCategories;
 
     public CategoricalEntity() {
+        super();
     }
 
     private CategoricalEntity(String originalValue, String featureName, Set<String> allowedCategories, boolean constrained) {
-        this.proposedValue = originalValue;
-        this.originalValue = originalValue;
-        this.featureName = featureName;
+        super(originalValue, featureName, constrained);
         this.allowedCategories = allowedCategories;
-        this.constrained = constrained;
     }
 
     /**
@@ -79,17 +70,6 @@ public class CategoricalEntity implements CounterfactualEntity {
         return allowedCategories;
     }
 
-    @Override
-    public String toString() {
-        return "CategoricalFeature{"
-                + "value="
-                + proposedValue
-                + ", id='"
-                + featureName
-                + '\''
-                + '}';
-    }
-
     /**
      * Calculates the distance between the current planning value and the reference value
      * for this feature.
@@ -111,19 +91,12 @@ public class CategoricalEntity implements CounterfactualEntity {
         return FeatureFactory.newCategoricalFeature(featureName, this.proposedValue);
     }
 
-    @Override
-    public boolean isConstrained() {
-        return constrained;
+    @PlanningVariable(valueRangeProviderRefs = { "categoricalRange" })
+    public String getProposedValue() {
+        return proposedValue;
     }
 
-    /**
-     * Returns whether the {@link CategoricalEntity} new value is different from the reference
-     * {@link Feature} value.
-     *
-     * @return boolean
-     */
-    @Override
-    public boolean isChanged() {
-        return !originalValue.equals(this.proposedValue);
+    public void setProposedValue(String proposedValue) {
+        this.proposedValue = proposedValue;
     }
 }

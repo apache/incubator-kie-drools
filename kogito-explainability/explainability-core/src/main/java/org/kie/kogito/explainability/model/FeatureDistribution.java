@@ -30,10 +30,10 @@ public interface FeatureDistribution {
      */
     Feature getFeature();
 
-    Value<?> sample();
+    Value sample();
 
-    List<Value<?>> sample(int sampleSize);
+    List<Value> sample(int sampleSize);
 
-    List<Value<?>> getAllSamples();
+    List<Value> getAllSamples();
 
 }

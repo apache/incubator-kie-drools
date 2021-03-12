@@ -31,7 +31,7 @@ import org.kie.kogito.explainability.utils.DataUtils;
 public class NumericFeatureDistribution implements FeatureDistribution {
 
     private final Feature feature;
-    private final List<Value<?>> doubles;
+    private final List<Value> doubles;
     private final Random random;
 
     public NumericFeatureDistribution(Feature feature, double[] doubles) {
@@ -50,13 +50,13 @@ public class NumericFeatureDistribution implements FeatureDistribution {
     }
 
     @Override
-    public Value<?> sample() {
+    public Value sample() {
         if (doubles.isEmpty()) {
-            return new Value<>(null);
+            return new Value(null);
         } else {
-            List<Value<?>> samples = sample(1);
+            List<Value> samples = sample(1);
             if (samples.isEmpty()) {
-                return new Value<>(null);
+                return new Value(null);
             } else {
                 return samples.get(0);
             }
@@ -64,17 +64,17 @@ public class NumericFeatureDistribution implements FeatureDistribution {
     }
 
     @Override
-    public List<Value<?>> sample(int sampleSize) {
+    public List<Value> sample(int sampleSize) {
         return DataUtils.sampleWithReplacement(doubles, sampleSize, random);
     }
 
-    private List<Value<?>> toValuesList(double[] doubles) {
+    private List<Value> toValuesList(double[] doubles) {
         return Arrays.stream(doubles).boxed().map(Value::new).collect(Collectors.toList());
     }
 
     @Override
-    public List<Value<?>> getAllSamples() {
-        List<Value<?>> values = new ArrayList<>(doubles);
+    public List<Value> getAllSamples() {
+        List<Value> values = new ArrayList<>(doubles);
         Collections.shuffle(values);
         return Collections.unmodifiableList(values);
     }

@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.util.Random;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -23,6 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WeightedLinearRegressionTest {
+
+    static Random random = new Random();
+
+    @BeforeAll
+    static void initRandom() {
+        random.setSeed(0);
+    }
 
     // check the overspecified case, no intercept
     @Test
@@ -40,7 +50,7 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 4., 10., 8., 6. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, false);
+                WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
         assertEquals(1.0, wlrr.getGof(), 1e-6);
@@ -63,7 +73,7 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 4., 10., 8., 6. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, true);
+                WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
         assertEquals(5., wlrr.getIntercept(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
@@ -86,7 +96,7 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 4., 10., 8. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, true);
+                WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
 
         // there is a random error in the given observations, so make sure we get close to the actual coefficients
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1.0);
@@ -111,7 +121,7 @@ class WeightedLinearRegressionTest {
         // since there's some randomness in the jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
             WeightedLinearRegressionResults wlrr =
-                    WeightedLinearRegression.fit(x, y, sampleWeights, false);
+                    WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
             assertEquals(0.0, wlrr.getMSE(), 1e-6);
             assertEquals(1.0, wlrr.getGof(), 1e-6);
         }
@@ -132,7 +142,7 @@ class WeightedLinearRegressionTest {
         // since there's some randomness in the jitter invert, let's make sure it's stable
         for (int run = 0; run < 100; run++) {
             WeightedLinearRegressionResults wlrr =
-                    WeightedLinearRegression.fit(x, y, sampleWeights, true);
+                    WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
             assertEquals(0.0, wlrr.getMSE(), 1e-6);
             assertEquals(1.0, wlrr.getGof(), 1e-6);
         }
@@ -149,7 +159,7 @@ class WeightedLinearRegressionTest {
         double[] sampleWeights = { 1. };
 
         assertThrows(ArithmeticException.class,
-                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true));
+                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true, random));
     }
 
     // if we have only one feature, should be an easy calculation
@@ -166,7 +176,7 @@ class WeightedLinearRegressionTest {
         double[] actualCoefs = { 5. };
 
         WeightedLinearRegressionResults wlrr =
-                WeightedLinearRegression.fit(x, y, sampleWeights, false);
+                WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
         assertEquals(0.0, wlrr.getIntercept(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
@@ -187,7 +197,7 @@ class WeightedLinearRegressionTest {
         // since there's some randomness in the jitter invert, let's make sure it's stable
 
         assertThrows(IllegalArgumentException.class,
-                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true));
+                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true, random));
     }
 
     @Test
@@ -203,6 +213,6 @@ class WeightedLinearRegressionTest {
         // since there's some randomness in the jitter invert, let's make sure it's stable
 
         assertThrows(IllegalArgumentException.class,
-                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true));
+                () -> WeightedLinearRegression.fit(x, y, sampleWeights, true, random));
     }
 }
