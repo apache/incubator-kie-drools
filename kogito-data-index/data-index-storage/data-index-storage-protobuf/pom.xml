@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>infinispan-persistence-addon</artifactId>
+      <artifactId>protobuf-persistence-common</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
