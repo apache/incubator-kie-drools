@@ -38,10 +38,10 @@ public class IndexOfFunction
         for( int i = 0; i < list.size(); i++ ) {
             Object o = list.get( i );
             if ( o == null && match == null) {
-                result.add( BigDecimal.valueOf( i+1 ) );
+                result.add( BigDecimal.valueOf( i+1L ) );
             } else if ( o != null && match != null ) {
                 if ( equalsAsBigDecimals(o, match) || o.equals(match) ) {
-                    result.add( BigDecimal.valueOf( i+1 ) );
+                    result.add( BigDecimal.valueOf( i+1L ) );
                 }
             }
         }
