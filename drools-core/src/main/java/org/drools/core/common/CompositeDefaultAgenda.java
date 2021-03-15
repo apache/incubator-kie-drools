@@ -427,7 +427,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void cancelActivation( PropagationContext context, Activation activation ) {
+    public void cancelActivation( Activation activation ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.cancelActivation -> TODO" );
     }
 

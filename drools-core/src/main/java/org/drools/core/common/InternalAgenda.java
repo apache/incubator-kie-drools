@@ -144,8 +144,7 @@ public interface InternalAgenda
                                 RuleAgendaItem ruleAgendaItem,
                                 InternalAgendaGroup agendaGroup);
 
-    void cancelActivation(final PropagationContext context,
-                          final Activation activation );
+    void cancelActivation(final Activation activation );
 
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,

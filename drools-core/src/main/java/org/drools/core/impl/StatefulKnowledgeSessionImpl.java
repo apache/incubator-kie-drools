@@ -231,9 +231,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Environment environment;
 
-    // this is a counter of concurrent operations happening. When this counter is zero,
-    // the engine is idle.
-    private AtomicLong opCounter;
     // this is the timestamp of the end of the last operation, based on the session clock,
     // or -1 if there are operation being executed at this moment
     private AtomicLong lastIdleTimestamp;
@@ -364,7 +361,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.timerService = createTimerService();
 
-        this.opCounter = new AtomicLong(0);
         this.lastIdleTimestamp = new AtomicLong(-1);
     }
 
@@ -1105,7 +1101,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.handleFactory.clear( 0, 0 );
         this.propagationIdCounter.set(0);
-        this.opCounter.set(0);
         this.lastIdleTimestamp.set( -1 );
 
         this.defaultEntryPoint.reset();
@@ -1138,7 +1133,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                   handleCounter);
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );
-        this.opCounter.set( 0 );
         this.lastIdleTimestamp.set(-1);
 
         // TODO should these be cleared?
@@ -1972,10 +1966,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void startOperation() {
-        if (this.opCounter.getAndIncrement() == 0) {
-            // means the engine was idle, reset the timestamp
-            this.lastIdleTimestamp.set(-1);
-        }
+        // no-op
     }
 
     private EndOperationListener endOperationListener;
@@ -1993,13 +1984,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void endOperation() {
-        if (this.opCounter.decrementAndGet() == 0) {
-            // means the engine is idle, so, set the timestamp
-            this.lastIdleTimestamp.set(this.timerService.getCurrentTime());
-            if (this.endOperationListener != null) {
-                this.endOperationListener.endOperation(this.getKnowledgeRuntime());
-            }
-        }
+        // no-op
     }
 
     /**
