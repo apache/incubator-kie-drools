@@ -371,7 +371,7 @@ public class NamedEntryPoint
 
                 final ObjectTypeConf typeConf = changedObject ?
                         getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint, object) :
-                        getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint, object);
+                        getObjectTypeConfigurationRegistry().getObjectTypeConf(object);
 
                 if (changedObject || isEqualityBehaviour) {
                     this.objectStore.updateHandle(handle, object);
@@ -512,7 +512,7 @@ public class NamedEntryPoint
 
         final Object object = handle.getObject();
 
-        final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
+        final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( object );
 
         if( typeConf.isDynamic() ) {
             removePropertyChangeListener( handle, true );
@@ -587,7 +587,7 @@ public class NamedEntryPoint
 
     public void removeFromObjectStore(InternalFactHandle handle) {
         this.objectStore.removeHandle( handle );
-        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, handle.getObject() );
+        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getObject() );
         deleteFromTMS( handle, handle.getEqualityKey(), typeConf, null );
     }
 

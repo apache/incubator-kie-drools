@@ -59,6 +59,12 @@ import static org.kie.api.pmml.PMMLConstants.LEGACY;
 import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
 import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
+/**
+ * This implementation is deprecated and will be removed in future releases.
+ *
+ * @see  <a href="https://github.com/kiegroup/drools/tree/master/kie-pmml-trusty">PMML Trusty</a>
+ */
+@Deprecated
 public class PMMLAssemblerService implements KieAssemblerService {
 
     private ClassLoader rootClassLoader;

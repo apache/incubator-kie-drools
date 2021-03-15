@@ -383,7 +383,7 @@ public class ConstraintParser {
         }
 
         left = coerced.getCoercedLeft();
-        right = coerced.getCoercedRight();
+        right = getCoercedRightExpression( packageModel, coerced );
 
         Expression combo;
 
@@ -418,6 +418,16 @@ public class ConstraintParser {
         return new SingleDrlxParseSuccess(patternType, bindingId, combo, isBooleanOperator( operator ) ? boolean.class : left.getType()).setDecodeConstraintType( constraintType )
                 .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft ).setUnification( constraint.isUnification() )
                 .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaConstraint(isBetaConstraint).setRequiresSplit( requiresSplit );
+    }
+
+    public static TypedExpression getCoercedRightExpression( PackageModel packageModel, CoercedExpression.CoercedExpressionResult coerced ) {
+        if ( coerced.isRightAsStaticField()) {
+            TypedExpression expr = coerced.getCoercedRight();
+            String field = expr.getExpression().toString().replaceAll( "\\W", "_" );
+            packageModel.addDateField( field, expr );
+            return new TypedExpression( new NameExpr(field), expr.getType() );
+        }
+        return coerced.getCoercedRight();
     }
 
     private boolean hasNonGlobalDeclaration( ExpressionTyperContext expressionTyperContext ) {

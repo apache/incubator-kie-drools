@@ -24,7 +24,7 @@ import org.drools.model.Binding;
 
 public class BindingEvaluator {
     private final Declaration[] declarations;
-    private final Binding binding;
+    protected final Binding binding;
 
     public BindingEvaluator( Declaration[] declarations, Binding binding ) {
         this.declarations = declarations;
@@ -43,7 +43,7 @@ public class BindingEvaluator {
         return declarations;
     }
 
-    protected Object[] getArguments( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory, Declaration[] declarations, Declaration[] innerDeclarations ) {
+    private Object[] getArguments( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory, Declaration[] declarations, Declaration[] innerDeclarations ) {
         Object[] params = new Object[declarations.length + innerDeclarations.length];
         for (int i = 0; i < innerDeclarations.length; i++) {
             params[i] = getArgument( handle, workingMemory, innerDeclarations[i], tuple );

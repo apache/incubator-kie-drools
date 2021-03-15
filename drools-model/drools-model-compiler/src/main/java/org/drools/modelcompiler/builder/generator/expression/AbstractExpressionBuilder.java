@@ -47,12 +47,12 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
 import org.drools.model.functions.PredicateInformation;
-import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
@@ -232,15 +232,7 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected boolean isStringToDateExpression(Expression expression) {
-        if (expression instanceof MethodCallExpr) {
-            String methodName = ((MethodCallExpr) expression).getNameAsString();
-            if (methodName.equals(PackageModel.STRING_TO_DATE_METHOD)
-                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_METHOD)
-                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_TIME_METHOD)) {
-                return true;
-            }
-        }
-        return false;
+        return expression instanceof NameExpr && ((NameExpr) expression).getNameAsString().startsWith( CoercedExpression.STRING_TO_DATE_FIELD_START );
     }
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {

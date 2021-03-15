@@ -73,7 +73,9 @@ public class ConstraintEvaluator {
             return null;
         }
         if (declarations.length == 1) {
-            return new InnerEvaluator._1(patternDeclaration, declarations[0], constraint.getPredicate1());
+            return declarations[0].isInternalFact() ?
+                    new InnerEvaluator._1(patternDeclaration, declarations[0], constraint.getPredicate1()) :
+                    new InnerEvaluator._1_FH(patternDeclaration, declarations[0], constraint.getPredicate1());
         }
         if (declarations.length == 2) {
             return new InnerEvaluator._2(patternDeclaration, declarations[0], declarations[1], constraint.getPredicate2());
@@ -172,8 +174,9 @@ public class ConstraintEvaluator {
                 if (i == 0) {
                     if (innerEvaluator instanceof InnerEvaluator._1) {
                         (( InnerEvaluator._1 ) innerEvaluator).declaration = newDecl;
-                    }
-                    if (innerEvaluator instanceof InnerEvaluator._2) {
+                    } else if (innerEvaluator instanceof InnerEvaluator._1_FH) {
+                        (( InnerEvaluator._1_FH ) innerEvaluator).declaration = newDecl;
+                    } else if (innerEvaluator instanceof InnerEvaluator._2) {
                         (( InnerEvaluator._2 ) innerEvaluator).declaration1 = newDecl;
                     }
                 }
@@ -247,16 +250,34 @@ public class ConstraintEvaluator {
 
             @Override
             public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
-                return predicate.test( getSingleArg( handle, workingMemory ) );
+                return predicate.test( declaration.getValue( workingMemory, handle ) );
             }
 
             @Override
             public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
                 return predicate.test( getArgument( handle, workingMemory, declaration, tuple ) );
             }
+        }
 
-            private Object getSingleArg( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-                return declaration.isInternalFact() ? declaration.getValue( workingMemory, handle ) : handle.getObject();
+        static class _1_FH extends InnerEvaluator {
+
+            private Declaration declaration;
+            private final Predicate1 predicate;
+
+            public _1_FH( Declaration patternDeclaration, Declaration declaration, Predicate1 predicate ) {
+                super( patternDeclaration );
+                this.declaration = declaration;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( handle.getObject() );
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getArgument( handle, workingMemory, declaration, tuple ) );
             }
         }
 

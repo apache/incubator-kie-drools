@@ -170,10 +170,9 @@ public class AccumulateNode extends BetaNode {
         }
         if (handle == null) {
             handle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                               result ),
+                                                                         null, // no need to retrieve the ObjectTypeConf, acc result is never an event or a trait
                                                                          workingMemory,
-                                                                         null ); // so far, result is not an event
+                                                                         null );
         }
         return handle;
     }
@@ -318,8 +317,7 @@ public class AccumulateNode extends BetaNode {
         private boolean            propagated;
         private Object             functionContext;
         private boolean            toPropagate;
-        private Object             value;
-        private TupleList<AccumulateContextEntry> tupleList;
+        private boolean            empty = true;
 
         public AccumulateContextEntry(Object key) {
             this.key = key;
@@ -369,20 +367,12 @@ public class AccumulateNode extends BetaNode {
             return this.key;
         }
 
-        public TupleList<AccumulateContextEntry> getTupleList() {
-            return tupleList;
+        public boolean isEmpty() {
+            return empty;
         }
 
-        public void setTupleList(TupleList<AccumulateContextEntry> tupleList) {
-            this.tupleList = tupleList;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
+        public void setEmpty( boolean empty ) {
+            this.empty = empty;
         }
     }
 
@@ -406,7 +396,6 @@ public class AccumulateNode extends BetaNode {
         private PropagationContext                              propagationContext;
         private Map<Object, TupleList<AccumulateContextEntry> > groupsMap = new HashMap<>();
         private TupleList<AccumulateContextEntry>               lastTupleList;
-        private TupleList<AccumulateContextEntry>               tupleList;
         private TupleList<AccumulateContextEntry>               toPropagateList;
 
         public PropagationContext getPropagationContext() {
@@ -422,19 +411,12 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
-                                                          InternalFactHandle handle, Object key, WorkingMemory wm) {
+                                                          Object key, WorkingMemory wm) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
-                TupleList<AccumulateContextEntry> tupleList = new TupleList<>(entry);
-                entry.setTupleList(tupleList);
-                addTupleList(tupleList);
-
-                Object funcContext = accumulate.createFunctionContext();
-                funcContext = accumulate.init(workingMemoryContext, entry, funcContext, leftTuple, wm);
-                entry.setFunctionContext(funcContext);
+                entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, wm) );
                 PhreakAccumulateNode.initContext(workingMemoryContext, (InternalWorkingMemory) wm, accumulate, leftTuple, entry);
-
-                return tupleList;
+                return new TupleList<>(entry);
             });
         }
 
@@ -442,34 +424,10 @@ public class AccumulateNode extends BetaNode {
             groupsMap.remove(key);
         }
 
-        public void addTupleList(TupleList<AccumulateContextEntry> list) {
-            // add to head of list
-            if (tupleList != null) {
-                tupleList.setPrevious(list);
-                list.setNext(tupleList);
-            }
-            tupleList = list;
-        }
-
         public void moveToPropagateTupleList(TupleList<AccumulateContextEntry> list) {
+            this.lastTupleList = list;
             if ( list.getContext().isToPropagate()) {
                 return;
-            }
-
-            TupleList next = list.getNext();
-            if (tupleList == list) {
-                // list is head
-                tupleList = next;
-                if (next != null) {
-                    next.setPrevious(null);
-                }
-            } else {
-                // list is mid or end
-                TupleList prev = list.getPrevious();
-                prev.setNext(next); // prev cannot be null here
-                if (next != null) {
-                    next.setPrevious(prev);
-                }
             }
 
             // add list to head
@@ -483,36 +441,19 @@ public class AccumulateNode extends BetaNode {
             list.getContext().setToPropagate(true);
         }
 
-        public void resetToPropagateTupleList(TupleList first, TupleList last) {
-            if (first == null) {
-                return;
-            }
-
-            if (tupleList == null) {
-                tupleList = toPropagateList;
-            } else {
-                last.setNext(tupleList);
-                tupleList.setPrevious(last);
-                tupleList = first;
-            }
-
+        public TupleList<AccumulateContextEntry> takeToPropagateList() {
+            TupleList<AccumulateContextEntry> list = toPropagateList;
             toPropagateList = null;
-        }
-
-        public TupleList<AccumulateContextEntry> getTupleList() {
-            return tupleList;
-        }
-
-        public TupleList<AccumulateContextEntry> getToPropagateList() {
-            return toPropagateList;
+            return list;
         }
 
         public TupleList<AccumulateContextEntry> getLastTupleList() {
             return lastTupleList;
         }
 
-        public void setLastTupleList(TupleList<AccumulateContextEntry> lastTupleList) {
-            this.lastTupleList = lastTupleList;
+        public void addMatchOnLastTupleList(LeftTuple match) {
+            lastTupleList.add(match);
+            lastTupleList.getContext().setEmpty( false );
         }
 
         public void clear() {
@@ -522,8 +463,7 @@ public class AccumulateNode extends BetaNode {
                     tuple.setContextObject(null);
                 }
             }
-            getGroups().clear();
-            tupleList = null;
+            groupsMap.clear();
             toPropagateList = null;
             lastTupleList = null;
         }

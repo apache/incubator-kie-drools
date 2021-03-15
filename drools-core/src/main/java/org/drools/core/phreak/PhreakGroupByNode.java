@@ -60,10 +60,8 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
         accctx.setPropagationContext( null );
 
         GroupByContext groupByContext = (GroupByContext)accctx;
-        TupleList<AccumulateContextEntry> firstList = groupByContext.getToPropagateList();
-        TupleList<AccumulateContextEntry> lastList = null;
 
-        for (TupleList<AccumulateContextEntry> tupleList = firstList; tupleList != null; tupleList = tupleList.getNext()) {
+        for (TupleList<AccumulateContextEntry> tupleList = groupByContext.takeToPropagateList(); tupleList != null; tupleList = tupleList.getNext()) {
             AccumulateContextEntry contextEntry = tupleList.getContext();
 
             Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, workingMemory);
@@ -72,11 +70,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                              contextEntry.getKey(), result, contextEntry, propagationContext );
 
             contextEntry.setToPropagate(false);
-
-            lastList = tupleList;
         }
-
-        groupByContext.resetToPropagateTupleList(firstList, lastList);
     }
 
     @Override
@@ -141,8 +135,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     void postAccumulate(AccumulateNode accNode, Object accctx, LeftTuple match) {
-        GroupByContext context = (GroupByContext)accctx;
-        context.getLastTupleList().add(match);
+        ((GroupByContext)accctx).addMatchOnLastTupleList(match);
     }
 
 }

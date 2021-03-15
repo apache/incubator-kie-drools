@@ -151,7 +151,7 @@ public class TraitHelperImpl implements Externalizable,
                     nep.update( h,
                                 t,
                                 t,
-                                nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), t ),
+                                nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( t ),
                                 propagationContext );
                 }
             }
@@ -307,7 +307,7 @@ public class TraitHelperImpl implements Externalizable,
             nep.update( h,
                         o,
                         o,
-                        nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), o ),
+                        nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( o ),
                         propagationContext );
         } else {
             handle = this.workingMemory.insert( inner,
