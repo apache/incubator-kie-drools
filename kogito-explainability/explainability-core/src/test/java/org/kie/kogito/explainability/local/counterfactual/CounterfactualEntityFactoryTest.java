@@ -21,8 +21,11 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.local.counterfactual.entities.*;
 import org.kie.kogito.explainability.model.Feature;
-import org.kie.kogito.explainability.model.FeatureDomain;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;
+import org.kie.kogito.explainability.model.domain.EmptyFeatureDomain;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +36,7 @@ class CounterfactualEntityFactoryTest {
     void testIntegerFactory() {
         int value = 5;
         final Feature feature = FeatureFactory.newNumericalFeature("int-feature", value);
-        final FeatureDomain domain = FeatureDomain.numerical(0.0, 10.0);
+        final FeatureDomain domain = NumericalFeatureDomain.create(0.0, 10.0);
         final CounterfactualEntity counterfactualEntity = CounterfactualEntityFactory.from(feature, false, domain);
         assertTrue(counterfactualEntity instanceof IntegerEntity);
     }
@@ -42,7 +45,7 @@ class CounterfactualEntityFactoryTest {
     void testDoubleFactory() {
         double value = 5.0;
         final Feature feature = FeatureFactory.newNumericalFeature("double-feature", value);
-        final FeatureDomain domain = FeatureDomain.numerical(0.0, 10.0);
+        final FeatureDomain domain = NumericalFeatureDomain.create(0.0, 10.0);
         final CounterfactualEntity counterfactualEntity = CounterfactualEntityFactory.from(feature, false, domain);
         assertTrue(counterfactualEntity instanceof DoubleEntity);
     }
@@ -50,14 +53,15 @@ class CounterfactualEntityFactoryTest {
     @Test
     void testBooleanFactory() {
         final Feature feature = FeatureFactory.newBooleanFeature("bool-feature", false);
-        final CounterfactualEntity counterfactualEntity = CounterfactualEntityFactory.from(feature, false, FeatureDomain.EMPTY);
+        final CounterfactualEntity counterfactualEntity =
+                CounterfactualEntityFactory.from(feature, false, EmptyFeatureDomain.create());
         assertTrue(counterfactualEntity instanceof BooleanEntity);
     }
 
     @Test
     void testCategoricalFactoryObject() {
         final Feature feature = FeatureFactory.newCategoricalFeature("categorical-feature", "foo");
-        final FeatureDomain domain = FeatureDomain.categorical("foo", "bar");
+        final FeatureDomain domain = CategoricalFeatureDomain.create("foo", "bar");
         final CounterfactualEntity counterfactualEntity = CounterfactualEntityFactory.from(feature, true, domain);
         assertTrue(counterfactualEntity instanceof CategoricalEntity);
         assertEquals(domain.getCategories(), ((CategoricalEntity) counterfactualEntity).getValueRange());
@@ -66,7 +70,7 @@ class CounterfactualEntityFactoryTest {
     @Test
     void testCategoricalFactorySet() {
         final Feature feature = FeatureFactory.newCategoricalFeature("categorical-feature", "foo");
-        final FeatureDomain domain = FeatureDomain.categorical(Set.of("foo", "bar"));
+        final FeatureDomain domain = CategoricalFeatureDomain.create(Set.of("foo", "bar"));
         final CounterfactualEntity counterfactualEntity = CounterfactualEntityFactory.from(feature, true, domain);
         assertTrue(counterfactualEntity instanceof CategoricalEntity);
         assertEquals(domain.getCategories(), ((CategoricalEntity) counterfactualEntity).getValueRange());
@@ -75,7 +79,7 @@ class CounterfactualEntityFactoryTest {
     @Test
     void testCategoricalFactoryList() {
         final Feature feature = FeatureFactory.newCategoricalFeature("categorical-feature", "foo");
-        final FeatureDomain domain = FeatureDomain.categorical(List.of("foo", "bar"));
+        final FeatureDomain domain = CategoricalFeatureDomain.create(List.of("foo", "bar"));
         final CounterfactualEntity counterfactualEntity = CounterfactualEntityFactory.from(feature, true, domain);
         assertTrue(counterfactualEntity instanceof CategoricalEntity);
         assertEquals(domain.getCategories(), ((CategoricalEntity) counterfactualEntity).getValueRange());

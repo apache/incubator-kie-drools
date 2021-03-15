@@ -17,8 +17,8 @@ package org.kie.kogito.explainability.local.counterfactual.entities;
 
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
-import org.kie.kogito.explainability.model.FeatureDomain;
 import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
 
 public class CounterfactualEntityFactory {
 
@@ -33,9 +33,9 @@ public class CounterfactualEntityFactory {
         CounterfactualEntity entity = null;
         if (feature.getType() == Type.NUMBER) {
             if (feature.getValue().getUnderlyingObject() instanceof Double) {
-                entity = DoubleEntity.from(feature, featureDomain.getStart(), featureDomain.getEnd(), featureDistribution, isConstrained);
+                entity = DoubleEntity.from(feature, featureDomain.getLowerBound(), featureDomain.getUpperBound(), featureDistribution, isConstrained);
             } else if (feature.getValue().getUnderlyingObject() instanceof Integer) {
-                entity = IntegerEntity.from(feature, featureDomain.getStart().intValue(), featureDomain.getEnd().intValue(), featureDistribution, isConstrained);
+                entity = IntegerEntity.from(feature, featureDomain.getLowerBound().intValue(), featureDomain.getUpperBound().intValue(), featureDistribution, isConstrained);
             }
         } else if (feature.getType() == Type.BOOLEAN) {
             entity = BooleanEntity.from(feature, isConstrained);

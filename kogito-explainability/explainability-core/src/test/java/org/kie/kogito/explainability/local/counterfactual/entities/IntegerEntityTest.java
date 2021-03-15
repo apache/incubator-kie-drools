@@ -22,9 +22,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
-import org.kie.kogito.explainability.model.FeatureDomain;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.NumericFeatureDistribution;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +35,7 @@ class IntegerEntityTest {
     @Test
     void distanceUnscaled() {
         final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20);
-        final FeatureDomain featureDomain = FeatureDomain.numerical(0, 100);
+        final FeatureDomain featureDomain = NumericalFeatureDomain.create(0, 100);
         IntegerEntity entity = (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, false, featureDomain);
         entity.proposedValue = 40;
         assertEquals(20.0, entity.distance());
@@ -47,7 +48,7 @@ class IntegerEntityTest {
         random.setSeed(seed);
 
         final Feature integerFeature = FeatureFactory.newNumericalFeature("feature-integer", 20);
-        final FeatureDomain featureDomain = FeatureDomain.numerical(0, 100);
+        final FeatureDomain featureDomain = NumericalFeatureDomain.create(0, 100);
         final FeatureDistribution featureDistribution = new NumericFeatureDistribution(integerFeature, random.ints(5000, 10, 40).mapToDouble(x -> x).toArray());
         IntegerEntity entity = (IntegerEntity) CounterfactualEntityFactory.from(integerFeature, false, featureDomain, featureDistribution);
         entity.proposedValue = 40;

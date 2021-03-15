@@ -13,30 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.explainability.model;
+package org.kie.kogito.explainability.model.domain;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import java.util.Set;
 
 /**
- * Information about feature domains of data used for training a model.
+ * Information about the search space domain for the model's features.
  */
-public class DataDomain {
 
-    private final List<FeatureDomain> featureDomains;
-
-    public DataDomain(List<FeatureDomain> featureDomains) {
-        this.featureDomains = Collections.unmodifiableList(featureDomains);
-    }
+public interface FeatureDomain {
 
     /**
-     * Get all feature data domains
+     * Return whether this is an empty domain
      *
-     * @return A list of {@link FeatureDomain}
+     * @return True if empty
      */
-    public List<FeatureDomain> getFeatureDomains() {
-        return featureDomains;
-    }
+    boolean isEmpty();
+
+    /**
+     * Get start value for this boundary
+     *
+     * @return the start value
+     */
+    Double getLowerBound();
+
+    /**
+     * Get the end value for this boundary
+     *
+     * @return the end value
+     */
+    Double getUpperBound();
+
+    /**
+     * Get the possible values for this boundary
+     *
+     * @return the end value
+     */
+    Set<String> getCategories();
+
 }

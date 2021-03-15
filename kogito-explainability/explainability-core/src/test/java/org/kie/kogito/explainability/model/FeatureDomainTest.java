@@ -19,6 +19,10 @@ package org.kie.kogito.explainability.model;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;
+import org.kie.kogito.explainability.model.domain.EmptyFeatureDomain;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,28 +32,28 @@ class FeatureDomainTest {
 
     @Test
     void getCategories() {
-        final FeatureDomain domain = FeatureDomain.categorical("foo", "bar", "foo", "bar", "bar");
+        final FeatureDomain domain = CategoricalFeatureDomain.create("foo", "bar", "foo", "bar", "bar");
         assertEquals(Set.of("foo", "bar"), domain.getCategories());
     }
 
     @Test
     void isEmpty() {
-        final FeatureDomain domain = FeatureDomain.EMPTY;
+        final FeatureDomain domain = EmptyFeatureDomain.create();
         assertNull(domain.getCategories());
-        assertNull(domain.getStart());
-        assertNull(domain.getEnd());
+        assertNull(domain.getLowerBound());
+        assertNull(domain.getUpperBound());
         assertTrue(domain.isEmpty());
     }
 
     @Test
     void getStart() {
-        final FeatureDomain domain = FeatureDomain.numerical(0.0, 10.0);
-        assertEquals(0.0, domain.getStart());
+        final FeatureDomain domain = NumericalFeatureDomain.create(0.0, 10.0);
+        assertEquals(0.0, domain.getLowerBound());
     }
 
     @Test
     void getEnd() {
-        final FeatureDomain domain = FeatureDomain.numerical(-10, -5);
-        assertEquals(-5.0, domain.getEnd());
+        final FeatureDomain domain = NumericalFeatureDomain.create(-10, -5);
+        assertEquals(-5.0, domain.getUpperBound());
     }
 }
