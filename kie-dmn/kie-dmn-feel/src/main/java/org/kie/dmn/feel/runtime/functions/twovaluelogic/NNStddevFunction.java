@@ -71,7 +71,7 @@ public class NNStddevFunction
             BigDecimal distanceSquared = numbers.get(i).subtract( mean ).pow( 2, MathContext.DECIMAL128 );
             total = total.add( distanceSquared );
         }
-        mean = total.divide( BigDecimal.valueOf( count - 1 ), MathContext.DECIMAL128 );
+        mean = total.divide( BigDecimal.valueOf( count - 1L ), MathContext.DECIMAL128 );
         return FEELFnResult.ofResult( SqrtFunction.sqrt( mean ) );
     }
 

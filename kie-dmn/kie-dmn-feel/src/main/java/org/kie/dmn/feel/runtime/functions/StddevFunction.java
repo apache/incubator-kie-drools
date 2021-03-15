@@ -63,7 +63,7 @@ public class StddevFunction
             BigDecimal distanceSquared = numbers[i].subtract( mean ).pow( 2, MathContext.DECIMAL128 );
             total = total.add( distanceSquared );
         }
-        mean = total.divide( BigDecimal.valueOf( n - 1 ), MathContext.DECIMAL128 );
+        mean = total.divide( BigDecimal.valueOf( n - 1L ), MathContext.DECIMAL128 );
         return FEELFnResult.ofResult( SqrtFunction.sqrt( mean ) );
     }
 
