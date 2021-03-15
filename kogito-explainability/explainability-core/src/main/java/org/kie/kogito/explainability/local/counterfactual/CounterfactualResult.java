@@ -29,10 +29,13 @@ public class CounterfactualResult {
 
     private List<CounterfactualEntity> entities;
     private List<PredictionOutput> output;
+    private boolean valid;
 
-    public CounterfactualResult(List<CounterfactualEntity> entities, List<PredictionOutput> output) {
+    public CounterfactualResult(List<CounterfactualEntity> entities, List<PredictionOutput> output,
+            boolean valid) {
         this.entities = entities;
         this.output = output;
+        this.valid = valid;
     }
 
     public List<CounterfactualEntity> getEntities() {
@@ -41,5 +44,9 @@ public class CounterfactualResult {
 
     public List<PredictionOutput> getOutput() {
         return output;
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 }
