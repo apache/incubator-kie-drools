@@ -56,10 +56,10 @@ public class StaticKieAssemblers implements KieAssemblers {
     }
 
     @Override
-    public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResourceAfterRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         KieAssemblerService assembler = assemblers.get(type);
         if (assembler != null) {
-            assembler.addResource(knowledgeBuilder,
+            assembler.addResourceAfterRules(knowledgeBuilder,
                     resource,
                     type,
                     configuration);
@@ -69,10 +69,10 @@ public class StaticKieAssemblers implements KieAssemblers {
     }
 
     @Override
-    public void addResources(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+    public void addResourcesAfterRules(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         KieAssemblerService assembler = assemblers.get(type);
         if (assembler != null) {
-            assembler.addResources(knowledgeBuilder, resources, type);
+            assembler.addResourcesAfterRules(knowledgeBuilder, resources, type);
         } else {
             log.debug("KieAssemblers: ignored {}", type);
         }
