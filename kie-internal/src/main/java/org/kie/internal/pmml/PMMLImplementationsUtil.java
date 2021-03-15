@@ -71,10 +71,10 @@ public class PMMLImplementationsUtil {
     }
 
     protected static PMMLConstants getFromClassPath(boolean isLegacyPresent, boolean isTrustyPresent) {
-        if (isLegacyPresent) {
-            return returnImplementation(LEGACY, true);
+        if (isTrustyPresent) {
+            return returnImplementation(NEW, true);
         } else {
-            return returnImplementation(NEW, isTrustyPresent);
+            return returnImplementation(LEGACY, isLegacyPresent);
         }
     }
 
