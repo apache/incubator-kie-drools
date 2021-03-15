@@ -129,7 +129,11 @@ class OptaPlannerProcessor {
         if (indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
                 && indexView.getAnnotations(DotNames.PLANNING_ENTITY).isEmpty()) {
             log.warn("Skipping OptaPlanner extension because there are no " + PlanningSolution.class.getSimpleName()
-                    + " or " + PlanningEntity.class.getSimpleName() + " annotated classes.");
+                    + " or " + PlanningEntity.class.getSimpleName() + " annotated classes."
+                    + "\nIf your domain classes are located in a dependency of this project, maybe try generating"
+                    + " the Jandex index by using the jandex-maven-plugin in that dependency, or by adding"
+                    + "application.properties entries (quarkus.index-dependency.<name>.group-id"
+                    + " and quarkus.index-dependency.<name>.artifact-id).");
             return;
         }
 
