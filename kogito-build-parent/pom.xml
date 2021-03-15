@@ -92,7 +92,6 @@
     <version.formatter.plugin>2.13.0</version.formatter.plugin>
     <version.impsort.plugin>1.5.0</version.impsort.plugin>
     <version.license.plugin>4.0.rc2</version.license.plugin>
-    <version.archetype.plugin>3.0.1</version.archetype.plugin>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
     <version.de.skuzzle.enforcer>1.1.0</version.de.skuzzle.enforcer>
     <version.maven>3.6.2</version.maven>
