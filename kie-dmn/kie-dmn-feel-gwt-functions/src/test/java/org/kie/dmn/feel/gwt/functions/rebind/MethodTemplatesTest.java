@@ -16,15 +16,28 @@
 
 package org.kie.dmn.feel.gwt.functions.rebind;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
+import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MethodTemplatesTest {
+
+    private static final List<FEELProfile> profiles = new ArrayList<>();
+
+    {
+        profiles.add(new KieExtendedFEELProfile());
+    }
 
     @Test
     public void testTemplate() {
@@ -39,9 +52,24 @@ public class MethodTemplatesTest {
         assertEquals("}", templateLines[templateLines.length - 1]);
     }
 
+    @Test
+    public void testTemplatedFunctionsCanBeEvaluated() {
+        final FEEL feel = FEEL.newInstance(profiles);
+        final List<FEELFunction> templatedFunctions = MethodTemplates.getFeelFunctions();
+        assertTrue(templatedFunctions.stream().allMatch(fn -> feel.evaluate(fn.getName()) instanceof FEELFunction));
+    }
+
+    @Test
+    public void testTemplatedFunctionsIncludeBuiltInAndKieExtendedFunctions() {
+        final List<FEELFunction> templatedFunctions = MethodTemplates.getFeelFunctions();
+
+        assertTrue(templatedFunctions.containsAll(asList(BuiltInFunctions.getFunctions())));
+        assertTrue(templatedFunctions.containsAll(asList(KieExtendedDMNFunctions.getFunctions())));
+    }
+
     private void assertTemplateBody(final String[] templateLines) {
 
-        final List<String> lines = Arrays.asList(templateLines);
+        final List<String> lines = asList(templateLines);
 
         assertLine(lines, "definitions.add( new FunctionOverrideVariation( BuiltInType.DATE, \"date\", new Parameter( \"year\", BuiltInType.UNKNOWN ), new Parameter( \"month\", BuiltInType.UNKNOWN ), new Parameter( \"day\", BuiltInType.UNKNOWN ) ) );");
         assertLine(lines, "definitions.add( new FunctionOverrideVariation( BuiltInType.DATE, \"date\", new Parameter( \"from\", BuiltInType.STRING ) ) );");

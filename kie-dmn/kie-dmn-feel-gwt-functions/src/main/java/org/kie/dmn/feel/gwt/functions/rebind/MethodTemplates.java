@@ -22,7 +22,9 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
@@ -44,8 +46,8 @@ public class MethodTemplates {
         builder.append("public List<FunctionOverrideVariation> getDefinitions() {\n");
         builder.append("    ArrayList definitions = new ArrayList();\n");
 
-        for (final String template : getAll()) {
-            builder.append(String.format("definitions.add( %s );\n", template));
+        for (final String signature : getFunctionSignatures()) {
+            builder.append(String.format("definitions.add( %s );\n", signature));
         }
 
         builder.append("    return definitions;\n");
@@ -54,18 +56,18 @@ public class MethodTemplates {
         return builder.toString();
     }
 
-    private static List<String> getAll() {
-        final List<String> result = new ArrayList<>();
+    private static List<String> getFunctionSignatures() {
+        return getFeelFunctions()
+                .stream()
+                .flatMap(function -> getFunctionSignatures(function).stream())
+                .collect(Collectors.toList());
+    }
 
-        for (final FEELFunction function : BuiltInFunctions.getFunctions()) {
-            result.addAll(getFunctionSignatures(function));
-        }
-
-        for (final FEELFunction function : KieExtendedDMNFunctions.getFunctions()) {
-            result.addAll(getFunctionSignatures(function));
-        }
-
-        return result;
+    static List<FEELFunction> getFeelFunctions() {
+        final List<FEELFunction> feelFunctions = new ArrayList<>();
+        feelFunctions.addAll(Arrays.asList(BuiltInFunctions.getFunctions()));
+        feelFunctions.addAll(Arrays.asList(KieExtendedDMNFunctions.getFunctions()));
+        return feelFunctions;
     }
 
     private static List<String> getFunctionSignatures(final FEELFunction function) {
