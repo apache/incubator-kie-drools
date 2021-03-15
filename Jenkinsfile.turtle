@@ -1,0 +1,82 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+optaplannerRepo = 'optaplanner'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    triggers {
+        cron('H H * * 5') // Run every Friday.
+    }
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    options {
+        timeout(time: 3, unit: 'DAYS') // Turtle tests take ~2 days to complete.
+    }
+    parameters {
+        // Git information
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Git branch to build.')
+        string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Git author repository.')
+    }
+    environment {
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+        OPTAPLANNER_CI_EMAIL = credentials('OPTAPLANNER_CI_EMAIL') // Contains the email address of the team's Zulip channel.
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutRepo(optaplannerRepo)
+                }
+            }
+        }
+        stage('Build OptaPlanner with turtle tests') {
+            steps {
+                script {
+                    new MavenCommand(this)
+                            // Use the same settings.xml as for the nightly builds, including a maven mirror.
+                            .withSettingsXmlId('kogito_release_settings')
+                            .inDirectory(optaplannerRepo)
+                            .withOptions(['-U', '-e', '-fae'])
+                            .withProperty('full')
+                            .withProperty('runTurtleTests', true)
+                            .run('clean install')
+                }
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+            sendEmail()
+            cleanWs()
+        }
+    }
+}
+
+void checkoutRepo(String repo, String dirName=repo) {
+    dir(dirName) {
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    }
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getGitAuthor() {
+    return params.GIT_AUTHOR
+}
+
+void sendEmail() {
+    echo 'Sending a summary email.'
+    String body = """OptaPlanner turtle tests build #${BUILD_NUMBER} was: ${currentBuild.currentResult}.
+        \nPlease have a look here: ${env.BUILD_URL}."""
+    echo body
+    emailext(body: body, subject: 'OptaPlanner turtle tests', to: env.OPTAPLANNER_CI_EMAIL)
+}
