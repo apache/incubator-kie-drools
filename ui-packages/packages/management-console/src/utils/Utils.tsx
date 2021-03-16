@@ -447,21 +447,23 @@ export const getSvg = async (data, setSvg, setSvgError): Promise<void> => {
       const temp = <SVG src={res.data} />;
       setSvg(temp);
     })
-    .catch(async error =>
-      axios
-        .get(
-          `${data.ProcessInstances[0].serviceUrl}/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
-        )
-        .then(res => {
-          const temp = <SVG src={res.data} />;
-          setSvg(temp);
-        })
-        .catch(err => {
-          if (err.response && err.response.status !== 404) {
-            setSvgError(err.message);
-          }
-        })
-    );
+    .catch(async error => {
+      if (data.ProcessInstances[0].serviceUrl) {
+        axios
+          .get(
+            `${data.ProcessInstances[0].serviceUrl}/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
+          )
+          .then(res => {
+            const temp = <SVG src={res.data} />;
+            setSvg(temp);
+          })
+          .catch(err => {
+            if (err.response && err.response.status !== 404) {
+              setSvgError(err.message);
+            }
+          });
+      }
+    });
 };
 
 export const formatForBulkListProcessInstance = (

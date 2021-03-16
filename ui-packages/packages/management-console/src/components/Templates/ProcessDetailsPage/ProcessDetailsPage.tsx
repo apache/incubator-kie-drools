@@ -608,7 +608,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
                       data.ProcessInstances[0].state !==
                         GraphQL.ProcessInstanceState.Completed &&
                       data.ProcessInstances[0].state !==
-                        GraphQL.ProcessInstanceState.Aborted && (
+                        GraphQL.ProcessInstanceState.Aborted &&
+                      data.ProcessInstances[0].serviceUrl &&
+                      data.ProcessInstances[0].addons.includes(
+                        'process-management'
+                      ) && (
                         <FlexItem>
                           <ProcessDetailsNodeTrigger
                             processInstanceData={data.ProcessInstances[0]}
