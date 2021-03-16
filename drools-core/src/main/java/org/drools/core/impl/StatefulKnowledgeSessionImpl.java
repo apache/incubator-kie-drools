@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -248,6 +249,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private transient StatefulSessionPool pool;
     private transient boolean alive = true;
+
+    // this is a counter of concurrent operations happening. When this counter is zero,
+    // the engine is idle.
+    private AtomicInteger opCounter = new AtomicInteger(0);
 
     // ------------------------------------------------------------
     // Constructors
@@ -1967,6 +1972,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     public void startOperation() {
         // no-op
+        if (this.opCounter.getAndIncrement() == 0) {
+            // means the engine was idle, reset the timestamp
+            this.lastIdleTimestamp.set(-1);
+        }
     }
 
     private EndOperationListener endOperationListener;
@@ -1984,7 +1993,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void endOperation() {
-        // no-op
+        if (this.opCounter.decrementAndGet() == 0) {
+            // means the engine is idle, so, set the timestamp
+            this.lastIdleTimestamp.set(this.timerService.getCurrentTime());
+            if (this.endOperationListener != null) {
+                this.endOperationListener.endOperation(this.getKnowledgeRuntime());
+            }
+        }
     }
 
     /**
