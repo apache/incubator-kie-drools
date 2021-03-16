@@ -26,7 +26,6 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import org.drools.core.util.ClassUtils;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
@@ -52,6 +51,8 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
@@ -175,7 +176,39 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             TypedExpression a = child.accept(this, arg);
             arguments.add(a);
         }
-        return new MethodCallExprT(n.getName().asString(), scope, arguments, name.getType());
+
+        Class<?>[] parametersType = parametersType(arguments);
+
+        Optional<Type> methodCallType =
+                name.getType()
+                .map(Optional::of)
+                .orElseGet(() -> findMethodCallReturnType(n, scope, parametersType));
+
+        return new MethodCallExprT(n.getName().asString(), scope, arguments, methodCallType);
+    }
+
+    private Optional<Type> findMethodCallReturnType(MethodCallExpr n, Optional<TypedExpression> scope, Class<?>[] parametersType) {
+        return scope.flatMap(TypedExpression::getType)
+                .map(TypeUtils::classFromType)
+                .flatMap(scopeClazz -> getMethodReturnTypeUsingReflection(n, parametersType, scopeClazz));
+    }
+
+    private Optional<Type> getMethodReturnTypeUsingReflection(MethodCallExpr n, Class<?>[] parametersType, Class<?> scopeClazz) {
+        try {
+            Method method = scopeClazz.getMethod(n.getNameAsString(), parametersType);
+            return of(method.getReturnType());
+        } catch (NoSuchMethodException e) {
+            return empty();
+        }
+    }
+
+    private Class<?>[] parametersType(List<TypedExpression> arguments) {
+        return arguments.stream()
+                .map(TypedExpression::getType)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(TypeUtils::classFromType)
+                .toArray(Class[]::new);
     }
 
     @Override
