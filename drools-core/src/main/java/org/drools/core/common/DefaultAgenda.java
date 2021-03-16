@@ -382,8 +382,7 @@ public class DefaultAgenda
     }
 
     @Override
-    public void cancelActivation(final PropagationContext context,
-                                 final Activation activation) {
+    public void cancelActivation(final Activation activation) {
         AgendaItem item = (AgendaItem) activation;
         item.removeAllBlockersAndBlocked( this );
 
@@ -417,7 +416,7 @@ public class DefaultAgenda
 
         workingMemory.getRuleEventSupport().onDeleteMatch( item );
 
-        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, context, activation.getRule() );
+        TruthMaintenanceSystemHelper.removeLogicalDependencies( activation, ( Tuple ) activation, activation.getRule() );
     }
 
     /*
