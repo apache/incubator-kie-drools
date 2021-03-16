@@ -37,6 +37,10 @@ public class ComponentsFactory {
         return getComponentsSupplier().createProjectClassLoader(parent, resourceProvider);
     }
 
+    public static ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider, boolean skipParentIfGenerated ) {
+        return getComponentsSupplier().createProjectClassLoader(parent, resourceProvider, skipParentIfGenerated);
+    }
+
     public static ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
         return getComponentsSupplier().createByteArrayClassLoader(parent);
     }

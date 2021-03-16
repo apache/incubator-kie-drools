@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,11 +57,9 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     private ClassLoader droolsClassLoader;
 
-    private InternalTypesClassLoader typesClassLoader;
+    protected InternalTypesClassLoader typesClassLoader;
 
-    private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
-
-    private Set<String> generatedClassNames = new HashSet<>();
+    protected final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
     private ResourceProvider resourceProvider;
 
@@ -111,6 +108,13 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider);
     }
 
+    public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider, boolean skipParentIfGenerated) {
+        if (parent == null) {
+            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), resourceProvider, skipParentIfGenerated);
+        }
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider, skipParentIfGenerated);
+    }
+
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {
         ProjectClassLoader projectClassLoader = createProjectClassLoader(parent);
         projectClassLoader.store = store;
@@ -119,6 +123,14 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public abstract boolean isDynamic();
 
+    public Set<String> getGeneratedClassNames() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setGeneratedClassNames(Set<String> generatedClassNames) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Class<?> cls = loadedClasses.get(name);
@@ -126,26 +138,10 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
             return cls;
         }
 
-        if (generatedClassNames.contains(name)) {
-            Class<?> clazz = findLoadedClass(name); // skip parent classloader
-            if (clazz != null) {
-                return clazz;
-            }
-            if (typesClassLoader != null) {
-                clazz = typesClassLoader.findLoadedClassWithoutParent(name);
-                if (clazz != null) {
-                    return clazz;
-                }
-            }
-            // if generated class, go straight to defineType
-            cls = tryDefineType(name, null);
-        } else {
-            try {
-                cls = internalLoadClass(name, resolve);
-            } catch (ClassNotFoundException e2) {
-                // for stored classes which are not in generatedClassNames
-                cls = loadType(name, resolve);
-            }
+        try {
+            cls = internalLoadClass(name, resolve);
+        } catch (ClassNotFoundException e2) {
+            cls = loadType(name, resolve);
         }
 
         loadedClasses.put(name, cls);
@@ -177,7 +173,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         }
     }
 
-    private Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
         ClassNotFoundException cnfe = null;
         if (typesClassLoader != null) {
             try {
@@ -329,14 +325,6 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return resources;
     }
 
-    public Set<String> getGeneratedClassNames() {
-        return generatedClassNames;
-    }
-
-    public void setGeneratedClassNames(Set<String> generatedClassNames) {
-        this.generatedClassNames = generatedClassNames;
-    }
-
     private static class ResourcesEnum implements Enumeration<URL> {
 
         private URL providedResource;
@@ -424,7 +412,6 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     public interface InternalTypesClassLoader extends KieTypeResolver {
         Class<?> defineClass( String name, byte[] bytecode );
         Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
-        Class<?> findLoadedClassWithoutParent( String name );
     }
 
     public synchronized List<String> reinitTypes() {

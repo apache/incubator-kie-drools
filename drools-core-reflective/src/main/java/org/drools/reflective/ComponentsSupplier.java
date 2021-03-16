@@ -26,6 +26,11 @@ import org.kie.internal.builder.KnowledgeBuilder;
 
 public interface ComponentsSupplier {
     ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider );
+
+    default ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider, boolean skipParentIfGenerated ) {
+        return createProjectClassLoader( parent, resourceProvider );
+    }
+
     ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent );
 
     Object createConsequenceExceptionHandler(String className, ClassLoader classLoader);

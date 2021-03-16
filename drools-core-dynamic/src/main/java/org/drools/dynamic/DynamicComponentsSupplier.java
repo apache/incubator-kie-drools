@@ -34,7 +34,12 @@ public class DynamicComponentsSupplier implements ComponentsSupplier {
 
     @Override
     public ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
-        return DynamicProjectClassLoader.create(parent, resourceProvider);
+        return DynamicProjectClassLoader.create(parent, resourceProvider, false);
+    }
+
+    @Override
+    public ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider, boolean skipParentIfGenerated) {
+        return DynamicProjectClassLoader.create(parent, resourceProvider, skipParentIfGenerated);
     }
 
     @Override

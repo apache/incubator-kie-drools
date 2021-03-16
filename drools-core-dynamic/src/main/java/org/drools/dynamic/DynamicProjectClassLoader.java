@@ -65,8 +65,15 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
         }
     }
 
-    public static DynamicProjectClassLoader create(ClassLoader parent, ResourceProvider resourceProvider) {
-        return isIBM_JVM ? new IBMDynamicClassLoader(parent, resourceProvider) : new DynamicProjectClassLoader(parent, resourceProvider);
+    public static DynamicProjectClassLoader create(ClassLoader parent, ResourceProvider resourceProvider, boolean skipParentIfGenerated) {
+        if (isIBM_JVM) {
+            return new IBMDynamicClassLoader(parent, resourceProvider);
+        }
+        if (skipParentIfGenerated) {
+            return new SkipParentDynamicProjectClassLoader(parent, resourceProvider);
+        } else {
+            return new DynamicProjectClassLoader(parent, resourceProvider);
+        }
     }
 
     @Override
@@ -78,15 +85,15 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
                                                      : new DefaultInternalTypesClassLoader(this));
     }
 
-    private static class DefaultInternalTypesClassLoader extends ClassLoader implements InternalTypesClassLoader {
+    public static class DefaultInternalTypesClassLoader extends ClassLoader implements InternalTypesClassLoader {
 
         static {
             registerAsParallelCapable();
         }
 
-        private final ProjectClassLoader projectClassLoader;
+        protected final ProjectClassLoader projectClassLoader;
 
-        private DefaultInternalTypesClassLoader(ProjectClassLoader projectClassLoader) {
+        protected DefaultInternalTypesClassLoader(ProjectClassLoader projectClassLoader) {
             super(projectClassLoader.getParent());
             this.projectClassLoader = projectClassLoader;
         }
@@ -103,14 +110,6 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
         }
 
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if (projectClassLoader.getGeneratedClassNames().contains(name)) {
-                Class<?> clazz = findLoadedClass(name); // skip parent classloader
-                if (clazz != null) {
-                    return clazz;
-                }
-                // if generated class, go straight to defineType
-                return projectClassLoader.tryDefineType(name, null);
-            }
             try {
                 return loadType(name, resolve);
             } catch (ClassNotFoundException cnfe) {
@@ -124,10 +123,6 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
 
         public Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
             return super.loadClass(name, resolve);
-        }
-
-        public Class<?> findLoadedClassWithoutParent( String name ) {
-            return findLoadedClass(name);
         }
 
         @Override

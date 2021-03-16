@@ -94,6 +94,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
+import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.internal.utils.NoDepsClassLoaderResolver;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -102,6 +104,7 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStream
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.builder.ModelSourceClass.getProjectModelClassNameNameWithReleaseId;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
+import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
 import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class CanonicalKieModule implements InternalKieModule {
@@ -381,6 +384,18 @@ public class CanonicalKieModule implements InternalKieModule {
             moduleClassLoader.setGeneratedClassNames(generatedClassNames);
         }
         return moduleClassLoader;
+    }
+
+    @Override
+    public ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {
+        if( parent == null ) {
+            ClassLoaderResolver resolver = ServiceRegistry.getService(ClassLoaderResolver.class);
+            if (resolver==null)  {
+                resolver = new NoDepsClassLoaderResolver();
+            }
+            parent = resolver.getClassLoader( this );
+        }
+        return createProjectClassLoader( parent, createResourceProvider(), true );
     }
 
     public void setModuleClassLoader(ProjectClassLoader moduleClassLoader) {
