@@ -231,7 +231,7 @@ pipeline {
 
 void buildOptaweb(MavenCommand optawebCommand){
     MavenCommand buildCommand = optawebCommand
-    if (!isRelease()) {
+    if (!skipIntegrationTests()) {
         buildCommand = buildCommand.withProfiles(getIntegrationTestProfiles())
     }
     buildCommand.skipTests(params.SKIP_TESTS).run('clean install')
