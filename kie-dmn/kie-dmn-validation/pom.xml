@@ -84,10 +84,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId> <!-- same solution as for DROOLS-3716 -->
-    </dependency>
     <!-- prepare for JDK11 -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Generated;
+import org.kie.dmn.feel.util.Generated;
 
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -120,7 +120,7 @@ public class Interval {
         return col;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -130,7 +130,7 @@ public class Interval {
         return result;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

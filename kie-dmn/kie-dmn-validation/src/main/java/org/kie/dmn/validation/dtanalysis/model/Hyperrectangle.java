@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.annotation.Generated;
+import org.kie.dmn.feel.util.Generated;
 
 public class Hyperrectangle {
 
@@ -54,7 +54,7 @@ public class Hyperrectangle {
         return Collections.unmodifiableList(edges);
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -64,7 +64,7 @@ public class Hyperrectangle {
         return result;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

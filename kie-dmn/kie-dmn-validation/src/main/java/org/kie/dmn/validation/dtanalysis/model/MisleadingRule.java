@@ -16,7 +16,7 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
-import javax.annotation.Generated;
+import org.kie.dmn.feel.util.Generated;
 
 public class MisleadingRule {
 
@@ -29,7 +29,7 @@ public class MisleadingRule {
         this.misleadRule = misleadRule;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -39,7 +39,7 @@ public class MisleadingRule {
         return result;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

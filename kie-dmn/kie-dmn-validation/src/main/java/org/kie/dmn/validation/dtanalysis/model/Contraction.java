@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Generated;
+import org.kie.dmn.feel.util.Generated;
 
 public class Contraction {
 
@@ -45,7 +45,7 @@ public class Contraction {
         return results;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -56,7 +56,7 @@ public class Contraction {
         return result;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -78,7 +78,7 @@ public class Contraction {
         return true;
     }
 
-    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
