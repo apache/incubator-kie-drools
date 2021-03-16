@@ -98,6 +98,7 @@
       <xsd:attribute name="scope" type="xsd:string"/>
       <xsd:attribute name="clockType" type="clockTypeEnum"/>
       <xsd:attribute name="beliefSystem" type="beliefSystemEnum"/>
+      <xsd:attribute name="directFiring" type="xsd:boolean"/>
     </xsd:complexType>
   </xsd:element>
 

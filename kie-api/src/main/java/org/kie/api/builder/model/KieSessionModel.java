@@ -160,6 +160,17 @@ public interface KieSessionModel {
     KieSessionModel setDefault(boolean isDefault);
 
     /**
+     * Returns true if this KieSessionModel has direct firing enabled
+     * see
+     */
+    boolean isDirectFiring();
+
+    /**
+     * Sets direct firing on this KieSession
+     */
+    KieSessionModel setDirectFiring(boolean isDefault);
+
+    /**
      * Returns the KieBaseModel which this KieSessionModel belongs to
      */
     KieBaseModel getKieBaseModel();

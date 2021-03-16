@@ -86,6 +86,24 @@
                 "methodName": "addResourcesAfterRules",
                 "elementKind": "method",
                 "justification": "Enforcing before rules/after rules semantic"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method boolean org.kie.api.builder.model.KieSessionModel::isDirectFiring()",
+                "package": "org.kie.api.builder.model",
+                "classSimpleName": "KieSessionModel",
+                "methodName": "isDirectFiring",
+                "elementKind": "method",
+                "justification": "support direct firing on KieSession"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.builder.model.KieSessionModel::setDirectFiring(boolean)",
+                "package": "org.kie.api.builder.model",
+                "classSimpleName": "KieSessionModel",
+                "methodName": "setDirectFiring",
+                "elementKind": "method",
+                "justification": "support direct firing on KieSession"
               }
             ]
         }
