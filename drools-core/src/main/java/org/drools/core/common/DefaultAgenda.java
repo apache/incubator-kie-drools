@@ -249,7 +249,7 @@ public class DefaultAgenda
         this.mainAgendaGroup = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
         this.mainAgendaGroup.setWorkingMemory( workingMemory );
 
-        if ( true || !workingMemory.getSessionConfiguration().isThreadSafe() ) {
+        if ( !workingMemory.getSessionConfiguration().isThreadSafe() ) {
             executionStateMachine = new UnsafeExecutionStateMachine();
         }
 
