@@ -18,11 +18,9 @@ pipeline {
     options {
         timeout(time: 3, unit: 'DAYS') // Turtle tests take ~2 days to complete.
     }
-    parameters {
-        // Git information
-        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Git branch to build.')
-        string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Git author repository.')
-    }
+    // parameters {
+    // For parameters, check the .jenkins/dsl/jobs.groovy file.
+    // }
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
         OPTAPLANNER_CI_EMAIL = credentials('OPTAPLANNER_CI_EMAIL') // Contains the email address of the team's Zulip channel.
