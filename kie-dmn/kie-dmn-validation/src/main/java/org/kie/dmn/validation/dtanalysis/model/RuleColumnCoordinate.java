@@ -16,6 +16,8 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
+import javax.annotation.Generated;
+
 public class RuleColumnCoordinate {
     public final int rule;
     public final int column;
@@ -27,6 +29,8 @@ public class RuleColumnCoordinate {
         this.column = column;
         this.feelText = feelText;
     }
+
+    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -36,6 +40,8 @@ public class RuleColumnCoordinate {
         result = prime * result + rule;
         return result;
     }
+
+    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -63,6 +69,8 @@ public class RuleColumnCoordinate {
         }
         return true;
     }
+
+    @Generated(value = "org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
