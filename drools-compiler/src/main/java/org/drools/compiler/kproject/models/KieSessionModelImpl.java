@@ -62,6 +62,8 @@ public class KieSessionModelImpl
 
     private FileLoggerModel                  fileLogger;
 
+    private boolean                          directFiring = false;
+
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
@@ -80,9 +82,19 @@ public class KieSessionModelImpl
         this.kBase = (KieBaseModelImpl) kieBaseModel;
     }
 
-
-    public KieSessionModel setDefault(boolean isDefault) {
+    public KieSessionModel setDefault( boolean isDefault) {
         this.isDefault = isDefault;
+        return this;
+    }
+
+    @Override
+    public boolean isDirectFiring() {
+        return directFiring;
+    }
+
+    @Override
+    public KieSessionModel setDirectFiring( boolean directFiring ) {
+        this.directFiring = directFiring;
         return this;
     }
 
@@ -252,6 +264,7 @@ public class KieSessionModelImpl
             writer.addAttribute("name", kSession.getName());
             writer.addAttribute("type", kSession.getType().toString().toLowerCase() );
             writer.addAttribute( "default", Boolean.toString(kSession.isDefault()) );
+            writer.addAttribute( "directFiring", Boolean.toString(kSession.isDirectFiring()) );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
@@ -299,6 +312,7 @@ public class KieSessionModelImpl
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.name = reader.getAttribute("name");
             kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
+            kSession.setDirectFiring( "true".equals(reader.getAttribute( "directFiring" )) );
 
             String kSessionType = reader.getAttribute("type");
             kSession.setType(kSessionType != null ? KieSessionType.valueOf( kSessionType.toUpperCase() ) : KieSessionType.STATEFUL);

@@ -86,8 +86,21 @@ public class RuleExecutor {
                                        AgendaFilter filter,
                                        int fireCount,
                                        int fireLimit ) {
+        InternalWorkingMemory wm = agenda.getWorkingMemory();
+
         reEvaluateNetwork( agenda );
-        return fire(agenda.getWorkingMemory(), agenda, filter, fireCount, fireLimit);
+
+        if ( wm.getSessionConfiguration().isDirectFiring() ) {
+            int directFirings = tupleList.size();
+            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
+                innerFireActivation( wm, agenda, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                removeLeftTuple( tuple );
+            }
+            ruleAgendaItem.remove();
+            return directFirings;
+        }
+
+        return fire( wm, agenda, filter, fireCount, fireLimit );
     }
 
     public void fire(InternalAgenda agenda) {
@@ -425,6 +438,7 @@ public class RuleExecutor {
         try {
             KnowledgeHelper knowledgeHelper = agenda.getKnowledgeHelper();
             knowledgeHelper.setActivation( activation );
+
             if ( log.isTraceEnabled() ) {
                 log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
             }
