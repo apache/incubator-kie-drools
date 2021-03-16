@@ -22,7 +22,17 @@ public interface Queue {
     void enqueue(Activation queueable);
 
     Activation dequeue();
-    Activation dequeue(Activation activation);
+    void dequeue(Activation activation);
 
     boolean isEmpty();
+
+    void clear();
+
+    Activation[] getAndClear();
+
+    int size();
+
+    Activation peek();
+
+    Object[] toArray(Object[] a);
 }

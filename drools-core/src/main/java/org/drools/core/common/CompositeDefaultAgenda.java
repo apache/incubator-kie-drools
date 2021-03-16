@@ -60,7 +60,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     private final DefaultAgenda[] agendas = new DefaultAgenda[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
 
-    private final DefaultAgenda.ExecutionStateMachine executionStateMachine = new DefaultAgenda.ExecutionStateMachine();
+    private final DefaultAgenda.ExecutionStateMachine executionStateMachine = new DefaultAgenda.ConcurrentExecutionStateMachine();
 
     private PropagationList propagationList;
 
