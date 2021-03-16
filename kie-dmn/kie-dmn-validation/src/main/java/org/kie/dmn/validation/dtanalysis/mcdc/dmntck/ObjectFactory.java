@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
  * provided in this class.
  * 
  */
-@Generated("com.sun.tools.xjc.api")
+@Generated("com.sun.tools.xjc.Driver")
 @XmlRegistry
 public class ObjectFactory {
 
