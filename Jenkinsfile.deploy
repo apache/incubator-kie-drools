@@ -124,7 +124,7 @@ pipeline {
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
+                    archiveJUnitTestResults()
                 }
             }
         }
@@ -137,7 +137,7 @@ pipeline {
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
+                    archiveJUnitTestResults()
                 }
             }
         }
@@ -150,8 +150,8 @@ pipeline {
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
-                    saveArtifacts(params.SKIP_INTEGRATION_TESTS)
+                    archiveJUnitTestResults()
+                    archiveCypressArtifacts()
                 }
             }
         }
@@ -164,8 +164,8 @@ pipeline {
             }
             post {
                 always {
-                    saveReports(params.SKIP_TESTS)
-                    saveArtifacts(params.SKIP_INTEGRATION_TESTS)
+                    archiveJUnitTestResults()
+                    archiveCypressArtifacts()
                 }
             }
         }
@@ -237,8 +237,10 @@ void buildOptaweb(MavenCommand optawebCommand){
     buildCommand.skipTests(params.SKIP_TESTS).run('clean install')
 }
 
-void saveArtifacts(boolean skipIntegrationTests=false) {
-        archiveArtifacts(allowEmptyArchive: skipIntegrationTests, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+void archiveCypressArtifacts() {
+    if (!skipIntegrationTests()) {
+        archiveArtifacts(artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false, allowEmptyArchive: false)
+    }
 }
 
 List getIntegrationTestProfiles(){
@@ -274,8 +276,10 @@ void gradleVersionsUpdate(String repo, String newVersion) {
     }
 }
 
-void saveReports(boolean allowEmpty=false) {
-    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
+void archiveJUnitTestResults() {
+    if (!skipUnitTests()) {
+        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: false
+    }
 }
 
 void checkoutRepo(String repo, String dirName=repo) {
@@ -433,6 +437,15 @@ boolean isRelease() {
 
 boolean isCreatePr() {
     return params.CREATE_PR
+}
+
+boolean skipUnitTests(){
+    return params.SKIP_TESTS;
+}
+
+
+boolean skipIntegrationTests(){
+    return params.SKIP_INTEGRATION_TESTS;
 }
 
 String getGitAuthor() {
