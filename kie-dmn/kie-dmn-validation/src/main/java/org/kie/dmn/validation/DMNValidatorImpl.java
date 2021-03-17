@@ -257,16 +257,6 @@ public class DMNValidatorImpl implements DMNValidator {
             return results.getMessages();
         }
 
-        private List<Definitions> unmarshallReaders(Reader... readers) {
-            List<Definitions> models = new ArrayList<>();
-            for (Reader reader : readers) {
-                Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(validator.dmnCompilerConfig.getRegisteredExtensions()).unmarshal(reader);
-                dmndefs.normalize();
-                models.add(dmndefs);
-            }
-            return models;
-        }
-
         private void validateDefinitions(List<Definitions> definitions, DMNMessageManager results) {
             List<Definitions> otherModel_Definitions = new ArrayList<>();
             List<DMNModel> otherModel_DMNModels = new ArrayList<>();
