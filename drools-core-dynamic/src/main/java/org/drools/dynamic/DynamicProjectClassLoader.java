@@ -103,7 +103,7 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
         }
 
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if (projectClassLoader.getGeneratedClassNames().contains(name)) {
+            if (projectClassLoader.getGeneratedClassNames().contains(name) && projectClassLoader.containsInStore(ClassUtils.convertClassToResourcePath(name))) {
                 Class<?> clazz = findLoadedClass(name); // skip parent classloader
                 if (clazz != null) {
                     return clazz;
@@ -126,6 +126,7 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
             return super.loadClass(name, resolve);
         }
 
+        @Override
         public Class<?> findLoadedClassWithoutParent( String name ) {
             return findLoadedClass(name);
         }

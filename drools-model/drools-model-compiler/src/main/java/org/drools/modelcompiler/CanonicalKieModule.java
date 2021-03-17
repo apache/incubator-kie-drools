@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
@@ -110,6 +111,7 @@ public class CanonicalKieModule implements InternalKieModule {
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
     public static final String MODEL_FILE_NAME = "drools-model";
     public static final String ANC_FILE_NAME = "alpha-network-compiler";
+    public static final String GENERATED_CLASS_NAMES = "generated-class-names";
     public static final String MODEL_VERSION = "Drools-Model-Version:";
 
     private static final Predicate<String> NON_MODEL_RESOURCES = res -> {
@@ -122,7 +124,7 @@ public class CanonicalKieModule implements InternalKieModule {
     private final Map<String, Model> models = new HashMap<>();
     private Collection<String> ruleClassesNames;
     private boolean incrementalUpdate = false;
-    private Set<String> generatedClassNames = new HashSet<>();
+    private Set<String> generatedClassNames;
 
     private ProjectClassLoader moduleClassLoader;
 
@@ -195,6 +197,10 @@ public class CanonicalKieModule implements InternalKieModule {
         return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + ANC_FILE_NAME;
     }
 
+    public static String getGeneratedClassNamesFile(ReleaseId releaseId) {
+        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + GENERATED_CLASS_NAMES;
+    }
+
     @Override
     public Map<String, byte[]> getClassesMap() {
         return internalKieModule.getClassesMap();
@@ -203,6 +209,11 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public void addGeneratedClassNames(Set<String> classNames) {
         generatedClassNames.addAll(classNames);
+    }
+
+    // for test
+    Set<String> getGeneratedClassNames() {
+        return generatedClassNames;
     }
 
     @Override
@@ -378,6 +389,9 @@ public class CanonicalKieModule implements InternalKieModule {
         if (moduleClassLoader == null) {
             moduleClassLoader = createModuleClassLoader(null);
             moduleClassLoader.storeClasses(getClassesMap());
+            if (generatedClassNames == null) {
+                generatedClassNames = findGeneratedClassNames();
+            }
             moduleClassLoader.setGeneratedClassNames(generatedClassNames);
         }
         return moduleClassLoader;
@@ -474,6 +488,20 @@ public class CanonicalKieModule implements InternalKieModule {
         }
 
         return Stream.of(lines).skip(1).collect(toList());
+    }
+
+    private Set<String> findGeneratedClassNames() {
+        ReleaseId releaseId = internalKieModule.getReleaseId();
+        String generatedClassNamesFile = getGeneratedClassNamesFile(releaseId);
+        if (!internalKieModule.hasResource(generatedClassNamesFile)) {
+            return new HashSet<>();
+        }
+        String content = readExistingResourceWithName(generatedClassNamesFile);
+        if (content.trim().isEmpty()) {
+            return new HashSet<>();
+        }
+        String[] lines = content.split("\n");
+        return Stream.of(lines).collect(Collectors.toSet());
     }
 
     private String readExistingResourceWithName(String fileName) {

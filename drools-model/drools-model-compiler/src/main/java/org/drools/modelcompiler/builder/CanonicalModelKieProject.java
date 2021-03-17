@@ -16,7 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -121,8 +120,8 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
         Set<String> generatedClassPaths = new HashSet<>(trgMfs.getFileNames());
         generatedClassPaths.removeAll(origFileNames);
-        Set<String> generatedClassNames = generatedClassPaths.stream().map(path -> ClassUtils.convertResourceToClassName(path)).collect(Collectors.toSet());
-        kieModule.addGeneratedClassNames(generatedClassNames);
+        Set<String> generatedClassNames = generatedClassPaths.stream().map(ClassUtils::convertResourceToClassName).collect(Collectors.toSet());
+        modelWriter.writeGeneratedClassNamesFile(generatedClassNames, trgMfs, getInternalKieModule().getReleaseId());
 
         modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
     }

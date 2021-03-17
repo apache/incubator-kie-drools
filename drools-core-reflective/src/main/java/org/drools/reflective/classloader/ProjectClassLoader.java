@@ -126,7 +126,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
             return cls;
         }
 
-        if (generatedClassNames.contains(name)) {
+        if (isDynamic() && generatedClassNames.contains(name) && containsInStore(ClassUtils.convertClassToResourcePath(name))) {
             Class<?> clazz = findLoadedClass(name); // skip parent classloader
             if (clazz != null) {
                 return clazz;
@@ -367,6 +367,10 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return store == null ? null : store.get(resourceName);
     }
 
+    public boolean containsInStore(String resourceName) {
+        return store == null ? false : store.containsKey(resourceName);
+    }
+
     @Override
     public Map<String, byte[]> getStore() {
         return store;
@@ -424,7 +428,9 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     public interface InternalTypesClassLoader extends KieTypeResolver {
         Class<?> defineClass( String name, byte[] bytecode );
         Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
-        Class<?> findLoadedClassWithoutParent( String name );
+        default Class<?> findLoadedClassWithoutParent(String name) {
+            throw new UnsupportedOperationException();
+        };
     }
 
     public synchronized List<String> reinitTypes() {
