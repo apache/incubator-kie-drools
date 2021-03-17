@@ -55,7 +55,7 @@ folder(nightlyBranchFolder)
 if (isMainBranch()) {
     setupDroolsJob(nightlyBranchFolder)
 
-    setupQuarkusJob(nightlyBranchFolder, 'master')
+    setupQuarkusJob(nightlyBranchFolder, 'main')
     setupQuarkusJob(nightlyBranchFolder, "${QUARKUS_LTS_VERSION}")
 }
 setupSonarCloudJob(nightlyBranchFolder)
