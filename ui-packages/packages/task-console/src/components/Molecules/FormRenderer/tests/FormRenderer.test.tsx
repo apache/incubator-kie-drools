@@ -21,7 +21,7 @@ import { AutoForm } from 'uniforms-patternfly';
 import { GraphQL } from '@kogito-apps/common';
 import FormRenderer from '../FormRenderer';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
-import { IFormAction } from '../../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
+import { FormAction } from '../../../../util/uniforms/FormActionsUtils';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
 const userTaskInstance: UserTaskInstance = {
@@ -51,7 +51,7 @@ const userTaskInstance: UserTaskInstance = {
 
 let formData;
 let props;
-let formActions: IFormAction[];
+let formActions: FormAction[];
 let submitHandler;
 
 // Clearing unneeded assignments to avoid issues on Uniforms Autoform

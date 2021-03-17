@@ -17,12 +17,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import FormFooter from '../FormFooter';
-import { IFormAction } from '../../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
 import { ActionGroup } from '@patternfly/react-core';
+import { FormAction } from '../../../../util/uniforms/FormActionsUtils';
 
 describe('Form Footer test', () => {
   it('testing showing actions', () => {
-    const actions: IFormAction[] = [
+    const actions: FormAction[] = [
       {
         name: 'Abort',
         execute: jest.fn()

@@ -14,34 +14,27 @@
  * limitations under the License.
  */
 
-import axios from 'axios';
 import { GraphQL, User } from '@kogito-apps/common';
-import {
-  IFormAction,
-  IFormSubmitHandler
-} from '../FormSubmitHandler/FormSubmitHandler';
+import _ from 'lodash';
+import { FormSubmitHandler } from '../FormSubmitHandler/FormSubmitHandler';
 import { FormSchema } from '../FormSchema';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { getTaskEndpointSecurityParams } from '../../Utils';
+import { TaskFormSubmit } from './utils/TaskFormSubmit';
+import { FormAction } from '../FormActionsUtils';
 
 interface FormAssignments {
   inputs: string[];
   outputs: string[];
 }
 
-export class TaskFormSubmitHandler implements IFormSubmitHandler {
-  private readonly user: User;
+export class TaskFormSubmitHandler implements FormSubmitHandler {
   private readonly userTaskInstance: UserTaskInstance;
   private readonly formSchema: FormSchema;
   private readonly onSubmit?: (data: any) => void;
-  private readonly successCallback?: (result: string) => void;
-  private readonly errorCallback?: (
-    errorMessage: string,
-    error?: string
-  ) => void;
+
+  private taskformSubmit: TaskFormSubmit;
 
   private readonly assignments;
-  private readonly actions: IFormAction[] = [];
 
   private selectedPhase: string;
 
@@ -55,108 +48,78 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
   ) {
     this.userTaskInstance = userTaskInstance;
     this.formSchema = formSchema;
-    this.user = user;
     this.onSubmit = onSubmit;
-    this.successCallback = successCallback;
-    this.errorCallback = errorCallback;
+    this.taskformSubmit = new TaskFormSubmit(
+      userTaskInstance,
+      user,
+      successCallback,
+      errorCallback
+    );
 
     this.assignments = readSchemaAssignments(this.formSchema);
-
-    if (!userTaskInstance.completed && formSchema.phases) {
-      this.actions = formSchema.phases.map(phase => {
-        return {
-          name: phase,
-          execute: () => {
-            this.setSelectedPhase(phase);
-          }
-        };
-      });
-    }
   }
 
   public setSelectedPhase(phase: string): void {
     this.selectedPhase = phase;
   }
 
-  getActions = (): IFormAction[] => {
-    return this.actions;
+  getActions = (): FormAction[] => {
+    if (this.userTaskInstance.completed || _.isEmpty(this.formSchema.phases)) {
+      return [];
+    }
+    return this.formSchema.phases.map(phase => {
+      return {
+        name: phase,
+        execute: () => {
+          this.setSelectedPhase(phase);
+        }
+      };
+    });
   };
 
-  doSubmit = async (formData: any) => {
-    if (this.actions.length === 0 || !this.selectedPhase) {
+  doSubmit = async (formData: any): Promise<void> => {
+    if (_.isEmpty(this.formSchema.phases) || !this.selectedPhase) {
       throw new Error('Submit disabled for form');
     }
 
-    try {
-      const data = {};
+    const data = {};
 
-      this.assignments.outputs.forEach(output => {
-        if (formData[output]) {
-          data[output] = formData[output];
-        }
-      });
-
-      const endpoint = `${this.userTaskInstance.endpoint}?phase=${
-        this.selectedPhase
-      }&${getTaskEndpointSecurityParams(this.user)}`;
-
-      if (this.onSubmit) {
-        this.onSubmit(data);
+    this.assignments.outputs.forEach(output => {
+      if (formData[output]) {
+        data[output] = formData[output];
       }
+    });
 
-      const response = await axios.post(endpoint, data, {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          crossorigin: 'true',
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
-
-      if (response.status === 200) {
-        this.notifySuccess();
-      } else {
-        this.notifyError(response.data);
-      }
-    } catch (e) {
-      const message = e.response ? e.response.data : e.message;
-      this.notifyError(message);
+    if (this.onSubmit) {
+      this.onSubmit(data);
     }
+
+    await this.taskformSubmit.submit(this.selectedPhase, data);
   };
-
-  private notifySuccess() {
-    if (this.successCallback) {
-      this.successCallback(this.selectedPhase);
-    }
-  }
-
-  private notifyError(errorMessage: string) {
-    if (this.errorCallback) {
-      this.errorCallback(this.selectedPhase, errorMessage);
-    }
-  }
 }
 
 function readSchemaAssignments(formSchema: FormSchema): FormAssignments {
-  const formInputs = [];
-  const formOutputs = [];
+  const assignments: FormAssignments = {
+    inputs: [],
+    outputs: []
+  };
+
+  if (!formSchema.properties) {
+    return assignments;
+  }
 
   for (const key of Object.keys(formSchema.properties)) {
     const property = formSchema.properties[key];
-    if (Object.prototype.hasOwnProperty.call(property, 'input')) {
-      if (property.input) {
-        formInputs.push(key);
-      }
+    if (property.input) {
+      assignments.inputs.push(key);
       delete property.input;
     }
-    if (Object.prototype.hasOwnProperty.call(property, 'output')) {
-      if (property.output) {
-        formOutputs.push(key);
-      }
+    if (property.output) {
+      assignments.outputs.push(key);
       delete property.output;
     }
 
-    if (!formOutputs.includes(key)) {
+    if (!assignments.outputs.includes(key)) {
       if (!property.uniforms) {
         property.uniforms = {};
       }
@@ -164,8 +127,5 @@ function readSchemaAssignments(formSchema: FormSchema): FormAssignments {
     }
   }
 
-  return {
-    inputs: formInputs,
-    outputs: formOutputs
-  };
+  return assignments;
 }

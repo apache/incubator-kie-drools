@@ -15,19 +15,16 @@
  */
 
 import React from 'react';
-import { ActionGroup, Button } from '@patternfly/react-core';
-import { IFormAction } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
+import _ from 'lodash';
+import { ActionGroup } from '@patternfly/react-core';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
+import {
+  convertActionsToButton,
+  FormAction
+} from '../../../util/uniforms/FormActionsUtils';
 
 interface IOwnProps {
-  actions?: IFormAction[];
-}
-
-interface FormButton {
-  key: string;
-  label: string;
-  variant: 'primary' | 'secondary';
-  onClick: () => void;
+  actions?: FormAction[];
 }
 
 const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
@@ -35,62 +32,13 @@ const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  if (!actions || actions.length == 0) {
+  if (_.isEmpty(actions)) {
     return null;
   }
 
-  const capitalize = label => {
-    return label.charAt(0).toUpperCase() + label.slice(1);
-  };
-
-  const isPrimary = (label: string): boolean => {
-    return label.toLowerCase() === 'complete';
-  };
-
-  const resolveButtonVariant = (action: IFormAction) => {
-    if (isPrimary(action.name)) {
-      return 'primary';
-    }
-    return 'secondary';
-  };
-
-  const buttons: FormButton[] = actions.map(action => {
-    return {
-      key: `submit-${action.name}`,
-      label: capitalize(action.name),
-      variant: resolveButtonVariant(action),
-      onClick: () => {
-        if (action.execute) {
-          action.execute();
-        }
-      }
-    };
-  });
-
-  buttons.sort((buttonA, buttonB) => {
-    if (isPrimary(buttonA.label)) {
-      return -1;
-    }
-    if (isPrimary(buttonB.label)) {
-      return 2;
-    }
-    return buttonA.label.localeCompare(buttonB.label);
-  });
-
   return (
     <ActionGroup {...componentOuiaProps(ouiaId, 'form-footer', ouiaSafe)}>
-      {buttons.map(button => {
-        return (
-          <Button
-            type="submit"
-            key={button.key}
-            variant={button.variant}
-            onClick={button.onClick}
-          >
-            {button.label}
-          </Button>
-        );
-      })}
+      {convertActionsToButton(actions, true)}
     </ActionGroup>
   );
 };

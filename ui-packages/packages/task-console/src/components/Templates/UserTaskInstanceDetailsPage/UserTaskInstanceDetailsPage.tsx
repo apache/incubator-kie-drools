@@ -21,7 +21,6 @@ import {
   BreadcrumbItem,
   Card,
   CardBody,
-  CardHeader,
   PageSection,
   Title,
   Button,
@@ -253,11 +252,6 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<MatchProps> &
             <DrawerContent panelContent={panelContent}>
               <DrawerContentBody>
                 <Card className="pf-u-h-100">
-                  <CardHeader>
-                    <Title headingLevel="h3" size="xl">
-                      Form
-                    </Title>
-                  </CardHeader>
                   <CardBody className="pf-u-h-100">
                     <TaskForm
                       userTaskInstance={userTask}

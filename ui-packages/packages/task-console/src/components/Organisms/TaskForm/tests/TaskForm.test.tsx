@@ -18,6 +18,7 @@ import React from 'react';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
+import wait from 'waait';
 import {
   getWrapperAsync,
   GraphQL,
@@ -28,18 +29,18 @@ import {
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskForm from '../TaskForm';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
-import FormRenderer from '../../../Molecules/FormRenderer/FormRenderer';
-import { TaskFormSubmitHandler } from '../../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
 import { getTaskSchemaEndPoint } from '../../../../util/Utils';
 import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
 import { TestingUserContext } from '../../../../util/tests/utils/TestingUserContext';
-import wait from 'waait';
 import TaskConsoleContext, {
   ITaskConsoleContext,
   TaskConsoleContextImpl
 } from '../../../../context/TaskConsoleContext/TaskConsoleContext';
+import TaskFormRenderer from '../../TaskFormRenderer/TaskFormRenderer';
+import EmptyTaskForm from '../../EmptyTaskForm/EmptyTaskForm';
 
-jest.mock('../../../Molecules/FormRenderer/FormRenderer');
+jest.mock('../../TaskFormRenderer/TaskFormRenderer');
+jest.mock('../../EmptyTaskForm/EmptyTaskForm');
 jest.mock('../../../Atoms/FormNotification/FormNotification');
 
 const MockedComponent = (): React.ReactElement => {
@@ -112,56 +113,6 @@ const getWrapper = async (
   return (wrapper = wrapper.update().find(TaskForm));
 };
 
-enum Mode {
-  SUCCESS,
-  ERROR,
-  ERROR_WITH_MESSAGE
-}
-
-const testSubmitCallbacks = async (mode: Mode) => {
-  const formSubmitSuccessCallback = jest.fn();
-  const formSubmitErrorCallback = jest.fn();
-
-  mockedAxios.get.mockResolvedValue({
-    status: 200,
-    data: _.cloneDeep(ApplyForVisaForm)
-  });
-
-  let wrapper = await getWrapper(
-    userTaskInstance,
-    formSubmitSuccessCallback,
-    formSubmitErrorCallback
-  );
-
-  wrapper = wrapper.update().find(TaskForm);
-
-  expect(wrapper).toMatchSnapshot();
-
-  const renderer = wrapper.find(FormRenderer);
-
-  expect(renderer.exists()).toBeTruthy();
-
-  // since the FormRenderer is mocked we are forcing the form submit callback
-  const callback =
-    mode === Mode.SUCCESS
-      ? renderer.getElement().props.formSubmitHandler.successCallback
-      : renderer.getElement().props.formSubmitHandler.errorCallback;
-
-  expect(callback).not.toBeNull();
-
-  act(() => {
-    if (mode === Mode.ERROR_WITH_MESSAGE) {
-      callback('phase', 'Extra error info.');
-    } else {
-      callback('phase');
-    }
-  });
-
-  wrapper = wrapper.update().find(TaskForm);
-
-  expect(wrapper).toMatchSnapshot();
-};
-
 let userContext: UserContext;
 
 describe('TaskForm Test', () => {
@@ -189,16 +140,14 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    const renderer = wrapper.find(FormRenderer);
+    const renderer = wrapper.find(TaskFormRenderer);
 
     expect(renderer.exists()).toBeTruthy();
 
-    expect(renderer.props().formSubmitHandler).toBeInstanceOf(
-      TaskFormSubmitHandler
-    );
-    expect(renderer.props().model).toStrictEqual(
-      JSON.parse(userTaskInstance.inputs)
-    );
+    expect(renderer.props().task).toBe(userTaskInstance);
+    expect(renderer.props().formSchema).toStrictEqual(ApplyForVisaForm);
+    expect(renderer.props().onSubmitSuccess).not.toBeNull();
+    expect(renderer.props().onSubmitError).not.toBeNull();
   });
 
   it('Test rendering form', async () => {
@@ -212,16 +161,38 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    const renderer = wrapper.find(FormRenderer);
+    const renderer = wrapper.find(TaskFormRenderer);
 
     expect(renderer.exists()).toBeTruthy();
 
-    expect(renderer.props().formSubmitHandler).toBeInstanceOf(
-      TaskFormSubmitHandler
-    );
-    expect(renderer.props().model).toStrictEqual(
-      JSON.parse(userTaskInstance.inputs)
-    );
+    expect(renderer.props().task).toBe(userTaskInstance);
+    expect(renderer.props().formSchema).toStrictEqual(ApplyForVisaForm);
+    expect(renderer.props().onSubmitSuccess).not.toBeNull();
+    expect(renderer.props().onSubmitError).not.toBeNull();
+  });
+
+  it('Empty form rendering', async () => {
+    const formSchema = _.cloneDeep(ApplyForVisaForm);
+    delete formSchema.properties;
+
+    mockedAxios.get.mockResolvedValue({
+      status: 200,
+      data: formSchema
+    });
+
+    const wrapper = await getWrapper(userTaskInstance);
+
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+
+    const renderer = wrapper.find(TaskFormRenderer);
+
+    expect(renderer.exists()).toBeFalsy();
+
+    const emptyForm = wrapper.find(EmptyTaskForm);
+
+    expect(emptyForm.exists()).toBeTruthy();
   });
 
   it('Test rendering form with HTTP error', async () => {
@@ -235,7 +206,7 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    expect(wrapper.find(FormRenderer).exists()).toBeFalsy();
+    expect(wrapper.find(TaskFormRenderer).exists()).toBeFalsy();
     expect(wrapper.find(KogitoEmptyState).exists()).toBeTruthy();
   });
 
@@ -248,20 +219,8 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    expect(wrapper.find(FormRenderer).exists()).toBeFalsy();
+    expect(wrapper.find(TaskFormRenderer).exists()).toBeFalsy();
     expect(wrapper.find(KogitoEmptyState).exists()).toBeTruthy();
-  });
-
-  it('Test successful callback', async () => {
-    await testSubmitCallbacks(Mode.SUCCESS);
-  });
-
-  it('Test unsuccessful callback', async () => {
-    await testSubmitCallbacks(Mode.ERROR);
-  });
-
-  it('Test unsuccessful callback with extra message', async () => {
-    await testSubmitCallbacks(Mode.ERROR_WITH_MESSAGE);
   });
 
   it('Test render completed task', async () => {
@@ -317,23 +276,19 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    const renderer = wrapper.find(FormRenderer);
+    const renderer = wrapper.find(TaskFormRenderer);
 
     expect(renderer.exists()).toBeTruthy();
 
-    // since the FormRenderer is mocked we are forcing the form submit callback
+    // since the TaskFormRenderer is mocked we are forcing the form submit callback
     await act(async () => {
-      const submitHandler: TaskFormSubmitHandler = renderer.props()
-        .formSubmitHandler as TaskFormSubmitHandler;
-      submitHandler.setSelectedPhase('phase');
-      await submitHandler.doSubmit({});
-      wrapper = wrapper.update().find(TaskForm);
+      renderer.props().onSubmitSuccess('phase');
     });
 
     wrapper = wrapper.update().find(TaskForm);
 
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find(FormRenderer).exists()).toBeTruthy();
+    expect(wrapper.find(TaskFormRenderer).exists()).toBeTruthy();
 
     expect(formSubmitSuccessCallback).toBeCalledWith('phase');
   });
@@ -357,15 +312,13 @@ describe('TaskForm Test', () => {
 
     expect(wrapper).toMatchSnapshot();
 
-    const renderer = wrapper.find(FormRenderer);
+    const renderer = wrapper.find(TaskFormRenderer);
 
     expect(renderer.exists()).toBeTruthy();
 
     // since the FormRenderer is mocked we are forcing the form submit callback
     act(() => {
-      renderer
-        .getElement()
-        .props.formSubmitHandler.errorCallback('phase', 'Extra info!');
+      renderer.props().onSubmitError('phase', 'Extra info!');
     });
 
     wrapper = wrapper.update().find(TaskForm);

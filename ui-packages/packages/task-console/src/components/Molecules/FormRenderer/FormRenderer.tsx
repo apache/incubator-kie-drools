@@ -20,15 +20,14 @@ import { AutoFields, AutoForm, ErrorsField } from 'uniforms-patternfly';
 import FormFooter from '../../Atoms/FormFooter/FormFooter';
 import ModelConversionTool from '../../../util/uniforms/ModelConversionTool';
 import { DefaultFormValidator } from '../../../util/uniforms/FormValidator';
-import { IFormSubmitHandler } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
-import { FormSchema } from '../../../util/uniforms/FormSchema';
+import { FormSubmitHandler } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
 
 interface IOwnProps {
-  formSchema: FormSchema;
+  formSchema: any;
   model?: any;
   readOnly: boolean;
-  formSubmitHandler: IFormSubmitHandler;
+  formSubmitHandler: FormSubmitHandler;
 }
 
 const FormRenderer: React.FC<IOwnProps & OUIAProps> = ({

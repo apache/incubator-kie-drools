@@ -31,6 +31,7 @@ exports[`Form Footer test testing action click 1`] = `
           className="pf-c-form__actions"
         >
           <Button
+            isDisabled={false}
             key="submit-Complete"
             onClick={[Function]}
             type="submit"
@@ -52,6 +53,7 @@ exports[`Form Footer test testing action click 1`] = `
             </button>
           </Button>
           <Button
+            isDisabled={false}
             key="submit-Release"
             onClick={[Function]}
             type="submit"
@@ -114,6 +116,7 @@ exports[`Form Footer test testing showing actions 1`] = `
           className="pf-c-form__actions"
         >
           <Button
+            isDisabled={false}
             key="submit-Complete"
             onClick={[Function]}
             type="submit"
@@ -135,6 +138,7 @@ exports[`Form Footer test testing showing actions 1`] = `
             </button>
           </Button>
           <Button
+            isDisabled={false}
             key="submit-Abort"
             onClick={[Function]}
             type="submit"
@@ -156,6 +160,7 @@ exports[`Form Footer test testing showing actions 1`] = `
             </button>
           </Button>
           <Button
+            isDisabled={false}
             key="submit-Release"
             onClick={[Function]}
             type="submit"

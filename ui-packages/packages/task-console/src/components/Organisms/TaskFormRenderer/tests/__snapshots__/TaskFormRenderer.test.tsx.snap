@@ -1,0 +1,457 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskFormRenderer Test Form rendering 1`] = `
+<TaskFormRenderer
+  formSchema={
+    Object {
+      "phases": Array [
+        "complete",
+        "release",
+      ],
+      "properties": Object {
+        "traveller": Object {
+          "properties": Object {
+            "address": Object {
+              "properties": Object {
+                "city": Object {
+                  "type": "string",
+                },
+                "country": Object {
+                  "type": "string",
+                },
+                "street": Object {
+                  "type": "string",
+                },
+                "zipCode": Object {
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+            "email": Object {
+              "format": "email",
+              "type": "string",
+            },
+            "firstName": Object {
+              "type": "string",
+            },
+            "lastName": Object {
+              "type": "string",
+            },
+            "nationality": Object {
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "firstName",
+            "lastName",
+          ],
+          "type": "object",
+        },
+        "trip": Object {
+          "output": false,
+          "properties": Object {
+            "begin": Object {
+              "format": "date-time",
+              "type": "string",
+            },
+            "city": Object {
+              "type": "string",
+            },
+            "country": Object {
+              "type": "string",
+            },
+            "end": Object {
+              "format": "date-time",
+              "type": "string",
+            },
+            "visaRequired": Object {
+              "type": "boolean",
+            },
+          },
+          "type": "object",
+          "uniforms": Object {
+            "disabled": true,
+          },
+        },
+        "visaApplication": Object {
+          "output": false,
+          "properties": Object {
+            "city": Object {
+              "type": "string",
+            },
+            "country": Object {
+              "type": "string",
+            },
+            "duration": Object {
+              "type": "integer",
+            },
+            "firstName": Object {
+              "type": "string",
+            },
+            "lastName": Object {
+              "type": "string",
+            },
+            "nationality": Object {
+              "type": "string",
+            },
+            "passportNumber": Object {
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "uniforms": Object {
+            "disabled": true,
+          },
+        },
+      },
+      "type": "object",
+    }
+  }
+  task={
+    Object {
+      "actualOwner": null,
+      "adminGroups": Array [],
+      "adminUsers": Array [],
+      "completed": null,
+      "description": null,
+      "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+      "excludedUsers": Array [],
+      "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+      "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+      "lastUpdate": "2020-02-19T11:11:56.282Z",
+      "name": "VisaApplication",
+      "outputs": "{}",
+      "potentialGroups": Array [],
+      "potentialUsers": Array [],
+      "priority": "1",
+      "processId": "travels",
+      "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+      "referenceName": "Apply for visa",
+      "rootProcessId": null,
+      "rootProcessInstanceId": null,
+      "started": "2020-02-19T11:11:56.282Z",
+      "state": "Ready",
+    }
+  }
+>
+  <MockedFormRenderer
+    formSchema={
+      Object {
+        "phases": Array [
+          "complete",
+          "release",
+        ],
+        "properties": Object {
+          "traveller": Object {
+            "properties": Object {
+              "address": Object {
+                "properties": Object {
+                  "city": Object {
+                    "type": "string",
+                  },
+                  "country": Object {
+                    "type": "string",
+                  },
+                  "street": Object {
+                    "type": "string",
+                  },
+                  "zipCode": Object {
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+              "email": Object {
+                "format": "email",
+                "type": "string",
+              },
+              "firstName": Object {
+                "type": "string",
+              },
+              "lastName": Object {
+                "type": "string",
+              },
+              "nationality": Object {
+                "type": "string",
+              },
+            },
+            "required": Array [
+              "firstName",
+              "lastName",
+            ],
+            "type": "object",
+          },
+          "trip": Object {
+            "output": false,
+            "properties": Object {
+              "begin": Object {
+                "format": "date-time",
+                "type": "string",
+              },
+              "city": Object {
+                "type": "string",
+              },
+              "country": Object {
+                "type": "string",
+              },
+              "end": Object {
+                "format": "date-time",
+                "type": "string",
+              },
+              "visaRequired": Object {
+                "type": "boolean",
+              },
+            },
+            "type": "object",
+            "uniforms": Object {
+              "disabled": true,
+            },
+          },
+          "visaApplication": Object {
+            "output": false,
+            "properties": Object {
+              "city": Object {
+                "type": "string",
+              },
+              "country": Object {
+                "type": "string",
+              },
+              "duration": Object {
+                "type": "integer",
+              },
+              "firstName": Object {
+                "type": "string",
+              },
+              "lastName": Object {
+                "type": "string",
+              },
+              "nationality": Object {
+                "type": "string",
+              },
+              "passportNumber": Object {
+                "type": "string",
+              },
+            },
+            "type": "object",
+            "uniforms": Object {
+              "disabled": true,
+            },
+          },
+        },
+        "type": "object",
+      }
+    }
+    formSubmitHandler={
+      TaskFormSubmitHandler {
+        "assignments": Object {
+          "inputs": Array [
+            "trip",
+            "traveller",
+            "visaApplication",
+          ],
+          "outputs": Array [
+            "traveller",
+          ],
+        },
+        "doSubmit": [Function],
+        "formSchema": Object {
+          "phases": Array [
+            "complete",
+            "release",
+          ],
+          "properties": Object {
+            "traveller": Object {
+              "properties": Object {
+                "address": Object {
+                  "properties": Object {
+                    "city": Object {
+                      "type": "string",
+                    },
+                    "country": Object {
+                      "type": "string",
+                    },
+                    "street": Object {
+                      "type": "string",
+                    },
+                    "zipCode": Object {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+                "email": Object {
+                  "format": "email",
+                  "type": "string",
+                },
+                "firstName": Object {
+                  "type": "string",
+                },
+                "lastName": Object {
+                  "type": "string",
+                },
+                "nationality": Object {
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "firstName",
+                "lastName",
+              ],
+              "type": "object",
+            },
+            "trip": Object {
+              "output": false,
+              "properties": Object {
+                "begin": Object {
+                  "format": "date-time",
+                  "type": "string",
+                },
+                "city": Object {
+                  "type": "string",
+                },
+                "country": Object {
+                  "type": "string",
+                },
+                "end": Object {
+                  "format": "date-time",
+                  "type": "string",
+                },
+                "visaRequired": Object {
+                  "type": "boolean",
+                },
+              },
+              "type": "object",
+              "uniforms": Object {
+                "disabled": true,
+              },
+            },
+            "visaApplication": Object {
+              "output": false,
+              "properties": Object {
+                "city": Object {
+                  "type": "string",
+                },
+                "country": Object {
+                  "type": "string",
+                },
+                "duration": Object {
+                  "type": "integer",
+                },
+                "firstName": Object {
+                  "type": "string",
+                },
+                "lastName": Object {
+                  "type": "string",
+                },
+                "nationality": Object {
+                  "type": "string",
+                },
+                "passportNumber": Object {
+                  "type": "string",
+                },
+              },
+              "type": "object",
+              "uniforms": Object {
+                "disabled": true,
+              },
+            },
+          },
+          "type": "object",
+        },
+        "getActions": [Function],
+        "onSubmit": [Function],
+        "taskformSubmit": TaskFormSubmit {
+          "errorCallback": [Function],
+          "submit": [Function],
+          "successCallback": [Function],
+          "task": Object {
+            "actualOwner": null,
+            "adminGroups": Array [],
+            "adminUsers": Array [],
+            "completed": null,
+            "description": null,
+            "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+            "excludedUsers": Array [],
+            "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+            "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+            "lastUpdate": "2020-02-19T11:11:56.282Z",
+            "name": "VisaApplication",
+            "outputs": "{}",
+            "potentialGroups": Array [],
+            "potentialUsers": Array [],
+            "priority": "1",
+            "processId": "travels",
+            "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+            "referenceName": "Apply for visa",
+            "rootProcessId": null,
+            "rootProcessInstanceId": null,
+            "started": "2020-02-19T11:11:56.282Z",
+            "state": "Ready",
+          },
+          "user": DefaultUser {
+            "groups": Array [
+              "employees",
+              "developers",
+            ],
+            "id": "john",
+          },
+        },
+        "userTaskInstance": Object {
+          "actualOwner": null,
+          "adminGroups": Array [],
+          "adminUsers": Array [],
+          "completed": null,
+          "description": null,
+          "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+          "excludedUsers": Array [],
+          "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+          "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+          "lastUpdate": "2020-02-19T11:11:56.282Z",
+          "name": "VisaApplication",
+          "outputs": "{}",
+          "potentialGroups": Array [],
+          "potentialUsers": Array [],
+          "priority": "1",
+          "processId": "travels",
+          "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+          "referenceName": "Apply for visa",
+          "rootProcessId": null,
+          "rootProcessInstanceId": null,
+          "started": "2020-02-19T11:11:56.282Z",
+          "state": "Ready",
+        },
+      }
+    }
+    model={
+      Object {
+        "NodeName": "Apply for visa",
+        "Priority": "1",
+        "Skippable": "true",
+        "TaskName": "VisaApplication",
+        "traveller": Object {
+          "address": Object {
+            "city": "Zerf",
+            "country": "Poland",
+            "street": "Cabalone",
+            "zipCode": "765756",
+          },
+          "email": "rwhite@gorle.com",
+          "firstName": "Rachel",
+          "lastName": "White",
+          "nationality": "Polish",
+        },
+        "trip": Object {
+          "begin": "2020-02-19T23:00:00.000+01:00",
+          "city": "Boston",
+          "country": "US",
+          "end": "2020-02-26T23:00:00.000+01:00",
+          "visaRequired": true,
+        },
+      }
+    }
+    ouiaId="task-form-form-renderer"
+    readOnly={false}
+  />
+</TaskFormRenderer>
+`;

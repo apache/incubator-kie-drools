@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { FormAction } from '../FormActionsUtils';
+import React from 'react';
 
-export interface FormSubmitHandler {
-  getActions(): FormAction[];
+const MockedTaskFormRenderer = (): React.ReactElement => {
+  return <></>;
+};
 
-  doSubmit(data: any): void;
-}
+export default MockedTaskFormRenderer;

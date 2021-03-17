@@ -42,7 +42,10 @@ app.use(
 
 app.post(
   '/:processId/:processInstanceId/:taskName/:taskId',
-  controller.callCompleteTask
+  async (req, res) => {
+    await timeout(500);
+    controller.callCompleteTask(req, res);
+  }
 );
 
 app.get(
@@ -50,34 +53,31 @@ app.get(
   controller.getTaskForm
 );
 
-app.get(
-  '/:processId/:taskName/schema',
-  controller.getTaskDefinitionForm
-);
+app.get('/:processId/:taskName/schema', controller.getTaskDefinitionForm);
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const checkStatesFilters = (userTaskInstance, states) => {
-  return states.includes(userTaskInstance.state)
-}
+  return states.includes(userTaskInstance.state);
+};
 
 const checkTaskNameFilters = (userTaskInstance, names) => {
   for (let i = 0; i < names.length; i++) {
     let name = names[i].referenceName.like.toLowerCase();
-    name = name.substring(1, name.length-1);
+    name = name.substring(1, name.length - 1);
 
-    if(userTaskInstance.referenceName &&
-      userTaskInstance.referenceName
-        .toLowerCase()
-        .includes(name)) {
+    if (
+      userTaskInstance.referenceName &&
+      userTaskInstance.referenceName.toLowerCase().includes(name)
+    ) {
       return true;
     }
   }
 
   return false;
-}
+};
 
 const checkTaskAssignment = (userTaskInstance, assignments) => {
   const actualOwnerClause = assignments.or[0];
@@ -85,31 +85,42 @@ const checkTaskAssignment = (userTaskInstance, assignments) => {
     return true;
   }
   if (userTaskInstance.actualOwner === null) {
-
     const excludedUsersClause = assignments.or[1].and[1].not;
 
-    if(userTaskInstance.excludedUsers && userTaskInstance.excludedUsers.includes(excludedUsersClause.excludedUsers.contains)) {
+    if (
+      userTaskInstance.excludedUsers &&
+      userTaskInstance.excludedUsers.includes(
+        excludedUsersClause.excludedUsers.contains
+      )
+    ) {
       return false;
     }
 
     const potentialUsersClause = assignments.or[1].and[2].or[0];
-    if (userTaskInstance.potentialUsers.includes(potentialUsersClause.potentialUsers.contains)) {
+    if (
+      userTaskInstance.potentialUsers.includes(
+        potentialUsersClause.potentialUsers.contains
+      )
+    ) {
       return true;
     }
     const potentialGroupsClause = assignments.or[1].and[2].or[1];
-    if (potentialGroupsClause.potentialGroups.containsAny
-            .some(clauseGroup => userTaskInstance.potentialGroups.includes(clauseGroup))) {
+    if (
+      potentialGroupsClause.potentialGroups.containsAny.some(clauseGroup =>
+        userTaskInstance.potentialGroups.includes(clauseGroup)
+      )
+    ) {
       return true;
     }
   }
-}
+};
 
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
     UserTaskInstances: async (parent, args) => {
       let result = data.UserTaskInstances.filter(datum => {
-        console.log('args', args)
+        console.log('args', args);
 
         if (args['where'].and) {
           // if filter available
@@ -118,27 +129,33 @@ const resolvers = {
           }
           if (args['where'].and[1].and.length === 2) {
             // if filter by state and taskNames
-            return checkTaskNameFilters(datum, args['where'].and[1].and[1].or) && checkStatesFilters(datum, args['where'].and[1].and[0].state.in);
-          }
-          else if (args['where'].and[1].and.length === 1) {
+            return (
+              checkTaskNameFilters(datum, args['where'].and[1].and[1].or) &&
+              checkStatesFilters(datum, args['where'].and[1].and[0].state.in)
+            );
+          } else if (args['where'].and[1].and.length === 1) {
             if (args['where'].and[1].and[0].state) {
               // if filter by states only
-              return checkStatesFilters(datum, args['where'].and[1].and[0].state.in);
+              return checkStatesFilters(
+                datum,
+                args['where'].and[1].and[0].state.in
+              );
             } else if (args['where'].and[1].and[0].or) {
               // if filter by taskNames only
-              return checkTaskNameFilters(datum, args['where'].and[1].and[0].or);
+              return checkTaskNameFilters(
+                datum,
+                args['where'].and[1].and[0].or
+              );
             }
           } else if (args['where'].and[1].and.length === 0) {
-            return false
+            return false;
           }
-        }
-        else if (args['where'].or) {
+        } else if (args['where'].or) {
           // if no filters
           return checkTaskAssignment(datum, args['where']);
-        }
-        else if (args['where'].id && args['where'].id.equal) {
+        } else if (args['where'].id && args['where'].id.equal) {
           // mock to return single id
-          return datum.id === args['where'].id.equal
+          return datum.id === args['where'].id.equal;
         }
         return false;
       });

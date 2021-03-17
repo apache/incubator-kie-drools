@@ -323,22 +323,6 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -783,22 +767,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 1`] = 
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -1201,22 +1169,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 2`] = 
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -1601,22 +1553,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 3`] = 
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -2001,22 +1937,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit notification - go to inbo
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -2401,22 +2321,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 1`] 
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -2819,22 +2723,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 2`] 
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >
@@ -3219,22 +3107,6 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 3`] 
                             data-ouia-safe={true}
                             id=""
                           >
-                            <CardHeader>
-                              <div
-                                className="pf-c-card__header"
-                              >
-                                <Title
-                                  headingLevel="h3"
-                                  size="xl"
-                                >
-                                  <h3
-                                    className="pf-c-title pf-m-xl"
-                                  >
-                                    Form
-                                  </h3>
-                                </Title>
-                              </div>
-                            </CardHeader>
                             <CardBody
                               className="pf-u-h-100"
                             >

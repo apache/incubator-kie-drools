@@ -3291,6 +3291,7 @@ exports[`FormRenderer test Render form with actions 1`] = `
                   className="pf-c-form__actions"
                 >
                   <Button
+                    isDisabled={false}
                     key="submit-complete"
                     onClick={[Function]}
                     type="submit"

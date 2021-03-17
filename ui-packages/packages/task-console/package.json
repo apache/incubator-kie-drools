@@ -20,7 +20,7 @@
     "dev": "concurrently 'yarn run   start  --define process.env.TEST_USER_SYSTEM_ENABLED=true' 'yarn run dev:server'",
     "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"' --define process.env.TEST_USER_SYSTEM_ENABLED=true",
     "dev:server": "nodemon ./server/app.js",
-    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
+    "format": "prettier --config ../../.prettierrc --check --write './{src,server}/**/*.{tsx,ts,js}'",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",

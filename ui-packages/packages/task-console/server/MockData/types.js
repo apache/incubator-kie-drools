@@ -28,11 +28,7 @@ module.exports = typeDefs = gql`
       orderBy: VisaApplicationsOrderBy
       pagination: Pagination
     ): [VisaApplications]
-    Jobs(
-      where: JobArgument
-      orderBy: JobOrderBy
-      pagination: Pagination
-      ): [Job]
+    Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination): [Job]
   }
 
   type ProcessInstance {
@@ -126,7 +122,7 @@ module.exports = typeDefs = gql`
     AVAILABLE
     COMPLETED
   }
-  
+
   input ProcessInstanceOrderBy {
     processId: OrderBy
     processName: OrderBy
@@ -581,9 +577,9 @@ module.exports = typeDefs = gql`
     priority: NumericArgument
     scheduledId: IdArgument
     lastUpdate: DateArgument
-}
+  }
 
-input JobOrderBy {
+  input JobOrderBy {
     processId: OrderBy
     rootProcessId: OrderBy
     status: OrderBy
@@ -592,36 +588,36 @@ input JobOrderBy {
     retries: OrderBy
     lastUpdate: OrderBy
     executionCounter: OrderBy
-}
+  }
 
-input JobStatusArgument {
-  equal: JobStatus
-  in: [JobStatus]
-}
+  input JobStatusArgument {
+    equal: JobStatus
+    in: [JobStatus]
+  }
 
-type Job {
-  id: String!
-  processId: String
-  processInstanceId: String
-  rootProcessInstanceId: String
-  rootProcessId: String
-  status: JobStatus!
-  expirationTime: DateTime
-  priority: Int
-  callbackEndpoint: String
-  repeatInterval: Int
-  repeatLimit: Int
-  scheduledId: String
-  retries: Int
-  lastUpdate: DateTime
-  executionCounter: Int
-}
+  type Job {
+    id: String!
+    processId: String
+    processInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    status: JobStatus!
+    expirationTime: DateTime
+    priority: Int
+    callbackEndpoint: String
+    repeatInterval: Int
+    repeatLimit: Int
+    scheduledId: String
+    retries: Int
+    lastUpdate: DateTime
+    executionCounter: Int
+  }
 
-enum JobStatus {
-  ERROR
-  EXECUTED
-  SCHEDULED
-  RETRY
-  CANCELED
-}
+  enum JobStatus {
+    ERROR
+    EXECUTED
+    SCHEDULED
+    RETRY
+    CANCELED
+  }
 `;
