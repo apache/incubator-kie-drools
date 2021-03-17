@@ -493,7 +493,6 @@ public class DMNValidatorImpl implements DMNValidator {
             validator.validate(s);
         } catch (SAXException | IOException e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
-            logDebugMessages(problems);
         }
         return problems;
     }
@@ -546,13 +545,5 @@ public class DMNValidatorImpl implements DMNValidator {
     private static Stream<DMNModelInstrumentedBase> allChildren(DMNModelInstrumentedBase root) {
         return Stream.concat( Stream.of(root),
                               root.getChildren().stream().flatMap(DMNValidatorImpl::allChildren) );
-    }
-
-    private void logDebugMessages(List<DMNMessage> messages) {
-        if ( LOG.isDebugEnabled() ) {
-            for ( DMNMessage m : messages ) {
-                LOG.debug("{}", m);
-            }
-        }
     }
 }
