@@ -18,11 +18,16 @@ export {
   default as DataTable,
   DataTableColumn
 } from './src/components/DataTable/DataTable';
-export * from './src/components/ItemDescriptor/ItemDescriptor';
+export {
+  default as ItemDescriptor,
+  ItemDescription
+} from './src/components/ItemDescriptor/ItemDescriptor';
 export {
   default as KogitoEmptyState,
   KogitoEmptyStateType
 } from './src/components/KogitoEmptyState/KogitoEmptyState';
 export { default as KogitoSpinner } from './src/components/KogitoSpinner/KogitoSpinner';
 export { default as LoadMore } from './src/components/LoadMore/LoadMore';
+export { default as ServerErrors } from './src/components/ServerErrors/ServerErrors';
+
 export * from './src/utils/OuiaUtils';

@@ -95,3 +95,5 @@ export const KogitoEmptyState: React.FC<IOwnProps & OUIAProps> = ({
     </Bullseye>
   );
 };
+
+export default KogitoEmptyState;

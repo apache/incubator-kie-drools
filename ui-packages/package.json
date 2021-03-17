@@ -124,6 +124,7 @@
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0",
     "webpack-merge": "^4.2.2",
+    "copy-webpack-plugin": "^6.0.3",
     "yarn": "^1.22.4"
   },
   "resolutions": {

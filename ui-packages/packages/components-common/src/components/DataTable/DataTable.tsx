@@ -40,10 +40,7 @@ import {
 export interface DataTableColumn {
   path: string;
   label: string;
-  bodyCellTransformer?: (
-    value: any,
-    rowDataObj: Record<string, unknown>
-  ) => any;
+  bodyCellTransformer?: (value: any, rowDataObj: Record<string, any>) => any;
   isSortable?: boolean;
 }
 
@@ -137,7 +134,7 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
   const [columnList, setColumnList] = useState<ICell[]>([]);
 
   useEffect(() => {
-    if (!_.isEmpty(data)) {
+    if (data) {
       const cols = getColumns(data, columns);
       if (!_.isEmpty(cols)) {
         setColumnList(cols);
@@ -176,35 +173,33 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
     );
   }
 
+  if (_.isEmpty(data)) {
+    return (
+      <KogitoEmptyState
+        type={KogitoEmptyStateType.Search}
+        title="No results found"
+        body="Try using different filters"
+      />
+    );
+  }
+
   return (
     <React.Fragment>
-      {data !== undefined &&
-        !isLoading &&
-        rows.length > 0 &&
-        columnList.length > 0 && (
-          <Table
-            aria-label="Data Table"
-            cells={columnList}
-            rows={rows}
-            sortBy={sortBy}
-            onSort={onSort}
-            {...componentOuiaProps(
-              ouiaId,
-              'data-table',
-              ouiaSafe ? ouiaSafe : !isLoading
-            )}
-          >
-            <TableHeader />
-            <TableBody rowKey="rowKey" />
-          </Table>
+      <Table
+        aria-label="Data Table"
+        cells={columnList}
+        rows={rows}
+        sortBy={sortBy}
+        onSort={onSort}
+        {...componentOuiaProps(
+          ouiaId,
+          'data-table',
+          ouiaSafe ? ouiaSafe : !isLoading
         )}
-      {data !== undefined && !isLoading && data.length === 0 && (
-        <KogitoEmptyState
-          type={KogitoEmptyStateType.Search}
-          title="No results found"
-          body="Try using different filters"
-        />
-      )}
+      >
+        <TableHeader />
+        <TableBody rowKey="rowKey" />
+      </Table>
     </React.Fragment>
   );
 };

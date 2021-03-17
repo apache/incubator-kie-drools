@@ -23,3 +23,4 @@ export { default as PageLayout } from './src/components/layout/PageLayout/PageLa
 export { default as ServerUnavailablePage } from './src/components/pages/ServerUnavailablePage/ServerUnavailablePage';
 export { default as PageNotFound } from './src/components/pages/PageNotFound/PageNotFound';
 export { default as NoData } from './src/components/pages/NoData/NoData';
+export { default as PageTitle } from './src/components/layout/PageTitle/PageTitle';

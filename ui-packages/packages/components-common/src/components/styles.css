@@ -15,7 +15,7 @@
  */
 
 .kogito-components-common__load-more {
-    margin-bottom: var(--pf-global--spacer--lg);
+    margin-bottom: var(--pf-global--spacer--lg) !important;
     text-align: center;
 }
 

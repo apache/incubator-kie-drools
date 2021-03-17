@@ -1,17 +1,20 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 const BG_IMAGES_DIRNAME = 'bgimages';
 
 module.exports = {
   entry: {
-    app: path.resolve(__dirname, 'src', 'index.tsx')
+    app: path.resolve(__dirname, 'src', 'index.tsx'),
+    'envelope/task-inbox': './src/envelope/task-inbox.ts'
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
-      favicon: 'src/favicon.ico'
+      favicon: 'src/favicon.ico',
+      chunks: ['app']
     }),
     new webpack.EnvironmentPlugin({
       KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
@@ -20,7 +23,12 @@ module.exports = {
       KOGITO_TASK_STATES_LIST: 'Ready,Reserved,Completed,Aborted,Skipped',
       KOGITO_TASK_ACTIVE_STATES_LIST: 'Ready,Reserved',
       TEST_USER_SYSTEM_ENABLED: false
-    })
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: "./envelope", to: "./envelope" }
+      ],
+    }),
   ],
   module: {
     rules: [

@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedTaskInbox tests Snapshot 1`] = `
+<ForwardRef
+  activeTaskStates={
+    Array [
+      "Ready",
+    ]
+  }
+  allTaskStates={
+    Array [
+      "Ready",
+      "Completed",
+    ]
+  }
+  driver={
+    Object {
+      "applyFilter": [MockFunction],
+      "applySorting": [MockFunction],
+      "openTask": [MockFunction],
+      "query": [MockFunction],
+      "refresh": [MockFunction],
+      "setInitialState": [MockFunction],
+    }
+  }
+  envelopePath="path"
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <iframe
+      src="path"
+      style={
+        Object {
+          "border": "none",
+          "display": "flex",
+          "flex": 1,
+          "flexDirection": "column",
+          "height": "100%",
+          "margin": 0,
+          "overflow": "hidden",
+          "padding": 0,
+          "width": "100%",
+        }
+      }
+      title="X"
+    />
+  </ForwardRef>
+</ForwardRef>
+`;

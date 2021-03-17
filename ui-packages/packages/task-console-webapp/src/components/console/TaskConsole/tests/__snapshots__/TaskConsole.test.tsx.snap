@@ -49,57 +49,86 @@ exports[`TaskConsole tests Snapshot 1`] = `
     }
   }
 >
-  <ApolloProvider
-    client={
-      ApolloClient {
-        "__actionHookForDevTools": [MockFunction],
-        "__requestRaw": [MockFunction],
-        "addResolvers": [MockFunction],
-        "clearStore": [MockFunction],
-        "extract": [MockFunction],
-        "getResolvers": [MockFunction],
-        "initQueryManager": [MockFunction],
-        "mutate": [MockFunction],
-        "onClearStore": [MockFunction],
-        "onResetStore": [MockFunction],
-        "query": [MockFunction],
-        "reFetchObservableQueries": [MockFunction],
-        "readFragment": [MockFunction],
-        "readQuery": [MockFunction],
-        "resetStore": [MockFunction],
-        "restore": [MockFunction],
-        "setLocalStateFragmentMatcher": [MockFunction],
-        "setResolvers": [MockFunction],
-        "stop": [MockFunction],
-        "subscribe": [MockFunction],
-        "watchQuery": [MockFunction],
-        "writeData": [MockFunction],
-        "writeFragment": [MockFunction],
-        "writeQuery": [MockFunction],
+  <KogitoAppContextProvider
+    userContext={
+      TestUserContextImpl {
+        "currentUser": Object {
+          "groups": Array [
+            "employees",
+          ],
+          "id": "john",
+        },
+        "userManager": TestUserManagerImpl {
+          "system": Array [
+            "john",
+            "mary",
+            "poul",
+          ],
+          "users": Array [],
+        },
       }
     }
   >
-    <KogitoAppContextProvider
-      userContext={
-        TestUserContextImpl {
-          "currentUser": Object {
-            "groups": Array [
-              "employees",
-            ],
-            "id": "john",
-          },
-          "userManager": TestUserManagerImpl {
-            "system": Array [
-              "john",
-              "mary",
-              "poul",
-            ],
-            "users": Array [],
-          },
+    <TaskConsoleContextsProvider
+      client={
+        ApolloClient {
+          "__actionHookForDevTools": [MockFunction],
+          "__requestRaw": [MockFunction],
+          "addResolvers": [MockFunction],
+          "clearStore": [MockFunction],
+          "extract": [MockFunction],
+          "getResolvers": [MockFunction],
+          "initQueryManager": [MockFunction],
+          "mutate": [MockFunction],
+          "onClearStore": [MockFunction],
+          "onResetStore": [MockFunction],
+          "query": [MockFunction],
+          "reFetchObservableQueries": [MockFunction],
+          "readFragment": [MockFunction],
+          "readQuery": [MockFunction],
+          "resetStore": [MockFunction],
+          "restore": [MockFunction],
+          "setLocalStateFragmentMatcher": [MockFunction],
+          "setResolvers": [MockFunction],
+          "stop": [MockFunction],
+          "subscribe": [MockFunction],
+          "watchQuery": [MockFunction],
+          "writeData": [MockFunction],
+          "writeFragment": [MockFunction],
+          "writeQuery": [MockFunction],
         }
       }
     >
-      <TaskConsoleContextProvider>
+      <TaskInboxContextProvider
+        apolloClient={
+          ApolloClient {
+            "__actionHookForDevTools": [MockFunction],
+            "__requestRaw": [MockFunction],
+            "addResolvers": [MockFunction],
+            "clearStore": [MockFunction],
+            "extract": [MockFunction],
+            "getResolvers": [MockFunction],
+            "initQueryManager": [MockFunction],
+            "mutate": [MockFunction],
+            "onClearStore": [MockFunction],
+            "onResetStore": [MockFunction],
+            "query": [MockFunction],
+            "reFetchObservableQueries": [MockFunction],
+            "readFragment": [MockFunction],
+            "readQuery": [MockFunction],
+            "resetStore": [MockFunction],
+            "restore": [MockFunction],
+            "setLocalStateFragmentMatcher": [MockFunction],
+            "setResolvers": [MockFunction],
+            "stop": [MockFunction],
+            "subscribe": [MockFunction],
+            "watchQuery": [MockFunction],
+            "writeData": [MockFunction],
+            "writeFragment": [MockFunction],
+            "writeQuery": [MockFunction],
+          }
+        }
+      >
         <BrowserRouter>
           <Router
             history={
@@ -161,8 +190,8 @@ exports[`TaskConsole tests Snapshot 1`] = `
             </Switch>
           </Router>
         </BrowserRouter>
-      </TaskConsoleContextProvider>
-    </KogitoAppContextProvider>
-  </ApolloProvider>
+      </TaskInboxContextProvider>
+    </TaskConsoleContextsProvider>
+  </KogitoAppContextProvider>
 </TaskConsole>
 `;

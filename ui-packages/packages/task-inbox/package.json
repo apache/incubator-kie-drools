@@ -1,0 +1,72 @@
+{
+  "name": "@kogito-apps/task-inbox",
+  "version": "1.0.0",
+  "description": "Task Inbox component.",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-apps.git"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "precommit": "lint-staged",
+    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
+    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
+    "build:prod": "yarn run clean && yarn run lint && yarn run build",
+    "test:report": "yarn test --ci --reporters=jest-junit",
+    "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
+    "update-snapshot": "jest --updateSnapshot",
+    "test:coverage": "yarn test --coverage",
+    "lint": "eslint './src/**/*.ts{,x}'",
+    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@kogito-apps/components-common": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-loader": "8.1.0",
+    "react-docgen-typescript-loader": "3.7.2"
+  },
+  "jest": {
+    "setupFiles": [
+      "../../config/Jest-config/test-shim.js",
+      "../../config/Jest-config/test-setup.js",
+      "core-js"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "./src/static",
+      "dist/"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest",
+      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
+    },
+    "testMatch": [
+      "**/tests/*.(ts|tsx|js)"
+    ],
+    "moduleNameMapper": {
+      "\\.(scss|sass|css)$": "identity-obj-proxy"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "yarn run format",
+      "yarn run lint"
+    ]
+  }
+}

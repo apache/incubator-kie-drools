@@ -16,7 +16,6 @@
 
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 
 import {
@@ -25,7 +24,7 @@ import {
   PageLayout
 } from '@kogito-apps/consoles-common';
 
-import TaskConsoleContextProvider from '../../../context/TaskConsoleContext/TaskConsoleContextProvider';
+import TaskConsoleContextsProvider from '../../../context/TaskConsoleContext/TaskConsoleContextsProvider';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 import TaskConsoleNav from '../TaskConsoleNav/TaskConsoleNav';
 
@@ -55,17 +54,15 @@ const TaskConsole: React.FC<Props> = ({
   };
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <KogitoAppContextProvider userContext={userContext}>
-        <TaskConsoleContextProvider>
-          <BrowserRouter>
-            <Switch>
-              <Route path="/" render={renderPage} />
-            </Switch>
-          </BrowserRouter>
-        </TaskConsoleContextProvider>
-      </KogitoAppContextProvider>
-    </ApolloProvider>
+    <KogitoAppContextProvider userContext={userContext}>
+      <TaskConsoleContextsProvider client={apolloClient}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" render={renderPage} />
+          </Switch>
+        </BrowserRouter>
+      </TaskConsoleContextsProvider>
+    </KogitoAppContextProvider>
   );
 };
 

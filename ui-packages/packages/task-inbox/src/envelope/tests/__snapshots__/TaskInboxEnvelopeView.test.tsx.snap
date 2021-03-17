@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskInboxEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`TaskInboxEnvelopeView tests Snapshot 2`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": Object {
+        "taskInbox__openTask": [MockFunction],
+      },
+      "requests": Object {
+        "taskInbox__applyFilter": [MockFunction],
+        "taskInbox__applySorting": [MockFunction],
+        "taskInbox__query": [MockFunction],
+        "taskInbox__refresh": [MockFunction],
+        "taskInbox__setInitialState": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedTaskInbox
+    activeTaskStates={
+      Array [
+        "Ready",
+      ]
+    }
+    allTaskStates={
+      Array [
+        "Ready",
+        "Finished",
+      ]
+    }
+    driver={
+      TaskInboxEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": Object {
+            "taskInbox__openTask": [MockFunction],
+          },
+          "requests": Object {
+            "taskInbox__applyFilter": [MockFunction],
+            "taskInbox__applySorting": [MockFunction],
+            "taskInbox__query": [MockFunction],
+            "taskInbox__refresh": [MockFunction],
+            "taskInbox__setInitialState": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    initialState={
+      Object {
+        "currentPage": Object {
+          "limit": 10,
+          "offset": 0,
+        },
+        "filters": Object {
+          "taskNames": Array [],
+          "taskStates": Array [],
+        },
+        "sortBy": Object {
+          "direction": "asc",
+          "property": "lastUpdate",
+        },
+      }
+    }
+    isEnvelopeConnectedToChannel={true}
+  />
+</ForwardRef>
+`;

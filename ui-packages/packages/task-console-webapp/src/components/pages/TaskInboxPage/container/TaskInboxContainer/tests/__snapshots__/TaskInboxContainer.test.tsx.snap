@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskInboxContainer tests Snapshot 1`] = `
+<TaskInboxContainer>
+  <ForwardRef
+    activeTaskStates={
+      Array [
+        "Ready",
+        "Reserved",
+      ]
+    }
+    allTaskStates={
+      Array [
+        "Ready",
+        "Reserved",
+        "Completed",
+        "Aborted",
+        "Skipped",
+      ]
+    }
+    driver={
+      TaskInboxGatewayApiImpl {
+        "onOpenTask": [MockFunction],
+        "queries": Object {
+          "getUserTasks": [MockFunction],
+        },
+        "user": DefaultUser {
+          "groups": Array [],
+          "id": "jon",
+        },
+      }
+    }
+    envelopePath="/envelope/task-inbox.html"
+    targetOrigin="http://localhost"
+  >
+    <ForwardRef>
+      <iframe
+        src="/envelope/task-inbox.html"
+        style={
+          Object {
+            "border": "none",
+            "display": "flex",
+            "flex": 1,
+            "flexDirection": "column",
+            "height": "100%",
+            "margin": 0,
+            "overflow": "hidden",
+            "padding": 0,
+            "width": "100%",
+          }
+        }
+        title="X"
+      />
+    </ForwardRef>
+  </ForwardRef>
+</TaskInboxContainer>
+`;

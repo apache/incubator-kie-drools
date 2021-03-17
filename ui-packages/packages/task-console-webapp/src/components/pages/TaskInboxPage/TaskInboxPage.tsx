@@ -20,19 +20,26 @@ import {
   OUIAProps,
   ouiaPageTypeAndObjectId
 } from '@kogito-apps/components-common';
+import { PageTitle } from '@kogito-apps/consoles-common';
+import TaskInboxContainer from './container/TaskInboxContainer/TaskInboxContainer';
+import '../../styles.css';
 
-const TaskInboxPage: React.FC<OUIAProps> = () => {
+const TaskInboxPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId('task-inbox');
   });
 
   return (
     <React.Fragment>
-      {'header goes here'}
+      <PageSection variant="light">
+        <PageTitle title="Task Inbox" />
+      </PageSection>
       <PageSection>
-        <Grid hasGutter md={1}>
-          <GridItem span={12}>
-            <Card>{'Task Inbox goes here!'}</Card>
+        <Grid hasGutter md={1} className={'kogito-task-console__full-size'}>
+          <GridItem span={12} className={'kogito-task-console__full-size'}>
+            <Card className={'kogito-task-console__full-size'}>
+              <TaskInboxContainer />
+            </Card>
           </GridItem>
         </Grid>
       </PageSection>

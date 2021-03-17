@@ -21,6 +21,7 @@
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
+    "test:coverage": "yarn test --coverage",
     "update-snapshot": "jest --updateSnapshot",
     "lint": "eslint './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
