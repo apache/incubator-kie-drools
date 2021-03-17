@@ -837,4 +837,37 @@ public class IndexingTest {
             return row;
         }
     }
+
+    @Test(timeout = 10000)
+    public void testBuildsIndexedMemoryWithThis() {
+        // tests indexes are correctly built
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "global java.util.List list\n" +
+                           "rule test1\n" +
+                           "when\n" +
+                           "   $p1  : Person()\n" +
+                           "   $p2 : String(this == $p1.name)\n" + //indexed
+                           "then\n" +
+                           "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
+
+        try {
+            final ObjectTypeNode node = KieUtil.getObjectTypeNode(wm.getKnowledgeBase(), Person.class);
+            assertNotNull(node);
+            final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
+            final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0];
+
+            SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
+            assertTrue(c.isIndexed());
+            BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
+            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
+            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+        } finally {
+            wm.dispose();
+        }
+    }
 }

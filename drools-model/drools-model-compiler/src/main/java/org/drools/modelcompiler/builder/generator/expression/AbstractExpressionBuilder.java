@@ -181,7 +181,7 @@ public abstract class AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
-        return left != null && left.getFieldName() != null &&
+        return left != null && (left.getFieldName() != null || isThisExpression( left.getExpression() )) &&
                 drlxParseResult.getDecodeConstraintType() != null &&
                 drlxParseResult.getPatternType() != null &&
                 isLeftIndexableExpression( left.getExpression() ) &&
@@ -194,7 +194,7 @@ public abstract class AbstractExpressionBuilder {
                 return false;
             }
         }
-        return !isThisExpression( expr );
+        return true;
     }
 
     private Optional<Expression> getMethodChainScope(MethodCallExpr expr) {
