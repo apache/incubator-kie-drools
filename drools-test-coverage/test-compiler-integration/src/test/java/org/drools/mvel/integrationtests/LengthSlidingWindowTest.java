@@ -16,26 +16,44 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.compiler.StockTick;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.mvel.compiler.StockTick;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Results;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class LengthSlidingWindowTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public LengthSlidingWindowTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+    }
 
     @Test
     public void testSlidingWindowWithAlphaConstraint() {
@@ -93,9 +111,8 @@ public class LengthSlidingWindowTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM )
-                                             .newKieSession( sessionConfig, null );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         List<Double> list = new ArrayList<Double>();
         ksession.setGlobal( "list", list );
@@ -134,7 +151,7 @@ public class LengthSlidingWindowTest {
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        assertEquals(1, kieBuilder.getResults().getMessages().size());
     }
 }

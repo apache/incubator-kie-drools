@@ -16,20 +16,38 @@
 
 package org.drools.mvel.integrationtests.session;
 
+import java.util.Collection;
+
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cat;
 import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Primitives;
-import org.drools.mvel.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class FieldAccessTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class FieldAccessTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public FieldAccessTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     // this isn't possible, we can only narrow with type safety, not widen.
@@ -50,8 +68,8 @@ public class FieldAccessTest extends CommonTestMethodBase {
         rule += "    System.out.println(\"hello person\");\n";
         rule += "end";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
+        KieSession session = kbase.newKieSession();
 
         final Person person = new Person();
         person.setPet(new Cat("Mittens"));
@@ -68,8 +86,8 @@ public class FieldAccessTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Primitives());
         final int rules = ksession.fireAllRules();
@@ -86,8 +104,8 @@ public class FieldAccessTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final Person p = new Person("x");
         p.setAddress(new Address("x", "x", "x"));

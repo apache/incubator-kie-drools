@@ -60,6 +60,8 @@ public class WireChannelTest {
     
     @Test
     public void testWireChannel() throws Exception {
+        channelMessages.clear();
+
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0");

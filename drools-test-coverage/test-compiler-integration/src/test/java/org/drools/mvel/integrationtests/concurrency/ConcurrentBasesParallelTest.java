@@ -18,12 +18,15 @@ package org.drools.mvel.integrationtests.concurrency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.mvel.integrationtests.facts.BeanA;
 import org.drools.mvel.integrationtests.facts.BeanB;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,22 +41,34 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 @RunWith(Parameterized.class)
 public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[] {false, false},
-                new Boolean[] {false, true},
-                new Boolean[] {true, false},
-                new Boolean[] {true, true});
+    @Parameterized.Parameters(name = "Enforced jitting={0}, KieBase type={1}")
+    public static List<Object[]> getTestParameters() {
+        List<Boolean[]> baseParams = Arrays.asList(
+                                                   new Boolean[]{false},
+                                                   new Boolean[]{true});
+
+        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        // combine
+        List<Object[]> params = new ArrayList<>();
+        for (Boolean[] baseParam : baseParams) {
+            for (Object[] kbParam : kbParams) {
+                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutabelModel()) {
+                    // jitting & exec-model test is not required
+                } else {
+                    params.add(new Object[]{baseParam[0], kbParam[0]});
+                }
+            }
+        }
+        return params;
     }
 
     private static final Integer NUMBER_OF_THREADS = 10;
 
-    public ConcurrentBasesParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase, false, false);
+    public ConcurrentBasesParallelTest(final boolean enforcedJitting, final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        super(enforcedJitting, false, false, false, kieBaseTestConfiguration);
     };
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testOneOfAllFactsMatches() throws InterruptedException {
         final int numberOfObjects = 100;
 
@@ -81,7 +96,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testNoFactMatches() throws InterruptedException {
         final TestExecutor exec = counter -> {
             final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
@@ -110,7 +125,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testFireAndGlobalSeparation() throws InterruptedException {
         final TestExecutor exec = counter -> {
             final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
@@ -140,7 +155,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testFireAndGlobalSeparation2() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
@@ -179,7 +194,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testNonMatchingFact() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
@@ -213,7 +228,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testMatchingFact() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
@@ -247,7 +262,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testNot() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
@@ -282,7 +297,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testExists() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
@@ -318,7 +333,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testSubnetwork() throws InterruptedException {
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
@@ -365,7 +380,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testAccumulatesMatchOnlyBeanA() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
@@ -403,7 +418,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testAccumulatesMatchBoth() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
@@ -436,7 +451,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testAccumulatesMatchOnlyOne() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
@@ -473,7 +488,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testNotsMatchOnlyOne() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleNotA " +
@@ -510,7 +525,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testNotsMatchBoth() throws InterruptedException {
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleNotA " +
@@ -547,7 +562,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testFunctions() throws InterruptedException {
         final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "global java.util.List list;" +
@@ -584,7 +599,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testFunctions2() throws InterruptedException {
         final int objectCount = 100;
 
@@ -633,7 +648,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testQueries() throws InterruptedException {
         final int numberOfObjects = 100;
 
@@ -668,7 +683,7 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testQueries2() throws InterruptedException {
         final int numberOfObjects = 100;
 

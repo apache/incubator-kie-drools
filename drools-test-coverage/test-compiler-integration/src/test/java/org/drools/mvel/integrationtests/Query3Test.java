@@ -16,23 +16,37 @@
 package org.drools.mvel.integrationtests;
 
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class Query3Test {
 
-    private InternalKnowledgeBase knowledgeBase;
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public Query3Test(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
+
+    private KieBase knowledgeBase;
 
     /**
      * @throws java.lang.Exception
@@ -57,12 +71,7 @@ public class Query3Test {
         text += "    foo2 : Foo2(id == foo.id);\n";
         text += "end\n";
 
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newByteArrayResource(text.getBytes()),
-                              ResourceType.DRL );
-        assertFalse( knowledgeBuilder.hasErrors() );
-        knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages( knowledgeBuilder.getKnowledgePackages() );
+        knowledgeBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, text);
     }
 
     private void doIt(Object o1,

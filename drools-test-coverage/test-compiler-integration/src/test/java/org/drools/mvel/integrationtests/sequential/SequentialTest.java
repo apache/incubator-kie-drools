@@ -18,27 +18,29 @@ package org.drools.mvel.integrationtests.sequential;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.IoUtils;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.phreak.A;
 import org.drools.mvel.integrationtests.DynamicRulesTest;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Results;
+import org.kie.api.builder.KieModule;
 import org.kie.api.conf.SequentialOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -52,24 +54,26 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class SequentialTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class SequentialTest {
 
-    private KieBaseConfiguration kconf;
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    @Before
-    public void setup() {
-        kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( SequentialOption.YES );
+    public SequentialTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -157,8 +161,10 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="    list.add( drools.getRule().getName() );\n";
         str +="end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, str);
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
+
         final List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -207,8 +213,9 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="    list.add( drools.getRule().getName() );\n";
         str +="end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, str);
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
         final List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -221,8 +228,9 @@ public class SequentialTest extends CommonTestMethodBase {
 
     @Test
     public void testBasicOperation() throws Exception {
-        KieBase kbase = loadKnowledgeBase(kconf, "simpleSequential.drl");
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "simpleSequential.drl");
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
         final List list = new ArrayList();
         ksession.setGlobal( "list",
                            list );
@@ -248,8 +256,9 @@ public class SequentialTest extends CommonTestMethodBase {
 
     @Test
     public void testSalience() throws Exception {
-        KieBase kbase = loadKnowledgeBase(kconf, "simpleSalience.drl");
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "simpleSalience.drl");
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -277,8 +286,9 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, str);
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         ksession.execute( new Message( "help" ) );
     }
@@ -295,8 +305,9 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString(kconf, str);
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final List list = new ArrayList();
 
@@ -382,15 +393,17 @@ public class SequentialTest extends CommonTestMethodBase {
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
     @Test
     public void testSequentialWithRulebaseUpdate() throws Exception {
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase(kconf, "simpleSalience.drl");
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "simpleSalience.drl");
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
         ksession.execute(new Person("pob"));
 
-        kbase.addPackages(loadKnowledgePackagesFromString( new String( IoUtils.readBytesFromInputStream( DynamicRulesTest.class.getResource("test_Dynamic3.drl").openStream() ) ) ) );
+        Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", DynamicRulesTest.class, kieBaseTestConfiguration, "test_Dynamic3.drl").getKiePackages();
+        kbase.addPackages(kpkgs);
 
         ksession = kbase.newStatelessKieSession();
         ksession.setGlobal( "list", list );
@@ -465,15 +478,15 @@ public class SequentialTest extends CommonTestMethodBase {
                                                  String message,
                                                  int timetoMeasureIterations,
                                                  String file) throws DroolsParserException, IOException, Exception {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        SequentialOption opt;
         if ( sequentialMode ) {
-            kconf.setOption( SequentialOption.YES );
+            opt = SequentialOption.YES;
         }   else {
-            kconf.setOption( SequentialOption.NO );
+            opt = SequentialOption.NO;
         }
-
-        KieBase kbase = loadKnowledgeBase(kconf, file);
-        StatelessKieSession ksession = createStatelessKnowledgeSession( kbase );
+        final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, file);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, opt);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -506,7 +519,7 @@ public class SequentialTest extends CommonTestMethodBase {
             long end = start + timetoMeasureIterations;
             int count = 0;
             while ( System.currentTimeMillis() < end ) {
-                StatelessKieSession sess2 = createStatelessKnowledgeSession( kbase );
+                StatelessKieSession sess2 = kbase.newStatelessKieSession();
                 List list2 = new ArrayList();
                 sess2.setGlobal( "list",
                                  list2 );
@@ -535,20 +548,11 @@ public class SequentialTest extends CommonTestMethodBase {
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write("src/main/resources/r0.drl", str);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession sequentialKsession = kbase.newStatelessKieSession();
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        Results results = kieBuilder.getResults();
-        if (results.hasMessages( org.kie.api.builder.Message.Level.ERROR)) {
-            throw new RuntimeException(results.getMessages().toString());
-        }
-        KieContainer kieContainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
-
-        KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
-        kieBaseConf.setOption( SequentialOption.YES );
-
-        StatelessKieSession sequentialKsession = kieContainer.newKieBase( kieBaseConf ).newStatelessKieSession();
         List result = (List) sequentialKsession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message())));
         assertEquals( 2, result.size() );
 
@@ -578,9 +582,9 @@ public class SequentialTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        StatelessKieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
-                                                      .build( SequentialOption.YES )
-                                                      .newStatelessKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         ksession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message(), 3, 5)));
     }

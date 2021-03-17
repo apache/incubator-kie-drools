@@ -30,7 +30,6 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -55,7 +54,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
-public class KieContainerTest extends CommonTestMethodBase {
+public class KieContainerTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
@@ -99,6 +98,11 @@ public class KieContainerTest extends CommonTestMethodBase {
     public void testReleaseIdGetters() {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.1");
+        ReleaseId newReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.2");
+
+        ks.getRepository().removeKieModule(releaseId);
+        ks.getRepository().removeKieModule(newReleaseId);
+
         KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, createDRL("ruleA"));
 
         ReleaseId configuredReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "RELEASE");
@@ -110,8 +114,7 @@ public class KieContainerTest extends CommonTestMethodBase {
         assertEquals(releaseId, iKieContainer.getReleaseId());
         // demonstrate internal API behavior, in the future shall this be enforced?
         assertEquals(configuredReleaseId, iKieContainer.getContainerReleaseId());
-        
-        ReleaseId newReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.2");
+
         KieUtil.getKieModuleFromDrls(newReleaseId, kieBaseTestConfiguration, createDRL("ruleA"));
         iKieContainer.updateToVersion(newReleaseId);
         

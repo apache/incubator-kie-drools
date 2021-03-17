@@ -58,6 +58,7 @@ public class SerializationSecurityPolicyTest extends CommonTestMethodBase {
 
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
+     // kpackage serialization is not supported. But leave it for standard-drl.
         final String rule =
                 " rule R " +
                 " when " +

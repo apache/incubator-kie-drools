@@ -16,26 +16,40 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class RuleExtensionTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public RuleExtensionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testRuleExtendsNonexistingRule() {
@@ -57,10 +71,9 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
-        kbuilder.getErrors().iterator().next().toString().contains("Base");
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -87,15 +100,8 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        assertFalse(kbuilder.hasErrors());
-
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession knowledgeSession = kb.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str, str2);
+        KieSession knowledgeSession = kbase.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -135,18 +141,8 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
-
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages( kbuilder.getKnowledgePackages() );
-
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kb );
-        kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        assertFalse(kbuilder2.hasErrors());
-
-        KieSession knowledgeSession = kb.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str, str2);
+        KieSession knowledgeSession = kbase.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -185,16 +181,9 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertFalse(kbuilder.hasErrors());
-
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages( kbuilder.getKnowledgePackages() );
-
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kb );
-        kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        assertTrue(kbuilder2.hasErrors());
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str2);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
 
@@ -224,19 +213,8 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckb = kbuilder.batch();
-
-        ckb.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
-                .build();
-
-        assertFalse( kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession knowledgeSession = kb.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str, str2);
+        KieSession knowledgeSession = kbase.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -275,14 +253,9 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckb = kbuilder.batch();
-
-        ckb.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
-                .build();
-
-        assertTrue( kbuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str2);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
 
@@ -311,17 +284,13 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckb = kbuilder.batch();
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str2);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
 
-        ckb.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
-                .build();
-
-        assertTrue( kbuilder.hasErrors() );
-        System.out.println( kbuilder.getErrors() );
-        assertFalse( kbuilder.getErrors().toString().contains( "Circular" ) );
-        assertTrue( kbuilder.getErrors().toString().contains( "Base" ) );
+        System.out.println( errors );
+        assertFalse( errors.toString().contains( "Circular" ) );
+        assertTrue( errors.toString().contains( "Base" ) );
     }
 
     @Test
@@ -349,19 +318,8 @@ public class RuleExtensionTest {
                         "  list.add( 1 );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckb = kbuilder.batch();
-
-        ckb.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
-                .build();
-
-        assertFalse( kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession knowledgeSession = kb.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str, str2);
+        KieSession knowledgeSession = kbase.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -406,20 +364,8 @@ public class RuleExtensionTest {
                         "  list.add( $i + $j );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckb = kbuilder.batch();
-
-        ckb.add( ResourceFactory.newByteArrayResource( str3.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
-                .build();
-
-        assertFalse( kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages( kbuilder.getKnowledgePackages() );
-
-        KieSession knowledgeSession = kb.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1, str2, str3);
+        KieSession knowledgeSession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<Integer>();
         knowledgeSession.setGlobal( "list", list );
@@ -470,16 +416,11 @@ public class RuleExtensionTest {
                         "  list.add( $i + $j );\n" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        CompositeKnowledgeBuilder ckb = kbuilder.batch();
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1, str2, str3);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
 
-        ckb.add( ResourceFactory.newByteArrayResource( str3.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
-                .build();
-
-        assertTrue( kbuilder.hasErrors() );
-        assertEquals( 1, kbuilder.getErrors().size() );
-        assertTrue( kbuilder.getErrors().iterator().next().toString().contains("Circular") );
+        assertEquals( 1, errors.size() );
+        assertTrue( errors.iterator().next().toString().contains("Circular") );
     }
 }

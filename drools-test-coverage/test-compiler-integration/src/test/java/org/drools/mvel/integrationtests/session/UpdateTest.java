@@ -18,9 +18,9 @@ package org.drools.mvel.integrationtests.session;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.IndexedNumber;
@@ -29,19 +29,23 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Target;
 import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.mvel.integrationtests.facts.AFact;
-import org.junit.Assert;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.command.Setter;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -49,7 +53,20 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class UpdateTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class UpdateTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public UpdateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testModifyBlock() throws Exception {
@@ -62,8 +79,8 @@ public class UpdateTest extends CommonTestMethodBase {
     }
 
     private void doModifyTest(final String drlResource) throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(drlResource));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, drlResource);
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -84,8 +101,8 @@ public class UpdateTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyBlockWithFrom() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ModifyBlockWithFrom.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ModifyBlockWithFrom.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);
@@ -109,8 +126,8 @@ public class UpdateTest extends CommonTestMethodBase {
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
     @Test
     public void testJavaModifyBlock() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_JavaModifyBlock.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_JavaModifyBlock.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -154,9 +171,9 @@ public class UpdateTest extends CommonTestMethodBase {
                 "    }\n" +
                 "end";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        Assert.assertFalse(kbuilder.getErrors().toString(), kbuilder.hasErrors());
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -177,8 +194,8 @@ public class UpdateTest extends CommonTestMethodBase {
                 "    System.out.println( $o );\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final Person p = new Person("hungry");
         ksession.insert(p);
@@ -188,8 +205,8 @@ public class UpdateTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyWithLockOnActive() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ModifyWithLockOnActive.drl"));
-        final KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ModifyWithLockOnActive.drl");
+        KieSession session = kbase.newKieSession();
 
         final List results = new ArrayList();
         session.setGlobal("results", results);
@@ -218,10 +235,9 @@ public class UpdateTest extends CommonTestMethodBase {
                 "   modify($p) { setCheese($c) ;\n" +
                 "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        assertTrue(kbuilder.hasErrors());
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -239,7 +255,9 @@ public class UpdateTest extends CommonTestMethodBase {
         str += "    list.add( $i ); \n";
         str += "end \n";
 
-        testInvalidDrl(str);
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -257,13 +275,15 @@ public class UpdateTest extends CommonTestMethodBase {
         str += "    list.add( $i ); \n";
         str += "end \n";
 
-        testInvalidDrl(str);
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
     public void testJoinNodeModifyObject() throws IOException, ClassNotFoundException {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_JoinNodeModifyObject.drl"));
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_JoinNodeModifyObject.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List orderedFacts = new ArrayList();
         final List errors = new ArrayList();
@@ -291,8 +311,8 @@ public class UpdateTest extends CommonTestMethodBase {
                         "       System.out.println(\"\\\"Hello world!\\\"\");\n" +
                         "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final Person p1 = new Person("John", "nobody", 25);
         ksession.execute(CommandFactory.newInsert(p1));
@@ -328,8 +348,8 @@ public class UpdateTest extends CommonTestMethodBase {
         str += "  list.add($f1); \n";
         str += "end  \n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -364,8 +384,8 @@ public class UpdateTest extends CommonTestMethodBase {
 
     @Test
     public void testLLR() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_JoinNodeModifyTuple.drl" ) );
-        KieSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_JoinNodeModifyTuple.drl");
+        KieSession ksession = kbase.newKieSession();
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,true );
 
         // 1st time
@@ -473,9 +493,8 @@ public class UpdateTest extends CommonTestMethodBase {
                 + "        // noop\n"
                 + "end\n";
 
-        // load up the knowledge base
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);

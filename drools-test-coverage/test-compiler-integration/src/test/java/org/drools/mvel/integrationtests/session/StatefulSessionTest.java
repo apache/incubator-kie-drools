@@ -20,19 +20,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.compiler.CheeseEqual;
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.Message;
-import org.drools.mvel.compiler.PersonInterface;
-import org.drools.mvel.integrationtests.SerializationHelper;
+
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.mvel.compiler.CheeseEqual;
+import org.drools.mvel.compiler.Message;
+import org.drools.mvel.compiler.PersonInterface;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -42,7 +43,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class StatefulSessionTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class StatefulSessionTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public StatefulSessionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testDispose() throws Exception {
@@ -55,8 +68,9 @@ public class StatefulSessionTest extends CommonTestMethodBase {
         rule.append("end\n");
 
         //building stuff
-        final KieBase kbase = loadKnowledgeBaseFromString(rule.toString());
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule.toString());
+        KieSession ksession = kbase.newKieSession();
+
 
         ksession.insert(new Message("test"));
         final int rules = ksession.fireAllRules();
@@ -75,9 +89,9 @@ public class StatefulSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testGetStatefulKnowledgeSessions() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("../empty.drl"));
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "../empty.drl");
+        KieSession ksession_1 = kbase.newKieSession();
 
-        final KieSession ksession_1 = createKnowledgeSession(kbase);
         final String expected_1 = "expected_1";
         final String expected_2 = "expected_2";
         final FactHandle handle_1 = ksession_1.insert(expected_1);
@@ -104,8 +118,8 @@ public class StatefulSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testGetFactHandle() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("../empty.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "../empty.drl");
+        KieSession ksession = kbase.newKieSession();
 
         for (int i = 0; i < 20; i++) {
             final Object object = new Object();
@@ -119,10 +133,9 @@ public class StatefulSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testGetFactHandleEqualityBehavior() throws Exception {
-        final KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbc.setOption(EqualityBehaviorOption.EQUALITY);
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(kbc));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
+        KieSession ksession = kbase.newKieSession();
 
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);
         ksession.insert(cheese);
@@ -132,10 +145,9 @@ public class StatefulSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testGetFactHandleIdentityBehavior() throws Exception {
-        final KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbc.setOption(EqualityBehaviorOption.IDENTITY);
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(kbc));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        kieBaseTestConfiguration.setIdentity(true); // IDENTITY
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
+        KieSession ksession = kbase.newKieSession();
 
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);
         ksession.insert(cheese);
@@ -147,8 +159,8 @@ public class StatefulSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testDisconnectedFactHandle() {
-        final KieBase kbase = getKnowledgeBase();
-        final KieSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
+        KieSession ksession = kbase.newKieSession();
         final DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
         final DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
 
@@ -163,8 +175,8 @@ public class StatefulSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testIterateObjects() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_IterateObjects.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_IterateObjects.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);

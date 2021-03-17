@@ -16,26 +16,32 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.kie.api.time.SessionPseudoClock;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.SessionPseudoClock;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests inserting events into KIE Session from multiple threads using one and
@@ -43,9 +49,21 @@ import org.kie.api.runtime.rule.EntryPoint;
  *
  * BZ-967599
  */
+@RunWith(Parameterized.class)
 public class MTEntryPointsTest {
 
     private KieSession kieSession;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MTEntryPointsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
 
     @Before
     public void initSession() {
@@ -92,7 +110,8 @@ public class MTEntryPointsTest {
                     .setClockType(ClockTypeOption.PSEUDO);
         kfs.writeKModuleXML(kmoduleModel.toXML());
 
-        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+
         assertEquals(0, builder.getResults().getMessages().size());
         ks.getRepository().addKieModule(builder.getKieModule());
 
