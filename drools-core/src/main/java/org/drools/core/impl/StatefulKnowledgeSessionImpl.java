@@ -1971,8 +1971,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void startOperation() {
-        // no-op
-        if (this.opCounter.getAndIncrement() == 0) {
+        if ( getSessionConfiguration().isThreadSafe() && this.opCounter.getAndIncrement() == 0 ) {
             // means the engine was idle, reset the timestamp
             this.lastIdleTimestamp.set(-1);
         }
@@ -1993,7 +1992,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void endOperation() {
-        if (this.opCounter.decrementAndGet() == 0) {
+        if ( getSessionConfiguration().isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             this.lastIdleTimestamp.set(this.timerService.getCurrentTime());
             if (this.endOperationListener != null) {

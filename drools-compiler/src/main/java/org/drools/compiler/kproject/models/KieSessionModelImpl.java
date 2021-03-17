@@ -64,6 +64,8 @@ public class KieSessionModelImpl
 
     private boolean                          directFiring = false;
 
+    private boolean                          threadSafe = true;
+
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
@@ -95,6 +97,18 @@ public class KieSessionModelImpl
     @Override
     public KieSessionModel setDirectFiring( boolean directFiring ) {
         this.directFiring = directFiring;
+        return this;
+    }
+
+
+    @Override
+    public boolean isThreadSafe() {
+        return threadSafe;
+    }
+
+    @Override
+    public KieSessionModel setThreadSafe( boolean threadSafe ) {
+        this.threadSafe = threadSafe;
         return this;
     }
 
@@ -265,6 +279,7 @@ public class KieSessionModelImpl
             writer.addAttribute("type", kSession.getType().toString().toLowerCase() );
             writer.addAttribute( "default", Boolean.toString(kSession.isDefault()) );
             writer.addAttribute( "directFiring", Boolean.toString(kSession.isDirectFiring()) );
+            writer.addAttribute( "threadSafe", Boolean.toString(kSession.isThreadSafe()) );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
@@ -313,6 +328,7 @@ public class KieSessionModelImpl
             kSession.name = reader.getAttribute("name");
             kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
             kSession.setDirectFiring( "true".equals(reader.getAttribute( "directFiring" )) );
+            kSession.setThreadSafe( "true".equals(reader.getAttribute( "threadSafe" )) );
 
             String kSessionType = reader.getAttribute("type");
             kSession.setType(kSessionType != null ? KieSessionType.valueOf( kSessionType.toUpperCase() ) : KieSessionType.STATEFUL);

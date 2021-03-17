@@ -34,6 +34,7 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 
+import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
@@ -221,7 +222,20 @@ public interface PropagationEntry {
         }
 
         public void execute(InternalWorkingMemory wm) {
-            EntryPointNode.propagateModify(handle, context, objectTypeConf, wm);
+            execute(handle, context, objectTypeConf, wm);
+        }
+
+        public static void execute(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
+            // make a reference to the previous tuples, then null then on the handle
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuples() );
+            ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
+            for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
+                cachedNodes[i].modifyObject( handle, modifyPreviousTuples, pctx, wm );
+                if (i < cachedNodes.length - 1) {
+                    removeRightTuplesMatchingOTN( pctx, wm, modifyPreviousTuples, cachedNodes[i], 0 );
+                }
+            }
+            modifyPreviousTuples.retractTuples(pctx, wm);
         }
 
         @Override
@@ -262,7 +276,7 @@ public interface PropagationEntry {
                                                             context.adaptModificationMaskForObjectType(otn.getObjectType(), wm),
                                                             wm, partition );
                 if (i < cachedNodes.length - 1) {
-                    EntryPointNode.removeRightTuplesMatchingOTN( context, wm, modifyPreviousTuples, otn, partition );
+                    removeRightTuplesMatchingOTN( context, wm, modifyPreviousTuples, otn, partition );
                 }
             }
             modifyPreviousTuples.retractTuples(context, wm);
