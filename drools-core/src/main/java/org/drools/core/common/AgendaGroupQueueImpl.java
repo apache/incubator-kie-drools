@@ -88,7 +88,8 @@ public class AgendaGroupQueueImpl
 
     public void setWorkingMemory(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        if (workingMemory.getSessionConfiguration().isDirectFiring()) {
+        // workingMemory can be null during deserialization
+        if (workingMemory != null && workingMemory.getSessionConfiguration().isDirectFiring()) {
             this.priorityQueue = new ArrayQueue();
         } else {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
