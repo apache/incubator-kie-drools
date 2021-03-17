@@ -8,9 +8,6 @@ pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
     }
-    triggers {
-        cron('H H * * 5') // Run every Friday.
-    }
     tools {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
