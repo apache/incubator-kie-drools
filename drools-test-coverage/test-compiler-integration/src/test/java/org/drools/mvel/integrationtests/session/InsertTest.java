@@ -17,15 +17,20 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.mvel.CommonTestMethodBase;
+
 import org.drools.mvel.compiler.Move;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.PersonFinal;
 import org.drools.mvel.compiler.Pet;
 import org.drools.mvel.compiler.Win;
-import org.drools.mvel.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -33,7 +38,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class InsertTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class InsertTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public InsertTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testInsert() throws Exception {
@@ -56,8 +73,8 @@ public class InsertTest extends CommonTestMethodBase {
         drl += "  list.add( $person );\n";
         drl += "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(drl);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -73,9 +90,8 @@ public class InsertTest extends CommonTestMethodBase {
 
     @Test
     public void testInsertionOrder() {
-        final KieBase kbase = loadKnowledgeBase("test_InsertionOrder.drl");
-
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_InsertionOrder.drl");
+        KieSession ksession = kbase.newKieSession();
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
         ksession.insert(new Move(1, 2));
@@ -90,7 +106,7 @@ public class InsertTest extends CommonTestMethodBase {
         assertTrue(results.contains(win3));
 
         ksession.dispose();
-        ksession = createKnowledgeSession(kbase);
+        ksession = kbase.newKieSession();
         results = new ArrayList<>();
         ksession.setGlobal("results", results);
         // reverse the order of the inserts
@@ -105,8 +121,8 @@ public class InsertTest extends CommonTestMethodBase {
 
     @Test
     public void testInsertFinalClassInstance() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_FinalClass.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_FinalClass.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);

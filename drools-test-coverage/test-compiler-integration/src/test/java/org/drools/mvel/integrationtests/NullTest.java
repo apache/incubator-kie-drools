@@ -18,17 +18,22 @@ package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Attribute;
+import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.PersonInterface;
 import org.drools.mvel.compiler.Primitives;
-import org.drools.mvel.compiler.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -37,12 +42,25 @@ import org.kie.api.runtime.KieSession;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class NullTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class NullTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public NullTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testNullValuesIndexing() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NullValuesIndexing.drl"));
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullValuesIndexing.drl");
+        KieSession ksession = kbase.newKieSession();
 
         // Adding person with null name and likes attributes
         final PersonInterface bob = new Person(null, null);
@@ -60,7 +78,7 @@ public class NullTest extends CommonTestMethodBase {
 
     @Test
     public void testNullBehaviour() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("null_behaviour.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "null_behaviour.drl");
         KieSession session = kbase.newKieSession();
 
         final PersonInterface p1 = new Person("michael", "food", 40);
@@ -74,7 +92,7 @@ public class NullTest extends CommonTestMethodBase {
 
     @Test
     public void testNullConstraint() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("null_constraint.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "null_constraint.drl");
         KieSession session = kbase.newKieSession();
 
         final List foo = new ArrayList();
@@ -94,8 +112,8 @@ public class NullTest extends CommonTestMethodBase {
 
     @Test
     public void testNullBinding() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_nullBindings.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_nullBindings.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -119,8 +137,8 @@ public class NullTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Person(null));
         ksession.insert(new Person("Mark"));
@@ -131,9 +149,9 @@ public class NullTest extends CommonTestMethodBase {
 
     @Test
     public void testNullFieldOnCompositeSink() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_NullFieldOnCompositeSink.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullFieldOnCompositeSink.drl");
+        KieSession ksession = kbase.newKieSession();
 
-        KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -148,8 +166,8 @@ public class NullTest extends CommonTestMethodBase {
 
     @Test
     public void testNullHandling() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_NullHandling.drl");
-        KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullHandling.drl");
+        KieSession session = kbase.newKieSession();
 
         final List list = new ArrayList();
         session.setGlobal("list", list);
@@ -180,8 +198,8 @@ public class NullTest extends CommonTestMethodBase {
 
     @Test
     public void testNullHashing() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_NullHashing.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullHashing.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);
@@ -222,11 +240,9 @@ public class NullTest extends CommonTestMethodBase {
                 "  list.add( \"OK\" ); \n" +
                 "end";
 
-        final KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbConf.setOption(EqualityBehaviorOption.EQUALITY);
-
-        final KieBase kbase = loadKnowledgeBaseFromString(kbConf, str);
-        final KieSession ksession = kbase.newKieSession();
+        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final java.util.List list = new java.util.ArrayList();
         ksession.setGlobal("list", list);
@@ -246,8 +262,8 @@ public class NullTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new PrimitiveBean(0.9, 1.1));
         ksession.insert(new PrimitiveBean(0.9, null));

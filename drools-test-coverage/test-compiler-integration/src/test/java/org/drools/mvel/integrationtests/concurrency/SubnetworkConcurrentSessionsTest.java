@@ -16,10 +16,14 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.integrationtests.facts.Product;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,26 +34,36 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
+    @Parameterized.Parameters(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    public static List<Object[]> getTestParameters() {
+        List<Boolean[]> baseParams = Arrays.asList(
+                new Boolean[]{false, false},
+                new Boolean[]{true, false},
+                new Boolean[]{false, true},
+                new Boolean[]{true, true}
+                );
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[]{false, false, false},
-                new Boolean[]{false, true, false},
-                new Boolean[]{true, false, false},
-                new Boolean[]{true, true, false},
-                new Boolean[]{false, false, true},
-                new Boolean[]{false, true, true},
-                new Boolean[]{true, false, true},
-                new Boolean[]{true, true, true});
+        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        // combine
+        List<Object[]> params = new ArrayList<>();
+        for (Boolean[] baseParam : baseParams) {
+            for (Object[] kbParam : kbParams) {
+                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutabelModel()) {
+                    // jitting & exec-model test is not required
+                } else {
+                    params.add(new Object[] {baseParam[0], baseParam[1], kbParam[0]});
+                }
+            }
+        }
+        return params;
     }
 
-    public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                            final boolean sharedKieBase) {
-        super(enforcedJitting, serializeKieBase, sharedKieBase, false);
+    public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting,
+                                            final boolean sharedKieBase,  final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        super(enforcedJitting, false, sharedKieBase, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void test1() throws InterruptedException {
         final String drl = "rule R when String() then end";
 
@@ -59,13 +73,13 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drl );
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void test2NoSubnetwork() throws InterruptedException {
         test2(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void test2WithSubnetwork() throws InterruptedException {
         test2(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
@@ -95,19 +109,19 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drls );
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void test3NoSubnetwork() throws InterruptedException {
         test3(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void test3WithSubnetwork() throws InterruptedException {
         test3(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void test3WithSharedSubnetwork() throws InterruptedException {
         final String ruleTemplate = "import " + Product.class.getCanonicalName() + ";\n" +
                 "rule ${ruleName} when\n" +
@@ -169,13 +183,13 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drls );
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 20000)
     public void test4NoSharing() throws InterruptedException {
         test4(getRule("R1", "", false, true, "Number( intValue > 5 )"),
                 getRule("R2", "", false, true, "Number( intValue < 5 )"));
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 20000)
     public void test4WithSharing() throws InterruptedException {
         test4(getRule("R1", "", true, true, "Number( intValue > 5 )"),
                 getRule("R2", "", true, true, "Number( intValue < 5 )"));

@@ -18,7 +18,7 @@ package nesting;
 //dialect "mvel"
 
 import org.drools.mvel.compiler.Person
-import org.drools.Address
+import org.drools.mvel.compiler.Address
 
 
 

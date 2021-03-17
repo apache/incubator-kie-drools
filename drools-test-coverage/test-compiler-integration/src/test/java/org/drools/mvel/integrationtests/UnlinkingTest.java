@@ -16,24 +16,41 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.Person;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class UnlinkingTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class UnlinkingTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public UnlinkingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void multipleJoinsUsingSameOTN() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_LRUnlinking.drl");
-        kbase = SerializationHelper.serializeObject( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_LRUnlinking.drl");
 
         final KieSession wmOne = kbase.newKieSession();
         final KieSession wmTwo = kbase.newKieSession();

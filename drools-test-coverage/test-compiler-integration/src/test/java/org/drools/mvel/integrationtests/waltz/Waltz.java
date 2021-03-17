@@ -22,8 +22,8 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.mvel.CommonTestMethodBase;
-
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -33,7 +33,13 @@ import static org.junit.Assert.fail;
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-public abstract class Waltz extends CommonTestMethodBase {
+public abstract class Waltz {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public Waltz(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
 
     @Test(timeout = 20000 )
     public void testWaltz() {
@@ -74,8 +80,7 @@ public abstract class Waltz extends CommonTestMethodBase {
     }
 
     public KieBase readKnowledegBase() {
-        KieBase kbase = loadKnowledgeBase( "waltz.drl");
-        return ( KieBase ) kbase;
+        return KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "waltz.drl");
     }
 
     private void loadLines(final KieSession kSession,

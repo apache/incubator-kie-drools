@@ -18,28 +18,41 @@ package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 
+@RunWith(Parameterized.class)
 public class BasicUpdateTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public BasicUpdateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private static final String UPDATE_TEST_DRL = "org/drools/mvel/integrationtests/session/update_test.drl";
 
@@ -47,23 +60,7 @@ public class BasicUpdateTest {
 
     @Before
     public void setUp() {
-        final KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-
-        kfs.write(KieServices.Factory.get().getResources()
-                .newClassPathResource(UPDATE_TEST_DRL, BasicUpdateTest.class));
-
-        final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-
-        kbuilder.buildAll();
-
-        final List<Message> res = kbuilder.getResults().getMessages(Message.Level.ERROR);
-
-        assertEquals(res.toString(), 0, res.size());
-
-        final KieBase kbase = KieServices.Factory.get()
-                .newKieContainer(kbuilder.getKieModule().getReleaseId())
-                .getKieBase();
-
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, UPDATE_TEST_DRL);
         ksession = kbase.newKieSession();
     }
 

@@ -18,6 +18,7 @@ package org.drools.mvel.integrationtests.concurrency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.mvel.integrationtests.facts.AnEnum;
@@ -26,6 +27,8 @@ import org.drools.mvel.integrationtests.facts.ChildFact2;
 import org.drools.mvel.integrationtests.facts.ChildFact3WithEnum;
 import org.drools.mvel.integrationtests.facts.ChildFact4WithFirings;
 import org.drools.mvel.integrationtests.facts.RootFact;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,25 +39,35 @@ public class JoinsConcurrentSessionsTest extends AbstractConcurrentTest {
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[]{false, false, false},
-                new Boolean[]{false, true, false},
-                new Boolean[]{true, false, false},
-                new Boolean[]{true, true, false},
-                new Boolean[]{false, false, true},
-                new Boolean[]{false, true, true},
-                new Boolean[]{true, false, true},
-                new Boolean[]{true, true, true});
+    @Parameterized.Parameters(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    public static List<Object[]> getTestParameters() {
+        List<Boolean[]> baseParams = Arrays.asList(
+                                                   new Boolean[]{false, false},
+                                                   new Boolean[]{true, false},
+                                                   new Boolean[]{false, true},
+                                                   new Boolean[]{true, true});
+
+        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        // combine
+        List<Object[]> params = new ArrayList<>();
+        for (Boolean[] baseParam : baseParams) {
+            for (Object[] kbParam : kbParams) {
+                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutabelModel()) {
+                    // jitting & exec-model test is not required
+                } else {
+                    params.add(new Object[]{baseParam[0], baseParam[1], kbParam[0]});
+                }
+            }
+        }
+        return params;
     }
 
-    public JoinsConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                       final boolean sharedKieBase) {
-        super(enforcedJitting, serializeKieBase, sharedKieBase, false);
+    public JoinsConcurrentSessionsTest(final boolean enforcedJitting,
+                                       final boolean sharedKieBase, final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        super(enforcedJitting, false, sharedKieBase, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void test5() throws InterruptedException {
         final String drlTemplate =
                 " import org.drools.mvel.integrationtests.facts.*;\n" +

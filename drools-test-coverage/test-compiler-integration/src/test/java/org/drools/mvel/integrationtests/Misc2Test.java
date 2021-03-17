@@ -16,8 +16,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -69,17 +67,14 @@ import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.builder.MVELDialectConfiguration;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
@@ -88,10 +83,15 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.PersonHolder;
 import org.drools.mvel.integrationtests.facts.FactWithList;
 import org.drools.mvel.integrationtests.facts.FactWithString;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -99,7 +99,6 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
@@ -115,7 +114,6 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -124,28 +122,20 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.KnowledgeBuilderResults;
-import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -154,7 +144,20 @@ import static org.junit.Assume.assumeTrue;
 /**
  * Run all the tests with the ReteOO engine implementation
  */
-public class Misc2Test extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class Misc2Test {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public Misc2Test(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private static final Logger logger = LoggerFactory.getLogger( Misc2Test.class );
 
@@ -179,17 +182,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "        System.out.println( $b ); \n" +
                      "end";
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        if ( builder.hasErrors() ) {
-            throw new RuntimeException( builder.getErrors().toString() );
-        }
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages( builder.getKnowledgePackages() );
-
-        KieSession ksession = knowledgeBase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Address address = new Address();
 
@@ -226,18 +220,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    System.out.println($s);\n" +
                      "end";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ResourceFactory.newByteArrayResource( str.getBytes() ).setTargetPath( "org/drools/compiler/rules.drl" ) );
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
-        kbuilder.buildAll();
-
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        assertNotNull( ksession );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> context = new ArrayList<>();
         ksession.setGlobal( "context", context );
@@ -252,6 +236,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testClassNotFoundAfterDeserialization() throws Exception {
+        // kbase serialization is not supported. But leave it for standard-drl.
         // JBRULES-3670
         String drl =
                 "package completely.other.deal;\n" +
@@ -303,7 +288,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         assertEquals( 2, ksession.fireAllRules() );
@@ -352,7 +337,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         assertEquals( 4, ksession.fireAllRules() );
@@ -377,7 +362,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         System.out.println( str );
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -388,7 +373,7 @@ public class Misc2Test extends CommonTestMethodBase {
     @Test
     public void testKnowledgeBaseEventSupportLeak() throws Exception {
         // JBRULES-3666
-        KieBase kbase = getKnowledgeBase();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener( listener );
         kbase.addEventListener( listener );
@@ -412,8 +397,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "   results.add(\"OK\");" +
                      "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> res = new ArrayList<>();
         ksession.setGlobal( "results", res );
@@ -497,7 +482,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
     }
 
     @Test
@@ -512,13 +497,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "   }\n" +
                      "end";
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        if ( builder.hasErrors() ) {
-            throw new RuntimeException( builder.getErrors().toString() );
-        }
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -532,8 +513,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Person p = new Person( "Mario", 38 );
         p.setBigDecimal( new BigDecimal( "0" ) );
@@ -576,7 +557,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    }\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
     }
@@ -596,7 +577,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   delete($number);\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -628,7 +609,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   delete($number);\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -713,7 +694,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "                             ) );\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 3, ksession.fireAllRules() );
     }
@@ -779,7 +760,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  Neuron( $value : value )\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
 
@@ -798,7 +779,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   $foo.x = 1;\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Foo foo1 = new Foo();
@@ -843,7 +824,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    };\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
     }
@@ -875,14 +856,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBaseFromString( str );
-
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         FactHandle fh = ksession.insert( new A( 1, 1, 1, 1 ) );
 
         ksession.fireAllRules();
 
-        kbase.addPackages( loadKnowledgePackagesFromString( str2 ) );
+        Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, str2).getKiePackages();
+        kbase.addPackages(kpkgs);
 
         ksession.fireAllRules();
 
@@ -985,7 +966,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Map<Parameter, Double> values = new EnumMap<>(Parameter.class);
@@ -1037,7 +1018,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println(drools.getRule().getName());\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new DataSample() );
@@ -1083,7 +1064,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "$S.getFoo().concat(\"this works with java dialect\");\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
     }
 
     public static abstract class AbstractBase<T> {
@@ -1111,7 +1092,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "String s = new String(\"write something with ) a paren\");\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
     }
 
     public static enum Answer {YES, NO}
@@ -1134,9 +1115,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -1157,7 +1138,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 2, ksession.fireAllRules() );
     }
@@ -1199,7 +1180,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   System.out.println( \"Success!\" );\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 1, ksession.fireAllRules() );
     }
@@ -1218,13 +1199,13 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify ($product) { price = $product.cost + 0.10B }\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final Model model = new Model();
         model.setCost( new BigDecimal( "2.43" ) );
         model.setPrice( new BigDecimal( "2.43" ) );
 
-        KieSession ksession = kbase.newKieSession();
         ksession.insert( model );
 
         int fired = ksession.fireAllRules( 2 );
@@ -1266,7 +1247,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.insert( new IntegerWrapperImpl( 2 ) );
         ksession.insert( new IntegerWrapperImpl( 3 ) );
@@ -1311,7 +1292,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.insert( new ComparableInteger( 2 ) );
         ksession.insert( new ComparableInteger( 3 ) );
@@ -1349,7 +1330,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.insert( new IntegerWrapperImpl2( 2 ) );
         ksession.insert( new IntegerWrapperImpl2( 3 ) );
@@ -1413,7 +1394,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println( \"c/e \" + $c + \" \" + $e );\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
     }
@@ -1444,7 +1425,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 2, ksession.fireAllRules() );
     }
@@ -1482,7 +1463,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 2, ksession.fireAllRules() );
     }
@@ -1516,7 +1497,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println( $b1 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 2, ksession.fireAllRules() );
     }
@@ -1556,7 +1537,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         assertEquals( 3, ksession.fireAllRules() );
     }
@@ -1588,9 +1569,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -1628,7 +1609,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  System.out.println( $m );\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         assertEquals( 2, ksession.fireAllRules() );
@@ -1646,9 +1627,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println( $x );\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -1663,7 +1644,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -1700,7 +1681,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         assertEquals( 2, ksession.fireAllRules() );
@@ -1714,7 +1695,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " $p : Person( name < \"90201304122000000000000017\" )\n" +
                      "then end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "90201304122000000000000015", 38 ) );
@@ -1734,7 +1715,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    l.add(s);\n" +
                 "end \n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<String> l = new ArrayList<>();
@@ -1754,7 +1735,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Long( 6 ) );
@@ -1811,17 +1792,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add( $b ); \n" +
                 "end\n";
 
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( new ByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-
-        System.out.println( knowledgeBuilder.getErrors() );
-
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
-        ksession.insert( knowledgeBuilder.getKnowledgePackages() );
+
+        Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, str2).getKiePackages();
+        ksession.insert( kpkgs );
 
         ksession.insert( new Integer( 1 ) );
         ksession.fireAllRules();
@@ -1857,7 +1835,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 " list.add( $i );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -1890,7 +1868,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    @duration(duration)\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
     }
 
@@ -1905,12 +1883,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    @duration(duration)\n" +
                 "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
-
-        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
     }
 
     @Test
@@ -1924,9 +1898,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    @duration(duratio)\n" +
                 "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue( kbuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -1941,7 +1915,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( 30 );
@@ -1996,7 +1970,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add($age);\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -2039,7 +2013,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  insertLogical(new Cheese(\"gorgonzola\", 10));\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person p1 = new Person( "A", 31 );
@@ -2073,9 +2047,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
 
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0, builder.getResults().getMessages().size() );
-        ks.getRepository().addKieModule( builder.getKieModule() );
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, kfs);
 
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
@@ -2168,7 +2140,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        list.add($lecture.getId());\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2230,7 +2202,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2277,7 +2249,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    delete( \"x\" );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2316,7 +2289,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify( $p ) { setAge( 40 ) };\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         assertEquals( 2, ksession.fireAllRules() );
@@ -2331,10 +2304,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue( kbuilder.hasResults( ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR ) );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str, str);
+        List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
+        assertFalse("Should have any message", messages.isEmpty()); // Duplicate rule name
     }
 
     @Test
@@ -2368,7 +2340,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        assertEquals( 0, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
@@ -2395,9 +2369,10 @@ public class Misc2Test extends CommonTestMethodBase {
                      " insert( new Foo() ); \n" +
                      " insert( new Bar() ); \n" +
                      "end";
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        assertTrue( kb.hasErrors() );
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -2410,7 +2385,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( 3 );
@@ -2477,7 +2452,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   list.add($conversation);\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Conversation> conversations = new ArrayList<>();
@@ -2527,9 +2502,10 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule X when\n" +
                      "then\n" +
                      "end";
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        assertTrue( kb.hasErrors() );
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -2553,7 +2529,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        };\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.setGlobal( "fired", firedRules );
         ksession.insert( new Foo() );
@@ -2584,7 +2560,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        };\n" +
                 "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.setGlobal( "fired", firedRules );
         ksession.insert( new Foo() );
@@ -2646,9 +2622,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    $f.setX( 2 );\n" +
                 "end";
 
-        KieBaseConfiguration kBaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBaseConf.setOption( EventProcessingOption.STREAM );
-        KieBase kbase = loadKnowledgeBaseFromString( kBaseConf, str );
+        kieBaseTestConfiguration.setStreamMode(true);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "context", new ArrayList() {{
@@ -2668,14 +2643,9 @@ public class Misc2Test extends CommonTestMethodBase {
         String str = "rule R when then end\n";
 
         KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        kfs.write( "src/main/resources/rule.drl", str );
-
-        KieBuilder kbuilder = ks.newKieBuilder( kfs );
-
-        kbuilder.buildAll();
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+        KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kbuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
         KieBase kbase = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
         KieSession ksession = kbase.newKieSession();
@@ -2692,7 +2662,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         StatelessKieSession ksession = kbase.newStatelessKieSession();
 
         final List<String> firings = new ArrayList<>();
@@ -2759,7 +2729,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2782,7 +2752,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add( 1 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2809,7 +2779,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add( 1 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2853,10 +2823,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    ruleList.add(\"third\");\n" +
                 "end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( DeclarativeAgendaOption.ENABLED );
-
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, str);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
         KieSession ksession = kbase.newKieSession();
 
         ArrayList<String> ruleList = new ArrayList<>();
@@ -2898,7 +2866,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
     }
@@ -2922,7 +2890,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new ResourceRequirement( new Resource( 2 ), 3 ) );
@@ -2983,9 +2951,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        assertTrue( kb.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -3007,7 +2975,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println($s);" +
                 "end\n";
 
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
 
         Map<String, String> context = new HashMap<>();
@@ -3061,7 +3029,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end \n" +
                 "";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3097,7 +3065,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3146,7 +3114,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
         int N = 1100;
 
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession ks = kb.newKieSession();
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3200,14 +3168,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  if ( list.isEmpty() ) { list.add( $p.getName() ); } \n" +
                      "end\n" +
                      "\n";
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( knowledgeBuilder.hasErrors() ) {
-            fail( knowledgeBuilder.getErrors().toString() );
-        }
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession knowledgeSession = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -3256,7 +3218,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3309,15 +3271,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        assertEquals( 2, kbuilder.getResults( ResultSeverity.WARNING ).size() );
-        for ( KnowledgeBuilderResult res : kbuilder.getResults( ResultSeverity.WARNING ) ) {
-            System.out.println( res.getMessage() );
+        Results results = kieBuilder.getResults();
+        List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
+
+        List<org.kie.api.builder.Message> warnings = results.getMessages(org.kie.api.builder.Message.Level.WARNING);
+        assertEquals( 2, warnings.size() );
+        for (org.kie.api.builder.Message warning : warnings) {
+            System.out.println( warning );
         }
     }
 
@@ -3374,7 +3337,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "     }\n" +
                      " end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         Map map = new HashMap();
         ksession.setGlobal( "map", map );
@@ -3483,10 +3446,10 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  $trade: Object( ) @watch(*) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
-        
-        ReteDumper.dumpRete(kb);
+
+//        ReteDumper.dumpRete(kb);
 
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
@@ -3554,7 +3517,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  $trade: Object( ) @watch(*) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
 
         final List created = new ArrayList();
@@ -3623,7 +3586,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  System.out.println( \"Rule2\" + $p ); " +
                      "  modify ( $p ) { setName( \"john\" ); } \n" +
                      "end";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
         ks.addEventListener( new DebugAgendaEventListener() );
 
@@ -3663,7 +3626,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  System.out.println( \"Rule2\" + $p ); " +
                      "  modify ( $p ) { setName( \"john\" ); } \n" +
                      "end";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
         ks.addEventListener( new DebugAgendaEventListener() );
 
@@ -3684,10 +3647,11 @@ public class Misc2Test extends CommonTestMethodBase {
                      "global int foo;\n" +
                      "\n" +
                      "";
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        System.out.println( kb.getErrors() );
-        assertTrue( kb.hasErrors() );
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
+
     }
 
     @Test
@@ -3701,8 +3665,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule_<_all\"" +
                      "when then end \n" +
                      "";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
-
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl); 
     }
 
     @Test
@@ -3723,23 +3686,12 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   $d: DClass()\n" +
                 "then\n" +
                 "end";
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, rule1, rule2);
+        Results results = kieBuilder.getResults();
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ), ResourceType.DRL );
-
-
-        //the default behavior of kbuilder is not to fail because of duplicated
-        //rules.
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        //We must have 1 INFO result.
-        KnowledgeBuilderResults infos = kbuilder.getResults( ResultSeverity.INFO );
-        assertNotNull( infos );
-        assertEquals( 1, infos.size() );
-
+        // When build, duplicate is ERROR level
+        List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty()); // Duplicate rule name
     }
 
 
@@ -3768,9 +3720,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbConf.setOption( LanguageLevelOption.DRL6 );
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6.name());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, drl);
 
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
@@ -3812,9 +3764,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbConf.setOption( LanguageLevelOption.DRL5 );
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL5.name());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, drl);
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3844,7 +3796,6 @@ public class Misc2Test extends CommonTestMethodBase {
         PatternDescr pd = (PatternDescr) r.getLhs().getDescrs().get( 0 );
         assertEquals( 1, pd.getConstraint().getDescrs().size() );
     }
-
 
     @Test
     public void testManyAccumulatesWithSubnetworks() {
@@ -3897,8 +3848,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
 
@@ -3952,8 +3902,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  System.out.println( $y ); \n" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
         List<Long> list = new ArrayList<>();
@@ -4005,8 +3954,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  delete( $l ); \n" +
                      "end \n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
@@ -4032,8 +3980,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add(1);\n" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
@@ -4071,8 +4018,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        System.out.println(\"Hello, I'm here!\");\n" +
                 "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KieBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Message( "Hello World" ) );
@@ -4101,7 +4047,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        modify( m ){ setMessage3( 'msg3' ) };\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         Message m1 = new Message( "msg1" );
@@ -4142,7 +4088,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4181,7 +4127,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4231,7 +4177,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4287,7 +4233,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4365,7 +4311,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "        delete( $m );" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         SimpleMessage[] msgs = new SimpleMessage[]{new SimpleMessage( 0 ), new SimpleMessage( 1 ), new SimpleMessage( 2 ), new SimpleMessage( 3 )};
@@ -4461,7 +4407,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "     }\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4499,10 +4445,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( EventProcessingOption.STREAM );
-
-        KieBase kbase = loadKnowledgeBaseFromString( kconf, drl );
+        kieBaseTestConfiguration.setStreamMode(true);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         final AtomicInteger i = new AtomicInteger( 0 );
@@ -4550,7 +4494,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add(\"working\");\n" +
                      "end";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4581,9 +4525,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end\n";
 
         KieServices ks = KieServices.Factory.get();
-
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
 
         KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
@@ -4596,7 +4538,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    l : List\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
     }
 
@@ -4617,7 +4559,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.fireAllRules();
@@ -4635,7 +4577,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person p1 = new Person( "A", 31 );
@@ -4657,7 +4599,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify($p) { setAge( $age + 1 ) }\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person mario = new Person( "Mario", 38 );
@@ -4681,7 +4623,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new SerializableValue( "0" ) );
@@ -4711,7 +4653,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
 
         Person[] ps = new Person[4];
@@ -4795,7 +4737,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   list.add( $a ); \n" +
                 " end \n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -4856,8 +4798,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end " +
                      "";
 
-
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
 
@@ -4882,8 +4823,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        byte[] jar = createKJar( ks, releaseId, null, drl1 );
-        KieModule km = deployJar( ks, jar );
+        KieModule km = KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, drl1);
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( km.getReleaseId() );
@@ -4913,7 +4853,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    anyList.add(\"1\");\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<String> allList = new ArrayList<>();
@@ -4989,7 +4929,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s);\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
@@ -5055,7 +4995,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 43 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5086,7 +5026,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 43 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5110,7 +5050,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 42 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5137,7 +5077,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 42 );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5162,7 +5102,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( $s );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5191,7 +5131,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( $s );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5224,7 +5164,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( $s );\n" +
                      "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
@@ -5258,7 +5198,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    insert( new Person() );\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         Foo f1 = new Foo();
         Foo2 f2 = new Foo2();
@@ -5312,10 +5252,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      " System.out.println(\"negation_distributed_fully\"); " +
                      "end";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         int n = ksession.fireAllRules();
         assertEquals( 7, n );
@@ -5372,10 +5310,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      " System.out.println(\"negation_distributed_fully\"); " +
                      "end";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         int n = ksession.fireAllRules();
         assertEquals( 8, n );
@@ -5395,10 +5331,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      " System.out.println(\"firing\"); " +
                      "end";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         int n = ksession.fireAllRules();
         assertEquals( 1, n );
@@ -5412,10 +5346,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      + "when \n" + "  $date: MyDate() \n"
                      + "then \n" + "$date.setDescription(\"test\"); \n" + "end \n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals( 0, results.getMessages().size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
+        assertTrue(messages.toString(), messages.isEmpty());
     }
 
     public static class MyDate extends Date {
@@ -5451,10 +5384,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "list.add($i.intValue());\n" +
                      "end";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -5473,7 +5404,7 @@ public class Misc2Test extends CommonTestMethodBase {
         // BZ-1092084
         String str = "rule R salience 10 salience 100 when then end\n";
 
-        assertDrlHasCompilationError( str, 1 );
+        assertDrlHasCompilationError( str, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -5488,14 +5419,14 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  .println(\"hello\");\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals( 0, results.getMessages().size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
+        assertTrue(messages.toString(), messages.isEmpty());
     }
 
     @Test
     public void testExtendsWithStrictModeOff() {
+        // not for exec-model test. Cannot change DialectConfiguration by kieModuleConfigurationProperties 
         // DROOLS-475
         String str =
                 "import java.util.HashMap;\n" +
@@ -5558,7 +5489,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " @role(event)\n" +
                      "end\n";
 
-        assertDrlHasCompilationError( str, 1 );
+        assertDrlHasCompilationError( str, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -5589,9 +5520,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "      update( $thing2 ); " +
                      "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession session = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession session = kbase.newKieSession();
 
         session.insert( "hello" );
         session.insert( new Integer( 42 ) );
@@ -5651,9 +5581,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "        insert(new Trailer(Trailer.TypeStatus.WAITING));\n" +
                      "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ArrayList<Trailer> trailerList = new ArrayList<>();
         ksession.setGlobal( "trailerList", trailerList );
@@ -5705,9 +5634,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Host() );
         ksession.insert( "host" );
@@ -5800,9 +5728,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    $d.setValue($result.intValue());\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new TypeA() );
         ksession.insert( new TypeB() );
@@ -5908,9 +5835,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    update(alarm);\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "t1" );
 
@@ -5988,9 +5914,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    update( $c1 );\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new C1() );
         ksession.fireAllRules();
@@ -6030,9 +5955,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Y() );
         ksession.fireAllRules();
@@ -6060,7 +5984,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " e : int[]\n" +
                      "end\n";
 
-        assertDrlHasCompilationError( str, 1 );
+        assertDrlHasCompilationError( str, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -6072,10 +5996,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals( 0, results.getMessages().size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
+        assertTrue(messages.toString(), messages.isEmpty());
     }
 
     public static class Underscore {
@@ -6111,9 +6034,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    delete( $s );\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "1" );
         ksession.insert( 1 );
@@ -6135,9 +6057,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println($n);\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "1" );
         ksession.insert( 1L );
@@ -6188,9 +6109,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add(\"group by \" + $word + \" count is \"+ $count);\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -6244,9 +6164,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( drools.getRule().getName() )\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -6280,9 +6199,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   list.add( $d );\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession kieSession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
@@ -6317,9 +6235,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   list.add( \"\" + $i );\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession kieSession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         List list = new ArrayList();
         kieSession.setGlobal( "list", list );
@@ -6353,9 +6270,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end " +
                      "";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession session = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession session = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         session.setGlobal( "list", list );
@@ -6409,9 +6325,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    delete( $s );\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "1" );
         FactHandle iFH = ksession.insert( 1 );
@@ -6438,9 +6353,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify( $s ) { };" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "1" );
         ksession.fireAllRules();
@@ -6475,9 +6389,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end " +
                 "";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession kieSession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
@@ -6544,9 +6457,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end " +
                 "";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession kieSession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
@@ -6613,9 +6525,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($i);\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession kieSession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         kieSession.setGlobal( "list", list );
@@ -6657,9 +6568,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   modify($cc) { setValue($cc.getValue()+1); }\n" +
                 "end; ";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
         ksession.insert( "1" );
         ksession.insert( "2" );
 
@@ -6714,9 +6625,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.addAll($classes);\n" +
                 "end ";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<Class> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -6742,9 +6652,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  sb.append($i);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         StringBuilder sb = new StringBuilder();
         ksession.setGlobal( "sb", sb );
@@ -6822,9 +6731,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end " +
                 "";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -6864,10 +6773,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    end" +
                 "\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
-        KieSession ks = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
         assertEquals( 1, ks.fireAllRules() );
     }
 
@@ -6883,10 +6790,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 " then " +
                 " end " +
                 "\n";
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
-        KieSession ks = helper.build().newKieSession();
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
         Person john = new Person( "John" ); // address is null
         try {
             ks.insert( john );
@@ -6910,10 +6816,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 " then " +
                 " end " +
                 "\n";
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
-        KieSession ks = helper.build().newKieSession();
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
         Person john = new Person( "John" ); // address is null
         try {
             ks.insert( "abbey" );
@@ -6939,9 +6844,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 + "not( exists( String() ) )\n"
                 + "then end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( asList( "Mario", "Mark" ) );
         ksession.insert( asList( "Julie", "Leiti" ) );
@@ -6961,9 +6865,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( 1 );
         assertEquals( 1, ksession.fireAllRules() );
@@ -6982,7 +6885,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    )\n" +
                 "then end\n";
 
-        assertDrlHasCompilationError( str, 1 );
+        assertDrlHasCompilationError( str, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -6998,7 +6901,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 " then\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( drl1, 1 );
+        assertDrlHasCompilationError( drl1, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -7014,7 +6917,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end;\n";
 
-        assertDrlHasCompilationError( drl1, 1 );
+        assertDrlHasCompilationError( drl1, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -7028,7 +6931,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end;\n";
 
-        assertDrlHasCompilationError( drl1, 1 );
+        assertDrlHasCompilationError( drl1, 1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -7042,9 +6945,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 " then " +
                 " end " +
                 "\n";
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new org.drools.mvel.compiler.Person( "Elizabeth2", 88 ) );
         assertEquals( 1, ksession.fireAllRules() );
@@ -7073,10 +6976,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n";
 
         URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/billasurf.jar" )} );
-        KieSession ksession = new KieHelper().setClassLoader( urlClassLoader )
-                                             .addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase)KieBaseUtil.getKieBaseFromDrlWithClassLoaderForKieBuilder("test", urlClassLoader, kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7101,9 +7003,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7136,9 +7038,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "list.add(\"Rule without agenda group executed\");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
 
         ksession.setGlobal( "list", new ArrayList<String>() );
         ksession.getAgenda().getAgendaGroup( "first-agenda" ).setFocus();
@@ -7170,9 +7072,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "list.add(\"Rule without agenda group executed\");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "list", new ArrayList<String>() );
         ksession.getAgenda().getAgendaGroup( "first-agenda" ).setFocus();
@@ -7210,9 +7111,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($v);\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7247,10 +7147,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add(\"NOT OK\");\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl1, ResourceType.DRL );
-        helper.addContent( drl2, ResourceType.DRL );
-        KieSession kieSession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1, drl2);
+        KieSession kieSession = kbase.newKieSession();
 
         List list = new ArrayList();
         kieSession.setGlobal( "list", list );
@@ -7286,9 +7184,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 + "        list.add(\"Fired\");\n"
                 + "end";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<Object> globalList = new ArrayList<>();
         ksession.setGlobal( "list", globalList );
@@ -7339,9 +7236,8 @@ public class Misc2Test extends CommonTestMethodBase {
         KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
         config.setOption( ForceEagerActivationOption.YES );
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                                   .build()
-                                                   .newKieSession( config, null );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(config, null);
 
         final Integer monitor = 42;
         int factsNr = 5;
@@ -7433,9 +7329,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add(\"3\");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7460,7 +7355,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( drl, -1 );
+        assertDrlHasCompilationError( drl, -1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -7488,9 +7383,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        insert( new Fact(\"bar\") );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         assertEquals( 2, ksession.fireAllRules() );
     }
@@ -7512,9 +7406,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    }\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7559,9 +7452,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify( $entity ) { setValue(\"Done!\"); }\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ChildA childA = new ChildA();
         ChildB childB = new ChildB();
@@ -7586,9 +7478,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7613,9 +7504,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7646,9 +7536,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then \n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         FactHandle fh1 = ksession.insert( 1 );
         FactHandle fh2 = ksession.insert( 2 );
@@ -7697,7 +7586,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($i);\n" +
                 "end\n";
 
-        final KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         final int parallelThreads = 10;
         final ExecutorService executor = Executors.newFixedThreadPool( parallelThreads );
@@ -7742,11 +7631,12 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( drl, 1 );
+        assertDrlHasCompilationError( drl, 1, kieBaseTestConfiguration );
     }
 
     @Test
     public void testKieBaseSerialization() throws Exception {
+        // kbase serialization is not supported. But leave it for standard-drl
         // DROOLS-944
         String drl =
                 "import " + Container.class.getCanonicalName() + ";" +
@@ -7786,9 +7676,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then \n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "\"#" );
         assertEquals( 1, ksession.fireAllRules() );
@@ -7803,9 +7692,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then \n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "\"!." );
         assertEquals( 1, ksession.fireAllRules() );
@@ -7834,9 +7722,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        $list.forEach(" + expr + ");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7858,9 +7745,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s2.getWrapped());\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7882,7 +7768,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ) .build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
@@ -7910,9 +7796,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($p.getName());\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -7936,13 +7821,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
 
         KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ResourceFactory.newByteArrayResource( str.getBytes() ).setTargetPath( "org/drools/compiler/rules.drl" ) );
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
-        kbuilder.buildAll();
-
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+        KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kbuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
         KieSession ksession1 = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
 
@@ -7999,8 +7880,8 @@ public class Misc2Test extends CommonTestMethodBase {
                  "    $p.setHappy(true);\n" +
                  "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert("test");
         Person b5L = new Person("B5L");
@@ -8021,7 +7902,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( str, -1 );
+        assertDrlHasCompilationError( str, -1, kieBaseTestConfiguration );
     }
 
     @Test
@@ -8035,8 +7916,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then \n" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( 42 );
         kieSession.insert( "test" );
@@ -8058,8 +7939,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then \n" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( 42 );
         kieSession.insert( "test" );
@@ -8078,8 +7959,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         Person p1 = new Person( "C", 1, true );
         Person p2 = new Person( "B", 1, true );
@@ -8128,8 +8009,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( "test" );
         assertEquals( 1, kieSession.fireAllRules() );
@@ -8154,9 +8035,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "\n" +
                 "rule R when MyQuery() then end\n";
 
-
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( new AnswerGiver() );
         assertEquals( 0, kieSession.fireAllRules() );
@@ -8185,8 +8065,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "\n" +
                 "rule R when ORQuery() then end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( new AnswerGiver() );
         assertEquals( 2, kieSession.fireAllRules() );
@@ -8209,8 +8089,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  modify($b) { set(false) }\n" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( asList("test") );
         kieSession.insert( new AtomicBoolean( true ) );
@@ -8226,8 +8106,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( 1 );
         assertEquals( 1, kieSession.fireAllRules() );
@@ -8235,6 +8115,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testCCEAfterDeserialization() throws Exception {
+     // kbase serialization is not supported. But leave it for standard-drl.
         // DROOLS-1155
         String drl =
                 "function boolean checkLength(int length) { return true; }\n" +
@@ -8319,7 +8200,7 @@ public class Misc2Test extends CommonTestMethodBase {
            .write("src/main/resources/c.drl", drl2)
            .write("src/main/java/org/kie/test/TestObject.java", javaSrc);
 
-        ks.newKieBuilder( kfs ).buildAll();
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, kfs);
         KieContainer kcontainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         KieSession kSession = kcontainer.newKieSession();
 
@@ -8347,7 +8228,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 + "then\n"
                 + "end";
 
-        KieSession kieSession = new KieHelper().addContent(rule, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
+        KieSession kieSession = kbase.newKieSession();
 
         String doctor = "D";
         String politician = "P";
@@ -8420,7 +8302,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         String o = "o";
         String x = "x";
@@ -8518,7 +8401,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 + "then\n"
                 + "end";
 
-        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         Shift1187 shift1 = new Shift1187(0, 4);
         Shift1187 shift2 = new Shift1187(1, 5);
@@ -8606,7 +8490,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
         for (int i = 0; i < 100; i++) {
             kieSession.insert( new Person( "A"+i ) );
         }
@@ -8669,7 +8554,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      + "    list.add(drools.getRule().getName() + \":\" + $value);\n"
                      + "end";
 
-        KieSession kSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kSession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         kSession.setGlobal( "list", list );
@@ -8703,7 +8589,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add(\"\" + b);" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -8778,7 +8665,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  list.add(\"\" );" +
                      "end\n";
 
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -8824,9 +8712,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder1.add(ResourceFactory.newByteArrayResource(drl1.getBytes()), ResourceType.DRL);
-        Collection<KiePackage> knowledgePackages1 = kbuilder1.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, drl1).getKiePackages();
 
         String drl2 = "package com.sample\n" +
                 "import org.drools.mvel.compiler.*;\n" +
@@ -8836,9 +8722,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder2.add(ResourceFactory.newByteArrayResource(drl2.getBytes()), ResourceType.DRL);
-        Collection<KiePackage> knowledgePackages2 = kbuilder2.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, drl2).getKiePackages();
 
         InternalKnowledgeBase kbase1 = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KiePackage> combinedPackages1 = new ArrayList<>();
@@ -8905,9 +8789,8 @@ public class Misc2Test extends CommonTestMethodBase {
         KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration(null);
         config.setOption( ForceEagerActivationOption.YES );
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession( config, null );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession(config, null);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -8937,7 +8820,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify($p) { addresses.add(address) }\n" +
                 "end\n";
 
-        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         Person martin = new Person( "Martin" );
@@ -8950,6 +8833,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testKieHelperReleaseId() throws Exception {
+        // test for KieHelper. not for exec-model
         String drl =
                 "rule R when\n" +
                      "    $s: String()" +
@@ -8960,7 +8844,6 @@ public class Misc2Test extends CommonTestMethodBase {
         KieContainer kieContainer = new KieHelper().addContent(drl, ResourceType.DRL)
                                                    .setReleaseId(releaseId)
                                                    .getKieContainer(null);
-
         assertEquals(releaseId, kieContainer.getReleaseId());
 
         KieSession ksession = kieContainer.newKieSession();

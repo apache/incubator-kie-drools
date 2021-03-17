@@ -65,6 +65,10 @@ public class WireListenerTest {
 
     @Test
     public void testWireListener() throws Exception {
+        insertEvents.clear();
+        updateEvents.clear();
+        retractEvents.clear();
+
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0");

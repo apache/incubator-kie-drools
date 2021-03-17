@@ -16,6 +16,7 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
@@ -24,8 +25,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -43,19 +42,40 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class LinkingTest {
+
+    // Note: Replaced class D with X : See DROOLS-6032
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public LinkingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
     public static class A {
         private int value;
 
@@ -116,14 +136,14 @@ public class LinkingTest {
         }
     }
 
-    public static class D {
+    public static class X {
         private int value;
 
-        public D() {
+        public X() {
 
         }
 
-        public D(int value) {
+        public X(int value) {
             this.value = value;
         }
 
@@ -204,7 +224,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 
@@ -212,33 +232,25 @@ public class LinkingTest {
         str += "   A() \n";
         str += "   B() \n";
         str += "   C() \n";
-        str += "   D() \n";
+        str += "   X() \n";
         str += "then \n";
         str += "end \n";
 
         str += "rule rule2 when \n";
         str += "   A() \n";
         str += "   exists( B() and C() ) \n";
-        str += "   D() \n";
+        str += "   X() \n";
         str += "then \n";
         str += "end \n";
 
         str += "rule rule3 when \n";
         str += "   A() \n";
-        str += "   exists( B() and C() and D() ) \n";
+        str += "   exists( B() and C() and X() ) \n";
         str += "   E() \n";
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -258,7 +270,7 @@ public class LinkingTest {
         assertEquals( 2, joinNodeC.getSinkPropagator().size() );
 
         JoinNode joinNodeD = ( JoinNode) joinNodeC.getSinkPropagator().getSinks()[0];
-        assertSame( joinNodeD.getRightInput(), getObjectTypeNode(kbase, D.class ) );
+        assertSame( joinNodeD.getRightInput(), getObjectTypeNode(kbase, X.class ) );
         assertEquals( 2, joinNodeD.getSinkPropagator().size() );
 
 
@@ -275,7 +287,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 
@@ -283,33 +295,25 @@ public class LinkingTest {
         str += "   A() \n";
         str += "   B() \n";
         str += "   C() \n";
-        str += "   D() \n";
+        str += "   X() \n";
         str += "then \n";
         str += "end \n";
 
         str += "rule rule2 when \n";
         str += "   A() \n";
         str += "   exists( B() and C() ) \n";
-        str += "   D() \n";
+        str += "   X() \n";
         str += "then \n";
         str += "end \n";
 
         str += "rule rule3 when \n";
         str += "   A() \n";
-        str += "   exists( B() and C() and D() ) \n";
+        str += "   exists( B() and C() and X() ) \n";
         str += "   E() \n";
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -332,7 +336,7 @@ public class LinkingTest {
         FactHandle fha = wm.insert( new A() );
         wm.insert( new B() );
         wm.insert( new C() );
-        wm.insert( new D() );
+        wm.insert( new X() );
         wm.flushPropagations();
 
         BetaMemory bm = null;
@@ -392,27 +396,19 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 
         str += "rule rule1 when \n";
         str += "   A() \n";
         str += "   B() \n";
-        str += "   exists( C() and D() ) \n";
+        str += "   exists( C() and X() ) \n";
         str += "   E() \n";
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -441,7 +437,7 @@ public class LinkingTest {
         assertEquals( 0, existsBm.getSegmentMemory().getLinkedNodeMask() );
 
         FactHandle fhc = wm.insert(  new C() );
-        FactHandle fhd = wm.insert(  new D() );
+        FactHandle fhd = wm.insert(  new X() );
         wm.flushPropagations();
 
         assertEquals( 1, existsBm.getSegmentMemory().getLinkedNodeMask() );  // exists is start of new segment
@@ -463,7 +459,7 @@ public class LinkingTest {
         wm.flushPropagations();
         assertFalse( rs.isRuleLinked() );
 
-        wm.insert(  new D() );
+        wm.insert(  new X() );
         wm.flushPropagations();
         assertTrue( rs.isRuleLinked() );
 
@@ -483,7 +479,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -493,19 +489,11 @@ public class LinkingTest {
         str += "   A() \n";
         str += "   exists( B() and C() ) \n";
         str += "   exists( eval(1==1) ) \n";
-        str += "   D() \n";
+        str += "   X() \n";
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -530,9 +518,9 @@ public class LinkingTest {
 
         BetaMemory bm =  ( BetaMemory ) wm.getNodeMemory(dNode);
         assertNull(bm.getSegmentMemory()); // check lazy initialization
-        wm.insert(new D());
+        wm.insert(new X());
         wm.flushPropagations();
-        assertEquals(2, bm.getSegmentMemory().getAllLinkedMaskTest()); // only D can be linked in
+        assertEquals(2, bm.getSegmentMemory().getAllLinkedMaskTest()); // only X can be linked in
     }
 
     @Test
@@ -542,7 +530,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -552,7 +540,7 @@ public class LinkingTest {
         str += "   A() \n";
         str += "   exists( B() and C() ) \n";
         str += "   exists( eval(1==1) ) \n";
-        str += "   D() \n";
+        str += "   X() \n";
         str += "then \n";
         str += "end \n";
         str += "rule rule2 when \n";
@@ -563,15 +551,7 @@ public class LinkingTest {
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -611,7 +591,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -620,20 +600,12 @@ public class LinkingTest {
         str += "rule rule1 when \n";
         str += "   A() \n";
         str += "   B() \n";
-        str += "   exists( C() and D() and exists( E() and F() ) ) \n";
+        str += "   exists( C() and X() and exists( E() and F() ) ) \n";
         str += "   G() \n";
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -667,7 +639,7 @@ public class LinkingTest {
         wm.insert(  new A() );
         wm.insert(  new B() );
         wm.insert(  new C() );
-        wm.insert(  new D() );
+        wm.insert(  new X() );
         wm.insert(  new F() );
         wm.insert(  new G() );
 
@@ -695,7 +667,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -704,20 +676,12 @@ public class LinkingTest {
         str += "rule rule1 when \n";
         str += "   A() \n";
         str += "   B() \n";
-        str += "   exists( C() and D() and exists( E() and F() ) ) \n";
+        str += "   exists( C() and X() and exists( E() and F() ) ) \n";
         str += "   G() \n";
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -744,7 +708,7 @@ public class LinkingTest {
         wm.insert(  new A() );
         wm.insert(  new B() );
         wm.insert(  new C() );
-        wm.insert(  new D() );
+        wm.insert(  new X() );
         wm.insert(  new G() );
         wm.flushPropagations();
 
@@ -870,7 +834,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -883,16 +847,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( $a.getValue() + \":\"+ $b.getValue() + \":\" + $c.getValue() ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, B.class );
@@ -957,7 +913,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -968,16 +924,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
@@ -1006,7 +954,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1019,16 +967,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
 
         KieSession wm = kbase.newKieSession();        List list = new ArrayList();
@@ -1073,7 +1013,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1086,16 +1026,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
 
@@ -1157,7 +1089,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1170,16 +1102,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
 
@@ -1218,7 +1142,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1229,16 +1153,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
@@ -1268,7 +1184,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1281,16 +1197,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
@@ -1339,7 +1247,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1352,15 +1260,7 @@ public class LinkingTest {
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -1400,7 +1300,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1413,15 +1313,7 @@ public class LinkingTest {
         str += "then \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
@@ -1461,7 +1353,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1474,16 +1366,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
@@ -1536,7 +1420,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1547,16 +1431,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( $l.size() ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
@@ -1584,7 +1460,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1597,16 +1473,8 @@ public class LinkingTest {
         str += "then \n";
         str += "  list.add( $l.size() ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
@@ -1638,7 +1506,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1647,20 +1515,12 @@ public class LinkingTest {
         str += "rule rule1 when \n";
         str += "   $a : A() \n";
         str += "   exists ( B() and C() ) \n";
-        str += "   $e : D() \n";        
+        str += "   $e : X() \n";        
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
@@ -1675,7 +1535,7 @@ public class LinkingTest {
         for ( int i = 0; i < 28; i++ ) {
             wm.insert( new C() );
         }
-        wm.insert( new D() );
+        wm.insert( new X() );
         wm.flushPropagations();
 
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
@@ -1699,7 +1559,7 @@ public class LinkingTest {
         str += "import " + A.class.getCanonicalName() + "\n" ;
         str += "import " + B.class.getCanonicalName() + "\n" ;
         str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
+        str += "import " + X.class.getCanonicalName() + "\n" ;
         str += "import " + E.class.getCanonicalName() + "\n" ;
         str += "import " + F.class.getCanonicalName() + "\n" ;
         str += "import " + G.class.getCanonicalName() + "\n" ;
@@ -1707,21 +1567,13 @@ public class LinkingTest {
 
         str += "rule rule1 when \n";
         str += "   $a : A() \n";
-        str += "   exists ( B() and exists( C() and D() ) and E() ) \n";
+        str += "   exists ( B() and exists( C() and X() ) and E() ) \n";
         str += "   $f : F() \n";        
         str += "then \n";
         str += "  list.add( 'x' ); \n";
         str += "end \n";                  
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
@@ -1737,7 +1589,7 @@ public class LinkingTest {
             wm.insert( new C() );
         }
         for ( int i = 0; i < 29; i++ ) {
-            wm.insert( new D() );
+            wm.insert( new X() );
         }
         wm.insert( new E() );
         wm.insert( new F() );
@@ -1778,7 +1630,4 @@ public class LinkingTest {
         }
         return null;
     }
-
-
 }
-

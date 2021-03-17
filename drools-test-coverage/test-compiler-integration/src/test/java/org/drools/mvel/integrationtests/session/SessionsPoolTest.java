@@ -17,6 +17,7 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -26,27 +27,34 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
-import org.drools.mvel.compiler.FactA;
-import org.drools.mvel.compiler.FactB;
-import org.drools.mvel.compiler.FactC;
 import org.drools.core.common.EventSupport;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.event.DefaultRuleRuntimeEventListener;
+import org.drools.mvel.compiler.FactA;
+import org.drools.mvel.compiler.FactB;
+import org.drools.mvel.compiler.FactC;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
 import org.kie.api.command.Command;
+import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieContainerSessionsPool;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import org.kie.api.conf.SequentialOption;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -54,7 +62,19 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class SessionsPoolTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SessionsPoolTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testKieSessionsPool() {
@@ -94,7 +114,9 @@ public class SessionsPoolTest {
 
     @Test
     public void testPooledKieBase() {
-        KieBase kBase = getKieHelper().build( SessionsPoolOption.get( 1 ) );
+        KieBaseConfiguration kbConf = KieServices.get().newKieBaseConfiguration();
+        kbConf.setOption(SessionsPoolOption.get(1));
+        KieBase kBase = getKieContainer().newKieBase(kbConf);
 
         KieSession ksession = kBase.newKieSession();
         try {
@@ -176,10 +198,6 @@ public class SessionsPoolTest {
     }
 
     private KieContainer getKieContainer() {
-        return getKieHelper().getKieContainer();
-    }
-
-    private KieHelper getKieHelper() {
         String drl =
                 "global java.util.List list\n" +
                         "rule R1 when\n" +
@@ -187,8 +205,8 @@ public class SessionsPoolTest {
                         "then\n" +
                         "  list.add($s);\n" +
                         "end\n";
-
-        return new KieHelper().addContent( drl, ResourceType.DRL );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        return KieServices.get().newKieContainer(kieModule.getReleaseId());
     }
 
     private void checkKieSession( KieSession ksession ) {
@@ -226,7 +244,8 @@ public class SessionsPoolTest {
                 "  list.add(\"OK\");\n" +
                 "end";
 
-        KieContainer kcontainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        KieContainer kcontainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         KieSessionsPool pool = kcontainer.newKieSessionsPool( 1 );
 
         AtomicInteger i = new AtomicInteger(1);
@@ -284,7 +303,8 @@ public class SessionsPoolTest {
                 "then\n" +
                 "end";
 
-        KieContainer kcontainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        KieContainer kcontainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         KieSessionsPool pool = kcontainer.newKieSessionsPool( 1 );
 
         KieSession ksession = pool.newKieSession();
@@ -336,7 +356,8 @@ public class SessionsPoolTest {
                 "then\n" +
                 "end";
 
-        KieContainer kcontainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        KieContainer kcontainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         KieSessionsPool pool = kcontainer.newKieSessionsPool( 1 );
 
         KieSession ksession = pool.newKieSession();
@@ -388,7 +409,8 @@ public class SessionsPoolTest {
                 "  list.add(\"OK\");\n" +
                 "end";
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build( SequentialOption.YES );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
         KieSessionsPool pool = kbase.newKieSessionsPool( 1 );
 
         StatelessKieSession ksession = pool.newStatelessKieSession();

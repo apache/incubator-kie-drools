@@ -16,39 +16,51 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.compiler.Address;
-import org.drools.mvel.compiler.Person;
-import org.drools.mvel.integrationtests.DynamicRulesChangesTest.Fire;
-import org.drools.mvel.integrationtests.DynamicRulesChangesTest.Room;
-import org.drools.mvel.integrationtests.DynamicRulesChangesTest.Sprinkler;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Person;
+import org.drools.mvel.integrationtests.DynamicRulesChangesTest.Fire;
+import org.drools.mvel.integrationtests.DynamicRulesChangesTest.Room;
+import org.drools.mvel.integrationtests.DynamicRulesChangesTest.Sprinkler;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
-import org.kie.internal.utils.KieHelper;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class SegmentMemoryPrototypeTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SegmentMemoryPrototypeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
+
     private static final String DRL =
             "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
             "global java.util.List events\n" +
@@ -99,13 +111,7 @@ public class SegmentMemoryPrototypeTest {
 
     @Test
     public void testSegmentMemoryPrototype() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
-                      ResourceType.DRL );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, DRL);
         KieSession ksession = kbase.newKieSession();
         try {
             checkKieSession(ksession);
@@ -124,12 +130,7 @@ public class SegmentMemoryPrototypeTest {
 
     @Test
     public void testSessionCache() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
-                      ResourceType.DRL );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, DRL);
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kbase.newKieSession();
         try {
@@ -189,7 +190,7 @@ public class SegmentMemoryPrototypeTest {
                 "    String(  )\n" +
                 "then end";
 
-        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
@@ -230,7 +231,7 @@ public class SegmentMemoryPrototypeTest {
                 "    Boolean()\n" +
                 "then end";
 
-        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         List<TerminalNode> terminalNodes = ReteDumper.collectRete( kbase ).stream()
                 .filter( TerminalNode.class::isInstance )

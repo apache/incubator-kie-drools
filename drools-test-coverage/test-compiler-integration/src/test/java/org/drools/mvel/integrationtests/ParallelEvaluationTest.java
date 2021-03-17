@@ -18,6 +18,7 @@ package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -29,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.mvel.compiler.util.debug.DebugList;
 import org.drools.core.ClockType;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -41,24 +41,42 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.mvel.compiler.util.debug.DebugList;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.MultithreadEvaluationOption;
-import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class ParallelEvaluationTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ParallelEvaluationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test(timeout = 40000L)
     public void test() {
@@ -68,8 +86,8 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "" ) );
         }
 
-        KieBase kbase = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                       .build( MultithreadEvaluationOption.YES );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
         ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Integer.class ) );
@@ -101,9 +119,9 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "insert( $i + 10 );\ninsert( \"\" + ($i + 10) );\n" ) );
         }
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -131,9 +149,9 @@ public class ParallelEvaluationTest {
             sb.append( getNotRule( i ) );
         }
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -160,9 +178,9 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "insertAsync( $i + 10 );\ninsertAsync( \"\" + ($i + 10) );\n" ) );
         }
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -212,9 +230,9 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "" ) );
         }
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -264,8 +282,8 @@ public class ParallelEvaluationTest {
             drl += getFireUntilHaltRule(fireNr, i);
         }
 
-        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL )
-                                       .build( MultithreadEvaluationOption.YES );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         for (int loop = 0; loop < 10; loop++) {
             System.out.println("Starting loop " + loop);
@@ -359,9 +377,9 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "" ) );
         }
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -412,9 +430,9 @@ public class ParallelEvaluationTest {
                 "    String( length < $i )\n" +
                 "then end \n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         InternalWorkingMemory session = (InternalWorkingMemory) ksession;
 
@@ -435,9 +453,10 @@ public class ParallelEvaluationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
-                                             .newKieSession( sessionConfig, null );
+        kieBaseTestConfiguration.setStreamMode(true);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -477,9 +496,10 @@ public class ParallelEvaluationTest {
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
-                                             .newKieSession( sessionConfig, null );
+        kieBaseTestConfiguration.setStreamMode(true);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -554,9 +574,10 @@ public class ParallelEvaluationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
-                                             .newKieSession( sessionConfig, null );
+        kieBaseTestConfiguration.setStreamMode(true);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -663,9 +684,10 @@ public class ParallelEvaluationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
-                                             .newKieSession( sessionConfig, null );
+        kieBaseTestConfiguration.setStreamMode(true);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         try {
             assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
@@ -703,9 +725,9 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "" ) );
         }
 
-        KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                             .build( MultithreadEvaluationOption.YES )
-                                             .newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieSession ksession = kbase.newKieSession();
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
@@ -745,8 +767,8 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "", "agenda-group \"agenda\"" ) );
         }
 
-        KieBase kbase = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                       .build( MultithreadEvaluationOption.YES );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         KieSession ksession = kbase.newKieSession();
 
@@ -774,8 +796,8 @@ public class ParallelEvaluationTest {
             sb.append( getRule( i, "", "salience " + i ) );
         }
 
-        KieBase kbase = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
-                                       .build( MultithreadEvaluationOption.YES );
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         KieSession ksession = kbase.newKieSession();
 
@@ -808,8 +830,9 @@ public class ParallelEvaluationTest {
         for (int i = 0; i < ruleNr; i++) {
             sb.append(getRule(i, "insert( $i + 10 );\ninsert( \"\" + ($i + 10) );\n"));
         }
-        KieBase kBase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
-                .build(MultithreadEvaluationOption.YES);
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         /* Create parallel tasks */
         List<Callable<Void>> tasks = new ArrayList<>();
@@ -849,8 +872,9 @@ public class ParallelEvaluationTest {
         for (int i = 0; i < 10; i++) {
             sb.append( getRule( i, "" ) );
         }
-        KieBase kBase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
-                .build(MultithreadEvaluationOption.YES);
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         /* Create parallel tasks */
         List<Callable<Void>> tasks = new ArrayList<>();
@@ -904,8 +928,9 @@ public class ParallelEvaluationTest {
         for (int i = 1; i < 11; i++) {
             sb.append(getNotRule(i));
         }
-        KieBase kbase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
-                .build(MultithreadEvaluationOption.YES);
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         List<Callable<Void>> tasks = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
@@ -946,8 +971,9 @@ public class ParallelEvaluationTest {
         for (int i = 0; i < 10; i++) {
             sb.append(getRule(i, ""));
         }
-        KieBase kbase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
-                .build(MultithreadEvaluationOption.YES);
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         List<Callable<Void>> tasks = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
@@ -1007,8 +1033,9 @@ public class ParallelEvaluationTest {
         for (int i = 0; i < 10; i++) {
             sb.append(getRule(i, ""));
         }
-        KieBase kbase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
-                .build(MultithreadEvaluationOption.YES);
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
 
         /* Create parallel tasks */
         List<Callable<Void>> tasks = new ArrayList<>();

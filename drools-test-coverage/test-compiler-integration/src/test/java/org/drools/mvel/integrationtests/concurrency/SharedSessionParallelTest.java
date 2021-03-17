@@ -18,6 +18,7 @@ package org.drools.mvel.integrationtests.concurrency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -25,6 +26,8 @@ import java.util.concurrent.CyclicBarrier;
 
 import org.assertj.core.api.Assertions;
 import org.drools.mvel.integrationtests.facts.BeanA;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,20 +36,33 @@ import org.kie.api.runtime.KieSession;
 @RunWith(Parameterized.class)
 public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[] {false, false},
-                new Boolean[] {false, true},
-                new Boolean[] {true, false},
-                new Boolean[] {true, true});
+    @Parameterized.Parameters(name = "Enforced jitting={0}, KieBase type={1}")
+    public static List<Object[]> getTestParameters() {
+        List<Boolean[]> baseParams = Arrays.asList(
+                new Boolean[] {false},
+                new Boolean[] {true}
+                );
+
+        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        // combine
+        List<Object[]> params = new ArrayList<>();
+        for (Boolean[] baseParam : baseParams) {
+            for (Object[] kbParam : kbParams) {
+                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutabelModel()) {
+                    // jitting & exec-model test is not required
+                } else {
+                    params.add(new Object[] {baseParam[0], kbParam[0]});
+                }
+            }
+        }
+        return params;
     }
 
-    public SharedSessionParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase, false, false);
+    public SharedSessionParallelTest(final boolean enforcedJitting, final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        super(enforcedJitting, false, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 60000)
     public void testNoExceptions() throws InterruptedException {
         final String drl = "rule R1 when String() then end";
 
@@ -74,7 +90,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testCheckOneThreadOnly() throws InterruptedException {
         final int threadCount = 100;
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
@@ -117,7 +133,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testCorrectFirings() throws InterruptedException {
         final int threadCount = 100;
 
@@ -146,7 +162,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(threadCount, list);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testCorrectFirings2() throws InterruptedException {
         final int threadCount = 100;
 
@@ -177,7 +193,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         Assertions.assertThat(list).hasSize(expectedListSize);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testLongRunningRule() throws InterruptedException {
         final int threadCount = 100;
         final int seed = threadCount + 200;
@@ -235,7 +251,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(1, threadCount, list2, (threadCount - 1) * objectCount);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testLongRunningRule2() throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
@@ -286,7 +302,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(0, seed, list, seed * threadCount);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testLongRunningRule3() throws InterruptedException {
         final int threadCount = 10;
         final int seed = threadCount + 50;
@@ -352,7 +368,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         Assertions.assertThat(list2).hasSize(list2ExpectedSize);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testCountdownBean() throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
@@ -392,7 +408,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         Assertions.assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 40000)
     public void testCountdownBean2() throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
@@ -433,7 +449,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 60000)
     public void testOneRulePerThread() throws InterruptedException {
         final int threadCount = 1000;
 
