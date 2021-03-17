@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 
 public class MethodUtils {
 
+    /* This method works better than simple Clazz.getMethod in presence of polymorphism.
+     *  This returns null when no method is found */
     public static Method findMethod(Class<?> clazz, String methodName, Class[] argsType) {
         try {
             return clazz.getMethod(methodName, argsType);
