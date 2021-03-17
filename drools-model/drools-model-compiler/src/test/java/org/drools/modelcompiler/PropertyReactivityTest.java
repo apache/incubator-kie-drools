@@ -16,8 +16,10 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -1327,5 +1329,81 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.fireAllRules(3);
 
         assertEquals(43, p.getAge());
+    }
+
+    public static class AssessmentContext {
+
+        private Deque<StackFrame> stackFrames;
+
+        public AssessmentContext() {
+            stackFrames = new ArrayDeque<StackFrame>(8);
+            stackFrames.push(new StackFrame());
+        }
+
+        public Long getTopQuestionGroupId() {
+            return stackFrames.peek().questionGroupId;
+        }
+
+        public int getTopPhase() {
+            return stackFrames.peek().phase;
+        }
+
+        public void setTopPhase(int i) {
+            stackFrames.peek().phase = i;
+        }
+
+        public void pushStackFrame(Long id) {
+            StackFrame sf = new StackFrame();
+            sf.questionGroupId = id;
+            sf.phase = 0;
+            stackFrames.push(sf);
+        }
+
+        public void popStackFrame() {
+            if (stackFrames.size() > 1) {
+                stackFrames.pop();
+            }
+        }
+
+        private static class StackFrame {
+            private Long questionGroupId = null;
+            private int phase = 0;
+        }
+    }
+
+    @Test
+    public void testUpdateNonPropertyInMvel() {
+        // DROOLS-6096
+        final String str =
+                "import " + AssessmentContext.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $ac : AssessmentContext(topQuestionGroupId == 51795 , topPhase == 3)\n" +
+                "  then\n" +
+                "  $ac.popStackFrame();\n" +
+                "  update($ac);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $ac : AssessmentContext(topQuestionGroupId == null, topPhase == 0)\n" +
+                "  then\n" +
+                "    $ac.setTopPhase(2);\n" +
+                "    $ac.pushStackFrame(223L);\n" +
+                "    update($ac);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        AssessmentContext ac1 = new AssessmentContext();
+        ac1.pushStackFrame(null);
+        ac1.pushStackFrame(51795L);
+        ac1.setTopPhase(3);
+        ksession.insert( ac1 );
+
+        assertEquals(2, ksession.fireAllRules(2));
     }
 }
