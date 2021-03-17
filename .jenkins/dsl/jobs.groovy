@@ -66,8 +66,7 @@ if (!isMainBranch()) {
     setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
 }
 
-//TODO: Replace with KogitoConstants.KOGITO_DSL_OTHER_FOLDER after https://github.com/kiegroup/kogito-pipelines/pull/134 is merged.
-def otherFolder = 'other'
+def otherFolder = KogitoConstants.KOGITO_DSL_OTHER_FOLDER
 if (isMainBranch()) {
     folder(otherFolder)
     setupOptaPlannerTurtleTestsJob(otherFolder);
@@ -217,7 +216,9 @@ void setupOptaPlannerTurtleTestsJob(String jobFolder) {
     def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, 'Jenkinsfile.turtle',
             'Run OptaPlanner turtle tests on a weekly basis.')
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
-        stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
-        stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or organization.')
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or organization.')
+        }
     }
 }
