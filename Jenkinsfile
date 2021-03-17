@@ -69,7 +69,7 @@ pipeline {
                 script {
                     mvnCmd = getMavenCommand(optaplannerRepo, true, true)
                         .withProperty('full')
-                    if(!isSpecificPRCheck()) {
+                    if(isNormalPRCheck()) {
                         mvnCmd.withProfiles(['run-code-coverage'])
                     }
                     mvnCmd.run('clean install')
@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Analyze OptaPlanner by SonarCloud') {
             when {
-                expression { !isSpecificPRCheck() }
+                expression { isNormalPRCheck() }
             }
             steps {
                 script {
@@ -166,6 +166,8 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true, b
     }
     if(canNative && isNative()) {
         mvnCmd.withProfiles(['native'])
+        // Added due to https://github.com/quarkusio/quarkus/issues/13341
+        mvnCmd.withProperty('quarkus.profile', 'native')
     }
     return mvnCmd
 }
@@ -178,6 +180,6 @@ boolean isNative() {
     return env['NATIVE'] && env['NATIVE'].toBoolean()
 }
 
-boolean isSpecificPRCheck() {
-    return getQuarkusBranch() || isNative()
+boolean isNormalPRCheck() {
+    return !(getQuarkusBranch() || isNative())
 }
