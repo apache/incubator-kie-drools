@@ -174,6 +174,8 @@ public abstract class AbstractExpressionBuilder {
         }
 
         TypedExpression left = drlxParseResult.getLeft();
+        TypedExpression right = drlxParseResult.getRight();
+
 
         if(!shouldIndexConstraintWithRightScopePatternBinding(drlxParseResult)) {
             return false;
@@ -181,11 +183,12 @@ public abstract class AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
-        return left != null && left.getFieldName() != null &&
+        return left != null && (left.getFieldName() != null || isThisExpression( left.getExpression() )) &&
                 drlxParseResult.getDecodeConstraintType() != null &&
                 drlxParseResult.getPatternType() != null &&
                 isLeftIndexableExpression( left.getExpression() ) &&
-                areIndexableDeclaration( usedDeclarations );
+                areIndexableDeclaration( usedDeclarations ) &&
+                right != null && !right.getExpression().isArrayAccessExpr();
     }
 
     private boolean isLeftIndexableExpression( Expression expr ) {
@@ -194,7 +197,7 @@ public abstract class AbstractExpressionBuilder {
                 return false;
             }
         }
-        return !isThisExpression( expr );
+        return true;
     }
 
     private Optional<Expression> getMethodChainScope(MethodCallExpr expr) {
@@ -283,10 +286,6 @@ public abstract class AbstractExpressionBuilder {
             if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
                 return toNewExpr(BigInteger.class, expression);
             }
-        }
-
-        if ( !isAssignableFrom( leftType, right.getType() ) && isAssignableFrom( right.getType(), leftType ) ) {
-            return new CastExpr( toClassOrInterfaceType(toNonPrimitiveType(toRawClass(leftType))), expression );
         }
 
         return expression;
