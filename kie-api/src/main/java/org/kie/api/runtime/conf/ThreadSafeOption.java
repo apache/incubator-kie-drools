@@ -17,15 +17,15 @@
 package org.kie.api.runtime.conf;
 
 /**
- * An option to define if the KieSession should directly firing consequences bypassing the agenda.
- * By default this option is disabled. Enabling this will bring a performance improvement at the cost
- * of being no longer able to use salience, no-loop and other features that affect rules' precedence.
+ * An option to define if the KieSession should should be thread safe or not.
+ * By default a KieSession is thread-safe. Flagging it as non-thread-sage will bring a performance improvement
+ * at the cost of being no longer able to safely use the KieSession in a multithreaded environment.
  *
- * drools.directFiring = &lt;true|false&gt;
+ * drools.threadSafe = &lt;true|false&gt;
  *
- * DEFAULT = false
+ * DEFAULT = true
  */
-public enum DirectFiringOption implements SingleValueKieSessionOption {
+public enum ThreadSafeOption implements SingleValueKieSessionOption {
 
     YES(true),
     NO(false);
@@ -33,18 +33,18 @@ public enum DirectFiringOption implements SingleValueKieSessionOption {
     private static final long serialVersionUID = 510l;
 
     /**
-     * The property name for the direct firing configuration
+     * The property name for the thread safety configuration
      */
-    public static final String PROPERTY_NAME = "drools.directFiring";
+    public static final String PROPERTY_NAME = "drools.threadSafe";
 
-    private final boolean directFiring;
+    private final boolean threadSafe;
 
     /**
      * Private constructor to enforce the use of the factory method
-     * @param directFiring
+     * @param threadSafe
      */
-    DirectFiringOption( final boolean directFiring ) {
-        this.directFiring = directFiring;
+    ThreadSafeOption( final boolean threadSafe ) {
+        this.threadSafe = threadSafe;
     }
 
     /**
@@ -54,8 +54,8 @@ public enum DirectFiringOption implements SingleValueKieSessionOption {
         return PROPERTY_NAME;
     }
 
-    public boolean isDirectFiring() {
-        return directFiring;
+    public boolean isThreadSafe() {
+        return threadSafe;
     }
 
 }

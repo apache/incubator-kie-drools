@@ -104,6 +104,24 @@
                 "methodName": "setDirectFiring",
                 "elementKind": "method",
                 "justification": "support direct firing on KieSession"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method boolean org.kie.api.builder.model.KieSessionModel::isThreadSafe()",
+                "package": "org.kie.api.builder.model",
+                "classSimpleName": "KieSessionModel",
+                "methodName": "isThreadSafe",
+                "elementKind": "method",
+                "justification": "support non-thread-safe on KieSession"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.builder.model.KieSessionModel::setThreadSafe(boolean)",
+                "package": "org.kie.api.builder.model",
+                "classSimpleName": "KieSessionModel",
+                "methodName": "setThreadSafe",
+                "elementKind": "method",
+                "justification": "support non-thread-safe on KieSession"
               }
             ]
         }

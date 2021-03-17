@@ -175,6 +175,10 @@ public interface KieSessionModel {
      */
     KieBaseModel getKieBaseModel();
 
+    boolean isThreadSafe();
+
+    KieSessionModel setThreadSafe( boolean threadSafe );
+
     enum KieSessionType {
         STATEFUL, STATELESS
     }
