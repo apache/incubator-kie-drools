@@ -533,10 +533,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void testVariableDeclarationUntyped() {
+    public void testAddCastToMapGet() {
         test(ctx -> ctx.addDeclaration("$map", Map.class),
-             " { Map pMap = map.get( $r.getName() ); }",
-             " { java.util.Map pMap = (java.util.Map) (map.get($r.getName())); }");
+             " { Map pMap = map.get( \"whatever\" ); }",
+             " { java.util.Map pMap = (java.util.Map) (map.get(\"whatever\")); }");
+    }
+
+    @Test
+    public void testAddCastToMapGetOfDeclaration() {
+        test(ctx -> {
+                 ctx.addDeclaration("map", Map.class);
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             " { Map pMap = map.get( $p.getName() ); }",
+             " { java.util.Map pMap = (java.util.Map) (map.get($p.getName())); }");
     }
 
     @Test
