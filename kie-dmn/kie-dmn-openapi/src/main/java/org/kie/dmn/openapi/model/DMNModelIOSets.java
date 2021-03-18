@@ -149,7 +149,9 @@ public class DMNModelIOSets {
                 String id = DMNCompilerImpl.getId(ds.getDecisionService().getOutputDecision().get(0));
                 DecisionNode outputDecision = model.getDecisionById(id);
                 this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, outputDecision != null ? outputDecision.getResultType() : ds.getResultType(), null);
-                outputDoc.put(outputDecision.getName(), ((DecisionNodeImpl) outputDecision).getDecision().getDescription());
+                if (outputDecision != null) {
+                    outputDoc.put(outputDecision.getName(), ((DecisionNodeImpl) outputDecision).getDecision().getDescription());
+                }
             } else {
                 CompositeTypeImpl is = new CompositeTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet");
                 for (DMNElementReference er : ds.getDecisionService().getOutputDecision()) {
