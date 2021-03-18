@@ -27,4 +27,12 @@ public class Declaration {
     public Boolean getCreated() {
         return created;
     }
+
+    @Override
+    public String toString() {
+        return "Declaration{" +
+                "name='" + name + '\'' +
+                ", clazz=" + clazz +
+                '}';
+    }
 }

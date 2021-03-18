@@ -16,6 +16,7 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -251,5 +252,61 @@ public class JittingTest {
         ksession.insert(person);
 
         assertEquals(expectedFires, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testJittingBigDecimalAdd() {
+        // RHDM-1635
+        final String drl =
+                "import " + BigDecimalFact.class.getCanonicalName() + ";\n" +
+                " rule R1 \n" +
+                " when \n" +
+                "    $fact : BigDecimalFact( $value : (value + 10) == 20 )\n" +
+                " then \n" +
+                " end ";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(new BigDecimalFact(new BigDecimal(10)));
+        kieSession.insert(new BigDecimalFact(new BigDecimal(11)));
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testJittingBigDecimalRemainder() {
+        // RHDM-1635
+        final String drl =
+                "import " + BigDecimalFact.class.getCanonicalName() + ";\n" +
+                " rule R1 \n" +
+                " when \n" +
+                "    $fact : BigDecimalFact( $value : (value % 10) == 0 )\n" +
+                " then \n" +
+                " end ";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(new BigDecimalFact(new BigDecimal(10)));
+        kieSession.insert(new BigDecimalFact(new BigDecimal(11)));
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+    }
+
+    public class BigDecimalFact {
+        private BigDecimal value;
+
+        public BigDecimalFact(BigDecimal value) {
+            this.value = value;
+        }
+
+        public BigDecimal getValue() {
+            return value;
+        }
+
+        public void setValue(BigDecimal value) {
+            this.value = value;
+        }
     }
 }

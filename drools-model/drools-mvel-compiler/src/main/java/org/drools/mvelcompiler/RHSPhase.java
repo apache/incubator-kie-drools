@@ -26,8 +26,8 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MethodUtils;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
@@ -175,7 +175,31 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             TypedExpression a = child.accept(this, arg);
             arguments.add(a);
         }
-        return new MethodCallExprT(n.getName().asString(), scope, arguments, name.getType());
+
+        Class<?>[] parametersType = parametersType(arguments);
+
+        Optional<Type> methodCallType =
+                name.getType()
+                .map(Optional::of)
+                .orElseGet(() -> findMethodCallReturnType(n, scope, parametersType));
+
+        return new MethodCallExprT(n.getName().asString(), scope, arguments, methodCallType);
+    }
+
+    private Optional<Type> findMethodCallReturnType(MethodCallExpr n, Optional<TypedExpression> scope, Class<?>[] parametersType) {
+        return scope.flatMap(TypedExpression::getType)
+                .map(TypeUtils::classFromType)
+                .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), parametersType))
+                .map(Method::getReturnType);
+    }
+
+    private Class<?>[] parametersType(List<TypedExpression> arguments) {
+        return arguments.stream()
+                .map(TypedExpression::getType)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(TypeUtils::classFromType)
+                .toArray(Class[]::new);
     }
 
     @Override

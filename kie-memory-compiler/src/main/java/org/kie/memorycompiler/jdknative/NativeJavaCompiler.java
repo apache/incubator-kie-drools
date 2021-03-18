@@ -22,19 +22,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +54,6 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.kie.memorycompiler.StoreClassLoader;
-import org.kie.memorycompiler.WritableClassLoader;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -278,12 +272,10 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     private static class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
         private final List<CompilationOutput> outputs = new ArrayList<CompilationOutput>();
         private final ClassLoader classLoader;
-        private final Map<String, Set<String>> indexedClasses;
 
         MemoryFileManager(JavaFileManager fileManager, ClassLoader classLoader) {
             super(fileManager);
             this.classLoader = classLoader;
-            this.indexedClasses = indexClassesByPackage();
         }
 
         @Override
@@ -337,7 +329,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         private List<JavaFileObject> findClassesInExternalJars(String packageName) {
             try {
                 Enumeration<URL> urlEnumeration = classLoader.getResources(packageName.replace('.', '/'));
-                List<JavaFileObject> result = null;
+                List<JavaFileObject> result = new ArrayList<JavaFileObject>();
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
                     if (!new File(packageFolderURL.getFile()).isDirectory()) {
@@ -351,51 +343,9 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                         }
                     }
                 }
-                return result == null ? findClassesFromPackage(packageName) : result;
+                return result;
             } catch (IOException e) {
                 return Collections.emptyList();
-            }
-        }
-
-        private List<JavaFileObject> findClassesFromPackage(String packageName) {
-            List<JavaFileObject> result = new ArrayList<JavaFileObject>();
-            for (String className : indexedClasses.getOrDefault( packageName, Collections.emptySet() )) {
-                String binaryName = packageName + "." + className;
-                URL classUrl = classLoader.getResource(binaryName.replace('.', '/') + ".class");
-                if (classUrl != null) {
-                    try {
-                        result.add(new CustomJavaFileObject(binaryName, classUrl.toURI()));
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException( e );
-                    }
-                }
-            }
-            return result;
-        }
-
-        private Map<String, Set<String>> indexClassesByPackage() {
-            Map<String, Set<String>> indexedClasses = new HashMap<>();
-            for (ClassLoader cl = classLoader; cl != null; cl = cl.getParent()) {
-                indexClassesByPackage(indexedClasses, cl);
-            }
-            return indexedClasses;
-        }
-
-        private void indexClassesByPackage(Map<String, Set<String>> indexedClasses, ClassLoader classLoader) {
-            if (classLoader instanceof StoreClassLoader || classLoader == NativeJavaCompiler.class.getClassLoader()) {
-                return;
-            }
-            try {
-                Field classesField = ClassLoader.class.getDeclaredField( "classes" );
-                classesField.setAccessible( true );
-                Collection<Class> classes = new ArrayList<>( (Collection<Class>) classesField.get( classLoader ) );
-                for (Class c : classes) {
-                    if (c.getPackage() != null) {
-                        indexedClasses.computeIfAbsent( c.getPackage().getName(), p -> new HashSet<>() ).add( c.getSimpleName() );
-                    }
-                }
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                // ignore: this classloader is not indexable
             }
         }
 

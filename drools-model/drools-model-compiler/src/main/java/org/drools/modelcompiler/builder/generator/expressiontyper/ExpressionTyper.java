@@ -60,6 +60,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -73,7 +74,6 @@ import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpe
 import org.drools.modelcompiler.builder.generator.operatorspec.NativeOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
@@ -748,7 +748,7 @@ public class ExpressionTyper {
             return startsWithMvel.get();
         }
 
-        Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, argsType) : null;
+        Method m = rawClassCursor != null ? MethodUtils.findMethod(rawClassCursor, methodName, argsType) : null;
         if (m == null) {
             Optional<Class<?>> functionType = ruleContext.getFunctionType(methodName);
             if (functionType.isPresent()) {

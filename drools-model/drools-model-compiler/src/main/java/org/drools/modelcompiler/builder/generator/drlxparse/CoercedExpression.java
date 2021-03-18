@@ -41,10 +41,10 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.PrimitiveType;
+import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
-import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
@@ -205,7 +205,7 @@ public class CoercedExpression {
     }
 
     private static TypedExpression coerceBoolean(TypedExpression typedExpression) {
-        if (typedExpression.getType() == ClassUtil.NullType.class) {
+        if (typedExpression.getType() == MethodUtils.NullType.class) {
             return typedExpression;
         }
 

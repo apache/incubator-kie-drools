@@ -69,8 +69,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenceRewrite.rewriteNode;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
-import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -135,6 +133,9 @@ public abstract class AbstractExpressionBuilder {
     }
 
     private Expression findLeftmostExpression(Expression expression) {
+        if (expression instanceof EnclosedExpr) {
+            return findLeftmostExpression( (( EnclosedExpr ) expression).getInner() );
+        }
         if (expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr) expression;
             return findLeftmostExpression(be.getLeft());

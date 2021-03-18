@@ -17,8 +17,8 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Test;
 
 import static java.util.Optional.of;
@@ -73,7 +73,7 @@ public class DrlxParseUtilTest {
         assertEquals(double.class, getExpressionType(null, typeResolver, new DoubleLiteralExpr(2.0d), null));
         assertEquals(int.class, getExpressionType(null, typeResolver, new IntegerLiteralExpr(2), null));
         assertEquals(long.class, getExpressionType(null, typeResolver, new LongLiteralExpr(2l), null));
-        assertEquals(ClassUtil.NullType.class, getExpressionType(null, typeResolver, new NullLiteralExpr(), null));
+        assertEquals(MethodUtils.NullType.class, getExpressionType(null, typeResolver, new NullLiteralExpr(), null));
         assertEquals(String.class, getExpressionType(null, typeResolver, new StringLiteralExpr(""), null));
     }
 

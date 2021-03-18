@@ -82,10 +82,10 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MethodUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
@@ -104,7 +104,7 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
-import static org.drools.modelcompiler.util.ClassUtil.findMethod;
+import static org.drools.core.util.MethodUtils.findMethod;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
@@ -304,7 +304,7 @@ public class DrlxParseUtil {
             return long.class;
         }
         if (expr instanceof NullLiteralExpr) {
-            return ClassUtil.NullType.class;
+            return MethodUtils.NullType.class;
         }
         if (expr instanceof StringLiteralExpr) {
             return String.class;
