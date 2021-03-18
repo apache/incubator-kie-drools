@@ -133,6 +133,9 @@ public abstract class AbstractExpressionBuilder {
     }
 
     private Expression findLeftmostExpression(Expression expression) {
+        if (expression instanceof EnclosedExpr) {
+            return findLeftmostExpression( (( EnclosedExpr ) expression).getInner() );
+        }
         if (expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr) expression;
             return findLeftmostExpression(be.getLeft());
