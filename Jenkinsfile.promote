@@ -206,16 +206,15 @@ void checkoutRepo() {
 }
 
 void mergeAndPush(String prLink) {
-    if (prLink != '') {
+    if (prLink) {
         githubscm.mergePR(prLink, getGitAuthorCredsID())
         githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
     }
 }
 
 void tagLatest() {
-    if (getGitTag() != '') {
-        githubscm.tagRepository(getGitTag(), env.BUILD_TAG)
-        githubscm.pushObject('origin', "--tags ${getGitTag()}", getGitAuthorCredsID())
+    if (getGitTag()) {
+        githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
     }
 }
 
