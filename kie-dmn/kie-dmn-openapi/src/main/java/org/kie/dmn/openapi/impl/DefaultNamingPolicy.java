@@ -20,6 +20,7 @@ import java.net.URI;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.openapi.NamingPolicy;
 
 public class DefaultNamingPolicy implements NamingPolicy {
@@ -38,6 +39,7 @@ public class DefaultNamingPolicy implements NamingPolicy {
             name = belongingType.getName() + "_" + name;
             belongingType = ((BaseDMNTypeImpl) belongingType).getBelongingType();
         }
+        name = CodegenStringUtil.escapeIdentifier(name);
         return name;
     }
 
