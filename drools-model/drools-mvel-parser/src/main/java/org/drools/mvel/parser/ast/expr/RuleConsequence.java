@@ -20,6 +20,7 @@ package org.drools.mvel.parser.ast.expr;
 
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -27,15 +28,15 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 
 public class RuleConsequence extends RuleItem {
 
-    private final BlockStmt block;
+    private final Statement statement;
 
-    public RuleConsequence(TokenRange range, BlockStmt block ) {
+    public RuleConsequence(TokenRange range, Statement statement) {
         super( range );
-        this.block = block;
+        this.statement = statement;
     }
 
-    public BlockStmt getBlock() {
-        return block;
+    public Statement getStatement() {
+        return statement;
     }
 
     @Override
