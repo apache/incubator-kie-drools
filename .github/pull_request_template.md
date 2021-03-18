@@ -22,6 +22,9 @@ How to retest this PR or trigger a specific build:
 * <b>Quarkus LTS checks</b>  
   Please add comment: <b>Jenkins run LTS</b>
 
+* <b>Native checks</b>  
+  Please add comment: <b>Jenkins run native</b>
+
 * <b>Full Kogito testing</b> (with cloud images and operator BDD testing)  
   Please add comment: <b>Jenkins run BDD</b>  
   <b>This check should be used only if a big change is done as it takes time to run, need resources and one full BDD tests check can be done at a time ...</b>

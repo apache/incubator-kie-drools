@@ -54,21 +54,32 @@ pipeline {
         stage('Build Runtimes') {
             steps {
                 script {
-                    if(getQuarkusBranch()) {
-                        // Only run against given quarkus branch
-                        getMavenCommand('kogito-runtimes')
-                            .run('clean install')
-                    } else {
-                        // Build & Perform the analysis
-                        getMavenCommand('kogito-runtimes')
-                            .withProperty('validate-formatting')
+                    mvnCmd = getMavenCommand('kogito-runtimes', true, true)
+                    if (isNormalPRCheck()) {
+                        mvnCmd.withProperty('validate-formatting')
                             .withProfiles(['run-code-coverage'])
-                            .run('clean install')
-                        getMavenCommand('kogito-runtimes')
+                    }
+                    mvnCmd.run('clean install')
+                }
+            }
+            post {
+                cleanup {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+        stage('Analyze Runtimes by SonarCloud') {
+            when {
+                expression { isNormalPRCheck() }
+            }
+            steps {
+                script {
+                    getMavenCommand('kogito-runtimes')
                             .withOptions(['-e', '-nsu'])
                             .withProfiles(['sonarcloud-analysis'])
                             .run('validate')
-                    }
                 }
             }
             post {
@@ -82,7 +93,7 @@ pipeline {
         stage('Check Runtimes integration-tests with persistence') {
             steps {
                 script {
-                    getMavenCommand('integration-tests')
+                    getMavenCommand('integration-tests', true, true)
                         .withProfiles(['persistence'])
                         .run('clean verify')
                 }
@@ -99,7 +110,7 @@ pipeline {
             steps {
                 script {
                     // Skip unnecessary plugins to save time.
-                    getMavenCommand('optaplanner')
+                    getMavenCommand('optaplanner', true, true)
                         .withProperty('enforcer.skip')
                         .withProperty('formatter.skip')
                         .withProperty('impsort.skip')
@@ -118,7 +129,8 @@ pipeline {
         stage('Build Apps') {
             steps {
                 script {
-                    getMavenCommand('kogito-apps').run('clean install')
+                    getMavenCommand('kogito-apps', true, true)
+                        .run('clean install')
                 }
             }
             post {
@@ -132,7 +144,8 @@ pipeline {
         stage('Build Examples') {
             steps {
                 script {
-                    getMavenCommand('kogito-examples').run('clean install')
+                    getMavenCommand('kogito-examples', true, true)
+                        .run('clean install')
                 }
             }
             post {
@@ -146,7 +159,7 @@ pipeline {
         stage('Check Examples with persistence') {
             steps {
                 script {
-                    getMavenCommand('kogito-examples-persistence')
+                    getMavenCommand('kogito-examples-persistence', true, true)
                         .withProfiles(['persistence'])
                         .run('clean verify')
                 }
@@ -162,7 +175,7 @@ pipeline {
         stage('Check Examples with events') {
             steps {
                 script {
-                    getMavenCommand('kogito-examples-events')
+                    getMavenCommand('kogito-examples-events', true, true)
                         .withProfiles(['events'])
                         .run('clean verify')
                 }
@@ -221,20 +234,20 @@ void checkoutQuarkusRepo() {
 void checkoutOptaplannerRepo() {
     String targetBranch = changeTarget
     String [] versionSplit = targetBranch.split("\\.")
-    if(versionSplit.length == 3 
+    if (versionSplit.length == 3
         && versionSplit[0].isNumber()
         && versionSplit[1].isNumber()
        && versionSplit[2] == 'x') {
         targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
     } else {
         echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
-    }
+       }
     dir('optaplanner') {
         githubscm.checkoutIfExists('optaplanner', changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
     }
 }
 
-MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true){
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true, boolean canNative = false) {
     mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
                 // add timestamp to Maven logs
@@ -242,6 +255,11 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true){
                 .inDirectory(directory)
     if (addQuarkusVersion && getQuarkusBranch()) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
+    }
+    if (canNative && isNative()) {
+        mvnCmd.withProfiles(['native'])
+        // Added due to https://github.com/quarkusio/quarkus/issues/13341
+        mvnCmd.withProperty('quarkus.profile', 'native')
     }
     return mvnCmd
 }
@@ -252,4 +270,12 @@ void cleanContainers() {
 
 String getQuarkusBranch() {
     return env['QUARKUS_BRANCH']
+}
+
+boolean isNative() {
+    return env['NATIVE'] && env['NATIVE'].toBoolean()
+}
+
+boolean isNormalPRCheck() {
+    return !(getQuarkusBranch() || isNative())
 }
