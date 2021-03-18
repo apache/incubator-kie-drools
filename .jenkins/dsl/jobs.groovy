@@ -42,6 +42,7 @@ if (isMainBranch()) {
 
     setupPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     setupQuarkusLTSPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    setupNativePrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
 
     // For BDD runtimes PR job
     folder(bddRuntimesPrFolder)
@@ -78,6 +79,12 @@ void setupQuarkusLTSPrJob(String jobFolder) {
     def jobParams = getDefaultJobParams()
     jobParams.job.folder = jobFolder
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
+}
+
+void setupNativePrJob(String jobFolder) {
+    def jobParams = getDefaultJobParams()
+    jobParams.job.folder = jobFolder
+    KogitoJobTemplate.createNativePRJob(this, jobParams)
 }
 
 void setupSonarCloudJob(String jobFolder) {

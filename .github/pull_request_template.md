@@ -20,4 +20,8 @@ How to retest this PR or trigger a specific build:
  
 * <b>Quarkus LTS checks</b>  
   Please add comment: <b>Jenkins run LTS</b>
+
+* <b>Native checks</b>  
+  Please add comment: <b>Jenkins run native</b>
+
 </details>
