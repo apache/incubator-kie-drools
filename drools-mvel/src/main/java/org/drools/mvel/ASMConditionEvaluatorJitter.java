@@ -880,6 +880,9 @@ public class ASMConditionEvaluatorJitter {
                         case DIV:
                             invoke(operationType.getMethod("divide", operationType));
                             break;
+                        case MOD:
+                            invoke(operationType.getMethod("remainder", operationType));
+                            break;
                     }
                 } catch (NoSuchMethodException e) {
                     throw new RuntimeException(e);
