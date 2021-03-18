@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,17 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.v1_3.TDecisionTable;
 
-public class DMNDTAnalysisException extends RuntimeException {
+public class DMNDTAnalysisExceptionTest {
 
-    private final DecisionTable dt;
-
-    public DMNDTAnalysisException(String message, DecisionTable dt) {
-        super(message);
-        this.dt = dt;
+    @Test
+    public void smokeTest() {
+        DecisionTable dtRef = new TDecisionTable();
+        DMNDTAnalysisException ut = new DMNDTAnalysisException("smoke test", dtRef);
+        Assertions.assertThat(ut.getDt()).isEqualTo(dtRef);
     }
-
-    public DecisionTable getDt() {
-        return dt;
-    }
-
 }

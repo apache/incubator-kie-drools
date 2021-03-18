@@ -1,6 +1,7 @@
 // Copied under Apache License from https://github.com/dmn-tck/tck/blob/8c23dc13caa508a33d11b47cca318d7c3a3ca2fc/LICENSE-ASL-2.0.txt
 package org.kie.dmn.validation.dtanalysis.mcdc.dmntck;
 
+import org.kie.dmn.feel.util.Generated;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -21,6 +22,7 @@ import javax.xml.namespace.QName;
  * provided in this class.
  * 
  */
+@Generated("com.sun.tools.xjc.Driver")
 @XmlRegistry
 public class ObjectFactory {
 

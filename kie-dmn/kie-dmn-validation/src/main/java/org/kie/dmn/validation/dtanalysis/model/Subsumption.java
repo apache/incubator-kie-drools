@@ -16,6 +16,8 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
+import org.kie.dmn.feel.util.Generated;
+
 public class Subsumption {
 
     public final int rule;
@@ -27,6 +29,7 @@ public class Subsumption {
         this.includedRule = includedRule;
     }
 
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -36,6 +39,7 @@ public class Subsumption {
         return result;
     }
 
+    @Generated("org.eclipse.jdt.internal.corext.codemanipulation")
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
