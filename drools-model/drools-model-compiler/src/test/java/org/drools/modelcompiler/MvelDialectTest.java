@@ -577,6 +577,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    result -= 10000B;\n" + // 40000
                 "    result /= 10B;\n" + // 4000
                 "    result *= 10B;\n" + // 40000
+                "    (result *= 10B);\n" + // 400000
                 "    $p.money = result;" +
                 "end";
 
@@ -587,7 +588,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 40000 ), john.getMoney());
+        assertEquals(new BigDecimal( 400000 ), john.getMoney());
     }
 
     @Test
