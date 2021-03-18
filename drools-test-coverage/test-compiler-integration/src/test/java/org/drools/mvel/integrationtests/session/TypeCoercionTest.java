@@ -17,13 +17,18 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.drools.mvel.CommonTestMethodBase;
+
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.PolymorphicFact;
 import org.drools.mvel.compiler.Primitives;
-import org.drools.mvel.integrationtests.SerializationHelper;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -31,12 +36,25 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
 
-public class TypeCoercionTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class TypeCoercionTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public TypeCoercionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testRuntimeTypeCoercion() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_RuntimeTypeCoercion.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuntimeTypeCoercion.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -64,8 +82,8 @@ public class TypeCoercionTest extends CommonTestMethodBase {
 
     @Test
     public void testRuntimeTypeCoercion2() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_RuntimeTypeCoercion2.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuntimeTypeCoercion2.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -132,7 +150,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                 "   System.out.println(\"ID compared values: 3.0, 4.0 - actual ID value: \" + $id);\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
         final KieSession ksession = kbase.newKieSession();
 
         final InnerBean innerTest = new InnerBean();
@@ -198,7 +216,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final FactType typeA = kbase.getFactType("org.drools.mvel.compiler.test", "A");
@@ -220,7 +238,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final Person p = new Person("42", 42);
@@ -247,7 +265,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                            "    Person(name == \"11\")\n" +
                            " then end\n";
 
-        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(new Person("11"));
@@ -269,7 +287,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                            "    Person(age == 11)\n" +
                            " then end\n";
 
-        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(new Person("Mario", 11));
@@ -285,7 +303,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                 "     String(this == $i)\n" +
                 " then end\n";
 
-        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(2);
@@ -303,7 +321,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
                 "     Person(name == $i)\n" +
                 " then end\n";
 
-        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(2);

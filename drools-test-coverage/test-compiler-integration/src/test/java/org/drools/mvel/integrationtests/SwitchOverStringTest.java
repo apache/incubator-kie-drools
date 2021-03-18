@@ -1,15 +1,36 @@
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+@RunWith(Parameterized.class)
 public class SwitchOverStringTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SwitchOverStringTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private static final String FUNCTION_WITH_SWITCH_OVER_STRING = "function void theTest(String input) {\n" +
             "  switch(input) {\n" +
@@ -33,9 +54,9 @@ public class SwitchOverStringTest {
         Assume.assumeTrue("Test only makes sense on Java 7+.", javaVersion >= 1.7);
         System.setProperty("drools.dialect.java.compiler.lnglevel", "1.7");
         try {
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add( ResourceFactory.newByteArrayResource( FUNCTION_WITH_SWITCH_OVER_STRING.getBytes() ), ResourceType.DRL );
-            Assert.assertFalse( "Compilation error(s) occurred!", kbuilder.hasErrors() );
+            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
+            List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+            assertTrue(errors.toString(), errors.isEmpty());
         } finally {
             System.clearProperty("drools.dialect.java.compiler.lnglevel");
         }
@@ -45,9 +66,10 @@ public class SwitchOverStringTest {
     public void testShouldFailToCompileSwitchOverStringWithLngLevel16() {
         System.setProperty("drools.dialect.java.compiler.lnglevel", "1.6");
         try {
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newByteArrayResource(FUNCTION_WITH_SWITCH_OVER_STRING.getBytes()), ResourceType.DRL);
-            Assert.assertTrue("Compilation error(s) expected!", kbuilder.hasErrors());
+            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
+            List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+            assertFalse("Should have an error", errors.isEmpty());
+            
         } finally {
             System.clearProperty("drools.dialect.java.compiler.lnglevel");
         }

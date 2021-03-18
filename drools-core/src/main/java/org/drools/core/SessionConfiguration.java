@@ -36,6 +36,7 @@ import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
@@ -58,6 +59,8 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
     public abstract boolean isKeepReference();
     public abstract void setDirectFiring(boolean directFiring);
     public abstract boolean isDirectFiring();
+    public abstract void setThreadSafe(boolean threadSafe);
+    public abstract boolean isThreadSafe();
 
     public abstract void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter);
     public abstract ForceEagerActivationFilter getForceEagerActivationFilter();
@@ -113,6 +116,8 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
             setKeepReference(((KeepReferenceOption) option).isKeepReference());
         } else if ( option instanceof DirectFiringOption ) {
             setDirectFiring(((DirectFiringOption) option).isDirectFiring());
+        } else if ( option instanceof ThreadSafeOption ) {
+            setThreadSafe(((ThreadSafeOption) option).isThreadSafe());
         } else if ( option instanceof ForceEagerActivationOption ) {
             setForceEagerActivationFilter(((ForceEagerActivationOption) option).getFilter());
         } else if ( option instanceof TimedRuleExecutionOption ) {
@@ -135,6 +140,8 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
             return (T) (isKeepReference() ? KeepReferenceOption.YES : KeepReferenceOption.NO);
         } else if ( DirectFiringOption.class.equals( option ) ) {
             return (T) (isDirectFiring() ? DirectFiringOption.YES : DirectFiringOption.NO);
+        } else if ( ThreadSafeOption.class.equals( option ) ) {
+            return (T) (isThreadSafe() ? ThreadSafeOption.YES : ThreadSafeOption.NO);
         } else if ( TimerJobFactoryOption.class.equals( option ) ) {
             return (T) TimerJobFactoryOption.get( getTimerJobFactoryType().toExternalForm() );
         } else if ( QueryListenerOption.class.equals( option ) ) {
@@ -166,6 +173,8 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
             setKeepReference( StringUtils.isEmpty( value ) || Boolean.parseBoolean( value ) );
         }else if ( name.equals( DirectFiringOption.PROPERTY_NAME ) ) {
             setDirectFiring(!StringUtils.isEmpty(value) && Boolean.parseBoolean(value));
+        }else if ( name.equals( ThreadSafeOption.PROPERTY_NAME ) ) {
+            setThreadSafe( StringUtils.isEmpty( value ) || Boolean.parseBoolean( value ) );
         } else if ( name.equals( ForceEagerActivationOption.PROPERTY_NAME ) ) {
             setForceEagerActivationFilter(ForceEagerActivationOption.resolve(StringUtils.isEmpty(value) ? "false" : value).getFilter());
         } else if ( name.equals( TimedRuleExecutionOption.PROPERTY_NAME ) ) {
@@ -192,6 +201,8 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
             return Boolean.toString( isKeepReference() );
         }else if ( name.equals( DirectFiringOption.PROPERTY_NAME ) ) {
             return Boolean.toString(isDirectFiring());
+        }else if ( name.equals( ThreadSafeOption.PROPERTY_NAME ) ) {
+            return Boolean.toString(isThreadSafe());
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             return getClockType().toExternalForm();
         } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {

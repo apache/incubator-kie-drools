@@ -3110,15 +3110,14 @@ NodeList<RuleItem> RuleItems():
     RuleConsequence consequnce;
 }
 {
-  (
-      <WHEN> "{"
-      (
-    item = RulePattern() { items.add(item); }
-      )*
-      "}"
-      <DO>
-    item = RuleConsequence() { items.add(item); }
-  )+
+
+    "{"
+    (
+        item = RulePattern() { items.add(item); }
+      | <DO> item = RuleConsequence() { items.add(item); }
+    )*
+    "}"
+
     { return items; }
 }
 
@@ -3132,9 +3131,9 @@ RulePattern RulePattern():
 {
   type = SimpleName() { begin=token(); }
   bind = SimpleName()
-  "="
+  ("=" | ":") // need to differentiate in the Pattern kind
   expr = OOPathExpr()
-  ";"
+  ","
 
     { return new RulePattern(range(begin, token()), type, bind, expr); }
 }
@@ -3142,13 +3141,13 @@ RulePattern RulePattern():
 RuleConsequence RuleConsequence():
 {
     JavaToken begin;
-    BlockStmt block;
+    Statement statement;
 }
 {
   { begin=token(); }
-  block = Block()
+  statement = Statement()
 
-    { return new RuleConsequence(range(begin, token()), block); }
+    { return new RuleConsequence(range(begin, token()), statement); }
 }
 
 OOPathExpr OOPathExpr():

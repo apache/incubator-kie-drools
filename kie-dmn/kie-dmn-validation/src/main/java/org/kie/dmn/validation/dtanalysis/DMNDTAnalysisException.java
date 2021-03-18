@@ -27,11 +27,6 @@ public class DMNDTAnalysisException extends RuntimeException {
         this.dt = dt;
     }
 
-    public DMNDTAnalysisException(Throwable cause, DecisionTable dt) {
-        super(cause);
-        this.dt = dt;
-    }
-
     public DecisionTable getDt() {
         return dt;
     }

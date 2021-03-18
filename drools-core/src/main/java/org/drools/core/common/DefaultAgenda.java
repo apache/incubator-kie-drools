@@ -40,6 +40,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
+import org.drools.core.phreak.ThreadUnsafePropagationList;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -147,7 +148,7 @@ public class DefaultAgenda
 
     public DefaultAgenda(InternalKnowledgeBase kBase,
                          boolean initMain) {
-        this(kBase, initMain, new ExecutionStateMachine());
+        this(kBase, initMain, new ConcurrentExecutionStateMachine());
     }
 
     DefaultAgenda(InternalKnowledgeBase kBase,
@@ -195,7 +196,7 @@ public class DefaultAgenda
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
         declarativeAgenda = in.readBoolean();
         sequential = in.readBoolean();
-        this.executionStateMachine = new ExecutionStateMachine();
+        this.executionStateMachine = new ConcurrentExecutionStateMachine();
     }
 
     @Override
@@ -246,19 +247,21 @@ public class DefaultAgenda
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.mainAgendaGroup = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
+        this.mainAgendaGroup.setWorkingMemory( workingMemory );
 
-        // TODO experimenting parallelzation through multiple agendas now
-        // TODO parallelization with ParallelRuleEvaluator is another (incompatible?) possibility
-        // TODO add a different kbase option if we want to keep this alive
-//        this.ruleEvaluator = workingMemory.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() ?
-//                             new ParallelRuleEvaluator( this ) :
-//                             new SequentialRuleEvaluator( this );
+        if ( !workingMemory.getSessionConfiguration().isThreadSafe() ) {
+            executionStateMachine = new UnsafeExecutionStateMachine();
+        }
 
         this.ruleEvaluator = new SequentialRuleEvaluator( this );
         this.propagationList = createPropagationList();
     }
 
     private PropagationList createPropagationList() {
+        if (!workingMemory.getSessionConfiguration().isThreadSafe()) {
+            return new ThreadUnsafePropagationList( workingMemory );
+        }
+
         return workingMemory.getSessionConfiguration().hasForceEagerActivationFilter() ?
                new SynchronizedBypassPropagationList( workingMemory ) :
                new SynchronizedPropagationList( workingMemory );
@@ -563,9 +566,9 @@ public class DefaultAgenda
             agendaGroup = agendaGroupFactory.createAgendaGroup( name,
                                                                 kBase );
             addAgendaGroup( agendaGroup );
-        }
 
-        agendaGroup.setWorkingMemory( getWorkingMemory() );
+            agendaGroup.setWorkingMemory( getWorkingMemory() );
+        }
 
         return agendaGroup;
     }
@@ -1152,7 +1155,7 @@ public class DefaultAgenda
         class FireAllRulesRestHandler implements RestHandler {
             @Override
             public PropagationEntry handleRest(DefaultAgenda agenda, boolean isInternalFire) {
-                synchronized (agenda.executionStateMachine.stateMachineLock) {
+                synchronized (agenda.executionStateMachine.getStateMachineLock()) {
                     PropagationEntry head = agenda.propagationList.takeAll();
                     if (isInternalFire && head == null) {
                         agenda.internalHalt();
@@ -1166,7 +1169,7 @@ public class DefaultAgenda
             @Override
             public PropagationEntry handleRest(DefaultAgenda agenda, boolean isInternalFire) {
                 boolean deactivated = false;
-                if (isInternalFire && agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT) {
+                if (isInternalFire && agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT) {
                     agenda.executionStateMachine.inactiveOnFireUntilHalt();
                     deactivated = true;
                 }
@@ -1179,8 +1182,8 @@ public class DefaultAgenda
                     // if halt() has called, the thread should not be put into a wait state
                     // instead this is just a safe way to make sure the queue is flushed before exiting the loop
                     if (head == null && (
-                            agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT ||
-                            agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT )) {
+                            agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT ||
+                            agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT )) {
                         agenda.propagationList.waitOnRest();
                         head = agenda.propagationList.takeAll();
                     }
@@ -1336,11 +1339,8 @@ public class DefaultAgenda
         return !propagationList.isEmpty();
     }
 
-    static class ExecutionStateMachine {
-        private volatile ExecutionState currentState = ExecutionState.INACTIVE;
-        private volatile boolean wasFiringUntilHalt = false;
-
-        public enum ExecutionState {         // fireAllRule | fireUntilHalt | executeTask <-- required action
+    interface ExecutionStateMachine {
+        enum ExecutionState {         // fireAllRule | fireUntilHalt | executeTask <-- required action
             INACTIVE( false, true ),         // fire        | fire          | exec
             FIRING_ALL_RULES( true, true ),  // do nothing  | wait + fire   | enqueue
             FIRING_UNTIL_HALT( true, true ), // do nothing  | do nothing    | enqueue
@@ -1367,6 +1367,134 @@ public class DefaultAgenda
                 return alive;
             }
         }
+
+        boolean isFiring();
+
+        void reset();
+
+        boolean toFireAllRules();
+
+        boolean toFireUntilHalt();
+
+        boolean toExecuteTask( ExecutableEntry executable );
+
+        boolean toExecuteTaskState();
+
+        void activate(DefaultAgenda agenda, PropagationList propagationList);
+
+        void deactivate();
+
+        boolean tryDeactivate();
+
+        void immediateHalt(PropagationList propagationList);
+
+        void inactiveOnFireUntilHalt();
+
+        void internalHalt();
+
+        boolean dispose(InternalWorkingMemory workingMemory);
+
+        boolean isAlive();
+
+        ExecutionState getCurrentState();
+
+        Object getStateMachineLock();
+    }
+
+    static class UnsafeExecutionStateMachine implements ExecutionStateMachine {
+
+        private final Object stateMachineLock = new Object();
+
+        private ExecutionState currentState = ExecutionState.INACTIVE;
+
+        @Override
+        public boolean isFiring() {
+            return currentState.isFiring();
+        }
+
+        @Override
+        public void reset() {
+            currentState = ExecutionState.INACTIVE;
+        }
+
+        @Override
+        public boolean toFireAllRules() {
+            currentState = ExecutionState.FIRING_ALL_RULES;
+            return true;
+        }
+
+        @Override
+        public boolean toFireUntilHalt() {
+            throw new UnsupportedOperationException( "Not permitted in non-thread-safe mode" );
+        }
+
+        @Override
+        public boolean toExecuteTask( ExecutableEntry executable ) {
+            throw new UnsupportedOperationException( "Not permitted in non-thread-safe mode" );
+        }
+
+        @Override
+        public boolean toExecuteTaskState() {
+            throw new UnsupportedOperationException( "Not permitted in non-thread-safe mode" );
+        }
+
+        @Override
+        public void activate( DefaultAgenda agenda, PropagationList propagationList ) {
+        }
+
+        @Override
+        public void deactivate() {
+            currentState = ExecutionState.DEACTIVATED;
+        }
+
+        @Override
+        public boolean tryDeactivate() {
+            currentState = ExecutionState.DEACTIVATED;
+            return true;
+        }
+
+        @Override
+        public void immediateHalt( PropagationList propagationList ) {
+            currentState = ExecutionState.INACTIVE;
+        }
+
+        @Override
+        public void inactiveOnFireUntilHalt() {
+            throw new UnsupportedOperationException( "Not permitted in non-thread-safe mode" );
+        }
+
+        @Override
+        public void internalHalt() {
+            if (isFiring()) {
+                currentState = ExecutionState.HALTING;
+            }
+        }
+
+        @Override
+        public boolean dispose( InternalWorkingMemory workingMemory ) {
+            currentState = ExecutionState.DISPOSED;
+            return true;
+        }
+
+        @Override
+        public boolean isAlive() {
+            return currentState.isAlive();
+        }
+
+        @Override
+        public ExecutionState getCurrentState() {
+            return currentState;
+        }
+
+        @Override
+        public Object getStateMachineLock() {
+            return stateMachineLock;
+        }
+    }
+
+    static class ConcurrentExecutionStateMachine implements ExecutionStateMachine {
+        private volatile ExecutionState currentState = ExecutionState.INACTIVE;
+        private volatile boolean wasFiringUntilHalt = false;
 
         private final Object stateMachineLock = new Object();
 
@@ -1536,6 +1664,14 @@ public class DefaultAgenda
             synchronized (stateMachineLock) {
                 return currentState.isAlive();
             }
+        }
+
+        public ExecutionState getCurrentState() {
+            return currentState;
+        }
+
+        public Object getStateMachineLock() {
+            return stateMachineLock;
         }
     }
 

@@ -40,6 +40,7 @@ import org.drools.mvel.expr.MVELConsequence;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 import static org.drools.core.util.StringUtils.codeAwareSplitOnChar;
@@ -290,6 +291,10 @@ public class MVELConsequenceBuilder
                     int index = settableProperties.indexOf(propertyName);
                     if (index >= 0) {
                         modificationMask = setPropertyOnMask(modificationMask, index);
+                    } else {
+                        // I'm property reactive, but I was unable to infer which properties was modified, setting all bit in bitmask
+                        modificationMask = allSetButTraitBitMask();
+                        break;
                     }
                 }
             }

@@ -286,6 +286,10 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         return Optional.ofNullable(executableModelProjectClass);
     }
 
+    public boolean isExecutabelModel() {
+        return executableModelProjectClass != null;
+    }
+
     @Override
     public KieBaseModel getKieBaseModel(final KieModuleModel kieModuleModel) {
         final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(KIE_BASE_MODEL_NAME);

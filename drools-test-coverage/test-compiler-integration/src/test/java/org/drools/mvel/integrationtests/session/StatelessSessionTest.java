@@ -23,38 +23,46 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Cheesery;
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.integrationtests.SerializationHelper;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieModule;
 import org.kie.api.command.Command;
 import org.kie.api.command.ExecutableCommand;
-import org.kie.api.definition.KiePackage;
+import org.kie.api.conf.SequentialOption;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.api.conf.SequentialOption;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 
-public class StatelessSessionTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class StatelessSessionTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public StatelessSessionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
     final List list = new ArrayList();
     final Cheesery cheesery = new Cheesery();
 
@@ -186,18 +194,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         str += "    stilton : Cheese(type == 'stilton') \n";
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
 
-        if  ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
-        kbase = SerializationHelper.serializeObject( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         final StatelessKieSession ksession = kbase.newStatelessKieSession();
         final Cheese stilton1 = new Cheese( "stilton", 1);
@@ -250,9 +248,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testNotInStatelessSession() throws Exception {
-        final KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbc.setOption(SequentialOption.YES);
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(kbc, "test_NotInStatelessSession.drl"));
+        final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "test_NotInStatelessSession.drl");
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
         final StatelessKieSession session = kbase.newStatelessKieSession();
 
         final List list = new ArrayList();
@@ -298,21 +295,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
     }
         
     private StatelessKieSession getSession2(final Resource resource) throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( resource, ResourceType.DRL );
-        
-        if (kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-        }
-        
-        assertFalse( kbuilder.hasErrors() );
-        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
-       
-        kbase.addPackages( pkgs );
-        kbase    = SerializationHelper.serializeObject( kbase );
+        resource.setTargetPath("r1.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
         final StatelessKieSession session = kbase.newStatelessKieSession();
 
         session.setGlobal( "list",

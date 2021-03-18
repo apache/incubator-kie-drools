@@ -140,7 +140,33 @@ public final class KieBaseUtil {
                                                            final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                            final String... classpathResources) {
         final List<Resource> resources = KieUtil.getClasspathResources(classLoaderFromClass, classpathResources);
-        KieModuleModel kieModuleModel = KieUtil.getKieModuleModel(kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME, new HashMap<>());
+        return getKieBaseFromResourcesWithClassLoaderForKieBuilder(moduleGroupId, classLoaderForKieBuilder, kieBaseTestConfiguration, new HashMap<>(), resources);
+    }
+
+    public static KieBase getKieBaseFromClasspathResourcesWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                                                       final Class<?> classLoaderFromClass,
+                                                                                       final ClassLoader classLoaderForKieBuilder,
+                                                                                       final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                                                       final Map<String, String> kieModuleConfigurationProperties,
+                                                                                       final String... classpathResources) {
+        final List<Resource> resources = KieUtil.getClasspathResources(classLoaderFromClass, classpathResources);
+        return getKieBaseFromResourcesWithClassLoaderForKieBuilder(moduleGroupId, classLoaderForKieBuilder, kieBaseTestConfiguration, kieModuleConfigurationProperties, resources);
+    }
+
+    public static KieBase getKieBaseFromDrlWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                                        final ClassLoader classLoaderForKieBuilder,
+                                                                        final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                                        final String... drls) {
+        final List<Resource> resources = KieUtil.getResourcesFromDrls(drls);
+        return getKieBaseFromResourcesWithClassLoaderForKieBuilder(moduleGroupId, classLoaderForKieBuilder, kieBaseTestConfiguration, new HashMap<>(), resources);
+    }
+
+    private static KieBase getKieBaseFromResourcesWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                                               final ClassLoader classLoaderForKieBuilder,
+                                                                               final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                                               final Map<String, String> kieModuleConfigurationProperties,
+                                                                               final List<Resource> resources) {
+        KieModuleModel kieModuleModel = KieUtil.getKieModuleModel(kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME, kieModuleConfigurationProperties);
         KieFileSystem kfs = KieUtil.getKieFileSystemWithKieModule(kieModuleModel, KieUtil.generateReleaseId(moduleGroupId), resources.toArray(new Resource[]{}));
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false, classLoaderForKieBuilder);
         final KieModule kieModule = kieBuilder.getKieModule();

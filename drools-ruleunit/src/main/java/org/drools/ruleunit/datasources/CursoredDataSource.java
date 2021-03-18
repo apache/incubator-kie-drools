@@ -34,7 +34,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationEntry.AbstractPropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.Activation;
@@ -264,7 +263,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
                                                                                modifiedClass,
                                                                                null);
 
-            EntryPointNode.propagateModify( handle, context, typeConf, ep.getInternalWorkingMemory() );
+            PropagationEntry.Update.execute( handle, context, typeConf, ep.getInternalWorkingMemory() );
         }
     }
 

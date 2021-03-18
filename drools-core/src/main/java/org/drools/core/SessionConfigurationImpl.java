@@ -37,6 +37,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
@@ -74,6 +75,8 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     private boolean                        keepReference;
 
     private boolean                        directFiring;
+
+    private boolean                        threadSafe;
 
     private ForceEagerActivationFilter     forceEagerActivationFilter;
     private TimedRuleExecutionFilter       timedRuleExecutionFilter;
@@ -162,6 +165,8 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
         setDirectFiring(Boolean.valueOf( getPropertyValue( DirectFiringOption.PROPERTY_NAME, "false" ) ));
 
+        setThreadSafe(Boolean.valueOf( getPropertyValue( ThreadSafeOption.PROPERTY_NAME, "true" ) ));
+
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve( getPropertyValue( ForceEagerActivationOption.PROPERTY_NAME, "false" ) ).getFilter());
 
         setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve( getPropertyValue( TimedRuleExecutionOption.PROPERTY_NAME, "false" ) ).getFilter());
@@ -225,6 +230,15 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     public boolean isDirectFiring() {
         return this.directFiring;
+    }
+
+    public void setThreadSafe(boolean threadSafe) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.threadSafe = threadSafe;
+    }
+
+    public boolean isThreadSafe() {
+        return this.threadSafe;
     }
 
     public void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {

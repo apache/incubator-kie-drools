@@ -29,14 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
-import org.drools.mvel.compiler.Address;
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.DomainObject;
-import org.drools.mvel.compiler.InsertedObject;
-import org.drools.mvel.compiler.Interval;
-import org.drools.mvel.compiler.Person;
-import org.drools.mvel.compiler.Worker;
+
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -47,15 +40,25 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
+import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.mvel.compiler.DomainObject;
+import org.drools.mvel.compiler.InsertedObject;
+import org.drools.mvel.compiler.Interval;
+import org.drools.mvel.compiler.Person;
+import org.drools.mvel.compiler.Worker;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.FactHandle;
@@ -65,7 +68,6 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -74,7 +76,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class QueryTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class QueryTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public QueryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @org.junit.Rule
     public TestName testName = new TestName();
@@ -160,8 +175,8 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQuery2() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Query.drl"));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Query.drl");
+        KieSession session = kbase.newKieSession();
 
         session.fireAllRules();
 
@@ -174,8 +189,8 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQueryWithParams() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QueryWithParams.drl"));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_QueryWithParams.drl");
+        KieSession session = kbase.newKieSession();
 
         session.fireAllRules();
 
@@ -222,8 +237,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession session = kbase.newKieSession();
 
 
         Cheese stilton1 = new Cheese( "stilton", 1 );
@@ -287,8 +302,8 @@ public class QueryTest extends CommonTestMethodBase {
     public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_TwoQuerries.drl"));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_TwoQuerries.drl");
+        KieSession session = kbase.newKieSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
@@ -314,8 +329,8 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testDoubleQueryWithExists() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_DoubleQueryWithExists.drl"));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_DoubleQueryWithExists.drl");
+        KieSession session = kbase.newKieSession();
 
         final Person p1 = new Person( "p1",
                                       "stilton",
@@ -395,8 +410,8 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQueryWithCollect() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Query.drl"));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Query.drl");
+        KieSession session = kbase.newKieSession();
         session.fireAllRules();
 
         QueryResults results = getQueryResults( session, "collect objects" );
@@ -412,8 +427,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testDroolsQueryCleanup() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QueryMemoryLeak.drl"));
-        KieSession session = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_QueryMemoryLeak.drl");
 
         KieSession ksession = kbase.newKieSession();
 
@@ -464,8 +478,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Person p1 = new Person( "darth",
                                 "stilton",
@@ -555,8 +569,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Person p1 = new Person( "darth",
                                 "stilton",
@@ -613,8 +627,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Person p1 = new Person( "darth",
                                 "stilton",
@@ -659,8 +673,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Cheese stilton1 = new Cheese( "stilton",
                                       1 );
@@ -866,8 +880,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    $cheese : Cheese(type == $type) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase, option );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         // insert some data into the session
         for ( int i = 0; i < 10000; i++ ) {
@@ -900,8 +914,8 @@ public class QueryTest extends CommonTestMethodBase {
                      "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +
                      "end";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         DomainObject do1 = new DomainObject();
         do1.setId( 1 );
@@ -936,11 +950,9 @@ public class QueryTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        Results results = helper.verify();
-        assertTrue( results.hasMessages( Message.Level.ERROR ) );
-        assertEquals( 2, results.getMessages( Message.Level.ERROR ).size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertEquals(2, errors.size());
     }
 
     @Test
@@ -956,11 +968,9 @@ public class QueryTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        Results results = helper.verify();
-        assertTrue( results.hasMessages( Message.Level.ERROR ) );
-        assertEquals( 1, results.getMessages( Message.Level.ERROR ).size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertEquals(1, errors.size());
     }
 
     @Test
@@ -977,11 +987,9 @@ public class QueryTest extends CommonTestMethodBase {
                     "then\n" +
                      "end";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        Results results = helper.verify();
-        assertTrue( results.hasMessages( Message.Level.ERROR ) );
-        assertEquals( 1, results.getMessages( Message.Level.ERROR ).size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertEquals(1, errors.size());
     }
 
 
@@ -1019,9 +1027,8 @@ public class QueryTest extends CommonTestMethodBase {
                      "         list.add( AString + \" World\" );\n" +
                      "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ks = helper.build(  ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
 
         ArrayList list = new ArrayList();
         ks.setGlobal( "AString", "Hello" );
@@ -1063,9 +1070,8 @@ public class QueryTest extends CommonTestMethodBase {
                      "end";
 
         List list = new ArrayList(  );
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ks = helper.build(  ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
@@ -1091,9 +1097,8 @@ public class QueryTest extends CommonTestMethodBase {
                      "    list.add( $s );\n" +
                      "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieSession ks = helper.build(  ).newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ks = kbase.newKieSession();
 
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -1125,9 +1130,8 @@ public class QueryTest extends CommonTestMethodBase {
                 "    persons.add( $p );\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( str, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         List<Person> personsWithA = new ArrayList<Person>();
         ksession.setGlobal("persons", personsWithA);
@@ -1165,9 +1169,7 @@ public class QueryTest extends CommonTestMethodBase {
                 "    persons.add( $p );\n" +
                 "end\n";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( str, ResourceType.DRL );
-        KieBase kbase = SerializationHelper.serializeObject(helper.build());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List<Person> list = new ArrayList<Person>();
@@ -1208,10 +1210,9 @@ public class QueryTest extends CommonTestMethodBase {
                 "    persons.add( $p );\n" +
                 "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertFalse( results.getMessages().isEmpty() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -1230,7 +1231,8 @@ public class QueryTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n\n";
 
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         FactHandle iFH = ksession.insert( 1 );
         FactHandle sFH = ksession.insert( "" );
@@ -1254,8 +1256,8 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
         str += "end\n";
 
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        KieSession ksession = createKieSession( kbase );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         Cheese stilton1 = new Cheese( "stilton", 1 );
         Cheese cheddar1 = new Cheese( "cheddar", 1 );
@@ -1382,7 +1384,8 @@ public class QueryTest extends CommonTestMethodBase {
                 "    $visible: QuestionVisible(question == $question) or not QuestionVisible(question == $question)\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         Question question = new Question();
         ksession.insert( question );
         QueryResults results = ksession.getQueryResults("QuestionsKnowledge");

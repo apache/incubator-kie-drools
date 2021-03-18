@@ -182,8 +182,8 @@ public class BinaryHeapQueue
         return result;
     }
 
-    public Activation dequeue(Activation activation) {
-        return dequeue(activation.getQueueIndex());
+    public void dequeue(Activation activation) {
+        dequeue(activation.getQueueIndex());
     }
 
     Activation dequeue(final int index) {
@@ -343,70 +343,5 @@ public class BinaryHeapQueue
     @Override
     public String toString() {
         return Stream.of( elements ).filter(Objects::nonNull).collect(toList() ).toString();
-    }
-
-    public static class Synchronized extends BinaryHeapQueue {
-
-        public Synchronized() {
-            super();
-        }
-
-        public Synchronized( Comparator<Activation> comparator ) {
-            super( comparator );
-        }
-
-        public Synchronized( Comparator<Activation> comparator, int capacity ) {
-            super( comparator, capacity );
-        }
-
-        @Override
-        public synchronized void clear() {
-            super.clear();
-        }
-
-        @Override
-        public synchronized Activation[] getAndClear() {
-            return super.getAndClear();
-        }
-
-        @Override
-        public synchronized boolean isEmpty() {
-            return super.isEmpty();
-        }
-
-        @Override
-        public synchronized boolean isFull() {
-            return super.isFull();
-        }
-
-        @Override
-        public synchronized int size() {
-            return super.size();
-        }
-
-        @Override
-        public synchronized Activation peek() {
-            return super.peek();
-        }
-
-        @Override
-        public synchronized void enqueue( Activation element ) {
-            super.enqueue( element );
-        }
-
-        @Override
-        public synchronized Activation dequeue() {
-            return super.dequeue();
-        }
-
-        @Override
-        public synchronized Activation dequeue( Activation activation ) {
-            return super.dequeue( activation );
-        }
-
-        @Override
-        public synchronized Object[] toArray( Object[] a ) {
-            return super.toArray( a );
-        }
     }
 }

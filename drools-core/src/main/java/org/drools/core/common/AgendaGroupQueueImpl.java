@@ -27,7 +27,9 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.BinaryHeapQueue;
+import org.drools.core.util.Queue;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -45,7 +47,7 @@ public class AgendaGroupQueueImpl
     /**
      * Items in the agenda.
      */
-    protected final  BinaryHeapQueue    priorityQueue;
+    private          Queue              priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -67,13 +69,7 @@ public class AgendaGroupQueueImpl
         this.name = name;
         this.sequential = kBase.getConfiguration().isSequential();
 
-        this.priorityQueue = initPriorityQueue( kBase );
-
         this.clearedForRecency = -1;
-    }
-
-    protected BinaryHeapQueue initPriorityQueue( InternalKnowledgeBase kBase ) {
-        return new BinaryHeapQueue(new PhreakConflictResolver());
     }
 
     @Override
@@ -92,6 +88,12 @@ public class AgendaGroupQueueImpl
 
     public void setWorkingMemory(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
+        // workingMemory can be null during deserialization
+        if (workingMemory != null && workingMemory.getSessionConfiguration().isDirectFiring()) {
+            this.priorityQueue = new ArrayQueue();
+        } else {
+            this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
+        }
     }
 
     public InternalWorkingMemory getWorkingMemory() {

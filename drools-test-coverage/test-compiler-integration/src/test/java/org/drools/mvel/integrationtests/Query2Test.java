@@ -15,21 +15,32 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
+import java.util.Collection;
+
 import org.drools.mvel.compiler.Order;
 import org.drools.mvel.compiler.OrderItem;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.fail;
+@RunWith(Parameterized.class)
+public class Query2Test {
 
-public class Query2Test extends CommonTestMethodBase {
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public Query2Test(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
     
     @Test
     public void testEvalRewrite() throws Exception {
@@ -44,14 +55,10 @@ public class Query2Test extends CommonTestMethodBase {
         "    then\n" +
         "        System.out.println( $o1 + \":\" + $o2 );\n" +
         "end        \n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
         final Order order1 = new Order( 11,
                                         "Bob" );
         final OrderItem item11 = new OrderItem( order1,
@@ -59,15 +66,10 @@ public class Query2Test extends CommonTestMethodBase {
         final OrderItem item12 = new OrderItem( order1,
                                                 2 );
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        KieSession ksession = createKnowledgeSession(kbase);
         ksession.insert( order1 );
         ksession.insert( item11 );
         ksession.insert( item12 );
         
         ksession.fireAllRules();
-        
-
     }
 }

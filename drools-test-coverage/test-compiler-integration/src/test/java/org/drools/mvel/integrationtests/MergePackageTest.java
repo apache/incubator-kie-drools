@@ -22,9 +22,13 @@ import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 
@@ -32,25 +36,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class MergePackageTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MergePackageTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MergePackageTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testMergingDifferentPackages2() throws Exception {
         // using different builders
         try {
-            final Collection<KiePackage> kpkgs1 = loadKnowledgePackages("test_RuleNameClashes1.drl");
+            Collection<KiePackage> kpkgs1 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RuleNameClashes1.drl").getKiePackages();
             KiePackage kpkg1 = kpkgs1.stream().filter( pkg -> pkg.getName().equals( "org.drools.package1" ) ).findFirst().get();
             assertEquals(1, kpkg1.getRules().size());
 
-            final Collection<KiePackage> kpkgs2 = loadKnowledgePackages("test_RuleNameClashes2.drl");
+            Collection<KiePackage> kpkgs2 = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RuleNameClashes2.drl").getKiePackages();
             KiePackage kpkg2 = kpkgs2.stream().filter( pkg -> pkg.getName().equals( "org.drools.package2" ) ).findFirst().get();
             assertEquals(1, kpkg2.getRules().size());
 
-            InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase();
+            InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
             kbase.addPackages(kpkgs1);
             kbase.addPackages(kpkgs2);
-            kbase = SerializationHelper.serializeObject(kbase);
-            final KieSession ksession = createKnowledgeSession(kbase);
+            KieSession ksession = kbase.newKieSession();
 
             final List results = new ArrayList();
             ksession.setGlobal("results", results);
@@ -73,13 +88,12 @@ public class MergePackageTest extends CommonTestMethodBase {
 
     @Test
     public void testMergePackageWithSameRuleNames() throws Exception {
-        final InternalKnowledgeBase kbase =
-                (InternalKnowledgeBase) SerializationHelper.serializeObject(loadKnowledgeBase("test_MergePackageWithSameRuleNames1.drl"));
-        final Collection<KiePackage> kpkgs =
-                loadKnowledgePackages("test_MergePackageWithSameRuleNames2.drl");
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MergePackageWithSameRuleNames1.drl");
+        Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_MergePackageWithSameRuleNames2.drl").getKiePackages();
+
         kbase.addPackages(kpkgs);
 
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);
@@ -92,8 +106,8 @@ public class MergePackageTest extends CommonTestMethodBase {
     public void testMergingDifferentPackages() throws Exception {
         // using the same builder
         try {
-            final Collection<KiePackage> kpkgs =
-                    loadKnowledgePackages("test_RuleNameClashes1.drl", "test_RuleNameClashes2.drl");
+            Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromClasspathResources("tmp", getClass(), kieBaseTestConfiguration, "test_RuleNameClashes1.drl", "test_RuleNameClashes2.drl").getKiePackages();
+
             assertEquals(3, kpkgs.size());
             for (final KiePackage kpkg : kpkgs) {
                 if (kpkg.getName().equals("org.drools.package1")) {
