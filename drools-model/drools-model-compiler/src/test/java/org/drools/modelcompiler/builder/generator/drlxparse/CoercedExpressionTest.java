@@ -4,9 +4,9 @@ import java.util.Map;
 
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.assertj.core.api.Assertions;
+import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -165,9 +165,9 @@ public class CoercedExpressionTest {
     @Test
     public void doNotCastNullLiteral() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".isApproved()", java.lang.Boolean.class);
-        final TypedExpression right = expr("null", ClassUtil.NullType.class);
+        final TypedExpression right = expr("null", MethodUtils.NullType.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertEquals(expr("null", ClassUtil.NullType.class), coerce.getCoercedRight());
+        assertEquals(expr("null", MethodUtils.NullType.class), coerce.getCoercedRight());
     }
 
     @Test(expected = CoercedExpression.CoercedExpressionException.class)

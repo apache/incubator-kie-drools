@@ -38,7 +38,8 @@ public class VariableDeclaratorTExpr implements TypedExpression {
         return initExpression.map(ie -> {
 
             Expression initializer = (Expression) ie.toJavaExpression();
-            if(!optInitType.isPresent()) {
+            // Used to downcast map.get see testAddCastToMapGetOfDeclaration
+            if(!optInitType.isPresent() || optInitType.get().equals(Object.class)) {
                 initializer = new CastExpr(jpType, new EnclosedExpr(initializer));
             }
             return (Node) new VariableDeclarationExpr(new VariableDeclarator(jpType, name, initializer));

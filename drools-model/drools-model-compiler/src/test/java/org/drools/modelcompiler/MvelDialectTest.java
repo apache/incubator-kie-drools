@@ -441,6 +441,32 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testAdditionMultiplication() throws Exception {
+        // DROOLS-6089
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    BigDecimal bd1 = 10;\n" +
+                "    BigDecimal bd2 = 20;\n" +
+                "    $p.money = $p.money + (bd1.multiply(bd2));" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 70200 ), john.getMoney());
+    }
+
+    @Test
     public void testBigDecimalModuloConsequence() {
         // DROOLS-5959
         String drl =

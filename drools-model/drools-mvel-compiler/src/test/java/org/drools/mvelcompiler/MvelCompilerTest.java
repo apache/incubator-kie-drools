@@ -170,6 +170,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalModuloOperationSumMultiply() {
+        test(ctx -> {
+                 ctx.addDeclaration("bd1", BigDecimal.class);
+                 ctx.addDeclaration("bd2", BigDecimal.class);
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             "{ $p.salary = $p.salary + (bd1.multiply(bd2)); }",
+             "{ $p.setSalary($p.getSalary().add(bd1.multiply(bd2)));\n }");
+    }
+
+    @Test
     public void testDoNotConvertAdditionInStringConcatenation() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +
@@ -522,10 +533,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void testVariableDeclarationUntyped() {
+    public void testAddCastToMapGet() {
         test(ctx -> ctx.addDeclaration("$map", Map.class),
-             " { Map pMap = map.get( $r.getName() ); }",
-             " { java.util.Map pMap = (java.util.Map) (map.get($r.getName())); }");
+             " { Map pMap = map.get( \"whatever\" ); }",
+             " { java.util.Map pMap = (java.util.Map) (map.get(\"whatever\")); }");
+    }
+
+    @Test
+    public void testAddCastToMapGetOfDeclaration() {
+        test(ctx -> {
+                 ctx.addDeclaration("map", Map.class);
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             " { Map pMap = map.get( $p.getName() ); }",
+             " { java.util.Map pMap = (java.util.Map) (map.get($p.getName())); }");
     }
 
     @Test
