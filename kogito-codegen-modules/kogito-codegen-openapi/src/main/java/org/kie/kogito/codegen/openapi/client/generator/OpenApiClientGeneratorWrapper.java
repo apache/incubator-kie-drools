@@ -18,6 +18,8 @@ package org.kie.kogito.codegen.openapi.client.generator;
 import java.io.File;
 import java.util.List;
 
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.openapi.client.OpenApiSpecDescriptor;
 import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.DefaultGenerator;
@@ -41,12 +43,17 @@ public class OpenApiClientGeneratorWrapper {
     private static final String GENERATOR_NAME = "java";
     private static final String VERBOSE = "verbose";
     private static final String ONCE_LOGGER = "org.openapitools.codegen.utils.oncelogger.enabled";
+    private static final String QUARKUS_API_CLIENT_TEMPLATE = "kogitoQuarkusApiClient.mustache";
 
     private final KogitoJavaClientCodegen kogitoCodegen;
     private final CodegenConfigurator configurator;
     private final DefaultGenerator generator;
 
-    private OpenApiClientGeneratorWrapper(final String specFilePath, final String outputDir) {
+    private OpenApiClientGeneratorWrapper(final String specFilePath, final String outputDir, final String runtime) {
+        String customApiTemplate = "";
+        if (QuarkusKogitoBuildContext.CONTEXT_NAME.equals(runtime)) {
+            customApiTemplate = QUARKUS_API_CLIENT_TEMPLATE;
+        }
         // do not generate docs nor tests
         GlobalSettings.setProperty(CodegenConstants.API_DOCS, FALSE);
         GlobalSettings.setProperty(CodegenConstants.API_TESTS, FALSE);
@@ -63,7 +70,7 @@ public class OpenApiClientGeneratorWrapper {
         this.configurator.setInputSpec(specFilePath);
         this.configurator.setGeneratorName(GENERATOR_NAME);
         this.generator = new DefaultGenerator();
-        this.kogitoCodegen = new KogitoJavaClientCodegen(this.generator);
+        this.kogitoCodegen = new KogitoJavaClientCodegen(this.generator, customApiTemplate);
         this.kogitoCodegen.setOutputDir(outputDir);
     }
 
@@ -74,8 +81,8 @@ public class OpenApiClientGeneratorWrapper {
      * @param outputDir a valid path in the local system where the files will be generated
      * @return a new instance of {@link OpenApiClientGeneratorWrapper}
      */
-    public static OpenApiClientGeneratorWrapper newInstance(final String specFilePath, final String outputDir) {
-        return new OpenApiClientGeneratorWrapper(specFilePath, outputDir);
+    public static OpenApiClientGeneratorWrapper newInstance(final String specFilePath, final String outputDir, final KogitoBuildContext context) {
+        return new OpenApiClientGeneratorWrapper(specFilePath, outputDir, context.name());
     }
 
     public OpenApiClientGeneratorWrapper withPackage(final String pkg) {

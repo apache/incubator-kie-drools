@@ -1,0 +1,47 @@
+package {{invokerPackage}};
+
+import java.util.Optional;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.jboss.logging.Logger;
+
+{{>generatedAnnotation}}
+public class KogitoApiClient extends ApiClient {
+
+    Optional<String> username;
+    Optional<String> password;
+    Optional<String> apiKey;
+    Optional<String> apiKeyPrefix;
+    Optional<String> basePath;
+
+    @javax.annotation.PostConstruct
+    public void init() {
+        if (username.isPresent()) {
+            super.setUsername(username.get());
+        }
+        if (password.isPresent()) {
+            super.setPassword(password.get());
+        }
+        if (apiKey.isPresent()) {
+            super.setApiKey(apiKey.get());
+        }
+        if (apiKeyPrefix.isPresent()) {
+            super.setApiKeyPrefix(apiKeyPrefix.get());
+        }
+        if (basePath.isPresent()) {
+            super.setBasePath(basePath.get());
+        }
+    }
+
+    protected Client buildHttpClient(boolean debugging) {
+        final RestClientBuilder restClientBuilder = RestClientBuilder.newBuilder();
+        restClientBuilder.register(getJSON());
+        if (debugging) {
+            restClientBuilder.register(Logger.class);
+        }
+        return ClientBuilder.newClient(restClientBuilder.getConfiguration());
+    }
+}

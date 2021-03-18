@@ -745,6 +745,12 @@
         <groupId>io.rest-assured</groupId>
         <artifactId>rest-assured</artifactId>
         <version>${version.io.rest-assured}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -842,6 +848,12 @@
         <groupId>io.serverlessworkflow</groupId>
         <artifactId>serverlessworkflow-api</artifactId>
         <version>${version.io.serverlessworkflow}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>io.serverlessworkflow</groupId>

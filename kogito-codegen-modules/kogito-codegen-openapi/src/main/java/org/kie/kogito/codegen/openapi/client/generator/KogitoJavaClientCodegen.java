@@ -42,8 +42,9 @@ public class KogitoJavaClientCodegen extends JavaClientCodegen {
     private static final String CUSTOM_API_CLIENT_TEMPLATE = "kogitoApiClient.mustache";
     private static final String CUSTOM_API_CLIENT_FILENAME = "KogitoApiClient.java";
     private final DefaultGenerator generator;
+    private final String customApiClientTemplate;
 
-    protected KogitoJavaClientCodegen(final DefaultGenerator generator) {
+    protected KogitoJavaClientCodegen(final DefaultGenerator generator, final String apiClientTemplate) {
         this.generator = generator;
         this.generator.setGeneratorPropertyDefault(CodegenConstants.MODELS, "false");
         this.setLibrary(JavaClientCodegen.RESTEASY);
@@ -51,6 +52,11 @@ public class KogitoJavaClientCodegen extends JavaClientCodegen {
         this.setDateLibrary(AbstractJavaCodegen.JAVA8_MODE);
         // not working, see #postProcessSupportingFileData
         this.setUseRuntimeException(true);
+        if (apiClientTemplate == null || apiClientTemplate.isEmpty()) {
+            this.customApiClientTemplate = CUSTOM_API_CLIENT_TEMPLATE;
+        } else {
+            this.customApiClientTemplate = apiClientTemplate;
+        }
     }
 
     /**
@@ -95,7 +101,7 @@ public class KogitoJavaClientCodegen extends JavaClientCodegen {
                 .filter(f -> f.getTemplateType() == TemplateFileType.SupportingFiles && f.getDestinationFilename().equals("ApiClient.java"))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Can't find ApiClient.java supporting file, impossible to generate OpenApi Client application"));
         // our custom ApiClient will be generated in the same folder
-        this.supportingFiles().add(new SupportingFile(CUSTOM_API_CLIENT_TEMPLATE, apiClientFile.getFolder(), CUSTOM_API_CLIENT_FILENAME));
+        this.supportingFiles().add(new SupportingFile(this.customApiClientTemplate, apiClientFile.getFolder(), CUSTOM_API_CLIENT_FILENAME));
     }
 
     @Override

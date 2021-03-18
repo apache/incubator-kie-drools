@@ -3,3 +3,5 @@ them to play along our required features.
 
 If you've ever need to modify these files, please check
 their [documentation](https://openapi-generator.tech/docs/templating).
+
+The templates we are likely to override are the [RestEasy](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/Java/libraries/resteasy) and [Java client](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/Java) ones.

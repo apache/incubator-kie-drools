@@ -115,7 +115,7 @@ public class OpenApiClientCodegen extends AbstractGenerator {
                         PathResolverFactory.newResolver(descriptor, this.context()).resolve(descriptor);
                 // generate the openapi client files
                 final List<GeneratedFile> files =
-                        OpenApiClientGeneratorWrapper.newInstance(resolvedPath, openApiGeneratorOutputDir)
+                        OpenApiClientGeneratorWrapper.newInstance(resolvedPath, openApiGeneratorOutputDir, this.context())
                                 .withPackage(this.getBasePackageFor(descriptor))
                                 .generate(descriptor)
                                 .stream()
