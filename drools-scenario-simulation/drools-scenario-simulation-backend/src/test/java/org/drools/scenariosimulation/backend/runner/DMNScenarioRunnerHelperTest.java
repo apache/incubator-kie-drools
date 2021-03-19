@@ -346,23 +346,35 @@ public class DMNScenarioRunnerHelperTest {
     @Test
     public void executeScenario() {
         ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
+        ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
+
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("imported.Person", Person.class.getCanonicalName());
+        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("imported.Dispute", Dispute.class.getCanonicalName());
 
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addBackground(new InstanceGiven(personFactIdentifier, new Person()));
         scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, new Dispute()));
         scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, new Person()));
+        scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, new Person()));
+        scenarioRunnerData.addGiven(new InstanceGiven(importedDisputeFactIdentifier, new Dispute()));
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
 
-        int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size();
+        int inputObjects = scenarioRunnerData.getBackgrounds().size() + (scenarioRunnerData.getGivens().size() - 1); //Imported with same prefix count once;
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(eq(DMN_FILE_PATH));
-        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(anyString(), setValueCaptor.capture());
+        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
+        verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(setKeyCaptor.capture(), setValueCaptor.capture());
+        assertTrue(setKeyCaptor.getAllValues().containsAll(Arrays.asList("imported", "Fact 1", "Fact 2")));
         for (Object value : setValueCaptor.getAllValues()) {
-            assertTrue(value instanceof Person || value instanceof Dispute);
+            assertTrue(value instanceof Person || value instanceof Dispute || value instanceof HashMap);
+            if (value instanceof HashMap) {
+                assertEquals(Person.class, ((HashMap<String, Object>) value).get("Person").getClass());
+                assertEquals(Dispute.class, ((HashMap<String, Object>) value).get("Dispute").getClass());
+                assertEquals(2, ((HashMap<String, Object>) value).size());
+            }
         }
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).run();
