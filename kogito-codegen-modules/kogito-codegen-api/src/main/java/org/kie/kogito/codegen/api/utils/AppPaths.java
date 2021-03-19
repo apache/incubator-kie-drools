@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
@@ -36,10 +35,6 @@ public class AppPaths {
 
     public static AppPaths fromProjectDir(Path projectDir) {
         return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false);
-    }
-
-    public static AppPaths fromProjectDir(Path projectDir, ClassLoader classLoader) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.singleton(getTargetPath(classLoader)), false);
     }
 
     public static AppPaths fromQuarkus(Iterable<Path> paths) {
@@ -84,10 +79,6 @@ public class AppPaths {
             return PathType.JAR;
         }
         return PathType.UNKNOWN;
-    }
-
-    private static Path getTargetPath(ClassLoader classLoader) {
-        return new File(Objects.requireNonNull(classLoader.getResource(""), "Got nullable resource in classloader root").getFile()).getParentFile().toPath();
     }
 
     private enum PathType {
