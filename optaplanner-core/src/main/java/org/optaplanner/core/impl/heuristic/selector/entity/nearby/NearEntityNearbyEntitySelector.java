@@ -80,12 +80,20 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        long childSize = childEntitySelector.getSize();
+        final long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The childEntitySelector (" + childEntitySelector
                     + ") has an entitySize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
+
+        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize,
+                origin -> childEntitySelector.endingIterator(), origin -> computeDestinationSize(childSize));
+        replayingOriginEntitySelector.endingIterator()
+                .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations(origin));
+    }
+
+    private int computeDestinationSize(long childSize) {
         int destinationSize = (int) childSize;
         if (randomSelection) {
             // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
@@ -99,11 +107,7 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
                 destinationSize = overallSizeMaximum;
             }
         }
-        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
-        for (Iterator<Object> originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
-            final Object origin = originIt.next();
-            nearbyDistanceMatrix.addAllDestinations(origin, childEntitySelector.endingIterator(), destinationSize);
-        }
+        return destinationSize;
     }
 
     @Override

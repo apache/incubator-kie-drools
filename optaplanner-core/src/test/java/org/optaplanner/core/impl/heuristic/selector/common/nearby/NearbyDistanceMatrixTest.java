@@ -24,10 +24,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
-public class NearbyDistanceMatrixTest {
+class NearbyDistanceMatrixTest {
 
     @Test
-    public void addAllDestinations() {
+    void addAllDestinations() {
         final MatrixTestdataObject a = new MatrixTestdataObject("a", 0, new double[] { 0.0, 4.0, 2.0, 6.0 });
         final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 4.0, 0.0, 5.0, 10.0 });
         final MatrixTestdataObject c = new MatrixTestdataObject("c", 2, new double[] { 2.0, 5.0, 0.0, 7.0 });
@@ -36,11 +36,12 @@ public class NearbyDistanceMatrixTest {
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
                 destination) -> origin.distances[destination.index];
 
-        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 4);
-        nearbyDistanceMatrix.addAllDestinations(a, entityList.iterator(), 4);
-        nearbyDistanceMatrix.addAllDestinations(b, entityList.iterator(), 4);
-        nearbyDistanceMatrix.addAllDestinations(c, entityList.iterator(), 4);
-        nearbyDistanceMatrix.addAllDestinations(d, entityList.iterator(), 4);
+        NearbyDistanceMatrix nearbyDistanceMatrix =
+                new NearbyDistanceMatrix(meter, 4, origin -> entityList.iterator(), origin -> 4);
+        nearbyDistanceMatrix.addAllDestinations(a);
+        nearbyDistanceMatrix.addAllDestinations(b);
+        nearbyDistanceMatrix.addAllDestinations(c);
+        nearbyDistanceMatrix.addAllDestinations(d);
 
         assertThat(nearbyDistanceMatrix.getDestination(a, 0)).isSameAs(a);
         assertThat(nearbyDistanceMatrix.getDestination(a, 1)).isSameAs(c);
@@ -61,7 +62,7 @@ public class NearbyDistanceMatrixTest {
     }
 
     @Test
-    public void addAllDestinationsWithSameDistance() {
+    void addAllDestinationsWithSameDistance() {
         final MatrixTestdataObject a = new MatrixTestdataObject("a", 0, new double[] { 0.0, 1.0, 1.0, 1.0 });
         final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 1.0, 0.0, 2.0, 1.0 });
         final MatrixTestdataObject c = new MatrixTestdataObject("c", 2, new double[] { 1.0, 2.0, 0.0, 3.0 });
@@ -70,11 +71,12 @@ public class NearbyDistanceMatrixTest {
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
                 destination) -> origin.distances[destination.index];
 
-        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 4);
-        nearbyDistanceMatrix.addAllDestinations(a, entityList.iterator(), 4);
-        nearbyDistanceMatrix.addAllDestinations(b, entityList.iterator(), 4);
-        nearbyDistanceMatrix.addAllDestinations(c, entityList.iterator(), 4);
-        nearbyDistanceMatrix.addAllDestinations(d, entityList.iterator(), 4);
+        NearbyDistanceMatrix nearbyDistanceMatrix =
+                new NearbyDistanceMatrix(meter, 4, origin -> entityList.iterator(), origin -> 4);
+        nearbyDistanceMatrix.addAllDestinations(a);
+        nearbyDistanceMatrix.addAllDestinations(b);
+        nearbyDistanceMatrix.addAllDestinations(c);
+        nearbyDistanceMatrix.addAllDestinations(d);
 
         assertThat(nearbyDistanceMatrix.getDestination(a, 0)).isSameAs(a);
         assertThat(nearbyDistanceMatrix.getDestination(a, 1)).isSameAs(b);
@@ -94,6 +96,29 @@ public class NearbyDistanceMatrixTest {
         assertThat(nearbyDistanceMatrix.getDestination(d, 3)).isSameAs(c);
     }
 
+    @Test
+    void missingItem_isComputedOnDemand() {
+        final MatrixTestdataObject a = new MatrixTestdataObject("a", 0, new double[] { 0.0, 1.0 });
+        final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 1.0, 0.0 });
+
+        final MatrixTestdataObject destination1 = new MatrixTestdataObject("1", 0, new double[] {});
+        final MatrixTestdataObject destination2 = new MatrixTestdataObject("2", 0, new double[] {});
+        List<Object> valueList = Arrays.asList(destination1, destination2);
+
+        NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter =
+                (origin, destination) -> origin.distances[destination.index];
+        NearbyDistanceMatrix nearbyDistanceMatrix =
+                new NearbyDistanceMatrix(meter, 1, origin -> valueList.iterator(), origin -> valueList.size());
+
+        // Add destinations for a. Destinations of b will be added when nearbyDistanceMatrix.getDestination() is called.
+        nearbyDistanceMatrix.addAllDestinations(a);
+        assertThat(nearbyDistanceMatrix.getDestination(a, 0)).isSameAs(destination1);
+        assertThat(nearbyDistanceMatrix.getDestination(a, 1)).isSameAs(destination2);
+
+        assertThat(nearbyDistanceMatrix.getDestination(b, 0)).isSameAs(destination1);
+        assertThat(nearbyDistanceMatrix.getDestination(b, 1)).isSameAs(destination2);
+    }
+
     private static class MatrixTestdataObject extends TestdataObject {
         private int index;
         private double[] distances;
@@ -103,7 +128,5 @@ public class NearbyDistanceMatrixTest {
             this.index = index;
             this.distances = distances;
         }
-
     }
-
 }
