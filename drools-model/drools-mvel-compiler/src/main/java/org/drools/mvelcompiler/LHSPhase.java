@@ -13,6 +13,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -256,6 +257,12 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         Optional<TypedExpression> expression = ofNullable(n.getExpression().accept(this, arg));
         return new ExpressionStmtT(expression.orElseGet(this::rhsOrError));
+    }
+
+    @Override
+    public TypedExpression visit(EnclosedExpr n, Void arg) {
+        // We don't want our LHS to be ever wrapped
+        return n.getInner().accept(this, arg);
     }
 
     @Override

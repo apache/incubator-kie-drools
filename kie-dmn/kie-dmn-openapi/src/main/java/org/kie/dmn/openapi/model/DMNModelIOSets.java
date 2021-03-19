@@ -17,6 +17,7 @@
 package org.kie.dmn.openapi.model;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,18 +27,25 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
+import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.InputData;
 
 public class DMNModelIOSets {
 
     private final DMNModel model;
     private CompositeTypeImpl inputSet;
     private CompositeTypeImpl outputSet;
+    private Map<String, String> inputDoc = new HashMap<>();
+    private Map<String, String> outputDoc = new HashMap<>();
     private final Map<String, DSIOSets> dsIOSets = new LinkedHashMap<>();
     protected static final String TEMP = "<temp>";
 
@@ -45,6 +53,7 @@ public class DMNModelIOSets {
         this.model = model;
         buildInputSet();
         buildOutputSet();
+        buildIODoc();
         for (DecisionServiceNode ds : model.getDecisionServices()) {
             dsIOSets.put(ds.getName(), new DSIOSets(model, ds));
         }
@@ -70,6 +79,17 @@ public class DMNModelIOSets {
             is.addField(idn.getName(), idnType);
         }
         this.inputSet = is;
+    }
+
+    private void buildIODoc() {
+        for (DRGElement drge : model.getDefinitions().getDrgElement()) {
+            if (drge instanceof InputData) {
+                inputDoc.put(drge.getName(), drge.getDescription());
+                outputDoc.put(drge.getName(), drge.getDescription());
+            } else if (drge instanceof Decision) {
+                outputDoc.put(drge.getName(), drge.getDescription());
+            }
+        }
     }
 
     public Collection<DSIOSets> getDSIOSets() {
@@ -100,12 +120,22 @@ public class DMNModelIOSets {
         this.outputSet.setName(name);
     }
 
+    public Map<String, String> getInputDoc() {
+        return inputDoc;
+    }
+
+    public Map<String, String> getOutputDoc() {
+        return outputDoc;
+    }
+
     public static class DSIOSets {
 
         private final DMNModel model;
         private final DecisionServiceNode ds;
         private CompositeTypeImpl inputSet;
         private BaseDMNTypeImpl outputSet;
+        private Map<String, String> inputDoc = new HashMap<>();
+        private Map<String, String> outputDoc = new HashMap<>();
 
         public DSIOSets(DMNModel model, DecisionServiceNode ds) {
             this.model = model;
@@ -119,6 +149,9 @@ public class DMNModelIOSets {
                 String id = DMNCompilerImpl.getId(ds.getDecisionService().getOutputDecision().get(0));
                 DecisionNode outputDecision = model.getDecisionById(id);
                 this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, outputDecision != null ? outputDecision.getResultType() : ds.getResultType(), null);
+                if (outputDecision != null) {
+                    outputDoc.put(outputDecision.getName(), ((DecisionNodeImpl) outputDecision).getDecision().getDescription());
+                }
             } else {
                 CompositeTypeImpl is = new CompositeTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet");
                 for (DMNElementReference er : ds.getDecisionService().getOutputDecision()) {
@@ -126,6 +159,7 @@ public class DMNModelIOSets {
                     DecisionNode outputDecision = model.getDecisionById(id);
                     if (outputDecision != null) {
                         is.addField(outputDecision.getName(), outputDecision.getResultType());
+                        outputDoc.put(outputDecision.getName(), ((DecisionNodeImpl) outputDecision).getDecision().getDescription());
                     } else {
                         this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, ds.getResultType(), null);
                         return; // since cannot lookup correctly, just assign the model-defined DS variable type.
@@ -143,10 +177,12 @@ public class DMNModelIOSets {
                     InputDataNode idn = (InputDataNode) node;
                     DMNType idnType = idn.getType();
                     is.addField(idn.getName(), idnType);
+                    inputDoc.put(idn.getName(), ((InputDataNodeImpl) idn).getInputData().getDescription());
                 } else if (node instanceof DecisionNode) {
                     DecisionNode dn = (DecisionNode) node;
                     DMNType idnType = dn.getResultType();
                     is.addField(dn.getName(), idnType);
+                    inputDoc.put(dn.getName(), ((DecisionNodeImpl) dn).getDecision().getDescription());
                 }
             }
             this.inputSet = is;
@@ -172,6 +208,14 @@ public class DMNModelIOSets {
             if (outputSet.getName().equals(TEMP)) {
                 outputSet.setName(name);
             }
+        }
+
+        public Map<String, String> getInputDoc() {
+            return inputDoc;
+        }
+
+        public Map<String, String> getOutputDoc() {
+            return outputDoc;
         }
     }
 

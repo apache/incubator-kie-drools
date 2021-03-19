@@ -451,10 +451,11 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +
                      "    BigDecimal result = 0B;" +
-                     "    result += 50000;\n" + // 50000
-                     "    result -= 10000;\n" + // 40000
-                     "    result /= 10;\n" + // 4000
-                     "    result *= 10;\n" + // 40000
+                     "    result += 50000;\n" +
+                     "    result -= 10000;\n" +
+                     "    result /= 10;\n" +
+                     "    result *= 10;\n" +
+                     "    (result *= $p.salary);\n" +
                      "    $p.salary = result;" +
                      "}",
              "{ " +
@@ -463,6 +464,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "        result = result.subtract(new java.math.BigDecimal(10000));\n" +
                      "        result = result.divide(new java.math.BigDecimal(10));\n" +
                      "        result = result.multiply(new java.math.BigDecimal(10));\n" +
+                     "        result = result.multiply($p.getSalary());\n" +
                      "        $p.setSalary(result);\n" +
                      "}");
     }
