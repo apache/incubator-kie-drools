@@ -69,18 +69,26 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     protected void loadInputData(List<InstanceGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
+        Map<String, Map<String, Object>> groupedValueToLoad = new HashMap<>();
+
         for (InstanceGiven input : dataToLoad) {
-            executableBuilder.setValue(retrieveKey(input.getFactIdentifier().getName()), input.getValue());
+            if (input.getFactIdentifier().getName().contains(".")) {
+                String[] importedKey = retrieveKey(input.getFactIdentifier().getName());
+                groupedValueToLoad.computeIfAbsent(importedKey[0], k -> new HashMap<>()).put(importedKey[1], input.getValue());
+            } else {
+                executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
+            }
         }
+
+        groupedValueToLoad.forEach(executableBuilder::setValue);
     }
 
-    protected String retrieveKey(String factIdentifierName) {
-        String key = factIdentifierName;
-        String[] classNameParts = key.split("\\.");
-        if (classNameParts.length == 2) {
-            key = classNameParts[0];
+    protected String[] retrieveKey(String factIdentifierName) {
+        String[] factIdentifierNameParts = factIdentifierName.split("\\.");
+        if (factIdentifierNameParts.length > 2) {
+            throw new IllegalArgumentException("Invalid FactIdentified name: " + factIdentifierName);
         }
-        return key;
+        return factIdentifierNameParts;
     }
 
     @Override
@@ -187,9 +195,8 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     protected Object createObject(ValueWrapper<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         // simple types
         if (initialInstance.isValid() && !(initialInstance.getValue() instanceof Map)) {
-            return className.contains(".") ? createImportedObject(initialInstance.getValue(), className) : initialInstance.getValue();
+            return initialInstance.getValue();
         }
-
         Map<String, Object> toReturn = (Map<String, Object>) initialInstance.orElseGet(HashMap::new);
         for (Map.Entry<List<String>, Object> listObjectEntry : params.entrySet()) {
 
@@ -208,18 +215,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             }
             targetMap.put(lastStep, listObjectEntry.getValue());
         }
-
-        return className.contains(".") ? createImportedObject(toReturn, className) : toReturn;
-    }
-
-    protected Object createImportedObject(Object importedValue, String className) {
-        String[] classNameParts = className.split("\\.");
-        if (classNameParts.length == 2) {
-            Map<String, Object> nestedMap = new HashMap<>();
-            nestedMap.put(classNameParts[1], importedValue);
-            return nestedMap;
-        }
-        throw new IllegalArgumentException("Error trying to create an imported Decision/input: " + className);
+        return toReturn;
     }
 
     protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
