@@ -69,21 +69,27 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     protected void loadInputData(List<InstanceGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
+        retrieveValuesToLoad(dataToLoad).forEach(executableBuilder::setValue);
+    }
+
+    protected Map<String, Object> retrieveValuesToLoad(List<InstanceGiven> dataToLoad) {
+        Map<String, Object> valueToLoad = new HashMap<>();
         Map<String, Map<String, Object>> groupedValueToLoad = new HashMap<>();
 
         for (InstanceGiven input : dataToLoad) {
             if (input.getFactIdentifier().getName().contains(".")) {
-                String[] importedKey = retrieveKey(input.getFactIdentifier().getName());
+                String[] importedKey = retrieveKeys(input.getFactIdentifier().getName());
                 groupedValueToLoad.computeIfAbsent(importedKey[0], k -> new HashMap<>()).put(importedKey[1], input.getValue());
             } else {
-                executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
+                valueToLoad.put(input.getFactIdentifier().getName(), input.getValue());
             }
         }
 
-        groupedValueToLoad.forEach(executableBuilder::setValue);
+        groupedValueToLoad.forEach(valueToLoad::put);
+        return valueToLoad;
     }
 
-    protected String[] retrieveKey(String factIdentifierName) {
+    protected String[] retrieveKeys(String factIdentifierName) {
         String[] factIdentifierNameParts = factIdentifierName.split("\\.");
         if (factIdentifierNameParts.length > 2) {
             throw new IllegalArgumentException("Invalid FactIdentified name: " + factIdentifierName);
