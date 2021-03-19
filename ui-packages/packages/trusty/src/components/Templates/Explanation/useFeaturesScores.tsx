@@ -10,6 +10,9 @@ const useFeaturesScores = (
   const [topFeaturesScores, setTopFeaturesScores] = useState<FeatureScores[]>(
     []
   );
+  const [topFeaturesScoresBySign, setTopFeaturesScoresBySign] = useState<
+    FeatureScores[]
+  >([]);
 
   useEffect(() => {
     if (saliencies.status === 'SUCCESS' && outcomeId) {
@@ -33,12 +36,29 @@ const useFeaturesScores = (
               sortedFeatures.slice(sortedFeatures.length - 10)
             );
           }
+
+          const positiveFeatures = sortedFeatures.filter(
+            feature => feature.featureScore > 0
+          );
+          const negativeFeatures = sortedFeatures.filter(
+            feature => feature.featureScore < 0
+          );
+          if (positiveFeatures.length > 5 || negativeFeatures.length > 5) {
+            setTopFeaturesScoresBySign([
+              ...(positiveFeatures.length > 5
+                ? positiveFeatures.slice(positiveFeatures.length - 5)
+                : positiveFeatures),
+              ...(negativeFeatures.length > 5
+                ? negativeFeatures.slice(negativeFeatures.length - 5)
+                : negativeFeatures)
+            ]);
+          }
         }
       }
     }
   }, [saliencies, outcomeId]);
 
-  return { featuresScores, topFeaturesScores };
+  return { featuresScores, topFeaturesScores, topFeaturesScoresBySign };
 };
 
 export default useFeaturesScores;

@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SkeletonDoubleBarChart renders a loading chart with 5 values 1`] = `
+<Split
+  className="skeleton-double-barchart"
+  style={
+    Object {
+      "height": 400,
+      "width": "100%",
+    }
+  }
+>
+  <SplitItem
+    isFilled={true}
+  >
+    <div
+      className="skeleton-double-barchart__chart skeleton-double-barchart__chart--left"
+    >
+      <div
+        className="skeleton-double-barchart__chart__legend"
+      >
+        <SkeletonStripe
+          isInline={true}
+        />
+      </div>
+      <div
+        className="skeleton-double-barchart__chart__bars"
+      >
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "left": 0,
+              "top": "1%",
+              "width": "100%",
+            }
+          }
+          isInline={true}
+          key="0"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "left": 0,
+              "top": "21%",
+              "width": "81%",
+            }
+          }
+          isInline={true}
+          key="2"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "left": 0,
+              "top": "41%",
+              "width": "62%",
+            }
+          }
+          isInline={true}
+          key="4"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "left": 0,
+              "top": "61%",
+              "width": "43%",
+            }
+          }
+          isInline={true}
+          key="6"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "left": 0,
+              "top": "81%",
+              "width": "24%",
+            }
+          }
+          isInline={true}
+          key="8"
+        />
+      </div>
+    </div>
+  </SplitItem>
+  <SplitItem
+    isFilled={true}
+  >
+    <div
+      className="skeleton-double-barchart__chart skeleton-double-barchart__chart--right"
+    >
+      <div
+        className="skeleton-double-barchart__chart__legend"
+      >
+        <SkeletonStripe
+          isInline={true}
+        />
+      </div>
+      <div
+        className="skeleton-double-barchart__chart__bars"
+      >
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "right": 0,
+              "top": "1%",
+              "width": "100%",
+            }
+          }
+          isInline={true}
+          key="1"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "right": 0,
+              "top": "21%",
+              "width": "81%",
+            }
+          }
+          isInline={true}
+          key="3"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "right": 0,
+              "top": "41%",
+              "width": "62%",
+            }
+          }
+          isInline={true}
+          key="5"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "right": 0,
+              "top": "61%",
+              "width": "43%",
+            }
+          }
+          isInline={true}
+          key="7"
+        />
+        <SkeletonStripe
+          customStyle={
+            Object {
+              "height": "10%",
+              "right": 0,
+              "top": "81%",
+              "width": "24%",
+            }
+          }
+          isInline={true}
+          key="9"
+        />
+      </div>
+    </div>
+  </SplitItem>
+</Split>
+`;

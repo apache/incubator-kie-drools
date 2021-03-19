@@ -19,11 +19,9 @@ import {
 import { HelpIcon } from '@patternfly/react-icons';
 import Outcomes from '../../Organisms/Outcomes/Outcomes';
 import InputDataBrowser from '../../Organisms/InputDataBrowser/InputDataBrowser';
-import FeaturesScoreChart from '../../Organisms/FeaturesScoreChart/FeaturesScoreChart';
 import FeaturesScoreTable from '../../Organisms/FeaturesScoreTable/FeaturesScoreTable';
 import ExplanationSwitch from '../../Organisms/ExplanationSwitch/ExplanationSwitch';
 import SkeletonGrid from '../../Molecules/SkeletonGrid/SkeletonGrid';
-import SkeletonTornadoChart from '../../Molecules/SkeletonTornadoChart/SkeletonTornadoChart';
 import SkeletonStripe from '../../Atoms/SkeletonStripe/SkeletonStripe';
 import useFeaturesScores from './useFeaturesScores';
 import useOutcomeDetail from './useOutcomeDetail';
@@ -31,6 +29,8 @@ import useSaliencies from './useSaliencies';
 import ExplanationUnavailable from '../../Molecules/ExplanationUnavailable/ExplanationUnavailable';
 import ExplanationError from '../../Molecules/ExplanationError/ExplanationError';
 import EvaluationStatus from '../../Atoms/EvaluationStatus/EvaluationStatus';
+import SkeletonDoubleBarChart from '../../Molecules/SkeletonDoubleBarChart/SkeletonDoubleBarChart';
+import FeaturesScoreChartBySign from '../../Organisms/FeaturesScoreChartBySign/FeaturesScoreChartBySign';
 import { ExecutionRouteParams, Outcome, RemoteData } from '../../../types';
 import './Explanation.scss';
 
@@ -45,10 +45,11 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
   const [outcomeId, setOutcomeId] = useState<string | null>(null);
   const outcomeDetail = useOutcomeDetail(executionId, outcomeId);
   const saliencies = useSaliencies(executionId);
-  const { featuresScores, topFeaturesScores } = useFeaturesScores(
-    saliencies,
-    outcomeId
-  );
+  const {
+    featuresScores,
+    topFeaturesScores,
+    topFeaturesScoresBySign
+  } = useFeaturesScores(saliencies, outcomeId);
   const [displayChart, setDisplayChart] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const history = useHistory();
@@ -184,7 +185,7 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                   <GridItem span={8}>
                     <Card>
                       <CardHeader>
-                        {topFeaturesScores.length ? (
+                        {topFeaturesScoresBySign.length ? (
                           <Title headingLevel="h4" size="xl">
                             Top Features Score Chart
                           </Title>
@@ -196,25 +197,28 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                       </CardHeader>
                       <CardBody>
                         {saliencies.status === 'LOADING' && (
-                          <SkeletonTornadoChart valuesCount={10} height={400} />
+                          <SkeletonDoubleBarChart
+                            valuesCount={5}
+                            height={400}
+                          />
                         )}
                         {saliencies.status === 'SUCCESS' && (
                           <>
-                            {topFeaturesScores.length === 0 && (
+                            {topFeaturesScoresBySign.length === 0 && (
                               <div className="explanation-view__chart">
                                 {displayChart && (
-                                  <FeaturesScoreChart
+                                  <FeaturesScoreChartBySign
                                     featuresScore={featuresScores}
                                   />
                                 )}
                               </div>
                             )}
-                            {topFeaturesScores.length > 0 && (
+                            {topFeaturesScoresBySign.length > 0 && (
                               <>
                                 <div className="explanation-view__chart">
                                   {displayChart && (
-                                    <FeaturesScoreChart
-                                      featuresScore={topFeaturesScores}
+                                    <FeaturesScoreChartBySign
+                                      featuresScore={topFeaturesScoresBySign}
                                     />
                                   )}
                                 </div>
@@ -240,7 +244,7 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                                     </Button>
                                   ]}
                                 >
-                                  <FeaturesScoreChart
+                                  <FeaturesScoreChartBySign
                                     featuresScore={featuresScores}
                                     large={true}
                                   />

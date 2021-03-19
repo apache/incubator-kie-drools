@@ -61,7 +61,7 @@ describe('Explanation', () => {
     expect(
       wrapper.find('.explanation-view__outcome SkeletonGrid')
     ).toHaveLength(1);
-    expect(wrapper.find('SkeletonTornadoChart')).toHaveLength(1);
+    expect(wrapper.find('SkeletonDoubleBarChart')).toHaveLength(1);
     expect(
       wrapper.find('.explanation-view__score-table SkeletonGrid')
     ).toHaveLength(1);
@@ -101,9 +101,9 @@ describe('Explanation', () => {
     expect(
       wrapper.find('ExplanationSwitch').prop('outcomesList')
     ).toStrictEqual(outcomes.status === 'SUCCESS' && outcomes.data);
-    expect(wrapper.find('FeaturesScoreChart')).toHaveLength(1);
+    expect(wrapper.find('FeaturesScoreChartBySign')).toHaveLength(1);
     expect(
-      wrapper.find('FeaturesScoreChart').prop('featuresScore')
+      wrapper.find('FeaturesScoreChartBySign').prop('featuresScore')
     ).toStrictEqual(sortedFeatures);
     expect(wrapper.find('FeaturesScoreTable')).toHaveLength(1);
     expect(
@@ -132,7 +132,7 @@ describe('Explanation', () => {
       </MemoryRouter>
     );
 
-    expect(wrapper.find('FeaturesScoreChart')).toHaveLength(0);
+    expect(wrapper.find('FeaturesScoreChartBySign')).toHaveLength(0);
     expect(wrapper.find('FeaturesScoreTable')).toHaveLength(0);
     expect(wrapper.find('ExplanationUnavailable')).toHaveLength(1);
   });
