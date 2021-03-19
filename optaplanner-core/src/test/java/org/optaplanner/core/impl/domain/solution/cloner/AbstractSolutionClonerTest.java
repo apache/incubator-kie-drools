@@ -45,6 +45,10 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedObject;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningEntity;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
@@ -401,6 +405,84 @@ public abstract class AbstractSolutionClonerTest {
         assertCode(entityCode, originalEntity);
         assertCode(entityCode, cloneEntity);
         assertThat(cloneEntity.getChainedObject()).isSameAs(value);
+    }
+
+    @Test
+    public void cloneShadowChainedSolution() {
+        SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
+                TestdataShadowingChainedSolution.buildSolutionDescriptor();
+        SolutionCloner<TestdataShadowingChainedSolution> cloner = createSolutionCloner(solutionDescriptor);
+
+        TestdataShadowingChainedAnchor a0 = new TestdataShadowingChainedAnchor("a0");
+        TestdataShadowingChainedEntity a1 = new TestdataShadowingChainedEntity("a1", a0);
+        TestdataShadowingChainedEntity a2 = new TestdataShadowingChainedEntity("a2", a1);
+        TestdataShadowingChainedEntity a3 = new TestdataShadowingChainedEntity("a3", a2);
+
+        TestdataShadowingChainedAnchor b0 = new TestdataShadowingChainedAnchor("b0");
+        TestdataShadowingChainedEntity b1 = new TestdataShadowingChainedEntity("b1", b0);
+
+        a0.setNextEntity(a1);
+        a1.setNextEntity(a2);
+        a2.setNextEntity(a3);
+        a3.setNextEntity(null);
+
+        b0.setNextEntity(b1);
+        b1.setNextEntity(null);
+
+        TestdataShadowingChainedSolution original = new TestdataShadowingChainedSolution("solution");
+        List<TestdataShadowingChainedAnchor> originalAnchorList = Arrays.asList(a0, b0);
+        original.setChainedAnchorList(originalAnchorList);
+        List<TestdataShadowingChainedEntity> originalEntityList = Arrays.asList(a1, a2, a3, b1);
+        original.setChainedEntityList(originalEntityList);
+
+        TestdataShadowingChainedSolution clone = cloner.cloneSolution(original);
+        assertThat(clone).isNotSameAs(original);
+        assertCode("solution", clone);
+        assertThat(clone.getScore()).isEqualTo(original.getScore());
+
+        List<TestdataShadowingChainedAnchor> cloneAnchorList = clone.getChainedAnchorList();
+        assertThat(cloneAnchorList).isNotSameAs(originalAnchorList);
+        assertThat(cloneAnchorList.size()).isEqualTo(2);
+        TestdataShadowingChainedAnchor cloneA0 = cloneAnchorList.get(0);
+        TestdataShadowingChainedAnchor cloneB0 = cloneAnchorList.get(1);
+
+        List<TestdataShadowingChainedEntity> cloneEntityList = clone.getChainedEntityList();
+        assertThat(cloneEntityList).isNotSameAs(originalEntityList);
+        assertThat(cloneEntityList.size()).isEqualTo(4);
+        TestdataShadowingChainedEntity cloneA1 = cloneEntityList.get(0);
+        TestdataShadowingChainedEntity cloneA2 = cloneEntityList.get(1);
+        TestdataShadowingChainedEntity cloneA3 = cloneEntityList.get(2);
+        TestdataShadowingChainedEntity cloneB1 = cloneEntityList.get(3);
+        assertChainedShadowingAnchorClone(a0, cloneA0, "a0", cloneA1);
+        assertChainedShadowingEntityClone(a1, cloneA1, "a1", cloneA0, cloneA2);
+        assertChainedShadowingEntityClone(a2, cloneA2, "a2", cloneA1, cloneA3);
+        assertChainedShadowingEntityClone(a3, cloneA3, "a3", cloneA2, null);
+        assertChainedShadowingAnchorClone(b0, cloneB0, "b0", cloneB1);
+        assertChainedShadowingEntityClone(b1, cloneB1, "b1", cloneB0, null);
+
+        a3.setChainedObject(b1);
+        assertCode("b1", a3.getChainedObject());
+        // Clone remains unchanged.
+        assertCode("a2", cloneA3.getChainedObject());
+    }
+
+    private void assertChainedShadowingAnchorClone(TestdataShadowingChainedAnchor originalEntity,
+            TestdataShadowingChainedAnchor cloneEntity,
+            String entityCode, TestdataShadowingChainedEntity next) {
+        assertThat(cloneEntity).isNotSameAs(originalEntity);
+        assertCode(entityCode, originalEntity);
+        assertCode(entityCode, cloneEntity);
+        assertThat(cloneEntity.getNextEntity()).isSameAs(next);
+    }
+
+    private void assertChainedShadowingEntityClone(TestdataShadowingChainedEntity originalEntity,
+            TestdataShadowingChainedEntity cloneEntity,
+            String entityCode, TestdataShadowingChainedObject value, TestdataShadowingChainedEntity next) {
+        assertThat(cloneEntity).isNotSameAs(originalEntity);
+        assertCode(entityCode, originalEntity);
+        assertCode(entityCode, cloneEntity);
+        assertThat(cloneEntity.getChainedObject()).isSameAs(value);
+        assertThat(cloneEntity.getNextEntity()).isSameAs(next);
     }
 
     @Test

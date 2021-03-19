@@ -15,15 +15,20 @@
  */
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -64,15 +69,19 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
         Map<Class<?>, GizmoSolutionOrEntityDescriptor> memoizedSolutionOrEntityDescriptorMap = new HashMap<>();
 
+        DeepCloningUtils deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
+        Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(Collections.emptyList());
         Stream.concat(Stream.of(solutionDescriptor.getSolutionClass()),
-                solutionDescriptor.getEntityClassSet().stream()).forEach(clazz -> {
+                Stream.concat(solutionDescriptor.getEntityClassSet().stream(),
+                        deepClonedClassSet.stream()))
+                .forEach(clazz -> {
                     memoizedSolutionOrEntityDescriptorMap.put(clazz,
                             generateGizmoSolutionOrEntityDescriptor(solutionDescriptor, clazz));
                 });
 
         GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor,
                 Arrays.asList(solutionDescriptor.getSolutionClass()),
-                memoizedSolutionOrEntityDescriptorMap);
+                memoizedSolutionOrEntityDescriptorMap, deepClonedClassSet);
         classCreator.close();
         final byte[] byteCode = classBytecodeHolder[0];
 
@@ -143,6 +152,52 @@ public class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
         GizmoSolutionOrEntityDescriptor out =
                 new GizmoSolutionOrEntityDescriptor(solutionDescriptor, entityClass, solutionFieldToMemberDescriptor);
         return out;
+    }
+
+    private interface Animal {
+    }
+
+    private interface Robot {
+    }
+
+    private interface Zebra extends Animal {
+    }
+
+    private interface RobotZebra extends Zebra, Robot {
+    }
+
+    // This test verify the instanceof comparator works correctly
+    @Test
+    public void instanceOfComparatorTest() {
+        Set<Class<?>> classSet = new HashSet<>(Arrays.asList(
+                Animal.class,
+                Robot.class,
+                Zebra.class,
+                RobotZebra.class));
+
+        Comparator<Class<?>> comparator = GizmoSolutionClonerImplementor.getInstanceOfComparator(classSet);
+
+        // assert that the comparator works on equality
+        assertThat(comparator.compare(Animal.class, Animal.class)).isEqualTo(0);
+        assertThat(comparator.compare(Robot.class, Robot.class)).isEqualTo(0);
+        assertThat(comparator.compare(Zebra.class, Zebra.class)).isEqualTo(0);
+        assertThat(comparator.compare(RobotZebra.class, RobotZebra.class)).isEqualTo(0);
+
+        // Zebra < Animal and Robot
+        // Since Animal and Robot are base classes (i.e. not subclasses of anything in the set)
+        // and Zebra is a subclass of Animal
+        assertThat(comparator.compare(Zebra.class, Animal.class)).isLessThan(0);
+        assertThat(comparator.compare(Zebra.class, Robot.class)).isLessThan(0);
+        assertThat(comparator.compare(Animal.class, Zebra.class)).isGreaterThan(0);
+        assertThat(comparator.compare(Robot.class, Zebra.class)).isGreaterThan(0);
+
+        // RobotZebra < Animal and Robot and Zebra
+        assertThat(comparator.compare(RobotZebra.class, Animal.class)).isLessThan(0);
+        assertThat(comparator.compare(RobotZebra.class, Robot.class)).isLessThan(0);
+        assertThat(comparator.compare(RobotZebra.class, Zebra.class)).isLessThan(0);
+        assertThat(comparator.compare(Animal.class, RobotZebra.class)).isGreaterThan(0);
+        assertThat(comparator.compare(Robot.class, RobotZebra.class)).isGreaterThan(0);
+        assertThat(comparator.compare(Zebra.class, RobotZebra.class)).isGreaterThan(0);
     }
 
     // This test verify a proper error message is thrown if an extended solution is passed.
