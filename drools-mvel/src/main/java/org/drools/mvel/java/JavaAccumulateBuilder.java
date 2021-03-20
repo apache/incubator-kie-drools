@@ -182,12 +182,27 @@ public class JavaAccumulateBuilder
                 return null;
             }
 
-            bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType() ), function.getResultType(), -1);
+            boolean resultAsObjectArray = false;
+            if (SingleAccumulate.ENABLE_D6064) {
+                if (pattern.getObjectType().getClassType().equals(Object.class) && !fc.isUnification()) {
+                    // implicit Pattern by accumulate is 'Object'. In this case, we return Object[] (same as MultiAccumulate) so it can contain null
+                    InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
+                    bindReaderToDeclaration(context, accumDescr, pattern, fc, new ArrayElementReader(reader, 0, function.getResultType()), function.getResultType(), -1);
+                    resultAsObjectArray = true;
+                } else {
+                    // from accumulate: Returns specified Type
+                    // unification: Requires original readAccessor
+                    bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType() ), function.getResultType(), -1);
+                }
+            } else {
+                bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType() ), function.getResultType(), -1);
+            }
+
             Accumulator accumulator = buildAccumulator(context, accumDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
 
             return new SingleAccumulate( source,
                                          requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                                         accumulator );
+                                         accumulator, resultAsObjectArray );
         }
     }
 

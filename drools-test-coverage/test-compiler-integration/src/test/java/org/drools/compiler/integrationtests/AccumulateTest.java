@@ -70,6 +70,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -3790,8 +3791,10 @@ public class AccumulateTest {
         list.clear();
 
         kieSession.delete( fh );
-        assertEquals(0, kieSession.fireAllRules() );
-        assertEquals(0, list.size() );
+        // changed by DROOLS-6064
+        assertEquals(1, kieSession.fireAllRules() );
+        assertEquals(1, list.size() );
+        assertNull(list.get(0));
     }
 
     @Test

@@ -36,6 +36,9 @@ import org.kie.internal.security.KiePolicyHelper;
 
 public class SingleAccumulate extends Accumulate {
     private Accumulator accumulator;
+    private boolean resultAsObjectArray;
+
+    public static boolean ENABLE_D6064 = true;
 
     public SingleAccumulate() { }
 
@@ -49,6 +52,16 @@ public class SingleAccumulate extends Accumulate {
                             final Accumulator accumulator ) {
         super(source, requiredDeclarations);
         this.accumulator = accumulator;
+        this.resultAsObjectArray = false;
+    }
+
+    public SingleAccumulate(final RuleConditionElement source,
+                            final Declaration[] requiredDeclarations,
+                            final Accumulator accumulator,
+                            final boolean resultAsObjectArray ) {
+        super(source, requiredDeclarations);
+        this.accumulator = accumulator;
+        this.resultAsObjectArray = resultAsObjectArray;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -130,23 +143,28 @@ public class SingleAccumulate extends Accumulate {
         return this.accumulator.supportsReverse();
     }
 
-
     public Object getResult(final Object workingMemoryContext,
                             final Object context,
                             final Tuple leftTuple,
                             final WorkingMemory workingMemory) {
-        return this.accumulator.getResult( workingMemoryContext,
+        Object result = this.accumulator.getResult( workingMemoryContext,
                                            ((AccumulateContextEntry)context).getFunctionContext(),
                                            leftTuple,
                                            this.requiredDeclarations,
                                            workingMemory );
+        if (ENABLE_D6064 && resultAsObjectArray) {
+            return new Object[] {result};
+        } else {
+            return result;
+        }
     }
 
     public SingleAccumulate clone() {
         RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
         SingleAccumulate clone = new SingleAccumulate( clonedSource,
                                                        this.requiredDeclarations,
-                                                       this.accumulator );
+                                                       this.accumulator,
+                                                       this.resultAsObjectArray);
         registerClone(clone);
         return clone;
     }

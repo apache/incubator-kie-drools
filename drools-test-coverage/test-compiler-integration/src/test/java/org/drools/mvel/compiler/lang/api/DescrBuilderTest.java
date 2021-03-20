@@ -37,6 +37,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.StockTick;
