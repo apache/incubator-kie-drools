@@ -14,10 +14,11 @@
 
 package org.drools.mvel;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -27,8 +28,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.mvel.model.Cheese;
@@ -36,12 +36,29 @@ import org.drools.mvel.model.MockObjectSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertSame;
 
+@RunWith(Parameterized.class)
 public class AlphaNodeTest extends DroolsTestCase {
     
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    private final boolean useLambdaConstraint;
+
+    public AlphaNodeTest(boolean useLambdaConstraint) {
+        this.useLambdaConstraint = useLambdaConstraint;
+    }
+
+    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{false});
+        parameters.add(new Object[]{true});
+        return parameters;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -63,12 +80,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                "type");
-
-        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
-
-        final MVELConstraint constraint = new MVELConstraintTestUtil("type == \"cheddar\"", field, extractor);
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
         // With Memory
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
@@ -134,12 +146,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type" );
-
-        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
-
-        final MVELConstraint constraint = new MVELConstraintTestUtil("type == \"cheddar\"", field, extractor);
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
@@ -197,12 +204,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type" );
-
-        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
-
-        final MVELConstraint constraint = new MVELConstraintTestUtil("type == \"cheddar\"", field, extractor);
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,

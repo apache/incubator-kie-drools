@@ -20,13 +20,13 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ValueType;
-import org.drools.core.base.field.LongFieldImpl;
-import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -51,12 +51,15 @@ import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.PredicateConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -64,11 +67,26 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class CompositeObjectSinkAdapterTest {
     private InternalKnowledgeBase        kBase;
     private BuildContext                 buildContext;
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    private final boolean useLambdaConstraint;
+
+    public CompositeObjectSinkAdapterTest(boolean useLambdaConstraint) {
+        this.useLambdaConstraint = useLambdaConstraint;
+    }
+
+    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{false});
+        parameters.add(new Object[]{true});
+        return parameters;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -140,9 +158,7 @@ public class CompositeObjectSinkAdapterTest {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
 
-        final MVELConstraint lit = new MVELConstraintTestUtil( "type == \"stilton\"",
-                                                                new ObjectFieldImpl( "stilton" ),
-                                                                new MockExtractor() );
+        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
 
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
@@ -169,9 +185,7 @@ public class CompositeObjectSinkAdapterTest {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
 
-        final MVELConstraint lit = new MVELConstraintTestUtil( "type == \"stilton\"",
-                                                               new ObjectFieldImpl( "stilton" ),
-                                                               new MockExtractor() );
+        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
 
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
@@ -187,9 +201,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final MVELConstraint lit2 = new MVELConstraintTestUtil( "type == \"cheddar\"",
-                                                               new ObjectFieldImpl( "cheddar" ),
-                                                               new MockExtractor() );
+        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "cheddar", useLambdaConstraint);
 
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
@@ -234,9 +246,7 @@ public class CompositeObjectSinkAdapterTest {
         InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                           "type" );
 
-        final MVELConstraint lit = new MVELConstraintTestUtil( "type == \"stilton\"",
-                                                                new ObjectFieldImpl( "stilton" ),
-                                                                new MockExtractor() );
+        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
 
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
@@ -252,9 +262,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final MVELConstraint lit2 = new MVELConstraintTestUtil( "type == \"cheddar\"",
-                                                                new ObjectFieldImpl( "cheddar" ),
-                                                                new MockExtractor() );
+        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "cheddar", useLambdaConstraint);
 
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
@@ -267,9 +275,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.getHashableSinks().size() );
 
-        final MVELConstraint lit3 = new MVELConstraintTestUtil( "type == \"stinky\"",
-                                                                new ObjectFieldImpl( "stinky" ),
-                                                                new MockExtractor() );
+        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stinky", useLambdaConstraint);
 
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
@@ -296,9 +302,7 @@ public class CompositeObjectSinkAdapterTest {
         InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                           "charType" );
 
-        final MVELConstraint lit = new MVELConstraintTestUtil( "charType == 65",
-                                                               new LongFieldImpl( 65 ),
-                                                               extractor );
+        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, 65, useLambdaConstraint);
 
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
@@ -314,9 +318,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final MVELConstraint lit2 = new MVELConstraintTestUtil( "charType == 66",
-                                                                new LongFieldImpl( 66 ),
-                                                                extractor );
+        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, 66, useLambdaConstraint);
 
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
@@ -329,9 +331,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.getHashableSinks().size() );
 
-        final MVELConstraint lit3 = new MVELConstraintTestUtil( "charType == 67",
-                                                                new LongFieldImpl( 67 ),
-                                                                extractor );
+        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, 67, useLambdaConstraint);
 
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
@@ -378,9 +378,7 @@ public class CompositeObjectSinkAdapterTest {
         InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                           "charObjectType" );
 
-        final MVELConstraint lit = new MVELConstraintTestUtil( "charObjectType == 65",
-                                                               new LongFieldImpl( 65 ),
-                                                               extractor );
+        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, 65, useLambdaConstraint);
 
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             lit,
@@ -396,9 +394,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final MVELConstraint lit2 = new MVELConstraintTestUtil( "charObjectType == 66",
-                                                                new LongFieldImpl( 66 ),
-                                                                extractor );
+        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, 66, useLambdaConstraint);
 
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
@@ -411,9 +407,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.getHashableSinks().size() );
 
-        final MVELConstraint lit3 = new MVELConstraintTestUtil( "charObjectType == 67",
-                                                                new LongFieldImpl( 67 ),
-                                                                extractor );
+        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, 67, useLambdaConstraint);
 
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
@@ -461,27 +455,21 @@ public class CompositeObjectSinkAdapterTest {
         InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                           "type" );
 
-        final MVELConstraint lit1 = new MVELConstraintTestUtil( "type == \"stilton\"",
-                                                                new ObjectFieldImpl( "stilton" ),
-                                                                new MockExtractor() );
+        AlphaNodeFieldConstraint lit1 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
 
         final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
                                              lit1,
                                              new MockObjectSource( buildContext.getNextId() ),
                                              buildContext );
 
-        final MVELConstraint lit2 = new MVELConstraintTestUtil( "type == \"brie\"",
-                new ObjectFieldImpl( "brie" ),
-                new MockExtractor() );
+        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "brie", useLambdaConstraint);
 
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
                                              lit2,
                                              new MockObjectSource( buildContext.getNextId() ),
                                              buildContext );
 
-        final MVELConstraint lit3 = new MVELConstraintTestUtil( "type == \"muzzarela\"",
-                                                                new ObjectFieldImpl( "muzzarela" ),
-                                                                new MockExtractor() );
+        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "muzzarela", useLambdaConstraint);
 
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
                                              lit3,
