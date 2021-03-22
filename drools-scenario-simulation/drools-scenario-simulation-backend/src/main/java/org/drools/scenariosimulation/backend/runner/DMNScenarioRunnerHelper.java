@@ -69,7 +69,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     /**
-     * It return a {@link Map<String, Object>} which contains the actual data in the DMN Executable Builder or DMN Context.
+     * It return a {@link Map} which contains the actual data in the DMN Executable Builder or DMN Context.
      * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value (another Map containing the fact properties)
      * (eg.   "Driver": {
      *              "Name": "string"
