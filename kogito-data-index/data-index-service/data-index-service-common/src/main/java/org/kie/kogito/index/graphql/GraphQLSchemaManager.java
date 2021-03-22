@@ -171,7 +171,7 @@ public class GraphQLSchemaManager {
         if (context.equals(endpoint) || endpoint.equals("/" + context)) {
             return null;
         } else {
-            return endpoint.contains("/" + context) ? endpoint.substring(0, endpoint.indexOf("/" + context)) : null;
+            return endpoint.contains("/" + context) ? endpoint.substring(0, endpoint.lastIndexOf("/" + context)) : null;
         }
     }
 
