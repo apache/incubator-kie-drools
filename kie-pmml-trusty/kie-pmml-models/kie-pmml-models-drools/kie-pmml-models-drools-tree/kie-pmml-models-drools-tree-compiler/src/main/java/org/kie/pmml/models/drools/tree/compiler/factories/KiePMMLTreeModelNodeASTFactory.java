@@ -97,7 +97,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         if (predicate instanceof False) {
             return;
         }
-        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
+        String currentRule = String.format(PATH_PATTERN, parentPath, node.hashCode());
         PredicateASTFactoryData predicateASTFactoryData = new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
         KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate(getCorrectlyFormattedResult(node.getScore(), targetType), true);
     }
@@ -119,7 +119,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         if (predicate instanceof False) {
             return;
         }
-        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
+        String currentRule = String.format(PATH_PATTERN, parentPath, node.hashCode());
         PredicateASTFactoryData predicateASTFactoryData = new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
         KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate(getCorrectlyFormattedResult(node.getScore(), targetType), false);
         node.getNodes().forEach(child -> declareRuleFromNode(child, currentRule, rules));
