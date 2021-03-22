@@ -90,23 +90,42 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
      * @return
      */
     protected Map<String, Object> defineInputValues(List<InstanceGiven> backgroundData, List<InstanceGiven> givenData) {
-        List<InstanceGiven> dataToLoad = new ArrayList<>(backgroundData);
-        dataToLoad.addAll(givenData);
+        List<InstanceGiven> inputData = new ArrayList<>();
+        inputData.addAll(backgroundData);
+        inputData.addAll(givenData);
 
-        Map<String, Object> valueToLoad = new HashMap<>();
-        Map<String, Map<String, Object>> groupedValueToLoad = new HashMap<>();
+        Map<String, Object> inputValues = new HashMap<>();
+        Map<String, Map<String, Object>> importedInputValues = new HashMap<>();
 
-        for (InstanceGiven input : dataToLoad) {
-            if (input.getFactIdentifier().getName().contains(".")) {
-                String[] importedKey = retrieveKeys(input.getFactIdentifier().getName());
-                groupedValueToLoad.computeIfAbsent(importedKey[0], k -> new HashMap<>()).put(importedKey[1], input.getValue());
+        for (InstanceGiven input : inputData) {
+            String factName = input.getFactIdentifier().getName();
+            if (factName.contains(".")) {
+                String[] fullKey = retrieveKeys(factName);
+                String importedKey = fullKey[0];
+                String factKey = fullKey[1];
+                Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importedKey, k -> new HashMap<>());
+                Object value = groupedFacts.containsKey(factKey) ?
+                        mergeValues(groupedFacts.get(factKey), input.getValue()) :
+                        input.getValue();
+                importedInputValues.get(importedKey).put(factKey, value);
             } else {
-                valueToLoad.put(input.getFactIdentifier().getName(), input.getValue());
+                Object value = inputValues.containsKey(factName) ?
+                        mergeValues(inputValues.get(factName), input.getValue()) :
+                        input.getValue();
+                inputValues.put(factName, value);
             }
         }
 
-        groupedValueToLoad.forEach(valueToLoad::put);
-        return valueToLoad;
+        importedInputValues.forEach(inputValues::put);
+        return inputValues;
+    }
+
+    private Map<String, Object> mergeValues(Object oldValue, Object newValue) {
+        Map<String, Object> toReturn = new HashMap<>();
+        toReturn.putAll((Map<String, Object>) oldValue);
+        toReturn.putAll((Map<String, Object>) newValue);
+
+        return toReturn;
     }
 
     protected String[] retrieveKeys(String factIdentifierName) {
