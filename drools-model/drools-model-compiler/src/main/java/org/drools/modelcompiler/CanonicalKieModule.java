@@ -187,10 +187,20 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     public static String getModelFileWithGAV(ReleaseId releaseId) {
+        return MODEL_FILE_DIRECTORY + releaseId.getGroupId().replace('.', '/') + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
+    }
+
+    // Just for backward compatibility
+    public static String getModelFileWithGAVOld(ReleaseId releaseId) {
         return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
     }
 
     public static String getANCFile(ReleaseId releaseId) {
+        return MODEL_FILE_DIRECTORY + releaseId.getGroupId().replace('.', '/') + "/" + releaseId.getArtifactId() + "/" + ANC_FILE_NAME;
+    }
+
+    // Just for backward compatibility
+    public static String getANCFileOld(ReleaseId releaseId) {
         return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + ANC_FILE_NAME;
     }
 
@@ -231,7 +241,7 @@ public class CanonicalKieModule implements InternalKieModule {
                     new KieBaseUpdaterOptions.OptionEntry(
                             AlphaNetworkCompilerOption.class,
                             builderConfiguration.getAlphaNetworkCompilerOption()));
-        } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId()))) { // executable model with ANC
+        } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId())) || resourceFileExists(getANCFileOld(internalKieModule.getReleaseId()))) { // executable model with ANC
             options = singletonList(
                     new KieBaseUpdaterOptions.OptionEntry(
                             AlphaNetworkCompilerOption.class,
@@ -454,7 +464,19 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private Collection<String> findRuleClassesNames() {
         ReleaseId releaseId = internalKieModule.getReleaseId();
-        String modelFiles = readExistingResourceWithName(getModelFileWithGAV(releaseId));
+        String modelFiles;
+
+        String modelFilePath = getModelFileWithGAV(releaseId);
+        if (internalKieModule.hasResource(modelFilePath)) {
+            modelFiles = readExistingResourceWithName(modelFilePath);
+        } else {
+            String oldModelFilePath = getModelFileWithGAVOld(releaseId);
+            if (internalKieModule.hasResource(oldModelFilePath)) {
+                modelFiles = readExistingResourceWithName(oldModelFilePath);
+            } else {
+                throw new RuntimeException("Cannot find " + MODEL_FILE_NAME + " in kjar");
+            }
+        }
 
         String[] lines = modelFiles.split("\n");
         String header = lines[0];

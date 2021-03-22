@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
+import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAVOld;
 
 public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBasedKieModuleProvider implements InternalKieModuleProvider {
 
@@ -43,7 +44,7 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
     }
 
     private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
-        if (internalKieModule.hasResource(getModelFileWithGAV(internalKieModule.getReleaseId()))) {
+        if (internalKieModule.hasResource(getModelFileWithGAV(internalKieModule.getReleaseId())) || internalKieModule.hasResource(getModelFileWithGAVOld(internalKieModule.getReleaseId()))) {
             if (log.isInfoEnabled()) {
                 log.info( "Artifact " + internalKieModule.getReleaseId() + " has executable model" );
             }
