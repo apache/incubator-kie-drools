@@ -41,7 +41,11 @@ public class LambdaConsequence implements Consequence {
     private final org.drools.model.Consequence consequence;
     private final Declaration[] declarations;
 
-    private FactSupplier[] factSuppliers;
+    private TupleFactSupplier[] factSuppliers;
+    private GlobalSupplier[] globalSuppliers;
+    private Object[] facts;
+
+    private FactHandleLookup fhLookup;
 
     public LambdaConsequence( org.drools.model.Consequence consequence, Declaration[] declarations ) {
         this.consequence = consequence;
@@ -72,12 +76,13 @@ public class LambdaConsequence implements Consequence {
 
     private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
         Object[] facts;
+        FactHandleLookup fhLookup = useDrools ? new FactHandleLookup.Multi() : null;
 
         int factsOffset = 0;
         if ( useDrools ) {
             factsOffset++;
             facts = new Object[vars.length + 1];
-            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory );
+            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
         } else {
             facts = new Object[vars.length];
         }
@@ -88,7 +93,7 @@ public class LambdaConsequence implements Consequence {
                 Declaration declaration = declarations[declrCounter++];
                 InternalFactHandle fh = getOriginalFactHandle( tuple.get( declaration ) );
                 if ( useDrools ) {
-                    (( DroolsImpl ) facts[0]).registerFactHandle( fh );
+                    fhLookup.put( fh.getObject(), fh );
                 }
                 facts[factsOffset++] = declaration.getValue( workingMemory, fh );
             } else {
@@ -111,63 +116,87 @@ public class LambdaConsequence implements Consequence {
             return initConsequence(knowledgeHelper, workingMemory);
         }
 
-        Tuple tuple = knowledgeHelper.getTuple();
-        Object[] facts = new Object[factSuppliers.length];
-        for (int i = 0; i < facts.length; i++) {
-            tuple = factSuppliers[i].get( facts, knowledgeHelper, workingMemory, tuple );
+        Object[] facts;
+        FactHandleLookup fhLookup = null;
+        if (workingMemory.getSessionConfiguration().isThreadSafe()) {
+            if ( consequence.isUsingDrools() ) {
+                facts = new Object[consequence.getVariables().length + 1];
+                fhLookup = FactHandleLookup.create( factSuppliers.length );
+                facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+            } else {
+                facts = new Object[consequence.getVariables().length];
+            }
+        } else {
+            facts = this.facts;
+            if ( consequence.isUsingDrools() ) {
+                fhLookup = this.fhLookup;
+                fhLookup.clear();
+                facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+            }
         }
+
+        Tuple tuple = knowledgeHelper.getTuple();
+        for (int j = 0; j < factSuppliers.length; j++) {
+            tuple = factSuppliers[j].get( facts, workingMemory, tuple, fhLookup );
+        }
+
+        if (globalSuppliers != null) {
+            for (int j = 0; j < globalSuppliers.length; j++) {
+                globalSuppliers[j].get( facts, workingMemory );
+            }
+        }
+
         return facts;
     }
 
     private Object[] initConsequence( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory) {
         Variable[] vars = consequence.getVariables();
         if (vars.length == 0) {
-            return consequence.isUsingDrools() ? new Object[] { new DroolsImpl( knowledgeHelper, workingMemory ) } : new Object[0];
+            return consequence.isUsingDrools() ? new Object[] { new DroolsImpl( knowledgeHelper, workingMemory, null ) } : new Object[0];
         }
 
         Tuple tuple = knowledgeHelper.getTuple();
-        List<FactSupplier> factSuppliers = new ArrayList<>();
+        List<TupleFactSupplier> factSuppliers = new ArrayList<>();
+        List<GlobalSupplier> globalSuppliers = new ArrayList<>();
 
         Object[] facts;
         int factsOffset = 0;
         if ( consequence.isUsingDrools() ) {
-            factsOffset++;
-            factSuppliers.add( DroolsImplSupplier.INSTANCE );
             facts = new Object[vars.length + 1];
-            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory );
+            factsOffset++;
         } else {
             facts = new Object[vars.length];
+            fhLookup = null;
         }
 
         int declrCounter = 0;
         for (Variable var : vars) {
             if ( var.isFact() ) {
-                factSuppliers.add( new TupleFactSupplier(factsOffset, declarations[declrCounter++], consequence.isUsingDrools()) );
+                factSuppliers.add( new TupleFactSupplier( factsOffset, declarations[declrCounter++], consequence.isUsingDrools() ) );
             } else {
                 facts[factsOffset] = workingMemory.getGlobal( var.getName() );
-                factSuppliers.add( new GlobalSupplier(factsOffset, var.getName()) );
+                globalSuppliers.add( new GlobalSupplier( factsOffset, var.getName() ) );
             }
             factsOffset++;
         }
 
-        // At this point the FactSuppliers (each of them supplying a single argument to be passed to the consequence)
-        // are sorted as it follows:
-        // - first (if necessary) the DroolsImplSupplier, used to eventually add the drools object to the list of arguments
-        // - second all the TupleFactSuppliers, used to retrieve the facts from the activation tuple
-        // - third the GlobalSupplier, used to retrieve the consequence's arguments from the globals
-        // Internally the TupleFactSuppliers are sorted from the one extracting a fact from the bottom of the tuple to the
-        // one reading from its top. In this way the whole tuple can be traversed only once to retrive all facts.
+        FactHandleLookup fhLookup = null;
+        if ( consequence.isUsingDrools() ) {
+            fhLookup = FactHandleLookup.create( factSuppliers.size() );
+            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+        }
+
         Collections.sort( factSuppliers );
+        Collections.sort( globalSuppliers );
 
         int lastOffset = tuple.getIndex();
         Tuple current = tuple;
         boolean first = true;
-        for (int i = consequence.isUsingDrools() ? 1 : 0; i < factSuppliers.size() && factSuppliers.get(i) instanceof TupleFactSupplier; i++) {
-            TupleFactSupplier tupleFactSupplier = (( TupleFactSupplier ) factSuppliers.get( i ));
+        for (TupleFactSupplier tupleFactSupplier : factSuppliers) {
             tupleFactSupplier.formerSupplierOffset = lastOffset - tupleFactSupplier.declarationOffset;
 
             for (int j = 0; j < tupleFactSupplier.formerSupplierOffset; j++) {
-                if (current.getFactHandle() == null) {
+                if ( current.getFactHandle() == null ) {
                     tupleFactSupplier.formerSupplierOffset++;
                 }
                 current = current.getParent();
@@ -182,33 +211,20 @@ public class LambdaConsequence implements Consequence {
             first = false;
             lastOffset = tupleFactSupplier.declarationOffset;
 
-            tupleFactSupplier.fetchFact( facts, workingMemory, current );
+            tupleFactSupplier.fetchFact( facts, workingMemory, current, fhLookup );
         }
 
-        this.factSuppliers = factSuppliers.toArray( new FactSupplier[factSuppliers.size()] );
+        this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
+        this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
+
+        if (!workingMemory.getSessionConfiguration().isThreadSafe()) {
+            this.facts = facts;
+            this.fhLookup = fhLookup;
+        }
         return facts;
     }
 
-    private interface FactSupplier extends Comparable<FactSupplier> {
-        Tuple get( Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple );
-    }
-
-    private static class DroolsImplSupplier implements FactSupplier {
-        static final DroolsImplSupplier INSTANCE = new DroolsImplSupplier();
-
-        @Override
-        public Tuple get( Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple ) {
-            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory );
-            return tuple;
-        }
-
-        @Override
-        public int compareTo( FactSupplier o ) {
-            return -1;
-        }
-    }
-
-    private static class GlobalSupplier implements FactSupplier {
+    private static class GlobalSupplier implements Comparable<GlobalSupplier> {
         private final int offset;
         private final String globalName;
 
@@ -217,20 +233,17 @@ public class LambdaConsequence implements Consequence {
             this.globalName = globalName;
         }
 
-        @Override
-        public Tuple get( Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple ) {
+        public void get( Object[] facts, InternalWorkingMemory workingMemory ) {
             facts[offset] = workingMemory.getGlobal( globalName );
-            return tuple;
         }
 
-        @Override
-        public int compareTo( FactSupplier o ) {
-            return o instanceof GlobalSupplier ? globalName.compareTo( (( GlobalSupplier ) o).globalName ) : 1;
+        public int compareTo( GlobalSupplier o ) {
+            return globalName.compareTo( o.globalName );
 
         }
     }
 
-    private static class TupleFactSupplier implements FactSupplier {
+    private static class TupleFactSupplier implements Comparable<TupleFactSupplier> {
         private final int factsOffset;
         private final Declaration declaration;
         private final int declarationOffset;
@@ -253,33 +266,28 @@ public class LambdaConsequence implements Consequence {
             }
         }
 
-        @Override
-        public Tuple get( Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple ) {
+        public Tuple get( Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple,FactHandleLookup fhLookup ) {
             // traverses the tuple of as many steps as distance between the former supplier and this one
             for (int i = 0; i < formerSupplierOffset; i++) {
                 tuple = tuple.getParent();
             }
-            fetchFact( facts, workingMemory, tuple );
+            fetchFact( facts, workingMemory, tuple, fhLookup );
             return tuple;
         }
 
-        public void fetchFact( Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple ) {
+        public void fetchFact( Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple, FactHandleLookup fhLookup ) {
             InternalFactHandle fh = getOriginalFactHandle( tuple.getFactHandle() );
             if ( useDrools ) {
-                (( DroolsImpl ) facts[0]).registerFactHandle( fh );
+                fhLookup.put( fh.getObject(), fh );
             }
             facts[factsOffset] = declaration.getValue( workingMemory, fh );
         }
 
         @Override
-        public int compareTo( FactSupplier o ) {
-            if (o instanceof DroolsImplSupplier) {
-                return 1;
-            }
-            if (o instanceof GlobalSupplier) {
-                return -1;
-            }
-            return (( TupleFactSupplier ) o).declarationOffset - declarationOffset;
+        public int compareTo( TupleFactSupplier o ) {
+            // Sorted from the one extracting a fact from the bottom of the tuple to the one reading from its top
+            // In this way the whole tuple can be traversed only once to retrive all facts
+            return o.declarationOffset - declarationOffset;
 
         }
     }
