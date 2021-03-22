@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -77,6 +78,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -351,15 +353,16 @@ public class DMNScenarioRunnerHelperTest {
         ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
         ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
 
-        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("imported.Person", Person.class.getCanonicalName());
-        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("imported.Dispute", Dispute.class.getCanonicalName());
         FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "tBook");
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("imported.Person", "tPerson");
+        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("imported.Dispute", "tDispute");
+        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("imported.Book", "tBook");
 
         // 1: Background only
         // 2: Background & Given
         // 3: Imported Background only
         // 4: Imported background & imported Given
-        // 5: Imported given only
+        // 5: Imported given only (is it possibile to have multiple imported ?)
         // 6: Given only
         AbstractMap.SimpleEntry<String, Object> backGroundDisputeFactData = new AbstractMap.SimpleEntry<>("description", "Nice");
         AbstractMap.SimpleEntry<String, Object> backGroundPersonFactData = new AbstractMap.SimpleEntry<>("name", "Carl");
@@ -368,15 +371,18 @@ public class DMNScenarioRunnerHelperTest {
         AbstractMap.SimpleEntry<String, Object> givenPersonFactData2 = new AbstractMap.SimpleEntry<>("age", 23);
         AbstractMap.SimpleEntry<String, Object> givenBookFactData = new AbstractMap.SimpleEntry<>("Author", "Resey Rema");
         AbstractMap.SimpleEntry<String, Object> givenBookFactData2 = new AbstractMap.SimpleEntry<>("Name", "The mighty Test Scenario!");
+        AbstractMap.SimpleEntry<String, Object> backGroundImportedDisputeFactData = new AbstractMap.SimpleEntry<>("description", "Bad");
+        AbstractMap.SimpleEntry<String, Object> givenImportedBookFactData = new AbstractMap.SimpleEntry<>("Author", "Mr Y");
+        AbstractMap.SimpleEntry<String, Object> givenImportedBookFactData2 = new AbstractMap.SimpleEntry<>("Title", "The awesome Test Scenario!");
 
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, instantiateMap(backGroundDisputeFactData))); //1
         scenarioRunnerData.addBackground(new InstanceGiven(personFactIdentifier, instantiateMap(backGroundPersonFactData, backGroundPersonFactData2))); //2
+        scenarioRunnerData.addBackground(new InstanceGiven(importedDisputeFactIdentifier, instantiateMap(backGroundImportedDisputeFactData))); //3
         scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, instantiateMap(givenPersonFactData, givenPersonFactData2))); //2
         scenarioRunnerData.addGiven(new InstanceGiven(bookFactIdentifier, instantiateMap(givenBookFactData, givenBookFactData2))); //6
+        scenarioRunnerData.addGiven(new InstanceGiven(importedBookFactIdentifier, instantiateMap(givenImportedBookFactData, givenImportedBookFactData2))); //5
 
-        /*scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, new Person()));
-        scenarioRunnerData.addGiven(new InstanceGiven(importedDisputeFactIdentifier, new Dispute()));*/
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
@@ -384,13 +390,13 @@ public class DMNScenarioRunnerHelperTest {
         // Number of data to be loaded in executableBuilder consists on elements on BackGrounds and Givens data and with following points:
         // 1. Imported data with same prefix are load once in the same Map.
         // 2. If same data is provided in both backgrounds and givens, only one will be loaded (the given one)
-        int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size() - 1;
+        int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size() - 2;
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
         verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(setKeyCaptor.capture(), setValueCaptor.capture());
-        assertTrue(setKeyCaptor.getAllValues().containsAll(Arrays.asList("Fact 1", "Fact 2")));
+        assertTrue(setKeyCaptor.getAllValues().containsAll(Arrays.asList("Fact 1", "Fact 2", "Book", "imported")));
         for (int i = 0; i < inputObjects; i++) {
             String key = setKeyCaptor.getAllValues().get(i);
             Map<String, Object> value = (Map<String, Object>) setValueCaptor.getAllValues().get(i);
@@ -400,25 +406,25 @@ public class DMNScenarioRunnerHelperTest {
                 assertEquals(givenPersonFactData.getValue(), value.get(givenPersonFactData.getKey()));
                 assertEquals(givenPersonFactData2.getValue(), value.get(givenPersonFactData2.getKey()));
                 assertEquals(3, value.size());
-            }
-            if ("Fact 2".equals(key)) {
+            } else if ("Fact 2".equals(key)) {
                 assertEquals(backGroundDisputeFactData.getValue(), value.get(backGroundDisputeFactData.getKey()));
                 assertEquals(1, value.size());
-            }
-            if ("Book".equals(key)) {
+            } else if ("Book".equals(key)) {
                 assertEquals(givenBookFactData.getValue(), value.get(givenBookFactData.getKey()));
                 assertEquals(givenBookFactData2.getValue(), value.get(givenBookFactData2.getKey()));
                 assertEquals(2, value.size());
+            } else if (Objects.equals("imported", key)) {
+                Map<String, Object> subValueDispute = (Map<String, Object>) value.get("Dispute");
+                assertEquals(backGroundImportedDisputeFactData.getValue(), subValueDispute.get(backGroundImportedDisputeFactData.getKey()));
+                assertEquals(1, subValueDispute.size());
+                Map<String, Object> subValueBook = (Map<String, Object>) value.get("Book");
+                assertEquals(givenImportedBookFactData.getValue(), subValueBook.get(givenImportedBookFactData.getKey()));
+                assertEquals(givenImportedBookFactData2.getValue(), subValueBook.get(givenImportedBookFactData2.getKey()));
+                assertEquals(2, subValueBook.size());
+            } else {
+                fail("Unexpected key: " + key);
             }
         }
-        /*for (Object value : setValueCaptor.getAllValues()) {
-            assertTrue(value instanceof Person || value instanceof Dispute || value instanceof HashMap);
-            if (value instanceof HashMap) {
-                assertEquals(Person.class, ((HashMap<String, Object>) value).get("Person").getClass());
-                assertEquals(Dispute.class, ((HashMap<String, Object>) value).get("Dispute").getClass());
-                assertEquals(2, ((HashMap<String, Object>) value).size());
-            }
-        }*/
 
         verify(dmnScenarioExecutableBuilderMock, times(1)).run();
 
