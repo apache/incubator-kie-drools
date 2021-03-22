@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,17 +63,44 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer);
         executableBuilder.setActiveModel(settings.getDmnFilePath());
 
-        loadInputData(scenarioRunnerData.getBackgrounds(), executableBuilder);
-        loadInputData(scenarioRunnerData.getGivens(), executableBuilder);
+        prepareInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
 
         return executableBuilder.run().getOutputs();
     }
 
-    protected void loadInputData(List<InstanceGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
-        retrieveValuesToLoad(dataToLoad).forEach(executableBuilder::setValue);
-    }
+    /**
+     * It return a {@link Map<String, Object>} which contains the actual data in the DMN Executable Builder or DMN Context.
+     * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value (another Map containing the fact properties)
+     * (eg.   "Driver": {
+     *              "Name": "string",
+     *              "Age": 0,
+     *              "State": "string",
+     *              "City": "string",
+     *              "Points": 43
+     *         }
+     * )
+     * In case of a Imported Fact, i.e. a Decision or a Input node imported from an external DMN file, the Map contains as a Key
+     * the Fact prefix, which is the name of the imported DMN document and another Map as value which contains all the Imported Fact
+     * with that prefix.
+     * (eg.   "imp" : {
+     *              "Violation": {
+     *                  "Code": "string",
+     *                  "Date": "2021-03-18",
+     *                  "Type": "speed",
+     *                  "Speed Limit": 10,
+     *                  "Actual Speed": 1000
+     *              }
+     *        }
+     * )
+     * If the the same fact is present in both Background and Given list, the Given one will override the background one.
+     * @param backgroundData,
+     * @param givenData
+     * @return
+     */
+    protected Map<String, Object> prepareInputValues(List<InstanceGiven> backgroundData, List<InstanceGiven> givenData) {
+        List<InstanceGiven> dataToLoad = new ArrayList<>(backgroundData);
+        dataToLoad.addAll(givenData);
 
-    protected Map<String, Object> retrieveValuesToLoad(List<InstanceGiven> dataToLoad) {
         Map<String, Object> valueToLoad = new HashMap<>();
         Map<String, Map<String, Object>> groupedValueToLoad = new HashMap<>();
 

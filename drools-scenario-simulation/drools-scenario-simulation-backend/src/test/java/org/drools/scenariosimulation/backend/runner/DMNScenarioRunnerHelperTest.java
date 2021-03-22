@@ -361,7 +361,10 @@ public class DMNScenarioRunnerHelperTest {
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
 
-        int inputObjects = scenarioRunnerData.getBackgrounds().size() + (scenarioRunnerData.getGivens().size() - 1); //Imported with same prefix count once;
+        // Number of data to be loaded in executableBuilder consists on elements on BackGrounds and Givens data and with following points:
+        // 1. Imported data with same prefix are load once in the same Map.
+        // 2. If same data is provided in both backgrounds and givens, only one will be loaded (the given one)
+        int inputObjects = scenarioRunnerData.getBackgrounds().size() + scenarioRunnerData.getGivens().size() - 2;
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
