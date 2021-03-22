@@ -136,7 +136,7 @@ public class KiePMMLTreeModelNodeASTFactory {
                                               final String parentPath,
                                               final List<KiePMMLDroolsRule> rules) {
         logger.trace("declareDefaultRuleFromNode {} {}", node, parentPath);
-        String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore());
+        String originalRule = String.format(PATH_PATTERN, parentPath, node.hashCode());
         String currentRule = String.format(PATH_PATTERN, "default", originalRule);
         PredicateASTFactoryData predicateASTFactoryData = new PredicateASTFactoryData(new True(), outputFields, rules, originalRule, currentRule, fieldTypeMap);
         KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate(getCorrectlyFormattedResult(node.getScore(), targetType), true);
