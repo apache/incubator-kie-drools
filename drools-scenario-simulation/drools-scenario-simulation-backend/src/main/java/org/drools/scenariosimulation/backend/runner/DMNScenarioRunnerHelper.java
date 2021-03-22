@@ -63,7 +63,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer);
         executableBuilder.setActiveModel(settings.getDmnFilePath());
 
-        prepareInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
+        defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
 
         return executableBuilder.run().getOutputs();
     }
@@ -72,11 +72,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
      * It return a {@link Map<String, Object>} which contains the actual data in the DMN Executable Builder or DMN Context.
      * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value (another Map containing the fact properties)
      * (eg.   "Driver": {
-     *              "Name": "string",
-     *              "Age": 0,
-     *              "State": "string",
-     *              "City": "string",
-     *              "Points": 43
+     *              "Name": "string"
      *         }
      * )
      * In case of a Imported Fact, i.e. a Decision or a Input node imported from an external DMN file, the Map contains as a Key
@@ -84,11 +80,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
      * with that prefix.
      * (eg.   "imp" : {
      *              "Violation": {
-     *                  "Code": "string",
-     *                  "Date": "2021-03-18",
-     *                  "Type": "speed",
-     *                  "Speed Limit": 10,
-     *                  "Actual Speed": 1000
+     *                  "Code": "string"
      *              }
      *        }
      * )
@@ -97,7 +89,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
      * @param givenData
      * @return
      */
-    protected Map<String, Object> prepareInputValues(List<InstanceGiven> backgroundData, List<InstanceGiven> givenData) {
+    protected Map<String, Object> defineInputValues(List<InstanceGiven> backgroundData, List<InstanceGiven> givenData) {
         List<InstanceGiven> dataToLoad = new ArrayList<>(backgroundData);
         dataToLoad.addAll(givenData);
 
