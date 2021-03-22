@@ -52,6 +52,7 @@ import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.utils.ConverterTypeUtil;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -77,8 +78,9 @@ public class ExpressionFunctionUtils {
         DEFAULT_PARAMETERTYPE_MAP.put(KIEPMMLNAMEVALUE_LIST_PARAM, getTypedClassOrInterfaceType(List.class.getName(),
                                                                                                 Collections.singletonList(KiePMMLNameValue.class.getName())));
         CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR = new FieldAccessExpr();
-        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.setName("ConverterTypeUtil");
-        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.setScope(new NameExpr("org.kie.pmml.commons.utils"));
+        String converterTypeUtilFullName = ConverterTypeUtil.class.getName();
+        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.setName(converterTypeUtilFullName.substring(converterTypeUtilFullName.lastIndexOf('.') + 1));
+        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.setScope(new NameExpr(converterTypeUtilFullName.substring(0, converterTypeUtilFullName.lastIndexOf('.'))));
     }
 
     private ExpressionFunctionUtils() {
@@ -542,7 +544,7 @@ public class ExpressionFunctionUtils {
         // then
         CastExpr thenExpr = new CastExpr();
         thenExpr.setType(returnedType);
-        // ((returnedType)) org.kie.pmml.commons.utils.ConverterTypeUtil.convert((returnedType).class, (variable_name))
+        // ((returnedType)) org.kie.pmml.api.utils.ConverterTypeUtil.convert((returnedType).class, (variable_name))
         MethodCallExpr converterCallExpression = new MethodCallExpr();
         converterCallExpression.setName("convert");
         converterCallExpression.setScope(CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR);
