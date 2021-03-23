@@ -47,10 +47,15 @@ public class InMemoryCompiler {
 
     public InMemoryCompiler(
             Collection<Path> classesPaths,
-            Collection<AppDependency> userDependencies) {
+            Collection<AppDependency> userDependencies,
+            boolean useDebugSymbols) {
         javaCompiler = JavaParserCompiler.getCompiler();
         compilerSettings = javaCompiler.createDefaultSettings();
         compilerSettings.addOption("-proc:none"); // force disable annotation processing
+        if (useDebugSymbols) {
+            compilerSettings.addOption("-g");
+            compilerSettings.addOption("-parameters");
+        }
         for (Path classPath : classesPaths) {
             compilerSettings.addClasspath(classPath.toString());
         }

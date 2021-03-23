@@ -90,7 +90,8 @@ public class KogitoAssetsProcessor {
         Optional<IndexView> optionalIndex = compileAndIndexJavaSources(
                 context,
                 generatedFiles,
-                generatedBeans);
+                generatedBeans,
+                liveReload.isLiveReload());
 
         registerDataEventsForReflection(optionalIndex, context, reflectiveClass);
 
@@ -111,12 +112,13 @@ public class KogitoAssetsProcessor {
     private Optional<IndexView> compileAndIndexJavaSources(
             KogitoBuildContext context,
             Collection<GeneratedFile> generatedFiles,
-            BuildProducer<GeneratedBeanBuildItem> generatedBeans) throws IOException {
+            BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            boolean useDebugSymbols) throws IOException {
 
         List<AppDependency> dependencies = curateOutcomeBuildItem.getEffectiveModel().getUserDependencies();
 
         Collection<GeneratedBeanBuildItem> generatedBeanBuildItems =
-                compileGeneratedSources(context, dependencies, generatedFiles);
+                compileGeneratedSources(context, dependencies, generatedFiles, useDebugSymbols);
         generatedBeanBuildItems.forEach(generatedBeans::produce);
         return Optional.of(indexBuildItems(context, generatedBeanBuildItems));
     }

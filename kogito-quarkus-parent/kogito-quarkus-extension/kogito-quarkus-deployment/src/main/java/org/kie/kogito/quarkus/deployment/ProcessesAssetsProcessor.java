@@ -128,7 +128,8 @@ public class ProcessesAssetsProcessor {
                 generatedBeans,
                 resource,
                 reflectiveClass,
-                runTimeConfiguration);
+                runTimeConfiguration,
+                liveReload.isLiveReload());
 
         // Json schema files
         generatedFiles.addAll(generateJsonSchema(context, aggregatedIndex));
@@ -148,7 +149,8 @@ public class ProcessesAssetsProcessor {
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration) throws IOException {
+            BuildProducer<RunTimeConfigurationDefaultBuildItem> runTimeConfiguration,
+            boolean useDebugSymbols) throws IOException {
 
         if (context.getAddonsConfig().usePersistence()) {
             resource.produce(new NativeImageResourceBuildItem("kogito-types.proto"));
@@ -159,7 +161,7 @@ public class ProcessesAssetsProcessor {
         validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.RESOURCE));
 
         List<AppDependency> dependencies = curateOutcomeBuildItem.getEffectiveModel().getUserDependencies();
-        compileGeneratedSources(context, dependencies, persistenceGeneratedFiles)
+        compileGeneratedSources(context, dependencies, persistenceGeneratedFiles, useDebugSymbols)
                 .forEach(generatedBeans::produce);
 
         return persistenceGeneratedFiles.stream()

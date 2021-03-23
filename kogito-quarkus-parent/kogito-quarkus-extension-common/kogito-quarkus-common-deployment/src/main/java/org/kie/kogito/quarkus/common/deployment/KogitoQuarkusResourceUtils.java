@@ -111,8 +111,11 @@ public class KogitoQuarkusResourceUtils {
         }
     }
 
-    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(KogitoBuildContext context, List<AppDependency> dependencies, Collection<GeneratedFile> generatedFiles)
-            throws IOException {
+    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(
+            KogitoBuildContext context,
+            List<AppDependency> dependencies,
+            Collection<GeneratedFile> generatedFiles,
+            boolean useDebugSymbols) throws IOException {
         Collection<GeneratedFile> javaFiles =
                 generatedFiles.stream()
                         .filter(f -> f.category() == GeneratedFileType.Category.SOURCE)
@@ -123,8 +126,11 @@ public class KogitoQuarkusResourceUtils {
             return Collections.emptyList();
         }
 
-        InMemoryCompiler inMemoryCompiler = new InMemoryCompiler(context.getAppPaths().getClassesPaths(),
-                dependencies);
+        InMemoryCompiler inMemoryCompiler =
+                new InMemoryCompiler(
+                        context.getAppPaths().getClassesPaths(),
+                        dependencies,
+                        useDebugSymbols);
         inMemoryCompiler.compile(javaFiles);
         return makeBuildItems(
                 context.getAppPaths(),
