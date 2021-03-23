@@ -32,9 +32,8 @@
     </DataField>
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
     <DataField name="overallScore" optype="continuous" dataType="double" />
-    <DataField name="variable" optype="continuous" dataType="double" />
   </DataDictionary>
-  <MiningModel functionName="regression" modelName="PredicatesMining">
+  <MiningModel functionName="regression" >
     <MiningSchema>
       <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -43,12 +42,11 @@
       <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
-      <MiningField name="variable" usageType="active" invalidValueTreatment="asMissing"/>
     </MiningSchema>
     <Segmentation multipleModelMethod="average">
       <Segment>
-        <SimplePredicate field="variable" operator="lessThan" value="20"/>
-        <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
+        <True/>
+        <RegressionModel functionName="regression">
           <MiningSchema>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -69,16 +67,13 @@
         </RegressionModel>
       </Segment>
       <Segment>
-        <SimpleSetPredicate field="occupation" booleanOperator="isIn">
-          <Array n="2" type="string">SKYDIVER ASTRONAUT</Array>
-        </SimpleSetPredicate>
-        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+        <True/>
+        <Scorecard useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
           <MiningSchema>
             <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
             <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
-            <MiningField name="overallScore" usageType="predicted"/>
           </MiningSchema>
           <Output>
             <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
@@ -159,31 +154,6 @@
             </Characteristic>
           </Characteristics>
         </Scorecard>
-      </Segment>
-      <Segment>
-        <CompoundPredicate booleanOperator="and">
-          <SimplePredicate field="variable" operator="greaterOrEqual" value="5"/>
-          <SimplePredicate field="variable" operator="lessThan" value="12"/>
-        </CompoundPredicate>
-        <RegressionModel modelName="OtherCategoricalVariablesRegression" functionName="regression">
-          <MiningSchema>
-            <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
-            <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
-          </MiningSchema>
-          <Output>
-            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
-          </Output>
-          <RegressionTable intercept="-15.1">
-            <CategoricalPredictor name="categoricalX" value="red" coefficient="3.5"/>
-            <CategoricalPredictor name="categoricalX" value="green" coefficient="11"/>
-            <CategoricalPredictor name="categoricalX" value="blue" coefficient="14"/>
-            <CategoricalPredictor name="categoricalX" value="orange" coefficient="2.7"/>
-            <CategoricalPredictor name="categoricalX" value="yellow" coefficient="-80.25"/>
-            <CategoricalPredictor name="categoricalY" value="classA" coefficient="11"/>
-            <CategoricalPredictor name="categoricalY" value="classB" coefficient="2"/>
-            <CategoricalPredictor name="categoricalY" value="classC" coefficient="4"/>
-          </RegressionTable>
-        </RegressionModel>
       </Segment>
     </Segmentation>
   </MiningModel>
