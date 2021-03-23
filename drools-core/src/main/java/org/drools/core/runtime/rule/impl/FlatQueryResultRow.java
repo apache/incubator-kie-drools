@@ -19,6 +19,7 @@ package org.drools.core.runtime.rule.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -43,11 +44,27 @@ public class FlatQueryResultRow
 
     @Override
     public FactHandle getFactHandle(String identifier) {
+        if(idFacthandleMap == null) {
+            return null;
+        }
         return this.idFacthandleMap.get( identifier );
     }
 
     public List<String> getIdentifiers() {
-        return new ArrayList<String>(this.idFacthandleMap.keySet());
+        Set<String> ids = this.idFacthandleMap.keySet();
+        if(ids.isEmpty()) {
+            ids = this.idResultMap.keySet();
+        }
+        return new ArrayList<>(ids);
     }
 
+    // Used for testing
+    public Map<String, FactHandle> getIdFacthandleMap() {
+        return idFacthandleMap;
+    }
+
+    // Used for testing
+    public Map<String, Object> getIdResultMap() {
+        return idResultMap;
+    }
 }

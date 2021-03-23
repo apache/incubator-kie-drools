@@ -332,6 +332,51 @@ public class XStreamXMLTest {
         Assert.assertEquals( results, results2 );
     }
 
+
+    @Test
+    public void testQueryResultsConverterWithoutFactHandleIds() {
+        final Message msg = new Message("Hello World!");
+        final FactHandle msgHandle = new DefaultFactHandle( 1,
+                                                            null,
+                                                            10,
+                                                            10,
+                                                            20,
+                                                            msg );
+        Set<String> identifiers = new HashSet<String>(  ) {{
+            add("greeting");
+        }};
+        ArrayList<Map<String, FactHandle>> idFactHandleMaps = new ArrayList<Map<String, FactHandle>>(  ) {{
+            add( new HashMap<String, FactHandle>(  ) {{
+            }} );
+        }};
+        ArrayList<Map<String, Object>> factHandleResultMap = new ArrayList<Map<String, Object>>(  ) {{
+            add( new HashMap<String, Object>(  ) {{
+                put( "greeting", msg );
+            }} );
+        }};
+
+        final String EXPECTED_XML = "<query-results>\n"
+                                    + "  <identifiers>\n"
+                                    + "    <identifier>greeting</identifier>\n"
+                                    + "  </identifiers>\n"
+                                    + "  <row>\n"
+                                    + "    <identifier id=\"greeting\">\n"
+                                    + "      <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n"
+                                    + "        <msg>Hello World!</msg>\n"
+                                    + "      </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n"
+                                    + "    </identifier>\n"
+                                    + "  </row>\n"
+                                    + "</query-results>";
+
+        QueryResults results = new FlatQueryResults( identifiers, idFactHandleMaps, factHandleResultMap );
+        String xmlString = xstream.toXML( results );
+        Assert.assertEquals( EXPECTED_XML, xmlString );
+
+        QueryResults results2 = (QueryResults) xstream.fromXML( xmlString );
+
+        Assert.assertEquals( results, results2 );
+    }
+
     private static class Message {
         String msg;
 

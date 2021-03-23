@@ -648,6 +648,10 @@ public class XStreamXML {
                                  cmd.getOutIdentifier() );
             writer.addAttribute( "name",
                                  cmd.getName() );
+            writer.addAttribute( "show-facthandles",
+                                 Boolean.toString(cmd.getShowFactHandleMaps()) );
+            writer.addAttribute( "show-results",
+                                 Boolean.toString(cmd.getShowResultMaps()) );
             if ( cmd.getArguments() != null ) {
                 for ( Object arg : cmd.getArguments() ) {
                     writeItem( arg,
@@ -664,6 +668,8 @@ public class XStreamXML {
             // Query cmd = null;
             String outIdentifier = reader.getAttribute( "out-identifier" );
             String name = reader.getAttribute( "name" );
+            String showFactHandleMaps = reader.getAttribute( "show-facthandles" );
+            String showResultMaps = reader.getAttribute( "show-results" );
             List<Object> args = new ArrayList<Object>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
@@ -675,6 +681,8 @@ public class XStreamXML {
             }
             QueryCommand cmd = new QueryCommand( outIdentifier,
                                                  name,
+                                                 Boolean.parseBoolean( showFactHandleMaps ) ,
+                                                 Boolean.parseBoolean( showResultMaps ) ,
                                                  args.toArray( new Object[args.size()] ) );
 
             return cmd;
@@ -1075,10 +1083,12 @@ public class XStreamXML {
                                writer );
 
                     FactHandle factHandle = result.getFactHandle( id );
-                    writer.startNode( "fact-handle" );
-                    writer.addAttribute( "external-form",
-                                         ((FactHandle) factHandle).toExternalForm() );
-                    writer.endNode();
+                    if (factHandle != null) {
+                        writer.startNode("fact-handle");
+                        writer.addAttribute("external-form",
+                                            ((FactHandle) factHandle).toExternalForm());
+                        writer.endNode();
+                    }
 
                     writer.endNode();
                 }
@@ -1113,17 +1123,20 @@ public class XStreamXML {
                     String identifier = reader.getAttribute("id");
 
                     reader.moveDown();
+
                     Object object = readItem( reader,
                                               context,
                                               null );
                     reader.moveUp();
 
-                    reader.moveDown();
-                    FactHandle handle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) );
-                    reader.moveUp();
+                    if(reader.hasMoreChildren()) {
+                        reader.moveDown();
+                        FactHandle handle = DefaultFactHandle.createFromExternalFormat(reader.getAttribute("external-form"));
+                        reader.moveUp();
+                        handles.put( identifier, handle );
+                    }
 
                     objects.put( identifier, object );
-                    handles.put( identifier, handle );
                     reader.moveUp();
                 }
                 results.add( objects );

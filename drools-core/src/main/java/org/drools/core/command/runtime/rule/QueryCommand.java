@@ -46,6 +46,12 @@ public class QueryCommand implements ExecutableCommand<QueryResults>, Identifiab
     @XmlAttribute(required = true)
     private String name;
 
+    @XmlAttribute(required = false)
+    private Boolean showFactHandleMaps = true;
+
+    @XmlAttribute(required = false)
+    private Boolean showResultMaps = true;
+
     @XmlElement
     private List<Object> arguments;
 
@@ -53,6 +59,22 @@ public class QueryCommand implements ExecutableCommand<QueryResults>, Identifiab
     }
 
     public QueryCommand(String outIdentifier, String name, Object... arguments) {
+        this.outIdentifier = outIdentifier;
+        this.name = name;
+        if ( arguments != null ) {
+            this.arguments = Arrays.asList( arguments );
+        } else {
+            this.arguments = Collections.EMPTY_LIST;
+        }
+    }
+
+    public QueryCommand(String outIdentifier,
+                        String name,
+                        boolean showFactHandleMaps,
+                        boolean showResultMaps,
+                        Object... arguments) {
+        this.showFactHandleMaps = showFactHandleMaps;
+        this.showResultMaps = showResultMaps;
         this.outIdentifier = outIdentifier;
         this.name = name;
         if ( arguments != null ) {
@@ -89,8 +111,40 @@ public class QueryCommand implements ExecutableCommand<QueryResults>, Identifiab
         this.arguments = arguments;
     }
 
+    public Boolean getShowFactHandleMaps() {
+        return showFactHandleMaps;
+    }
+
+    public void setShowFactHandleMaps(Boolean showFactHandleMaps) {
+        this.showFactHandleMaps = showFactHandleMaps;
+    }
+
+    public Boolean getShowResultMaps() {
+        return showResultMaps;
+    }
+
+    public void setShowResultMaps(Boolean showResultMaps) {
+        this.showResultMaps = showResultMaps;
+    }
+
     public QueryResults execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+
+        System.out.println("------- Calling query command with showFactHandleMaps: " + showFactHandleMaps +
+                                   " showResultMaps: " + showResultMaps + "" +
+                                   "arguments: " );
+        if(arguments != null) {
+            for (Object o : arguments) {
+                System.out.println(o);
+                if (o instanceof Iterable) {
+                    System.out.println("Collection elements:");
+                    Iterable list = (Iterable) o;
+                    for (Object io : list) {
+                        System.out.println(io);
+                    }
+                }
+            }
+        }
 
         if ( this.arguments == null || this.arguments.isEmpty() ) {
             this.arguments = Collections.emptyList();
@@ -105,7 +159,10 @@ public class QueryCommand implements ExecutableCommand<QueryResults>, Identifiab
         QueryResults results = ksession.getQueryResults( name, this.arguments.toArray() );
 
         if ( this.outIdentifier != null ) {
-            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, new FlatQueryResults( (QueryResultsImpl) results) );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier,
+                                                                                       new FlatQueryResults( showFactHandleMaps,
+                                                                                                             showResultMaps,
+                                                                                                             (QueryResultsImpl) results) );
         }
 
         return results;

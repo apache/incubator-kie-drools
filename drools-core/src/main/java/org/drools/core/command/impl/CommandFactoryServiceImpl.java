@@ -259,6 +259,11 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
         return new QueryCommand(identifier, name, arguments);
     }
 
+    @Override
+    public Command newQuery(String identifier, String name, boolean showFactHandleMaps, boolean showResultMaps, Object[] arguments) {
+        return new QueryCommand(identifier, name, showFactHandleMaps, showResultMaps, arguments);
+    }
+
     public BatchExecutionCommand newBatchExecution(List<? extends Command> commands) {
         return newBatchExecution( commands, null );
     }

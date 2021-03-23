@@ -73,6 +73,13 @@ public class FlatQueryResults implements QueryResults {
     }
 
     public FlatQueryResults(QueryResultsImpl results) {
+        this(true, true, results);
+    }
+
+    public FlatQueryResults(boolean showFactHandleMaps,
+                            boolean showResultMaps,
+                            QueryResultsImpl results) {
+
         Declaration[] parameters = results.getParameters();
 
         identifiers  = new HashSet<String>();
@@ -110,15 +117,21 @@ public class FlatQueryResults implements QueryResults {
                 String id = declrs[i].getIdentifier();
                 FactHandle factHandle = resultImpl.getFactHandle(id);
                 if (factHandle != null) {
-                    Object obj = null;
-                    if ( !id.equals( "" ) ) {
-                        // no result value "" because "abducibl/retrieved facts are hidden
-                        obj = resultImpl.get( id );
+                    if(showResultMaps) {
+                        final Object obj;
+                        if (!id.equals("")) {
+                            // no result value "" because "abducibl/retrieved facts are hidden
+                            obj = resultImpl.get(id);
+                        } else {
+                            obj = null;
+                        }
+                        idResultMap.put(id, obj);
                     }
-                    factHandle = DisconnectedFactHandle.newFrom( factHandle );
 
-                    idFactHandleMap.put( id, factHandle );
-                    idResultMap.put( id, obj );
+                    if(showFactHandleMaps) {
+                        FactHandle newDisconnectedFactHandle = DisconnectedFactHandle.newFrom(factHandle);
+                        idFactHandleMap.put(id, newDisconnectedFactHandle);
+                    }
                 }
             }
             idFactHandleMaps.add(idFactHandleMap);
@@ -169,17 +182,18 @@ public class FlatQueryResults implements QueryResults {
 
         public QueryResultsIterator(final Iterator<Map<String, FactHandle>> handleIterator,
                                     final Iterator<Map<String, Object>> iterator) {
-            this.handleIterator = handleIterator;
-            this.iterator = iterator;
+            this.handleIterator = handleIterator.hasNext() ? handleIterator : null;
+            this.iterator = iterator.hasNext() ? iterator : null;
         }
 
         public boolean hasNext() {
-            return this.iterator.hasNext();
+            return (this.iterator != null && this.iterator.hasNext()) ||
+                    (this.handleIterator != null && this.handleIterator.hasNext());
         }
 
         public QueryResultsRow next() {
-            return new FlatQueryResultRow( handleIterator.next(),
-                                           iterator.next() );
+            return new FlatQueryResultRow( handleIterator != null && handleIterator.hasNext() ? handleIterator.next() : null,
+                                           iterator != null && iterator.hasNext() ? iterator.next() : null );
         }
 
         public void remove() {
