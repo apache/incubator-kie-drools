@@ -69,15 +69,16 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     /**
-     * It return a {@link Map} which contains the actual data in the DMN Executable Builder or DMN Context.
-     * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value (another Map containing the fact properties)
+     * It returns a {@link Map} which contains the actual data in the DMN Executable Builder (BC) or DMN Context (Kogito)
+     * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value
+     * (another Map containing the fact properties)
      * (eg.   "Driver": {
      *              "Name": "string"
      *         }
      * )
-     * In case of a Imported Fact, i.e. a Decision or a Input node imported from an external DMN file, the Map contains as a Key
-     * the Fact prefix, which is the name of the imported DMN document and another Map as value which contains all the Imported Fact
-     * with that prefix.
+     * In case of a Imported Fact, i.e. a Decision or a Input node imported from an external DMN file, the Map contains
+     * the <b>Fact prefix as a Key</b>, which is the name of the imported DMN document, and another Map as value which
+     * contains all the Imported Fact with that prefix.
      * (eg.   "imp" : {
      *              "Violation": {
      *                  "Code": "string"
@@ -120,6 +121,14 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return inputValues;
     }
 
+    /**
+     * It manages the merge of two values in case a Fact is defined in both Background and Given input data.
+     * In case of DMN scenario, values are Maps. In case of properties present in both values map, the new Value
+     * will override the old one.
+     * @param oldValue
+     * @param newValue
+     * @return
+     */
     private Map<String, Object> mergeValues(Object oldValue, Object newValue) {
         Map<String, Object> toReturn = new HashMap<>();
         toReturn.putAll((Map<String, Object>) oldValue);
@@ -128,7 +137,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return toReturn;
     }
 
-    protected String[] retrieveKeys(String factIdentifierName) {
+    private String[] retrieveKeys(String factIdentifierName) {
         String[] factIdentifierNameParts = factIdentifierName.split("\\.");
         if (factIdentifierNameParts.length > 2) {
             throw new IllegalArgumentException("Invalid FactIdentified name: " + factIdentifierName);
