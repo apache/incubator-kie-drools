@@ -10218,6 +10218,18 @@
           "methodName": "groupBy",
           "elementKind": "method",
           "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "method int org.optaplanner.core.api.score.constraint.ConstraintMatch::hashCode()",
+          "new": "method int java.lang.Object::hashCode() @ org.optaplanner.core.api.score.constraint.ConstraintMatch<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>",
+          "annotationType": "jdk.internal.vm.annotation.IntrinsicCandidate",
+          "annotation": "@jdk.internal.vm.annotation.IntrinsicCandidate",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatch",
+          "methodName": "hashCode",
+          "elementKind": "method",
+          "justification": "JDK 16 does fun things."
         }
       ]
     }

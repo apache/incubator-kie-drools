@@ -42,7 +42,7 @@ jobs:
   # Early feedback on a compatibility with the newest Java version.
   # TODO: update each time a new major Java version is released.
   latest-jdk:
-    name: OpenJDK 15
+    name: OpenJDK 16
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
@@ -50,7 +50,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
       # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2

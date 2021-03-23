@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -187,10 +186,10 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             nurseRoster.setNurseRosterParametrization(nurseRosterParametrization);
         }
 
-        private void readSkillList(NurseRoster nurseRoster, Element skillsElement) throws JDOMException {
+        private void readSkillList(NurseRoster nurseRoster, Element skillsElement) {
             List<Skill> skillList;
             if (skillsElement == null) {
-                skillList = Collections.emptyList();
+                skillList = emptyList();
             } else {
                 List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
                 skillList = new ArrayList<>(skillElementList.size());
@@ -211,6 +210,11 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 }
             }
             nurseRoster.setSkillList(skillList);
+        }
+
+        private static <X> List<X> emptyList() {
+            // XStream causes illegal access when trying to use Collections.emptyList().
+            return new ArrayList<>(0);
         }
 
         private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) throws JDOMException {
@@ -304,7 +308,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
             List<Pattern> patternList;
             if (patternsElement == null) {
-                patternList = Collections.emptyList();
+                patternList = emptyList();
             } else {
                 List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
                 patternList = new ArrayList<>(patternElementList.size());
@@ -856,7 +860,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readDayOffRequestList(NurseRoster nurseRoster, Element dayOffRequestsElement) throws JDOMException {
             List<DayOffRequest> dayOffRequestList;
             if (dayOffRequestsElement == null) {
-                dayOffRequestList = Collections.emptyList();
+                dayOffRequestList = emptyList();
             } else {
                 List<Element> dayOffElementList = (List<Element>) dayOffRequestsElement.getChildren();
                 dayOffRequestList = new ArrayList<>(dayOffElementList.size());
@@ -895,7 +899,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readDayOnRequestList(NurseRoster nurseRoster, Element dayOnRequestsElement) throws JDOMException {
             List<DayOnRequest> dayOnRequestList;
             if (dayOnRequestsElement == null) {
-                dayOnRequestList = Collections.emptyList();
+                dayOnRequestList = emptyList();
             } else {
                 List<Element> dayOnElementList = (List<Element>) dayOnRequestsElement.getChildren();
                 dayOnRequestList = new ArrayList<>(dayOnElementList.size());
@@ -934,7 +938,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readShiftOffRequestList(NurseRoster nurseRoster, Element shiftOffRequestsElement) throws JDOMException {
             List<ShiftOffRequest> shiftOffRequestList;
             if (shiftOffRequestsElement == null) {
-                shiftOffRequestList = Collections.emptyList();
+                shiftOffRequestList = emptyList();
             } else {
                 List<Element> shiftOffElementList = (List<Element>) shiftOffRequestsElement.getChildren();
                 shiftOffRequestList = new ArrayList<>(shiftOffElementList.size());
@@ -976,7 +980,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readShiftOnRequestList(NurseRoster nurseRoster, Element shiftOnRequestsElement) throws JDOMException {
             List<ShiftOnRequest> shiftOnRequestList;
             if (shiftOnRequestsElement == null) {
-                shiftOnRequestList = Collections.emptyList();
+                shiftOnRequestList = emptyList();
             } else {
                 List<Element> shiftOnElementList = (List<Element>) shiftOnRequestsElement.getChildren();
                 shiftOnRequestList = new ArrayList<>(shiftOnElementList.size());

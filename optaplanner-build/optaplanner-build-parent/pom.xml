@@ -22,14 +22,13 @@
 
     <!-- SNAPSHOT and KIE dependency versions -->
     <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
-
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
     <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
     <version.commons-io>2.6</version.commons-io>
     <version.com.fasterxml.jackson.core>2.12.1</version.com.fasterxml.jackson.core>
     <version.com.h2database>1.3.173</version.com.h2database>
-    <version.com.thoughtworks.xstream>1.4.15</version.com.thoughtworks.xstream>
+    <version.com.thoughtworks.xstream>1.4.16</version.com.thoughtworks.xstream>
     <version.io.quarkus>1.11.0.Final</version.io.quarkus>
     <version.io.quarkus.gizmo>1.0.6.Final</version.io.quarkus.gizmo>
     <version.org.ow2.asm>9.0</version.org.ow2.asm>
@@ -730,7 +729,14 @@
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
-            <failOnWarnings>true</failOnWarnings>
+            <!--
+                 Disabled to workaround the following issue on JDK 16+:
+                 Warning:  javadoc: warning - The -footer option is no longer supported and will be ignored.
+
+                 Since we do not add the footer ourselves, it must be the plugin itself.
+                 Therefore until a new Javadoc plugin version is released, there is no better workaround.
+            -->
+            <!-- <failOnWarnings>true</failOnWarnings>-->
             <quiet>true</quiet>
           </configuration>
         </plugin>
