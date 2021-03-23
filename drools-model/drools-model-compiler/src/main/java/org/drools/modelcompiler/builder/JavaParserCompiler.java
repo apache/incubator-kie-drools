@@ -30,14 +30,13 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.JavaCompilerFactory;
-import org.kie.memorycompiler.JavaConfiguration;
+import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,21 +45,13 @@ import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
 
-    private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-    private static final JavaConfiguration.CompilerType COMPILER_TYPE = isJboss() ?
-            JavaConfiguration.CompilerType.ECLIPSE :
-            JavaConfiguration.CompilerType.NATIVE;
-
-    private static final JavaCompiler JAVA_COMPILER = createCompiler();
+    private static final JavaCompiler JAVA_COMPILER = isJboss() ?
+                                                      JavaDialectConfiguration.createEclipseCompiler() :
+                                                      JavaDialectConfiguration.createDefaultCompiler();
 
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
-
-    private static JavaCompiler createCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( COMPILER_TYPE, "1.8" );
-        javaCompiler.setSourceFolder( "src/main/java/" );
-        return javaCompiler;
-    }
 
     public static JavaCompiler getCompiler() {
         return JAVA_COMPILER;

@@ -2,8 +2,6 @@ package org.drools.modelcompiler.assembler;
 
 import java.util.List;
 
-import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -12,18 +10,13 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.Results;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.builder.KnowledgeBuilderResults;
-import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.drools.modelcompiler.KJARUtils.getPom;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -56,11 +49,9 @@ public class AssemblerTest {
             // we use this to verify that it's been actually picked up
             KieBase kieBase = kieContainer.getKieBase();
             fail("The PackageDescr has not been picked up by drools");
-        } catch (RuntimeException ex) {
+        } catch (Throwable ex) {
             // all good
             assertTrue(ex.getCause() instanceof ClassNotFoundException);
         }
-
-
     }
 }
