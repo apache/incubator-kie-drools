@@ -28,13 +28,11 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
-      <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

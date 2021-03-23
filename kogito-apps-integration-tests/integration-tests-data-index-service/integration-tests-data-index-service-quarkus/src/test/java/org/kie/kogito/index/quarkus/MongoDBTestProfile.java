@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.testcontainers;
 
-import org.testcontainers.containers.GenericContainer;
+package org.kie.kogito.index.quarkus;
 
-import static org.kie.kogito.testcontainers.TestContainersUtils.getImageName;
+import java.util.Collections;
+import java.util.List;
 
-public class KogitoServiceContainer extends GenericContainer<KogitoServiceContainer> {
+import io.quarkus.test.junit.QuarkusTestProfile;
 
-    public KogitoServiceContainer(String kogitoServiceUrl) {
-        super(getImageName("kogito-service"));
-        addEnv("KOGITO_SERVICE_URL", kogitoServiceUrl);
-        addExposedPort(8080);
+public class MongoDBTestProfile implements QuarkusTestProfile {
+
+    @Override
+    public List<TestResourceEntry> testResources() {
+        return Collections.singletonList(new TestResourceEntry(DataIndexMongoDBQuarkusTestResource.class));
     }
+
 }

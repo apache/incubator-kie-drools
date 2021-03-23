@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class TestcontainersUtils {
+public class TestContainersUtils {
 
     public static String getImageName(String containerName) {
         String propertyName = "container.image." + containerName;
@@ -28,6 +28,6 @@ public class TestcontainersUtils {
                 .orElseThrow(() -> new IllegalArgumentException(propertyName + " property should be set in pom.xml"));
     }
 
-    private TestcontainersUtils() {
+    private TestContainersUtils() {
     }
 }

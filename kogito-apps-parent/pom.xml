@@ -30,6 +30,8 @@
     <!-- internal containers used for testing (built by maven using quarkus-container-image-jib) -->
     <container.image.explainability-service-messaging>org.kie.kogito/explainability-service-messaging:${project.version}</container.image.explainability-service-messaging>
     <container.image.jobs-service>org.kie.kogito/jobs-service:${project.version}</container.image.jobs-service>
+    <container.image.data-index-service-infinispan>org.kie.kogito/data-index-service-infinispan:${project.version}</container.image.data-index-service-infinispan>
+    <container.image.data-index-service-mongodb>org.kie.kogito/data-index-service-mongodb:${project.version}</container.image.data-index-service-mongodb>
     <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
     <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
 
@@ -102,6 +104,16 @@
         <groupId>com.redislabs</groupId>
         <artifactId>jredisearch</artifactId>
         <version>${version.org.jredisearch}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>kafka</artifactId>
+        <version>${version.org.testcontainers}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

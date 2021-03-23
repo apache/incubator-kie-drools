@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>apps-integration-tests</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>integration-tests-data-index-service</artifactId>
+  <name>Kogito Apps :: Integration Tests :: Data Index</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>integration-tests-data-index-service-common</module>
+    <module>integration-tests-data-index-service-quarkus</module>
+    <module>integration-tests-data-index-service-springboot</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-data-index-service-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- ensure data-index-service module was built, but not added in the classpath -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-service-infinispan</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+              <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
+              <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
+              <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+            </systemPropertyVariables>
+          </configuration>
+          <executions>
+            <execution>
+              <id>default</id>
+              <phase>test</phase>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

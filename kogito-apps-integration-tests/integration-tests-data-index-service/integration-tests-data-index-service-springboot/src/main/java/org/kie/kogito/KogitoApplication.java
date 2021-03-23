@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.testcontainers;
+package org.kie.kogito;
 
-import org.testcontainers.containers.GenericContainer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import static org.kie.kogito.testcontainers.TestContainersUtils.getImageName;
+@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**", "org.acme.travels.**" })
+public class KogitoApplication {
 
-public class KogitoServiceContainer extends GenericContainer<KogitoServiceContainer> {
-
-    public KogitoServiceContainer(String kogitoServiceUrl) {
-        super(getImageName("kogito-service"));
-        addEnv("KOGITO_SERVICE_URL", kogitoServiceUrl);
-        addExposedPort(8080);
+    public static void main(String[] args) {
+        SpringApplication.run(KogitoApplication.class, args);
     }
 }

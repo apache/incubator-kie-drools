@@ -18,7 +18,7 @@ package org.kie.kogito.testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-import static org.kie.kogito.testcontainers.TestcontainersUtils.getImageName;
+import static org.kie.kogito.testcontainers.TestContainersUtils.getImageName;
 
 public class InfinispanTrustyServiceContainer extends GenericContainer<InfinispanTrustyServiceContainer> {
 
