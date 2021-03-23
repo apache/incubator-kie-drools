@@ -74,7 +74,7 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
     @Test
     @Timeout(TEST_TIMEOUT)
     void start() throws Exception {
-        CompletableFuture future = startRunnableBase();
+        CompletableFuture<Void> future = startRunnableBase();
         doReturn(solver).when(solverFactory).buildSolver();
         runnableBase.start(solution);
 
@@ -97,7 +97,7 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
         doReturn(solver).when(solverFactory).buildSolver();
         runnableBase.start(solution);
         Assertions.assertThatThrownBy(() -> runnableBase.start(solution))
-                .hasMessage("SolverExecutor start method can only be invoked when the status is STOPPED");
+                .hasMessage("start method can only be invoked when the status is STOPPED");
     }
 
     @Test
@@ -113,7 +113,7 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
     @Test
     @Timeout(TEST_TIMEOUT)
     void stopWithSolverStarted() throws Exception {
-        CompletableFuture future = startRunnableBase();
+        CompletableFuture<Void> future = startRunnableBase();
         doReturn(solver).when(solverFactory).buildSolver();
         runnableBase.start(solution);
         // wait for the start initialization to finish
@@ -144,7 +144,7 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
     @Test
     @Timeout(TEST_TIMEOUT)
     void addProblemFactChanges() throws Exception {
-        CompletableFuture future = startRunnableBase();
+        CompletableFuture<Void> future = startRunnableBase();
         doReturn(solver).when(solverFactory).buildSolver();
         runnableBase.start(solution);
 
@@ -180,7 +180,7 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
     private class SolverMock implements Solver<TaskAssigningSolution> {
 
         private final Semaphore finishSolverWork = new Semaphore(0);
-        private CompletableFuture action;
+        private CompletableFuture<Void> action;
 
         public void dispose() {
             finishSolverWork.release();

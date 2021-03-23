@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.taskassigning.messaging;
 
+package org.kie.kogito.taskassigning.service.messaging;
+
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -32,18 +35,24 @@ public class ReactiveMessagingEventConsumer {
 
     private static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
 
+    private UserTaskEventConsumer userTaskEventConsumer;
+
+    @Inject
+    public ReactiveMessagingEventConsumer(UserTaskEventConsumer userTaskEventConsumer) {
+        this.userTaskEventConsumer = userTaskEventConsumer;
+    }
+
     @Incoming(KOGITO_USERTASKINSTANCES_EVENTS)
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
     public CompletionStage<Void> onUserTaskEvent(Message<UserTaskEvent> message) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("UserTaskEvent instance received: {}", message.getPayload());
+            LOGGER.debug("UserTaskEvent received: {}", message.getPayload());
         }
-        handleEvent(message.getPayload());
-        return message.ack();
+        return CompletableFuture.runAsync(() -> handleEvent(message.getPayload()))
+                .thenRun(message::ack);
     }
 
-    void handleEvent(UserTaskEvent event) {
-        //TODO, this part of the code will be implemented in upcoming iteration
-        //when we do the real processing of the event e.g. feed the solver with the just arrived task, etc.
+    private void handleEvent(UserTaskEvent event) {
+        userTaskEventConsumer.accept(event);
     }
 }

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.taskassigning.messaging;
+
+package org.kie.kogito.taskassigning.service.messaging;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -28,7 +29,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserTaskEvent {
 
-    private String id;
+    @JsonProperty("id")
+    private String taskId;
     @JsonProperty("taskDescription")
     private String description;
     @JsonProperty("taskName")
@@ -56,12 +58,12 @@ public class UserTaskEvent {
     private String endpoint;
     private ZonedDateTime eventTime;
 
-    public String getId() {
-        return id;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public String getDescription() {
@@ -235,7 +237,7 @@ public class UserTaskEvent {
     @Override
     public String toString() {
         return "UserTaskEvent{" +
-                "id='" + id + '\'' +
+                "taskId='" + taskId + '\'' +
                 ", description='" + description + '\'' +
                 ", name='" + name + '\'' +
                 ", priority='" + priority + '\'' +

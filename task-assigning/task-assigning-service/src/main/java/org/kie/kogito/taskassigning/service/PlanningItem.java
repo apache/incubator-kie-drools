@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.core.model;
+package org.kie.kogito.taskassigning.service;
 
-public class ImmutableTaskAssignment extends TaskAssignment {
+import org.kie.kogito.taskassigning.core.model.Task;
 
-    public ImmutableTaskAssignment() {
-        // required for marshaling and FieldAccessingSolutionCloner purposes.
+public class PlanningItem {
+
+    private Task task;
+
+    private String targetUser;
+
+    public PlanningItem(Task task, String targetUser) {
+        this.task = task;
+        this.targetUser = targetUser;
     }
 
-    public ImmutableTaskAssignment(ImmutableTask task, boolean pinned) {
-        super(task);
-        super.setPinned(pinned);
+    public Task getTask() {
+        return task;
     }
 
-    @Override
-    public void setPinned(boolean pinned) {
-        // can never be changed.
+    public String getTargetUser() {
+        return targetUser;
     }
 }

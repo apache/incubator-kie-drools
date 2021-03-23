@@ -17,7 +17,6 @@
 package org.kie.kogito.taskassigning.service;
 
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.optaplanner.core.api.solver.ProblemFactChange;
@@ -45,8 +44,6 @@ public class SolverExecutor extends RunnableBase {
     private SolverFactory<TaskAssigningSolution> solverFactory;
     private SolverEventListener<TaskAssigningSolution> eventListener;
 
-    private final Semaphore startPermit = new Semaphore(0);
-
     public SolverExecutor(SolverFactory<TaskAssigningSolution> solverFactory,
             SolverEventListener<TaskAssigningSolution> eventListener) {
         this.solverFactory = solverFactory;
@@ -63,9 +60,7 @@ public class SolverExecutor extends RunnableBase {
      * @param solution a valid solution for starting the solver with.
      */
     public void start(final TaskAssigningSolution solution) {
-        if (!status.compareAndSet(STOPPED, STARTING)) {
-            throw new SolverExecutorException("SolverExecutor start method can only be invoked when the status is STOPPED");
-        }
+        startCheck();
         this.solution = solution;
         try {
             this.solver = solverFactory.buildSolver();

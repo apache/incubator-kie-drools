@@ -14,21 +14,32 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.core.model;
+package org.kie.kogito.taskassigning.service;
 
-public class ImmutableTaskAssignment extends TaskAssignment {
+public class PlanningExecutionResultItem {
 
-    public ImmutableTaskAssignment() {
-        // required for marshaling and FieldAccessingSolutionCloner purposes.
+    private PlanningItem item;
+
+    private Exception error;
+
+    public PlanningExecutionResultItem(PlanningItem item) {
+        this.item = item;
     }
 
-    public ImmutableTaskAssignment(ImmutableTask task, boolean pinned) {
-        super(task);
-        super.setPinned(pinned);
+    public PlanningExecutionResultItem(PlanningItem item, Exception error) {
+        this.item = item;
+        this.error = error;
     }
 
-    @Override
-    public void setPinned(boolean pinned) {
-        // can never be changed.
+    public boolean hasError() {
+        return error != null;
+    }
+
+    public PlanningItem getItem() {
+        return item;
+    }
+
+    public Exception getError() {
+        return error;
     }
 }

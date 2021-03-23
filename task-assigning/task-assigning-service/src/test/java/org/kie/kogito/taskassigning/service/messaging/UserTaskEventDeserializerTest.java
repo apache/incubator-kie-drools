@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.taskassigning.messaging;
+
+package org.kie.kogito.taskassigning.service.messaging;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +29,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.kogito.taskassigning.TestUtil.parseZonedDateTime;
+import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
 
 class UserTaskEventDeserializerTest {
 
@@ -77,7 +78,7 @@ class UserTaskEventDeserializerTest {
         UserTaskEvent event = deserializer.deserialize(TOPIC, eventBytes);
 
         assertThat(event).isNotNull();
-        assertThat(event.getId()).isEqualTo(TASK_INSTANCE_ID);
+        assertThat(event.getTaskId()).isEqualTo(TASK_INSTANCE_ID);
         assertThat(event.getName()).isEqualTo(TASK_NAME);
         assertThat(event.getDescription()).isEqualTo(TASK_DESCRIPTION);
         assertThat(event.getPriority()).isEqualTo(TASK_PRIORITY);

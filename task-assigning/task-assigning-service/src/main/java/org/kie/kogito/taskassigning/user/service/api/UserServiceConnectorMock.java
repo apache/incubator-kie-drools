@@ -76,6 +76,25 @@ public class UserServiceConnectorMock implements UserServiceConnector {
     private Map<String, User> mockedUsers = new HashMap<>();
 
     public UserServiceConnectorMock() {
+        if (System.getProperty("kieServerDataset") != null) {
+            buildKieServerDataset();
+        } else {
+            buildKogitoDataset();
+        }
+    }
+
+    void buildKogitoDataset() {
+        mockedUsers.put("john", new UserMock("john",
+                new HashSet<>(Arrays.asList(new GroupMock("employees")))));
+        mockedUsers.put("mary", new UserMock("mary",
+                new HashSet<>(Arrays.asList(new GroupMock("managers")))));
+        mockedUsers.put("poul", new UserMock("poul",
+                new HashSet<>(Arrays.asList(new GroupMock("interns"),
+                        new GroupMock("managers")))));
+
+    }
+
+    void buildKieServerDataset() {
         mockedUsers.put("krisv", new UserMock("krisv",
                 new HashSet<>(Arrays.asList(new GroupMock("admin"),
                         new GroupMock("analyst"),
@@ -108,6 +127,7 @@ public class UserServiceConnectorMock implements UserServiceConnector {
                         new GroupMock("user"),
                         new GroupMock("PM"),
                         new GroupMock("HR")))));
+
     }
 
     public List<User> findAllUsers() {

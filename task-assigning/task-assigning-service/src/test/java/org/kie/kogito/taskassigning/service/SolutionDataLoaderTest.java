@@ -17,8 +17,10 @@
 package org.kie.kogito.taskassigning.service;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -36,13 +38,19 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
+
+    private static final String TASK_ID = "TASK_ID";
+    private static final Duration DURATION = Duration.of(10, ChronoUnit.MILLIS);
+    private static final int RETRIES = 5;
+    private static final int PAGE_SIZE = 10;
 
     @Mock
     private TaskServiceConnector taskServiceConnector;
@@ -60,21 +68,21 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
 
     @Override
     protected SolutionDataLoader createRunnableBase() {
-        return spy(new SolutionDataLoaderMock(taskServiceConnector, userServiceConnector, Duration.ofMillis(500)));
+        return spy(new SolutionDataLoaderMock(taskServiceConnector, userServiceConnector));
     }
 
     @Test
     @Timeout(TEST_TIMEOUT)
     void startWithSuccessfulExecution() throws Exception {
-        CompletableFuture future = startRunnableBase();
+        CompletableFuture<Void> future = startRunnableBase();
 
-        List<List<UserTaskInstance>> taskServiceResults = Arrays.asList(new ArrayList<>(), null, new ArrayList<>());
-        List<List<User>> userServiceResults = Arrays.asList(null, new ArrayList<>());
-        doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), anyInt());
+        List<List<UserTaskInstance>> taskServiceResults = Arrays.asList(new ArrayList<>(), null, Collections.singletonList(createUserTaskInstance()));
+        List<List<User>> userServiceResults = Arrays.asList(null, Collections.singletonList(createExternalUser()));
+        doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
         doAnswer(createExecutions(userServiceResults)).when(userServiceConnector).findAllUsers();
 
         resultApplied = new CountDownLatch(1);
-        runnableBase.start(resultConsumer, 5);
+        runnableBase.start(resultConsumer, true, true, DURATION, RETRIES, PAGE_SIZE);
         resultApplied.await();
 
         runnableBase.destroy();
@@ -83,14 +91,20 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
 
         verify(resultConsumer).accept(resultCaptor.capture());
         assertThat(resultCaptor.getValue().hasErrors()).isFalse();
-        assertThat(resultCaptor.getValue().getTasks()).isSameAs(taskServiceResults.get(2));
-        assertThat(resultCaptor.getValue().getUsers()).isSameAs(userServiceResults.get(1));
+        SolutionDataLoader.Result result = resultCaptor.getValue();
+        assertThat(result.getTasks())
+                .isNotNull()
+                .hasSize(1)
+                .element(0)
+                .isNotNull();
+        assertThat(result.getTasks().get(0).getId()).isEqualTo(TASK_ID);
+        assertThat(result.getUsers()).isSameAs(userServiceResults.get(1));
     }
 
     @Test
     @Timeout(TEST_TIMEOUT)
     void startWithUnsuccessfulExecution() throws Exception {
-        CompletableFuture future = startRunnableBase();
+        CompletableFuture<Void> future = startRunnableBase();
 
         List<List<UserTaskInstance>> taskServiceResults = Arrays.asList(new ArrayList<>(),
                 null,
@@ -99,11 +113,11 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
                 new ArrayList<>(),
                 null);
         List<List<User>> userServiceResults = Arrays.asList(null, null, null, null);
-        doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), anyInt());
+        doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
         doAnswer(createExecutions(userServiceResults)).when(userServiceConnector).findAllUsers();
 
         resultApplied = new CountDownLatch(1);
-        runnableBase.start(resultConsumer, 5);
+        runnableBase.start(resultConsumer, true, true, DURATION, RETRIES, PAGE_SIZE);
         resultApplied.await();
 
         runnableBase.destroy();
@@ -114,10 +128,20 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
         assertThat(resultCaptor.getValue().hasErrors()).isTrue();
     }
 
+    private static UserTaskInstance createUserTaskInstance() {
+        UserTaskInstance userTaskInstance = new UserTaskInstance();
+        userTaskInstance.setId(TASK_ID);
+        return userTaskInstance;
+    }
+
+    private static org.kie.kogito.taskassigning.user.service.api.User createExternalUser() {
+        return mock(org.kie.kogito.taskassigning.user.service.api.User.class);
+    }
+
     private class SolutionDataLoaderMock extends SolutionDataLoader {
 
-        public SolutionDataLoaderMock(TaskServiceConnector taskServiceConnector, UserServiceConnector userServiceConnector, Duration retryInterval) {
-            super(taskServiceConnector, userServiceConnector, retryInterval);
+        public SolutionDataLoaderMock(TaskServiceConnector taskServiceConnector, UserServiceConnector userServiceConnector) {
+            super(taskServiceConnector, userServiceConnector);
         }
 
         @Override

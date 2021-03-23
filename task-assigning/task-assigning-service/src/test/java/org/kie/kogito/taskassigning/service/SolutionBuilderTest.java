@@ -24,15 +24,16 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
-import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT;
+import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT_PLANNER_1738;
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.PLANNING_USER_ID;
-import static org.kie.kogito.taskassigning.service.TaskStatus.READY;
-import static org.kie.kogito.taskassigning.service.TaskStatus.RESERVED;
+import static org.kie.kogito.taskassigning.service.TaskState.READY;
+import static org.kie.kogito.taskassigning.service.TaskState.RESERVED;
 import static org.kie.kogito.taskassigning.service.TestUtil.mockExternalUser;
-import static org.kie.kogito.taskassigning.service.TestUtil.mockUserTaskInstance;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 class SolutionBuilderTest {
 
@@ -56,17 +57,17 @@ class SolutionBuilderTest {
 
     @Test
     void build() {
-        List<UserTaskInstance> userTaskInstances = Arrays.asList(mockUserTaskInstance(TASK1, READY.value()),
-                mockUserTaskInstance(TASK2, RESERVED.value(), USER2),
-                mockUserTaskInstance(TASK3, READY.value()),
-                mockUserTaskInstance(TASK4, READY.value()),
-                mockUserTaskInstance(TASK5, RESERVED.value(), USER2),
-                mockUserTaskInstance(TASK6, READY.value()),
-                mockUserTaskInstance(TASK7, RESERVED.value(), USER4),
-                mockUserTaskInstance(TASK8, READY.value()),
-                mockUserTaskInstance(TASK9, RESERVED.value(), USER4),
-                mockUserTaskInstance(TASK10, RESERVED.value(), USER1),
-                mockUserTaskInstance(TASK11, RESERVED.value(), USER_NOT_IN_THE_EXTERNAL_SYSTEM));
+        List<TaskData> taskDataList = Arrays.asList(mockTaskData(TASK1, READY.value()),
+                mockTaskData(TASK2, RESERVED.value(), USER2),
+                mockTaskData(TASK3, READY.value()),
+                mockTaskData(TASK4, READY.value()),
+                mockTaskData(TASK5, RESERVED.value(), USER2),
+                mockTaskData(TASK6, READY.value()),
+                mockTaskData(TASK7, RESERVED.value(), USER4),
+                mockTaskData(TASK8, READY.value()),
+                mockTaskData(TASK9, RESERVED.value(), USER4),
+                mockTaskData(TASK10, RESERVED.value(), USER1),
+                mockTaskData(TASK11, RESERVED.value(), USER_NOT_IN_THE_EXTERNAL_SYSTEM));
 
         List<org.kie.kogito.taskassigning.user.service.api.User> externalUsers = Arrays.asList(mockExternalUser(USER1),
                 mockExternalUser(USER2),
@@ -74,11 +75,11 @@ class SolutionBuilderTest {
                 mockExternalUser(USER4));
 
         TaskAssigningSolution solution = SolutionBuilder.newBuilder()
-                .withTasks(userTaskInstances)
+                .withTasks(taskDataList)
                 .withUsers(externalUsers)
                 .build();
 
-        assertThat(solution.getTaskAssignmentList()).hasSize(12);
+        assertThat(solution.getTaskAssignmentList()).hasSize(13);
         assertThat(solution.getUserList()).hasSize(6);
 
         assertThatUserHasTask(solution, USER1, 1, 0, TASK10, 0, 1);
@@ -102,6 +103,7 @@ class SolutionBuilderTest {
         assertThatTaskIsAssignedToUser(solution, TASK10, USER1);
         assertThatTaskIsAssignedToUser(solution, TASK11, USER_NOT_IN_THE_EXTERNAL_SYSTEM);
         assertThatTaskIsNotAssigned(solution, DUMMY_TASK_ASSIGNMENT.getId());
+        assertThatTaskIsNotAssigned(solution, DUMMY_TASK_ASSIGNMENT_PLANNER_1738.getId());
     }
 
     private void assertThatUserHasTask(TaskAssigningSolution solution, String userId,
@@ -172,5 +174,17 @@ class SolutionBuilderTest {
         assertThat(taskAssignment.getUser())
                 .withFailMessage("Task %s must not be assigned", taskId)
                 .isNull();
+    }
+
+    private static TaskData mockTaskData(String taskId, String state, String actualOwner) {
+        TaskData taskData = mock(TaskData.class);
+        doReturn(taskId).when(taskData).getId();
+        doReturn(state).when(taskData).getState();
+        doReturn(actualOwner).when(taskData).getActualOwner();
+        return taskData;
+    }
+
+    private static TaskData mockTaskData(String taskId, String state) {
+        return mockTaskData(taskId, state, null);
     }
 }

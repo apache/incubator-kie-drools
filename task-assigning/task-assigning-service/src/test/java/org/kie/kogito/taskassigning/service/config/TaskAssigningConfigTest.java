@@ -17,6 +17,7 @@
 package org.kie.kogito.taskassigning.service.config;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,10 @@ class TaskAssigningConfigTest {
     private static final String CREDENTIALS_SECRET = "CREDENTIALS_SECRET";
     private static final String CLIENT_USER = "CLIENT_USER";
     private static final String CLIENT_PASSWORD = "CLIENT_PASSWORD";
+    private static final Duration DATA_LOADER_RETRY_INTERVAL = Duration.ofMillis(1000);
+    private static final int DATA_LOADER_RETRIES = 5;
+    private static final int DATA_LOADER_PAGE_SIZE = 10;
+    private static final int PUBLISH_WINDOW_SIZE = 3;
 
     private TaskAssigningConfig config;
 
@@ -160,5 +165,29 @@ class TaskAssigningConfigTest {
         URL url = new URL(DATA_INDEX_SERVER_URL);
         config.dataIndexServerUrl = url;
         assertThat(config.getDataIndexServerUrl()).isEqualTo(url);
+    }
+
+    @Test
+    void getDataLoaderRetryInterval() {
+        config.dataLoaderRetryInterval = DATA_LOADER_RETRY_INTERVAL;
+        assertThat(config.getDataLoaderRetryInterval()).isEqualTo(DATA_LOADER_RETRY_INTERVAL);
+    }
+
+    @Test
+    void getDataLoaderRetries() {
+        config.dataLoaderRetries = DATA_LOADER_RETRIES;
+        assertThat(config.getDataLoaderRetries()).isEqualTo(DATA_LOADER_RETRIES);
+    }
+
+    @Test
+    void getDataLoaderPageSize() {
+        config.dataLoaderPageSize = DATA_LOADER_PAGE_SIZE;
+        assertThat(config.getDataLoaderPageSize()).isEqualTo(DATA_LOADER_PAGE_SIZE);
+    }
+
+    @Test
+    void getPublishWindowSize() {
+        config.publishWindowSize = PUBLISH_WINDOW_SIZE;
+        assertThat(config.getPublishWindowSize()).isEqualTo(PUBLISH_WINDOW_SIZE);
     }
 }

@@ -16,9 +16,11 @@
 
 package org.kie.kogito.taskassigning.service;
 
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.kie.kogito.taskassigning.service.RunnableBase.Status.DESTROYED;
+import static org.kie.kogito.taskassigning.service.RunnableBase.Status.STARTING;
 import static org.kie.kogito.taskassigning.service.RunnableBase.Status.STOPPED;
 
 public abstract class RunnableBase implements Runnable {
@@ -33,8 +35,17 @@ public abstract class RunnableBase implements Runnable {
 
     protected final AtomicReference<Status> status = new AtomicReference<>(STOPPED);
 
+    protected final Semaphore startPermit = new Semaphore(0);
+
+    protected void startCheck() {
+        if (!status.compareAndSet(STOPPED, STARTING)) {
+            throw new IllegalStateException("start method can only be invoked when the status is STOPPED");
+        }
+    }
+
     public void destroy() {
         status.set(DESTROYED);
+        startPermit.release();
     }
 
     /**

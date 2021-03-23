@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.core.model;
+package org.kie.kogito.taskassigning.core.model.solver.realtime;
 
-public class ImmutableTaskAssignment extends TaskAssignment {
+import org.kie.kogito.taskassigning.core.model.Task;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 
-    public ImmutableTaskAssignment() {
-        // required for marshaling and FieldAccessingSolutionCloner purposes.
-    }
+public class TaskStateChangeProblemFactChange extends AbstractTaskPropertyChangeProblemFactChange {
 
-    public ImmutableTaskAssignment(ImmutableTask task, boolean pinned) {
-        super(task);
-        super.setPinned(pinned);
+    private String newState;
+
+    public TaskStateChangeProblemFactChange(TaskAssignment taskAssignment, String newState) {
+        super(taskAssignment);
+        this.newState = newState;
     }
 
     @Override
-    public void setPinned(boolean pinned) {
-        // can never be changed.
+    protected void applyChange(Task task) {
+        task.setState(newState);
     }
 }

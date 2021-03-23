@@ -18,6 +18,7 @@ package org.kie.kogito.taskassigning.service.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -28,6 +29,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.CLIENT_AUTH_PASSWORD;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.CLIENT_AUTH_USER;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_INDEX_SERVER_URL;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_LOADER_PAGE_SIZE;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_LOADER_RETRIES;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_LOADER_RETRY_INTERVAL_DURATION;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.PUBLISH_WINDOW_SIZE;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_AUTH_SERVER_URL;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CLIENT_ID;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CREDENTIALS_SECRET;
@@ -69,6 +74,22 @@ public class TaskAssigningConfig {
     @Inject
     @ConfigProperty(name = DATA_INDEX_SERVER_URL)
     URL dataIndexServerUrl;
+
+    @Inject
+    @ConfigProperty(name = DATA_LOADER_RETRY_INTERVAL_DURATION, defaultValue = "PT1S")
+    Duration dataLoaderRetryInterval;
+
+    @Inject
+    @ConfigProperty(name = DATA_LOADER_RETRIES, defaultValue = "5")
+    int dataLoaderRetries;
+
+    @Inject
+    @ConfigProperty(name = DATA_LOADER_PAGE_SIZE, defaultValue = "3000")
+    int dataLoaderPageSize;
+
+    @Inject
+    @ConfigProperty(name = PUBLISH_WINDOW_SIZE, defaultValue = "2")
+    int publishWindowSize;
 
     public boolean isOidcTenantEnabled() {
         return oidcTenantEnabled;
@@ -136,6 +157,22 @@ public class TaskAssigningConfig {
         return !isKeycloakSet() && clientAuthUser.isPresent();
     }
 
+    public Duration getDataLoaderRetryInterval() {
+        return dataLoaderRetryInterval;
+    }
+
+    public int getDataLoaderRetries() {
+        return dataLoaderRetries;
+    }
+
+    public int getDataLoaderPageSize() {
+        return dataLoaderPageSize;
+    }
+
+    public int getPublishWindowSize() {
+        return publishWindowSize;
+    }
+
     @Override
     public String toString() {
         return "TaskAssigningConfig{" +
@@ -146,6 +183,10 @@ public class TaskAssigningConfig {
                 ", clientAuthUser=" + clientAuthUser +
                 ", clientAuthPassword=" + (clientAuthPassword.isEmpty() ? null : "*****") +
                 ", dataIndexServerUrl=" + dataIndexServerUrl +
+                ", dataLoaderRetryInterval=" + dataLoaderRetryInterval +
+                ", dataLoaderRetries=" + dataLoaderRetries +
+                ", dataLoaderPageSize=" + dataLoaderPageSize +
+                ", publishWindowSize=" + publishWindowSize +
                 '}';
     }
 }

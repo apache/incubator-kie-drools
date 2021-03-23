@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.taskassigning.core.model.solver.realtime;
 
 import org.kie.kogito.taskassigning.core.model.Task;
@@ -20,26 +21,26 @@ import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TaskPriorityChangeProblemFactChangeTest extends AbstractTaskPropertyChangeProblemFactChangeTest<TaskPriorityChangeProblemFactChange> {
+class TaskStateChangeProblemFactChangeTest extends AbstractTaskPropertyChangeProblemFactChangeTest<TaskStateChangeProblemFactChange> {
 
-    private static final String CURRENT_PRIORITY = "CURRENT_PRIORITY";
-    private static final String NEW_PRIORITY = "NEW_PRIORITY";
+    private static final String CURRENT_STATE = "CURRENT_STATE";
+    private static final String NEW_STATE = "NEW_STATE";
 
     @Override
-    protected TaskPriorityChangeProblemFactChange createChange(TaskAssignment taskAssignment) {
-        return new TaskPriorityChangeProblemFactChange(taskAssignment, NEW_PRIORITY);
+    protected TaskStateChangeProblemFactChange createChange(TaskAssignment taskAssignment) {
+        return new TaskStateChangeProblemFactChange(taskAssignment, NEW_STATE);
     }
 
     @Override
     protected Task createTask() {
         Task task = super.createTask();
-        task.setPriority(CURRENT_PRIORITY);
+        task.setState(CURRENT_STATE);
         return task;
     }
 
     @Override
     protected void verifyValuesWhereApplied() {
-        assertThat(workingTaskAssignment.getTask().getPriority()).isEqualTo(NEW_PRIORITY);
-        assertThat(task.getPriority()).isEqualTo(CURRENT_PRIORITY);
+        assertThat(workingTaskAssignment.getTask().getState()).isEqualTo(NEW_STATE);
+        assertThat(task.getState()).isEqualTo(CURRENT_STATE);
     }
 }

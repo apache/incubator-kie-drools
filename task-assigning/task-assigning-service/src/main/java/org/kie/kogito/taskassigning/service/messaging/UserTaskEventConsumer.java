@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.core.model;
+package org.kie.kogito.taskassigning.service.messaging;
 
-public class ImmutableTaskAssignment extends TaskAssignment {
+import java.util.List;
+import java.util.function.Consumer;
 
-    public ImmutableTaskAssignment() {
-        // required for marshaling and FieldAccessingSolutionCloner purposes.
-    }
+public interface UserTaskEventConsumer extends Consumer<UserTaskEvent> {
 
-    public ImmutableTaskAssignment(ImmutableTask task, boolean pinned) {
-        super(task);
-        super.setPinned(pinned);
-    }
+    void pause();
 
-    @Override
-    public void setPinned(boolean pinned) {
-        // can never be changed.
-    }
+    void resume();
+
+    List<UserTaskEvent> pollEvents();
+
+    int queuedEvents();
+
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.kogito.taskassigning.resource;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -38,6 +37,7 @@ public class TaskAssigningResource {
     @Path("/service/status")
     @Produces({ "application/json" })
     public String getServiceStatus() {
-        return "{\"result\": \"" + service.getStatus() + "\"}";
+        //TODO, future iteration, define the set of useful operations.
+        return "{\"result\": \"Not yet implemented!\"}";
     }
 }

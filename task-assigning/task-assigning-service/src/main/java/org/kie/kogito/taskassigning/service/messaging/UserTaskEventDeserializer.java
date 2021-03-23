@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.taskassigning.messaging;
+
+package org.kie.kogito.taskassigning.service.messaging;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,7 +40,7 @@ public class UserTaskEventDeserializer implements Deserializer<UserTaskEvent> {
             UserTaskEvent event = message.getData();
             event.setEventTime(message.getTime());
             event.setLastUpdate(message.getTime().truncatedTo(ChronoUnit.MILLIS));
-            event.setEndpoint(buildEndpoint(message.getSource(), event.getProcessInstanceId(), event.getName(), event.getId()));
+            event.setEndpoint(buildEndpoint(message.getSource(), event.getProcessInstanceId(), event.getName(), event.getTaskId()));
             return event;
         } catch (IOException e) {
             throw new SerializationException("An error was produced during UserTaskEventMessage deserialization: " + e.getMessage(), e);

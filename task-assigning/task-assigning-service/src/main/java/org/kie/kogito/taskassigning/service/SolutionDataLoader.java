@@ -17,22 +17,23 @@
 package org.kie.kogito.taskassigning.service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
-import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 import org.kie.kogito.taskassigning.user.service.api.User;
 import org.kie.kogito.taskassigning.user.service.api.UserServiceConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.taskassigning.service.RunnableBase.Status.STARTED;
+import static org.kie.kogito.taskassigning.service.RunnableBase.Status.STARTING;
 import static org.kie.kogito.taskassigning.service.RunnableBase.Status.STOPPED;
-import static org.kie.kogito.taskassigning.service.TaskStatus.READY;
-import static org.kie.kogito.taskassigning.service.TaskStatus.RESERVED;
+import static org.kie.kogito.taskassigning.service.TaskState.READY;
+import static org.kie.kogito.taskassigning.service.TaskState.RESERVED;
+import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromUserTaskInstances;
 
 public class SolutionDataLoader extends RunnableBase {
 
@@ -41,33 +42,31 @@ public class SolutionDataLoader extends RunnableBase {
             " It was not possible to access the %s." +
             " Next attempt will be in a period of %s, error: %s";
 
-    //TODO upcoming iteration, parametrize this value
-    private static final int PAGE_SIZE = 2;
-
     private TaskServiceConnector taskServiceConnector;
     private UserServiceConnector userServiceConnector;
-    private final Duration retryInterval;
-
-    private Semaphore startPermit = new Semaphore(0);
     private Consumer<Result> resultConsumer;
+    private boolean includeTasks;
+    private boolean includeUsers;
+    private Duration retryInterval;
     private int remainingRetries;
+    private int pageSize;
 
     public static class Result {
 
-        private List<UserTaskInstance> tasks;
-        private List<User> users;
-        private List<Throwable> errors;
+        private List<TaskData> tasks = new ArrayList<>();
+        private List<User> users = new ArrayList<>();
+        private List<Exception> errors;
 
-        public Result(List<UserTaskInstance> tasks, List<User> users) {
+        public Result(List<TaskData> tasks, List<User> users) {
             this.tasks = tasks;
             this.users = users;
         }
 
-        public Result(List<Throwable> errors) {
+        public Result(List<Exception> errors) {
             this.errors = errors;
         }
 
-        public List<UserTaskInstance> getTasks() {
+        public List<TaskData> getTasks() {
             return tasks;
         }
 
@@ -79,31 +78,27 @@ public class SolutionDataLoader extends RunnableBase {
             return errors != null && !errors.isEmpty();
         }
 
-        public List<Throwable> getErrors() {
+        public List<Exception> getErrors() {
             return errors;
         }
     }
 
     public SolutionDataLoader(TaskServiceConnector taskServiceConnector,
-            UserServiceConnector userServiceConnector,
-            Duration retryInterval) {
+            UserServiceConnector userServiceConnector) {
+
         this.taskServiceConnector = taskServiceConnector;
         this.userServiceConnector = userServiceConnector;
-        this.retryInterval = retryInterval;
     }
 
-    public void start(Consumer<Result> resultConsumer, int retries) {
-        if (!status.compareAndSet(STOPPED, STARTED)) {
-            throw new IllegalStateException("start method can only be invoked when the status is STOPPED");
-        }
+    public void start(Consumer<Result> resultConsumer, boolean includeTasks, boolean includeUsers,
+            Duration retryInterval, int retries, int pageSize) {
+        startCheck();
         this.resultConsumer = resultConsumer;
+        this.includeTasks = includeTasks;
+        this.includeUsers = includeUsers;
+        this.retryInterval = retryInterval;
         this.remainingRetries = retries;
-        startPermit.release();
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
+        this.pageSize = pageSize;
         startPermit.release();
     }
 
@@ -112,7 +107,7 @@ public class SolutionDataLoader extends RunnableBase {
         while (isAlive()) {
             try {
                 startPermit.acquire();
-                if (isAlive()) {
+                if (isAlive() && (status.compareAndSet(STARTING, STARTED) || status.get() == STARTED)) {
                     Result result = loadData();
                     if (result.hasErrors() && hasRemainingRetries()) {
                         decreaseRemainingRetries();
@@ -138,17 +133,20 @@ public class SolutionDataLoader extends RunnableBase {
     }
 
     protected Result loadData() {
-        List<UserTaskInstance> tasks = null;
+        List<TaskData> tasks = null;
         List<User> users = null;
         try {
-            tasks = taskServiceConnector.findAllTasks(Arrays.asList(READY.value(), RESERVED.value()), PAGE_SIZE);
-            if (isAlive()) {
+            if (includeTasks && isAlive()) {
+                tasks = fromUserTaskInstances(taskServiceConnector.findAllTasks(Arrays.asList(READY.value(), RESERVED.value()), pageSize));
+            }
+            if (includeUsers && isAlive()) {
                 users = userServiceConnector.findAllUsers();
             }
-            return new Result(tasks, users);
+            return new Result(tasks != null ? tasks : new ArrayList<>(),
+                    users != null ? users : new ArrayList<>());
         } catch (Exception e) {
             String msg;
-            if (tasks == null) {
+            if (includeTasks && tasks == null) {
                 msg = String.format(SERVICE_ACCESS_ERROR, " Task Service", retryInterval, e.getMessage());
             } else {
                 msg = String.format(SERVICE_ACCESS_ERROR, " User Service", retryInterval, e.getMessage());

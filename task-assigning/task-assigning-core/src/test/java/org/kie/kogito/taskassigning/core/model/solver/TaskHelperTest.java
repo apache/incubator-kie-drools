@@ -36,6 +36,8 @@ import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT;
+import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT_PLANNER_1738;
 import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.isPotentialOwner;
 
 class TaskHelperTest {
@@ -201,6 +203,19 @@ class TaskHelperTest {
     void hasPinnedTasks() {
         ChainElement chainElement = buildChainElement();
         assertThat(TaskHelper.hasPinnedTasks(chainElement)).isTrue();
+    }
+
+    @Test
+    void filterNonDummyAssignments() {
+        List<TaskAssignment> taskAssignments = Arrays.asList(
+                new TaskAssignment(Task.newBuilder().id(TASK_ID_1).build()),
+                new TaskAssignment(Task.newBuilder().id(DUMMY_TASK_ASSIGNMENT.getId()).build()),
+                new TaskAssignment(Task.newBuilder().id(TASK_ID_2).build()),
+                new TaskAssignment(Task.newBuilder().id(DUMMY_TASK_ASSIGNMENT_PLANNER_1738.getId()).build()));
+        List<TaskAssignment> result = TaskHelper.filterNonDummyAssignments(taskAssignments);
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0)).isSameAs(taskAssignments.get(0));
+        assertThat(result.get(1)).isSameAs(taskAssignments.get(2));
     }
 
     private ChainElement buildChainElement() {

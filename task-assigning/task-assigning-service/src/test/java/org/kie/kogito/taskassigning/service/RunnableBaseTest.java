@@ -51,7 +51,7 @@ abstract class RunnableBaseTest<T extends RunnableBase> {
     @Test
     @Timeout(TEST_TIMEOUT)
     void destroy() throws Exception {
-        CompletableFuture future = startRunnableBase();
+        CompletableFuture<Void> future = startRunnableBase();
         assertThat(runnableBase.isAlive()).isTrue();
         runnableBase.destroy();
         future.get();

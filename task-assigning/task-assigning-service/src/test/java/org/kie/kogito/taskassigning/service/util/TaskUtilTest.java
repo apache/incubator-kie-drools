@@ -18,13 +18,20 @@ package org.kie.kogito.taskassigning.service.util;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
+import org.kie.kogito.taskassigning.service.TaskData;
+import org.kie.kogito.taskassigning.service.messaging.UserTaskEvent;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
 
 class TaskUtilTest {
@@ -54,7 +61,7 @@ class TaskUtilTest {
     private static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
 
     @Test
-    void fromUserTaskInstance() {
+    void fromUserTaskInstances() {
         UserTaskInstance userTaskInstance = new UserTaskInstance();
         userTaskInstance.setId(TASK_ID);
         userTaskInstance.setDescription(TASK_DESCRIPTION);
@@ -76,8 +83,149 @@ class TaskUtilTest {
         userTaskInstance.setReferenceName(REFERENCE_NAME);
         userTaskInstance.setLastUpdate(LAST_UPDATE);
         userTaskInstance.setEndpoint(ENDPOINT);
+        List<TaskData> result = TaskUtil.fromUserTaskInstances(Collections.singletonList(userTaskInstance));
+        assertThat(result).hasSize(1);
+        TaskData taskData = result.get(0);
+        assertExpectedTaskData(taskData);
+    }
 
-        Task task = TaskUtil.fromUserTaskInstance(userTaskInstance);
+    @Test
+    void fromUserTaskEvents() {
+        UserTaskEvent userTaskEvent = new UserTaskEvent();
+        userTaskEvent.setTaskId(TASK_ID);
+        userTaskEvent.setDescription(TASK_DESCRIPTION);
+        userTaskEvent.setName(TASK_NAME);
+        userTaskEvent.setPriority(TASK_PRIORITY);
+        userTaskEvent.setProcessInstanceId(PROCESS_INSTANCE_ID);
+        userTaskEvent.setProcessId(PROCESS_ID);
+        userTaskEvent.setRootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID);
+        userTaskEvent.setRootProcessId(ROOT_PROCESS_ID);
+        userTaskEvent.setState(STATE);
+        userTaskEvent.setActualOwner(ACTUAL_OWNER);
+        userTaskEvent.setAdminGroups(ADMIN_GROUPS);
+        userTaskEvent.setAdminUsers(ADMIN_USERS);
+        userTaskEvent.setCompleted(COMPLETED_DATE);
+        userTaskEvent.setStarted(START_DATE);
+        userTaskEvent.setExcludedUsers(EXCLUDED_USERS);
+        userTaskEvent.setPotentialGroups(POTENTIAL_GROUPS);
+        userTaskEvent.setPotentialUsers(POTENTIAL_USERS);
+        userTaskEvent.setReferenceName(REFERENCE_NAME);
+        userTaskEvent.setLastUpdate(LAST_UPDATE);
+        userTaskEvent.setEndpoint(ENDPOINT);
+        List<TaskData> result = TaskUtil.fromUserTaskEvents(Collections.singletonList(userTaskEvent));
+        assertThat(result).hasSize(1);
+        TaskData taskData = result.get(0);
+        assertExpectedTaskData(taskData);
+    }
+
+    @Test
+    void fromTaskData() {
+        Task task = TaskUtil.fromTaskData(new TaskData() {
+            @Override
+            public String getId() {
+                return TASK_ID;
+            }
+
+            @Override
+            public String getName() {
+                return TASK_NAME;
+            }
+
+            @Override
+            public String getState() {
+                return STATE;
+            }
+
+            @Override
+            public String getDescription() {
+                return TASK_DESCRIPTION;
+            }
+
+            @Override
+            public String getReferenceName() {
+                return REFERENCE_NAME;
+            }
+
+            @Override
+            public String getPriority() {
+                return TASK_PRIORITY;
+            }
+
+            @Override
+            public String getProcessInstanceId() {
+                return PROCESS_INSTANCE_ID;
+            }
+
+            @Override
+            public String getProcessId() {
+                return PROCESS_ID;
+            }
+
+            @Override
+            public String getRootProcessInstanceId() {
+                return ROOT_PROCESS_INSTANCE_ID;
+            }
+
+            @Override
+            public String getRootProcessId() {
+                return ROOT_PROCESS_ID;
+            }
+
+            @Override
+            public String getActualOwner() {
+                return ACTUAL_OWNER;
+            }
+
+            @Override
+            public Set<String> getPotentialUsers() {
+                return new HashSet<>(POTENTIAL_USERS);
+            }
+
+            @Override
+            public Set<String> getPotentialGroups() {
+                return new HashSet<>(POTENTIAL_GROUPS);
+            }
+
+            @Override
+            public Set<String> getAdminUsers() {
+                return new HashSet<>(ADMIN_USERS);
+            }
+
+            @Override
+            public Set<String> getAdminGroups() {
+                return new HashSet<>(ADMIN_GROUPS);
+            }
+
+            @Override
+            public Set<String> getExcludedUsers() {
+                return new HashSet<>(EXCLUDED_USERS);
+            }
+
+            @Override
+            public ZonedDateTime getStarted() {
+                return START_DATE;
+            }
+
+            @Override
+            public ZonedDateTime getCompleted() {
+                return COMPLETED_DATE;
+            }
+
+            @Override
+            public ZonedDateTime getLastUpdate() {
+                return LAST_UPDATE;
+            }
+
+            @Override
+            public JsonNode getInputs() {
+                return null;
+            }
+
+            @Override
+            public String getEndpoint() {
+                return ENDPOINT;
+            }
+        });
         assertThat(task.getId()).isEqualTo(TASK_ID);
         assertThat(task.getDescription()).isEqualTo(TASK_DESCRIPTION);
         assertThat(task.getName()).isEqualTo(TASK_NAME);
@@ -97,5 +245,27 @@ class TaskUtilTest {
         assertThat(task.getReferenceName()).isEqualTo(REFERENCE_NAME);
         assertThat(task.getLastUpdate()).isEqualTo(LAST_UPDATE);
         assertThat(task.getEndpoint()).isEqualTo(ENDPOINT);
+    }
+
+    private void assertExpectedTaskData(TaskData taskData) {
+        assertThat(taskData.getId()).isEqualTo(TASK_ID);
+        assertThat(taskData.getDescription()).isEqualTo(TASK_DESCRIPTION);
+        assertThat(taskData.getName()).isEqualTo(TASK_NAME);
+        assertThat(taskData.getPriority()).isEqualTo(TASK_PRIORITY);
+        assertThat(taskData.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
+        assertThat(taskData.getProcessId()).isEqualTo(PROCESS_ID);
+        assertThat(taskData.getRootProcessId()).isEqualTo(ROOT_PROCESS_ID);
+        assertThat(taskData.getRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
+        assertThat(taskData.getState()).isEqualTo(STATE);
+        assertThat(taskData.getAdminGroups()).containsExactlyInAnyOrder(ADMIN_GROUPS.toArray(new String[0]));
+        assertThat(taskData.getAdminUsers()).containsExactlyInAnyOrder(ADMIN_USERS.toArray(new String[0]));
+        assertThat(taskData.getCompleted()).isEqualTo(COMPLETED_DATE);
+        assertThat(taskData.getStarted()).isEqualTo(START_DATE);
+        assertThat(taskData.getExcludedUsers()).containsExactlyInAnyOrder(EXCLUDED_USERS.toArray(new String[0]));
+        assertThat(taskData.getPotentialGroups()).containsExactlyInAnyOrder(POTENTIAL_GROUPS.toArray(new String[0]));
+        assertThat(taskData.getPotentialUsers()).containsExactlyInAnyOrder(POTENTIAL_USERS.toArray(new String[0]));
+        assertThat(taskData.getReferenceName()).isEqualTo(REFERENCE_NAME);
+        assertThat(taskData.getLastUpdate()).isEqualTo(LAST_UPDATE);
+        assertThat(taskData.getEndpoint()).isEqualTo(ENDPOINT);
     }
 }

@@ -28,24 +28,21 @@ import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
-import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 import org.kie.kogito.taskassigning.service.util.IndexedElement;
 import org.kie.kogito.taskassigning.service.util.UserUtil;
 
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT;
+import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT_PLANNER_1738;
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.IS_PLANNING_USER;
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.PLANNING_USER;
-import static org.kie.kogito.taskassigning.service.TaskStatus.RESERVED;
+import static org.kie.kogito.taskassigning.service.TaskState.RESERVED;
 import static org.kie.kogito.taskassigning.service.util.IndexedElement.addInOrder;
-import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromUserTaskInstance;
+import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromTaskData;
 import static org.kie.kogito.taskassigning.service.util.UserUtil.filterDuplicates;
 
-/**
- * This class is intended for the restoring of a TaskAssigningSolution given a set of UserTaskInstance and a set of User.
- */
 public class SolutionBuilder {
 
-    private List<UserTaskInstance> userTaskInstances;
+    private List<TaskData> taskDataList;
     private List<org.kie.kogito.taskassigning.user.service.api.User> externalUsers;
 
     private SolutionBuilder() {
@@ -55,8 +52,8 @@ public class SolutionBuilder {
         return new SolutionBuilder();
     }
 
-    public SolutionBuilder withTasks(List<UserTaskInstance> userTaskInstances) {
-        this.userTaskInstances = userTaskInstances;
+    public SolutionBuilder withTasks(List<TaskData> taskDataList) {
+        this.taskDataList = taskDataList;
         return this;
     }
 
@@ -74,13 +71,13 @@ public class SolutionBuilder {
                 .collect(Collectors.toMap(User::getId, Function.identity()));
         usersById.put(PLANNING_USER.getId(), PLANNING_USER);
 
-        userTaskInstances.forEach(userTaskInstance -> {
-            Task task = fromUserTaskInstance(userTaskInstance);
+        taskDataList.forEach(taskData -> {
+            Task task = fromTaskData(taskData);
             TaskAssignment taskAssignment = new TaskAssignment(task);
             String state = task.getState();
             taskAssignments.add(taskAssignment);
             if (RESERVED.value().equals(state)) {
-                addTaskAssignmentToUser(assignmentsByUserId, taskAssignment, userTaskInstance.getActualOwner(), -1, true);
+                addTaskAssignmentToUser(assignmentsByUserId, taskAssignment, taskData.getActualOwner(), -1, true);
             }
         });
 
@@ -95,8 +92,10 @@ public class SolutionBuilder {
             addAssignmentsToUser(user, userTasks);
         });
 
-        // Add the DUMMY_TASK to avoid running into scenarios where the solution remains with no tasks.
+        // Add the DUMMY_TASKs to avoid running into scenarios where the solution remains with no tasks or only one task
+        // for selection. (https://issues.redhat.com/browse/PLANNER-1738)
         taskAssignments.add(DUMMY_TASK_ASSIGNMENT);
+        taskAssignments.add(DUMMY_TASK_ASSIGNMENT_PLANNER_1738);
 
         final List<User> users = new ArrayList<>(usersById.values());
         return new TaskAssigningSolution("-1", users, taskAssignments);

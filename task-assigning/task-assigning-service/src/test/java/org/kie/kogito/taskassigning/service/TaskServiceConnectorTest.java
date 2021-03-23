@@ -35,8 +35,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.kie.kogito.taskassigning.service.TaskStatus.READY;
-import static org.kie.kogito.taskassigning.service.TaskStatus.RESERVED;
+import static org.kie.kogito.taskassigning.service.TaskState.READY;
+import static org.kie.kogito.taskassigning.service.TaskState.RESERVED;
 import static org.kie.kogito.taskassigning.service.TestUtil.mockUserTaskInstance;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
 import static org.mockito.ArgumentMatchers.any;

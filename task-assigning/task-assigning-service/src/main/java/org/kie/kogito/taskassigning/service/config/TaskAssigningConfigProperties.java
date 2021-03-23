@@ -36,4 +36,12 @@ public class TaskAssigningConfigProperties {
     public static final String CLIENT_AUTH_PASSWORD = TASK_ASSIGNING_PROPERTY_PREFIX + ".password";
 
     public static final String DATA_INDEX_SERVER_URL = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-index.server-url";
+
+    public static final String DATA_LOADER_RETRY_INTERVAL_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.retry-interval-duration";
+
+    public static final String DATA_LOADER_RETRIES = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.retries";
+
+    public static final String DATA_LOADER_PAGE_SIZE = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.page-size";
+
+    public static final String PUBLISH_WINDOW_SIZE = TASK_ASSIGNING_PROPERTY_PREFIX + ".publish-window-size";
 }

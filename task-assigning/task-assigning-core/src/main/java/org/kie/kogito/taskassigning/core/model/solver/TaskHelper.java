@@ -20,11 +20,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.kie.kogito.taskassigning.core.model.ChainElement;
 import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
+
+import static org.kie.kogito.taskassigning.core.model.ModelConstants.IS_NOT_DUMMY_TASK_ASSIGNMENT;
 
 public class TaskHelper {
 
@@ -116,6 +119,12 @@ public class TaskHelper {
      */
     public static boolean hasPinnedTasks(ChainElement user) {
         return !extractTaskAssignments(user, TaskAssignment::isPinned).isEmpty();
+    }
+
+    public static List<TaskAssignment> filterNonDummyAssignments(List<TaskAssignment> taskAssignments) {
+        return taskAssignments.stream()
+                .filter(IS_NOT_DUMMY_TASK_ASSIGNMENT)
+                .collect(Collectors.toList());
     }
 
     private static Collection<?> attributeAsCollection(Object attribute) {

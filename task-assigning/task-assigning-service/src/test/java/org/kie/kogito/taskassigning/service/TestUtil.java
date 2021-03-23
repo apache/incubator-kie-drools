@@ -19,12 +19,17 @@ package org.kie.kogito.taskassigning.service;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.taskassigning.core.model.ChainElement;
+import org.kie.kogito.taskassigning.core.model.Task;
+import org.kie.kogito.taskassigning.core.model.TaskAssignment;
+import org.kie.kogito.taskassigning.core.model.User;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 import org.kie.kogito.taskassigning.user.service.api.Group;
 
@@ -80,5 +85,48 @@ public class TestUtil {
         userTaskInstance.setState(state);
         userTaskInstance.setActualOwner(actualOwner);
         return userTaskInstance;
+    }
+
+    public static User mockUser(String userId, List<TaskAssignment> taskAssignments) {
+        User result = new User(userId);
+        ChainElement previousElement = result;
+        for (TaskAssignment taskAssignment : taskAssignments) {
+            taskAssignment.setUser(result);
+            taskAssignment.setPreviousElement(previousElement);
+            previousElement.setNextElement(taskAssignment);
+            previousElement = taskAssignment;
+        }
+        return result;
+    }
+
+    public static TaskAssignment mockTaskAssignment(String taskId) {
+        return new TaskAssignment(Task.newBuilder().id(taskId).build());
+    }
+
+    public static TaskData mockTaskData(String taskId, String state, ZonedDateTime lastUpdate) {
+        TaskData taskData = mock(TaskData.class);
+        doReturn(taskId).when(taskData).getId();
+        doReturn(state).when(taskData).getState();
+        doReturn(lastUpdate).when(taskData).getLastUpdate();
+        doReturn(Collections.emptySet()).when(taskData).getPotentialUsers();
+        doReturn(Collections.emptySet()).when(taskData).getPotentialGroups();
+        doReturn(Collections.emptySet()).when(taskData).getExcludedUsers();
+        doReturn(Collections.emptySet()).when(taskData).getAdminUsers();
+        doReturn(Collections.emptySet()).when(taskData).getAdminGroups();
+        return taskData;
+    }
+
+    public static TaskData mockTaskData(String taskId, String state, String actualOwner, ZonedDateTime lastUpdate) {
+        TaskData taskData = mock(TaskData.class);
+        doReturn(taskId).when(taskData).getId();
+        doReturn(state).when(taskData).getState();
+        doReturn(actualOwner).when(taskData).getActualOwner();
+        doReturn(lastUpdate).when(taskData).getLastUpdate();
+        doReturn(Collections.emptySet()).when(taskData).getPotentialUsers();
+        doReturn(Collections.emptySet()).when(taskData).getPotentialGroups();
+        doReturn(Collections.emptySet()).when(taskData).getExcludedUsers();
+        doReturn(Collections.emptySet()).when(taskData).getAdminUsers();
+        doReturn(Collections.emptySet()).when(taskData).getAdminGroups();
+        return taskData;
     }
 }
