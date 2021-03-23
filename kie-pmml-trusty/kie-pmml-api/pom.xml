@@ -20,6 +20,11 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+    </dependency>
   </dependencies>
 
 
