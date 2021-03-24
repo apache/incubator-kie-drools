@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,16 @@ package org.optaplanner.examples.examination.domain.solver;
 import java.util.Comparator;
 import java.util.Objects;
 
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.Topic;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-public class TopicConflict implements Comparable<TopicConflict> {
+@XStreamAlias("TopicConflict")
+public class TopicConflict extends AbstractPersistable implements Comparable<TopicConflict> {
 
     private static final Comparator<Topic> TOPIC_COMPARATOR = Comparator.comparingLong(Topic::getId);
     private static final Comparator<TopicConflict> COMPARATOR = Comparator
@@ -34,7 +38,8 @@ public class TopicConflict implements Comparable<TopicConflict> {
     private Topic rightTopic;
     private int studentSize;
 
-    public TopicConflict(Topic leftTopic, Topic rightTopic, int studentSize) {
+    public TopicConflict(long id, Topic leftTopic, Topic rightTopic, int studentSize) {
+        super(id);
         this.leftTopic = leftTopic;
         this.rightTopic = rightTopic;
         this.studentSize = studentSize;

@@ -22,6 +22,9 @@
 
     <!-- SNAPSHOT and KIE dependency versions -->
     <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
+    <!-- Keep in sync with version.org.kie7 in kogito-runtimes: https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build-parent/pom.xml#L185 -->
+    <version.org.drools>7.52.0.t20210322</version.org.drools>
+
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
     <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
@@ -183,6 +186,11 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>drools-decisiontables</artifactId>
         <version>${version.org.kie.kogito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-alphanetwork-compiler</artifactId>
+        <version>${version.org.drools}</version>
       </dependency>
 
       <!-- Normal dependencies versions-->

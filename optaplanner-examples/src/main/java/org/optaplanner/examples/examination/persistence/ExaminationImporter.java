@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.optaplanner.examples.examination.domain.RoomPenalty;
 import org.optaplanner.examples.examination.domain.RoomPenaltyType;
 import org.optaplanner.examples.examination.domain.Student;
 import org.optaplanner.examples.examination.domain.Topic;
+import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 
 public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination> {
 
@@ -129,11 +131,11 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 String line = bufferedReader.readLine();
                 String[] lineTokens = line.split(SPLIT_REGEX);
                 topic.setDuration(Integer.parseInt(lineTokens[0]));
-                List<Student> topicStudentList = new ArrayList<>(lineTokens.length - 1);
+                Set<Student> topicStudentList = new LinkedHashSet<>(lineTokens.length - 1);
                 for (int j = 1; j < lineTokens.length; j++) {
                     topicStudentList.add(findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j])));
                 }
-                topic.setStudentList(topicStudentList);
+                topic.setStudentSet(topicStudentList);
                 topic.setFrontLoadLarge(false);
                 topicList.add(topic);
                 coincidenceMap.put(topic, new HashSet<>());
@@ -141,8 +143,30 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 afterMap.put(topic, new HashSet<>());
             }
             examination.setTopicList(topicList);
+            examination.setTopicConflictList(calculateTopicConflictList(topicList));
             List<Student> studentList = new ArrayList<>(studentMap.values());
             examination.setStudentList(studentList);
+        }
+
+        private List<TopicConflict> calculateTopicConflictList(List<Topic> topicList) {
+            long nextId = 0;
+            List<TopicConflict> topicConflictList = new ArrayList<>();
+            for (Topic leftTopic : topicList) {
+                for (Topic rightTopic : topicList) {
+                    if (leftTopic.getId() < rightTopic.getId()) {
+                        int studentSize = 0;
+                        for (Student student : leftTopic.getStudentSet()) {
+                            if (rightTopic.getStudentSet().contains(student)) {
+                                studentSize++;
+                            }
+                        }
+                        if (studentSize > 0) {
+                            topicConflictList.add(new TopicConflict(nextId++, leftTopic, rightTopic, studentSize));
+                        }
+                    }
+                }
+            }
+            return topicConflictList;
         }
 
         private Student findOrCreateStudent(Map<Integer, Student> studentMap, int id) {
@@ -238,7 +262,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                             logger.warn("  Filtering out periodPenalty (" + periodPenalty
                                     + ") because the left and right topic are the same.");
                             ignorePenalty = true;
-                        } else if (!Collections.disjoint(leftTopic.getStudentList(), rightTopic.getStudentList())) {
+                        } else if (!Collections.disjoint(leftTopic.getStudentSet(), rightTopic.getStudentSet())) {
                             throw new IllegalStateException("PeriodPenalty (" + periodPenalty
                                     + ") for leftTopic (" + leftTopic + ") and rightTopic (" + rightTopic
                                     + ")'s left and right topic share students.");

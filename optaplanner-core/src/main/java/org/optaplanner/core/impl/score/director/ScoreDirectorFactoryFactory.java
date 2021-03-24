@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,15 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
@@ -270,6 +268,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
+            KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase);
             if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
                         config.getScoreDrlFileList());
@@ -281,13 +280,4 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
     }
 
-    protected KieBaseConfiguration buildKieBaseConfiguration(KieServices kieServices) {
-        KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
-        if (config.getKieBaseConfigurationProperties() != null) {
-            for (Map.Entry<String, String> entry : config.getKieBaseConfigurationProperties().entrySet()) {
-                kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-        return kieBaseConfiguration;
-    }
 }

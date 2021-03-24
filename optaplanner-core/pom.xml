@@ -50,6 +50,10 @@
       <artifactId>drools-core-dynamic</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-alphanetwork-compiler</artifactId>
+    </dependency>
 
     <!-- Gizmo dependencies -->
     <dependency>

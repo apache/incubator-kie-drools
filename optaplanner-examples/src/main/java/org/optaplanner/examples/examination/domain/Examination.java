@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
@@ -46,6 +45,7 @@ public class Examination extends AbstractPersistable {
 
     private List<PeriodPenalty> periodPenaltyList;
     private List<RoomPenalty> roomPenaltyList;
+    private List<TopicConflict> topicConflictList;
 
     private List<Exam> examList;
 
@@ -116,6 +116,15 @@ public class Examination extends AbstractPersistable {
         this.roomPenaltyList = roomPenaltyList;
     }
 
+    @ProblemFactCollectionProperty
+    public List<TopicConflict> getTopicConflictList() {
+        return topicConflictList;
+    }
+
+    public void setTopicConflictList(List<TopicConflict> topicConflictList) {
+        this.topicConflictList = topicConflictList;
+    }
+
     @PlanningEntityCollectionProperty
     public List<Exam> getExamList() {
         return examList;
@@ -132,31 +141,6 @@ public class Examination extends AbstractPersistable {
 
     public void setScore(HardSoftScore score) {
         this.score = score;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    @ProblemFactCollectionProperty
-    private List<TopicConflict> calculateTopicConflictList() {
-        List<TopicConflict> topicConflictList = new ArrayList<>();
-        for (Topic leftTopic : topicList) {
-            for (Topic rightTopic : topicList) {
-                if (leftTopic.getId() < rightTopic.getId()) {
-                    int studentSize = 0;
-                    for (Student student : leftTopic.getStudentList()) {
-                        if (rightTopic.getStudentList().contains(student)) {
-                            studentSize++;
-                        }
-                    }
-                    if (studentSize > 0) {
-                        topicConflictList.add(new TopicConflict(leftTopic, rightTopic, studentSize));
-                    }
-                }
-            }
-        }
-        return topicConflictList;
     }
 
 }

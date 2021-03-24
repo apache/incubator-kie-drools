@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,6 @@ import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
- * WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
- * It works but it has many API gaps.
- * Therefore, it is not rich enough yet to handle complex constraints.
- * <p>
  * The factory to create every {@link ConstraintStream} (for example with {@link #from(Class)})
  * which ends in a {@link Constraint} returned by {@link ConstraintProvider#defineConstraints(ConstraintFactory)}.
  */

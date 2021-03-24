@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -27,7 +28,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class Topic extends AbstractPersistable {
 
     private int duration; // in minutes
-    private List<Student> studentList;
+    private Set<Student> studentSet;
 
     // Calculated during initialization, not modified during score calculation.
     private boolean frontLoadLarge;
@@ -41,16 +42,16 @@ public class Topic extends AbstractPersistable {
         this.duration = duration;
     }
 
-    public List<Student> getStudentList() {
-        return studentList;
+    public Set<Student> getStudentSet() {
+        return studentSet;
     }
 
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
+    public void setStudentSet(Set<Student> studentSet) {
+        this.studentSet = studentSet;
     }
 
     public int getStudentSize() {
-        return studentList.size();
+        return studentSet.size();
     }
 
     public boolean isFrontLoadLarge() {
@@ -92,8 +93,8 @@ public class Topic extends AbstractPersistable {
         return this;
     }
 
-    public Topic withStudentList(List<Student> studentList) {
-        this.setStudentList(studentList);
+    public Topic withStudents(Student... students) {
+        this.setStudentSet(Arrays.stream(students).collect(Collectors.toSet()));
         return this;
     }
 

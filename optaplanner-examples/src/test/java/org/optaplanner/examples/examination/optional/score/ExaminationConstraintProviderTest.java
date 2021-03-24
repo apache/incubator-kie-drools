@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.examination.optional.score;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
@@ -47,7 +45,7 @@ public class ExaminationConstraintProviderTest {
     public void conflictingExamsInSamePeriodTest() {
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
-        TopicConflict conflict = new TopicConflict(topic1, topic2, 2);
+        TopicConflict conflict = new TopicConflict(0, topic1, topic2, 2);
 
         Period period = new Period();
 
@@ -70,7 +68,7 @@ public class ExaminationConstraintProviderTest {
     @Test
     public void periodDurationTooShortTest() {
         LeadingExam exam = new LeadingExam()
-                .withTopic(new Topic().withDuration(2).withStudentList(Arrays.asList(student1, student2)))
+                .withTopic(new Topic().withDuration(2).withStudents(student1, student2))
                 .withPeriod(new Period().withDuration(1))
                 .withRoom(new Room());
 
@@ -85,7 +83,7 @@ public class ExaminationConstraintProviderTest {
         Room room = new Room().withCapacity(2);
 
         LeadingExam exam = new LeadingExam()
-                .withTopic(new Topic().withStudentList(Arrays.asList(student1, student2, student3, student4)))
+                .withTopic(new Topic().withStudents(student1, student2, student3, student4))
                 .withPeriod(period)
                 .withRoom(room);
 
@@ -101,12 +99,12 @@ public class ExaminationConstraintProviderTest {
 
         LeadingExam exam1 = new LeadingExam()
                 .withId(1L)
-                .withTopic(new Topic().withStudentList(Arrays.asList(student1, student2)))
+                .withTopic(new Topic().withStudents(student1, student2))
                 .withPeriod(period)
                 .withRoom(room);
         LeadingExam exam2 = new LeadingExam()
                 .withId(2L)
-                .withTopic(new Topic().withStudentList(Arrays.asList(student3, student4)))
+                .withTopic(new Topic().withStudents(student3, student4))
                 .withPeriod(period)
                 .withRoom(room);
 
@@ -117,8 +115,8 @@ public class ExaminationConstraintProviderTest {
 
     @Test
     public void periodPenaltyTypeTest() {
-        Topic topic1 = new Topic().withStudentList(Arrays.asList(student1, student2));
-        Topic topic2 = new Topic().withStudentList(Arrays.asList(student1, student2));
+        Topic topic1 = new Topic().withStudents(student1, student2);
+        Topic topic2 = new Topic().withStudents(student1, student2);
 
         PeriodPenalty periodPenalty = new PeriodPenalty(topic1, topic2, PeriodPenaltyType.EXCLUSION);
 
@@ -167,8 +165,8 @@ public class ExaminationConstraintProviderTest {
 
     @Test
     public void roomPenaltyExclusiveTest() {
-        Topic topic1 = new Topic().withStudentList(Arrays.asList(student1, student2));
-        Topic topic2 = new Topic().withStudentList(Arrays.asList(student3, student4));
+        Topic topic1 = new Topic().withStudents(student1, student2);
+        Topic topic2 = new Topic().withStudents(student3, student4);
 
         RoomPenalty penalty = new RoomPenalty().withTopic(topic1).withRoomPenaltyType(RoomPenaltyType.ROOM_EXCLUSIVE);
 
@@ -195,7 +193,7 @@ public class ExaminationConstraintProviderTest {
     public void twoExamsInARowAndInADayTest() {
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
-        TopicConflict conflict = new TopicConflict(topic1, topic2, 2);
+        TopicConflict conflict = new TopicConflict(0, topic1, topic2, 2);
 
         LeadingExam exam1 = new LeadingExam()
                 .withId(1L)
@@ -255,7 +253,7 @@ public class ExaminationConstraintProviderTest {
 
         Topic topic1 = new Topic();
         Topic topic2 = new Topic();
-        TopicConflict topicConflict = new TopicConflict(topic1, topic2, 3);
+        TopicConflict topicConflict = new TopicConflict(0, topic1, topic2, 3);
 
         LeadingExam exam1 = new LeadingExam()
                 .withId(1L)
