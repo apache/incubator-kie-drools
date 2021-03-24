@@ -54,7 +54,8 @@
     "taskDescription": "",
     "taskName": "VisaApplication",
     "taskPriority": "1",
-    "referenceName": "Apply for visa"
+    "referenceName": "Apply for visa",
+    "unknownProperty": ""
   },
   "id": "ef315bd2-93a9-456f-b539-d73c0c83c1df",
   "kogitoProcessId": "travels",
