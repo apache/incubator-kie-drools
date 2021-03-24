@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.commons.utils;
+package org.kie.pmml.api.utils;
 
 import org.junit.Test;
 import org.kie.pmml.api.utils.PrimitiveBoxedUtils;

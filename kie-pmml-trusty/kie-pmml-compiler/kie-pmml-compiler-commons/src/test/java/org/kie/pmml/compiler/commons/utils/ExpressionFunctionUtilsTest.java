@@ -45,6 +45,7 @@ import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.TextIndex;
 import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.utils.ConverterTypeUtil;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -99,7 +100,7 @@ public class ExpressionFunctionUtilsTest {
 
     @Test
     public void converterTypeUtilFieldAccessorExpr() {
-        assertEquals("org.kie.pmml.commons.utils.ConverterTypeUtil", CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.toString());
+        assertEquals(ConverterTypeUtil.class.getName(), CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.toString());
     }
 
     @Test(expected = KiePMMLException.class)
@@ -142,7 +143,7 @@ public class ExpressionFunctionUtilsTest {
                 "param1, java.lang.Object FIELD_REF) {\n" +
                 "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
                 "    java.lang.Object variableapplyVariableFieldRef2 = FIELD_REF != null ? (java.lang.Object) org.kie" +
-                ".pmml.commons.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang" +
+                ".pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang" +
                 ".Object) null;\n" +
                 "    java.lang.Object applyVariable = this.FUNCTION_NAME(param1, variableapplyVariableConstant1, " +
                 "variableapplyVariableFieldRef2);\n" +
@@ -400,7 +401,7 @@ public class ExpressionFunctionUtilsTest {
         BlockStmt retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef,
                                                                                                    parseClassOrInterfaceType(Object.class.getName()), modifiedParametersMap);
         String expected = "{\n" +
-                "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) null;\n" +
+                "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) null;\n" +
                 "}";
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
@@ -408,7 +409,7 @@ public class ExpressionFunctionUtilsTest {
         retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef,
                                                                                          parseClassOrInterfaceType(Object.class.getName()), modifiedParametersMap);
         expected = "{\n" +
-                "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) \"MAP_MISSING_TO\";\n" +
+                "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) \"MAP_MISSING_TO\";\n" +
                 "}";
         assertEquals(expected, retrieved.toString());
     }

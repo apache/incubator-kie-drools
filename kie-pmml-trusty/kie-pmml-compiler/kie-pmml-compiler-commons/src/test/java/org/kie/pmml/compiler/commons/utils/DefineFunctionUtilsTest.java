@@ -193,7 +193,7 @@ public class DefineFunctionUtilsTest {
         modifiedParametersMap.put(parameterField.getName().toString(), parseClassOrInterfaceType(getBoxedClassName(parameterField)));
         MethodDeclaration retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRef, STRING_CLASS, modifiedParametersMap);
         String expected = String.format("java.lang.String %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1, java.lang.Object FIELD_REF) {\n" +
-                                                "    java.lang.String fieldRefVariable = FIELD_REF != null ? (java.lang.String) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(java.lang.String.class, FIELD_REF) " +
+                                                "    java.lang.String fieldRefVariable = FIELD_REF != null ? (java.lang.String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.String.class, FIELD_REF) " +
                                                 ": (java.lang.String) null;\n" +
                                                 "    return fieldRefVariable;\n" +
                                                 "}", methodName);
@@ -202,7 +202,7 @@ public class DefineFunctionUtilsTest {
         fieldRef.setMapMissingTo(mapMissingTo);
         retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRef, STRING_CLASS, modifiedParametersMap);
         expected = String.format("java.lang.String %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1, java.lang.Object FIELD_REF) {\n" +
-                                                "    java.lang.String fieldRefVariable = FIELD_REF != null ? (java.lang.String) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(java.lang.String.class, FIELD_REF) " +
+                                                "    java.lang.String fieldRefVariable = FIELD_REF != null ? (java.lang.String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.String.class, FIELD_REF) " +
                                          ": (java.lang.String) \"MAP_MISSING_TO\";\n" +
                                                 "    return fieldRefVariable;\n" +
                                                 "}", methodName);

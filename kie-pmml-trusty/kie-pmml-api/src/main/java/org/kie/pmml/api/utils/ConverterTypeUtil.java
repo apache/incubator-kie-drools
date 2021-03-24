@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.utils;
+package org.kie.pmml.api.utils;
 
+import java.math.BigDecimal;
 import java.util.function.Predicate;
 
+import org.apache.commons.math3.util.Precision;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 /**
@@ -61,41 +63,91 @@ public class ConverterTypeUtil {
         if (expectedClass.isAssignableFrom(currentClass)) {
             return originalObject;
         }
+        if (PrimitiveBoxedUtils.areSameWithBoxing(expectedClass, originalObject.getClass())) {
+            // No cast/transformation originalObject
+            return originalObject;
+        }
+        if (expectedClass == String.class) {
+            return originalObject.toString();
+        }
         Object toReturn;
-        if (currentClass.equals(String.class)) {
-            try {
+        String currentClassName = currentClass.getName();
+        switch (currentClassName) {
+            case "java.lang.String":
                 toReturn = convertFromString(expectedClass, (String) originalObject);
-            } catch (Exception e) {
+                break;
+            case "int":
+            case "java.lang.Integer":
+                toReturn = convertFromInteger(expectedClass, (Integer) originalObject);
+                break;
+            case "double":
+            case "java.lang.Double":
+                toReturn = convertFromDouble(expectedClass, (Double) originalObject);
+                break;
+            default:
                 throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
-                                                         expectedClass.getName()), e);
-            }
-        } else if (expectedClass == String.class) {
-            toReturn = originalObject.toString();
-        } else {
-            throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
-                                                     expectedClass.getName()));
+                                                         expectedClass.getName()));
         }
         return toReturn;
     }
 
-    static Object convertFromString(Class<?> expectedClass, String originalObject) {
-        if (IS_BOOLEAN.test(expectedClass)) {
-            return parseBoolean(originalObject);
-        } else if (IS_INTEGER.test(expectedClass)) {
-            return Integer.parseInt(originalObject);
+    static Object convertFromInteger(Class<?> expectedClass, Integer originalObject) {
+        if (IS_DOUBLE.test(expectedClass)) {
+            return originalObject.doubleValue();
         } else if (IS_LONG.test(expectedClass)) {
-            return Long.parseLong(originalObject);
-        } else if (IS_DOUBLE.test(expectedClass)) {
-            return Double.parseDouble(originalObject);
+            return originalObject.longValue();
         } else if (IS_FLOAT.test(expectedClass)) {
-            return Float.parseFloat(originalObject);
-        } else if (IS_CHARACTER.test(expectedClass)) {
-            return parseChar(originalObject);
+            return originalObject.floatValue();
         } else if (IS_BYTE.test(expectedClass)) {
-            return Byte.parseByte(originalObject);
+            return originalObject.byteValue();
         } else if (IS_SHORT.test(expectedClass)) {
-            return Short.parseShort(originalObject);
+            return originalObject.shortValue();
         } else {
+            throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
+                                                     expectedClass.getName()));
+        }
+    }
+
+    static Object convertFromDouble(Class<?> expectedClass, Double originalObject) {
+        if (IS_INTEGER.test(expectedClass)) {
+            return  (int) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else if (IS_LONG.test(expectedClass)) {
+            return  (long) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else if (IS_FLOAT.test(expectedClass)) {
+            return originalObject.floatValue();
+        } else if (IS_BYTE.test(expectedClass)) {
+            return (byte) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else if (IS_SHORT.test(expectedClass)) {
+            return (short) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else {
+            throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
+                                                     expectedClass.getName()));
+        }
+    }
+
+    static Object convertFromString(Class<?> expectedClass, String originalObject) {
+        try {
+            if (IS_BOOLEAN.test(expectedClass)) {
+                return parseBoolean(originalObject);
+            } else if (IS_INTEGER.test(expectedClass)) {
+                return Integer.parseInt(originalObject);
+            } else if (IS_LONG.test(expectedClass)) {
+                return Long.parseLong(originalObject);
+            } else if (IS_DOUBLE.test(expectedClass)) {
+                return Double.parseDouble(originalObject);
+            } else if (IS_FLOAT.test(expectedClass)) {
+                return Float.parseFloat(originalObject);
+            } else if (IS_CHARACTER.test(expectedClass)) {
+                return parseChar(originalObject);
+            } else if (IS_BYTE.test(expectedClass)) {
+                return Byte.parseByte(originalObject);
+            } else if (IS_SHORT.test(expectedClass)) {
+                return Short.parseShort(originalObject);
+            } else {
+                throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
+                                                         expectedClass.getName()));
+            }
+        } catch (Exception e) {
             throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
                                                      expectedClass.getName()));
         }
