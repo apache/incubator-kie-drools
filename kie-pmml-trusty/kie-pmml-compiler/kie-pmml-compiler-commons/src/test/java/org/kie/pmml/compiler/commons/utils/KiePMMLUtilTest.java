@@ -44,6 +44,8 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.Target;
+import org.dmg.pmml.Targets;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.junit.Test;
@@ -95,13 +97,14 @@ public class KiePMMLUtilTest {
     }
 
     @Test
-    public void populateMissingTargetField() throws Exception {
+    public void populateMissingMiningTargetField() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_TARGET_FIELD_SAMPLE);
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(inputStream);
         final Model toPopulate = pmml.getModels().get(0);
         List<MiningField> miningTargetFields = getMiningTargetFields(toPopulate.getMiningSchema().getMiningFields());
         assertTrue(miningTargetFields.isEmpty());
-        KiePMMLUtil.populateMissingTargetField(toPopulate, pmml.getDataDictionary().getDataFields());
+        assertNull(toPopulate.getTargets().getTargets().get(0).getField());
+        KiePMMLUtil.populateMissingMiningTargetField(toPopulate, pmml.getDataDictionary().getDataFields());
         miningTargetFields = getMiningTargetFields(toPopulate.getMiningSchema().getMiningFields());
         assertEquals(1, miningTargetFields.size());
         final MiningField targetField = miningTargetFields.get(0);
@@ -109,6 +112,7 @@ public class KiePMMLUtilTest {
                            .getDataFields()
                            .stream()
                            .anyMatch(dataField -> dataField.getName().equals(targetField.getName())));
+        assertEquals(targetField.getName(), toPopulate.getTargets().getTargets().get(0).getField());
     }
 
     @Test
@@ -172,6 +176,20 @@ public class KiePMMLUtilTest {
         final MiningField retrieved = KiePMMLUtil.getTargetMiningField(dataField);
         assertEquals(dataField.getName().getValue(), retrieved.getName().getValue());
         assertEquals(MiningField.UsageType.TARGET, retrieved.getUsageType());
+    }
+
+    @Test
+    public void correctTargetFields() {
+        final MiningField miningField = new MiningField(FieldName.create("FIELD_NAME"));
+        final Targets targets = new Targets();
+        final Target namedTarget = new Target();
+        String targetName ="TARGET_NAME";
+        namedTarget.setField(FieldName.create(targetName));
+        final Target unnamedTarget = new Target();
+        targets.addTargets(namedTarget, unnamedTarget);
+        KiePMMLUtil.correctTargetFields(miningField, targets);
+        assertEquals(targetName, namedTarget.getField().getValue());
+        assertEquals(miningField.getName(), unnamedTarget.getField());
     }
 
     @Test

@@ -35,6 +35,8 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.Target;
+import org.dmg.pmml.Targets;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -81,7 +83,7 @@ public class KiePMMLUtil {
             Model model = models.get(i);
             populateMissingModelName(model, cleanedFileName, i);
             populateMissingOutputFieldDataType(model, dataFields);
-            populateMissingTargetField(model, dataFields);
+            populateMissingMiningTargetField(model, dataFields);
         }
         return toReturn;
     }
@@ -109,7 +111,7 @@ public class KiePMMLUtil {
      * @param model
      * @param dataFields
      */
-    static void populateMissingTargetField(final Model model, final  List<DataField> dataFields) {
+    static void populateMissingMiningTargetField(final Model model, final  List<DataField> dataFields) {
         List<MiningField> miningTargetFields = getMiningTargetFields(model.getMiningSchema().getMiningFields());
         if (miningTargetFields.isEmpty()) {
             Optional<DataField> targetDataField = getTargetDataField(model);
@@ -117,6 +119,7 @@ public class KiePMMLUtil {
                 dataFields.add(dataField);
                 MiningField targetMiningField = getTargetMiningField(dataField);
                 model.getMiningSchema().addMiningFields(targetMiningField);
+                correctTargetFields(targetMiningField, model.getTargets());
             });
          }
     }
@@ -186,6 +189,21 @@ public class KiePMMLUtil {
         toReturn.setName(dataField.getName());
         toReturn.setUsageType(MiningField.UsageType.TARGET);
         return toReturn;
+    }
+
+    /**
+     * Add the newly generated <code>MiningField</code> name to anonymous <code>Target</code>s
+     *
+     * @param targetMiningField
+     * @param targets
+     */
+    static void correctTargetFields(MiningField targetMiningField, Targets targets) {
+        if (targets != null && !targets.getTargets().isEmpty()) {
+            final List<Target> targetsFields = targets.getTargets();
+            targetsFields.stream()
+                    .filter(targetField -> targetField.getField() == null)
+                    .forEach(targetField -> targetField.setField(targetMiningField.getName()));
+        }
     }
 
 
