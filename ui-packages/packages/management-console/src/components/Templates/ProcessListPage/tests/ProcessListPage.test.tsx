@@ -374,7 +374,7 @@ describe('ProcessListPage component tests', () => {
         .find(EmptyStateBody)
         .children()
         .html()
-        .includes('Try selecting at least one status to see results')
+        .includes('Try applying at least one filter to see results')
     ).toBeTruthy();
     const emptyState = wrapper.find(EmptyState);
     expect(emptyState).toMatchSnapshot();

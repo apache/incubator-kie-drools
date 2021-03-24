@@ -41,14 +41,14 @@ exports[`ProcessListPage component tests Snapshot tests for no status selected 1
         <h5
           className="pf-c-title pf-m-lg"
         >
-          No status is selected
+          No filters applied.
         </h5>
       </Title>
       <EmptyStateBody>
         <div
           className="pf-c-empty-state__body"
         >
-          Try selecting at least one status to see results
+          Try applying at least one filter to see results
         </div>
       </EmptyStateBody>
       <Button
@@ -192,14 +192,14 @@ exports[`ProcessListPage component tests reset click in no status found test 1`]
         <h5
           className="pf-c-title pf-m-lg"
         >
-          No status is selected
+          No filters applied.
         </h5>
       </Title>
       <EmptyStateBody>
         <div
           className="pf-c-empty-state__body"
         >
-          Try selecting at least one status to see results
+          Try applying at least one filter to see results
         </div>
       </EmptyStateBody>
       <Button

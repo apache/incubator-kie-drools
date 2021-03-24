@@ -447,14 +447,14 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                   className="pf-c-toolbar__toggle"
                 >
                   <Button
-                    aria-controls="data-toolbar-with-chip-groups-expandable-content-20"
+                    aria-controls="data-toolbar-with-chip-groups-expandable-content-23"
                     aria-haspopup={false}
                     aria-label="Show Filters"
                     onClick={[Function]}
                     variant="plain"
                   >
                     <button
-                      aria-controls="data-toolbar-with-chip-groups-expandable-content-20"
+                      aria-controls="data-toolbar-with-chip-groups-expandable-content-23"
                       aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
@@ -685,11 +685,11 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                 >
                                   <SelectToggle
                                     aria-label="Options menu"
-                                    aria-labelledby="Select a field pf-select-toggle-id-44"
+                                    aria-labelledby="Select a field pf-select-toggle-id-50"
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
-                                    id="pf-select-toggle-id-44"
+                                    id="pf-select-toggle-id-50"
                                     isActive={false}
                                     isDisabled={false}
                                     isOpen={false}
@@ -714,9 +714,9 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                           <button
                                             aria-expanded="false"
                                             aria-haspopup="listbox"
-                                            aria-labelledby="Select a field pf-select-toggle-id-44"
+                                            aria-labelledby="Select a field pf-select-toggle-id-50"
                                             class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-44"
+                                            id="pf-select-toggle-id-50"
                                             type="button"
                                           >
                                             <div
@@ -755,10 +755,10 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup="listbox"
-                                      aria-labelledby="Select a field pf-select-toggle-id-44"
+                                      aria-labelledby="Select a field pf-select-toggle-id-50"
                                       className="pf-c-select__toggle"
                                       disabled={false}
-                                      id="pf-select-toggle-id-44"
+                                      id="pf-select-toggle-id-50"
                                       onClick={[Function]}
                                       onKeyDown={[Function]}
                                       type="button"
@@ -855,11 +855,11 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                 >
                                   <SelectToggle
                                     aria-label="Options menu"
-                                    aria-labelledby=" pf-select-toggle-id-45"
+                                    aria-labelledby=" pf-select-toggle-id-51"
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
-                                    id="pf-select-toggle-id-45"
+                                    id="pf-select-toggle-id-51"
                                     isActive={false}
                                     isDisabled={false}
                                     isOpen={false}
@@ -884,9 +884,9 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                           <button
                                             aria-expanded="false"
                                             aria-haspopup="listbox"
-                                            aria-labelledby=" pf-select-toggle-id-45"
+                                            aria-labelledby=" pf-select-toggle-id-51"
                                             class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-45"
+                                            id="pf-select-toggle-id-51"
                                             type="button"
                                           >
                                             <div
@@ -925,10 +925,10 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup="listbox"
-                                      aria-labelledby=" pf-select-toggle-id-45"
+                                      aria-labelledby=" pf-select-toggle-id-51"
                                       className="pf-c-select__toggle"
                                       disabled={false}
-                                      id="pf-select-toggle-id-45"
+                                      id="pf-select-toggle-id-51"
                                       onClick={[Function]}
                                       onKeyDown={[Function]}
                                       type="button"
@@ -1467,7 +1467,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
               Object {
                 "current": <div
                   class="pf-c-toolbar__expandable-content"
-                  id="data-toolbar-with-chip-groups-expandable-content-20"
+                  id="data-toolbar-with-chip-groups-expandable-content-23"
                 >
                   <div
                     class="pf-c-toolbar__group"
@@ -1496,13 +1496,13 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                 </div>,
               }
             }
-            id="data-toolbar-with-chip-groups-expandable-content-20"
+            id="data-toolbar-with-chip-groups-expandable-content-23"
             isExpanded={false}
             showClearFiltersButton={true}
           >
             <div
               className="pf-c-toolbar__expandable-content"
-              id="data-toolbar-with-chip-groups-expandable-content-20"
+              id="data-toolbar-with-chip-groups-expandable-content-23"
             >
               <ForwardRef>
                 <ToolbarGroupWithRef
@@ -1719,6 +1719,11 @@ exports[`Domain Explorer component Mock query testing 1`] = `
       </ToolbarChipGroupContent>
     </div>
   </Toolbar>
+  <Divider>
+    <hr
+      className="pf-c-divider"
+    />
+  </Divider>
   <Card
     className="kogito-common--domain-explorer__table-OverFlow"
     data-ouia-component-type="domain-explorer"
@@ -1945,14 +1950,14 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                   className="pf-c-toolbar__toggle"
                 >
                   <Button
-                    aria-controls="data-toolbar-with-chip-groups-expandable-content-5"
+                    aria-controls="data-toolbar-with-chip-groups-expandable-content-7"
                     aria-haspopup={false}
                     aria-label="Show Filters"
                     onClick={[Function]}
                     variant="plain"
                   >
                     <button
-                      aria-controls="data-toolbar-with-chip-groups-expandable-content-5"
+                      aria-controls="data-toolbar-with-chip-groups-expandable-content-7"
                       aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
@@ -2183,11 +2188,11 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                 >
                                   <SelectToggle
                                     aria-label="Options menu"
-                                    aria-labelledby="Select a field pf-select-toggle-id-12"
+                                    aria-labelledby="Select a field pf-select-toggle-id-16"
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
-                                    id="pf-select-toggle-id-12"
+                                    id="pf-select-toggle-id-16"
                                     isActive={false}
                                     isDisabled={false}
                                     isOpen={false}
@@ -2212,9 +2217,9 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                           <button
                                             aria-expanded="false"
                                             aria-haspopup="listbox"
-                                            aria-labelledby="Select a field pf-select-toggle-id-18"
+                                            aria-labelledby="Select a field pf-select-toggle-id-32"
                                             class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-18"
+                                            id="pf-select-toggle-id-32"
                                             type="button"
                                           >
                                             <div
@@ -2253,10 +2258,10 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup="listbox"
-                                      aria-labelledby="Select a field pf-select-toggle-id-12"
+                                      aria-labelledby="Select a field pf-select-toggle-id-16"
                                       className="pf-c-select__toggle"
                                       disabled={false}
-                                      id="pf-select-toggle-id-12"
+                                      id="pf-select-toggle-id-16"
                                       onClick={[Function]}
                                       onKeyDown={[Function]}
                                       type="button"
@@ -2353,11 +2358,11 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                 >
                                   <SelectToggle
                                     aria-label="Options menu"
-                                    aria-labelledby=" pf-select-toggle-id-13"
+                                    aria-labelledby=" pf-select-toggle-id-17"
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
-                                    id="pf-select-toggle-id-13"
+                                    id="pf-select-toggle-id-17"
                                     isActive={false}
                                     isDisabled={false}
                                     isOpen={false}
@@ -2382,9 +2387,9 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                           <button
                                             aria-expanded="false"
                                             aria-haspopup="listbox"
-                                            aria-labelledby=" pf-select-toggle-id-19"
+                                            aria-labelledby=" pf-select-toggle-id-33"
                                             class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-19"
+                                            id="pf-select-toggle-id-33"
                                             type="button"
                                           >
                                             <div
@@ -2423,10 +2428,10 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup="listbox"
-                                      aria-labelledby=" pf-select-toggle-id-13"
+                                      aria-labelledby=" pf-select-toggle-id-17"
                                       className="pf-c-select__toggle"
                                       disabled={false}
-                                      id="pf-select-toggle-id-13"
+                                      id="pf-select-toggle-id-17"
                                       onClick={[Function]}
                                       onKeyDown={[Function]}
                                       type="button"
@@ -2965,7 +2970,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
               Object {
                 "current": <div
                   class="pf-c-toolbar__expandable-content"
-                  id="data-toolbar-with-chip-groups-expandable-content-8"
+                  id="data-toolbar-with-chip-groups-expandable-content-15"
                 >
                   <div
                     class="pf-c-toolbar__group"
@@ -2994,13 +2999,13 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                 </div>,
               }
             }
-            id="data-toolbar-with-chip-groups-expandable-content-5"
+            id="data-toolbar-with-chip-groups-expandable-content-7"
             isExpanded={false}
             showClearFiltersButton={true}
           >
             <div
               className="pf-c-toolbar__expandable-content"
-              id="data-toolbar-with-chip-groups-expandable-content-5"
+              id="data-toolbar-with-chip-groups-expandable-content-7"
             >
               <ForwardRef>
                 <ToolbarGroupWithRef
@@ -3217,6 +3222,11 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
       </ToolbarChipGroupContent>
     </div>
   </Toolbar>
+  <Divider>
+    <hr
+      className="pf-c-divider"
+    />
+  </Divider>
   <Card
     className="kogito-common--domain-explorer__table-OverFlow"
     data-ouia-component-type="domain-explorer"
@@ -3230,15 +3240,20 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
       id=""
     >
       <MockedDomainExplorerTable
-        columnFilters={Array []}
+        columnFilters={
+          Array [
+            undefined,
+            undefined,
+          ]
+        }
         displayEmptyState={false}
-        displayTable={false}
+        displayTable={true}
         filterChips={
           Array [
             "metadata / processInstances / state: ACTIVE",
           ]
         }
-        filterError={[TypeError: Cannot read property 'data' of undefined]}
+        filterError=""
         finalFilters={
           Object {
             "metadata": Object {
@@ -3438,14 +3453,14 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                   className="pf-c-toolbar__toggle"
                 >
                   <Button
-                    aria-controls="data-toolbar-with-chip-groups-expandable-content-28"
+                    aria-controls="data-toolbar-with-chip-groups-expandable-content-33"
                     aria-haspopup={false}
                     aria-label="Show Filters"
                     onClick={[Function]}
                     variant="plain"
                   >
                     <button
-                      aria-controls="data-toolbar-with-chip-groups-expandable-content-28"
+                      aria-controls="data-toolbar-with-chip-groups-expandable-content-33"
                       aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
@@ -3676,11 +3691,11 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                 >
                                   <SelectToggle
                                     aria-label="Options menu"
-                                    aria-labelledby="Select a field pf-select-toggle-id-62"
+                                    aria-labelledby="Select a field pf-select-toggle-id-72"
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
-                                    id="pf-select-toggle-id-62"
+                                    id="pf-select-toggle-id-72"
                                     isActive={false}
                                     isDisabled={false}
                                     isOpen={false}
@@ -3705,9 +3720,9 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                           <button
                                             aria-expanded="false"
                                             aria-haspopup="listbox"
-                                            aria-labelledby="Select a field pf-select-toggle-id-62"
+                                            aria-labelledby="Select a field pf-select-toggle-id-72"
                                             class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-62"
+                                            id="pf-select-toggle-id-72"
                                             type="button"
                                           >
                                             <div
@@ -3746,10 +3761,10 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup="listbox"
-                                      aria-labelledby="Select a field pf-select-toggle-id-62"
+                                      aria-labelledby="Select a field pf-select-toggle-id-72"
                                       className="pf-c-select__toggle"
                                       disabled={false}
-                                      id="pf-select-toggle-id-62"
+                                      id="pf-select-toggle-id-72"
                                       onClick={[Function]}
                                       onKeyDown={[Function]}
                                       type="button"
@@ -3846,11 +3861,11 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                 >
                                   <SelectToggle
                                     aria-label="Options menu"
-                                    aria-labelledby=" pf-select-toggle-id-63"
+                                    aria-labelledby=" pf-select-toggle-id-73"
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
-                                    id="pf-select-toggle-id-63"
+                                    id="pf-select-toggle-id-73"
                                     isActive={false}
                                     isDisabled={false}
                                     isOpen={false}
@@ -3875,9 +3890,9 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                           <button
                                             aria-expanded="false"
                                             aria-haspopup="listbox"
-                                            aria-labelledby=" pf-select-toggle-id-63"
+                                            aria-labelledby=" pf-select-toggle-id-73"
                                             class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-63"
+                                            id="pf-select-toggle-id-73"
                                             type="button"
                                           >
                                             <div
@@ -3916,10 +3931,10 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                     <button
                                       aria-expanded={false}
                                       aria-haspopup="listbox"
-                                      aria-labelledby=" pf-select-toggle-id-63"
+                                      aria-labelledby=" pf-select-toggle-id-73"
                                       className="pf-c-select__toggle"
                                       disabled={false}
-                                      id="pf-select-toggle-id-63"
+                                      id="pf-select-toggle-id-73"
                                       onClick={[Function]}
                                       onKeyDown={[Function]}
                                       type="button"
@@ -4458,7 +4473,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
               Object {
                 "current": <div
                   class="pf-c-toolbar__expandable-content"
-                  id="data-toolbar-with-chip-groups-expandable-content-28"
+                  id="data-toolbar-with-chip-groups-expandable-content-33"
                 >
                   <div
                     class="pf-c-toolbar__group"
@@ -4487,13 +4502,13 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                 </div>,
               }
             }
-            id="data-toolbar-with-chip-groups-expandable-content-28"
+            id="data-toolbar-with-chip-groups-expandable-content-33"
             isExpanded={false}
             showClearFiltersButton={true}
           >
             <div
               className="pf-c-toolbar__expandable-content"
-              id="data-toolbar-with-chip-groups-expandable-content-28"
+              id="data-toolbar-with-chip-groups-expandable-content-33"
             >
               <ForwardRef>
                 <ToolbarGroupWithRef
@@ -4710,6 +4725,11 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
       </ToolbarChipGroupContent>
     </div>
   </Toolbar>
+  <Divider>
+    <hr
+      className="pf-c-divider"
+    />
+  </Divider>
   <Card
     className="kogito-common--domain-explorer__table-OverFlow"
     data-ouia-component-type="domain-explorer"
@@ -4723,15 +4743,20 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
       id=""
     >
       <MockedDomainExplorerTable
-        columnFilters={Array []}
+        columnFilters={
+          Array [
+            undefined,
+            undefined,
+          ]
+        }
         displayEmptyState={false}
-        displayTable={false}
+        displayTable={true}
         filterChips={
           Array [
             "metadata / processInstances / state: ACTIVE",
           ]
         }
-        filterError={[TypeError: Cannot read property 'data' of undefined]}
+        filterError=""
         finalFilters={
           Object {
             "metadata": Object {

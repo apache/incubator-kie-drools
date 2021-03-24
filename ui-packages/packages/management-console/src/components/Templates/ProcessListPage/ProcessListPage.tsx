@@ -321,8 +321,8 @@ const ProcessListPage: React.FC<OUIAProps &
                 ) : (
                   <KogitoEmptyState
                     type={KogitoEmptyStateType.Reset}
-                    title="No status is selected"
-                    body="Try selecting at least one status to see results"
+                    title="No filters applied."
+                    body="Try applying at least one filter to see results"
                     onClick={resetClick}
                   />
                 )}

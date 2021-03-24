@@ -7,7 +7,8 @@ import {
   ToolbarToggleGroup,
   Toolbar,
   ToolbarItem,
-  ToolbarFilter
+  ToolbarFilter,
+  Divider
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import { useApolloClient } from 'react-apollo';
@@ -187,6 +188,12 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
       setSelected(selections);
     }
   }, [columnPickerType, selections.length > 0]);
+
+  useEffect(() => {
+    if (filterChips.length === 0) {
+      setDisplayTable(false);
+    }
+  }, [filterChips]);
 
   const onDeleteChip = (type = '', id = '') => {
     if (type) {
@@ -371,6 +378,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
   return (
     <>
       {renderToolbar()}
+      <Divider />
       <Card
         className="kogito-common--domain-explorer__table-OverFlow"
         {...componentOuiaProps(
@@ -379,7 +387,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
           ouiaSafe ? ouiaSafe : !tableLoading && !isLoadingMore
         )}
       >
-        {!tableLoading || isLoadingMore ? (
+        {columnFilters.length > 0 ? (
           <>
             <DomainExplorerTable
               columnFilters={columnFilters}
@@ -406,7 +414,8 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
               !displayEmptyState &&
               !filterError &&
               filterChips.length > 0 &&
-              (limit === pageSize || isLoadingMore) && (
+              (limit === pageSize || isLoadingMore) &&
+              !tableLoading && (
                 <LoadMore
                   offset={offset}
                   setOffset={setOffset}
@@ -419,7 +428,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
           </>
         ) : (
           <Bullseye>
-            <KogitoSpinner spinnerText="Loading domain data..." />
+            <KogitoSpinner spinnerText="Loading domain explorer..." />
           </Bullseye>
         )}
       </Card>

@@ -216,6 +216,7 @@ describe('Domain Explorer component', () => {
     mockUseEffect();
   });
   it('Snapshot test with default prop', async () => {
+    client.query.mockReturnValueOnce(mGraphQLResponse);
     // @ts-ignore
     useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,
@@ -351,7 +352,7 @@ describe('Domain Explorer component', () => {
       </BrowserRouter>,
       'DomainExplorer'
     );
-    act(() => {
+    await act(async () => {
       wrapper
         .find('Toolbar')
         .props()
@@ -560,6 +561,7 @@ describe('Domain Explorer component', () => {
     expect(wrapper.find('h1').text()).toEqual('Error fetching data');
   });
   it('check assertions on rememberedParams', async () => {
+    client.query.mockReturnValueOnce(mGraphQLResponse);
     // @ts-ignore
     useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,

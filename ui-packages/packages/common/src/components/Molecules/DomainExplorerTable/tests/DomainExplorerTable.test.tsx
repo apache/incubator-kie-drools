@@ -315,11 +315,20 @@ describe('Domain Explorer Table Component', () => {
   it('check false value of isLoadingMore', async () => {
     const isLoadingMore = false;
     const displayEmptyState = true;
-    const displayTable = false;
+    const displayTable = true;
+    const filterError = null;
+    const selected = ['metadata / processInstances / state: ACTIVE'];
     const wrapper = await getWrapperAsync(
       <MockedProvider>
         <DomainExplorerTable
-          {...{ ...props, displayTable, isLoadingMore, displayEmptyState }}
+          {...{
+            ...props,
+            displayTable,
+            isLoadingMore,
+            displayEmptyState,
+            filterError,
+            selected
+          }}
         />
       </MockedProvider>,
       'DomainExplorerTable'
@@ -330,7 +339,7 @@ describe('Domain Explorer Table Component', () => {
         .find('h5')
         .first()
         .text()
-    ).toEqual('No data available');
+    ).toEqual('No results found');
   });
   it('check null value for process instance attributes', async () => {
     const isLoadingMore = false;
@@ -450,9 +459,23 @@ describe('Domain Explorer Table Component', () => {
       ['onClick'](event);
   });
   it('check sort functionality', async () => {
+    const isLoadingMore = false;
+    const displayEmptyState = true;
+    const displayTable = true;
+    const filterError = null;
+    const selected = ['metadata / processInstances / state: ACTIVE'];
     const wrapper = await getWrapperAsync(
       <MockedProvider>
-        <DomainExplorerTable {...props} />
+        <DomainExplorerTable
+          {...{
+            ...props,
+            displayTable,
+            isLoadingMore,
+            displayEmptyState,
+            filterError,
+            selected
+          }}
+        />
       </MockedProvider>,
       'DomainExplorerTable'
     );

@@ -69,6 +69,7 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
     setChips(selectedStatus);
     setValues(selectedStatus);
     setSelectedJobInstances([]);
+    selectedStatus.length > 0 && setDisplayTable(true);
   };
 
   const onDelete = (type: string = '', id: string = ''): void => {

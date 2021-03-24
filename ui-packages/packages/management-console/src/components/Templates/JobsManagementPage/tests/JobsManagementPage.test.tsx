@@ -5,6 +5,7 @@ import { MockedProvider } from '@apollo/react-testing';
 import { BrowserRouter } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import { JobsData } from '../mockData/JobsMockData';
+import { Button } from '@patternfly/react-core';
 
 jest.mock('../../../Organisms/JobsManagementTable/JobsManagementTable');
 jest.mock('../../../Organisms/JobsManagementFilters/JobsManagementFilters');
@@ -90,45 +91,6 @@ describe('Jobs management page tests', () => {
     }
   ];
 
-  const mocks2 = [
-    {
-      request: {
-        query: GraphQL.GetJobsWithFiltersDocument,
-        variables: {
-          values: ['SCHEDULED'],
-          orderBy: {
-            lastUpdate: GraphQL.OrderBy.Asc
-          },
-          offset: 0,
-          limit: 10
-        }
-      },
-      result: {
-        data: {
-          Jobs: []
-        }
-      }
-    },
-    {
-      request: {
-        query: GraphQL.GetJobsWithFiltersDocument,
-        variables: {
-          values: ['SCHEDULED'],
-          orderBy: {
-            lastUpdate: GraphQL.OrderBy.Asc
-          },
-          offset: 0,
-          limit: 10
-        }
-      },
-      result: {
-        data: {
-          Jobs: []
-        }
-      }
-    }
-  ];
-
   const mocks3 = [
     {
       request: {
@@ -169,10 +131,46 @@ describe('Jobs management page tests', () => {
           Jobs: mockData.splice(mockOffset1 - mockLimit1, mockLimit1)
         }
       }
+    },
+    {
+      request: {
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          offset: 0,
+          limit: 10,
+          values: ['SCHEDULED'],
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          }
+        }
+      },
+      result: {
+        data: {
+          Jobs: mockData.slice(0, 20)
+        }
+      }
     }
   ];
   const mockData2 = [...JobsData];
   const mocks5: any = [
+    {
+      request: {
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          values: ['SCHEDULED'],
+          limit: 10,
+          offset: 0,
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          }
+        }
+      },
+      result: {
+        data: {
+          Jobs: mockData2.splice(mockOffset2 - mockLimit2, mockLimit2)
+        }
+      }
+    },
     {
       request: {
         query: GraphQL.GetJobsWithFiltersDocument,
@@ -219,30 +217,6 @@ describe('Jobs management page tests', () => {
         .first()
         .simulate('click');
     });
-  });
-  it('mock data with empty response', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks2} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
-    expect(wrapper).toMatchSnapshot();
-    const event: any = {};
-    await act(async () => {
-      wrapper
-        .find('.pf-c-button')
-        .at(1)
-        .props()
-        ['onClick'](event);
-    });
-    wrapper = wrapper.update();
-    expect(wrapper.find('h5').text()).toEqual('No results found');
-    expect(wrapper.find('.pf-c-empty-state__body').text()).toEqual(
-      'Try using different filters'
-    );
   });
 
   it('mock data with error response', async () => {
@@ -325,22 +299,27 @@ describe('Jobs management page tests', () => {
         .contains('Cancel selected')
     ).toBeTruthy();
   });
-  it('test click handler on empty state', async () => {
+  it('test click handler on empty state & empty state snapshot', async () => {
     let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks5} addTypename={false}>
         <BrowserRouter>
           <JobsManagementPage {...props} />
         </BrowserRouter>
       </MockedProvider>,
       'JobsManagementPage'
     );
-    const event: any = {};
     await act(async () => {
       wrapper
-        .find('.pf-c-button')
-        .at(1)
+        .find('JobsManagementFilters')
         .props()
-        ['onClick'](event);
+        ['setChips']([]);
+    });
+    wrapper = wrapper.update();
+    const emptyState = wrapper.find('EmptyState');
+    expect(emptyState.exists()).toBeTruthy();
+    expect(emptyState).toMatchSnapshot();
+    await act(async () => {
+      emptyState.find(Button).simulate('click');
     });
     wrapper = wrapper.update();
     const defaultChip: string[] = ['SCHEDULED'];

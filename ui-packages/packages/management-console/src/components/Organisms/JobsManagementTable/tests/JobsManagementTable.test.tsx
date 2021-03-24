@@ -103,7 +103,8 @@ describe('Jobs management table component tests', () => {
     sortBy: {},
     setSortBy: jest.fn(),
     isActionPerformed: true,
-    setIsActionPerformed: jest.fn()
+    setIsActionPerformed: jest.fn(),
+    loading: false
   };
   it('Snapshot with default props', async () => {
     const wrapper = await getWrapperAsync(
@@ -325,5 +326,25 @@ describe('Jobs management table component tests', () => {
     wrapper = wrapper.update();
     expect(props.setSortBy).toBeTruthy();
     expect(props.setOffset).toHaveBeenCalledWith(0);
+  });
+  it('loading state in table', async () => {
+    const wrapper = await getWrapperAsync(
+      <JobsManagementTable {...{ ...props, loading: true }} />,
+      'JobsManagementTable'
+    );
+    const loadingComponent = wrapper.find('KogitoSpinner');
+    expect(loadingComponent.exists()).toBeTruthy();
+    expect(loadingComponent).toMatchSnapshot();
+  });
+  it('loading empty in table', async () => {
+    const wrapper = await getWrapperAsync(
+      <JobsManagementTable
+        {...{ ...props, data: { ...props.data.Jobs, Jobs: [] } }}
+      />,
+      'JobsManagementTable'
+    );
+    const loadingComponent = wrapper.find('EmptyState');
+    expect(loadingComponent.exists()).toBeTruthy();
+    expect(loadingComponent).toMatchSnapshot();
   });
 });
