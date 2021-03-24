@@ -93,6 +93,7 @@ const mocks1 = [
           state: { in: [GraphQL.ProcessInstanceState.Active] },
           parentProcessInstanceId: { isNull: true }
         },
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc },
         offset: 0,
         limit: 10
       }
@@ -112,7 +113,8 @@ const mocks1 = [
           parentProcessInstanceId: { isNull: true }
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
@@ -134,7 +136,8 @@ const mocks2 = [
           or: [{ businessKey: { like: 'TRAVELS' } }]
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
@@ -153,7 +156,8 @@ const mocks2 = [
           or: [{ businessKey: { like: 'TRAVELS' } }]
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
@@ -174,7 +178,8 @@ const mocks3 = [
           parentProcessInstanceId: { isNull: true }
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     error: new Error('something went wrong')
@@ -191,7 +196,8 @@ const mocks5 = [
           parentProcessInstanceId: { isNull: true }
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
@@ -209,7 +215,8 @@ const mocks5 = [
           parentProcessInstanceId: { isNull: true }
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
@@ -230,7 +237,8 @@ const mocks6 = [
           parentProcessInstanceId: { isNull: true }
         },
         offset: 0,
-        limit: 10
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
@@ -248,12 +256,54 @@ const mocks6 = [
           parentProcessInstanceId: { isNull: true }
         },
         offset: 0,
-        limit: 20
+        limit: 20,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
       }
     },
     result: {
       data: {
         ProcessInstances: mockProcessData.slice(0, 20)
+      }
+    }
+  }
+];
+
+const mocks7 = [
+  {
+    request: {
+      query: GraphQL.GetProcessInstancesDocument,
+      variables: {
+        where: {
+          state: { in: [GraphQL.ProcessInstanceState.Active] },
+          parentProcessInstanceId: { isNull: true }
+        },
+        offset: 0,
+        limit: 10,
+        orderBy: { lastUpdate: GraphQL.OrderBy.Asc }
+      }
+    },
+    result: {
+      data: {
+        ProcessInstances: mockProcessData.slice(0, 10)
+      }
+    }
+  },
+  {
+    request: {
+      query: GraphQL.GetProcessInstancesDocument,
+      variables: {
+        where: {
+          state: { in: [GraphQL.ProcessInstanceState.Active] },
+          parentProcessInstanceId: { isNull: true }
+        },
+        offset: 0,
+        limit: 10,
+        orderBy: { processName: GraphQL.OrderBy.Asc }
+      }
+    },
+    result: {
+      data: {
+        ProcessInstances: mockProcessData.slice(0, 10)
       }
     }
   }
@@ -412,5 +462,27 @@ describe('ProcessListPage component tests', () => {
         'ProcessInstances'
       ].length
     ).toEqual(16);
+  });
+
+  it('sorting tests', async () => {
+    let wrapper = await getWrapperAsync(
+      <BrowserRouter>
+        <MockedProvider mocks={mocks7} addTypename={false}>
+          <ProcessListPage {...routeComponentPropsMock1} />
+        </MockedProvider>
+      </BrowserRouter>,
+      'ProcessListPage'
+    );
+    await act(async () => {
+      wrapper
+        .find('MockedProcessListTable')
+        .props()
+        ['onSort']({ target: { innerText: 'id' } }, 0, GraphQL.OrderBy.Asc);
+    });
+    wrapper = wrapper.update();
+    expect(wrapper.find('MockedProcessListTable').props()['sortBy']).toEqual({
+      index: 0,
+      direction: 'ASC'
+    });
   });
 });

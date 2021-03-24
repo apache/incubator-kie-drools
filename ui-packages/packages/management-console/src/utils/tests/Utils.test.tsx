@@ -18,7 +18,8 @@ import {
   getSvg,
   formatForBulkListProcessInstance,
   formatForBulkListJob,
-  checkProcessInstanceState
+  checkProcessInstanceState,
+  alterOrderByObj
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -973,5 +974,20 @@ describe('uitility function testing', () => {
     const trueResult = checkProcessInstanceState(testProcessInstance2);
     expect(falseResult).toBeFalsy();
     expect(trueResult).toBeTruthy();
+  });
+
+  it('test alterOrderByObj method', () => {
+    const orderById = { id: GraphQL.OrderBy.Desc };
+    const orderByStatus = { status: GraphQL.OrderBy.Desc };
+    const orderByCreated = { created: GraphQL.OrderBy.Desc };
+    expect(alterOrderByObj(orderById)).toEqual({
+      processName: GraphQL.OrderBy.Desc
+    });
+    expect(alterOrderByObj(orderByStatus)).toEqual({
+      state: GraphQL.OrderBy.Desc
+    });
+    expect(alterOrderByObj(orderByCreated)).toEqual({
+      start: GraphQL.OrderBy.Desc
+    });
   });
 });

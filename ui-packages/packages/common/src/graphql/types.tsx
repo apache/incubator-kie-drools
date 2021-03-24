@@ -662,6 +662,7 @@ export namespace GraphQL {
 
   export type GetProcessInstancesQueryVariables = Exact<{
     where?: Maybe<ProcessInstanceArgument>;
+    orderBy?: Maybe<ProcessInstanceOrderBy>;
     offset?: Maybe<Scalars['Int']>;
     limit?: Maybe<Scalars['Int']>;
   }>;
@@ -1163,11 +1164,13 @@ export namespace GraphQL {
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
       $where: ProcessInstanceArgument
+      $orderBy: ProcessInstanceOrderBy
       $offset: Int
       $limit: Int
     ) {
       ProcessInstances(
         where: $where
+        orderBy: $orderBy
         pagination: { offset: $offset, limit: $limit }
       ) {
         id
@@ -1203,6 +1206,7 @@ export namespace GraphQL {
    * const { data, loading, error } = useGetProcessInstancesQuery({
    *   variables: {
    *      where: // value for 'where'
+   *      orderBy: // value for 'orderBy'
    *      offset: // value for 'offset'
    *      limit: // value for 'limit'
    *   },

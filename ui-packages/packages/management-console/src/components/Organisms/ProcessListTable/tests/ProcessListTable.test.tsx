@@ -124,7 +124,9 @@ const props = {
   selectedInstances: [],
   setSelectableInstances: jest.fn(),
   setIsAllChecked: jest.fn(),
-  selectableInstances: 0
+  selectableInstances: 0,
+  onSort: jest.fn(),
+  sortBy: { lastUpdate: GraphQL.OrderBy.Desc }
 };
 
 describe('ProcessListPage tests', () => {

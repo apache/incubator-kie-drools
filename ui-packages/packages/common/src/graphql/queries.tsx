@@ -3,11 +3,13 @@ import gql from 'graphql-tag';
 const GET_PROCESS_INSTANCES = gql`
   query getProcessInstances(
     $where: ProcessInstanceArgument
+    $orderBy: ProcessInstanceOrderBy
     $offset: Int
     $limit: Int
   ) {
     ProcessInstances(
       where: $where
+      orderBy: $orderBy
       pagination: { offset: $offset, limit: $limit }
     ) {
       id

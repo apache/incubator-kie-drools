@@ -55,7 +55,6 @@ interface IOwnProps {
   setIsAllChecked: (isAllChecked: boolean) => void;
   statusArray: GraphQL.ProcessInstanceState[];
   setStatusArray: (stautsArray) => void;
-  setSelectableInstances: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export type filterType = {
@@ -83,7 +82,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   setSelectedInstances,
   statusArray,
   setStatusArray,
-  setSelectableInstances,
   ouiaId,
   ouiaSafe
 }) => {
@@ -91,7 +89,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState<boolean>(
     false
   );
-  const [shouldRefresh, setShouldRefresh] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
@@ -254,7 +251,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const onFilterClick = (): void => {
-    setShouldRefresh(true);
     filters.status = statusArray;
     searchWord.length > 0 &&
       !filters.businessKey.includes(searchWord) &&
@@ -266,7 +262,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const onSelect = (event, selection): void => {
-    setShouldRefresh(false);
     if (selection) {
       const index = statusArray.indexOf(selection);
       if (index === -1) {
@@ -282,7 +277,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const onDelete = (type = '', id = ''): void => {
-    setShouldRefresh(true);
     if (type === 'Status') {
       const copyOfStatusArray = statusArray.slice();
       _.remove(copyOfStatusArray, (status: string) => {
@@ -299,7 +293,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const clearAll = (): void => {
-    setShouldRefresh(true);
     setSearchWord('');
     setFilters({
       ...filters,
@@ -312,7 +305,7 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const onRefreshClick = (): void => {
-    shouldRefresh && filterClick(statusArray);
+    filterClick(statusArray);
   };
   const onStatusToggle = isExpandedItem => {
     setIsExpanded(isExpandedItem);
@@ -328,7 +321,6 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   };
   const handleEnterClick = (e): void => {
     if (e.key === 'Enter') {
-      setShouldRefresh(true);
       searchWord.length > 0 && onFilterClick();
     }
   };

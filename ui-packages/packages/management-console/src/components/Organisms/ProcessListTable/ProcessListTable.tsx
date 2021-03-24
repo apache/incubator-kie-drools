@@ -6,7 +6,8 @@ import {
   Tr,
   Th,
   Td,
-  ExpandableRowContent
+  ExpandableRowContent,
+  ISortBy
 } from '@patternfly/react-table';
 import {
   componentOuiaProps,
@@ -58,6 +59,8 @@ interface IOwnProps {
   setSelectableInstances: React.Dispatch<React.SetStateAction<number>>;
   setIsAllChecked: (isAllChecked: boolean) => void;
   selectableInstances: number;
+  onSort: (event: any, index: number, direction: 'desc' | 'asc') => void;
+  sortBy: ISortBy;
 }
 
 interface RowPairType {
@@ -79,6 +82,8 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
   setSelectableInstances,
   setIsAllChecked,
   selectableInstances,
+  onSort,
+  sortBy,
   ouiaId,
   ouiaSafe
 }) => {
@@ -428,10 +433,24 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
                 width: '86px'
               }}
             />
-            <Th>{columns[0]}</Th>
-            <Th>{columns[1]}</Th>
-            <Th>{columns[2]}</Th>
-            <Th>{columns[3]}</Th>
+            {columns.map((column, columnIndex) => {
+              const sortParams = {
+                sort: {
+                  sortBy,
+                  onSort,
+                  columnIndex
+                }
+              };
+              if (!loading && rowPairs.length > 0) {
+                return (
+                  <Th key={columnIndex} {...sortParams}>
+                    {column}
+                  </Th>
+                );
+              } else {
+                return <Th key={columnIndex}>{column}</Th>;
+              }
+            })}
             <Th style={{ width: '188px' }}>{columns[4]}</Th>
           </Tr>
         </Thead>

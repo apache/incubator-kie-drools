@@ -8,7 +8,7 @@ var bodyParser = require('body-parser')
 // GraphQL - Apollo
 const { GraphQLScalarType } = require('graphql');
 const uuidv1 = require('uuid/v1');
-
+const _ = require('lodash');
 // Config
 const config = require('./config');
 
@@ -108,7 +108,7 @@ function paginatedResult(arr, offset, limit) {
 const resolvers = {
   Query: {
     ProcessInstances: async (parent, args) => {
-      const result = data.ProcessInstanceData.filter(datum => {
+      let result = data.ProcessInstanceData.filter(datum => {
         console.log('args', args['where']);
         if (args['where'].id && args['where'].id.equal) {
           return datum.id == args['where'].id.equal;
@@ -159,10 +159,17 @@ const resolvers = {
           return false;
         }
       });
-
+      if (args['orderBy']) {
+        console.log('orderBy args: ',args['orderBy'])
+        result = _.orderBy(
+          result,
+          _.keys(args['orderBy']).map(key => key),
+          _.values(args['orderBy']).map(value => value.toLowerCase())
+        );
+      }
       await timeout(2000);
       if (args['pagination']) {
-        return paginatedResult(
+        result = paginatedResult(
           result,
           args['pagination'].offset,
           args['pagination'].limit

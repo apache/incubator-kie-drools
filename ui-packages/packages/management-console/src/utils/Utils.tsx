@@ -518,3 +518,17 @@ export const checkProcessInstanceState = (
     return true;
   }
 };
+
+export const alterOrderByObj = (orderByObj): GraphQL.ProcessInstanceOrderBy => {
+  if (orderByObj['id']) {
+    orderByObj['processName'] = orderByObj['id'];
+    delete orderByObj['id'];
+  } else if (orderByObj['status']) {
+    orderByObj['state'] = orderByObj['status'];
+    delete orderByObj['status'];
+  } else if (orderByObj['created']) {
+    orderByObj['start'] = orderByObj['created'];
+    delete orderByObj['created'];
+  }
+  return orderByObj;
+};
