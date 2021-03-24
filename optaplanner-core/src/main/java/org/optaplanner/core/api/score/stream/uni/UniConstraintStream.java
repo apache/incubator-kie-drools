@@ -867,6 +867,140 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
 
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link TriConstraintStream}, consisting of unique tuples with three
+     * facts.
+     * <p>
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     * The third fact is the return value of the third group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     *
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, GroupKeyC_> TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+            Function<A, GroupKeyC_> groupKeyCMapping);
+
+    /**
+     * Combines the semantics of {@link #groupBy(Function, Function)} and {@link #groupBy(UniConstraintCollector)}.
+     * That is, the first three facts in the tuple follow the {@link #groupBy(Function, Function)} semantics.
+     * The final fact is the result of applying the first {@link UniConstraintCollector#finisher()} on all the tuples
+     * of the original {@link UniConstraintStream} that belong to the group.
+     *
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
+     * @param collectorD never null, the collector to perform the grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> groupBy(
+                    Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+                    Function<A, GroupKeyC_> groupKeyCMapping,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
+
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
+     * facts.
+     * <p>
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     * The third fact is the return value of the third group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     * The fourth fact is the return value of the fourth group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     *
+     * @param groupKeyAMapping * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     *        * {@code [20, 25, 30]},
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
+     * @param groupKeyDMapping never null, function to convert the original tuple into a fourth fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> groupBy(
+                    Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+                    Function<A, GroupKeyC_> groupKeyCMapping, Function<A, GroupKeyD_> groupKeyDMapping);
+
+    // ************************************************************************
+    // Operations with duplicate tuple possibility
+    // ************************************************************************
+
+    /**
+     * Transforms the stream in such a way that tuples are remapped using the given function.
+     * This may produce a stream with duplicate tuples.
+     * See {@link #distinct()} for details.
+     *
+     * There are several recommendations for implementing the mapping function:
+     *
+     * <ul>
+     * <li>Purity.
+     * The mapping function should only depend on its input.
+     * That is, given the same input, it always returns the same output.</li>
+     * <li>Bijectivity.
+     * No two input tuples should map to the same output tuple,
+     * or to tuples that are {@link Object#equals(Object) equal}.
+     * Not following this recommendation creates a constraint stream with duplicate tuples,
+     * and may force you to use {@link #distinct()} later, which comes with a performance cost.</li>
+     * <li>Immutable data carriers.
+     * The objects returned by the mapping function should be identified by their contents and nothing else.
+     * If two of them have contents which {@link Object#equals(Object) equal},
+     * then they should likewise {@link Object#equals(Object) equal} and preferably be the same instance.
+     * The objects returned by the mapping function should also be immutable,
+     * meaning their contents should not be allowed to change.</li>
+     * </ul>
+     *
+     * <p>
+     * Simple example: assuming a constraint stream of tuple of {@code Person}s
+     * {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30)]},
+     * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     * {@code [20, 25, 30]},
+     *
+     * <p>
+     * Example with a non-bijective mapping function: assuming a constraint stream of tuple of {@code Person}s
+     * {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]},
+     * calling {@code map(Person::getAge)} on such stream will produce a stream of {@link Integer}s
+     * {@code [20, 25, 30, 30, 20]}.
+     *
+     * @param mapping never null, function to convert the original tuple into the new tuple
+     * @param <ResultA_> the type of the only fact in the resulting {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping);
+
+    /**
+     * Transforms the stream in such a way that all the tuples going through it are distinct.
+     * (No two tuples will {@link Object#equals(Object) equal}.)
+     *
+     * <p>
+     * By default, tuples going through a constraint stream are distinct.
+     * However, operations such as {@link #map(Function)} may create a stream which breaks that promise.
+     * By calling this method on such a stream,
+     * duplicate copies of the same tuple will be omitted at a performance cost.
+     *
+     * @return never null
+     */
+    UniConstraintStream<A> distinct();
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

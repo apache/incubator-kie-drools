@@ -87,6 +87,11 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping);
     }
 
+    @Override
+    public boolean guaranteesDistinct() {
+        return true;
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

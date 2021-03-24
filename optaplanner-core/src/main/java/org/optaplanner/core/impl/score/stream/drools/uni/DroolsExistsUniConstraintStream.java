@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
+    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final UniLeftHandSide<A> leftHandSide;
     private final String streamName;
 
@@ -29,10 +30,16 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************

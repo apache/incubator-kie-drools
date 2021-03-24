@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,11 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
         if (predicate == null) {
             throw new IllegalArgumentException("The predicate (null) cannot be null.");
         }
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     @Override

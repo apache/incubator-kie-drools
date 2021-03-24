@@ -16,8 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import org.drools.model.DSL;
 import org.drools.model.Variable;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.TriFunction;
 
 /**
  * Creates {@link Variable}s with unique names, by adding numeric suffixes to the user-provided names.
@@ -37,28 +42,106 @@ public interface DroolsVariableFactory {
      *        types in the working memory. Therefore, it is desirable to be as specific as possible.
      * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
      *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param <X> generic type of the variable
+     * @param <U> generic type of the variable
      * @return new variable declaration, not yet bound to anything
      */
-    <X> Variable<? extends X> createVariable(Class<X> clz, String baseName);
+    <U> Variable<? extends U> createVariable(Class<U> clz, String baseName);
 
     /**
-     * Declare a new {@link Variable} with a given name, the contents of which will be identical to the source variable.
-     * Delegates to {@link DSL#declarationOf(Class, String, org.drools.model.DeclarationSource)}.
-     *
-     * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
-     *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
-     * @param source source of the variable
-     * @param <X> generic type of the variable
-     * @return new variable declaration, not yet bound to anything
+     * As defined by {@link #createVariable(String, Variable, boolean)} with no flattening.
      */
-    <X> Variable<X> createVariable(String baseName, Variable<X> source);
+    default <U> Variable<U> createVariable(String baseName, Variable<U> source) {
+        return createVariable(baseName, source, false);
+    }
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Function, boolean)} with no flattening.
+     */
+    default <U, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source, Function<U, Result_> mapping) {
+        return createVariable(baseName, source, mapping, false);
+    }
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Variable, BiFunction, boolean)} with no flattening.
+     */
+    default <U, V, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
+            BiFunction<U, V, Result_> mapping) {
+        return createVariable(baseName, source1, source2, mapping, false);
+    }
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Variable, Variable, TriFunction, boolean)}
+     * with no flattening.
+     */
+    default <U, V, W, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
+            Variable<W> source3, TriFunction<U, V, W, Result_> mapping) {
+        return createVariable(baseName, source1, source2, source3, mapping, false);
+    }
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Variable, Variable, Variable, QuadFunction, boolean)}
+     * with no flattening.
+     */
+    default <U, V, W, Y, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
+            Variable<W> source3, Variable<Y> source4, QuadFunction<U, V, W, Y, Result_> mapping) {
+        return createVariable(baseName, source1, source2, source3, source4, mapping, false);
+    }
 
     /**
      * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for details.
      */
-    default <X> Variable<X> createVariable(String baseName) {
-        return (Variable<X>) createVariable(Object.class, baseName);
+    default <U> Variable<U> createVariable(String baseName) {
+        return (Variable<U>) createVariable(Object.class, baseName);
     }
+
+    /**
+     * Declare a new {@link Variable} with a given name,
+     * where the value of the variable will be read from the provided source variable.
+     * If the value is {@link Iterable},
+     * the final argument to this method controls whether the elements will be treated individually or not.
+     *
+     * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
+     *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
+     * @param source the variable the value of which will be set to the new variable
+     * @param flatten if true, we will flatten the collection and return one element after another
+     * @param <U> generic type of the variable
+     * @return never null
+     */
+    <U> Variable<U> createVariable(String baseName, Variable<U> source, boolean flatten);
+
+    /**
+     * Declare a new {@link Variable} with a given name,
+     * where the value of the variable will be computed from the provided source variable.
+     * If the computed value is {@link Iterable},
+     * the final argument to this method controls whether the elements will be treated individually or not.
+     *
+     * @param baseName name of the variable, mostly useful for debugging purposes. Will be decorated by a numeric
+     *        identifier to prevent multiple variables of the same name to exist within left-hand side of a single rule.
+     * @param source the variable the value of which will be set to the new variable
+     * @param mapping the function to apply on the source variable
+     * @param flatten if true, we will flatten the collection and return one element after another
+     * @param <U> generic type of the variable
+     * @return never null
+     */
+    <U, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source, Function<U, Result_> mapping,
+            boolean flatten);
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Function, boolean)}.
+     */
+    <U, V, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
+            BiFunction<U, V, Result_> mapping, boolean flatten);
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Function, boolean)}.
+     */
+    <U, V, W, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
+            Variable<W> source3, TriFunction<U, V, W, Result_> mapping, boolean flatten);
+
+    /**
+     * As defined by {@link #createVariable(String, Variable, Function, boolean)}.
+     */
+    <U, V, W, Y, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
+            Variable<W> source3, Variable<Y> source4, QuadFunction<U, V, W, Y, Result_> mapping, boolean flatten);
 
 }

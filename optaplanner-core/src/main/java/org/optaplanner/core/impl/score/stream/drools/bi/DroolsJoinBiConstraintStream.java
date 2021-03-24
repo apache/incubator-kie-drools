@@ -24,12 +24,20 @@ public final class DroolsJoinBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BiLeftHandSide<A, B> leftHandSide;
+    private final boolean guaranteesDistinct;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             DroolsAbstractUniConstraintStream<Solution_, B> otherStream, BiJoiner<A, B> biJoiner) {
         super(constraintFactory);
+
         this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), biJoiner);
+        this.guaranteesDistinct = parent.guaranteesDistinct() && otherStream.guaranteesDistinct();
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return guaranteesDistinct;
     }
 
     @Override

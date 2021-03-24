@@ -92,6 +92,26 @@ public interface ConstraintStreamFunctionalTest {
 
     void groupBy_2Mapping2Collector();
 
+    void groupBy_3Mapping0Collector();
+
+    void groupBy_3Mapping1Collector();
+
+    void groupBy_4Mapping0Collector();
+
+    // ************************************************************************
+    // Map/distinct
+    // ************************************************************************
+
+    void distinct();
+
+    void mapWithDuplicates();
+
+    void mapWithoutDuplicates();
+
+    void mapAndDistinctWithDuplicates();
+
+    void mapAndDistinctWithoutDuplicates();
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

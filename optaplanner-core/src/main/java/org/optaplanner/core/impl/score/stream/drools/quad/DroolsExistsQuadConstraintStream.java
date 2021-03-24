@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.QuadLeftHandSide;
 public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
+    private final DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     private final QuadLeftHandSide<A, B, C, D> leftHandSide;
     private final String streamName;
 
@@ -30,10 +31,16 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean shouldExist, Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners);
         this.streamName = shouldExist ? "QuadIfExists()" : "QuadIfNotExists()";
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************

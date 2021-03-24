@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,23 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
+
+    /**
+     * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.
+     * See {@link #distinct()} for details.
+     *
+     * @return true if the guarantee of distinct tuples is provided
+     */
+    boolean guaranteesDistinct();
+
+    @Override
+    default UniConstraintStream<A> distinct() {
+        if (guaranteesDistinct()) {
+            return this;
+        } else {
+            return groupBy(Function.identity());
+        }
+    }
 
     @Override
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,

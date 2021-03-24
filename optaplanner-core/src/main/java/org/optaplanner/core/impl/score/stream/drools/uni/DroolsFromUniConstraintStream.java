@@ -30,6 +30,11 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
         this.leftHandSide = new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
     }
 
+    @Override
+    public boolean guaranteesDistinct() {
+        return true;
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

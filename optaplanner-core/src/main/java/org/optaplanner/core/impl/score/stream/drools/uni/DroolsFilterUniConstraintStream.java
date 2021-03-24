@@ -23,12 +23,19 @@ import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
+    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final UniLeftHandSide<A> leftHandSide;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = parent.getLeftHandSide().andFilter(predicate);
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************

@@ -23,12 +23,19 @@ import org.optaplanner.core.impl.score.stream.drools.common.TriLeftHandSide;
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
+    private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private final TriLeftHandSide<A, B, C> leftHandSide;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = parent.getLeftHandSide().andFilter(triPredicate);
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************

@@ -122,6 +122,11 @@ public final class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
     }
 
     @Override
+    public boolean guaranteesDistinct() {
+        return true;
+    }
+
+    @Override
     public BiLeftHandSide<NewA, NewB> getLeftHandSide() {
         return leftHandSide;
     }

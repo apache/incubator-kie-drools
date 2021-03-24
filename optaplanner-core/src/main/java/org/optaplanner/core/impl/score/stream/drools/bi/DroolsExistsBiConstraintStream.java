@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
+    private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
     private final BiLeftHandSide<A, B> leftHandSide;
     private final String streamName;
 
@@ -30,10 +31,16 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************

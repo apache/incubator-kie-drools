@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,26 +22,32 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBridgeBiNode;
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniNode;
 
 public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends BavetAbstractTriConstraintStream<Solution_, A, B, C>
         implements BavetJoinConstraintStream<Solution_> {
 
-    private final BavetAbstractConstraintStream<Solution_> leftParent;
-    private final BavetAbstractConstraintStream<Solution_> rightParent;
+    private final BavetAbstractBiConstraintStream<Solution_, A, B> leftParent;
+    private final BavetAbstractUniConstraintStream<Solution_, C> rightParent;
 
     public BavetJoinTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractConstraintStream<Solution_> leftParent,
-            BavetAbstractConstraintStream<Solution_> rightParent) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> leftParent,
+            BavetAbstractUniConstraintStream<Solution_, C> rightParent) {
         super(constraintFactory);
         this.leftParent = leftParent;
         this.rightParent = rightParent;
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return leftParent.guaranteesDistinct() && rightParent.guaranteesDistinct();
     }
 
     @Override

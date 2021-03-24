@@ -95,6 +95,11 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
+    }
+
+    @Override
     public List<BavetFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }

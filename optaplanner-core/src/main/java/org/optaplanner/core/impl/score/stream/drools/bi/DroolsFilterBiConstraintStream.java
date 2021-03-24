@@ -24,12 +24,19 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 public final class DroolsFilterBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
+    private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
     private final BiLeftHandSide<A, B> leftHandSide;
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = parent.getLeftHandSide().andFilter(biPredicate);
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     @Override

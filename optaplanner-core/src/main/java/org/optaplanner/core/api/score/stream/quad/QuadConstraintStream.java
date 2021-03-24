@@ -485,6 +485,110 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
 
+    /**
+     * Convert the {@link QuadConstraintStream} to a {@link TriConstraintStream}, consisting of unique tuples with three
+     * facts.
+     * <p>
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     * The third fact is the return value of the third group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     *
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, GroupKeyC_> TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> groupBy(
+            QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+            QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+            QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping);
+
+    /**
+     * Combines the semantics of {@link #groupBy(QuadFunction, QuadFunction)} and {@link #groupBy(QuadConstraintCollector)}.
+     * That is, the first three facts in the tuple follow the {@link #groupBy(QuadFunction, QuadFunction)} semantics.
+     * The final fact is the result of applying the first {@link QuadConstraintCollector#finisher()} on all the tuples
+     * of the original {@link QuadConstraintStream} that belong to the group.
+     *
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
+     * @param collectorD never null, the collector to perform the grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> groupBy(
+                    QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+                    QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+                    QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
+
+    /**
+     * Convert the {@link TriConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
+     * facts.
+     * <p>
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     * The third fact is the return value of the third group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     * The fourth fact is the return value of the fourth group key mapping function, applied on all incoming tuples with
+     * the same first fact.
+     *
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param groupKeyCMapping never null, function to convert the original tuple into a third fact
+     * @param groupKeyDMapping never null, function to convert the original tuple into a fourth fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> groupBy(
+                    QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+                    QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+                    QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping,
+                    QuadFunction<A, B, C, D, GroupKeyD_> groupKeyDMapping);
+
+    // ************************************************************************
+    // Operations with duplicate tuple possibility
+    // ************************************************************************
+
+    /**
+     * As defined by {@link UniConstraintStream#map(Function)}.
+     *
+     * @param mapping never null, function to convert the original tuple into the new tuple
+     * @param <ResultA_> the type of the only fact in the resulting {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultA_> UniConstraintStream<ResultA_> map(QuadFunction<A, B, C, D, ResultA_> mapping);
+
+    /**
+     * Transforms the stream in such a way that all the tuples going through it are distinct.
+     * (No two tuples will {@link Object#equals(Object) equal}.)
+     *
+     * <p>
+     * By default, tuples going through a constraint stream are distinct.
+     * However, operations such as {@link #map(QuadFunction)} may create a stream which breaks that promise.
+     * By calling this method on such a stream,
+     * duplicate copies of the same tuple will be omitted at a performance cost.
+     *
+     * @return never null
+     */
+    QuadConstraintStream<A, B, C, D> distinct();
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

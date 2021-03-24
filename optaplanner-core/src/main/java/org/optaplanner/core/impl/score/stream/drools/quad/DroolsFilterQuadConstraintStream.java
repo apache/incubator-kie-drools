@@ -23,12 +23,19 @@ import org.optaplanner.core.impl.score.stream.drools.common.QuadLeftHandSide;
 public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
+    private final DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     private final QuadLeftHandSide<A, B, C, D> leftHandSide;
 
     public DroolsFilterQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
         super(constraintFactory);
+        this.parent = parent;
         this.leftHandSide = parent.getLeftHandSide().andFilter(predicate);
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     // ************************************************************************

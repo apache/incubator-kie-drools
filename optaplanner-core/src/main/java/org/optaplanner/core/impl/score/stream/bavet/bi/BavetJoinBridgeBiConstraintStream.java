@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,11 @@ public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
         this.isLeftBridge = isLeftBridge;
         this.mapping = mapping;
         this.indexFactory = indexFactory;
+    }
+
+    @Override
+    public boolean guaranteesDistinct() {
+        return parent.guaranteesDistinct();
     }
 
     public void setJoinStream(BavetJoinConstraintStream<Solution_> joinStream) {

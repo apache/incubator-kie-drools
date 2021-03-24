@@ -10230,6 +10230,186 @@
           "methodName": "hashCode",
           "elementKind": "method",
           "justification": "JDK 16 does fun things."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::distinct()",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "distinct",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKeyA_>, java.util.function.BiFunction<A, B, GroupKeyB_>, java.util.function.BiFunction<A, B, GroupKeyC_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKeyA_>, java.util.function.BiFunction<A, B, GroupKeyB_>, java.util.function.BiFunction<A, B, GroupKeyC_>, java.util.function.BiFunction<A, B, GroupKeyD_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::groupBy(java.util.function.BiFunction<A, B, GroupKeyA_>, java.util.function.BiFunction<A, B, GroupKeyB_>, java.util.function.BiFunction<A, B, GroupKeyC_>, org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ResultContainerD_, ResultD_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::map(java.util.function.BiFunction<A, B, ResultA_>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "map",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::distinct()",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "distinct",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::groupBy(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyA_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyB_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyC_>)",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::groupBy(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyA_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyB_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyC_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyD_>)",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::groupBy(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyA_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyB_>, org.optaplanner.core.api.function.QuadFunction<A, B, C, D, GroupKeyC_>, org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_>)",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::map(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, ResultA_>)",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "map",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::distinct()",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "distinct",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyA_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyB_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyC_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyA_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyB_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyC_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyD_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::groupBy(org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyA_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyB_>, org.optaplanner.core.api.function.TriFunction<A, B, C, GroupKeyC_>, org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::map(org.optaplanner.core.api.function.TriFunction<A, B, C, ResultA_>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "map",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::distinct()",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "distinct",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, java.util.function.Function<A, GroupKeyC_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, java.util.function.Function<A, GroupKeyC_>, java.util.function.Function<A, GroupKeyD_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultContainerD_, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::groupBy(java.util.function.Function<A, GroupKeyA_>, java.util.function.Function<A, GroupKeyB_>, java.util.function.Function<A, GroupKeyC_>, org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ResultContainerD_, ResultD_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "groupBy",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::map(java.util.function.Function<A, ResultA_>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "map",
+          "elementKind": "method",
+          "justification": "Constraint streams get new features."
         }
       ]
     }

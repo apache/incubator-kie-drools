@@ -176,6 +176,31 @@ The following constraint stream cardinalities are currently supported:
 |4          |  Quad|`QuadConstraintStream<A, B, C, D>`
 |===
 
+[[constraintStreamsHigherCardinalities]]
+=== Achieving higher cardinalities
+
+OptaPlanner currently does not support constraint stream cardinalities higher than 4.
+However, with <<constraintStreamsMappingTuples,tuple mapping>> effectively infinite cardinality is possible:
+
+[source,java,options="nowrap"]
+----
+    private Constraint pentaStreamExample(ConstraintFactory factory) {
+        return factory.from(Shift.class) // UniConstraintStream<Shift>
+                .join(Shift.class)       // BiConstraintStream<Shift, Shift>
+                .join(Shift.class)       // TriConstraintStream<Shift, Shift, Shift>
+                .join(Shift.class)       // QuadConstraintStream<Shift, Shift, Shift, Shift>
+                .map(Tuple::of)          // UniConstraintStream<Tuple<Shift, Shift, Shift, Shift>>
+                .join(Shift.class)       // BiConstraintStream<Tuple<Shift, Shift, Shift, Shift>, Shift>
+                ...                      // This BiConstraintStream carries 5 Shift elements.
+    }
+----
+
+[NOTE]
+====
+OptaPlanner does not provide any `Tuple` implementations out of the box.
+It's recommended to use one of the myriad freely available 3rd party implementations.
+Should a custom implementation be necessary, see <<constraintStreamsDesigningMappingFunction,guidelines for mapping functions>>.
+====
 
 [[constraintStreamsBuildingBlocks]]
 == Building blocks
@@ -585,6 +610,71 @@ Joining should only be used in cases where the other fact is actually required f
 the stream.
 ====
 
+[[constraintStreamsMappingTuples]]
+=== Mapping tuples
+
+Mapping enables you to transform each tuple in a constraint stream by applying a mapping function to it.
+The result of such mapping is `UniConstraintStream` of the mapped tuples.
+
+[source,java,options="nowrap"]
+----
+    private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class) // UniConstraintStream<CloudProcess>
+                .map(CloudProcess::getComputer)           // UniConstraintStream<CloudComputer>
+                ...
+    }
+----
+
+[NOTE]
+====
+In the example above, the mapping function produces duplicate tuples if two different `CloudProcess`es share a single `CloudComputer`.
+That is, such `CloudComputer` will appear in the resulting constraint stream twice.
+See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
+====
+
+[[constraintStreamsDesigningMappingFunction]]
+==== Designing the mapping function
+
+When designing the mapping function, follow these guidelines for optimal performance:
+
+* Keep the function pure.
+  The mapping function should only depend on its input.
+  That is, given the same input, it always returns the same output.
+* Keep the function bijective.
+  No two input tuples should map to the same output tuple, or to tuples that are equal.
+  Not following this recommendation creates a constraint stream with duplicate tuples,
+  and may force you to use <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> later.
+* Use immutable data carriers.
+  The tuples returned by the mapping function should be immutable and identified by their contents and nothing else.
+  If two tuples carry objects which equal one another,
+  those two tuples should likewise equal and preferably be the same instance.
+
+[[constraintStreamsDealingWithDuplicateTuplesUsingDistinct]]
+==== Dealing with duplicate tuples using `distinct()`
+
+As a general rule, tuples in constraint streams will be distinct.
+That is, no two tuples that equal one another.
+However, certain operations such as <<constraintStreamsMappingTuples,tuple mapping>> may produce constraint streams
+where that is not true.
+
+If a constraint stream produces duplicate tuples, you can use the `distinct()` building block
+to have the duplicate copies eliminated.
+
+[source,java,options="nowrap"]
+----
+    private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class) // UniConstraintStream<CloudProcess>
+                .map(CloudProcess::getComputer)           // UniConstraintStream<CloudComputer>
+                .distinct()                               // The same, each CloudComputer just once.
+                ...
+    }
+----
+
+[NOTE]
+====
+There is a performance cost to `distinct()`.
+For optimal performance, don't use constraint stream operations that produce duplicate tuples, to avoid the need to call `distinct()`.
+====
 
 [[constraintStreamsTesting]]
 == Testing a constraint stream
