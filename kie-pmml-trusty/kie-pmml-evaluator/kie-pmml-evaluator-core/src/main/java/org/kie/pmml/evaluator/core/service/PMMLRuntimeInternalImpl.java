@@ -40,6 +40,8 @@ import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.api.enums.ResultCode.OK;
+
 public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeInternalImpl.class);
@@ -47,7 +49,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     private final KieBase knowledgeBase;
     private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase, final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase,
+                                   final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -95,18 +98,23 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         addMissingValuesReplacements(model, context);
         executeTransformations(model, context);
         PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
-                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s", model.getPmmlMODEL())));
-        return executor.evaluate(knowledgeBase, model, context);
+                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
+                                                                      model.getPmmlMODEL())));
+        final PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
+        executeTargets(toReturn, model);
+        return toReturn;
     }
 
     /**
      * Add missing input values if defined in original PMML as <b>missingValueReplacement</b>.
      * <p>
-     * "missingValueReplacement: If this attribute is specified then a missing input value is automatically replaced by the given value.
+     * "missingValueReplacement: If this attribute is specified then a missing input value is automatically replaced
+     * by the given value.
      * That is, the model itself works as if the given value was found in the original input. "
      * @param model
      * @param context
-     * @see <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
+     * @see
+     * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
      */
     protected void addMissingValuesReplacements(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("addMissingValuesReplacements {} {}", model, context);
@@ -127,14 +135,17 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
      * @param model
      * @param context
      * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html">Transformations</a>
-     * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
+     * @see
+     * <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
      */
     protected void executeTransformations(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("executeTransformations {} {}", model, context);
         final PMMLRequestData requestData = context.getRequestData();
         final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
-        final List<KiePMMLNameValue> kiePMMLNameValues = getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
-        final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = model.getCommonTransformationsMap();
+        final List<KiePMMLNameValue> kiePMMLNameValues =
+                getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
+        final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap =
+                model.getCommonTransformationsMap();
         commonTransformationsMap.forEach((fieldName, transformationFunction) -> {
             // Common Transformations need to be done only once
             if (!mappedRequestParams.containsKey(fieldName)) {
@@ -145,7 +156,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
                 kiePMMLNameValues.add(new KiePMMLNameValue(fieldName, commonTranformation));
             }
         });
-        final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = model.getLocalTransformationsMap();
+        final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap =
+                model.getLocalTransformationsMap();
         localTransformationsMap.forEach((fieldName, transformationFunction) -> {
             logger.debug("localTransformation {} {}", fieldName, transformationFunction);
             Object localTransformation = transformationFunction.apply(kiePMMLNameValues);
@@ -157,6 +169,33 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
             requestData.addRequestParam(fieldName, localTransformation);
             context.addLocalTranformation(fieldName, localTransformation);
         });
+    }
+
+    /**
+     * Execute <b>modifications</b> on target result.
+     * @param toModify
+     * @param model
+     * @see <a href="http://dmg.org/pmml/v4-4-1/Targets.html>Targets</a>
+     */
+    protected void executeTargets(final PMML4Result toModify, final KiePMMLModel model) {
+        logger.debug("executeTargets {} {}", toModify, model);
+        if (!toModify.getResultCode().equals(OK.getName())) {
+            return;
+        }
+        final String resultObjectName = toModify.getResultObjectName();
+        final Map<String, Object> resultVariables = toModify.getResultVariables();
+        model.getKiePMMLTargets()
+                .stream()
+                .filter(kiePMMLTarget -> kiePMMLTarget.getField() != null && kiePMMLTarget.getField().equals(resultObjectName))
+                .findFirst()
+                .ifPresent(kiePMMLTarget -> {
+                    Object prediction = resultVariables.get(resultObjectName);
+                    logger.debug("Original prediction {}", prediction);
+                    Object modifiedPrediction = kiePMMLTarget.modifyPrediction(resultVariables.get(resultObjectName));
+                    logger.debug("Modified prediction {}", modifiedPrediction);
+                    resultVariables.put(resultObjectName, modifiedPrediction);
+                });
+
     }
 
     /**
