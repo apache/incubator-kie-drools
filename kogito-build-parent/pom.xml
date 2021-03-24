@@ -126,7 +126,9 @@
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
     <version.com.github.victools>4.12.1</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
+    <version.com.github.ben-manes.caffeine>2.8.5</version.com.github.ben-manes.caffeine>
     <version.com.google.protobuf>3.14.0</version.com.google.protobuf>
+    <version.com.google.guava>16.0.1</version.com.google.guava>
     <version.org.openapitools>5.0.1</version.org.openapitools>
     <version.org.openapitools.jackson.databind.nullable>0.2.0</version.org.openapitools.jackson.databind.nullable>
     <version.com.squareup.okhttp3>3.14.6</version.com.squareup.okhttp3>
@@ -189,14 +191,14 @@
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
-    <version.org.springframework.boot>2.3.1.RELEASE</version.org.springframework.boot>
-    <version.org.springframework>5.2.7.RELEASE</version.org.springframework>
-    <version.org.springframework.kafka>2.5.2.RELEASE</version.org.springframework.kafka>
+    <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
+    <version.org.springframework>5.2.9.RELEASE</version.org.springframework>
+    <version.org.springframework.kafka>2.5.6.RELEASE</version.org.springframework.kafka>
     <version.org.springdoc>1.5.2</version.org.springdoc>
     <version.org.testcontainers>1.15.1</version.org.testcontainers>
     <version.org.xmlunit>2.2.1</version.org.xmlunit>
-    <version.io.netty>4.1.50.Final</version.io.netty>
-    <version.io.projectreactor>3.3.6.RELEASE</version.io.projectreactor>
+    <version.io.netty>4.1.52.Final</version.io.netty>
+    <version.io.projectreactor>3.3.10.RELEASE</version.io.projectreactor>
     <version.io.projectreactor.kafka>1.2.2.RELEASE</version.io.projectreactor.kafka>
     <version.xerces>2.11.0</version.xerces>
   </properties>

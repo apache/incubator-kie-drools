@@ -71,6 +71,18 @@
       <classifier>linux-x86_64</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>${version.com.github.ben-manes.caffeine}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${version.com.google.guava}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
