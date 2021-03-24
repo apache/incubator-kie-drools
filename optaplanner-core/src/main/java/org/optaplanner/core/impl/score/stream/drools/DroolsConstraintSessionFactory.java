@@ -37,7 +37,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.DirectFiringOption;
-import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
@@ -92,7 +91,6 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     private static KieSession buildKieSessionFromKieBase(KieBase kieBase) {
         KieSessionConfiguration config = KieServices.get().newKieSessionConfiguration();
         config.setOption(DirectFiringOption.YES); // For performance; not applicable to DRL due to insertLogical etc.
-        config.setOption(ThreadSafeOption.NO); // For performance; CS can guarantee no CEP, no multi-threaded session.
         Environment environment = KieServices.get().newEnvironment();
         return kieBase.newKieSession(config, environment);
     }
