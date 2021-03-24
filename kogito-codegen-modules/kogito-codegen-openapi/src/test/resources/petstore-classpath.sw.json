@@ -2,6 +2,7 @@
   "id": "petstore",
   "version": "1.0",
   "name": "Send CloudEvent after fetching inventory",
+  "start": "ProvisionOrdersState",
   "events": [
     {
       "name": "FetchComplete",
@@ -23,7 +24,6 @@
     {
       "name": "ProvisionOrdersState",
       "type": "operation",
-      "start": true,
       "actions": [
         {
           "functionRef": {
@@ -33,7 +33,7 @@
         {
           "functionRef": {
             "refName": "uploadFile",
-            "parameters": {
+            "arguments": {
               "petId": "${.pet.id}",
               "file": "$.{pet.file}"
             }

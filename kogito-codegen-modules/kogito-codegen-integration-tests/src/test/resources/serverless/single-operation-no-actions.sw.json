@@ -2,11 +2,11 @@
   "id": "noactions",
   "name": "test-wf",
   "version": "1.0",
+  "start": "HelloWorld",
   "states":[
     {
       "name":"HelloWorld",
       "type":"operation",
-      "start": true,
       "end": {
         "terminate": "true"
       }

@@ -1,6 +1,7 @@
 {
   "id": "produceeventontransition",
   "name": "Produce Event On Transition",
+  "start": "HelloWorld",
   "events": [
     {
       "name": "TestKafkaEvent",
@@ -26,13 +27,12 @@
     {
       "name": "HelloWorld",
       "type": "operation",
-      "start": true,
       "actionMode": "sequential",
       "actions": [
         {
           "functionRef": {
             "refName": "helloOne",
-            "parameters": {
+            "arguments": {
               "script": ""
             }
           }
@@ -55,7 +55,7 @@
         {
           "functionRef": {
             "refName": "helloTwo",
-            "parameters": {
+            "arguments": {
               "script": ""
             }
           }

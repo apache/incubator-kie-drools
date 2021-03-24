@@ -112,7 +112,12 @@ public class ServerlessWorkflowParser {
         Functions workflowFunctions = workflow.getFunctions();
 
         StartNode workflowStartNode = null;
+        String workflowStartStateName = workflow.getStart().getStateName();
         Map<String, EndNode> workflowEndNodes = new HashMap<>();
+
+        if (workflowStartStateName == null || workflowStartStateName.trim().length() < 1) {
+            throw new IllegalArgumentException("workflow does not define a starting state");
+        }
 
         State workflowStartState = ServerlessWorkflowUtils.getWorkflowStartState(workflow);
 
@@ -134,7 +139,7 @@ public class ServerlessWorkflowParser {
         for (State state : workflowStates) {
             if (state.getType().equals(DefaultState.Type.EVENT)) {
                 EventState eventState = (EventState) state;
-                if (eventState.getStart() == null) {
+                if (!eventState.getName().equals(workflowStartStateName)) {
                     throw new IllegalArgumentException("currently support only event start states");
                 }
 
@@ -172,7 +177,7 @@ public class ServerlessWorkflowParser {
                 CompositeContextNode embeddedSubProcess = factory.subProcessNode(idCounter.getAndIncrement(), state.getName(), process);
                 handleActions(workflowFunctions, operationState.getActions(), embeddedSubProcess);
 
-                if (state.getStart() != null) {
+                if (state.getName().equals(workflowStartStateName)) {
                     factory.connect(workflowStartNode.getId(), embeddedSubProcess.getId(), workflowStartNode.getId() + "_" + embeddedSubProcess.getId(), process);
                 }
 
@@ -192,7 +197,7 @@ public class ServerlessWorkflowParser {
 
                 TimerNode timerNode = factory.timerNode(idCounter.getAndIncrement(), delayState.getName(), delayState.getTimeDelay(), process);
 
-                if (state.getStart() != null) {
+                if (state.getName().equals(workflowStartStateName)) {
                     factory.connect(workflowStartNode.getId(), timerNode.getId(), workflowStartNode.getId() + "_" + timerNode.getId(), process);
                 }
 
@@ -220,7 +225,7 @@ public class ServerlessWorkflowParser {
                     actionNode = factory.scriptNode(idCounter.getAndIncrement(), injectState.getName(), "", process);
                 }
 
-                if (state.getStart() != null) {
+                if (state.getName().equals(workflowStartStateName)) {
                     factory.connect(workflowStartNode.getId(), actionNode.getId(), workflowStartNode.getId() + "_" + actionNode.getId(), process);
                 }
 
@@ -239,7 +244,7 @@ public class ServerlessWorkflowParser {
 
                 SubProcessNode callActivityNode = factory.callActivity(idCounter.getAndIncrement(), subflowState.getName(), subflowState.getWorkflowId(), subflowState.isWaitForCompletion(), process);
 
-                if (state.getStart() != null) {
+                if (state.getName().equals(workflowStartStateName)) {
                     factory.connect(workflowStartNode.getId(), callActivityNode.getId(), workflowStartNode.getId() + "_" + callActivityNode.getId(), process);
                 }
 
@@ -261,7 +266,7 @@ public class ServerlessWorkflowParser {
                     // data-based switch state
                     Split splitNode = factory.splitNode(idCounter.getAndIncrement(), switchState.getName(), Split.TYPE_XOR, process);
 
-                    if (state.getStart() != null) {
+                    if (state.getName().equals(workflowStartStateName)) {
                         factory.connect(workflowStartNode.getId(), splitNode.getId(), workflowStartNode.getId() + "_" + splitNode.getId(), process);
                     }
                     // switch states cannot be end states
@@ -273,7 +278,7 @@ public class ServerlessWorkflowParser {
                 } else if (switchState.getEventConditions() != null && !switchState.getEventConditions().isEmpty()) {
                     // event-based switch state
                     Split splitNode = factory.eventBasedSplit(idCounter.getAndIncrement(), switchState.getName(), process);
-                    if (state.getStart() != null) {
+                    if (state.getName().equals(workflowStartStateName)) {
                         factory.connect(workflowStartNode.getId(), splitNode.getId(), workflowStartNode.getId() + "_" + splitNode.getId(), process);
                     }
                     // switch states cannot be end states
@@ -301,7 +306,7 @@ public class ServerlessWorkflowParser {
                     factory.connect(callActivityNode.getId(), parallelJoin.getId(), callActivityNode.getId() + "_" + parallelJoin.getId(), process);
                 }
 
-                if (state.getStart() != null) {
+                if (state.getName().equals(workflowStartStateName)) {
                     factory.connect(workflowStartNode.getId(), parallelSplit.getId(), workflowStartNode.getId() + "_" + parallelSplit.getId(), process);
                 }
 
@@ -530,8 +535,9 @@ public class ServerlessWorkflowParser {
                                                     .scriptFunctionScript(
                                                             action
                                                                     .getFunctionRef()
-                                                                    .getParameters()
-                                                                    .get(SCRIPT_TYPE_PARAM)),
+                                                                    .getArguments()
+                                                                    .get(SCRIPT_TYPE_PARAM)
+                                                                    .asText()),
                                             embeddedSubProcess);
                             break;
                         case SYSOUT_TYPE:
@@ -543,8 +549,9 @@ public class ServerlessWorkflowParser {
                                                     .sysOutFunctionScript(
                                                             action
                                                                     .getFunctionRef()
-                                                                    .getParameters()
-                                                                    .get(SYSOUT_TYPE_PARAM)),
+                                                                    .getArguments()
+                                                                    .get(SYSOUT_TYPE_PARAM)
+                                                                    .asText()),
                                             embeddedSubProcess);
                             break;
                         case SERVICE_TYPE:

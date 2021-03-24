@@ -2,11 +2,11 @@
   "id": "switchworkflow",
   "name": "switch-wf",
   "version": "1.0",
+  "start": "AddInfo",
   "states":[
     {
       "name":"AddInfo",
       "type":"inject",
-      "start": true,
       "data": {
         "people": [
           {
@@ -15,9 +15,7 @@
           }
         ]
       },
-      "transition": {
-        "nextState": "ChooseOnAge"
-      }
+      "transition": "ChooseOnAge"
     },
     {
       "name": "ChooseOnAge",
@@ -25,21 +23,15 @@
       "dataConditions": [
         {
           "condition": "{{ $.people[?(@.age  >= 18)] }}",
-          "transition": {
-            "nextState": "Approve"
-          }
+          "transition": "Approve"
         },
         {
           "condition": "{{ $.people[?(@.age  < 18)] }}",
-          "transition": {
-            "nextState": "Deny"
-          }
+          "transition": "Deny"
         }
       ],
       "default": {
-        "transition": {
-          "nextState": "Approve"
-        }
+        "transition": "Approve"
       }
     },
     {

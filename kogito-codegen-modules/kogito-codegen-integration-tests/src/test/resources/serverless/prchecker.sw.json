@@ -2,11 +2,11 @@
   "id": "prchecker",
   "name": "Github PR Checker Workflow",
   "version": "1.0",
+  "start": "AddFiles",
   "states": [
     {
       "name": "AddFiles",
       "type": "inject",
-      "start": true,
       "data": {
         "files": [
           {
@@ -15,9 +15,7 @@
           }
         ]
       },
-      "transition": {
-        "nextState": "CheckBackend"
-      }
+      "transition": "CheckBackend"
     },
     {
       "name": "CheckBackend",
@@ -25,15 +23,11 @@
       "dataConditions": [
         {
           "condition": "{{ $.files[?(@.file  == 'backend')] }}",
-          "transition": {
-            "nextState": "CheckFrontend"
-          }
+          "transition": "CheckFrontend"
         },
         {
           "condition": "{{ $.files[?(@.file  != 'backend')] }}",
-          "transition": {
-            "nextState": "CheckFrontend"
-          }
+          "transition": "CheckFrontend"
         }
       ]
     },

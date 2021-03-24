@@ -1,7 +1,7 @@
----
 id: function
 name: test-wf
 version: '1.0'
+start: HelloWorld
 functions:
   - name: helloWorld
     metadata:
@@ -9,15 +9,13 @@ functions:
 states:
   - name: HelloWorld
     type: operation
-    start: true
     actionMode: sequential
     actions:
       - functionRef:
           refName: helloWorld
-          parameters:
+          arguments:
             script: System.out.println("Hello Serverless Workflow World");
-    transition:
-      nextState: SmallDelay
+    transition: SmallDelay
   - name: SmallDelay
     type: delay
     timeDelay: PT1S

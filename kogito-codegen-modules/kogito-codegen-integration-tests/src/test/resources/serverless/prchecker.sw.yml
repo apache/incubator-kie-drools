@@ -2,25 +2,22 @@
 id: prchecker
 name: Github PR Checker Workflow
 version: '1.0'
+start: AddFiles
 states:
   - name: AddFiles
     type: inject
-    start: true
     data:
       files:
         - file: frontend
           location: a/b/c/d
-    transition:
-      nextState: CheckBackend
+    transition: CheckBackend
   - name: CheckBackend
     type: switch
     dataConditions:
       - condition: "{{ $.files[?(@.file  == 'backend')] }}"
-        transition:
-          nextState: CheckFrontend
+        transition: CheckFrontend
       - condition: "{{ $.files[?(@.file  != 'backend')] }}"
-        transition:
-          nextState: CheckFrontend
+        transition: CheckFrontend
   - name: CheckFrontend
     type: switch
     dataConditions:

@@ -2,17 +2,15 @@
   "id": "singlesubflow",
   "name": "singlesubflow",
   "version": "1.0",
+  "start": "InjectTestData",
   "states":[
     {
       "name":"InjectTestData",
       "type":"inject",
-      "start": true,
       "data": {
         "parentData" : "parentTestData"
       },
-      "transition": {
-        "nextState": "SimpleSubFlow"
-      }
+      "transition": "SimpleSubFlow"
     },
     {
       "name":"SimpleSubFlow",

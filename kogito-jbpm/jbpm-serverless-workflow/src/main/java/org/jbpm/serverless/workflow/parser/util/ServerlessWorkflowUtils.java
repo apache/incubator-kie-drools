@@ -78,8 +78,9 @@ public class ServerlessWorkflowUtils {
     }
 
     public static State getWorkflowStartState(Workflow workflow) {
+        String wfStart = workflow.getStart().getStateName();
         return workflow.getStates().stream()
-                .filter(ws -> ws.getStart() != null)
+                .filter(ws -> ws.getName().equals(wfStart))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Workflow does not have a Start state"));
     }
 

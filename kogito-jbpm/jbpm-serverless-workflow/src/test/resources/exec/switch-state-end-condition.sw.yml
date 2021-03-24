@@ -1,16 +1,14 @@
----
 id: switchworkflow
 name: switch-wf
 version: '1.0'
+start: AddInfo
 states:
   - name: AddInfo
     type: inject
-    start: true
     data:
       name: john
       age: '20'
-    transition:
-      nextState: ChooseOnAge
+    transition: ChooseOnAge
   - name: ChooseOnAge
     type: switch
     dataConditions:

@@ -1,7 +1,7 @@
----
 id: function
 name: test-wf
 version: '1.0'
+start: WaitForGreeting
 events:
   - name: TestKafkaEvent
     source: testtopic
@@ -16,17 +16,16 @@ functions:
 states:
   - name: WaitForGreeting
     type: event
-    start: true
     onEvents:
       - eventRefs:
           - TestKafkaEvent
           - TestKafkaEvent2
         eventDataFilter:
-          dataOutputPath: "{{ $.data.greet }}"
+          toStateData: "{{ $.data.greet }}"
         actions:
           - functionRef:
               refName: greetFunction
-              parameters:
+              arguments:
                 script: System.out.println("Hello:" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable("testtopicVar")).get("firstName"));
     end:
       terminate: true

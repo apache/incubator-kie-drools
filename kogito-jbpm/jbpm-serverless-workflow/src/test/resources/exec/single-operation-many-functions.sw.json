@@ -1,6 +1,7 @@
 {
   "id": "function",
   "name": "test-wf",
+  "start": "HelloWorld",
   "functions": [
     {
       "name": "helloWorld",
@@ -19,13 +20,12 @@
     {
       "name": "HelloWorld",
       "type": "operation",
-      "start": true,
       "actionMode": "sequential",
       "actions": [
         {
           "functionRef": {
             "refName": "helloWorld",
-            "parameters": {
+            "arguments": {
               "script": "System.out.println(\"Hello Serverless Workflow World\");"
             }
           }
@@ -33,7 +33,7 @@
         {
           "functionRef": {
             "refName": "goodbyeWorld",
-            "parameters": {
+            "arguments": {
               "script": "System.out.println(\"GoodBye Serverless Workflow World\");"
             }
           }

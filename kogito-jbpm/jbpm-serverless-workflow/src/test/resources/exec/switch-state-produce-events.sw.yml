@@ -1,7 +1,7 @@
----
 id: switchworkflow
 name: switch-wf
 version: '1.0'
+start: AddInfo
 events:
   - name: TestKafkaEvent
     source: testtopic
@@ -18,12 +18,10 @@ events:
 states:
   - name: AddInfo
     type: inject
-    start: true
     data:
       name: john
       age: '20'
-    transition:
-      nextState: ChooseOnAge
+    transition: ChooseOnAge
   - name: ChooseOnAge
     type: switch
     dataConditions:
@@ -44,8 +42,7 @@ states:
             - eventRef: TestKafkaEvent3
             - eventRef: TestKafkaEvent4
     default:
-      transition:
-        nextState: Approve
+      transition: Approve
   - name: Approve
     type: inject
     data:

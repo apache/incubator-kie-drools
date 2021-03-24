@@ -1,7 +1,7 @@
----
 id: function
 name: test-wf
 version: '1.0'
+start: HelloWorld
 functions:
   - name: helloWorld
     metadata:
@@ -11,10 +11,8 @@ functions:
 states:
   - name: HelloWorld
     type: operation
-    start: true
     actionMode: sequential
     actions:
-      - functionRef:
-          refName: helloWorld
+      - functionRef: helloWorld
     end:
       terminate: true

@@ -2,6 +2,7 @@
   "id": "sendcloudeventonprovision2",
   "version": "1.0",
   "name": "Send CloudEvent on provision completion",
+  "start": "ProvisionOrdersState",
   "events": [
     {
       "name": "provisioningCompleteEvent",
@@ -23,7 +24,6 @@
     {
       "name": "ProvisionOrdersState",
       "type": "foreach",
-      "start": true,
       "inputCollection": "{{ $.orders }}",
       "iterationParam": "singleorder",
       "outputCollection": "{{ $.provisionedOrders }}",
@@ -31,7 +31,7 @@
         {
           "functionRef": {
             "refName": "provisionOrderFunction",
-            "parameters": {
+            "arguments": {
               "order": "{{ $.singleorder }}"
             }
           }
@@ -39,7 +39,7 @@
         {
           "functionRef": {
             "refName": "verifyOrder",
-            "parameters": {
+            "arguments": {
               "order": "{{ $.singleorder }}"
             }
           }

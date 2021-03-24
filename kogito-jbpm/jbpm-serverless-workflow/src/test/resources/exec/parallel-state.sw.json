@@ -2,11 +2,11 @@
   "id": "parallelworkflow",
   "name": "parallel-wf",
   "version": "1.0",
+  "start": "ExecInParallel",
   "states": [
     {
       "name": "ExecInParallel",
       "type": "parallel",
-      "start": true,
       "branches": [
         {
           "name": "branch1",

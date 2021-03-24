@@ -1,7 +1,7 @@
----
 id: prchecker
 name: Github PR Checker Workflow
 version: '1.0'
+start: HandleOpenPR
 functions:
   - name: AddLabels
     metadata:
@@ -42,20 +42,15 @@ events:
 states:
   - name: HandleOpenPR
     type: event
-    start: true
     onEvents:
       - eventRefs:
           - PROpened
           - ChangedPR
         actions:
-          - functionRef:
-              refName: AddLabels
-          - functionRef:
-              refName: AddReviewers
-          - functionRef:
-              refName: FetchPRFiles
-    transition:
-      nextState: CheckBackend
+          - functionRef: AddLabels
+          - functionRef: AddReviewers
+          - functionRef: FetchPRFiles
+    transition: CheckBackend
   - name: CheckBackend
     type: switch
     dataConditions:
@@ -65,8 +60,7 @@ states:
             - eventRef: BackendNewChange
           nextState: CheckFrontend
       - condition: "{{ $.[?(@.file  != 'backend')] }}"
-        transition:
-          nextState: CheckFrontend
+        transition: CheckFrontend
   - name: CheckFrontend
     type: switch
     dataConditions:

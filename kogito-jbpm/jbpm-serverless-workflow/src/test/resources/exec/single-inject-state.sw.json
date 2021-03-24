@@ -2,11 +2,11 @@
   "id": "function",
   "name": "test-wf",
   "version": "1.0",
+  "start": "SimpleInject",
   "states": [
     {
       "name": "SimpleInject",
       "type": "inject",
-      "start": true,
       "data": {
         "name": "john"
       },

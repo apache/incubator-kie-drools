@@ -36,13 +36,17 @@ import static java.util.Collections.singletonList;
 
 public abstract class BaseServerlessTest {
 
-    protected static final Workflow singleInjectStateWorkflow = new Workflow().withStates(singletonList(
-            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start())
-                    .withEnd(new End())));
-    protected static final Workflow multiInjectStateWorkflow = new Workflow().withStates(asList(
-            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start())
-                    .withEnd(new End()),
-            new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End())));
+    protected static final Workflow singleInjectStateWorkflow = new Workflow()
+            .withStart(new Start().withStateName("relayState"))
+            .withStates(singletonList(
+                    new InjectState().withName("relayState").withType(DefaultState.Type.INJECT)
+                            .withEnd(new End())));
+    protected static final Workflow multiInjectStateWorkflow = new Workflow()
+            .withStart(new Start().withStateName("relayState"))
+            .withStates(asList(
+                    new InjectState().withName("relayState").withType(DefaultState.Type.INJECT)
+                            .withEnd(new End()),
+                    new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End())));
     protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(
             new Events(singletonList(new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType"))));
     protected static ServerlessWorkflowFactory testFactory = new ServerlessWorkflowFactory(WorkflowAppContext.ofProperties(testWorkflowProperties()));

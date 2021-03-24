@@ -1,6 +1,7 @@
 {
   "id": "function",
   "name": "test-wf",
+  "start": "HelloWorld",
   "functions": [
     {
       "name": "helloOne",
@@ -25,43 +26,38 @@
     {
       "name": "HelloWorld",
       "type": "operation",
-      "start": true,
       "actionMode": "sequential",
       "actions": [
         {
           "functionRef": {
             "refName": "helloOne",
-            "parameters": {
+            "arguments": {
               "script": "System.out.println(\"First Serverless Workflow World\");"
             }
           }
         }
       ],
-      "transition": {
-        "nextState": "UpdateArg"
-      }
+      "transition": "UpdateArg"
     },
     {
       "name": "UpdateArg",
       "type": "operation",
       "actionMode": "sequential",
       "stateDataFilter": {
-        "dataInputPath": "{{ $.trace }}",
-        "dataOutputPath": "{{ $.trace }}"
+        "input": "{{ $.trace }}",
+        "output": "{{ $.trace }}"
       },
       "actions": [
         {
           "functionRef": {
             "refName": "helloTwo",
-            "parameters": {
+            "arguments": {
               "script": "System.out.println(\"Second Serverless Workflow World\");"
             }
           }
         }
       ],
-      "transition": {
-        "nextState": "SaveResult"
-      }
+      "transition": "SaveResult"
     },
     {
       "name": "SaveResult",
@@ -71,7 +67,7 @@
         {
           "functionRef": {
             "refName": "helloThree",
-            "parameters": {
+            "arguments": {
               "script": "System.out.println(\"Third Serverless Workflow World\");"
             }
           }

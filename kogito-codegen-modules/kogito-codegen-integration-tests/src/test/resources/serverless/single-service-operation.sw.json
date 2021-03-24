@@ -2,6 +2,7 @@
   "id": "singleservice",
   "name": "test-wf",
   "version": "1.0",
+  "start": "HelloWorld",
   "functions": [
     {
       "name": "helloWorld",
@@ -16,7 +17,6 @@
     {
       "name":"HelloWorld",
       "type":"operation",
-      "start": true,
       "actionMode":"sequential",
       "actions":[
         {

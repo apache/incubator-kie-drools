@@ -2,6 +2,7 @@
   "id": "petstore",
   "version": "1.0",
   "name": "Send CloudEvent after fetching inventory",
+  "start": "ProvisionOrdersState",
   "events": [
     {
       "name": "FetchComplete",
@@ -27,12 +28,11 @@
     {
       "name": "ProvisionOrdersState",
       "type": "operation",
-      "start": true,
       "actions": [
         {
           "functionRef": {
             "refName": "addPet",
-            "parameters": {
+            "arguments": {
               "body": "{\"name\": \"pluto\"}"
             }
           }

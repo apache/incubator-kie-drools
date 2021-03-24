@@ -2,6 +2,7 @@
   "id": "prchecker",
   "name": "Github PR Checker Workflow",
   "version": "1.0",
+  "start": "HandleOpenPR",
   "functions": [
     {
       "name": "AddLabels",
@@ -64,7 +65,6 @@
     {
       "name": "HandleOpenPR",
       "type": "event",
-      "start": true,
       "onEvents": [
         {
           "eventRefs": [
@@ -73,26 +73,18 @@
           ],
           "actions": [
             {
-              "functionRef": {
-                "refName": "AddLabels"
-              }
+              "functionRef": "AddLabels"
             },
             {
-              "functionRef": {
-                "refName": "AddReviewers"
-              }
+              "functionRef": "AddReviewers"
             },
             {
-              "functionRef": {
-                "refName": "FetchPRFiles"
-              }
+              "functionRef": "FetchPRFiles"
             }
           ]
         }
       ],
-      "transition": {
-        "nextState": "CheckBackend"
-      }
+      "transition": "CheckBackend"
     },
     {
       "name": "CheckBackend",
@@ -111,9 +103,7 @@
         },
         {
           "condition": "{{ $.[?(@.file  != 'backend')] }}",
-          "transition": {
-            "nextState": "CheckFrontend"
-          }
+          "transition": "CheckFrontend"
         }
       ]
     },

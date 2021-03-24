@@ -2,11 +2,11 @@
   "id": "calledsubflow",
   "name": "calledsubflow",
   "version": "1.0",
+  "start": "InjectTestData",
   "states":[
     {
       "name":"InjectTestData",
       "type":"inject",
-      "start": true,
       "data": {
         "childData" : "childTestData"
       },

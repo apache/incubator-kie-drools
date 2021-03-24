@@ -2,6 +2,7 @@
 id: eventswitchworkflow
 name: event-switch-wf
 version: '1.0'
+start: AddRandomInfo
 events:
   - name: visaApprovedEvent
     source: visaapproved
@@ -15,7 +16,6 @@ events:
 states:
   - name: AddRandomInfo
     type: inject
-    start: true
     data:
       name: john
       age: '20'
@@ -27,11 +27,9 @@ states:
     type: switch
     eventConditions:
       - eventRef: visaApprovedEvent
-        transition:
-          nextState: ApprovedVisa
+        transition: ApprovedVisa
       - eventRef: visaDeniedEvent
-        transition:
-          nextState: DeniedVisa
+        transition: DeniedVisa
   - name: ApprovedVisa
     type: inject
     data:
