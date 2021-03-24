@@ -18,6 +18,7 @@ package org.kie.pmml.compiler.commons.utils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
@@ -25,9 +26,12 @@ import javax.xml.bind.JAXBException;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.ResultFeature;
@@ -45,6 +49,7 @@ public class KiePMMLUtil {
     public static final String SEGMENTID_TEMPLATE = "%sSegment%s";
     static final String MODELNAME_TEMPLATE = "%s%s%s";
     static final String SEGMENTMODELNAME_TEMPLATE = "Segment%s%s";
+    static final String TARGETFIELD_TEMPLATE = "target%s";
 
     private KiePMMLUtil() {
         // Avoid instantiation
@@ -70,37 +75,15 @@ public class KiePMMLUtil {
     public static PMML load(final InputStream is, final String fileName) throws SAXException, JAXBException {
         PMML toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
         String cleanedFileName = fileName.contains(".") ? fileName.substring(0, fileName.indexOf('.')) : fileName;
-        populateMissingNames(toReturn, cleanedFileName);
         List<DataField> dataFields = toReturn.getDataDictionary().getDataFields();
-        for (Model model : toReturn.getModels()) {
-            if (model.getOutput() != null &&
-                    model.getOutput().getOutputFields() != null) {
-                populateMissingOutputFieldDataType(model.getOutput().getOutputFields(),
-                                                   model.getMiningSchema().getMiningFields(),
-                                                   dataFields);
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * Method to provide default generated <b>modelName</b> attributes for models
-     * without them.
-     * Generated name would be
-     * <p>
-     * fileName + model type + index (inside models list)
-     * @param toPopulate
-     * @param fileName
-     */
-    static void populateMissingNames(final PMML toPopulate, final String fileName) {
-        final List<Model> models = toPopulate.getModels();
+        List<Model> models =  toReturn.getModels();
         for (int i = 0; i < models.size(); i++) {
             Model model = models.get(i);
-            populateMissingModelName(model, fileName, i);
-            if (model instanceof MiningModel) {
-                populateCorrectMiningModel((MiningModel) model);
-            }
+            populateMissingModelName(model, cleanedFileName, i);
+            populateMissingOutputFieldDataType(model, dataFields);
+            populateMissingTargetField(model, dataFields);
         }
+        return toReturn;
     }
 
     /**
@@ -118,6 +101,93 @@ public class KiePMMLUtil {
             model.setModelName(modelName);
         }
     }
+
+    /**
+     * Method to populate <code>MiningSchema</code> with a n ad-hoc created target <code>MiningField</code>.
+     * It also populate the given <code>List&lt;DataField&gt;</code> with the relative <code>DataField</code>.
+     * This method has to be called <b>after</b> the model name has been set
+     * @param model
+     * @param dataFields
+     */
+    static void populateMissingTargetField(final Model model, final  List<DataField> dataFields) {
+        List<MiningField> miningTargetFields = getMiningTargetFields(model.getMiningSchema().getMiningFields());
+        if (miningTargetFields.isEmpty()) {
+            Optional<DataField> targetDataField = getTargetDataField(model);
+            targetDataField.ifPresent(dataField -> {
+                dataFields.add(dataField);
+                MiningField targetMiningField = getTargetMiningField(dataField);
+                model.getMiningSchema().addMiningFields(targetMiningField);
+            });
+         }
+    }
+
+    /**
+     * Returns a model-specific <b>target</b> <code>DataField</code>
+     * @param model
+     * @return
+     */
+    static Optional<DataField> getTargetDataField(final Model model) {
+        DataType targetDataType = getTargetDataType(model.getMiningFunction(), model.getMathContext());
+        OpType targetOpType = getTargetOpType(model.getMiningFunction());
+        if (targetDataType == null || targetOpType == null) {
+            return  Optional.empty();
+        }
+        String cleanedName = model.getModelName().replaceAll("[^A-Za-z0-9]", "");
+        String fieldName = String.format(TARGETFIELD_TEMPLATE, cleanedName);
+        DataField toReturn = new DataField();
+        toReturn.setName(FieldName.create(fieldName));
+        toReturn.setOpType(targetOpType);
+        toReturn.setDataType(targetDataType);
+        return Optional.of(toReturn);
+    }
+
+    /**
+     * Returns the <code>DataType</code> to be set in the target field
+     * @param miningFunction
+     * @param mathContext
+     * @return
+     */
+    static DataType getTargetDataType(final MiningFunction miningFunction, final MathContext mathContext) {
+        switch(miningFunction){
+            case REGRESSION:
+                return  DataType.fromValue(mathContext.value());
+            case CLASSIFICATION:
+            case CLUSTERING:
+                return DataType.STRING;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Returns the <code>DataType</code> to be set in the target field
+     * @param miningFunction
+     * @return
+     */
+    static OpType getTargetOpType(final MiningFunction miningFunction) {
+        switch(miningFunction){
+            case REGRESSION:
+                return  OpType.CONTINUOUS;
+            case CLASSIFICATION:
+            case CLUSTERING:
+                return OpType.CATEGORICAL;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Returns a model-specific <b>target</b> <code>MiningField</code>
+     * @param dataField
+     * @return
+     */
+    static MiningField getTargetMiningField(final DataField dataField) {
+        MiningField toReturn = new MiningField();
+        toReturn.setName(dataField.getName());
+        toReturn.setUsageType(MiningField.UsageType.TARGET);
+        return toReturn;
+    }
+
 
     /**
      * Recursively populate or correct <code>Segment</code>s with auto generated id,
@@ -179,6 +249,22 @@ public class KiePMMLUtil {
             childrenModel.getMiningSchema().addMiningFields(parentTargetFields.toArray(new MiningField[parentTargetFields.size()]));
         }
     }
+
+    /**
+     * Method to populate the <b>dataType</b> property of <code>OutputField</code>s.
+     * Such property was optional until 4.4.1 spec
+     * @param model
+     * @param dataFields
+     */
+    static void populateMissingOutputFieldDataType(final Model model, final List<DataField> dataFields) {
+        if (model.getOutput() != null &&
+                model.getOutput().getOutputFields() != null) {
+            populateMissingOutputFieldDataType(model.getOutput().getOutputFields(),
+                                               model.getMiningSchema().getMiningFields(),
+                                               dataFields);
+        }
+    }
+
 
     /**
      * Method to populate the <b>dataType</b> property of <code>OutputField</code>s.
