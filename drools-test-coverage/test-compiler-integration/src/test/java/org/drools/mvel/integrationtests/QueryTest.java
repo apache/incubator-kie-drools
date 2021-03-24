@@ -183,8 +183,7 @@ public class QueryTest {
         QueryResults results = getQueryResults(session, "assertedobjquery" );
         assertEquals( 1,
                       results.size() );
-        assertEquals( new InsertedObject( "value1" ),
-                      ((InternalFactHandle) results.iterator().next().getFactHandle( "assertedobj" )).getObject() );
+        assertEquals(new InsertedObject("value1" ), results.iterator().next().get("assertedobj") );
     }
 
     @Test
@@ -204,8 +203,6 @@ public class QueryTest {
                       results.size() );
         InsertedObject value = new InsertedObject( "value1" );
         assertEquals( value,
-                      ((InternalFactHandle) results.iterator().next().getFactHandle( "assertedobj" )).getObject()  );
-        assertEquals( value,
                       results.iterator().next().get("assertedobj") );
 
         results = getQueryResults( session, "assertedobjquery", new String[]{"value3"}  );
@@ -217,14 +214,14 @@ public class QueryTest {
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value2" ),
-                      ((InternalFactHandle) results.iterator().next().getFactHandle( "assertedobj" )).getObject() );
+                      results.iterator().next().get( "assertedobj" ));
 
         results = getQueryResults(session, "assertedobjquery2", new String[]{"value3", "value2"}  );
 
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value2" ),
-                      ((InternalFactHandle) results.iterator().next().getFactHandle( "assertedobj" )).getObject()  );
+                      results.iterator().next().get( "assertedobj" ));
     }
 
     @Test
