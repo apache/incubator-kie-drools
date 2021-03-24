@@ -29,7 +29,9 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -92,6 +94,24 @@ public class QuarkusDataIndexClientTest {
         WebClientOptions webClientOptions = client.getWebClientToURLOptions("http://" + defaultHost + ":" + defaultPort);
         assertThat(webClientOptions.getDefaultHost()).isEqualTo(defaultHost);
         assertThat(webClientOptions.getDefaultPort()).isEqualTo(defaultPort);
+    }
+
+    @Test
+    public void testWebClientToURLOptionsWithoutPort() throws MalformedURLException {
+        String dataindexurl = "http://dataIndex.com";
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions(dataindexurl);
+        assertThat(webClientOptions.getDefaultPort()).isEqualTo(80);
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo("dataIndex.com");
+        assertFalse(webClientOptions.isSsl());
+    }
+
+    @Test
+    public void testWebClientToURLOptionsWithoutPortSSL() throws MalformedURLException {
+        String dataindexurl = "https://dataIndex.com";
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions(dataindexurl);
+        assertThat(webClientOptions.getDefaultPort()).isEqualTo(443);
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo("dataIndex.com");
+        assertTrue(webClientOptions.isSsl());
     }
 
     @Test

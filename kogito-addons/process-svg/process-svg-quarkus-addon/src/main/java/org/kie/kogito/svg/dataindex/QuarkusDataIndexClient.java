@@ -71,8 +71,8 @@ public class QuarkusDataIndexClient implements DataIndexClient {
         URL dataIndexURL = new URL(targetHttpURL);
         return new WebClientOptions()
                 .setDefaultHost(dataIndexURL.getHost())
-                .setDefaultPort(dataIndexURL.getPort())
-                .addEnabledSecureTransportProtocol(dataIndexURL.getProtocol());
+                .setDefaultPort((dataIndexURL.getPort() != -1 ? dataIndexURL.getPort() : dataIndexURL.getDefaultPort()))
+                .setSsl(dataIndexURL.getProtocol().compareToIgnoreCase("https") == 0);
     }
 
     @Override
