@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ProcessInstance extends ProcessInstanceMeta {
 
-    private JsonNode variables;
+    private ObjectNode variables;
     @JsonProperty("nodeInstances")
     private List<NodeInstance> nodes;
     private List<Milestone> milestones;
@@ -31,11 +31,11 @@ public class ProcessInstance extends ProcessInstanceMeta {
 
     private ProcessInstanceError error;
 
-    public JsonNode getVariables() {
+    public ObjectNode getVariables() {
         return variables;
     }
 
-    public void setVariables(JsonNode variables) {
+    public void setVariables(ObjectNode variables) {
         this.variables = variables;
     }
 

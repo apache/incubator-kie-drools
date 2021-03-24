@@ -25,8 +25,6 @@ import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.persistence.mongodb.model.ModelUtils;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MONGO_ID;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.documentToJsonNode;
@@ -87,7 +85,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setId(entity.getId());
         instance.setProcessId(entity.getProcessId());
         instance.setRoles(entity.getRoles());
-        instance.setVariables(documentToJsonNode(entity.getVariables(), JsonNode.class));
+        instance.setVariables(documentToJsonNode(entity.getVariables()));
         instance.setEndpoint(entity.getEndpoint());
         instance.setNodes(Optional.ofNullable(entity.getNodes()).map(nodes -> nodes.stream().map(this::toNodeInstance).collect(toList())).orElse(null));
         instance.setState(entity.getState());

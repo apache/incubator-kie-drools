@@ -19,7 +19,6 @@ package org.kie.kogito.persistence.mongodb.storage;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.bson.Document;
@@ -83,7 +82,7 @@ public class MongoStorage<V, E> implements Storage<String, V> {
     }
 
     @Override
-    public Set<Map.Entry<String, V>> entrySet() {
+    public Map<String, V> entries() {
         throw new UnsupportedOperationException();
     }
 

@@ -35,7 +35,6 @@ import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -115,7 +114,7 @@ public class TestUtils {
         return MAPPER.valueToTree(json);
     }
 
-    private static JsonNode createProcessInstanceVariables() {
+    private static ObjectNode createProcessInstanceVariables() {
         return createDomainData(null, "Bar", "Swi");
     }
 

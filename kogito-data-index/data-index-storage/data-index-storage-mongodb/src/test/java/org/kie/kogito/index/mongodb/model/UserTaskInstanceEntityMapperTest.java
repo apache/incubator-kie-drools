@@ -17,15 +17,13 @@
 package org.kie.kogito.index.mongodb.model;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.UserTaskInstance;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MAPPER;
@@ -59,10 +57,10 @@ class UserTaskInstanceEntityMapperTest {
         String processId = "testProcessId";
         String rootProcessId = "testRootProcessId";
         String rootProcessInstanceId = "testRootProcessInstanceId";
-        Map<String, String> object = new HashMap<>();
+        ObjectNode object = MAPPER.createObjectNode();
         object.put("test", "testValue");
-        JsonNode inputs = MAPPER.valueToTree(object);
-        JsonNode outputs = MAPPER.valueToTree(object);
+        ObjectNode inputs = object;
+        ObjectNode outputs = object;
 
         userTaskInstance = new UserTaskInstance();
         userTaskInstance.setId(testId);

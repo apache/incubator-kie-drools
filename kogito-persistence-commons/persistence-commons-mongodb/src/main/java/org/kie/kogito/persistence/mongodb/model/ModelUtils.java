@@ -61,10 +61,10 @@ public class ModelUtils {
         return Optional.ofNullable(time).map(t -> t.toInstant().toEpochMilli()).orElse(null);
     }
 
-    public static <T extends JsonNode> T documentToJsonNode(Document document, Class<T> type) {
+    public static ObjectNode documentToJsonNode(Document document) {
         return Optional.ofNullable(document).map(doc -> {
             try {
-                return MAPPER.readValue(doc.toJson(jsonWriterSettings), type);
+                return (ObjectNode) MAPPER.readTree(doc.toJson(jsonWriterSettings));
             } catch (JsonProcessingException ex) {
                 LOGGER.error("Error trying to parse Process Variables", ex);
                 return null;
@@ -77,7 +77,7 @@ public class ModelUtils {
     }
 
     public static <T> T documentToObject(Document document, Class<T> type, UnaryOperator<String> converter) {
-        ObjectNode node = documentToJsonNode(document, ObjectNode.class);
+        ObjectNode node = documentToJsonNode(document);
         return Optional.ofNullable(node).map(n -> convertAttributes(node, Optional.empty(), converter))
                 .map(n -> MAPPER.convertValue(n, type)).orElse(null);
     }

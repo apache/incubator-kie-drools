@@ -40,6 +40,8 @@ import org.kie.kogito.persistence.protobuf.ProtobufService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -245,7 +247,7 @@ abstract class AbstractIndexingServiceIT {
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
 
         KogitoProcessCloudEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId, processId, processInstanceId);
-        subProcessStartEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
+        subProcessStartEvent.getData().setVariables((ObjectNode) getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
         subProcessStartEvent.setSource(URI.create("/" + subProcessId));
         indexProcessCloudEvent(subProcessStartEvent);
 
@@ -681,7 +683,7 @@ abstract class AbstractIndexingServiceIT {
 
         KogitoProcessCloudEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
         endEvent.getData().setEnd(ZonedDateTime.now());
-        endEvent.getData().setVariables(getObjectMapper().readTree(
+        endEvent.getData().setVariables((ObjectNode) getObjectMapper().readTree(
                 "{ \"traveller\":{\"firstName\":\"Maciej\"},\"hotel\":{\"name\":\"Ibis\"},\"flight\":{\"arrival\":\"2019-08-20T22:12:57.340Z\",\"departure\":\"2019-08-20T07:12:57.340Z\",\"flightNumber\":\"QF444\"} }"));
         indexProcessCloudEvent(endEvent);
 

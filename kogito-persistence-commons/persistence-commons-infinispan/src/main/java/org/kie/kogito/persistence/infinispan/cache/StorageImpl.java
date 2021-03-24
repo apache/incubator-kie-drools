@@ -16,8 +16,8 @@
 
 package org.kie.kogito.persistence.infinispan.cache;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.infinispan.client.hotrod.RemoteCache;
@@ -60,8 +60,8 @@ public class StorageImpl<K, V> implements Storage<K, V> {
     }
 
     @Override
-    public Set<Map.Entry<K, V>> entrySet() {
-        return delegate.entrySet();
+    public Map<K, V> entries() {
+        return new HashMap<>(delegate);
     }
 
     public V put(K key, V value) {

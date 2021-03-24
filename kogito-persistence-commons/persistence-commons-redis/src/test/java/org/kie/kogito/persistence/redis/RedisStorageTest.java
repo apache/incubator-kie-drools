@@ -74,7 +74,7 @@ public class RedisStorageTest {
 
     @Test
     public void entrySetOperationShouldThrowException() {
-        Assertions.assertThrows(UnsupportedOperationException.class, redisStorage::entrySet);
+        Assertions.assertThrows(UnsupportedOperationException.class, redisStorage::entries);
     }
 
     @Test

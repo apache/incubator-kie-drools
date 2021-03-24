@@ -51,7 +51,7 @@ public class MongoStorageManager implements StorageService {
     }
 
     @Override
-    public <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType) {
+    public <T> Storage<String, T> getCache(String name, Class<T> type, String rootType) {
         return new MongoStorage<>(mongoClientManager.getCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
                 mongoClientManager.getReactiveCollection(name, mongoModelService.getEntityMapper(name).getEntityClass()),
                 rootType, mongoModelService.getEntityMapper(name));

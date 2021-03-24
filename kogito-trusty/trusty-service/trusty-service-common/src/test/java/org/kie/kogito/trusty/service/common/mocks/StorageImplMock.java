@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.ws.rs.NotFoundException;
@@ -90,8 +89,8 @@ public class StorageImplMock<K, V> implements Storage<K, V> {
     }
 
     @Override
-    public Set<Map.Entry<K, V>> entrySet() {
-        return storage.entrySet();
+    public Map<K, V> entries() {
+        return storage;
     }
 
     @Override

@@ -17,9 +17,7 @@
 package org.kie.kogito.index.mongodb.model;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +28,7 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.persistence.mongodb.model.ModelUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MAPPER;
@@ -64,9 +62,8 @@ class ProcessInstanceEntityMapperTest {
         String testId = "testId";
         String processId = "testProcessId";
         Set<String> roles = Set.of("testRoles");
-        Map<String, String> object = new HashMap<>();
-        object.put("test", "testValue");
-        JsonNode variables = MAPPER.valueToTree(object);
+        ObjectNode variables = MAPPER.createObjectNode();
+        variables.put("test", "testValue");
         String endpoint = "testEndpoint";
         Integer state = 2;
         ZonedDateTime time = ZonedDateTime.now();

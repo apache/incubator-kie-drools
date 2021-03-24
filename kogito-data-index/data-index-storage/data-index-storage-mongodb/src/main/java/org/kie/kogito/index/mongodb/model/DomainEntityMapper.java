@@ -56,9 +56,9 @@ public class DomainEntityMapper implements MongoEntityMapper<ObjectNode, Documen
         if (idObj != null) {
             ObjectNode result = MAPPER.createObjectNode();
             result.put(ID, idObj.toString());
-            result.setAll(ModelUtils.documentToJsonNode(entity, ObjectNode.class));
+            result.setAll(ModelUtils.documentToJsonNode(entity));
             return result;
         }
-        return ModelUtils.documentToJsonNode(entity, ObjectNode.class);
+        return ModelUtils.documentToJsonNode(entity);
     }
 }

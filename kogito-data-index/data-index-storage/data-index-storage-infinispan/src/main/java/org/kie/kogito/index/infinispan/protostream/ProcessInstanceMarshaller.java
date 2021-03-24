@@ -27,6 +27,7 @@ import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ProcessInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<ProcessInstance> {
 
@@ -59,7 +60,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setId(reader.readString(ID));
         pi.setProcessId(reader.readString(PROCESS_ID));
         pi.setRoles(reader.readCollection(ROLES, new HashSet<>(), String.class));
-        pi.setVariables(jsonFromString(reader.readString(VARIABLES)));
+        pi.setVariables((ObjectNode) jsonFromString(reader.readString(VARIABLES)));
         pi.setEndpoint(reader.readString(ENDPOINT));
         pi.setNodes(reader.readCollection(NODES, new ArrayList<>(), NodeInstance.class));
         pi.setState(reader.readInt(STATE));

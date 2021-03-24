@@ -55,7 +55,7 @@ class ModelUtilsTest {
         Document document = new Document().append("testKey1", "testValue1")
                 .append("testKey2", "testValue2");
 
-        assertEquals(object, ModelUtils.documentToJsonNode(document, ObjectNode.class));
+        assertEquals(object, ModelUtils.documentToJsonNode(document));
     }
 
     @Test

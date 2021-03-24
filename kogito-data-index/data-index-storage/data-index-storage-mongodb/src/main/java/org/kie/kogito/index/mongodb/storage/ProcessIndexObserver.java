@@ -22,7 +22,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.kogito.index.DataIndexStorageService;
-import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.index.IndexCreateOrUpdateEvent;
 import org.kie.kogito.persistence.mongodb.index.ProcessIndexEvent;
 
@@ -40,8 +39,7 @@ public class ProcessIndexObserver {
     public void onProcessIndexEvent(@Observes ProcessIndexEvent event) {
         String processId = event.getProcessDescriptor().getProcessId();
         String processType = event.getProcessDescriptor().getProcessType();
-        Storage<String, String> processIdStorage = dataIndexStorageService.getProcessIdModelCache();
-        processIdStorage.put(processId, processType);
+        dataIndexStorageService.getProcessIdModelCache().put(processId, processType);
 
         indexCreateOrUpdateEvent.fire(new IndexCreateOrUpdateEvent(getDomainCollectionName(processId), processType));
     }

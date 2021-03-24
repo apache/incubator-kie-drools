@@ -67,7 +67,7 @@ class MongoStorageManagerIT {
     @Test
     void getCacheWithDataFormat() {
         String storageName = "testCacheWithDataFormat";
-        storage = mongoStorageManager.getCacheWithDataFormat(storageName, String.class, "type");
+        storage = mongoStorageManager.getCache(storageName, String.class, "type");
 
         assertTrue(storage instanceof MongoStorage);
         assertEquals(storageName, ((MongoStorage) storage).mongoCollection.getNamespace().getCollectionName());

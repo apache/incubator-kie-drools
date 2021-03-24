@@ -43,7 +43,7 @@ import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singleton;
@@ -157,7 +157,7 @@ public final class TestUtils {
                         .build());
     }
 
-    private static JsonNode getProcessInstanceVariables() {
+    private static ObjectNode getProcessInstanceVariables() {
         Map<String, Object> json = new HashMap<>();
         Map<String, Object> traveller = new HashMap<>();
         traveller.put("firstName", "Maciej");

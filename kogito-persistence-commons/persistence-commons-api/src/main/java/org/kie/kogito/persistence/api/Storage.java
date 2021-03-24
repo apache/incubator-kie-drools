@@ -16,7 +16,6 @@
 package org.kie.kogito.persistence.api;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.kie.kogito.persistence.api.query.Query;
@@ -89,7 +88,7 @@ public interface Storage<K, V> {
      *
      * @return The key-value pair set of the elements in the storage.
      */
-    Set<Map.Entry<K, V>> entrySet();
+    Map<K, V> entries();
 
     /**
      * Erase all the elements in the storage.

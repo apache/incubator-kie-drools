@@ -43,7 +43,7 @@ public class CacheManagerServiceMock implements StorageService {
     }
 
     @Override
-    public <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType) {
+    public <T> Storage<String, T> getCache(String name, Class<T> type, String rootType) {
         return mock(Storage.class);
     }
 }

@@ -15,15 +15,15 @@
  */
 package org.kie.kogito.index.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class UserTaskInstance extends UserTaskInstanceMeta {
 
     private String processId;
     private String rootProcessId;
     private String rootProcessInstanceId;
-    private JsonNode inputs;
-    private JsonNode outputs;
+    private ObjectNode inputs;
+    private ObjectNode outputs;
     private String endpoint;
 
     public String getProcessId() {
@@ -76,19 +76,19 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
         }
     }
 
-    public JsonNode getInputs() {
+    public ObjectNode getInputs() {
         return inputs;
     }
 
-    public void setInputs(JsonNode inputs) {
+    public void setInputs(ObjectNode inputs) {
         this.inputs = inputs;
     }
 
-    public JsonNode getOutputs() {
+    public ObjectNode getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(JsonNode outputs) {
+    public void setOutputs(ObjectNode outputs) {
         this.outputs = outputs;
     }
 }

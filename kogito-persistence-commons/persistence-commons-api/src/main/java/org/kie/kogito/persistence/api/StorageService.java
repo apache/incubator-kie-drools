@@ -22,5 +22,5 @@ public interface StorageService {
 
     <T> Storage<String, T> getCache(String name, Class<T> type);
 
-    <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType);
+    <T> Storage<String, T> getCache(String name, Class<T> type, String rootType);
 }

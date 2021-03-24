@@ -109,7 +109,7 @@ public class ProtoSchemaManager {
 
     private void logProtoCacheKeys() {
         LOGGER.debug(">>>>>>list cache keys start");
-        protobufCacheService.getProtobufCache().entrySet().forEach(e -> LOGGER.debug(e.toString()));
+        protobufCacheService.getProtobufCache().entries().entrySet().forEach(e -> LOGGER.debug(e.toString()));
         LOGGER.debug(">>>>>>list cache keys end");
     }
 }

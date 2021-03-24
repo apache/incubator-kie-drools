@@ -47,7 +47,7 @@ public class RedisCacheManager implements StorageService {
     }
 
     @Override
-    public <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType) {
+    public <T> Storage<String, T> getCache(String name, Class<T> type, String rootType) {
         return new RedisStorage<>(redisClientManager.getClient(name), redisIndexManager, name, type);
     }
 }
