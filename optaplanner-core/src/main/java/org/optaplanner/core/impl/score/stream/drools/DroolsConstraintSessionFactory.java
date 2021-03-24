@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
@@ -86,7 +85,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         kieBaseConfiguration.setProperty(PropertySpecificOption.PROPERTY_NAME,
                 PropertySpecificOption.DISABLED.name()); // Users of CS must not rely on underlying Drools gimmicks.
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, kieBaseConfiguration);
-        KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
+        // KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // PLANNER-2375 Enable Alpha Network Compiler for performance.
         return kieBase;
     }
 
