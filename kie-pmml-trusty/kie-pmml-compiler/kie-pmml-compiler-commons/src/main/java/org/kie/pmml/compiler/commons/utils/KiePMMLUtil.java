@@ -84,6 +84,9 @@ public class KiePMMLUtil {
             populateMissingModelName(model, cleanedFileName, i);
             populateMissingOutputFieldDataType(model, dataFields);
             populateMissingMiningTargetField(model, dataFields);
+            if (model instanceof MiningModel) {
+                populateCorrectMiningModel((MiningModel) model);
+            }
         }
         return toReturn;
     }

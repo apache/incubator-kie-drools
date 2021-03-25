@@ -186,7 +186,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         if (!toModify.getResultCode().equals(OK.getName())) {
             return;
         }
-        final String targetFieldName = model.getTargetField();
+        final String targetFieldName = toModify.getResultObjectName();
         final Map<String, Object> resultVariables = toModify.getResultVariables();
         model.getKiePMMLTargets()
                 .stream()

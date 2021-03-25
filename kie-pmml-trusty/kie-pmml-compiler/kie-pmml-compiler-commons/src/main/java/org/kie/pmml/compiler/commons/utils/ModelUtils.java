@@ -101,19 +101,10 @@ public class ModelUtils {
      */
     public static List<KiePMMLNameOpType> getTargetFields(DataDictionary dataDictionary, Model model) {
         List<KiePMMLNameOpType> toReturn = new ArrayList<>();
-        if (model.getTargets() != null && model.getTargets().getTargets() != null) {
-            for (Target target : model.getTargets().getTargets()) {
-                OP_TYPE opType = target.getOpType() != null ? OP_TYPE.byName(target.getOpType().value()) :
-                        getOpType(dataDictionary, model, target.getField().getValue());
-                toReturn.add(new KiePMMLNameOpType(target.getField().getValue(), opType));
-            }
-        } else {
+        if (model.getMiningSchema() != null && model.getMiningSchema().getMiningFields() != null) {
             for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
                 if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                    OP_TYPE opType = miningField.getOpType() != null ?
-                            OP_TYPE.byName(miningField.getOpType().value()) : getOpType(dataDictionary, model,
-                                                                                        miningField.getName().getValue());
-
+                    OP_TYPE opType = getOpType(dataDictionary, model, miningField.getName().getValue());
                     toReturn.add(new KiePMMLNameOpType(miningField.getName().getValue(), opType));
                 }
             }
@@ -130,16 +121,10 @@ public class ModelUtils {
      */
     public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(DataDictionary dataDictionary, Model model) {
         Map<String, DATA_TYPE> toReturn = new LinkedHashMap<>();
-        if (model.getTargets() != null && model.getTargets().getTargets() != null) {
-            for (Target target : model.getTargets().getTargets()) {
-                toReturn.put(target.getField().getValue(), getDataType(dataDictionary, target.getField().getValue()));
-            }
-        } else {
-            for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
-                if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                    toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary,
-                                                                               miningField.getName().getValue()));
-                }
+        for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
+            if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
+                toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary,
+                                                                           miningField.getName().getValue()));
             }
         }
         return toReturn;
@@ -155,13 +140,13 @@ public class ModelUtils {
      */
     public static OP_TYPE getOpType(DataDictionary dataDictionary, Model model, String targetFieldName) {
         return Stream.of(getOpTypeFromTargets(model.getTargets(), targetFieldName),
-                  getOpTypeFromMiningFields(model.getMiningSchema(), targetFieldName),
-                  getOpTypeFromDataDictionary(dataDictionary, targetFieldName))
+                         getOpTypeFromMiningFields(model.getMiningSchema(), targetFieldName),
+                         getOpTypeFromDataDictionary(dataDictionary, targetFieldName))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find OpType for field" +
-                                                                                             " %s", targetFieldName)));
+                                                                                      " %s", targetFieldName)));
     }
 
     /**
@@ -206,10 +191,10 @@ public class ModelUtils {
      */
     public static Optional<OP_TYPE> getOpTypeFromTargets(Targets targets, String fieldName) {
         if (targets != null && targets.getTargets() != null) {
-        return targets.getTargets().stream()
-                .filter(target -> Objects.equals(fieldName, target.getField().getValue()) && target.getOpType() != null)
-                .findFirst()
-                .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
+            return targets.getTargets().stream()
+                    .filter(target -> Objects.equals(fieldName, target.getField().getValue()) && target.getOpType() != null)
+                    .findFirst()
+                    .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
         } else {
             return Optional.empty();
         }
@@ -433,7 +418,8 @@ public class ModelUtils {
         if (priorProbability != null) {
             builder.withPriorProbability(priorProbability);
         }
-        final Double defaultValue = toConvert.getDefaultValue() != null ? toConvert.getDefaultValue().doubleValue() : null;
+        final Double defaultValue = toConvert.getDefaultValue() != null ? toConvert.getDefaultValue().doubleValue() :
+                null;
         if (defaultValue != null) {
             builder.withDefaultValue(defaultValue);
         }

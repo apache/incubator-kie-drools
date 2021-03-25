@@ -358,19 +358,7 @@ public class ModelUtilsTest {
         model.setTargets(targets);
         Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(dataDictionary, model);
         assertNotNull(retrieved);
-        assertEquals(targets.getTargets().size(), retrieved.size());
-        assertTrue(retrieved instanceof LinkedHashMap);
-        final Iterator<Map.Entry<String, DATA_TYPE>> iterator = retrieved.entrySet().iterator();
-        for (int i = 0; i < targets.getTargets().size(); i++) {
-            Target target = targets.getTargets().get(i);
-            DataField dataField = dataDictionary.getDataFields().stream()
-                    .filter(df -> df.getName().equals(target.getField()))
-                    .findFirst()
-                    .get();
-            DATA_TYPE expected = DATA_TYPE.byName(dataField.getDataType().value());
-            final Map.Entry<String, DATA_TYPE> next = iterator.next();
-            assertEquals(expected, next.getValue());
-        }
+        assertTrue(retrieved.isEmpty());
     }
 
     @Test
