@@ -29,6 +29,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
@@ -124,8 +125,11 @@ public class KiePMMLModelRetriever {
 
     static KiePMMLModel getPopulatedWithKiePMMLTargets(final KiePMMLModel toPopulate,
                                                        final Targets targets) {
-        // TODO {gcardosi}
-        throw new UnsupportedOperationException();
+        if (targets != null) {
+            final List<KiePMMLTarget> converted = ModelUtils.convertToKiePMMLTargetList(targets);
+            toPopulate.setKiePMMLTargets(converted);
+        }
+        return toPopulate;
     }
 
     /**

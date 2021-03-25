@@ -26,6 +26,7 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
  */
 public class KiePMMLTargetValue extends AbstractKiePMMLComponent {
 
+    private static final long serialVersionUID = -4948552909458142415L;
     private String value;
     private String displayValue;
     private Double priorProbability; // double between 0.0 and 1.0, usually describing a probability.

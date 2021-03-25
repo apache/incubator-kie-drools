@@ -80,10 +80,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         return Collections.unmodifiableMap(localTransformationsMap);
     }
 
-    public List<KiePMMLTarget> getKiePMMLTargets() {
-        return Collections.unmodifiableList(kiePMMLTargets);
-    }
-
     /**
      * Method to retrieve the <b>package</b> name to be used inside kiebase/package attribute of
      * kmodule.xml and to use for package creation inside PMMLAssemblerService
@@ -112,6 +108,14 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public void setOutputFields(List<OutputField> outputFields) {
         this.outputFields = Collections.unmodifiableList(outputFields);
+    }
+
+    public List<KiePMMLTarget> getKiePMMLTargets() {
+        return kiePMMLTargets;
+    }
+
+    public void setKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
+        this.kiePMMLTargets = Collections.unmodifiableList(kiePMMLTargets);
     }
 
     /**

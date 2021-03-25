@@ -29,6 +29,7 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
  */
 public class KiePMMLTarget extends AbstractKiePMMLComponent {
 
+    private static final long serialVersionUID = -6336733489238275499L;
     private List<KiePMMLTargetValue> targetValues = null;
     private OP_TYPE opType;
     private String field;
@@ -80,38 +81,38 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
     Number applyCastInteger(double predictionDouble) {
         return  castInteger != null ? castInteger.getScaledValue(predictionDouble) : predictionDouble;
     }
-//
-//    public List<KiePMMLTargetValue> getTargetValues() {
-//        return targetValues;
-//    }
-//
-//    public OP_TYPE getOpType() {
-//        return opType;
-//    }
-//
+
     public String getField() {
         return field;
     }
-//
-//    public CAST_INTEGER getCastInteger() {
-//        return castInteger;
-//    }
-//
-//    public Double getMin() {
-//        return min;
-//    }
-//
-//    public Double getMax() {
-//        return max;
-//    }
-//
-//    public double getRescaleConstant() {
-//        return rescaleConstant;
-//    }
-//
-//    public double getRescaleFactor() {
-//        return rescaleFactor;
-//    }
+
+    public List<KiePMMLTargetValue> getTargetValues() {
+        return targetValues;
+    }
+
+    public OP_TYPE getOpType() {
+        return opType;
+    }
+
+    public CAST_INTEGER getCastInteger() {
+        return castInteger;
+    }
+
+    public Double getMin() {
+        return min;
+    }
+
+    public Double getMax() {
+        return max;
+    }
+
+    public double getRescaleConstant() {
+        return rescaleConstant;
+    }
+
+    public double getRescaleFactor() {
+        return rescaleFactor;
+    }
 
     @Override
     public boolean equals(Object o) {
