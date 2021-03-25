@@ -16,6 +16,11 @@
 
 package org.kie.dmn.feel.gwt.functions.api;
 
+/**
+ * FEEL DMN GWT functions type enum
+ *
+ * These types are used by the GWT-friendly/generated function instances.
+ */
 public enum Type {
     NUMBER("number"),
     PERIOD("Period"),

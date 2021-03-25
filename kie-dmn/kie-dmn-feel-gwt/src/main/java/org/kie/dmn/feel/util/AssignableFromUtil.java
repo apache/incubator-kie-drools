@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,16 @@ package org.kie.dmn.feel.util;
 public class AssignableFromUtil {
 
     public static boolean isAssignableFrom(final Class thisClass,
-                                           Class otherClass) {
-        while (otherClass != null) {
-            if (otherClass.equals(thisClass)) {
-                return true;
-            }
-            otherClass = otherClass.getSuperclass();
+                                           final Class otherClass) {
+
+        if (otherClass == null) {
+            return false;
         }
-        return false;
+
+        if (otherClass.equals(thisClass)) {
+            return true;
+        }
+
+        return isAssignableFrom(thisClass, otherClass.getSuperclass());
     }
 }

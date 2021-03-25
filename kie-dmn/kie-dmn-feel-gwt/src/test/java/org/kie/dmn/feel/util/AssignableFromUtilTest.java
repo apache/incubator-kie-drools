@@ -13,16 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.feel.entrypoint;
 
-import com.google.gwt.core.client.EntryPoint;
-import org.jresearch.threetenbp.gwt.time.client.Support;
+package org.kie.dmn.feel.util;
 
-public class FEELEntryPoint implements EntryPoint {
+import org.junit.Test;
 
-    @Override
-    public void onModuleLoad() {
-        Support.init();
-        Support.initTzData();
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class AssignableFromUtilTest {
+
+    @Test
+    public void testIsAssignableFromWhenItIsAssignable() {
+        assertTrue(AssignableFromUtil.isAssignableFrom(A.class, B.class));
+    }
+
+    @Test
+    public void testIsAssignableFromWhenItIsNotAssignable() {
+        assertFalse(AssignableFromUtil.isAssignableFrom(A.class, C.class));
+    }
+
+    static class A {
+        // empty.
+    }
+
+    static class B extends A {
+        // empty.
+    }
+
+    static class C {
+        // empty.
     }
 }

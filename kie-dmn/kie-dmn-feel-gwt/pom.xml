@@ -45,12 +45,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-feel</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-
-    <dependency>
       <groupId>org.dominokit</groupId>
       <artifactId>domino-slf4j-logger</artifactId>
     </dependency>

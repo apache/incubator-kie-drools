@@ -20,12 +20,10 @@ import java.io.File;
 import java.time.Duration;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -57,13 +55,10 @@ public class FEELShowcaseIT {
         driver.get(INDEX_HTML_PATH);
     }
 
-    @Rule
-    public TestWatcher takeScreenShotAndCleanUp = new TestWatcher() {
-        @Override
-        protected void finished(final Description description) {
-            driver.quit();
-        }
-    };
+    @After
+    public void quitDriver() {
+        driver.quit();
+    }
 
     @Test
     public void testEvaluation() {

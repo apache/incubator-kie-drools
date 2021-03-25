@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package org.kie.dmn.feel.gwt.functions.api;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.kie.dmn.feel.lang.Type;
 
@@ -67,20 +67,9 @@ public class FunctionOverrideVariation implements HumanReadable {
         templateBuilder.append("(");
         humanReadableBuilder.append(toHumanReadableString());
 
-        final Iterator<Parameter> iterator = parameters.iterator();
-
-        int i = 1;
-        while (iterator.hasNext()) {
-            iterator.next();
-
-            templateBuilder.append("$");
-            templateBuilder.append(i);
-
-            if (iterator.hasNext()) {
-                templateBuilder.append(", ");
-            }
-            i++;
-        }
+        templateBuilder.append(IntStream.rangeClosed(1, getParameters().size())
+                                       .mapToObj(i -> "$" + i)
+                                       .collect(Collectors.joining(", ")));
 
         humanReadableBuilder.append(")");
         templateBuilder.append(")");

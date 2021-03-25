@@ -157,6 +157,10 @@ public class MethodTemplates {
     private static String getType(final String typeName) {
         if (typeName.equals("java.time.temporal.TemporalAmount")) {
             return "BuiltInType.DURATION";
+        } else if (typeName.equals("java.time.temporal.TemporalAccessor")) {
+            return "BuiltInType.DATE_TIME";
+        } else if (typeName.equals("java.time.temporal.Temporal")) {
+            return "BuiltInType.DATE_TIME";
         } else if (typeName.equals("java.lang.String")) {
             return "BuiltInType.STRING";
         } else if (typeName.equals("java.lang.Boolean")) {
@@ -167,6 +171,14 @@ public class MethodTemplates {
             return "BuiltInType.DURATION";
         } else if (typeName.equals("java.math.BigDecimal")) {
             return "BuiltInType.NUMBER";
+        } else if (typeName.equals("java.lang.Number")) {
+            return "BuiltInType.NUMBER";
+        } else if (typeName.endsWith("Range")) {
+            return "BuiltInType.RANGE";
+        } else if (typeName.endsWith("ComparablePeriod")) {
+            return "BuiltInType.DURATION";
+        } else if (typeName.endsWith("FEELFunction")) {
+            return "BuiltInType.FUNCTION";
         }
         return "BuiltInType.UNKNOWN";
     }
