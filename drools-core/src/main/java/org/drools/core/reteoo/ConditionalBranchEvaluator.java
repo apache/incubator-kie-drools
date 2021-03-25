@@ -15,15 +15,15 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.spi.Tuple;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.spi.Tuple;
 
 public class ConditionalBranchEvaluator implements Externalizable {
 
@@ -81,10 +81,6 @@ public class ConditionalBranchEvaluator implements Externalizable {
         public String toString() {
             return ( breaking ? "break[" : "do[" ) + sink.getSinks()[0] +"]";
         }
-    }
-
-    public EvalCondition getCondition() {
-        return condition;
     }
 
     public ConditionalBranchEvaluator getElseBranchEvaluator() {

@@ -62,7 +62,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
     }
 
     private void replaceDeclarations(ConditionalBranchEvaluator branchEvaluator) {
-        //replaceDeclarations(this, branchEvaluator.getCondition().getRequiredDeclarations());
         if (branchEvaluator.getElseBranchEvaluator() != null){
             replaceDeclarations(branchEvaluator.getElseBranchEvaluator());
         }

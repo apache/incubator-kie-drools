@@ -43,11 +43,8 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     public LambdaGroupByAccumulate() { }
 
-    public LambdaGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations,
-                                    //final Declaration[] outerDeclarations,
-                                    FunctionN groupingFunction ) {
-        super(innerAccumulate.getSource(), innerAccumulate.getRequiredDeclarations()); //,
-              //outerDeclarations);
+    public LambdaGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations, FunctionN groupingFunction ) {
+        super(innerAccumulate.getSource(), innerAccumulate.getRequiredDeclarations());
         this.innerAccumulate = innerAccumulate;
         this.groupingDeclarations = groupingDeclarations;
         this.groupingFunction = groupingFunction;
@@ -158,8 +155,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     @Override
     public Accumulate clone() {
-        return new LambdaGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, //outerDeclarations,
-                                            groupingFunction );
+        return new LambdaGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, groupingFunction );
     }
 
     @Override

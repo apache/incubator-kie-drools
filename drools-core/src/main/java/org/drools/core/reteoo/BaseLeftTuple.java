@@ -201,6 +201,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         this.sink = sink;
     }
 
+    @Override
     public LeftTuple getNextParentWithHandle() {
         // if parent is null, then we are LIAN
         return (handle!=null) ? this : parent != null ? parent.getNextParentWithHandle() : this;

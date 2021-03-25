@@ -16,6 +16,9 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
@@ -24,15 +27,11 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CollectBuilder
     implements
@@ -96,14 +95,10 @@ public class CollectBuilder
 
         // The node needs to declare the vars it returns
         Pattern resultPattern = collect.getResultPattern();
-        Declaration[] outerDeclarations = resultPattern.getOuterDeclarations().values().toArray( new Declaration[resultPattern.getOuterDeclarations().size()]);
 
-        CollectAccumulator accumulator = new CollectAccumulator( collect, 
-                                                                 existSubNetwort );
         Accumulate accumulate = new SingleAccumulate( sourcePattern,
                                                       sourcePattern.getRequiredDeclarations(),
-//                                                      outerDeclarations,
-                                                      accumulator );
+                                                      new CollectAccumulator( collect, existSubNetwort ) );
 
         AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
                                                                                                             context.getTupleSource(),

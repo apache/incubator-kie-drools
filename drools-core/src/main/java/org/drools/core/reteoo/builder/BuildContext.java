@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Stack;
 
 import org.drools.core.common.BaseNode;
@@ -35,7 +34,6 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
@@ -61,12 +59,12 @@ public class BuildContext {
     private LinkedList<Pattern>              objectType;
 
     // rule base to add rules to
-    private InternalKnowledgeBase            kBase;
+    private final InternalKnowledgeBase      kBase;
     // rule being added at this moment
     private RuleImpl                         rule;
     private GroupElement                     subRule;
     // the rule component being processed at the moment
-    private Stack<RuleComponent>             ruleComponent;
+    private final Stack<RuleComponent>       ruleComponent;
     // a build stack to track nested elements
     private LinkedList<RuleConditionElement> buildstack;
     // beta constraints from the last pattern attached
@@ -76,15 +74,14 @@ public class BuildContext {
     // xpath constraints from the last pattern attached
     private List<XpathConstraint>            xpathConstraints;
 
-    private Map<String, Declaration>         declarations;
-
     // the current entry point
     private EntryPointId                     currentEntryPoint;
     private boolean                          tupleMemoryEnabled;
     private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
 
-    private List<PathEndNode>                pathEndNodes = new ArrayList<>();
+    private final List<PathEndNode>          pathEndNodes = new ArrayList<>();
+
     /**
      * Stores the list of nodes being added that require partitionIds
      */
@@ -485,13 +482,5 @@ public class BuildContext {
 
     public void setConsequenceName( String consequenceName ) {
         this.consequenceName = consequenceName;
-    }
-
-    public void setDeclarations(Map<String, Declaration> declarations) {
-        this.declarations = declarations;
-    }
-
-    public Map<String, Declaration> getDeclarations() {
-        return declarations;
     }
 }

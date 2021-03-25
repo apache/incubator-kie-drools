@@ -68,24 +68,11 @@ public class TimerNode extends LeftTupleSource
         this.calendarNames = calendarNames;
         this.startEndDeclarations = startEndDeclarations;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
-        //replaceDeclarations(startEndDeclarations, this);
 
         initMasks(context, tupleSource);
 
         hashcode = calculateHashCode();
 
-    }
-
-    /**
-     * This is needed as patterns and declarations are cloned, due to sharing. Once added it must used the pattern instance
-     * that was chosen from the shared condidates.
-     * @param
-     */
-    public static  void replaceDeclarations(Declaration[][] startEndDeclarations, LeftTupleSource node) {
-        for (int i = 0; i < startEndDeclarations.length; i++) {
-            Declaration[] declarations = startEndDeclarations[i];
-            //replaceDeclarations(node, declarations);
-        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,

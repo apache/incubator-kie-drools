@@ -54,7 +54,6 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSource;
@@ -63,7 +62,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
@@ -142,7 +140,6 @@ public class MVELConsequenceBuilderTest {
 
         BuildContext buildContext = new BuildContext(kBase);
         MockTupleSource      source       = new MockTupleSource(1, buildContext);
-        source.setDeclarations(map);
         source.setObjectCount(1);
         RuleTerminalNode rtn = new RuleTerminalNode(0, source, context.getRule(), subrule, 0, buildContext);
 

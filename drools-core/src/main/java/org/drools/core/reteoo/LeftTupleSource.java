@@ -22,13 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
@@ -36,7 +34,10 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -60,9 +61,6 @@ public abstract class LeftTupleSource extends BaseNode
 
     /** The left input <code>TupleSource</code>. */
     protected LeftTupleSource         leftInput;
-
-    protected Map<String, Declaration> declarations;
-
 
     // ------------------------------------------------------------
     // Instance members
@@ -94,27 +92,7 @@ public abstract class LeftTupleSource extends BaseNode
               context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
               context != null && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
-        this.declarations = context.getDeclarations();
         initMemoryId( context );
-    }
-
-    protected static void replaceDeclarations(LeftTupleNode node, Declaration[] declarations) {
-        if (declarations == null) {
-            return;
-        }
-        for (int j = 0; j < declarations.length; j++) {
-            Declaration declr = declarations[j];
-            // Always start with the parent node, as this is "required" declarations from previous joins
-            LeftTupleSource current = node.getLeftTupleSource();
-            while (current != null) {
-                Declaration targetDeclr = current.declarations.get(declr.getIdentifier());
-                if (targetDeclr != null && targetDeclr != declr) {
-                    declarations[j] = targetDeclr;
-                    break;
-                }
-                current = current.getLeftTupleSource();
-            }
-        }
     }
 
     // ------------------------------------------------------------
@@ -129,7 +107,6 @@ public abstract class LeftTupleSource extends BaseNode
         leftNegativeMask = (BitMask) in.readObject();
         pathIndex = in.readInt();
         objectCount = in.readInt();
-        declarations = (Map<String, Declaration>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -140,7 +117,6 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeObject(leftNegativeMask);
         out.writeInt(pathIndex);
         out.writeInt(objectCount);
-        out.writeObject(declarations);
     }
 
     public int getPathIndex() {
@@ -170,14 +146,6 @@ public abstract class LeftTupleSource extends BaseNode
 
     public void setObjectCount(int count) {
         objectCount = count;
-    }
-
-    public Map<String, Declaration> getDeclarations() {
-        return declarations;
-    }
-
-    public void setDeclarations(Map<String, Declaration> declarations) {
-        this.declarations = declarations;
     }
 
     /**

@@ -146,7 +146,6 @@ public class SingleAccumulate extends Accumulate {
         RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
         SingleAccumulate clone = new SingleAccumulate( clonedSource,
                                                        this.requiredDeclarations,
-                                                       //this.outerDeclarations,
                                                        this.accumulator );
         registerClone(clone);
         return clone;

@@ -39,8 +39,7 @@ public class LambdaConsequence implements Consequence {
     private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
-    private boolean              enabledTupleOptimization;
-    private Declaration[]        requiredDeclarations;
+    private final Declaration[]        requiredDeclarations;
 
     private TupleFactSupplier[] factSuppliers;
     private GlobalSupplier[]    globalSuppliers;
@@ -48,13 +47,9 @@ public class LambdaConsequence implements Consequence {
 
     private FactHandleLookup    fhLookup;
 
-    public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
+    public LambdaConsequence( org.drools.model.Consequence consequence, Declaration[] requiredDeclarations) {
         this.consequence = consequence;
-        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION & enabledTupleOptimization;
-    }
-
-    @Override public void initDeclarations(Declaration[] requiredDeclarations) {
-        this.requiredDeclarations = enabledTupleOptimization ? requiredDeclarations : null;
+        this.requiredDeclarations = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION ? requiredDeclarations : null;
     }
 
     @Override
@@ -197,7 +192,6 @@ public class LambdaConsequence implements Consequence {
         Tuple current = tuple;
         boolean first = true;
         for (TupleFactSupplier tupleFactSupplier : factSuppliers) {
-            //tupleFactSupplier.formerSupplierOffset = lastOffset - tupleFactSupplier.declarationOffset;
             int targetTupleIndex = tupleFactSupplier.declarationTupleIndex;
 
             tupleFactSupplier.offsetFromPrior = 0;
@@ -237,7 +231,6 @@ public class LambdaConsequence implements Consequence {
 
         public int compareTo( GlobalSupplier o ) {
             return globalName.compareTo( o.globalName );
-
         }
     }
 
@@ -286,7 +279,6 @@ public class LambdaConsequence implements Consequence {
             // Sorted from the one extracting a fact from the bottom of the tuple to the one reading from its top
             // In this way the whole tuple can be traversed only once to retrive all facts
             return o.declarationTupleIndex - declarationTupleIndex;
-
         }
     }
 }

@@ -163,14 +163,9 @@ public abstract class BaseTuple implements Tuple {
 
     @Override
     public Tuple skipEmptyHandles() {
-        Tuple entry = this;
-
         // because getParent now only returns a tuple that as an FH, we only need to cheeck the current tuple,
         // and not the parent chain
-        if ( entry.getFactHandle() == null) {
-            entry = entry.getParent();
-        }
-        return entry;
+        return getFactHandle() == null ? getParent() : this;
     }
 
     @Override

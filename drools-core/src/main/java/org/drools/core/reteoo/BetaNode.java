@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,7 +43,6 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
@@ -479,35 +477,6 @@ public abstract class BetaNode extends LeftTupleSource
     
     private void setConstraints(BetaConstraints constraints) {
         this.constraints = constraints.cloneIfInUse();
-
-        // replaceDeclarations(constraints, this);
-    }
-
-    /**
-     * This is needed as patterns and declarations are cloned, due to sharing. Once added it must used the pattern instance
-     * that was chosen from the shared condidates.
-     * @param constraints
-     */
-    public static  void replaceDeclarations(BetaConstraints constraints, LeftTupleSource node) {
-        BetaNodeFieldConstraint[] array = constraints.getConstraints();
-        Arrays.stream(array).forEach(c -> {
-            Arrays.stream(c.getRequiredDeclarations()).forEach(declr ->
-                {
-                    // Always start with the parent node, as this is "required" declarations from previous joins
-                    LeftTupleSource current = node.getLeftTupleSource();
-                    while (current != null) {
-                        Declaration targetDeclr = current.declarations.get(declr.getIdentifier());
-                        if (targetDeclr != null) {
-                            if ( targetDeclr != declr) {
-                                // only replace if they are not already the same.
-                                c.replaceDeclaration(declr, targetDeclr);
-                            }
-                            break;
-                        }
-                        current = current.getLeftTupleSource();
-                    }
-                });
-        });
     }
 
     public void networkUpdated(UpdateContext updateContext) {

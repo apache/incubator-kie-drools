@@ -25,7 +25,6 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -73,10 +72,6 @@ public class MVELConsequence
         out.writeObject( unit );
         out.writeUTF( id );
         out.writeUTF(consequenceName);
-    }
-
-    @Override public void initDeclarations(Declaration[] requiredDeclarations) {
-        // this does nothing, as it's only needed for LamdaConsequence
     }
 
     public void compile( MVELDialectRuntimeData runtimeData) {

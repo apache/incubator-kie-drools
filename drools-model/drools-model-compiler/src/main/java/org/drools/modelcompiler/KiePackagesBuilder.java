@@ -110,7 +110,6 @@ import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.AbstractSingleConstraint;
-import org.drools.model.constraints.MultipleConstraints;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
@@ -393,19 +392,16 @@ public class KiePackagesBuilder {
     }
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
-        // @TODO this might be wasteful, as we calculating this else where too, and now I only need the boolean (mdp).
-        // This is changed, because we must use the Declarations provided by the RTN, otherwise tuple indexes are not set.
         Declaration[] requiredDeclarations = getRequiredDeclarationsIfPossible( ctx, consequence, name );
-        boolean enabledTupleOptimization = requiredDeclarations != null && requiredDeclarations.length > 0;
 
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence( new LambdaConsequence( consequence, enabledTupleOptimization ) );
+                ctx.getRule().setConsequence( new LambdaConsequence( consequence, requiredDeclarations ) );
             } else {
                 throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
             }
         } else {
-            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, enabledTupleOptimization ) );
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, requiredDeclarations ) );
         }
     }
 
@@ -754,18 +750,7 @@ public class KiePackagesBuilder {
         Arrays.stream( modelPattern.getWatchedProps() ).forEach( pattern::addWatchedProperty );
 
         for (Binding binding : modelPattern.getBindings()) {
-            Function1 f1;
-            if (delegateDeclr) {
-                // There is a pattern after the accumulate that creates more bindings targetting an existing result pattern declaration
-                // This is semantically the same as var1.getVar2(). Where var1 is a accumulate binding and var2 a binding in the follow up pattern.
-                // To make thsi work the first accessor is first called, with the second function using the result of that.
-                Declaration declr = ctx.getDeclaration(patternVariable);
-                InternalReadAccessor reader = declr.getExtractor();
-                f1 = (o) -> binding.getBindingFunction().apply(reader.getValue(o));
-            } else {
-                f1 = binding.getBindingFunction();
-            }
-
+            Function1 f1 = getBindingFunction( ctx, patternVariable, delegateDeclr, binding );
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
                                                       new LambdaReadAccessor(binding.getBoundVariable().getType(), f1),
                                                       pattern,
@@ -787,20 +772,16 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private RuleConditionElement buildEvalsForGroupKey( RuleContext ctx, Constraint constraint, Variable groupKeyVar ) {
-        if ( constraint instanceof SingleConstraint) {
-            EvalCondition evalCondition = buildEval( ctx, new EvalImpl( ( SingleConstraint ) constraint ) );
-            Map<String, Declaration> declarationsMap = new HashMap<>();
-            declarationsMap.put( groupKeyVar.getName(), ctx.getDeclaration( groupKeyVar ) );
-            evalCondition.setOuterDeclarations( declarationsMap );
-            return evalCondition;
+    private Function1 getBindingFunction( RuleContext ctx, Variable patternVariable, boolean delegateDeclr, Binding binding ) {
+        if ( delegateDeclr ) {
+            // There is a pattern after the accumulate that creates more bindings targetting an existing result pattern declaration
+            // This is semantically the same as var1.getVar2(). Where var1 is a accumulate binding and var2 a binding in the follow up pattern.
+            // To make thsi work the first accessor is first called, with the second function using the result of that.
+            Declaration declr = ctx.getDeclaration( patternVariable );
+            InternalReadAccessor reader = declr.getExtractor();
+            return (o) -> binding.getBindingFunction().apply(reader.getValue(o));
         }
-
-        GroupElement evals = new GroupElement(GroupElement.Type.AND);
-        for ( Constraint child : (( MultipleConstraints ) constraint).getChildren() ) {
-            evals.addChild( buildEvalsForGroupKey( ctx, child, groupKeyVar ) );
-        }
-        return evals;
+        return binding.getBindingFunction();
     }
 
     // this method sets the property reactive masks on the pattern and it's strictly necessary for native compilation
@@ -842,10 +823,13 @@ public class KiePackagesBuilder {
         Accumulator[] accumulators = new Accumulator[accFunctions.length];
         List<Declaration> requiredDeclarationList = new ArrayList<>();
         for (int i = 0; i < accFunctions.length; i++) {
-            processFunctions(ctx, accPattern, source, pattern, usedVariableName,
+            Variable boundVar = processFunctions(ctx, accPattern, source, pattern, usedVariableName,
                              bindings,
                              isGroupBy, accFunctions[i],
-                             groupByDeclaration, selfReader, accumulators, requiredDeclarationList, arrayIndexOffset, i);
+                             selfReader, accumulators, requiredDeclarationList, arrayIndexOffset, i);
+            if (isGroupBy) {
+                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), boundVar, groupByDeclaration);
+            }
         }
 
         if (accFunctions.length == 1) {
@@ -876,11 +860,11 @@ public class KiePackagesBuilder {
         return accumulate;
     }
 
-    private void processFunctions(RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern,
+    private Variable processFunctions(RuleContext ctx, AccumulatePattern accPattern, RuleConditionElement source, Pattern pattern,
                                   Set<String> usedVariableName, Collection<Binding> bindings, boolean isGroupBy, AccumulateFunction accFunction,
-                                  Declaration groupByDeclaration, InternalReadAccessor selfReader, Accumulator[] accumulators,
+                                  InternalReadAccessor selfReader, Accumulator[] accumulators,
                                   List<Declaration> requiredDeclarationList, int arrayIndexOffset, int i) {
-        Binding                binding          = findBindingForAccumulate(bindings, accFunction);
+        Binding binding = findBindingForAccumulate(bindings, accFunction);
         if (binding != null) {
             for (Variable var : binding.getInputVariables()) {
                 usedVariableName.add( var.getName() );
@@ -892,24 +876,22 @@ public class KiePackagesBuilder {
         Variable boundVar = accPattern.getBoundVariables()[i];
         Declaration declaration;
         if (!isGroupBy && accumulators.length == 1) {
-            declaration = new Declaration(boundVar.getName(),  getReadAcessor( new ClassObjectType(boundVar.getType()) ),
-                                        pattern,true);
+            declaration = new Declaration(boundVar.getName(), getReadAcessor( new ClassObjectType(boundVar.getType()) ),
+                                        pattern, true);
         } else {
             // GroupBy or multi-accumulate always return an array
             // If GroupBy has no bound function, it uses an anonymous one.
             // The result is still in element 0 so must be offset using arrayIndexOffset
-            declaration = new Declaration(boundVar.getName(),new ArrayElementReader(selfReader, i+arrayIndexOffset, boundVar.getType()),
+            declaration = new Declaration(boundVar.getName(), new ArrayElementReader(selfReader, i+arrayIndexOffset, boundVar.getType()),
                                           pattern, true);
         }
         pattern.addDeclaration( declaration );
         ctx.addDeclaration( boundVar, declaration );
-        if (isGroupBy) {
-            ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), boundVar, groupByDeclaration);
-        }
         accumulators[i] = accumulator;
 
         Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate(ctx, source, accFunction, binding, bindingEvaluator);
         requiredDeclarationList.addAll(Arrays.asList(requiredDeclarations));
+        return boundVar;
     }
 
     private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {

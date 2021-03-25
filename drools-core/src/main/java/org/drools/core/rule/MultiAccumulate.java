@@ -195,7 +195,6 @@ public class MultiAccumulate extends Accumulate {
         RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
         MultiAccumulate clone = new MultiAccumulate( clonedSource,
                                                      this.requiredDeclarations,
-                                                     //this.outerDeclarations,
                                                      this.accumulators,
                                                      this.arraySize);
         registerClone(clone);

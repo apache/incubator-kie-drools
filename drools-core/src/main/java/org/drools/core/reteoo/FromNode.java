@@ -92,7 +92,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
-        //BetaNode.replaceDeclarations(betaConstraints, this);
         this.betaConstraints.init(context, getType());
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;

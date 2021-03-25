@@ -98,7 +98,7 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(77, results.iterator().next().getValue());
     }
 
-   @Test
+    @Test
     public void testFromOnAccumulatedValue() {
         // DROOLS-5635
         String str =
@@ -127,7 +127,7 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals("77", results.iterator().next().getValue());
     }
 
-   @Test
+    @Test
     public void testFromOnAccumulatedValueUsingExists() {
         // DROOLS-5635
         String str =
@@ -2433,33 +2433,6 @@ public class AccumulateTest extends BaseModelTest {
         List<String> resultsString = getObjectsIntoList(ksession, String.class);
         assertEquals(1, resultsString.size());
         assertEquals("13", resultsString.get(0));
-    }
-
-    @Test @Ignore
-    // I had to ignore this as Flow DSL is broken, and my changes expose this.
-    // Flow DSL is incorrectly adding a Person Pattern before the accumulate
-    public void testAccumulateOnTwoPatterns() {
-        // DROOLS-5738
-        String str =
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R1 when\n" +
-                "  accumulate (\n" +
-                "       $p1: Person() and $p2: Person( age > $p1.age ), $sum : sum(Person.sumAges($p1, $p2)) " +
-                "         )" +
-                "then\n" +
-                "  insert($sum);\n" +
-                "end\n";
-
-        KieSession ksession = getKieSession( str );
-
-        ksession.insert( new Person( "Mario", 46 ) );
-        ksession.insert( new Person( "Mark", 44 ) );
-
-        ksession.fireAllRules();
-
-        List<Number> results = getObjectsIntoList(ksession, Number.class);
-        assertEquals( 1, results.size() );
-        assertEquals( 90, results.get(0) );
     }
 
     @Test

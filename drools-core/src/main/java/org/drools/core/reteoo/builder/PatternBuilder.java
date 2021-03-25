@@ -27,7 +27,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -97,7 +96,6 @@ public class PatternBuilder
 
         // Create BetaConstraints object
         context.setBetaconstraints( constraints.betaConstraints );
-        context.setDeclarations(pattern.getDeclarations());
 
         if ( pattern.getSource() != null ) {
             context.setAlphaConstraints( constraints.alphaConstraints );
