@@ -50,6 +50,8 @@ public class DisconnectedFactHandle
         InternalFactHandle,
         Externalizable {
 
+    private static final String UNSUPPORTED_OPERATION_ERROR_MESSAGE = "DisconnectedFactHandle does not support this method";;
+
     @XmlElement
     @XmlSchemaType(name="long")
     private long    id;
@@ -160,7 +162,7 @@ public class DisconnectedFactHandle
 
     @Override
     public <K> K as( Class<K> klass ) throws ClassCastException {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     @Override
@@ -205,7 +207,7 @@ public class DisconnectedFactHandle
     }
 
     public LeftTuple getLastLeftTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public String getObjectClassName() {
@@ -216,27 +218,27 @@ public class DisconnectedFactHandle
         if ( this.object != null ) {
             return this.object;
         }
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public WorkingMemoryEntryPoint getEntryPoint() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public EqualityKey getEqualityKey() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public RightTuple getRightTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void invalidate() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public boolean isEvent() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public boolean isTraitOrTraitable() {
@@ -251,54 +253,54 @@ public class DisconnectedFactHandle
         return traitType == TraitTypeEnum.TRAIT.TRAIT;
     }
     public boolean isValid() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setEntryPoint(WorkingMemoryEntryPoint ep ) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setEqualityKey(EqualityKey key) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setFirstLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     @Override
     public LinkedTuples getLinkedTuples() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     @Override
     public LinkedTuples detachLinkedTuples() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     @Override
     public LinkedTuples detachLinkedTuplesForPartition(int i) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setLastLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setObject(Object object) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setRecency(long recency) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void setRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public InternalFactHandle clone() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public String toExternalForm() {
@@ -323,15 +325,15 @@ public class DisconnectedFactHandle
     }
 
     public LeftTuple getFirstLeftTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public RightTuple getFirstRightTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public RightTuple getLastRightTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public String toTupleTree(int indent) {
@@ -347,39 +349,39 @@ public class DisconnectedFactHandle
     }
 
     public void addFirstLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void addLastLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void removeLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void clearLeftTuples() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void clearRightTuples() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void addFirstRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void addLastRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void addTupleInPosition(Tuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public void removeRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
     public EntryPointId getEntryPointId() {
