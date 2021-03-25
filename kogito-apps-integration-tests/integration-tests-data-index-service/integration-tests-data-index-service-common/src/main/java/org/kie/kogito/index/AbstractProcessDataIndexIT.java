@@ -87,9 +87,11 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("data.Approvals[0].id", is(pId))
                         .body("data.Approvals[0].traveller.firstName", is("Darth"))
                         .body("data.Approvals[0].traveller.lastName", is("Vader"))
+                        .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
                         .body("data.Approvals[0].metadata.processInstances.size()", is(1))
                         .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
                         .body("data.Approvals[0].metadata.processInstances[0].state", is("ACTIVE"))
+                        .body("data.Approvals[0].metadata.userTasks", is(notNullValue()))
                         .body("data.Approvals[0].metadata.userTasks.size()", is(1))
                         .body("data.Approvals[0].metadata.userTasks[0].id", is(flTaskId))
                         .body("data.Approvals[0].metadata.userTasks[0].name", is("firstLineApproval"))
@@ -193,9 +195,11 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("data.Approvals[0].id", is(pId))
                         .body("data.Approvals[0].firstLineApproval", is(true))
                         .body("data.Approvals[0].secondLineApproval", is(true))
+                        .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
                         .body("data.Approvals[0].metadata.processInstances.size()", is(1))
                         .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
                         .body("data.Approvals[0].metadata.processInstances[0].state", is("COMPLETED"))
+                        .body("data.Approvals[0].metadata.userTasks", is(notNullValue()))
                         .body("data.Approvals[0].metadata.userTasks.size()", is(2)));
     }
 
