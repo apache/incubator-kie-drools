@@ -39,7 +39,8 @@ public class LambdaConsequence implements Consequence {
     private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
-    private final Declaration[]        requiredDeclarations;
+    private boolean              enabledTupleOptimization;
+    private Declaration[]        requiredDeclarations;
 
     private TupleFactSupplier[] factSuppliers;
     private GlobalSupplier[]    globalSuppliers;
@@ -47,9 +48,14 @@ public class LambdaConsequence implements Consequence {
 
     private FactHandleLookup    fhLookup;
 
-    public LambdaConsequence( org.drools.model.Consequence consequence, Declaration[] requiredDeclarations) {
+    public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
         this.consequence = consequence;
-        this.requiredDeclarations = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION ? requiredDeclarations : null;
+        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION & enabledTupleOptimization;
+    }
+
+    @Override
+    public void initDeclarations(Declaration[] requiredDeclarations) {
+        this.requiredDeclarations = enabledTupleOptimization ? requiredDeclarations : null;
     }
 
     @Override

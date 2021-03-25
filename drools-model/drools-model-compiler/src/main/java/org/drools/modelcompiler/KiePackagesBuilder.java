@@ -392,16 +392,19 @@ public class KiePackagesBuilder {
     }
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
+        // @TODO this might be wasteful, as we calculating this else where too, and now I only need the boolean (mdp).
+        // This is changed, because we must use the Declarations provided by the RTN, otherwise tuple indexes are not set.
         Declaration[] requiredDeclarations = getRequiredDeclarationsIfPossible( ctx, consequence, name );
+        boolean enabledTupleOptimization = requiredDeclarations != null && requiredDeclarations.length > 0;
 
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence( new LambdaConsequence( consequence, requiredDeclarations ) );
+                ctx.getRule().setConsequence( new LambdaConsequence( consequence, enabledTupleOptimization ) );
             } else {
                 throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
             }
         } else {
-            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, requiredDeclarations ) );
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, enabledTupleOptimization ) );
         }
     }
 
