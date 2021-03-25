@@ -72,6 +72,7 @@ public class KiePMMLModelRetriever {
                                                                       hasClassloader))
                 .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, dataDictionary,
                                                                      model.getMiningSchema(), model.getOutput()))
+                .map(kiePMMLModel -> getPopulatedWithKiePMMLTargets(kiePMMLModel, model.getTargets()))
                 .findFirst();
     }
 
@@ -102,7 +103,6 @@ public class KiePMMLModelRetriever {
                                                                                  hasClassloader))
                 .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, dataDictionary,
                                                                      model.getMiningSchema(), model.getOutput()))
-                .map(kiePMMLModel -> getPopulatedWithKiePMMLTargets(kiePMMLModel, model.getTargets()))
                 .findFirst();
     }
 

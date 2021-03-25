@@ -186,18 +186,18 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         if (!toModify.getResultCode().equals(OK.getName())) {
             return;
         }
-        final String resultObjectName = toModify.getResultObjectName();
+        final String targetFieldName = model.getTargetField();
         final Map<String, Object> resultVariables = toModify.getResultVariables();
         model.getKiePMMLTargets()
                 .stream()
-                .filter(kiePMMLTarget -> kiePMMLTarget.getField() != null && kiePMMLTarget.getField().equals(resultObjectName))
+                .filter(kiePMMLTarget -> kiePMMLTarget.getField() != null && kiePMMLTarget.getField().equals(targetFieldName))
                 .findFirst()
                 .ifPresent(kiePMMLTarget -> {
-                    Object prediction = resultVariables.get(resultObjectName);
+                    Object prediction = resultVariables.get(targetFieldName);
                     logger.debug("Original prediction {}", prediction);
-                    Object modifiedPrediction = kiePMMLTarget.modifyPrediction(resultVariables.get(resultObjectName));
+                    Object modifiedPrediction = kiePMMLTarget.modifyPrediction(resultVariables.get(targetFieldName));
                     logger.debug("Modified prediction {}", modifiedPrediction);
-                    resultVariables.put(resultObjectName, modifiedPrediction);
+                    resultVariables.put(targetFieldName, modifiedPrediction);
                 });
 
     }
