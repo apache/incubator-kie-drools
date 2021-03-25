@@ -373,6 +373,7 @@ public class KieContainerImpl
         Set<String> reloadedClasses = new HashSet<>(modifiedClasses);
 
         ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
+        projectClassLoader.clearStore();
         if (modifyingUsedClass) {
             reloadedClasses.addAll( projectClassLoader.reinitTypes().stream().map( ClassUtils::convertClassToResourcePath ).collect( toList() ) );
         }

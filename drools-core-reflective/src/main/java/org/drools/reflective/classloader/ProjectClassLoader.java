@@ -336,6 +336,12 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return store;
     }
 
+    public void clearStore() {
+        if (store != null) {
+            store.clear();
+        }
+    }
+
     public void setDroolsClassLoader(ClassLoader droolsClassLoader) {
         if (getParent() != droolsClassLoader && isModularClassLoader(droolsClassLoader)) {
             this.droolsClassLoader = droolsClassLoader;
