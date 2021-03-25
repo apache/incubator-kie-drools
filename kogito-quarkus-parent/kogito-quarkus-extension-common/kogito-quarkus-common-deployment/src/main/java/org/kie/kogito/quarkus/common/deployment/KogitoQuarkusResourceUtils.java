@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jboss.jandex.CompositeIndex;
@@ -49,6 +50,11 @@ import static java.util.stream.Collectors.toList;
  * Utility class to aggregate and share resource handling in Kogito extensions
  */
 public class KogitoQuarkusResourceUtils {
+
+    static final String HOT_RELOAD_SUPPORT_PACKAGE = "org.kie.kogito.app";
+    static final String HOT_RELOAD_SUPPORT_CLASS = "HotReloadSupportClass";
+    static final String HOT_RELOAD_SUPPORT_FQN = HOT_RELOAD_SUPPORT_PACKAGE + "." + HOT_RELOAD_SUPPORT_CLASS;
+    static final String HOT_RELOAD_SUPPORT_PATH = HOT_RELOAD_SUPPORT_FQN.replace('.', '/');
 
     private KogitoQuarkusResourceUtils() {
         // utility class
@@ -156,20 +162,31 @@ public class KogitoQuarkusResourceUtils {
 
         Collection<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
         Path location = generatedFileWriterBuilder.build(appPaths.getFirstProjectPath()).getClassesDir();
-        ;
+
         for (String fileName : resources.getFileNames()) {
             byte[] data = resources.getBytes(fileName);
             String className = toClassName(fileName);
-            buildItems.add(new GeneratedBeanBuildItem(className, data));
 
-            Path path = pathOf(location.toString(), fileName);
-            Files.write(path, data);
+            // Write the bytecode of the class retriggering the hot reload in the file system
+            // This is necessary to workaround the problem fixed by https://github.com/quarkusio/quarkus/pull/15726 and
+            // TODO this can be removed when we will use a version of quarkus having that fix
+            if (className.equals(HOT_RELOAD_SUPPORT_FQN)) {
+                for (Path classPath : appPaths.getClassesPaths()) {
+                    // Write the class bytecode in the first available directory class path if any
+                    if (classPath.toFile().isDirectory()) {
+                        Path path = pathOf(classPath.toString(), HOT_RELOAD_SUPPORT_PATH + ".class");
+                        Files.write(path, data);
+                        break;
+                    }
+                }
+            }
+
+            buildItems.add(new GeneratedBeanBuildItem(className, data));
 
             String sourceFile = location.toString().replaceFirst("\\.class", ".java");
             if (sourceFile.contains("$")) {
                 sourceFile = sourceFile.substring(0, sourceFile.indexOf("$")) + ".java";
             }
-            KogitoCompilationProvider.classToSource.put(path, Paths.get(sourceFile));
         }
 
         return buildItems;
@@ -191,5 +208,13 @@ public class KogitoQuarkusResourceUtils {
         Path path = Paths.get(location, end);
         path.getParent().toFile().mkdirs();
         return path;
+    }
+
+    static String getHotReloadSupportSource() {
+        return "package " + HOT_RELOAD_SUPPORT_PACKAGE + ";\n" +
+                "@io.quarkus.runtime.Startup()\n" +
+                "public class " + HOT_RELOAD_SUPPORT_CLASS + " {\n" +
+                "private static final String ID = \"" + UUID.randomUUID().toString() + "\";\n" +
+                "}";
     }
 }

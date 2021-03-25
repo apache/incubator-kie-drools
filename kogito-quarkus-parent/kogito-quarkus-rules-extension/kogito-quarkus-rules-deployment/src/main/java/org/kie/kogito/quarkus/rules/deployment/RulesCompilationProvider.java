@@ -15,20 +15,12 @@
  */
 package org.kie.kogito.quarkus.rules.deployment;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kie.kogito.codegen.api.Generator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
-import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.quarkus.common.deployment.KogitoCompilationProvider;
-import org.kie.kogito.quarkus.common.deployment.PackageWalker;
 
 public class RulesCompilationProvider extends KogitoCompilationProvider {
 
@@ -38,15 +30,4 @@ public class RulesCompilationProvider extends KogitoCompilationProvider {
     public Set<String> handledExtensions() {
         return MANAGED_EXTENSIONS;
     }
-
-    @Override
-    protected Generator getGenerator(KogitoBuildContext context, Set<File> filesToCompile, Context quarkusContext) {
-        Path resources = quarkusContext.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
-        Collection<File> files = PackageWalker.getAllSiblings(filesToCompile);
-        return IncrementalRuleCodegen.ofCollectedResources(
-                context,
-                CollectedResourceProducer.fromFiles(resources, files.toArray(new File[0])))
-                .withHotReloadMode();
-    }
-
 }

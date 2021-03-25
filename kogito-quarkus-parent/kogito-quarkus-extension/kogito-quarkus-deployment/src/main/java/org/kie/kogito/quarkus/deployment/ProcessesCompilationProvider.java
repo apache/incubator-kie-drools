@@ -15,15 +15,9 @@
  */
 package org.kie.kogito.quarkus.deployment;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kie.kogito.codegen.api.Generator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
-import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.quarkus.common.deployment.KogitoCompilationProvider;
 
 import static java.util.Arrays.asList;
@@ -33,13 +27,5 @@ public class ProcessesCompilationProvider extends KogitoCompilationProvider {
     @Override
     public Set<String> handledExtensions() {
         return new HashSet<>(asList(".bpmn", ".bpmn2"));
-    }
-
-    @Override
-    protected Generator getGenerator(KogitoBuildContext context, Set<File> filesToCompile, Context quarkusContext) {
-        Path resources = quarkusContext.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
-        return ProcessCodegen.ofCollectedResources(
-                context,
-                CollectedResourceProducer.fromFiles(resources, filesToCompile.toArray(new File[0])));
     }
 }

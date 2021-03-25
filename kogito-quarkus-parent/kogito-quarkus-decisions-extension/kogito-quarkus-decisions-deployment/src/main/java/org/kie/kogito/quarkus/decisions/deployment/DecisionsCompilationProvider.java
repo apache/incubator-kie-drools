@@ -15,15 +15,9 @@
  */
 package org.kie.kogito.quarkus.decisions.deployment;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
-import org.kie.kogito.codegen.api.Generator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
-import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.quarkus.common.deployment.KogitoCompilationProvider;
 
 public class DecisionsCompilationProvider extends KogitoCompilationProvider {
@@ -31,13 +25,5 @@ public class DecisionsCompilationProvider extends KogitoCompilationProvider {
     @Override
     public Set<String> handledExtensions() {
         return Collections.singleton(".dmn");
-    }
-
-    @Override
-    protected Generator getGenerator(KogitoBuildContext context, Set<File> filesToCompile, Context quarkusContext) {
-        Path path = quarkusContext.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
-        return DecisionCodegen.ofCollectedResources(
-                context,
-                CollectedResourceProducer.fromDirectory(path));
     }
 }

@@ -18,33 +18,22 @@ package org.kie.kogito.quarkus.common.deployment;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.codegen.api.Generator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.utils.AppPaths;
-import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.quarkus.deployment.dev.JavaCompilationProvider;
 
+import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
+import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getHotReloadSupportSource;
+
 public abstract class KogitoCompilationProvider extends JavaCompilationProvider {
 
-    public static final Map<Path, Path> classToSource = new ConcurrentHashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoCompilationProvider.class);
 
     @Override
@@ -54,79 +43,20 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
 
     @Override
     public final void compile(Set<File> filesToCompile, Context quarkusContext) {
-        // This classloader reads from the file system all the project dependencies, plus the quarkus output directory
-        // containing all the latest class definitions of user's pojos, eventually recompiled also during the latest
-        // hot reload round. It is also necessary to use a null as a parent classloader otherwise this classloader
-        // could load the old definition of a class from the parent instead of getting the latest one from the output directory
-        try (final URLClassLoader cl = new URLClassLoader(getClasspathUrls(quarkusContext), null)) {
+        Path path = pathOf(quarkusContext.getOutputDirectory().getPath(), HOT_RELOAD_SUPPORT_PATH + ".java");
 
-            File outputDirectory = quarkusContext.getOutputDirectory();
-            try {
-                AppPaths appPaths = AppPaths.fromProjectDir(quarkusContext.getProjectDirectory().toPath());
-                KogitoBuildContext context = KogitoQuarkusContextProvider.context(appPaths, cl);
-
-                ApplicationGenerator appGen = new ApplicationGenerator(context);
-
-                appGen.registerGeneratorIfEnabled(getGenerator(context, filesToCompile, quarkusContext));
-
-                Collection<GeneratedFile> generatedFiles = appGen.generate();
-
-                Set<File> generatedSourceFiles = new HashSet<>();
-                for (GeneratedFile file : generatedFiles) {
-                    Path path = pathOf(outputDirectory.getPath(), file.relativePath());
-                    if (file.type().canHotReload()) {
-                        Files.write(path, file.contents());
-                        if (file.category().equals(GeneratedFileType.Category.SOURCE)) {
-                            generatedSourceFiles.add(path.toFile());
-                        }
-                    } else {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Skipping file because cannot hot reload: {}", file);
-                        }
-                    }
-                }
-                super.compile(generatedSourceFiles, quarkusContext);
-            } catch (Exception e) {
-                throw new KogitoCompilerException(e);
-            }
+        try {
+            Files.write(path, getHotReloadSupportSource().getBytes());
         } catch (IOException e) {
-            throw new UncheckedIOException("Exception while closing URLClassLoader", e);
-        }
-    }
-
-    @Override
-    public Path getSourcePath(Path classFilePath, Set<String> sourcePaths, String classesPath) {
-        if (classToSource.containsKey(classFilePath)) {
-            return classToSource.get(classFilePath);
+            throw new UncheckedIOException(e);
         }
 
-        return null;
+        super.compile(Collections.singleton(path.toFile()), quarkusContext);
     }
 
-    protected abstract Generator getGenerator(KogitoBuildContext context,
-            Set<File> filesToCompile,
-            Context quarkusContext);
-
-    static Path pathOf(String path, String relativePath) {
+    private static Path pathOf(String path, String relativePath) {
         Path p = Paths.get(path, relativePath);
         p.getParent().toFile().mkdirs();
         return p;
-    }
-
-    private URL[] getClasspathUrls(Context context) {
-        Set<File> elements = context.getClasspath();
-        URL[] urls = new URL[elements.size() + 1];
-
-        try {
-            urls[0] = context.getOutputDirectory().toURI().toURL();
-            int i = 1;
-            for (File artifact : elements) {
-                urls[i++] = artifact.toURI().toURL();
-            }
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return urls;
     }
 }
