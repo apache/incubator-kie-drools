@@ -36,19 +36,23 @@ import org.kie.internal.security.KiePolicyHelper;
 
 public class MultiAccumulate extends Accumulate {
     private Accumulator[] accumulators;
+    private int arraySize;
 
     public MultiAccumulate() { }
 
     public MultiAccumulate(final RuleConditionElement source,
                            final Declaration[] requiredDeclarations,
-                           final Accumulator[] accumulators ) {
+                           final Accumulator[] accumulators,
+                           int arraySize) {
         super(source, requiredDeclarations);
+        this.arraySize = arraySize;
         this.accumulators = accumulators;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
         super.readExternal(in);
+        arraySize = in.readInt();
         this.accumulators = new Accumulator[in.readInt()];
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             this.accumulators[i] = (Accumulator) in.readObject();
@@ -57,6 +61,7 @@ public class MultiAccumulate extends Accumulate {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
+        out.writeInt(arraySize);
         out.writeInt( accumulators.length );
         for (Accumulator acc : accumulators) {
             if (Accumulator.isCompiledInvoker(acc)) {
@@ -76,8 +81,10 @@ public class MultiAccumulate extends Accumulate {
     }
 
     public Object[] createFunctionContext() {
-        Object[] ctxs = new Object[this.accumulators.length];
-        for ( int i = 0; i < ctxs.length; i++ ) {
+        Object[] ctxs = new Object[accumulators.length];
+        for ( int i = 0; i < accumulators.length; i++ ) {
+            // use the size of the accumulates not the arraySize, as the last element may be
+            // left empty, for the groupby key
             ctxs[i] = this.accumulators[i].createContext();
         }
         return ctxs;
@@ -164,7 +171,7 @@ public class MultiAccumulate extends Accumulate {
                               final Object context,
                               final Tuple leftTuple,
                               final WorkingMemory workingMemory) {
-        Object[] results = new Object[this.accumulators.length];
+        Object[] results = new Object[arraySize];
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
             results[i] = this.accumulators[i].getResult( ((Object[])workingMemoryContext)[i],
@@ -188,7 +195,8 @@ public class MultiAccumulate extends Accumulate {
         RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
         MultiAccumulate clone = new MultiAccumulate( clonedSource,
                                                      this.requiredDeclarations,
-                                                     this.accumulators );
+                                                     this.accumulators,
+                                                     this.arraySize);
         registerClone(clone);
         return clone;
     }

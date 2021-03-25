@@ -223,7 +223,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START2() {
         String input = "rule MyRule \n" + "	when \n" + "		Class ( na";
 
@@ -239,7 +239,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START3() {
         String input = "rule MyRule \n" + "	when \n"
                 + "		Class ( name.subProperty['test'].subsu";
@@ -380,7 +380,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START10() {
         String input = "rule MyRule \n" + "	when \n" + "		Class ( name:";
 
@@ -397,7 +397,7 @@ public class DRLContextTest {
     }
 
     /** Inside of condition: Operator */
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR1() {
         String input = "rule MyRule \n" + "	when \n" + "		Class ( property ";
 
@@ -1190,7 +1190,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START22() {
         String input = "rule MyRule \n" + "	when \n" + "		not ( exists Class (";
 
@@ -1206,7 +1206,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START23() {
         String input = "rule MyRule \n" + "	when \n"
                 + "		not ( exists name : Class (";
@@ -1831,7 +1831,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_EVAL5() {
         String input = "rule MyRule \n" + "	when \n"
                 + "		eval( param.getMethod(";
@@ -1932,7 +1932,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION51() {
         String input = "rule MyRule \n" + "	when \n"
                 + "		eval( param.getProperty(\"someStringWith(((\").isTrue() )";
@@ -2450,7 +2450,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_FROM_ACCUMULATE_ACTION_INSIDE() {
         String input = "rule MyRule \n" + "	when \n"
                 + "		Class ( property > 0 ) from accumulate( \n"
@@ -2488,7 +2488,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testCheckLHSLocationDetermination_FROM_ACCUMULATE_RESULT_INSIDE() {
         String input = "rule MyRule \n" + "	when \n"
                 + "		Class ( property > 0 ) from accumulate( \n"
@@ -3215,7 +3215,7 @@ public class DRLContextTest {
                         .getContent()));
     }
 
-    @Test//(timeout=10*1000)
+    @Test(timeout=10*1000)
     public void testRuleParameters_PATTERN_1() {
         String input =
                 "rule MyRule \n" +

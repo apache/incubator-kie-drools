@@ -88,6 +88,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                 final ObjectSource source,
                                 final BuildContext context) {
         super(id, context);
+        this.setObjectCount(1); // 'lia' start at 1
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
@@ -150,7 +151,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.objectSource;
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.objectSource.addObjectSink( this );
     }
 

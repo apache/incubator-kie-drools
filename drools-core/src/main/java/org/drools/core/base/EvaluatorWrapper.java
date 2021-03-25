@@ -212,9 +212,20 @@ public class EvaluatorWrapper
     }
 
     public void loadHandles(InternalFactHandle[] handles, InternalFactHandle rightHandle) {
-        InternalFactHandle localLeftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
+        InternalFactHandle localLeftHandle = null;
+        InternalFactHandle localRightHandle = null;
 
-        InternalFactHandle localRightHandle = selfRight ? rightHandle : getFactHandle(rightBinding, handles);
+        if ( !selfLeft && handles != null) {
+            localLeftHandle = getFactHandle(leftBinding, handles);
+        }
+
+        if (selfRight) {
+            localRightHandle = rightHandle;
+        } else if (handles != null){
+            localRightHandle = getFactHandle(rightBinding, handles);
+        } // @FIXME else? what happens now (mdp) ? Maybe this can never happen?
+
+
         this.rightLiteral = localRightHandle == null;
 
         if (isTemporal()) {
@@ -246,6 +257,6 @@ public class EvaluatorWrapper
 
     private static InternalFactHandle getFactHandle( Declaration declaration,
                                                     InternalFactHandle[] handles ) {
-        return handles != null && handles.length > declaration.getOffset() ? handles[declaration.getOffset()] : null;
+        return handles[declaration.getObjectIndex()];
     }
 }

@@ -43,6 +43,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
@@ -427,7 +428,8 @@ public class JpaPersistentStatefulSessionTest {
         ks.newKieBuilder( kfs ).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
-        KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+        //KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+        KieSession ksession = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -437,7 +439,14 @@ public class JpaPersistentStatefulSessionTest {
         Object here = hereType.newInstance();
         hereType.set(here, "place", "office");
 
+        FactType locationType = kbase.getFactType(this.getClass().getPackage().getName(), "Location");
+        assertNotNull(locationType);
+        Object location = locationType.newInstance();
+        locationType.set(location, "thing", "key");
+        locationType.set(location, "location", "office");
+
         ksession.insert(here);
+        ksession.insert(location);
         ksession.fireAllRules();
     }
 
@@ -576,7 +585,9 @@ public class JpaPersistentStatefulSessionTest {
                               .write( "src/main/resources/r1.drl", str )
                               .writeKModuleXML( kmodel.toXML() );
 
-        ks.newKieBuilder( kfs ).buildAll();
+        Results results = ks.newKieBuilder(kfs).buildAll().getResults();
+        System.out.println(results.getMessages());
+
 
         KieContainer kcontainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
 

@@ -642,10 +642,6 @@ public class RuleImpl implements Externalizable,
         return namedConsequences != null && !namedConsequences.isEmpty();
     }
 
-    public Map<String, Consequence> getNamedConsequences() {
-        return this.namedConsequences;
-    }
-
     public Consequence getNamedConsequence(String consequenceName)  {
         Consequence consequence = namedConsequences != null ? namedConsequences.get(consequenceName) : null;
         return consequence == null && parent != null ? parent.getNamedConsequence(consequenceName) : consequence;

@@ -383,14 +383,16 @@ public class EntryPointNode extends ObjectSource
     }
 
     public void attach() {
-        attach(null);
+        doAttach(null);
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.source.addObjectSink( this );
         if (context == null ) {
             return;
         }
+        // @FIXME when is below ever called, if context is always null? (mdp)
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
         }

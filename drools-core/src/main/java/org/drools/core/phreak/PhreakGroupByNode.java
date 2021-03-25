@@ -14,7 +14,6 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
@@ -40,8 +39,15 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     @Override
-    protected InternalFactHandle createFactHandle( AccumulateNode accNode, LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object key, Object result ) {
-        return new GroupByFactHandle( accNode.createResultFactHandle( context, workingMemory, leftTuple, result ), key );
+    protected Object createResult( AccumulateNode accNode, Object key, Object result ) {
+        Object[] array;
+        if (accNode.getAccumulate().isMultiFunction()) {
+            array = (Object[]) result;
+            array[array.length-1] = key;
+        } else {
+            array = new Object[] {result, key};
+        }
+        return array;
     }
 
     @Override

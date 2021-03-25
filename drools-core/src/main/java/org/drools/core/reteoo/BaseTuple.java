@@ -27,7 +27,7 @@ public abstract class BaseTuple implements Tuple {
 
     private Object contextObject;
 
-    private InternalFactHandle handle;
+    protected InternalFactHandle handle;
 
     private PropagationContext propagationContext;
 
@@ -45,7 +45,7 @@ public abstract class BaseTuple implements Tuple {
     private boolean expired;
 
     public Object getObject(Declaration declaration) {
-        return getObject(declaration.getOffset());
+        return getObject(declaration.getTupleIndex());
     }
 
     public Object getContextObject() {
@@ -128,13 +128,13 @@ public abstract class BaseTuple implements Tuple {
 
     @Override
     public InternalFactHandle get( Declaration declaration ) {
-        return get(declaration.getOffset());
+        return get(declaration.getTupleIndex());
     }
 
     @Override
     public void increaseActivationCountForEvents() {
-        for ( Tuple entry = this; entry != null; entry = entry.getParent() ) {
-            if(entry.getFactHandle() != null &&  entry.getFactHandle().isEvent() ) {
+        for ( Tuple entry = skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
+            if(entry.getFactHandle().isEvent()) {
                 // can be null for eval, not and exists that have no right input
                 ((EventFactHandle)entry.getFactHandle()).increaseActivationsCount();
             }
@@ -143,8 +143,8 @@ public abstract class BaseTuple implements Tuple {
 
     @Override
     public void decreaseActivationCountForEvents() {
-        for ( Tuple entry = this; entry != null; entry = entry.getParent() ) {
-            if( entry.getFactHandle() != null &&  entry.getFactHandle().isEvent() ) {
+        for ( Tuple entry = skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
+            if(entry.getFactHandle().isEvent()) {
                 // can be null for eval, not and exists that have no right input
                 ((EventFactHandle)entry.getFactHandle()).decreaseActivationsCount();
             }
@@ -153,24 +153,19 @@ public abstract class BaseTuple implements Tuple {
 
     @Override
     public Tuple getRootTuple() {
-        if ( getParent() == null ) {
-            return this;
-        }
+        Tuple tuple = this;
 
-        Tuple currentLt = getParent();
-        while (currentLt.getParent() != null ) {
-            currentLt = currentLt.getParent();
+        while (tuple.getParent() != null ) {
+            tuple = tuple.getParent();
         }
-        return currentLt;
+        return tuple;
     }
 
     @Override
     public Tuple skipEmptyHandles() {
-        Tuple entry = this;
-        while ( entry != null && entry.getFactHandle() == null ) {
-            entry = entry.getParent();
-        }
-        return entry;
+        // because getParent now only returns a tuple that as an FH, we only need to cheeck the current tuple,
+        // and not the parent chain
+        return getFactHandle() == null ? getParent() : this;
     }
 
     @Override

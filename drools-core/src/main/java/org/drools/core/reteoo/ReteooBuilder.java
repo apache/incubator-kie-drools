@@ -217,7 +217,7 @@ public class ReteooBuilder
      */
     private void removePath( Collection<InternalWorkingMemory> wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode ) {
         LeftTupleNode[] nodes = endNode.getPathNodes();
-        for (int i = endNode.getPositionInPath(); i >= 0; i--) {
+        for (int i = endNode.getPathIndex(); i >= 0; i--) {
             BaseNode node = (BaseNode) nodes[i];
 
             boolean removed = false;

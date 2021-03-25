@@ -30,6 +30,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.AbstractCompositeConstraint;
@@ -138,8 +139,6 @@ public class BuildUtils {
             // set node whit the actual partition label
             node.setPartitionId( context, partition );
             node.attach(context);
-            // adds the node to the context list to track all added nodes
-            context.getNodes().add( node );
         } else {
             // shared node found
             mergeNodes(node, candidate);
@@ -151,6 +150,8 @@ public class BuildUtils {
                 context.setPartitionId( partition );
             }
         }
+        // adds the node to the context list to track all added nodes
+        context.getNodes().add( node );
         node.addAssociation( context, context.getRule() );
         return (T)node;
     }

@@ -596,10 +596,11 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert(new Parent("eve",
                                        "jill"));
 
+            QueryResults results = null;
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
             list.clear();
-            QueryResults results = ksession.getQueryResults("woman", v);
+            results = ksession.getQueryResults("woman", v);
             for (final QueryResultsRow result : results) {
                 list.add((String) result.get("name"));
             }
@@ -676,10 +677,26 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                                    "eve, mary", "mary, eve"}, list);
 
             list.clear();
+
+            list.clear();
+            results = ksession.getQueryResults("parent", v, v);
+            for (final QueryResultsRow result : results) {
+                list.add(result.get("parent") + ":" + result.get("child"));
+            }
+            System.out.println(list);
+
+//            "query fullSiblings( String c1, String c2 )\n" +
+//            "   ?parent( $p1, c1; ) ?parent( $p1, c2; )\n" +
+//            "   ?parent( $p2, c1; ) ?parent( $p2, c2; )\n" +
+//            "   eval( !c1.equals( c2 ) && !$p1.equals( $p2 )  )\n" +
+//            "end\n" +
+
+            list.clear();
             results = ksession.getQueryResults("fullSiblings", v, v);
             for (final QueryResultsRow result : results) {
                 list.add(result.get("c1") + ", " + result.get("c2"));
             }
+            System.out.println(list);
             assertEquals(12, list.size());
             assertContains(new String[]{"eve, mary", "mary, eve",
                                    "adam, stan", "stan, adam",
@@ -750,7 +767,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test()
+    @Test(timeout = 10000)
     public void testDynamicRulesWithSharing() {
         String drl = "" +
                 "package org.drools.compiler.test1  \n" +
@@ -897,7 +914,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testOpenBackwardChain() {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
@@ -1708,7 +1725,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testQueryWithEvents() {
         final String drl = "global java.util.List list; " +
                 "" +
@@ -1747,7 +1764,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testNpeOnQuery() {
         final String drl =
                 "global java.util.List list; " +

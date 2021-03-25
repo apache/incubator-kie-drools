@@ -445,7 +445,7 @@ public class ViewFlowBuilder implements ViewBuilder {
                 newCondition = viewItem2Condition(acc.getExpr(), condition, ctx);
             }
 
-            return new AccumulatePatternImpl(newCondition, acc.getAccumulateFunctions());
+            return new AccumulatePatternImpl(newCondition, null, acc.getAccumulateFunctions());
         }
 
         if ( viewItem instanceof CombinedExprViewItem ) {

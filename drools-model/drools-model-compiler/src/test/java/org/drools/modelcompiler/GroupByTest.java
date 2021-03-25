@@ -33,7 +33,6 @@ import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
-import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Declaration;
@@ -1079,12 +1078,8 @@ public class GroupByTest {
                 }
                 RuleTerminalNodeLeftTuple tuple = (RuleTerminalNodeLeftTuple) match;
                 InternalFactHandle handle = tuple.getFactHandle();
-                if (handle instanceof GroupByFactHandle) {
-                    results.remove( (( GroupByFactHandle ) handle).getGroupKey() );
-                } else {
-                    GroupKey groupKey = (( GroupKey ) match.getObjects().get( 0 ));
-                    results.remove( groupKey.getKey() );
-                }
+                Object[] array = (Object[]) handle.getObject();
+                results.remove( array[array.length-1] );
             }
 
             @Override
@@ -1110,6 +1105,7 @@ public class GroupByTest {
         // Remove Edoardo's clone. The group for age 33 should be undone.
         ksession.delete(fh2);
         ksession.fireAllRules();
+        System.out.println(results);
         assertThat( results ).doesNotContain(edoardoAge);
     }
 
@@ -1533,6 +1529,7 @@ public class GroupByTest {
 
         ksession.insert(new Person("Mark", 42));
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+        System.out.println(results);
         Assertions.assertThat(results).containsOnly(Collections.singletonList(42));
     }
 

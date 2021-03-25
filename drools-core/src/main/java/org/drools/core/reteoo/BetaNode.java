@@ -478,7 +478,7 @@ public abstract class BetaNode extends LeftTupleSource
     private void setConstraints(BetaConstraints constraints) {
         this.constraints = constraints.cloneIfInUse();
     }
-    
+
     public void networkUpdated(UpdateContext updateContext) {
         updateContext.startVisitNode( leftInput );
         rightInput.networkUpdated( updateContext );
@@ -517,7 +517,8 @@ public abstract class BetaNode extends LeftTupleSource
         return objectTypeNode;
     }
 
-    public void attach(BuildContext context) {
+    public void doAttach(BuildContext context) {
+        super.doAttach(context);
         setUnificationJoin();
 
         this.rightInput.addObjectSink(this);

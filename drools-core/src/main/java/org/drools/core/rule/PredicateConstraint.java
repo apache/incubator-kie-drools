@@ -204,7 +204,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
-            if ( this.previousDeclarations[i].getOffset() != other.previousDeclarations[i].getOffset() ) {
+            if (this.previousDeclarations[i].getTupleIndex() != other.previousDeclarations[i].getTupleIndex() ) {
                 return false;
             }
 
@@ -214,7 +214,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         for ( int i = 0, length = this.localDeclarations.length; i < length; i++ ) {
-            if ( this.localDeclarations[i].getOffset() != other.localDeclarations[i].getOffset() ) {
+            if (this.localDeclarations[i].getTupleIndex() != other.localDeclarations[i].getTupleIndex() ) {
                 return false;
             }
 

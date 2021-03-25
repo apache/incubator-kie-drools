@@ -627,11 +627,11 @@ public class PhreakAccumulateNode {
         }
 
         if ( accPropCtx.getResultFactHandle() == null) {
-            InternalFactHandle handle = createFactHandle( accNode, leftTuple, context, workingMemory, key, result );
+            InternalFactHandle handle = accNode.createResultFactHandle(context, workingMemory, leftTuple, createResult(accNode, key, result ));
             accPropCtx.setResultFactHandle(handle);
             accPropCtx.setResultLeftTuple( sink.createLeftTuple(handle, leftTuple, sink ));
         } else {
-            accPropCtx.getResultFactHandle().setObject( result );
+            accPropCtx.getResultFactHandle().setObject( createResult(accNode, key, result) );
         }
 
         // First alpha node filters
@@ -674,9 +674,8 @@ public class PhreakAccumulateNode {
         }
     }
 
-    protected InternalFactHandle createFactHandle(AccumulateNode accNode, LeftTuple leftTuple, PropagationContext context,
-                                                  InternalWorkingMemory workingMemory, Object key, Object result) {
-        return accNode.createResultFactHandle(context, workingMemory, leftTuple, result);
+    protected Object createResult( AccumulateNode accNode, Object key, Object result ) {
+        return result;
     }
 
     private void addMatch(final AccumulateNode accNode,

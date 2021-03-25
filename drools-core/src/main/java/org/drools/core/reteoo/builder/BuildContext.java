@@ -57,15 +57,14 @@ public class BuildContext {
     private ObjectSource                     objectSource;
     // object type cache to check for cross products
     private LinkedList<Pattern>              objectType;
-    // offset of the pattern
-    private int                              currentPatternOffset;
+
     // rule base to add rules to
-    private InternalKnowledgeBase            kBase;
+    private final InternalKnowledgeBase      kBase;
     // rule being added at this moment
     private RuleImpl                         rule;
     private GroupElement                     subRule;
     // the rule component being processed at the moment
-    private Stack<RuleComponent>             ruleComponent;
+    private final Stack<RuleComponent>       ruleComponent;
     // a build stack to track nested elements
     private LinkedList<RuleConditionElement> buildstack;
     // beta constraints from the last pattern attached
@@ -74,13 +73,15 @@ public class BuildContext {
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
     // xpath constraints from the last pattern attached
     private List<XpathConstraint>            xpathConstraints;
+
     // the current entry point
     private EntryPointId                     currentEntryPoint;
     private boolean                          tupleMemoryEnabled;
     private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
 
-    private List<PathEndNode>                pathEndNodes = new ArrayList<>();
+    private final List<PathEndNode>          pathEndNodes = new ArrayList<>();
+
     /**
      * Stores the list of nodes being added that require partitionIds
      */
@@ -115,8 +116,6 @@ public class BuildContext {
         this.tupleSource = null;
         this.objectSource = null;
 
-        this.currentPatternOffset = 0;
-
         this.tupleMemoryEnabled = true;
 
         this.objectTypeNodeMemoryEnabled = true;
@@ -144,27 +143,14 @@ public class BuildContext {
         this.emptyForAllBetaConstraints = true;
     }
 
-    /**
-     * @return the currentPatternOffset
-     */
-    public int getCurrentPatternOffset() {
-        return this.currentPatternOffset;
-    }
-
-    /**
-     * @param currentPatternIndex the currentPatternOffset to set
-     */
-    void setCurrentPatternOffset(final int currentPatternIndex) {
-        this.currentPatternOffset = currentPatternIndex;
-        this.syncObjectTypesWithPatternOffset();
-    }
-
-    private void syncObjectTypesWithPatternOffset() {
+    public void syncObjectTypesWithObjectCount() {
         if (this.objectType == null) {
             this.objectType = new LinkedList<>();
         }
-        while (this.objectType.size() > this.currentPatternOffset) {
-            this.objectType.removeLast();
+        if (tupleSource != null) {
+            while (this.objectType.size() > tupleSource.getObjectCount()) {
+                this.objectType.removeLast();
+            }
         }
     }
 
@@ -214,15 +200,6 @@ public class BuildContext {
      */
     public void setTupleSource(final LeftTupleSource tupleSource) {
         this.tupleSource = tupleSource;
-    }
-
-    public void incrementCurrentPatternOffset() {
-        this.currentPatternOffset++;
-    }
-
-    public void decrementCurrentPatternOffset() {
-        this.currentPatternOffset--;
-        this.syncObjectTypesWithPatternOffset();
     }
 
     /**

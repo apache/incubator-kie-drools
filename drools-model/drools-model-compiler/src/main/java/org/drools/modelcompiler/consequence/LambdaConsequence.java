@@ -39,17 +39,23 @@ public class LambdaConsequence implements Consequence {
     private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
-    private final Declaration[] declarations;
+    private boolean              enabledTupleOptimization;
+    private Declaration[]        requiredDeclarations;
 
     private TupleFactSupplier[] factSuppliers;
-    private GlobalSupplier[] globalSuppliers;
-    private Object[] facts;
+    private GlobalSupplier[]    globalSuppliers;
+    private Object[]            facts;
 
-    private FactHandleLookup fhLookup;
+    private FactHandleLookup    fhLookup;
 
-    public LambdaConsequence( org.drools.model.Consequence consequence, Declaration[] declarations ) {
+    public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
         this.consequence = consequence;
-        this.declarations = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION ? declarations : null;
+        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION & enabledTupleOptimization;
+    }
+
+    @Override
+    public void initDeclarations(Declaration[] requiredDeclarations) {
+        this.requiredDeclarations = enabledTupleOptimization ? requiredDeclarations : null;
     }
 
     @Override
@@ -60,7 +66,7 @@ public class LambdaConsequence implements Consequence {
     @Override
     public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
         Object[] facts;
-        if ( this.declarations == null ) {
+        if ( this.requiredDeclarations == null ) {
             Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
             facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
         } else {
@@ -75,16 +81,16 @@ public class LambdaConsequence implements Consequence {
     }
 
     private static Object[] declarationsToFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars, boolean useDrools ) {
-        Object[] facts;
+        Object[] objects;
         FactHandleLookup fhLookup = useDrools ? new FactHandleLookup.Multi() : null;
 
-        int factsOffset = 0;
+        int index = 0;
         if ( useDrools ) {
-            factsOffset++;
-            facts = new Object[vars.length + 1];
-            facts[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
+            index++;
+            objects = new Object[vars.length + 1];
+            objects[0] = new DroolsImpl( knowledgeHelper, workingMemory, fhLookup );
         } else {
-            facts = new Object[vars.length];
+            objects = new Object[vars.length];
         }
 
         int declrCounter = 0;
@@ -95,12 +101,12 @@ public class LambdaConsequence implements Consequence {
                 if ( useDrools ) {
                     fhLookup.put( fh.getObject(), fh );
                 }
-                facts[factsOffset++] = declaration.getValue( workingMemory, fh );
+                objects[index++] = declaration.getValue( workingMemory, fh );
             } else {
-                facts[factsOffset++] = workingMemory.getGlobal( var.getName() );
+                objects[index++] = workingMemory.getGlobal( var.getName() );
             }
         }
-        return facts;
+        return objects;
     }
 
     private static InternalFactHandle getOriginalFactHandle( InternalFactHandle handle ) {
@@ -137,12 +143,12 @@ public class LambdaConsequence implements Consequence {
 
         Tuple tuple = knowledgeHelper.getTuple();
         for (int j = 0; j < factSuppliers.length; j++) {
-            tuple = factSuppliers[j].get( facts, workingMemory, tuple, fhLookup );
+            tuple = factSuppliers[j].resolveAndStore(facts, workingMemory, tuple, fhLookup);
         }
 
         if (globalSuppliers != null) {
             for (int j = 0; j < globalSuppliers.length; j++) {
-                globalSuppliers[j].get( facts, workingMemory );
+                globalSuppliers[j].resolveAndStore(facts, workingMemory);
             }
         }
 
@@ -160,10 +166,10 @@ public class LambdaConsequence implements Consequence {
         List<GlobalSupplier> globalSuppliers = new ArrayList<>();
 
         Object[] facts;
-        int factsOffset = 0;
+        int supplierIndex = 0;
         if ( consequence.isUsingDrools() ) {
             facts = new Object[vars.length + 1];
-            factsOffset++;
+            supplierIndex++;
         } else {
             facts = new Object[vars.length];
             fhLookup = null;
@@ -172,12 +178,12 @@ public class LambdaConsequence implements Consequence {
         int declrCounter = 0;
         for (Variable var : vars) {
             if ( var.isFact() ) {
-                factSuppliers.add( new TupleFactSupplier( factsOffset, declarations[declrCounter++], consequence.isUsingDrools() ) );
+                factSuppliers.add( new TupleFactSupplier( supplierIndex, requiredDeclarations[declrCounter++], consequence.isUsingDrools() ) );
             } else {
-                facts[factsOffset] = workingMemory.getGlobal( var.getName() );
-                globalSuppliers.add( new GlobalSupplier( factsOffset, var.getName() ) );
+                facts[supplierIndex] = workingMemory.getGlobal( var.getName() );
+                globalSuppliers.add( new GlobalSupplier( supplierIndex, var.getName() ) );
             }
-            factsOffset++;
+            supplierIndex++;
         }
 
         FactHandleLookup fhLookup = null;
@@ -189,29 +195,21 @@ public class LambdaConsequence implements Consequence {
         Collections.sort( factSuppliers );
         Collections.sort( globalSuppliers );
 
-        int lastOffset = tuple.getIndex();
         Tuple current = tuple;
         boolean first = true;
         for (TupleFactSupplier tupleFactSupplier : factSuppliers) {
-            tupleFactSupplier.formerSupplierOffset = lastOffset - tupleFactSupplier.declarationOffset;
+            int targetTupleIndex = tupleFactSupplier.declarationTupleIndex;
 
-            for (int j = 0; j < tupleFactSupplier.formerSupplierOffset; j++) {
-                if ( current.getFactHandle() == null ) {
-                    tupleFactSupplier.formerSupplierOffset++;
-                }
-                current = current.getParent();
-            }
-
-            while (current != null && current.getFactHandle() == null) {
-                tupleFactSupplier.formerSupplierOffset++;
+            tupleFactSupplier.offsetFromPrior = 0;
+            while (current.getIndex() != targetTupleIndex) {
+                tupleFactSupplier.offsetFromPrior++;
                 current = current.getParent();
             }
 
             tupleFactSupplier.setFirst( first );
             first = false;
-            lastOffset = tupleFactSupplier.declarationOffset;
 
-            tupleFactSupplier.fetchFact( facts, workingMemory, current, fhLookup );
+            tupleFactSupplier.resolveAndStore(facts, workingMemory, current.getFactHandle(), fhLookup);
         }
 
         this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
@@ -225,36 +223,35 @@ public class LambdaConsequence implements Consequence {
     }
 
     private static class GlobalSupplier implements Comparable<GlobalSupplier> {
-        private final int offset;
+        private final int supplierIndex;
         private final String globalName;
 
-        private GlobalSupplier( int offset, String globalName ) {
-            this.offset = offset;
+        private GlobalSupplier( int supplierIndex, String globalName ) {
+            this.supplierIndex = supplierIndex;
             this.globalName = globalName;
         }
 
-        public void get( Object[] facts, InternalWorkingMemory workingMemory ) {
-            facts[offset] = workingMemory.getGlobal( globalName );
+        public void resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory) {
+            facts[supplierIndex] = workingMemory.getGlobal( globalName );
         }
 
         public int compareTo( GlobalSupplier o ) {
             return globalName.compareTo( o.globalName );
-
         }
     }
 
     private static class TupleFactSupplier implements Comparable<TupleFactSupplier> {
-        private final int factsOffset;
+        private final int         supplierIndex;
         private final Declaration declaration;
-        private final int declarationOffset;
+        private final int         declarationTupleIndex;
 
-        private boolean useDrools;
-        private int formerSupplierOffset;
+        private boolean     useDrools;
+        private int     offsetFromPrior;
 
-        private TupleFactSupplier( int offset, Declaration declaration, boolean useDrools ) {
-            this.factsOffset = offset;
+        private TupleFactSupplier( int supplierIndex, Declaration declaration, boolean useDrools ) {
+            this.supplierIndex = supplierIndex;
             this.declaration = declaration;
-            this.declarationOffset = declaration.getOffset();
+            this.declarationTupleIndex = declaration.getTupleIndex();
             this.useDrools = useDrools;
         }
 
@@ -262,33 +259,32 @@ public class LambdaConsequence implements Consequence {
             if (!first) {
                 // if this is not the first fact supplier and it's reading a value from the same fact handle of the former
                 // supplier (formerSupplierOffset==0) it is not necessary to register the same fact handle twice on the drools object
-                useDrools &= formerSupplierOffset > 0;
+                useDrools &= offsetFromPrior > 0;
             }
         }
 
-        public Tuple get( Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple,FactHandleLookup fhLookup ) {
+        public Tuple resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple, FactHandleLookup fhLookup) {
             // traverses the tuple of as many steps as distance between the former supplier and this one
-            for (int i = 0; i < formerSupplierOffset; i++) {
+            for (int i = 0; i < offsetFromPrior; i++) {
                 tuple = tuple.getParent();
             }
-            fetchFact( facts, workingMemory, tuple, fhLookup );
+            resolveAndStore(facts, workingMemory, tuple.getFactHandle(), fhLookup);
             return tuple;
         }
 
-        public void fetchFact( Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple, FactHandleLookup fhLookup ) {
-            InternalFactHandle fh = getOriginalFactHandle( tuple.getFactHandle() );
+        public void resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory, InternalFactHandle factHandle, FactHandleLookup fhLookup) {
+            InternalFactHandle fh = getOriginalFactHandle( factHandle );
             if ( useDrools ) {
                 fhLookup.put( fh.getObject(), fh );
             }
-            facts[factsOffset] = declaration.getValue( workingMemory, fh );
+            facts[supplierIndex] = declaration.getValue(workingMemory, fh);
         }
 
         @Override
         public int compareTo( TupleFactSupplier o ) {
             // Sorted from the one extracting a fact from the bottom of the tuple to the one reading from its top
             // In this way the whole tuple can be traversed only once to retrive all facts
-            return o.declarationOffset - declarationOffset;
-
+            return o.declarationTupleIndex - declarationTupleIndex;
         }
     }
 }
