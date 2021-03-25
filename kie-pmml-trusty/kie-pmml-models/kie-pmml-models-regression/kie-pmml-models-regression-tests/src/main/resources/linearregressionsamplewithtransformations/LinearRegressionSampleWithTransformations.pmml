@@ -98,6 +98,9 @@
         <FieldRef field="der_fun_salary_apply"/>
       </OutputField>
     </Output>
+    <Targets>
+      <Target field="number_of_claims" rescaleConstant="10" rescaleFactor="3.14" castInteger="round"/>
+    </Targets>
     <RegressionTable intercept="132.37">
       <NumericPredictor name="der_age" exponent="1" coefficient="7.1"/>
       <NumericPredictor name="der_salary" exponent="1" coefficient="0.01"/>

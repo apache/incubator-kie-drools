@@ -71,11 +71,11 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {27, 34000, "street", 989.1},
-                {49, 78000, "carpark", 1301.37},
-                {57, 72000, "street", 1582.1},
-                {61, 123000, "carpark", 1836.5699999999997},
-                {18, 26000, "street", 845.1999999999999},
+                {27, 34000, "street", 3116.0},
+                {49, 78000, "carpark", 4096.0},
+                {57, 72000, "street", 4978.0},
+                {61, 123000, "carpark", 5777.0},
+                {18, 26000, "street", 2664.0},
         });
     }
 
