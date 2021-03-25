@@ -27,8 +27,10 @@ import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -39,6 +41,8 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.api.enums.ResultCode.OK;
 
 import static org.kie.pmml.api.enums.ResultCode.OK;
 
@@ -98,10 +102,10 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         addMissingValuesReplacements(model, context);
         executeTransformations(model, context);
         PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
-                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s",
-                                                                      model.getPmmlMODEL())));
-        final PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
+                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s", model.getPmmlMODEL())));
+        PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
         executeTargets(toReturn, model);
+        updateTargetValueType( model, toReturn);
         return toReturn;
     }
 
@@ -196,6 +200,23 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
                     resultVariables.put(resultObjectName, modifiedPrediction);
                 });
 
+    }
+
+    /**
+     * Verify that the returned value has the required type as defined inside <code>DataDictionary/MiningSchema</code>
+     * @param toUpdate
+     */
+    void updateTargetValueType(final KiePMMLModel model, final PMML4Result toUpdate) {
+        DATA_TYPE dataType = model.getMiningFields().stream()
+                .filter(miningField -> model.getTargetField().equals(miningField.getName()))
+                .map(MiningField::getDataType)
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLException("Failed to find DATA_TYPE for " + model.getTargetField()));
+        Object prediction = toUpdate.getResultVariables().get(model.getTargetField());
+        if (prediction != null) {
+            Object convertedPrediction = dataType.getActualValue(prediction);
+            toUpdate.getResultVariables().put(model.getTargetField(), convertedPrediction);
+        }
     }
 
     /**
