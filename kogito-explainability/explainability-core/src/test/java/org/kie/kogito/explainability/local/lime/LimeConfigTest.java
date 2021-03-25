@@ -30,4 +30,18 @@ class LimeConfigTest {
         assertThat(config.getEncodingParams().getNumericTypeClusterThreshold()).isEqualTo(2);
     }
 
+    @Test
+    void testNormalizeWeights() {
+        LimeConfig config = new LimeConfig()
+                .withNormalizeWeights(false);
+        assertThat(config.isNormalizeWeights()).isFalse();
+
+        config = new LimeConfig()
+                .withNormalizeWeights(true);
+        assertThat(config.isNormalizeWeights()).isTrue();
+
+        config = new LimeConfig();
+        assertThat(config.isNormalizeWeights()).isTrue();
+    }
+
 }

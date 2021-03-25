@@ -23,12 +23,14 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -135,5 +137,39 @@ class LimeExplainerTest {
                 assertThat(Math.abs(score)).isLessThanOrEqualTo(Math.abs(scoreNoPenalty));
             }
         }
+    }
+
+    @Test
+    void testNormalizedWeights() throws InterruptedException, ExecutionException, TimeoutException {
+        Random random = new Random();
+        random.setSeed(4);
+        LimeConfig limeConfig = new LimeConfig()
+                .withNormalizeWeights(true)
+                .withPerturbationContext(new PerturbationContext(random, 2))
+                .withSamples(10);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        int nf = 4;
+        List<Feature> features = new ArrayList<>();
+        for (int i = 0; i < nf; i++) {
+            features.add(TestUtils.getMockedNumericFeature(i));
+        }
+        PredictionInput input = new PredictionInput(features);
+        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionOutput output = model.predictAsync(List.of(input))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                .get(0);
+        Prediction prediction = new Prediction(input, output);
+
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertThat(saliencyMap).isNotNull();
+
+        String decisionName = "sum-but0";
+        Saliency saliency = saliencyMap.get(decisionName);
+        List<FeatureImportance> perFeatureImportance = saliency.getPerFeatureImportance();
+        for (FeatureImportance featureImportance : perFeatureImportance) {
+            assertThat(featureImportance.getScore()).isBetween(-1d, 1d);
+        }
+
     }
 }
