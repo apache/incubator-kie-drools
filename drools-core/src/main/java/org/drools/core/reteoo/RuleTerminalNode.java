@@ -95,7 +95,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
         Consequence consequence = consequenceName == null || consequenceName.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ?
                 rule.getConsequence() :
-                rule.getNamedConsequences().get(consequenceName);
+                rule.getNamedConsequence(consequenceName);
         if ( consequence != null) {
             // This can only be null certain mock unit tests
             consequence.initDeclarations(requiredDeclarations);

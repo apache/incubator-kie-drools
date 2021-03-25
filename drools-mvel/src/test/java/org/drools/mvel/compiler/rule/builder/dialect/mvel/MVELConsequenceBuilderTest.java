@@ -429,13 +429,12 @@ public class MVELConsequenceBuilderTest {
         namedConsequences.put( "name1", name1 );
         
         setupTest( defaultCon, namedConsequences);
-        assertEquals( 1, context.getRule().getNamedConsequences().size() );
-        
+
         assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );
+        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof MVELConsequence );
         
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
     }
     
     @Test
@@ -449,17 +448,16 @@ public class MVELConsequenceBuilderTest {
         namedConsequences.put( "name2", name2 );
         
         setupTest( defaultCon, namedConsequences);
-        assertEquals( 2, context.getRule().getNamedConsequences().size() );
-        
+
         assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );
+        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof MVELConsequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof MVELConsequence );
+        assertTrue( context.getRule().getNamedConsequence( "name2" ) instanceof MVELConsequence );
         
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
-        assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name2" ) );
+        assertNotSame(  context.getRule().getNamedConsequence( "name1"), context.getRule().getNamedConsequence( "name2" ) );
     }
 
     public static class MockBetaNode extends BetaNode {
