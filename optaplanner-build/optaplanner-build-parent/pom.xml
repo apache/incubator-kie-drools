@@ -482,7 +482,7 @@
               </configuration>
             </execution>
             <execution>
-              <id>ban-blacklisted-dependencies</id>
+              <id>ban-forbidden-dependencies</id>
               <goals>
                 <goal>enforce</goal>
               </goals>
@@ -490,7 +490,7 @@
                 <rules>
                   <bannedDependencies>
                     <excludes combine.children="append">
-                      <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                      <!-- Ban forbidden logging deps (we only use SLF4J + Logback) -->
                       <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
                       <exclude>commons-logging:commons-log*</exclude>
                       <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->

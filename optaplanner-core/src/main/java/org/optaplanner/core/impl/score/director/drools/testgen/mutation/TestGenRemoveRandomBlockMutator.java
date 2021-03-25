@@ -23,7 +23,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
 
     private final List<T> list;
     private final Random random = new Random(0);
-    private final List<Integer> indexBlacklist = new ArrayList<>();
+    private final List<Integer> indexDenylist = new ArrayList<>();
     private int blockPortion = 10;
     private int removedIndex = -1;
     private List<T> removedBlock;
@@ -33,7 +33,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
     }
 
     public boolean canMutate() {
-        return !list.isEmpty() && list.size() > indexBlacklist.size();
+        return !list.isEmpty() && list.size() > indexDenylist.size();
     }
 
     public List<T> mutate() {
@@ -42,22 +42,22 @@ public class TestGenRemoveRandomBlockMutator<T> {
         }
 
         if (removedIndex >= 0) {
-            // last mutation was successful => clear the blacklist
-            indexBlacklist.clear();
+            // last mutation was successful => clear the denylist
+            indexDenylist.clear();
         }
 
         int blockSize = Math.max(list.size() / blockPortion, 1);
-        if (indexBlacklist.size() == list.size() / blockSize && list.size() / blockPortion > 1) {
-            // we've tried all blocks without success => try smaller blocks and clear the blacklist
+        if (indexDenylist.size() == list.size() / blockSize && list.size() / blockPortion > 1) {
+            // we've tried all blocks without success => try smaller blocks and clear the denylist
             blockPortion *= 2;
-            indexBlacklist.clear();
+            indexDenylist.clear();
         }
 
         blockSize = Math.max(list.size() / blockPortion, 1);
 
         do {
             removedIndex = random.nextInt(list.size() / blockSize) * blockSize;
-        } while (indexBlacklist.contains(removedIndex));
+        } while (indexDenylist.contains(removedIndex));
 
         removedBlock = new ArrayList<>(list.subList(removedIndex, removedIndex + blockSize));
         list.removeAll(removedBlock);
@@ -68,7 +68,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
         // return the item
         list.addAll(removedIndex, removedBlock);
         // don't try this index on next mutation
-        indexBlacklist.add(removedIndex);
+        indexDenylist.add(removedIndex);
         // last mutation wasn't successful
         removedIndex = -1;
     }
