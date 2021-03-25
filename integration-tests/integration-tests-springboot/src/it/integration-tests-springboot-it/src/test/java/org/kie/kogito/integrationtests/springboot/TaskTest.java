@@ -15,10 +15,13 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
-
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -26,6 +29,7 @@ import org.acme.travels.Traveller;
 import org.acme.travels.Address;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +39,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 
@@ -57,15 +62,15 @@ public class TaskTest extends BaseRestTest {
                 .statusCode(200)
                 .body(matchesJsonSchemaInClasspath("approvals_firstLineApproval.json"));
     }
-    
+
     @Test
-    void testUpdateTask() {
-        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", new Address("Alfredo Di Stefano", "Madrid", "28033", "Spain"));
+    void testCommentAndAttachment() {
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
 
         String processId = given()
                 .contentType(ContentType.JSON)
-                .body(Collections.singletonMap("traveller",traveller))
                 .when()
+                .body(Collections.singletonMap("traveller", traveller))
                 .post("/approvals")
                 .then()
                 .statusCode(201)
@@ -84,17 +89,42 @@ public class TaskTest extends BaseRestTest {
                 .extract()
                 .path("[0].id");
 
-        given().contentType(ContentType.JSON)
+        final String commentId = given().contentType(ContentType.TEXT)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
-                .body(Collections.singletonMap("approved", true))
-                .patch("/approvals/{processId}/firstLineApproval/{taskId}")
+                .body("We need to act")
+                .post("/approvals/{processId}/firstLineApproval/{taskId}/comments")
                 .then()
-                .statusCode(200)
-                .body("approved", is(true));
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        final String commentText = "We have done everything we can";
+        given().contentType(ContentType.TEXT)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("commentId", commentId)
+                .body(commentText)
+                .put("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .then()
+                .statusCode(200);
+
+        assertEquals(commentText, given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("commentId", commentId)
+                .get("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .then()
+                .statusCode(200).extract().path("content"));
 
         given().contentType(ContentType.JSON)
                 .when()
@@ -102,13 +132,135 @@ public class TaskTest extends BaseRestTest {
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
-                .body(Collections.singletonMap("approved", false))
-                .patch("/approvals/{processId}/firstLineApproval/{taskId}")
+                .pathParam("commentId", commentId)
+                .delete("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .then()
+                .statusCode(200);
+
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("commentId", commentId)
+                .get("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .then()
+                .statusCode(404);
+
+        final String attachmentId = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .body(new AttachmentInfo(URI.create("pepito.txt"), "pepito.txt"))
+                .post("/approvals/{processId}/firstLineApproval/{taskId}/attachments")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("attachmentId", attachmentId)
+                .body(new AttachmentInfo(URI.create("file:/home/fulanito.txt")))
+                .put("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .then()
+                .statusCode(200);
+
+        given().contentType(
+                ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("attachmentId", attachmentId)
+                .get("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .then()
+                .statusCode(200).body("name", equalTo("fulanito.txt")).body("content", equalTo(
+                        "file:/home/fulanito.txt"));
+
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("attachmentId", attachmentId)
+                .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .then()
+                .statusCode(200);
+
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("attachmentId", attachmentId)
+                .get("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .then()
+                .statusCode(404);
+
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .pathParam("attachmentId", attachmentId)
+                .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void testSaveTask() {
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", new Address("Alfredo Di Stefano", "Madrid", "28033", "Spain"));
+
+        String processId = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("traveller", traveller))
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
                 .then()
                 .statusCode(200)
-                .body("approved", is(false));
+                .extract()
+                .path("[0].id");
+
+        Map<String, Object> model = Collections.singletonMap("approved", true);
+        assertEquals(model, given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .body(model)
+                .put("/approvals/{processId}/firstLineApproval/{taskId}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(Map.class));
     }
-    
+
     @Test
     void testUpdateExcludedUsers() {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", new Address("Alfredo Di Stefano", "Madrid", "28033", "Spain"));

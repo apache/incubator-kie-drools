@@ -17,10 +17,14 @@ package org.jbpm.process.instance.impl.humantask;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.process.workitem.Attachment;
+import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
@@ -44,7 +48,10 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
     private Set<String> excludedUsers = new HashSet<>();
     private Set<String> adminUsers = new HashSet<>();
     private Set<String> adminGroups = new HashSet<>();
+    private Map<Object, Comment> comments = new ConcurrentHashMap<>();
+    private Map<Object, Attachment> attachments = new ConcurrentHashMap<>();
 
+    @Override
     public String getTaskName() {
         return taskName;
     }
@@ -53,6 +60,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.taskName = taskName;
     }
 
+    @Override
     public String getTaskDescription() {
         return taskDescription;
     }
@@ -61,6 +69,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.taskDescription = taskDescription;
     }
 
+    @Override
     public String getTaskPriority() {
         return taskPriority;
     }
@@ -69,6 +78,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.taskPriority = taskPriority;
     }
 
+    @Override
     public String getReferenceName() {
         return referenceName;
     }
@@ -77,6 +87,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.referenceName = referenceName;
     }
 
+    @Override
     public String getActualOwner() {
         return actualOwner;
     }
@@ -85,6 +96,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.actualOwner = actualOwner;
     }
 
+    @Override
     public Set<String> getPotentialUsers() {
         return potentialUsers;
     }
@@ -93,6 +105,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.potentialUsers = potentialUsers;
     }
 
+    @Override
     public Set<String> getPotentialGroups() {
         return potentialGroups;
     }
@@ -101,6 +114,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.potentialGroups = potentialGroups;
     }
 
+    @Override
     public Set<String> getExcludedUsers() {
         return excludedUsers;
     }
@@ -109,6 +123,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.excludedUsers = excludedUsers;
     }
 
+    @Override
     public Set<String> getAdminUsers() {
         return adminUsers;
     }
@@ -117,6 +132,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         this.adminUsers = adminUsers;
     }
 
+    @Override
     public Set<String> getAdminGroups() {
         return adminGroups;
     }
@@ -181,5 +197,15 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
                 getPotentialGroups().stream().noneMatch(roles::contains)) {
             throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getStringId());
         }
+    }
+
+    @Override
+    public Map<Object, Attachment> getAttachments() {
+        return attachments;
+    }
+
+    @Override
+    public Map<Object, Comment> getComments() {
+        return comments;
     }
 }

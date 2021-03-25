@@ -17,10 +17,16 @@ package com.myspace.demo;
 
 import java.util.List;
 
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
 public class $Type$Resource {
 
@@ -53,11 +59,11 @@ public class $Type$Resource {
     }
 
     @POST
-    @Path("/{id}/$taskName$/{workItemId}")
+    @Path("/{id}/$taskName$/{taskId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output completeTask(@PathParam("id") final String id,
-                                     @PathParam("workItemId") final String workItemId,
+                                     @PathParam("taskId") final String taskId,
                                      @QueryParam("phase") @DefaultValue("complete") final String phase,
                                      @QueryParam("user") final String user,
                                      @QueryParam("group") final List<String> groups,
@@ -71,7 +77,7 @@ public class $Type$Resource {
                     .map(pi -> {
                         pi
                             .transitionWorkItem(
-                                workItemId,
+                                taskId,
                                 HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
                         return pi.variables().toOutput();
                     }))
@@ -79,13 +85,35 @@ public class $Type$Resource {
     }
     
     
+    @PUT
+    @Path("/{id}/$taskName$/{taskId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public $TaskOutput$ saveTask(@PathParam("id") final String id,
+                                     @PathParam("taskId") final String taskId,
+                                     @QueryParam("user") final String user,
+                                     @QueryParam("group") final List<String> groups,
+                                     final $TaskOutput$ model) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> $TaskOutput$.fromMap(pi.updateWorkItem(
+                                        taskId,
+                                        wi -> HumanTaskHelper.updateContent(wi, model),
+                                        Policies.of(user,groups)))))
+                .orElseThrow(() -> new NotFoundException());
+    }
+    
+    
     @POST
-    @Path("/{id}/$taskName$/{workItemId}/phases/{phase}")
+    @Path("/{id}/$taskName$/{taskId}/phases/{phase}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output taskTransition(
                                        @PathParam("id") final String id,
-                                       @PathParam("workItemId") final String workItemId,
+                                       @PathParam("taskId") final String taskId,
                                        @PathParam("phase") final String phase,
                                        @QueryParam("user") final String user,
                                        @QueryParam("group") final List<String> groups,
@@ -98,7 +126,7 @@ public class $Type$Resource {
                                 .findById(id)
                                 .map(pi -> {
                                     pi.transitionWorkItem(
-                                            workItemId,
+                                            taskId,
                                             HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
                                     return pi.variables().toOutput();
                                 }))
@@ -106,36 +134,17 @@ public class $Type$Resource {
     }
     
     
-    @PATCH
-    @Path("/{id}/$taskName$/{workItemId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public $TaskOutput$ updateTask(@PathParam("id") final String id,
-                               @PathParam("workItemId") final String workItemId,
-                               @QueryParam("user") final String user,
-                               @QueryParam("group") final List<String> groups,
-                               final Map<String,Object> params) {
-        return UnitOfWorkExecutor
-                .executeInUnitOfWork(
-                        application.unitOfWorkManager(),
-                        () -> process
-                                .instances()
-                                .findById(id)
-                                .map(pi -> $TaskOutput$.fromMap(pi.updateWorkItem(workItemId, params,
-                                        Policies.of(user, groups)))))
-                                .orElseThrow(() -> new NotFoundException());
-    }
 
     @GET
-    @Path("/{id}/$taskName$/{workItemId}")
+    @Path("/{id}/$taskName$/{taskId}")
     @Produces(MediaType.APPLICATION_JSON)
     public $TaskInput$ getTask(@PathParam("id") String id,
-                               @PathParam("workItemId") String workItemId,
+                               @PathParam("taskId") String taskId,
                                @QueryParam("user") final String user,
                                @QueryParam("group") final List<String> groups) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(pi -> $TaskInput$.from(pi.workItem(workItemId, Policies.of(user, groups))))
+                      .map(pi -> $TaskInput$.from(pi.workItem(taskId, Policies.of(user, groups))))
                       .orElseThrow(() -> new NotFoundException());
     }
 
@@ -147,10 +156,10 @@ public class $Type$Resource {
     }
 
     @GET
-    @Path("/{id}/$taskName$/{workItemId}/schema")
+    @Path("/{id}/$taskName$/{taskId}/schema")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Object> getSchemaAndPhases(@PathParam("id") final String id,
-                                                  @PathParam("workItemId") final String workItemId,
+                                                  @PathParam("taskId") final String taskId,
                                                   @QueryParam("user") final String user,
                                                   @QueryParam("group") final List<String> groups) {
         return JsonSchemaUtil
@@ -158,16 +167,16 @@ public class $Type$Resource {
                 process,
                 application,
                 id,
-                workItemId,
+                taskId,
                 Policies.of(user, groups),
                 JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(), "$taskName$"));
     }
 
     @DELETE
-    @Path("/{id}/$taskName$/{workItemId}")
+    @Path("/{id}/$taskName$/{taskId}")
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output abortTask(@PathParam("id") final String id,
-                                  @PathParam("workItemId") final String workItemId,
+                                  @PathParam("taskId") final String taskId,
                                   @QueryParam("phase") @DefaultValue("abort") final String phase,
                                   @QueryParam("user") final String user,
                                   @QueryParam("group") final List<String> groups) {
@@ -176,11 +185,217 @@ public class $Type$Resource {
                                                                    .instances()
                                                                    .findById(id)
                                                                    .map(pi -> {
-                                                                       pi.transitionWorkItem(workItemId,
+                                                                       pi.transitionWorkItem(taskId,
                                                                                              HumanTaskTransition.withoutModel(phase,
                                                                                                      Policies.of(user, groups)));
                                                                        return pi.variables().toOutput();
                                                                    }))
                                                                    .orElseThrow(() -> new NotFoundException());
+    }
+    
+    @POST
+    @Path("/{id}/$taskName$/{taskId}/comments")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addComment(@PathParam("id") final String id,
+                               @PathParam("taskId") final String taskId,
+                               @QueryParam("user") final String user,
+                               @QueryParam("group") final List<String> groups,
+                               String commentInfo,
+                               @Context UriInfo uriInfo) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> {
+                                    Comment comment = pi.updateWorkItem(
+                                            taskId,
+                                            wi -> HumanTaskHelper.addComment(wi, commentInfo, user),
+                                            Policies.of(user, groups));
+                                    return Response.created(uriInfo.getAbsolutePathBuilder().path(comment.getId()
+                                            .toString())
+                                            .build()).entity(comment).build();
+                                })
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+
+    @PUT
+    @Path("/{id}/$taskName$/{taskId}/comments/{commentId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Comment updateComment(@PathParam("id") final String id,
+                                 @PathParam("taskId") final String taskId,
+                                 @PathParam("commentId") final String commentId,
+                                 @QueryParam("user") final String user,
+                                 @QueryParam("group") final List<String> groups,
+                                 String comment) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> pi.updateWorkItem(
+                                        taskId,
+                                        wi -> HumanTaskHelper.updateComment(wi, commentId, comment, user),
+                                        Policies.of(user, groups)))
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+
+    @DELETE
+    @Path("/{id}/$taskName$/{taskId}/comments/{commentId}")
+    public Response deleteComment(@PathParam("id") final String id,
+                                  @PathParam("taskId") final String taskId,
+                                  @PathParam("commentId") final String commentId,
+                                  @QueryParam("user") final String user,
+                                  @QueryParam("group") final List<String> groups) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> {
+                                    boolean removed = pi.updateWorkItem(
+                                            taskId,
+                                            wi -> HumanTaskHelper.deleteComment(wi, commentId, user),
+                                            Policies.of(user, groups));
+                                    return (removed ? Response.ok() : Response.status(Status.NOT_FOUND)).build();
+                                })
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+
+    @POST
+    @Path("/{id}/$taskName$/{taskId}/attachments")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addAttachment(@PathParam("id") final String id,
+                                  @PathParam("taskId") final String taskId,
+                                  @QueryParam("user") final String user,
+                                  @QueryParam("group") final List<String> groups,
+                                  AttachmentInfo attachmentInfo,
+                                  @Context UriInfo uriInfo) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> {
+                                    Attachment attachment = pi.updateWorkItem(
+                                            taskId,
+                                            wi -> HumanTaskHelper.addAttachment(wi, attachmentInfo, user),
+                                            Policies.of(user, groups));
+                                    return Response.created(uriInfo.getAbsolutePathBuilder().path(attachment.getId()
+                                            .toString())
+                                            .build()).entity(attachment).build();
+                                })
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+
+    @PUT
+    @Path("/{id}/$taskName$/{taskId}/attachments/{attachmentId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Attachment updateAttachment(@PathParam("id") final String id,
+                                       @PathParam("taskId") final String taskId,
+                                       @PathParam("attachmentId") final String attachmentId,
+                                       @QueryParam("user") final String user,
+                                       @QueryParam("group") final List<String> groups,
+                                       AttachmentInfo attachment) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> pi.updateWorkItem(
+                                        taskId,
+                                        wi -> HumanTaskHelper.updateAttachment(wi, attachmentId, attachment, user),
+                                        Policies.of(user, groups)))
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+
+    @DELETE
+    @Path("/{id}/$taskName$/{taskId}/attachments/{attachmentId}")
+    public Response deleteAttachment(@PathParam("id") final String id,
+                                     @PathParam("taskId") final String taskId,
+                                     @PathParam("attachmentId") final String attachmentId,
+                                     @QueryParam("user") final String user,
+                                     @QueryParam("group") final List<String> groups) {
+        return UnitOfWorkExecutor
+                .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                                .instances()
+                                .findById(id)
+                                .map(pi -> {
+                                    boolean removed = pi.updateWorkItem(
+                                            taskId,
+                                            wi -> HumanTaskHelper.deleteAttachment(wi, attachmentId, user),
+                                            Policies.of(user, groups));
+                                    return (removed ? Response.ok() : Response.status(Status.NOT_FOUND)).build();
+                                })
+                                .orElseThrow(() -> new NotFoundException()));
+    }
+
+    @GET
+    @Path("/{id}/$taskName$/{taskId}/attachments/{attachmentId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Attachment getAttachment(@PathParam("id") final String id,
+                                    @PathParam("taskId") final String taskId,
+                                    @PathParam("attachmentId") final String attachmentId,
+                                    @QueryParam("user") final String user,
+                                    @QueryParam("group") final List<String> groups) {
+        Attachment attachment = HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(
+                () -> new NotFoundException()), taskId, Policies.of(user, groups))
+                .getAttachments().get(attachmentId);
+        if (attachment == null) {
+            throw new NotFoundException("Attachment " + attachmentId + " not found");
+        }
+        return attachment;
+    }
+
+    @GET
+    @Path("/{id}/$taskName$/{taskId}/attachments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Attachment> getAttachments(@PathParam("id") final String id,
+                                                 @PathParam("taskId") final String taskId,
+                                                 @QueryParam("user") final String user,
+                                                 @QueryParam("group") final List<String> groups) {
+        return HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(() -> new NotFoundException()),
+                taskId, Policies.of(user, groups))
+                .getAttachments().values();
+    }
+
+    @GET
+    @Path("/{id}/$taskName$/{taskId}/comments/{commentId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Comment getComment(@PathParam("id") final String id,
+                              @PathParam("taskId") final String taskId,
+                              @PathParam("commentId") final String commentId,
+                              @QueryParam("user") final String user,
+                              @QueryParam("group") final List<String> groups) {
+        Comment comment = HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(
+                () -> new NotFoundException()), taskId, Policies.of(user, groups))
+                .getComments().get(commentId);
+        if (comment == null) {
+            throw new NotFoundException("Comment " + commentId + " not found");
+        }
+        return comment;
+    }
+
+    @GET
+    @Path("/{id}/$taskName$/{taskId}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Comment> getComments(@PathParam("id") final String id,
+                                           @PathParam("taskId") final String taskId,
+                                           @QueryParam("user") final String user,
+                                           @QueryParam("group") final List<String> groups) {
+        return HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(() -> new NotFoundException()),
+                taskId, Policies.of(user, groups))
+                .getComments().values();
     }
 }

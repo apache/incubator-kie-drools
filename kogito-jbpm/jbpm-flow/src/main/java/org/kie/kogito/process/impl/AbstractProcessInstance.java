@@ -64,7 +64,6 @@ import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
-import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
@@ -440,19 +439,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 policies);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         return result;
-    }
-
-    @Override
-    public Map<String, Object> updateWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
-        return updateWorkItem(id, workItem -> {
-            Map<String, Object> results = workItem.getResults();
-            if (results == null) {
-                results = new HashMap<>();
-            }
-            results.putAll(variables);
-            ((InternalKogitoWorkItem) workItem).setResults(results);
-            return results;
-        }, policies);
     }
 
     @Override

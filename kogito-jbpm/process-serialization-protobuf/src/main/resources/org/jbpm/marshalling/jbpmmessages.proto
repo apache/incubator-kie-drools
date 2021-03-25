@@ -203,6 +203,21 @@ message WorkItem {
         
 }
 
+message Comment {
+    optional string id = 1;
+    optional string content = 2;
+    optional int64  updatedAt = 3;
+    optional string updatedBy = 4;
+}
+
+message Attachment {
+    optional string id = 1;
+    optional string content = 2;
+    optional int64  updatedAt = 3;
+    optional string updatedBy = 4;
+    optional string name = 5;
+}
+
 message HumanTaskWorkItem {
 	optional string id = 1;
     optional string process_instances_id = 2;
@@ -233,6 +248,8 @@ message HumanTaskWorkItem {
     
     optional string task_reference_name = 22;
     
+   	repeated Comment comments = 23;
+   	repeated Attachment attachments = 24;
 }
 
 message ProcessTimer {

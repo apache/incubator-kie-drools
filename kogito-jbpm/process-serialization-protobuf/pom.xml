@@ -37,7 +37,32 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
-
+  <profiles>
+    <profile>
+    <id>proto</id>
+    <build>
+        <plugins>
+          <plugin>
+            <groupId>org.xolstice.maven.plugins</groupId>
+            <artifactId>protobuf-maven-plugin</artifactId>
+            <version>0.6.1</version>
+            <configuration>
+              <protocArtifact>com.google.protobuf:protoc:3.12.0:exe:</protocArtifact>
+              <protoSourceRoot>${basedir}/src/main/resources/org/jbpm/marshalling</protoSourceRoot>
+              <clearOutputDirectory>false</clearOutputDirectory>
+              <outputDirectory>${basedir}/src/main/java</outputDirectory>
+             </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+   </profile>
+  </profiles>
 </project>

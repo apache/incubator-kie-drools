@@ -16,9 +16,10 @@
 package com.myspace.demo;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
-
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
@@ -30,8 +31,12 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.workitem.Attachment;
+import org.kie.kogito.process.workitem.AttachmentInfo;
+import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 
 import org.springframework.http.HttpHeaders;

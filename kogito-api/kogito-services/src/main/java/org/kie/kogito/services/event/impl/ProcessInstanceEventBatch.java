@@ -103,7 +103,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected void handleProcessNodeTriggeredEvent(ProcessNodeTriggeredEvent event, ProcessInstanceEventBody body) {
-        NodeInstanceEventBody nodeInstanceBody = create((ProcessNodeEvent) event);
+        NodeInstanceEventBody nodeInstanceBody = create(event);
         if (!body.getNodeInstances().contains(nodeInstanceBody)) {
             // add it only if it does not exist
             body.update().nodeInstance(nodeInstanceBody);
@@ -111,7 +111,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected void handleProcessNodeLeftEvent(ProcessNodeLeftEvent event, ProcessInstanceEventBody body) {
-        NodeInstanceEventBody nodeInstanceBody = create((ProcessNodeEvent) event);
+        NodeInstanceEventBody nodeInstanceBody = create(event);
         // if it's already there, remove it
         body.getNodeInstances().remove(nodeInstanceBody);
         // and add it back as the node left event has latest information
@@ -155,6 +155,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .rootProcessId(pi.getRootProcessId())
                 .inputs(workItem.getParameters())
                 .outputs(workItem.getResults())
+                .comments(workItem.getComments().values())
+                .attachments(workItem.getAttachments().values())
                 .build();
     }
 

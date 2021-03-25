@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.process.workitem;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -94,4 +95,19 @@ public interface HumanTaskWorkItem extends KogitoWorkItem {
      * @return excluded users
      */
     Set<String> getExcludedUsers();
+
+    /**
+     * Returns task attachments
+     * 
+     * @return A map which key is the attachment id and value the attachment object
+     */
+    Map<Object, Attachment> getAttachments();
+
+    /**
+     * Returns task comments
+     * 
+     * @return A map which key is the comment id and value the comment object
+     */
+    Map<Object, Comment> getComments();
+
 }

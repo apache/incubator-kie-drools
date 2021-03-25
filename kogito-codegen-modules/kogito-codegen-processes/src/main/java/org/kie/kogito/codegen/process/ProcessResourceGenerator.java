@@ -336,10 +336,17 @@ public class ProcessResourceGenerator {
         m.setName(interpolated);
     }
 
-    private void interpolateUserTaskTypes(ClassOrInterfaceType t, String inputClazzName, String outputClazzName) {
-        SimpleName returnType = t.asClassOrInterfaceType().getName();
-        interpolateUserTaskTypes(returnType, inputClazzName, outputClazzName);
-        t.getTypeArguments().ifPresent(o -> interpolateUserTaskTypeArguments(o, inputClazzName, outputClazzName));
+    private void interpolateUserTaskTypes(Type t, String inputClazzName, String outputClazzName) {
+        if (t.isArrayType()) {
+            t = t.asArrayType().getElementType();
+        }
+        if (t.isClassOrInterfaceType()) {
+            SimpleName returnType = t.asClassOrInterfaceType().getName();
+            interpolateUserTaskTypes(returnType, inputClazzName, outputClazzName);
+            t.asClassOrInterfaceType().getTypeArguments().ifPresent(o -> interpolateUserTaskTypeArguments(o,
+                    inputClazzName,
+                    outputClazzName));
+        }
     }
 
     private void interpolateUserTaskTypes(SimpleName returnType, String inputClazzName, String outputClazzName) {
@@ -352,8 +359,7 @@ public class ProcessResourceGenerator {
     }
 
     private void interpolateUserTaskTypeArguments(NodeList<Type> ta, String inputClazzName, String outputClazzName) {
-        ta.stream().map(Type::asClassOrInterfaceType)
-                .forEach(t -> interpolateUserTaskTypes(t, inputClazzName, outputClazzName));
+        ta.stream().forEach(t -> interpolateUserTaskTypes(t, inputClazzName, outputClazzName));
     }
 
     private String sanitizeName(String name) {

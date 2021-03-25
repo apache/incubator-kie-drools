@@ -475,12 +475,12 @@ public class UserTaskTest extends AbstractCodegenTest {
     public void testRESTApiForUserTasks() throws Exception {
         class Dummy {
 
-            @Path("/{id}/FirstTask/{workItemId}")
+            @Path("/{id}/FirstTask/{taskId}")
             void post1() {
 
             }
 
-            @Path("/{id}/SecondTask/{workItemId}")
+            @Path("/{id}/SecondTask/{taskId}")
             void post2() {
 
             }

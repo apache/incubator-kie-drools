@@ -21,11 +21,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
-import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
@@ -56,20 +54,17 @@ public class TaskManagementService implements TaskManagementOperations {
         KogitoWorkItem workItem = UnitOfWorkExecutor.executeInUnitOfWork(processConfig.unitOfWorkManager(),
                 () -> pi.updateWorkItem(taskId,
                         wi -> {
-                            if (wi instanceof HumanTaskWorkItemImpl) {
-                                HumanTaskWorkItemImpl humanTask = (HumanTaskWorkItemImpl) wi;
-                                setField(humanTask::setAdminGroups, taskInfo::getAdminGroups, shouldReplace);
-                                setField(humanTask::setAdminUsers, taskInfo::getAdminUsers, shouldReplace);
-                                setField(humanTask::setExcludedUsers, taskInfo::getExcludedUsers, shouldReplace);
-                                setField(humanTask::setPotentialUsers, taskInfo::getPotentialUsers, shouldReplace);
-                                setField(humanTask::setPotentialGroups, taskInfo::getPotentialGroups, shouldReplace);
-                                setField(humanTask::setTaskPriority, taskInfo::getPriority, shouldReplace);
-                                setField(humanTask::setTaskDescription, taskInfo::getDescription, shouldReplace);
-                                setMap(humanTask::setParameters, humanTask::setParameter, taskInfo.getInputParams(),
-                                        shouldReplace);
-                                return wi;
-                            }
-                            throw new IllegalArgumentException("Work item " + taskId + " is not a human task");
+                            HumanTaskWorkItemImpl humanTask = HumanTaskHelper.asHumanTask(wi);
+                            setField(humanTask::setAdminGroups, taskInfo::getAdminGroups, shouldReplace);
+                            setField(humanTask::setAdminUsers, taskInfo::getAdminUsers, shouldReplace);
+                            setField(humanTask::setExcludedUsers, taskInfo::getExcludedUsers, shouldReplace);
+                            setField(humanTask::setPotentialUsers, taskInfo::getPotentialUsers, shouldReplace);
+                            setField(humanTask::setPotentialGroups, taskInfo::getPotentialGroups, shouldReplace);
+                            setField(humanTask::setTaskPriority, taskInfo::getPriority, shouldReplace);
+                            setField(humanTask::setTaskDescription, taskInfo::getDescription, shouldReplace);
+                            setMap(humanTask::setParameters, humanTask::setParameter, taskInfo.getInputParams(),
+                                    shouldReplace);
+                            return wi;
                         }, policies));
         return convert((HumanTaskWorkItem) workItem);
     }
@@ -100,19 +95,8 @@ public class TaskManagementService implements TaskManagementOperations {
 
     @Override
     public TaskInfo getTask(String processId, String processInstanceId, String taskId, Policy<?>... policies) {
-        return getProcessInstance(processId, processInstanceId, taskId).findNodes(ni -> isSearchWorkItem(ni, taskId,
-                policies)).stream().findFirst().map(this::convert).orElseThrow(() -> new WorkItemNotFoundException(
-                        taskId));
-    }
-
-    private boolean isSearchWorkItem(KogitoNodeInstance ni, String taskId, Policy<?>... policies) {
-        return ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(
-                taskId) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies) &&
-                ((WorkItemNodeInstance) ni).getWorkItem() instanceof HumanTaskWorkItem;
-    }
-
-    private TaskInfo convert(KogitoNodeInstance wi) {
-        return convert((HumanTaskWorkItem) ((WorkItemNodeInstance) wi).getWorkItem());
+        return convert(HumanTaskHelper.findTask(getProcessInstance(processId, processInstanceId, taskId), taskId,
+                policies));
     }
 
     private TaskInfo convert(HumanTaskWorkItem humanTask) {

@@ -15,10 +15,14 @@
  */
 package org.kie.kogito.services.event.impl;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.kie.kogito.process.workitem.Attachment;
+import org.kie.kogito.process.workitem.Comment;
 
 public class UserTaskInstanceEventBody {
 
@@ -44,6 +48,9 @@ public class UserTaskInstanceEventBody {
 
     private Map<String, Object> inputs;
     private Map<String, Object> outputs;
+
+    private Collection<Comment> comments;
+    private Collection<Attachment> attachments;
 
     private String processInstanceId;
     private String rootProcessInstanceId;
@@ -132,6 +139,22 @@ public class UserTaskInstanceEventBody {
 
     public String getRootProcessId() {
         return rootProcessId;
+    }
+
+    public Collection<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Collection<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Collection<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(Collection<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
     public Map<String, String> metaData() {
@@ -270,6 +293,16 @@ public class UserTaskInstanceEventBody {
 
         public Builder outputs(Map<String, Object> outputs) {
             instance.outputs = outputs;
+            return this;
+        }
+
+        public Builder comments(Collection<Comment> comments) {
+            instance.comments = comments;
+            return this;
+        }
+
+        public Builder attachments(Collection<Attachment> attachments) {
+            instance.attachments = attachments;
             return this;
         }
 
