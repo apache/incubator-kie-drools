@@ -362,9 +362,12 @@ public class ServerlessWorkflowFactory {
             ObjectMapper mapper = new ObjectMapper();
             Map<String, String> mapArguments = mapper.convertValue(arguments, new TypeReference<Map<String, String>>() {
             });
-            for (Entry<String, String> param : mapArguments.entrySet()) {
-                // assuming param value is json string path
-                work.setParameter(param.getKey(), new JsonPathExprSupplier(param.getValue()));
+
+            if (mapArguments != null) {
+                for (Entry<String, String> param : mapArguments.entrySet()) {
+                    // assuming param value is json string path
+                    work.setParameter(param.getKey(), new JsonPathExprSupplier(param.getValue()));
+                }
             }
         }
         work.setParameter(RestWorkItemHandler.RESULT_HANDLER, new JsonPathResultExprSupplier());
@@ -416,7 +419,9 @@ public class ServerlessWorkflowFactory {
         Map<String, String> mapArguments = mapper.convertValue(arguments, new TypeReference<Map<String, String>>() {
         });
 
-        mapArguments.forEach((k, v) -> builder.addParamResolver(k, new JsonNodeParameterExprSupplier(v)));
+        if (mapArguments != null) {
+            mapArguments.forEach((k, v) -> builder.addParamResolver(k, new JsonNodeParameterExprSupplier(v)));
+        }
 
         final WorkItemNode workItemNode = builder.build();
         workItemNode.setId(id);
