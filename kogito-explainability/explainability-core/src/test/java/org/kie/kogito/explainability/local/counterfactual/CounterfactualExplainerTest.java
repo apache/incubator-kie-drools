@@ -21,6 +21,8 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -573,5 +575,60 @@ class CounterfactualExplainerTest {
                         TestUtils.getSumThresholdModel(center, epsilon));
 
         assertFalse(result.isValid());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void testConsumers(int seed) throws ExecutionException, InterruptedException, TimeoutException {
+        Random random = new Random();
+        random.setSeed(seed);
+
+        final List<Output> goal = List.of(new Output("class", Type.BOOLEAN, new Value(false), 0.0d));
+        List<Feature> features = new LinkedList<>();
+        List<FeatureDomain> featureBoundaries = new LinkedList<>();
+        List<Boolean> constraints = new LinkedList<>();
+        for (int i = 0; i < 4; i++) {
+            features.add(TestUtils.getMockedNumericFeature(i));
+            featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+            constraints.add(false);
+        }
+        final DataDomain dataDomain = new DataDomain(featureBoundaries);
+        final TerminationConfig terminationConfig = new TerminationConfig().withScoreCalculationCountLimit(10L);
+        // for the purpose of this test, only a few steps are necessary
+        final SolverConfig solverConfig = CounterfactualConfigurationFactory
+                .builder().withTerminationConfig(terminationConfig).build();
+        solverConfig.setRandomSeed((long) seed);
+        solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
+
+        final AtomicBoolean finalConsumerCalled = new AtomicBoolean(false);
+
+        final Consumer<CounterfactualSolution> assertIntermediateCounterfactualNotNull = counterfactual -> {
+        };
+
+        final Consumer<CounterfactualSolution> assertFinalCounterfactualNotNull =
+                counterfactual -> finalConsumerCalled.set(true);
+
+        final CounterfactualExplainer counterfactualExplainer =
+                CounterfactualExplainer
+                        .builder(goal, constraints, dataDomain)
+                        .withSolverConfig(solverConfig)
+                        .withIntermediateConsumer(assertIntermediateCounterfactualNotNull)
+                        .withFinalConsumer(assertFinalCounterfactualNotNull)
+                        .build();
+
+        PredictionInput input = new PredictionInput(features);
+        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionOutput output = model.predictAsync(List.of(input))
+                .get(predictionTimeOut, predictionTimeUnit)
+                .get(0);
+        Prediction prediction = new Prediction(input, output);
+        final CounterfactualResult counterfactualResult = counterfactualExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (CounterfactualEntity entity : counterfactualResult.getEntities()) {
+            logger.debug("Entity: {}", entity);
+        }
+
+        logger.debug("Outputs: {}", counterfactualResult.getOutput().get(0).getOutputs());
+        assertTrue(finalConsumerCalled.get());
     }
 }

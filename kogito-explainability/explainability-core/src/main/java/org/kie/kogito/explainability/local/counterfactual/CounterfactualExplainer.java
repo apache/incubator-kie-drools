@@ -22,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,6 +62,14 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
     private final SolverConfig solverConfig;
     private final Executor executor;
     private final DataDistribution dataDistribution;
+    private final Consumer<CounterfactualSolution> intermediateResultsConsumer;
+    private final Consumer<CounterfactualSolution> finalResultsConsumer;
+
+    public static final Consumer<CounterfactualSolution> defaultIntermediateConsumer =
+            counterfactual -> logger.debug("Intermediate counterfactual: {}", counterfactual.getEntities());
+
+    public static final Consumer<CounterfactualSolution> defaultFinalConsumer =
+            counterfactual -> logger.debug("Final counterfactual: {}", counterfactual.getEntities());
 
     /**
      * Create a new {@link CounterfactualExplainer} using OptaPlanner as the underlying engine.
@@ -69,18 +79,25 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
      * The desired outcome is passed using an {@link Output}, where the score of each feature represents the
      * minimum prediction score for a counterfactual to be considered.
      * A customizable OptaPlanner solver configuration can be passed using a {@link SolverConfig}.
+     * A {@link Consumer<CounterfactualSolution>} should be provided for the intermediate and final search results.
+     * Note that the final counterfactual is always returned by the prediction method itself, which means that the
+     * consumer for the final counterfactual can be used to other purposes.
      *
      * @param dataDistribution Characteristics of the data distribution as {@link DataDistribution}, if available
      * @param dataDomain A {@link DataDomain} which specifies the search space domain
      * @param contraints A list specifying by index which features are constrained
      * @param goal A collection of {@link Output} representing the desired outcome
      * @param solverConfig An OptaPlanner {@link SolverConfig} configuration
+     * @param intermediateConsumer A {@link Consumer<CounterfactualSolution>} for the search intermediate result
+     * @param finalConsumer A {@link Consumer<CounterfactualSolution>} for the final intermediate result
      */
     protected CounterfactualExplainer(DataDistribution dataDistribution,
             DataDomain dataDomain,
             List<Boolean> contraints,
             List<Output> goal,
             SolverConfig solverConfig,
+            Consumer<CounterfactualSolution> intermediateConsumer,
+            Consumer<CounterfactualSolution> finalConsumer,
             Executor executor) {
         this.dataDistribution = dataDistribution;
         this.dataDomain = dataDomain;
@@ -88,6 +105,8 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         this.goal = goal;
         this.solverConfig = solverConfig;
         this.executor = executor;
+        this.intermediateResultsConsumer = intermediateConsumer;
+        this.finalResultsConsumer = finalConsumer;
     }
 
     public static Builder builder(List<Output> goal, List<Boolean> constraints, DataDomain dataDomain) {
@@ -116,14 +135,15 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
 
         final UUID problemId = UUID.randomUUID();
 
+        Function<UUID, CounterfactualSolution> initial = uuid -> new CounterfactualSolution(entities, model, goal);
+
         final CompletableFuture<CounterfactualSolution> cfSolution = CompletableFuture.supplyAsync(() -> {
             try (SolverManager<CounterfactualSolution, UUID> solverManager =
                     SolverManager.create(solverConfig, new SolverManagerConfig())) {
 
-                CounterfactualSolution problem =
-                        new CounterfactualSolution(entities, model, goal);
-
-                SolverJob<CounterfactualSolution, UUID> solverJob = solverManager.solve(problemId, problem);
+                SolverJob<CounterfactualSolution, UUID> solverJob =
+                        solverManager.solveAndListen(problemId, initial, intermediateResultsConsumer, finalResultsConsumer,
+                                null);
                 CounterfactualSolution solution;
                 try {
                     // Wait until the solving ends
@@ -145,6 +165,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             CounterfactualSolution solution = cfSolution.join();
             return new CounterfactualResult(solution.getEntities(), cfOutputs.join(), solution.getScore().isFeasible());
         });
+
     }
 
     public static class Builder {
@@ -155,6 +176,8 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         private DataDistribution dataDistribution = null;
         private Executor executor = ForkJoinPool.commonPool();
         private SolverConfig solverConfig = null;
+        private Consumer<CounterfactualSolution> intermediateConsumer = null;
+        private Consumer<CounterfactualSolution> finalConsumer = null;
 
         private Builder(List<Output> goal, List<Boolean> constraints, DataDomain dataDomain) {
             this.goal = goal;
@@ -177,16 +200,35 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             return this;
         }
 
+        public Builder withIntermediateConsumer(Consumer<CounterfactualSolution> consumer) {
+            this.intermediateConsumer = consumer;
+            return this;
+        }
+
+        public Builder withFinalConsumer(Consumer<CounterfactualSolution> consumer) {
+            this.finalConsumer = consumer;
+            return this;
+        }
+
         public CounterfactualExplainer build() {
             // Create a default solver configuration if none provided
             if (this.solverConfig == null) {
                 this.solverConfig = CounterfactualConfigurationFactory.builder().build();
+            }
+            if (this.intermediateConsumer == null) {
+                this.intermediateConsumer = defaultIntermediateConsumer;
+            }
+
+            if (this.finalConsumer == null) {
+                this.finalConsumer = defaultFinalConsumer;
             }
             return new CounterfactualExplainer(dataDistribution,
                     dataDomain,
                     constraints,
                     goal,
                     solverConfig,
+                    intermediateConsumer,
+                    finalConsumer,
                     executor);
         }
     }
