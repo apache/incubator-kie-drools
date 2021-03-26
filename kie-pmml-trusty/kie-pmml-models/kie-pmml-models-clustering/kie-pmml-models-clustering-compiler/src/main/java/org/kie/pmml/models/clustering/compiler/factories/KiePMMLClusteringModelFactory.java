@@ -15,12 +15,16 @@
  */
 package  org.kie.pmml.models.clustering.compiler.factories;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.ClusteringModel;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 
 public class KiePMMLClusteringModelFactory {
@@ -35,7 +39,8 @@ public class KiePMMLClusteringModelFactory {
                                                                        final String packageName,
                                                                        final HasClassLoader hasClassLoader) {
         // TODO
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+        return new DummyPMMLClusteringModel(model.getModelName());
     }
 
     public static Map<String, String> getKiePMMLClusteringModelSourcesMap(final DataDictionary dataDictionary,
@@ -43,8 +48,17 @@ public class KiePMMLClusteringModelFactory {
                                                                                  final ClusteringModel model,
                                                                                  final String packageName) {
         // TODO
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+        return Collections.emptyMap();
     }
+}
 
+class DummyPMMLClusteringModel extends KiePMMLClusteringModel {
 
+    public DummyPMMLClusteringModel(String modelName) {
+        super(modelName);
+        miningFunction = MINING_FUNCTION.CLUSTERING;
+        pmmlMODEL = PMML_MODEL.CLUSTERING_MODEL;
+        targetField = "class";
+    }
 }

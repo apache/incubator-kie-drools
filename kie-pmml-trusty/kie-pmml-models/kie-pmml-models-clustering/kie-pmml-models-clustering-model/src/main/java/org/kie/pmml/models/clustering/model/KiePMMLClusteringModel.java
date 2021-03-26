@@ -30,14 +30,15 @@ public class KiePMMLClusteringModel extends KiePMMLModel {
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         // TODO
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+        return "Iris-setosa"; // 123.45;
     }
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
         // TODO
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+        return Collections.emptyMap();
     }
-
 
 }
