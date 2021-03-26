@@ -53,6 +53,15 @@
           "methodName": "rewards",
           "elementKind": "method",
           "justification": "Assertions get new functionality."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.test.api.score.stream.ConstraintVerifier<ConstraintProvider_, Solution_> org.optaplanner.test.api.score.stream.ConstraintVerifier<ConstraintProvider_ extends org.optaplanner.core.api.score.stream.ConstraintProvider, Solution_>::withDroolsAlphaNetworkCompilationEnabled(boolean)",
+          "package": "org.optaplanner.test.api.score.stream",
+          "classSimpleName": "ConstraintVerifier",
+          "methodName": "withDroolsAlphaNetworkCompilationEnabled",
+          "elementKind": "method",
+          "justification": "Constraint streams performance tweak."
         }
       ]
     }

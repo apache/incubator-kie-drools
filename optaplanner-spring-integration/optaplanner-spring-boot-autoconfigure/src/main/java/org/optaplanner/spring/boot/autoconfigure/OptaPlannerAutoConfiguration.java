@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -163,6 +163,12 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                     }
 
                     @Override
+                    public ConstraintVerifier<ConstraintProvider_, SolutionClass_>
+                            withDroolsAlphaNetworkCompilationEnabled(boolean droolsAlphaNetworkCompilationEnabled) {
+                        throw new UnsupportedOperationException(noConstraintProviderErrorMsg);
+                    }
+
+                    @Override
                     public SingleConstraintVerification<SolutionClass_>
                             verifyThat(BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
                         throw new UnsupportedOperationException(noConstraintProviderErrorMsg);
@@ -179,11 +185,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             Class<?>[] entityClasses = solverConfig.getEntityClassList().toArray(new Class<?>[0]);
             ConstraintStreamImplType constraintStreamImplType =
                     solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
+            boolean droolsAlphaNetworkCompilationEnabled =
+                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
 
             return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier.build(constraintProvider,
-                    solverConfig.getSolutionClass(),
-                    entityClasses).withConstraintStreamImplType(
-                            (constraintStreamImplType != null) ? constraintStreamImplType : ConstraintStreamImplType.DROOLS);
+                    solverConfig.getSolutionClass(), entityClasses)
+                    .withConstraintStreamImplType(
+                            (constraintStreamImplType != null) ? constraintStreamImplType : ConstraintStreamImplType.DROOLS)
+                    .withDroolsAlphaNetworkCompilationEnabled(droolsAlphaNetworkCompilationEnabled);
         }
     }
 

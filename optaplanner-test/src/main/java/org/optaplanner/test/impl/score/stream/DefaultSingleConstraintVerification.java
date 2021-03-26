@@ -32,17 +32,17 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
 
 public final class DefaultSingleConstraintVerification<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintVerification<Solution_> {
 
-    private final ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
+    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
 
     protected DefaultSingleConstraintVerification(
-            ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
+            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 

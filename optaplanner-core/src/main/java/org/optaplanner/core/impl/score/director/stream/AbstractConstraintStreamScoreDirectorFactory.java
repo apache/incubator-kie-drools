@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,18 @@ package org.optaplanner.core.impl.score.director.stream;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 /**
  * FP streams implementation of {@link ScoreDirectorFactory}.
@@ -41,27 +39,17 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
  * @see ConstraintStreamScoreDirector
  * @see ScoreDirectorFactory
  */
-public class ConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
+public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractScoreDirectorFactory<Solution_, Score_> {
 
     private final ConstraintSessionFactory<Solution_, Score_> constraintSessionFactory;
     private final Constraint[] constraints;
 
-    public ConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
+    protected AbstractConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            ConstraintProvider constraintProvider,
+            Supplier<InnerConstraintFactory<Solution_>> constraintFactorySupplier) {
         super(solutionDescriptor);
-        InnerConstraintFactory<Solution_> constraintFactory;
-        switch (constraintStreamImplType) {
-            case BAVET:
-                constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
-                break;
-            case DROOLS:
-                constraintFactory = new DroolsConstraintFactory<>(solutionDescriptor);
-                break;
-            default:
-                throw new IllegalStateException(
-                        "The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
-        }
+        InnerConstraintFactory<Solution_> constraintFactory = constraintFactorySupplier.get();
         this.constraints = constraintProvider.defineConstraints(constraintFactory);
         if (constraints == null) {
             throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
@@ -95,6 +83,10 @@ public class ConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Scor
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    public ConstraintSessionFactory<Solution_, Score_> getConstraintSessionFactory() {
+        return constraintSessionFactory;
+    }
 
     public Constraint[] getConstraints() {
         return constraints;

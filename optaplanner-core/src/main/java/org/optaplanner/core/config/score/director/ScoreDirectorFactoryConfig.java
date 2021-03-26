@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -43,6 +45,7 @@ import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
         "incrementalScoreCalculatorCustomProperties",
         "scoreDrlList",
         "scoreDrlFileList",
+        "droolsAlphaNetworkCompilationEnabled",
         "kieBaseConfigurationProperties",
         "initializingScoreTrend",
         "assertionScoreDirectorFactory"
@@ -69,6 +72,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<String> scoreDrlList = null;
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
+
+    protected Boolean droolsAlphaNetworkCompilationEnabled = null;
 
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
@@ -154,6 +159,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public void setScoreDrlFileList(List<File> scoreDrlFileList) {
         this.scoreDrlFileList = scoreDrlFileList;
+    }
+
+    public Boolean getDroolsAlphaNetworkCompilationEnabled() {
+        return droolsAlphaNetworkCompilationEnabled;
+    }
+
+    public void setDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
     }
 
     public Map<String, String> getKieBaseConfigurationProperties() {
@@ -244,6 +257,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
+    public ScoreDirectorFactoryConfig withDroolsAlphaNetworkCompilationEnabled(
+            boolean droolsAlphaNetworkCompilationEnabled) {
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
+        return this;
+    }
+
     public ScoreDirectorFactoryConfig withInitializingScoreTrend(String initializingScoreTrend) {
         this.initializingScoreTrend = initializingScoreTrend;
         return this;
@@ -275,11 +294,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
+        droolsAlphaNetworkCompilationEnabled = ConfigUtils.inheritOverwritableProperty(
+                droolsAlphaNetworkCompilationEnabled, inheritedConfig.getDroolsAlphaNetworkCompilationEnabled());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
                 kieBaseConfigurationProperties, inheritedConfig.getKieBaseConfigurationProperties());
         initializingScoreTrend = ConfigUtils.inheritOverwritableProperty(
                 initializingScoreTrend, inheritedConfig.getInitializingScoreTrend());
-
         assertionScoreDirectorFactory = ConfigUtils.inheritOverwritableProperty(
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
         return this;
@@ -288,6 +308,27 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @Override
     public ScoreDirectorFactoryConfig copyConfig() {
         return new ScoreDirectorFactoryConfig().inherit(this);
+    }
+
+    private boolean isUsingDrools() {
+        if (scoreDrlList != null || scoreDrlFileList != null) { // We know we're in DRL.
+            return true;
+        } else if (constraintProviderClass == null) { // We know we're neither in DRL nor in CS.
+            return false;
+        }
+        return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+    }
+
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        if (!isUsingDrools()) {
+            return false;
+        }
+        boolean ancEnabledValue = ObjectUtils.defaultIfNull(getDroolsAlphaNetworkCompilationEnabled(), true);
+        if (ancEnabledValue) { // ANC does not work in native images.
+            return !CoreComponentsBuilder.isNativeImage();
+        } else {
+            return false;
+        }
     }
 
 }

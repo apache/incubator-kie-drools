@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
@@ -39,13 +39,13 @@ import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
 public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintAssertion {
 
-    private final ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
+    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final Score_ score;
     private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
     private final Collection<Indictment<Score_>> indictmentCollection;
 
     protected DefaultSingleConstraintAssertion(
-            ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             Score_ score, Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
             Map<Object, Indictment<Score_>> indictmentMap) {
         this.scoreDirectorFactory = requireNonNull(scoreDirectorFactory);

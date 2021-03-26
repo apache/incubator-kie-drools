@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assumptions;
@@ -36,7 +35,8 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 @ExtendWith(ConstraintStreamTestExtension.class)
@@ -68,17 +68,26 @@ public abstract class AbstractConstraintStreamTest {
 
     protected InnerScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
             Function<ConstraintFactory, Constraint> function) {
-        return buildScoreDirector(TestdataLavishSolution::buildSolutionDescriptor, function);
+        return buildScoreDirector(TestdataLavishSolution.buildSolutionDescriptor(), factory -> new Constraint[] {
+                function.apply(factory)
+        });
     }
 
     protected <Score_ extends Score<Score_>, Solution_> InnerScoreDirector<Solution_, Score_> buildScoreDirector(
-            Supplier<SolutionDescriptor<Solution_>> solutionDescriptorSupplier,
-            Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptorSupplier.get(),
-                        (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) },
-                        constraintStreamImplType);
-        return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+            SolutionDescriptor<Solution_> solutionDescriptorSupplier, ConstraintProvider constraintProvider) {
+        switch (constraintStreamImplType) {
+            case BAVET:
+                return (InnerScoreDirector<Solution_, Score_>) new BavetConstraintStreamScoreDirectorFactory<>(
+                        solutionDescriptorSupplier, constraintProvider)
+                                .buildScoreDirector(false, constraintMatchEnabled);
+            case DROOLS:
+                return (InnerScoreDirector<Solution_, Score_>) new DroolsConstraintStreamScoreDirectorFactory<>(
+                        solutionDescriptorSupplier, constraintProvider, true)
+                                .buildScoreDirector(false, constraintMatchEnabled);
+            default:
+                throw new UnsupportedOperationException(
+                        "Unknown Constraint Stream implementation: " + constraintStreamImplType);
+        }
     }
 
     protected <Score_ extends Score<Score_>> void assertScore(

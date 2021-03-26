@@ -51,11 +51,10 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- PLANNER-2375 Enable Alpha Network Compiler for performance. -->
-    <!--<dependency>-->
-    <!--  <groupId>org.drools</groupId>-->
-    <!--  <artifactId>drools-alphanetwork-compiler</artifactId>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-alphanetwork-compiler</artifactId>
+    </dependency>
 
     <!-- Gizmo dependencies -->
     <dependency>

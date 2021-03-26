@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -211,14 +211,17 @@ class OptaPlannerProcessor {
 
     private void generateConstraintVerifier(SolverConfig solverConfig,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer) {
+        String constraintVerifierClassName = DotNames.CONSTRAINT_VERIFIER.toString();
         if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null &&
-                isClassDefined(DotNames.CONSTRAINT_VERIFIER.toString())) {
+                isClassDefined(constraintVerifierClassName)) {
             final Class<?> constraintProviderClass = solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass();
             final Class<?> planningSolutionClass = solverConfig.getSolutionClass();
             final List<Class<?>> planningEntityClasses = solverConfig.getEntityClassList();
             final ConstraintStreamImplType constraintStreamImplType =
                     ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
                             ConstraintStreamImplType.DROOLS);
+            final boolean droolsAlphaNetworkCompilationEnabled =
+                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
             syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(DotNames.CONSTRAINT_VERIFIER)
                     .scope(Singleton.class)
                     .creator(methodCreator -> {
@@ -247,13 +250,21 @@ class OptaPlannerProcessor {
                                         ConstraintProvider.class, SolutionDescriptor.class),
                                 constraintProviderResultHandle, solutionDescriptorResultHandle);
 
-                        ResultHandle constraintStreamImplTypeResultHandle = methodCreator.load(constraintStreamImplType);
                         constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
-                                MethodDescriptor.ofMethod(DotNames.CONSTRAINT_VERIFIER.toString(),
+                                MethodDescriptor.ofMethod(constraintVerifierClassName,
                                         "withConstraintStreamImplType",
-                                        DotNames.CONSTRAINT_VERIFIER.toString(),
+                                        constraintVerifierClassName,
                                         ConstraintStreamImplType.class),
-                                constraintVerifierResultHandle, constraintStreamImplTypeResultHandle);
+                                constraintVerifierResultHandle,
+                                methodCreator.load(constraintStreamImplType));
+
+                        constraintVerifierResultHandle = methodCreator.invokeInterfaceMethod(
+                                MethodDescriptor.ofMethod(constraintVerifierClassName,
+                                        "withDroolsAlphaNetworkCompilationEnabled",
+                                        constraintVerifierClassName,
+                                        boolean.class),
+                                constraintVerifierResultHandle,
+                                methodCreator.load(droolsAlphaNetworkCompilationEnabled));
                         methodCreator.returnValue(constraintVerifierResultHandle);
                     })
                     .addType(ParameterizedType.create(DotNames.CONSTRAINT_VERIFIER,

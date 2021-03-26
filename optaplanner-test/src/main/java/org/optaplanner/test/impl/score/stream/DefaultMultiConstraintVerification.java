@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,18 @@ import java.util.Objects;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
 
 public final class DefaultMultiConstraintVerification<Solution_, Score_ extends Score<Score_>>
         implements MultiConstraintVerification<Solution_> {
 
-    private final ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
+    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final ConstraintProvider constraintProvider;
 
     protected DefaultMultiConstraintVerification(
-            ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+            AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             ConstraintProvider constraintProvider) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintProvider = constraintProvider;

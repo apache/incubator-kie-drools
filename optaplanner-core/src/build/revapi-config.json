@@ -10410,6 +10410,17 @@
           "methodName": "map",
           "elementKind": "method",
           "justification": "Constraint streams get new features."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
+          "new": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"easyScoreCalculatorClass\", \"easyScoreCalculatorCustomProperties\", \"constraintProviderClass\", \"constraintProviderCustomProperties\", \"constraintStreamImplType\", \"incrementalScoreCalculatorClass\", \"incrementalScoreCalculatorCustomProperties\", \"scoreDrlList\", \"scoreDrlFileList\", \"droolsAlphaNetworkCompilationEnabled\", \"kieBaseConfigurationProperties\", \"initializingScoreTrend\", \"assertionScoreDirectorFactory\"})",
+          "package": "org.optaplanner.core.config.score.director",
+          "classSimpleName": "ScoreDirectorFactoryConfig",
+          "elementKind": "class",
+          "justification": "Constraint streams performance tweak."
         }
       ]
     }

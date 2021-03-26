@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,11 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
  * @see ScoreDirector
  */
 public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
-        extends AbstractScoreDirector<Solution_, Score_, ConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
+        extends AbstractScoreDirector<Solution_, Score_, AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
     protected ConstraintSession<Solution_, Score_> session;
 
-    public ConstraintStreamScoreDirector(ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+    public ConstraintStreamScoreDirector(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
     }

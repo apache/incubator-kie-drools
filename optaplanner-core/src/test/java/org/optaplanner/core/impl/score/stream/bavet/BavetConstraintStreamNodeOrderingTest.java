@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,8 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBridgeBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
@@ -163,10 +162,9 @@ public class BavetConstraintStreamNodeOrderingTest {
 
     protected ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
             Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution, SimpleScore> scoreDirectorFactory =
-                new ConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
-                        (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) },
-                        ConstraintStreamImplType.BAVET);
+        BavetConstraintStreamScoreDirectorFactory<TestdataLavishSolution, SimpleScore> scoreDirectorFactory =
+                new BavetConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),
+                        (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) });
         return scoreDirectorFactory.buildScoreDirector(false, false);
     }
 

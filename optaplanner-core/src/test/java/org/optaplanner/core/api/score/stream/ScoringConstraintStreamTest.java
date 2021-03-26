@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,9 +72,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.from(TestdataEntity.class)
-                        .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.from(TestdataEntity.class)
+                                .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -86,10 +88,10 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.from(TestdataEntity.class)
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] { factory.from(TestdataEntity.class)
                                 .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        entity -> BigDecimal.valueOf(2)));
+                                        entity -> BigDecimal.valueOf(2)) });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -127,9 +129,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.from(TestdataEntity.class)
-                        .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.from(TestdataEntity.class)
+                                .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -141,10 +145,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.from(TestdataEntity.class)
-                                .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        entity -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.from(TestdataEntity.class)
+                                        .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                entity -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -182,9 +188,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.from(TestdataEntity.class)
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.from(TestdataEntity.class)
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -196,10 +204,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.from(TestdataEntity.class)
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        entity -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.from(TestdataEntity.class)
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                entity -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -224,9 +234,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.from(TestdataEntity.class)
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> -2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.from(TestdataEntity.class)
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> -2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -238,10 +250,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.from(TestdataEntity.class)
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        entity -> BigDecimal.valueOf(-2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.from(TestdataEntity.class)
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                entity -> BigDecimal.valueOf(-2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -279,9 +293,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class)
-                        .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class)
+                                .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -293,10 +309,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class)
-                                .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -334,9 +352,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class)
-                        .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class)
+                                .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -348,10 +368,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class)
-                                .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -389,9 +411,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class)
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class)
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -403,10 +427,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class)
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -431,9 +457,11 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class)
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> -2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class)
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2) -> -2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -445,10 +473,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class)
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2) -> BigDecimal.valueOf(-2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class)
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2) -> BigDecimal.valueOf(-2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -488,10 +518,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -503,11 +535,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -547,10 +581,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -562,11 +598,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -606,10 +644,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -621,11 +661,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -651,10 +693,12 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> -2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value) -> -2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -666,11 +710,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value) -> BigDecimal.valueOf(-2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value) -> BigDecimal.valueOf(-2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -715,11 +761,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -732,12 +780,14 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value, value2) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -782,11 +832,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -799,12 +851,14 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value, value2) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -849,11 +903,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -866,12 +922,14 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value, value2) -> BigDecimal.valueOf(2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -900,11 +958,13 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution::buildSolutionDescriptor,
-                factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> -2L));
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> -2L)
+                });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -917,12 +977,14 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution::buildSolutionDescriptor,
-                        factory -> factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
-                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        (entity, entity2, value, value2) -> BigDecimal.valueOf(-2)));
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.fromUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(-2))
+                        });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();

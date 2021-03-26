@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,16 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      */
     ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType);
+
+    /**
+     * Applies only to {@link ConstraintStreamImplType#DROOLS}.
+     * Do not enable when running in a native image.
+     *
+     * @param droolsAlphaNetworkCompilationEnabled true to enable the alpha network compiler
+     * @return this
+     */
+    ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
+            boolean droolsAlphaNetworkCompilationEnabled);
 
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.

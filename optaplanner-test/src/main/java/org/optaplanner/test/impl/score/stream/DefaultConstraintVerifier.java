@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,16 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.BiFunction;
 
+import org.drools.core.base.CoreComponentsBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public final class DefaultConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_, Score_ extends Score<Score_>>
@@ -35,14 +38,11 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private ConstraintStreamImplType constraintStreamImplType = ConstraintStreamImplType.DROOLS;
+    private boolean droolsAlphaNetworkCompilationEnabled = !CoreComponentsBuilder.isNativeImage();
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
         this.constraintProvider = constraintProvider;
         this.solutionDescriptor = solutionDescriptor;
-    }
-
-    protected SolutionDescriptor<Solution_> getSolutionDescriptor() {
-        return solutionDescriptor;
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
@@ -56,6 +56,21 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
         return this;
     }
 
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        return droolsAlphaNetworkCompilationEnabled;
+    }
+
+    @Override
+    public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
+            boolean droolsAlphaNetworkCompilationEnabled) {
+        if (getConstraintStreamImplType() != ConstraintStreamImplType.DROOLS && droolsAlphaNetworkCompilationEnabled) {
+            throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType +
+                    ") does not support Drools alpha network compilation.");
+        }
+        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
+        return this;
+    }
+
     // ************************************************************************
     // Verify methods
     // ************************************************************************
@@ -64,20 +79,37 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     public DefaultSingleConstraintVerification<Solution_, Score_> verifyThat(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
         requireNonNull(constraintFunction);
-        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                        constraintFactory -> new Constraint[] {
-                                constraintFunction.apply(constraintProvider, constraintFactory)
-                        },
-                        constraintStreamImplType);
+        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                createScoreDirectorFactory(constraintFunction);
         return new DefaultSingleConstraintVerification<>(scoreDirectorFactory);
+    }
+
+    private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
+            BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
+        ConstraintProvider actualConstraintProvider = constraintFactory -> new Constraint[] {
+                constraintFunction.apply(constraintProvider, constraintFactory)
+        };
+        return createScoreDirectorFactory(actualConstraintProvider);
+    }
+
+    private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
+            ConstraintProvider constraintProvider) {
+        switch (constraintStreamImplType) {
+            case DROOLS:
+                return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
+                        droolsAlphaNetworkCompilationEnabled);
+            case BAVET:
+                return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+            default:
+                throw new UnsupportedOperationException("Unknown constraint stream implementation: "
+                        + constraintStreamImplType);
+        }
     }
 
     @Override
     public DefaultMultiConstraintVerification<Solution_, Score_> verifyThat() {
-        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
-                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                        constraintStreamImplType);
+        AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                createScoreDirectorFactory(constraintProvider);
         return new DefaultMultiConstraintVerification<>(scoreDirectorFactory, constraintProvider);
     }
 
