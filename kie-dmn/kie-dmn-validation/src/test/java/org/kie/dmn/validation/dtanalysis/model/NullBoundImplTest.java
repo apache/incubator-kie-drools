@@ -21,8 +21,12 @@ import java.math.BigDecimal;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NullBoundImplTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(NullBoundImplTest.class);
 
     /**
      * assert the requirement over NullBoundImpl.NULL to always throw exception if attempting to use it.
@@ -35,5 +39,10 @@ public class NullBoundImplTest {
         Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.getParent());
         Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.isLowerBound());
         Assertions.assertThatIllegalStateException().isThrownBy(() -> NullBoundImpl.NULL.isUpperBound());
+    }
+
+    @Test
+    public void testToStringInLogger() {
+        LOG.info("{}", NullBoundImpl.NULL); // this could sometimes happen in debug mode
     }
 }
