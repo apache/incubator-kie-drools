@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Cheese;
@@ -65,11 +66,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
-
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -3789,8 +3790,15 @@ public class AccumulateTest {
         list.clear();
 
         kieSession.delete( fh );
-        assertEquals(0, kieSession.fireAllRules() );
-        assertEquals(0, list.size() );
+        // changed by DROOLS-6064
+        if (((SessionConfiguration)kieSession.getSessionConfiguration()).isAccumulateNullPropagation()) {
+            assertEquals(1, kieSession.fireAllRules() );
+            assertEquals(1, list.size() );
+            assertNull(list.get(0));
+        } else {
+            assertEquals(0, kieSession.fireAllRules() );
+            assertEquals(0, list.size() );
+        }
     }
 
     @Test
