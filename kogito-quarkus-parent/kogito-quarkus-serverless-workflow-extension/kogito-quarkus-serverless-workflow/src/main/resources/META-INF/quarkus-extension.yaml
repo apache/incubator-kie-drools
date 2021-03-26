@@ -1,0 +1,13 @@
+---
+name: "Kogito - Serverless Workflow"
+metadata:
+  keywords:
+    - "kogito"
+    - "serverless workflow"
+    - "serverless"
+    - "workflow"
+    - "SW"
+  guide: "https://quarkus.io/guides/kogito"
+  categories:
+    - "business-automation"
+  status: "preview"

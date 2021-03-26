@@ -1,0 +1,31 @@
+---
+openapi: 3.0.3
+info:
+  title: Generated API
+  version: "1.0"
+paths:
+  /:
+    post:
+      operationId: doOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubtractionOperation'
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    SubtractionOperation:
+      type: object
+      properties:
+        difference:
+          format: float
+          type: number
+        leftElement:
+          format: float
+          type: number
+        rightElement:
+          format: float
+          type: number

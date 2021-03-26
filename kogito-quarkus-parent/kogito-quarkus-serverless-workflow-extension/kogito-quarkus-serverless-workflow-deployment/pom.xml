@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kogito-quarkus-serverless-workflow-extension</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
+  <name>Kogito :: Quarkus Workflows Extension :: Deployment</name>
+
+  <dependencies>
+    <!-- Runtime dependencies -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+      <exclusions>
+        <!-- this is a deprecated module that will be removed on: https://issues.redhat.com/browse/KOGITO-4457   -->
+        <!-- and it's messing with some examples that also uses Kafka -->
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>knative-eventing-addon</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Deployment -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-common-deployment</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Quarkus Deployment Extensions Dependencies -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-jackson-deployment</artifactId>
+    </dependency>
+
+    <!-- codegen dependencies -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-codegen-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-codegen-processes</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -19,9 +19,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- required because of native image substitution  -->
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
         </dependency>
 
         <!-- quarkus -->
