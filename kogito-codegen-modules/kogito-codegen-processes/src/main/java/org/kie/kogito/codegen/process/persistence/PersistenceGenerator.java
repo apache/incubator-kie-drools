@@ -174,6 +174,7 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         TemplatedGenerator generator = TemplatedGenerator.builder().withTemplateBasePath("/class-templates/persistence/")
                 .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .withPackageName(KOGITO_PROCESS_INSTANCE_PACKAGE)
                 .build(context(), "KafkaStreamsTopologyProducer");
         CompilationUnit parsedClazzFile = generator.compilationUnitOrThrow();
         ClassOrInterfaceDeclaration producer = parsedClazzFile.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new InvalidTemplateException(
