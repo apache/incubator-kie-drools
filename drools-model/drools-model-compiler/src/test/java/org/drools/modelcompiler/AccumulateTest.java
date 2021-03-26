@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.Pair;
@@ -3406,5 +3407,36 @@ public class AccumulateTest extends BaseModelTest {
         public void setGrandChild(List<GrandChild> grandChild) {
             this.grandChild = grandChild;
         }
+    }
+
+    @Test
+    public void testAccumulateSubnetworkEval() {
+        // DROOLS-6228
+        String str =
+                "import java.time.Duration;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        $g : String()\n" +
+                "        accumulate(\n" +
+                "            ($p : Person( $age: age > 30) and eval($g.equals(\"go\"))),\n" +
+                "            $sum : sum($age)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        holder.set((int)holder.get() + $sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        AtomicReference<Integer> holder = new AtomicReference<>(0);
+        ksession.setGlobal("holder", holder);
+
+        FactHandle s = ksession.insert("stop");
+        FactHandle fh1 = ksession.insert( new Person("name1", 40));
+        FactHandle fh2 = ksession.insert( new Person("name2", 40));
+        FactHandle fh3 = ksession.insert( new Person("name3", 25));
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertEquals(0, (int)holder.get());
     }
 }
