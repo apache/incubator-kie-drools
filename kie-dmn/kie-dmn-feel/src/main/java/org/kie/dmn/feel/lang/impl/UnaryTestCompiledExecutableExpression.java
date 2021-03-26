@@ -20,7 +20,9 @@ import java.util.List;
 
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELUnaryTests;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class UnaryTestCompiledExecutableExpression {
 
     private final CompiledFEELUnaryTests expr;

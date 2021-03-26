@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.model.api.GwtIncompatible;
 
 public interface EvaluationContext {
 
@@ -46,6 +47,7 @@ public interface EvaluationContext {
 
     DMNRuntime getDMNRuntime();
 
+    @GwtIncompatible
     ClassLoader getRootClassLoader();
 
     void notifyEvt(Supplier<FEELEvent> event);

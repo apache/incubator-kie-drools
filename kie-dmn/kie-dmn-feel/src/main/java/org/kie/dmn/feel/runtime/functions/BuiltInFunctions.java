@@ -33,7 +33,9 @@ import org.kie.dmn.feel.runtime.functions.interval.OverlapsBeforeFunction;
 import org.kie.dmn.feel.runtime.functions.interval.OverlapsFunction;
 import org.kie.dmn.feel.runtime.functions.interval.StartedByFunction;
 import org.kie.dmn.feel.runtime.functions.interval.StartsFunction;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class BuiltInFunctions {
 
     protected static final FEELFunction[] FUNCTIONS = new FEELFunction[]{
@@ -79,7 +81,7 @@ public class BuiltInFunctions {
             new SortFunction(),
             new GetEntriesFunction(),
             new GetValueFunction(),
-            
+
             new AllFunction(),
             new AnyFunction(),
             AbsFunction.INSTANCE,
@@ -94,14 +96,14 @@ public class BuiltInFunctions {
             EvenFunction.INSTANCE,
             OddFunction.INSTANCE,
             MedianFunction.INSTANCE,
-            
+
             DayOfWeekFunction.INSTANCE,
             DayOfYearFunction.INSTANCE,
             MonthOfYearFunction.INSTANCE,
             WeekOfYearFunction.INSTANCE,
-            
+
             IsFunction.INSTANCE,
-            
+
             // Interval based logic
             AfterFunction.INSTANCE,
             BeforeFunction.INSTANCE,
@@ -117,15 +119,16 @@ public class BuiltInFunctions {
             OverlapsAfterFunction.INSTANCE,
             MeetsFunction.INSTANCE,
             MetByFunction.INSTANCE
-            };
+    };
 
     public static FEELFunction[] getFunctions() {
         return FUNCTIONS;
     }
 
-    public static <T extends FEELFunction> T getFunction( Class<T> functionClazz ) {
-        return (T) Stream.of( FUNCTIONS )
-                .filter( f -> functionClazz.isAssignableFrom( f.getClass() ) )
+    @GwtIncompatible
+    public static <T extends FEELFunction> T getFunction(Class<T> functionClazz) {
+        return (T) Stream.of(FUNCTIONS)
+                .filter(f -> functionClazz.isAssignableFrom(f.getClass()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find function by class " + functionClazz.getCanonicalName() + "!"));
     }
