@@ -27,7 +27,7 @@ public class KiePMMLClusteringModelWithSources extends KiePMMLClusteringModel im
     protected Map<String, String> sourcesMap;
 
     public KiePMMLClusteringModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
-        super(modelName);
+        super(modelName, null);
         this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
     }

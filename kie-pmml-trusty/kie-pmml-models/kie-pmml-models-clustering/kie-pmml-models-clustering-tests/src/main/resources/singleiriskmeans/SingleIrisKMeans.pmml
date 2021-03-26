@@ -28,7 +28,7 @@
       <MiningField name="sepal_width" invalidValueTreatment="asIs"/>
       <MiningField name="petal_length" invalidValueTreatment="asIs"/>
       <MiningField name="petal_width" invalidValueTreatment="asIs"/>
-<!--      <MiningField name="class" usageType="predicted"/>-->
+      <MiningField name="class" usageType="predicted"/>
     </MiningSchema>
     <ComparisonMeasure kind="distance">
       <squaredEuclidean/>
