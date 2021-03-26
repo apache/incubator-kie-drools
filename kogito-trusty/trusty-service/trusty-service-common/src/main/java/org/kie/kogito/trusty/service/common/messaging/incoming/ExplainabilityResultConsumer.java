@@ -36,8 +36,8 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
-import org.kie.kogito.trusty.storage.api.model.Saliency;
+import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
+import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,29 +71,29 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<Explainabili
                 ? Collections.emptyMap()
                 : decision.getOutcomes().stream().collect(Collectors.toUnmodifiableMap(DecisionOutcome::getOutcomeName, DecisionOutcome::getOutcomeId));
 
-        List<Saliency> saliencies = dto.getSaliencies() == null ? null
+        List<SaliencyModel> saliencies = dto.getSaliencies() == null ? null
                 : dto.getSaliencies().entrySet().stream()
                         .map(e -> saliencyFrom(outcomeNameToIdMap.get(e.getKey()), e.getKey(), e.getValue()))
                         .collect(Collectors.toList());
         return new ExplainabilityResult(dto.getExecutionId(), statusFrom(dto.getStatus()), dto.getStatusDetails(), saliencies);
     }
 
-    protected static FeatureImportance featureImportanceFrom(FeatureImportanceDto dto) {
+    protected static FeatureImportanceModel featureImportanceFrom(FeatureImportanceDto dto) {
         if (dto == null) {
             return null;
         }
-        return new FeatureImportance(dto.getFeatureName(), dto.getScore());
+        return new FeatureImportanceModel(dto.getFeatureName(), dto.getScore());
     }
 
-    protected static Saliency saliencyFrom(String outcomeId, String outcomeName, SaliencyDto dto) {
+    protected static SaliencyModel saliencyFrom(String outcomeId, String outcomeName, SaliencyDto dto) {
         if (dto == null) {
             return null;
         }
-        List<FeatureImportance> featureImportance = dto.getFeatureImportance() == null ? null
+        List<FeatureImportanceModel> featureImportanceModel = dto.getFeatureImportance() == null ? null
                 : dto.getFeatureImportance().stream()
                         .map(ExplainabilityResultConsumer::featureImportanceFrom)
                         .collect(Collectors.toList());
-        return new Saliency(outcomeId, outcomeName, featureImportance);
+        return new SaliencyModel(outcomeId, outcomeName, featureImportanceModel);
     }
 
     protected static ExplainabilityStatus statusFrom(org.kie.kogito.explainability.api.ExplainabilityStatus status) {

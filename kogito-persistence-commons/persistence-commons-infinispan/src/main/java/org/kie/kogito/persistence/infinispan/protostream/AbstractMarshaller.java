@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractMarshaller {
 
-    private ObjectMapper mapper;
+    protected ObjectMapper mapper;
 
     public AbstractMarshaller(ObjectMapper mapper) {
         this.mapper = mapper;

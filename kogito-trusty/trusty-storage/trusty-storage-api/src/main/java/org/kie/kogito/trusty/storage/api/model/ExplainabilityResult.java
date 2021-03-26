@@ -39,12 +39,12 @@ public class ExplainabilityResult {
     private String statusDetails;
 
     @JsonProperty(SALIENCIES_FIELD)
-    private List<Saliency> saliencies;
+    private List<SaliencyModel> saliencies;
 
     public ExplainabilityResult() {
     }
 
-    public ExplainabilityResult(String executionId, ExplainabilityStatus status, String statusDetails, List<Saliency> saliencies) {
+    public ExplainabilityResult(String executionId, ExplainabilityStatus status, String statusDetails, List<SaliencyModel> saliencies) {
         this.executionId = executionId;
         this.status = status;
         this.statusDetails = statusDetails;
@@ -75,11 +75,11 @@ public class ExplainabilityResult {
         this.statusDetails = statusDetails;
     }
 
-    public List<Saliency> getSaliencies() {
+    public List<SaliencyModel> getSaliencies() {
         return saliencies;
     }
 
-    public void setSaliencies(List<Saliency> saliencies) {
+    public void setSaliencies(List<SaliencyModel> saliencies) {
         this.saliencies = saliencies;
     }
 }

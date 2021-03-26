@@ -1425,7 +1425,7 @@
       "allPublicClasses" : true
     },
     {
-      "name":"org.kie.kogito.trusty.service.common.responses.SaliencyResponse",
+      "name":"org.kie.kogito.trusty.storage.api.model.SaliencyModel",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
@@ -1435,7 +1435,7 @@
       "allPublicClasses" : true
     },
     {
-      "name":"org.kie.kogito.trusty.service.common.responses.FeatureImportanceResponse",
+      "name":"org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,

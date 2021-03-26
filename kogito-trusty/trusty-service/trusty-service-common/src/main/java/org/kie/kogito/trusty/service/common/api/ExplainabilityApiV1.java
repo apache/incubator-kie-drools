@@ -16,9 +16,7 @@
 
 package org.kie.kogito.trusty.service.common.api;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -36,13 +34,8 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.kie.kogito.trusty.service.common.TrustyService;
-import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
-import org.kie.kogito.trusty.service.common.responses.FeatureImportanceResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
-import org.kie.kogito.trusty.service.common.responses.SaliencyResponse;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
-import org.kie.kogito.trusty.storage.api.model.Saliency;
 
 @Path("executions/decisions")
 public class ExplainabilityApiV1 {
@@ -50,61 +43,26 @@ public class ExplainabilityApiV1 {
     @Inject
     TrustyService trustyService;
 
-    static SalienciesResponse explainabilityResultModelToResponse(ExplainabilityResult model) {
-        if (model == null) {
-            return null;
-        }
-        return new SalienciesResponse(
-                model.getStatus().name(),
-                model.getStatusDetails(),
-                model.getSaliencies().stream()
-                        .map(ExplainabilityApiV1::saliencyModelToResponse)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
-    }
-
-    static FeatureImportanceResponse featureImportanceModelToResponse(FeatureImportance model) {
-        if (model == null) {
-            return null;
-        }
-        return new FeatureImportanceResponse(model.getFeatureName(), model.getScore());
-    }
-
-    static SaliencyResponse saliencyModelToResponse(Saliency model) {
-        if (model == null) {
-            return null;
-        }
-        return new SaliencyResponse(
-                model.getOutcomeId(),
-                model.getOutcomeName(),
-                model.getFeatureImportance().stream()
-                        .map(ExplainabilityApiV1::featureImportanceModelToResponse)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
-    }
-
     @GET
     @Path("/{executionId}/explanations/saliencies")
     @APIResponses(value = {
             @APIResponse(description = "Gets the local explanation of a decision.", responseCode = "200",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = SalienciesResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
     })
     @Operation(
             summary = "Returns the saliencies for a decision.",
             description = "Returns the saliencies for a particular decision calculated using the lime algorithm.")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStructuredInputs(
+    public Response getSaliencies(
             @Parameter(
                     name = "executionId",
                     description = "The execution ID.",
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return retrieveExplainabilityResult(executionId)
-                .map(ExplainabilityApiV1::explainabilityResultModelToResponse)
-                .map(Response::ok)
-                .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()))
-                .build();
+                .map(obj -> Response.ok(new SalienciesResponse(obj)).build())
+                .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
     }
 
     private Optional<ExplainabilityResult> retrieveExplainabilityResult(String executionId) {

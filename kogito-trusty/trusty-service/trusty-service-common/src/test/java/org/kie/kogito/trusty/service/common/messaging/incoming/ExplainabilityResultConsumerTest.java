@@ -35,8 +35,8 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
-import org.kie.kogito.trusty.storage.api.model.Saliency;
+import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
+import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import io.cloudevents.CloudEvent;
@@ -94,7 +94,7 @@ class ExplainabilityResultConsumerTest {
         return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto)).orElseThrow(IllegalStateException::new);
     }
 
-    private static int compareFeatureImportance(FeatureImportance expected, FeatureImportance actual) {
+    private static int compareFeatureImportance(FeatureImportanceModel expected, FeatureImportanceModel actual) {
         return new CompareToBuilder()
                 .append(expected.getFeatureName(), actual.getFeatureName())
                 .toComparison();
@@ -135,28 +135,28 @@ class ExplainabilityResultConsumerTest {
         assertNotNull(TEST_RESULT_DTO.getSaliencies());
         assertEquals(TEST_RESULT_DTO.getSaliencies().size(), explainabilityResult.getSaliencies().size());
 
-        Optional<Saliency> optSaliency = explainabilityResult.getSaliencies().stream()
+        Optional<SaliencyModel> optSaliency = explainabilityResult.getSaliencies().stream()
                 .filter(s -> s.getOutcomeName().equals(TEST_OUTCOME_1_NAME))
                 .findFirst();
 
         assertFalse(optSaliency.isEmpty());
 
-        Saliency saliency = optSaliency.get();
-        assertEquals(expectedOutcomeId, saliency.getOutcomeId());
-        assertNotNull(saliency.getFeatureImportance());
-        assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().size(), saliency.getFeatureImportance().size());
+        SaliencyModel saliencyModel = optSaliency.get();
+        assertEquals(expectedOutcomeId, saliencyModel.getOutcomeId());
+        assertNotNull(saliencyModel.getFeatureImportance());
+        assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().size(), saliencyModel.getFeatureImportance().size());
 
-        List<FeatureImportance> featureImportances = saliency.getFeatureImportance().stream()
+        List<FeatureImportanceModel> featureImportanceModels = saliencyModel.getFeatureImportance().stream()
                 .sorted(ExplainabilityResultConsumerTest::compareFeatureImportance)
                 .collect(Collectors.toList());
 
         FeatureImportanceDto expected0 = TEST_SALIENCY_DTO.getFeatureImportance().get(0);
-        FeatureImportance actual0 = featureImportances.get(0);
+        FeatureImportanceModel actual0 = featureImportanceModels.get(0);
         assertEquals(expected0.getFeatureName(), actual0.getFeatureName());
         assertEquals(expected0.getScore(), actual0.getScore());
 
         FeatureImportanceDto expected1 = TEST_SALIENCY_DTO.getFeatureImportance().get(1);
-        FeatureImportance actual1 = featureImportances.get(1);
+        FeatureImportanceModel actual1 = featureImportanceModels.get(1);
         assertEquals(expected1.getFeatureName(), actual1.getFeatureName());
         assertEquals(expected1.getScore(), actual1.getScore());
     }
@@ -178,10 +178,10 @@ class ExplainabilityResultConsumerTest {
 
     @Test
     void testFeatureImportanceFromWithValidParams() {
-        FeatureImportance featureImportance = ExplainabilityResultConsumer.featureImportanceFrom(TEST_FEATURE_IMPORTANCE_DTO_1);
-        assertNotNull(featureImportance);
-        assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getFeatureName(), featureImportance.getFeatureName());
-        assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getScore(), featureImportance.getScore());
+        FeatureImportanceModel featureImportanceModel = ExplainabilityResultConsumer.featureImportanceFrom(TEST_FEATURE_IMPORTANCE_DTO_1);
+        assertNotNull(featureImportanceModel);
+        assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getFeatureName(), featureImportanceModel.getFeatureName());
+        assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getScore(), featureImportanceModel.getScore());
     }
 
     @Test
@@ -191,14 +191,14 @@ class ExplainabilityResultConsumerTest {
 
     @Test
     void testSaliencyFromWithValidParams() {
-        Saliency saliency = ExplainabilityResultConsumer.saliencyFrom(TEST_OUTCOME_1_ID, TEST_OUTCOME_1_NAME, TEST_SALIENCY_DTO);
+        SaliencyModel saliencyModel = ExplainabilityResultConsumer.saliencyFrom(TEST_OUTCOME_1_ID, TEST_OUTCOME_1_NAME, TEST_SALIENCY_DTO);
 
-        assertNotNull(saliency);
-        assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().size(), saliency.getFeatureImportance().size());
+        assertNotNull(saliencyModel);
+        assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().size(), saliencyModel.getFeatureImportance().size());
         assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().get(0).getFeatureName(),
-                saliency.getFeatureImportance().get(0).getFeatureName());
+                saliencyModel.getFeatureImportance().get(0).getFeatureName());
         assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().get(0).getScore(),
-                saliency.getFeatureImportance().get(0).getScore(), 0.1);
+                saliencyModel.getFeatureImportance().get(0).getScore(), 0.1);
     }
 
     @Test

@@ -18,21 +18,23 @@ package org.kie.kogito.trusty.service.common.responses;
 
 import java.util.Collection;
 
+import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DecisionStructuredInputsResponse {
 
     @JsonProperty("inputs")
-    private Collection<TypedVariableResponse> inputs;
+    private Collection<TypedVariable> inputs;
 
     private DecisionStructuredInputsResponse() {
     }
 
-    public DecisionStructuredInputsResponse(Collection<TypedVariableResponse> inputs) {
+    public DecisionStructuredInputsResponse(Collection<TypedVariable> inputs) {
         this.inputs = inputs;
     }
 
-    public Collection<TypedVariableResponse> getInputs() {
+    public Collection<TypedVariable> getInputs() {
         return inputs;
     }
 }

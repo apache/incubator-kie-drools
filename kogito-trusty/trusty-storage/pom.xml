@@ -17,5 +17,6 @@
     <module>trusty-storage-api</module>
     <module>trusty-storage-infinispan</module>
     <module>trusty-storage-redis</module>
+    <module>trusty-storage-common</module>
   </modules>
 </project>

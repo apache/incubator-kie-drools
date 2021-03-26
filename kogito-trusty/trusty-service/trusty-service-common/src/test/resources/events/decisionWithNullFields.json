@@ -1,0 +1,12 @@
+{
+  "executionId":"03c3db32-5b93-473f-a83d-39e661e2462e",
+  "sourceUrl":"http://localhost:8080/Traffic+Violation",
+  "executionTimestamp":1594136494408,
+  "hasSucceeded":false,
+  "executorName":null,
+  "executedModelName":"Traffic Violation",
+  "executedModelNamespace":"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+  "executionType":"DECISION",
+  "inputs":null,
+  "outcomes":null
+}

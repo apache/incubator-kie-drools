@@ -19,15 +19,13 @@ package org.kie.kogito.trusty.service.common.api;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
-import org.kie.kogito.trusty.service.common.responses.SaliencyResponse;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
-import org.kie.kogito.trusty.storage.api.model.Saliency;
+import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
+import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -56,12 +54,12 @@ class ExplainabilityApiV1IT {
                 ExplainabilityStatus.SUCCEEDED,
                 null,
                 List.of(
-                        new Saliency("O1", "Output1", List.of(
-                                new FeatureImportance("Feature1", 0.49384),
-                                new FeatureImportance("Feature2", -0.1084))),
-                        new Saliency("O2", "Output2", List.of(
-                                new FeatureImportance("Feature1", 0.0),
-                                new FeatureImportance("Feature2", 0.70293)))));
+                        new SaliencyModel("O1", "Output1", List.of(
+                                new FeatureImportanceModel("Feature1", 0.49384),
+                                new FeatureImportanceModel("Feature2", -0.1084))),
+                        new SaliencyModel("O2", "Output2", List.of(
+                                new FeatureImportanceModel("Feature1", 0.0),
+                                new FeatureImportanceModel("Feature2", 0.70293)))));
     }
 
     @Test
@@ -76,7 +74,7 @@ class ExplainabilityApiV1IT {
         assertNotNull(response.getSaliencies());
         assertSame(2, response.getSaliencies().size());
 
-        List<SaliencyResponse> sortedSaliencies = response.getSaliencies().stream()
+        List<SaliencyModel> sortedSaliencies = response.getSaliencies().stream()
                 .sorted((s1, s2) -> new CompareToBuilder().append(s1.getOutcomeName(), s2.getOutcomeName()).toComparison())
                 .collect(Collectors.toList());
 
@@ -85,18 +83,18 @@ class ExplainabilityApiV1IT {
         assertNotNull(sortedSaliencies.get(0).getFeatureImportance());
         assertSame(2, sortedSaliencies.get(0).getFeatureImportance().size());
         assertEquals("Feature1", sortedSaliencies.get(0).getFeatureImportance().get(0).getFeatureName());
-        assertEquals(0.49384, sortedSaliencies.get(0).getFeatureImportance().get(0).getFeatureScore());
+        assertEquals(0.49384, sortedSaliencies.get(0).getFeatureImportance().get(0).getScore());
         assertEquals("Feature2", sortedSaliencies.get(0).getFeatureImportance().get(1).getFeatureName());
-        assertEquals(-0.1084, sortedSaliencies.get(0).getFeatureImportance().get(1).getFeatureScore());
+        assertEquals(-0.1084, sortedSaliencies.get(0).getFeatureImportance().get(1).getScore());
 
         assertNotNull(sortedSaliencies.get(1));
         assertEquals("Output2", sortedSaliencies.get(1).getOutcomeName());
         assertNotNull(sortedSaliencies.get(1).getFeatureImportance());
         assertSame(2, sortedSaliencies.get(1).getFeatureImportance().size());
         assertEquals("Feature1", sortedSaliencies.get(1).getFeatureImportance().get(0).getFeatureName());
-        assertEquals(0.0, sortedSaliencies.get(1).getFeatureImportance().get(0).getFeatureScore());
+        assertEquals(0.0, sortedSaliencies.get(1).getFeatureImportance().get(0).getScore());
         assertEquals("Feature2", sortedSaliencies.get(1).getFeatureImportance().get(1).getFeatureName());
-        assertEquals(0.70293, sortedSaliencies.get(1).getFeatureImportance().get(1).getFeatureScore());
+        assertEquals(0.70293, sortedSaliencies.get(1).getFeatureImportance().get(1).getScore());
     }
 
     @Test
@@ -115,13 +113,6 @@ class ExplainabilityApiV1IT {
         given().filter(new ResponseLoggingFilter())
                 .when().get("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/saliencies")
                 .then().statusCode(400);
-    }
-
-    @Test
-    void testConverterMethodsNotThrowingWithNullModelValues() {
-        Assertions.assertDoesNotThrow(() -> ExplainabilityApiV1.explainabilityResultModelToResponse(null));
-        Assertions.assertDoesNotThrow(() -> ExplainabilityApiV1.featureImportanceModelToResponse(null));
-        Assertions.assertDoesNotThrow(() -> ExplainabilityApiV1.saliencyModelToResponse(null));
     }
 
     private void mockServiceWithExplainabilityResult() {

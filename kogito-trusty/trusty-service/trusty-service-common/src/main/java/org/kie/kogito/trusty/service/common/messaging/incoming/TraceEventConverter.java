@@ -63,16 +63,16 @@ public class TraceEventConverter {
         return new DecisionInput(eventInput.getId(), eventInput.getName(), toTypedVariable(eventInput.getName(), eventInput.getValue()));
     }
 
-    public static TypedVariable toTypedVariable(String name, TypedValue typedVariable) {
-        if (typedVariable == null) {
+    public static TypedVariable toTypedVariable(String name, TypedValue typedValue) {
+        if (typedValue == null) {
             return TypedVariable.buildUnit(name, null, null);
         }
-        switch (typedVariable.getKind()) {
+        switch (typedValue.getKind()) {
             case STRUCTURE:
                 return TypedVariable.buildStructure(
                         name,
-                        typedVariable.getType(),
-                        Optional.ofNullable(typedVariable.toStructure().getValue())
+                        typedValue.getType(),
+                        Optional.ofNullable(typedValue.toStructure().getValue())
                                 .map(v -> v.entrySet().stream()
                                         .map(e -> toTypedVariable(e.getKey(), e.getValue()))
                                         .collect(Collectors.toList()))
@@ -80,8 +80,8 @@ public class TraceEventConverter {
             case COLLECTION:
                 return TypedVariable.buildCollection(
                         name,
-                        typedVariable.getType(),
-                        Optional.ofNullable(typedVariable.toCollection().getValue())
+                        typedValue.getType(),
+                        Optional.ofNullable(typedValue.toCollection().getValue())
                                 .map(v -> v.stream()
                                         .map(x -> toTypedVariable(null, x))
                                         .collect(Collectors.toList()))
@@ -89,10 +89,10 @@ public class TraceEventConverter {
             case UNIT:
                 return TypedVariable.buildUnit(
                         name,
-                        typedVariable.getType(),
-                        typedVariable.toUnit().getValue());
+                        typedValue.getType(),
+                        typedValue.toUnit().getValue());
         }
-        throw new IllegalStateException("Unsupported TypedVariable of kind " + typedVariable.getKind());
+        throw new IllegalStateException("Unsupported TypedVariable of kind " + typedValue.getKind());
     }
 
     public static DecisionOutcome toOutcome(TraceOutputValue eventOutput) {

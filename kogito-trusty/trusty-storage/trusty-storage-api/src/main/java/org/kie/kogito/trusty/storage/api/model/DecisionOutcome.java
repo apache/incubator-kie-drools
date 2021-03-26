@@ -31,6 +31,7 @@ public class DecisionOutcome {
     public static final String OUTCOME_INPUTS_FIELD = "outcomeInputs";
     public static final String OUTCOME_NAME_FIELD = "outcomeName";
     public static final String OUTCOME_RESULT_FIELD = "outcomeResult";
+    public static final String HAS_ERRORS_FIELD = "hasErrors";
 
     @JsonProperty(OUTCOME_ID_FIELD)
     private String outcomeId;
@@ -110,6 +111,7 @@ public class DecisionOutcome {
         this.messages = messages;
     }
 
+    @JsonProperty(HAS_ERRORS_FIELD)
     public boolean hasErrors() {
         return messages != null && messages.stream().anyMatch(m -> m.getLevel() == MessageLevel.ERROR);
     }

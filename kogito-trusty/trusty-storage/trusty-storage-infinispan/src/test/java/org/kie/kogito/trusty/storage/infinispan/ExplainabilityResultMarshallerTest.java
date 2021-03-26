@@ -21,7 +21,7 @@ import java.util.List;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
-import org.kie.kogito.trusty.storage.api.model.Saliency;
+import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.EnumTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ListTestField;
@@ -40,7 +40,7 @@ public class ExplainabilityResultMarshallerTest extends MarshallerTestTemplate<E
             new StringTestField<>(EXECUTION_ID_FIELD, "ID", ExplainabilityResult::getExecutionId, ExplainabilityResult::setExecutionId),
             new EnumTestField<>(STATUS_FIELD, ExplainabilityStatus.SUCCEEDED, ExplainabilityResult::getStatus, ExplainabilityResult::setStatus, ExplainabilityStatus.class),
             new StringTestField<>(STATUS_DETAILS_FIELD, "status", ExplainabilityResult::getStatusDetails, ExplainabilityResult::setStatusDetails),
-            new ListTestField<>(SALIENCIES_FIELD, Collections.emptyList(), ExplainabilityResult::getSaliencies, ExplainabilityResult::setSaliencies, Saliency.class));
+            new ListTestField<>(SALIENCIES_FIELD, Collections.emptyList(), ExplainabilityResult::getSaliencies, ExplainabilityResult::setSaliencies, SaliencyModel.class));
 
     public ExplainabilityResultMarshallerTest() {
         super(ExplainabilityResult.class);

@@ -61,7 +61,7 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller featureImportanceMarshaller() {
-        return new FeatureImportanceMarshaller(mapper);
+        return new FeatureImportanceModelMarshaller(mapper);
     }
 
     @Produces
@@ -76,7 +76,7 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller saliencyMarshaller() {
-        return new SaliencyMarshaller(mapper);
+        return new SaliencyModelMarshaller(mapper);
     }
 
     @Produces

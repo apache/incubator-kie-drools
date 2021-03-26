@@ -1,0 +1,17 @@
+{
+  "header":{
+    "type":"DMN",
+    "executionId":"03c3db32-5b93-473f-a83d-39e661e2462e",
+    "startTimestamp":1594136494408,
+    "endTimestamp":1594136494673,
+    "duration":265,
+    "resourceId":{
+      "serviceUrl":"http://localhost:8080",
+      "modelNamespace":"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+      "modelName":"Traffic Violation"
+    }
+  },
+  "inputs":null,
+  "outputs":null,
+  "executionSteps":null
+}

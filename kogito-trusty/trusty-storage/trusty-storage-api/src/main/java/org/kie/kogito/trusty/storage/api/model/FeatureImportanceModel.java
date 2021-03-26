@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FeatureImportance {
+public class FeatureImportanceModel {
 
     public static final String FEATURE_NAME_FIELD = "featureName";
     public static final String SCORE_FIELD = "score";
@@ -30,10 +30,10 @@ public class FeatureImportance {
     @JsonProperty(SCORE_FIELD)
     private Double score;
 
-    public FeatureImportance() {
+    public FeatureImportanceModel() {
     }
 
-    public FeatureImportance(String featureName, Double score) {
+    public FeatureImportanceModel(String featureName, Double score) {
         this.featureName = featureName;
         this.score = score;
     }

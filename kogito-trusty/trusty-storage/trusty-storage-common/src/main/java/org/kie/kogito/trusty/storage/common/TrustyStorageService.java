@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.trusty.storage.api;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+package org.kie.kogito.trusty.storage.common;
 
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.api.StorageService;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
-@ApplicationScoped
-public class TrustyStorageServiceImpl implements TrustyStorageService {
+public interface TrustyStorageService {
 
-    @Inject
-    StorageService storageService;
+    String DECISIONS_STORAGE = "decisions";
+    String EXPLAINABILITY_RESULTS_STORAGE = "explainability-results";
+    String MODELS_STORAGE = "models";
 
-    @Override
-    public Storage<String, Decision> getDecisionsStorage() {
-        return storageService.getCache(DECISIONS_STORAGE, Decision.class);
-    }
+    /**
+     * Gets the decision storage.
+     *
+     * @return The Storage for decisions.
+     */
+    Storage<String, Decision> getDecisionsStorage();
 
-    @Override
-    public Storage<String, ExplainabilityResult> getExplainabilityResultStorage() {
-        return storageService.getCache(EXPLAINABILITY_RESULTS_STORAGE, ExplainabilityResult.class);
-    }
+    /**
+     * Gets the explainability result storage.
+     *
+     * @return The Storage for explainability results.
+     */
+    Storage<String, ExplainabilityResult> getExplainabilityResultStorage();
 
-    @Override
-    public Storage<String, DMNModelWithMetadata> getModelStorage() {
-        return storageService.getCache(MODELS_STORAGE, DMNModelWithMetadata.class);
-    }
+    /**
+     * Gets the model definition storage.
+     *
+     * @return The Storage for model definitions.
+     */
+    Storage<String, DMNModelWithMetadata> getModelStorage();
 }

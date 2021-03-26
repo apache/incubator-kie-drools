@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 import io.quarkus.runtime.Startup;
 import io.redisearch.Schema;
 
-import static org.kie.kogito.trusty.storage.api.TrustyStorageServiceImpl.DECISIONS_STORAGE;
-import static org.kie.kogito.trusty.storage.api.TrustyStorageServiceImpl.EXPLAINABILITY_RESULTS_STORAGE;
-import static org.kie.kogito.trusty.storage.api.TrustyStorageServiceImpl.MODELS_STORAGE;
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.DECISIONS_STORAGE;
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.EXPLAINABILITY_RESULTS_STORAGE;
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.MODELS_STORAGE;
 
 @Singleton
 @Startup

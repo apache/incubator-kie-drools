@@ -18,6 +18,8 @@ package org.kie.kogito.trusty.service.common.responses;
 
 import java.util.Collection;
 
+import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DecisionOutcomesResponse {
@@ -26,12 +28,12 @@ public class DecisionOutcomesResponse {
     private ExecutionHeaderResponse header;
 
     @JsonProperty("outcomes")
-    private Collection<DecisionOutcomeResponse> outcomes;
+    private Collection<DecisionOutcome> outcomes;
 
     private DecisionOutcomesResponse() {
     }
 
-    public DecisionOutcomesResponse(ExecutionHeaderResponse header, Collection<DecisionOutcomeResponse> outcomes) {
+    public DecisionOutcomesResponse(ExecutionHeaderResponse header, Collection<DecisionOutcome> outcomes) {
         this.header = header;
         this.outcomes = outcomes;
     }
@@ -40,7 +42,7 @@ public class DecisionOutcomesResponse {
         return header;
     }
 
-    public Collection<DecisionOutcomeResponse> getOutcomes() {
+    public Collection<DecisionOutcome> getOutcomes() {
         return outcomes;
     }
 }

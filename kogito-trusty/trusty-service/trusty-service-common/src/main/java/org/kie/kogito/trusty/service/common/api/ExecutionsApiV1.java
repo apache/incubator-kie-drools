@@ -64,7 +64,7 @@ public class ExecutionsApiV1 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionsApiV1.class);
 
     @Inject
-    TrustyService executionService;
+    TrustyService trustyService;
 
     /**
      * Gets all the headers of the executions that were evaluated within a specified time range.
@@ -127,7 +127,7 @@ public class ExecutionsApiV1 {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), "Date format should be yyyy-MM-dd'T'HH:mm:ssZ").build();
         }
 
-        MatchedExecutionHeaders result = executionService.getExecutionHeaders(fromDate, toDate, limit, offset, prefix);
+        MatchedExecutionHeaders result = trustyService.getExecutionHeaders(fromDate, toDate, limit, offset, prefix);
 
         List<ExecutionHeaderResponse> headersResponses = new ArrayList<>();
         result.getExecutions().forEach(x -> headersResponses.add(ResponseUtils.executionHeaderResponseFrom(x)));
@@ -173,10 +173,6 @@ public class ExecutionsApiV1 {
                     description = "The execution ID.",
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
-        return handleModelRequest(executionId);
-    }
-
-    private Response handleModelRequest(String executionId) {
         return retrieveModel(executionId)
                 .map(definition -> Response.ok(definition).build())
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
@@ -186,7 +182,7 @@ public class ExecutionsApiV1 {
         try {
             Optional<Decision> decision = retrieveDecision(executionId);
             //TODO GAV components are provided but unused. See https://issues.redhat.com/browse/FAI-239
-            return decision.map(d -> executionService.getModelById(new ModelIdentifier(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
+            return decision.map(d -> trustyService.getModelById(new ModelIdentifier(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }
@@ -194,7 +190,7 @@ public class ExecutionsApiV1 {
 
     private Optional<Decision> retrieveDecision(String executionId) {
         try {
-            return Optional.ofNullable(executionService.getDecisionById(executionId));
+            return Optional.ofNullable(trustyService.getDecisionById(executionId));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

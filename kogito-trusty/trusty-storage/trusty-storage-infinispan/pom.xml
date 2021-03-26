@@ -15,7 +15,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>trusty-storage-api</artifactId>
+      <artifactId>trusty-storage-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

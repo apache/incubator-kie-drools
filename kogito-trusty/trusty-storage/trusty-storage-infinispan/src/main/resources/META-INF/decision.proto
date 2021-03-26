@@ -107,11 +107,11 @@ message ExplainabilityResult {
     optional string statusDetails = 3;
 
     /* @Field(store = Store.YES) */
-    repeated Saliency saliencies = 4;
+    repeated SaliencyModel saliencies = 4;
 }
 
 /* @Indexed */
-message FeatureImportance {
+message FeatureImportanceModel {
     /* @Field(store = Store.YES) */
     optional string featureName = 1;
 
@@ -132,7 +132,7 @@ message MessageExceptionField {
 }
 
 /* @Indexed */
-message Saliency {
+message SaliencyModel {
     /* @Field(store = Store.YES) */
     optional string outcomeId = 1;
 
@@ -140,7 +140,7 @@ message Saliency {
     optional string outcomeName = 2;
 
     /* @Field(store = Store.YES) */
-    repeated FeatureImportance featureImportance = 3;
+    repeated FeatureImportanceModel featureImportance = 3;
 }
 
 /* @Indexed */
