@@ -645,6 +645,8 @@ public class KiePackagesBuilder {
             }
         } else if (c instanceof AccumulatePattern) {
             allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
+        } else if (c instanceof EvalImpl) {
+            allSubConditions.addChild( buildEval( ctx, ( EvalImpl ) c ) );
         }
     }
 
