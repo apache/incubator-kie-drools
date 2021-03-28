@@ -40,7 +40,7 @@ public class SingleAccumulate extends Accumulate {
     public SingleAccumulate() { }
 
     public SingleAccumulate(final RuleConditionElement source,
-                            final Declaration[] requiredDeclarations ) {
+                            final Declaration[] requiredDeclarations) {
         super(source, requiredDeclarations);
     }
 

@@ -30,9 +30,11 @@ import com.github.javaparser.ast.type.Type;
 import org.kie.dmn.feel.codegen.feel11.FEELCompilationError;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.model.api.GwtIncompatible;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 
+@GwtIncompatible
 public class FunctionDefs {
 
     public static Expression asMethodCall(

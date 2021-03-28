@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -40,8 +39,8 @@ public class MockLeftTupleSink extends LeftTupleSource
     private LeftTupleSinkNode     previousTupleSinkNode;
     private LeftTupleSinkNode     nextTupleSinkNode;
 
-    public MockLeftTupleSink() {
-        super( 0, null );
+    public MockLeftTupleSink(BuildContext buildContext) {
+        super( 0, buildContext );
     }
 
     public MockLeftTupleSink(final int id) {
@@ -68,7 +67,7 @@ public class MockLeftTupleSink extends LeftTupleSource
         return true;
     }
 
-    public void attach(BuildContext buildContext) {
+    public void doAttach(BuildContext buildContext) {
     }
 
     /**
@@ -154,7 +153,11 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        return new MockLeftTupleSink() {
+        if ( super.getLeftTupleSource() != null) {
+            return super.getLeftTupleSource();
+        }
+
+        return new MockLeftTupleSink(null) {
             @Override
             public short getType() {
                 return NodeTypeEnums.LeftInputAdapterNode;

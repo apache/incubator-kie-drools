@@ -37,12 +37,16 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     private final Variable[] boundVariables;
     private final Pattern<T> pattern;
 
-    public AccumulatePatternImpl(Condition condition, AccumulateFunction... accumulateFunctions) {
+    public AccumulatePatternImpl(Condition condition,  Variable var, AccumulateFunction... accumulateFunctions) {
         this.condition = condition;
         this.accumulateFunctions = accumulateFunctions;
-        boundVariables = new Variable[accumulateFunctions.length];
+        int extraVar = var == null ? 0 : 1; // this is the groupbyKey var
+        boundVariables = new Variable[accumulateFunctions.length + extraVar];
         for (int i = 0; i < accumulateFunctions.length; i++) {
             boundVariables[i] = accumulateFunctions[i].getResult();
+        }
+        if (var != null) {
+            boundVariables[boundVariables.length-1] = var; // add extra var to end
         }
         this.pattern = findPatternImplSource();
     }

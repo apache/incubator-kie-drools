@@ -92,12 +92,13 @@ public class TupleStartEqualsConstraint
         // object MUST be a ReteTuple
         int size = ((TupleStartEqualsConstraintContextEntry) context).compareSize;
         final Tuple tuple = ((Tuple) handle.getObject()).getSubTuple( size );
-        return ((TupleStartEqualsConstraintContextEntry) context).tuple.getSubTuple( size ).equals( tuple );
+        return ((TupleStartEqualsConstraintContextEntry) context).leftTuple.getSubTuple(size).equals(tuple);
     }
 
     public boolean isAllowedCachedRight(final Tuple tuple,
                                         final ContextEntry context) {
-        return tuple.skipEmptyHandles().equals( ((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ) );
+        LeftTuple nonEmptyLeftTuple = (LeftTuple) tuple.skipEmptyHandles();
+        return nonEmptyLeftTuple.equals( ((TupleStartEqualsConstraintContextEntry) context).rightTuple.getSubTuple(nonEmptyLeftTuple.size()));
     }
 
     public String toString() {
@@ -125,8 +126,8 @@ public class TupleStartEqualsConstraint
 
         private static final long serialVersionUID = 510l;
 
-        public Tuple     tuple;
-        public Tuple     right;
+        public Tuple leftTuple;
+        public Tuple rightTuple;
 
         // the size of the tuple to compare
         public int                compareSize;
@@ -137,15 +138,15 @@ public class TupleStartEqualsConstraint
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            tuple        = (Tuple)in.readObject();
-            right       = (Tuple)in.readObject();
+            leftTuple = (Tuple)in.readObject();
+            rightTuple = (Tuple)in.readObject();
             compareSize = in.readInt();
             entry       = (ContextEntry)in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(tuple);
-            out.writeObject(right);
+            out.writeObject(leftTuple);
+            out.writeObject(rightTuple);
             out.writeInt(compareSize);
             out.writeObject(entry);
         }
@@ -160,23 +161,23 @@ public class TupleStartEqualsConstraint
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
                                     final Tuple tuple) {
-            this.tuple = tuple;
-            this.compareSize = tuple.size();
+            this.leftTuple = tuple.skipEmptyHandles();
+            this.compareSize = leftTuple.size();
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple
-            this.right = (LeftTuple) handle.getObject();
+            this.rightTuple = ((LeftTuple) handle.getObject()).skipEmptyHandles();
         }
 
         public void resetTuple() {
-            this.tuple = null;
+            this.leftTuple = null;
         }
 
         public void resetFactHandle() {
-            this.right = null;
+            this.rightTuple = null;
         }
     }
 

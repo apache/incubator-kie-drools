@@ -117,7 +117,6 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
 
         int count = executor.run(ruleUnitClass);
         assertTrue(count > 0);
-        System.out.println(resultHolder);
     }
 
     /**
@@ -174,7 +173,6 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
 
         int count = executor.run(ruleUnitClass);
         assertTrue(count > 0);
-        System.out.println(resultHolder);
     }
 
     @Test

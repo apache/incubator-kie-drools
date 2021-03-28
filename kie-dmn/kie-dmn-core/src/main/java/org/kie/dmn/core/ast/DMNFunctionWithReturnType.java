@@ -29,6 +29,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.model.api.GwtIncompatible;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,7 @@ public class DMNFunctionWithReturnType extends BaseFEELFunction {
     }
 
     @Override
+    @GwtIncompatible
     public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
         Object result = wrapped.invokeReflectively(ctx, params);
         result = DMNRuntimeImpl.coerceUsingType(result,

@@ -26,6 +26,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
@@ -162,12 +163,14 @@ public class GroupElementBuilder
                                                                                         context.getBetaconstraints(),
                                                                                         false );
 
-                context.setTupleSource( utils.attachNode( context, context.getComponentFactory()
-                                                                          .getNodeFactoryService().buildJoinNode( context.getNextId(),
-                                                                                                                  context.getTupleSource(),
-                                                                                                                  context.getObjectSource(),
-                                                                                                                  betaConstraints,
-                                                                                                                  context) ) );
+                JoinNode joinNode = context.getComponentFactory()
+                                           .getNodeFactoryService().buildJoinNode( context.getNextId(),
+                                                                                   context.getTupleSource(),
+                                                                                   context.getObjectSource(),
+                                                                                   betaConstraints,
+                                                                                   context);
+
+                context.setTupleSource( utils.attachNode( context, joinNode));
                 context.setBetaconstraints( null );
                 context.setObjectSource( null );
             }
@@ -228,8 +231,6 @@ public class GroupElementBuilder
             boolean existSubNetwort = false;
             final GroupElement not = (GroupElement) rce;
 
-            // NOT must save some context info to restore it later
-            final int currentPatternIndex = context.getCurrentPatternOffset();
             final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
@@ -286,9 +287,6 @@ public class GroupElementBuilder
             context.setTupleSource( utils.attachNode( context, node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
-
-            // restore pattern index
-            context.setCurrentPatternOffset( currentPatternIndex );
         }
 
         public boolean requiresLeftActivation(final BuildUtils utils,
@@ -315,8 +313,6 @@ public class GroupElementBuilder
             boolean existSubNetwort = false;
             final GroupElement exists = (GroupElement) rce;
 
-            // EXISTS must save some context info to restore it later
-            final int currentPatternIndex = context.getCurrentPatternOffset();
             final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
@@ -370,9 +366,6 @@ public class GroupElementBuilder
             context.setTupleSource( utils.attachNode( context, node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
-
-            // restore pattern index
-            context.setCurrentPatternOffset( currentPatternIndex );
         }
 
         /**

@@ -96,7 +96,7 @@ public class MockObjectSource extends ObjectSource {
         }
     }
 
-    public void attach(BuildContext context) {
+    public void doAttach(BuildContext context) {
     }
 
    

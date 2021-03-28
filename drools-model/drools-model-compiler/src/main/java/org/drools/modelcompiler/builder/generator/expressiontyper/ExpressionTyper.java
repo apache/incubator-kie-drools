@@ -812,11 +812,16 @@ public class ExpressionTyper {
         try {
             for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
                 Expression arg = methodCallExpr.getArgument( i );
-                TypedExpressionResult typedArg = toTypedExpressionFromMethodCallOrField( arg );
-                TypedExpression typedExpr = typedArg.getTypedExpression()
-                        .orElseThrow( () -> new NoSuchElementException( "Node argument doesn't contain typed expression!" ) );
-                argsType[i] = toRawClass( typedExpr.getType() );
-                methodCallExpr.setArgument( i, typedExpr.getExpression() );
+                TypedExpressionResult typedArgumentResult = toTypedExpressionFromMethodCallOrField( arg );
+                Optional<TypedExpression> optTypedArgumentExpression = typedArgumentResult.getTypedExpression();
+                if(optTypedArgumentExpression.isPresent()) {
+                    TypedExpression typedArgumentExpression = optTypedArgumentExpression.get();
+                    argsType[i] = toRawClass(typedArgumentExpression.getType() );
+                    methodCallExpr.setArgument(i, typedArgumentExpression.getExpression() );
+                } else {
+                    argsType[i] = Object.class;
+                    methodCallExpr.setArgument( i, arg );
+                }
             }
         } finally {
             context.setRegisterPropertyReactivity( true );

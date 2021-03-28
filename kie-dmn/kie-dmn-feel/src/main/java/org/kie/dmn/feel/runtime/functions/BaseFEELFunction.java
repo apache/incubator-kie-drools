@@ -41,6 +41,7 @@ import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.model.api.GwtIncompatible;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +74,7 @@ public abstract class BaseFEELFunction
     }
 
     @Override
+    @GwtIncompatible
     public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
         // use reflection to call the appropriate invoke method
         try {
@@ -185,6 +187,7 @@ public abstract class BaseFEELFunction
         return params;
     }
 
+    @GwtIncompatible
     private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available) {
         CandidateMethod candidate = null;
         // first, look for exact matches
@@ -289,6 +292,7 @@ public abstract class BaseFEELFunction
     /**
      * Adjust CandidateMethod considering var args signature. 
      */
+    @GwtIncompatible
     private void adjustForVariableParameters(CandidateMethod cm, Class<?>[] parameterTypes) {
         if ( parameterTypes.length > 0 && parameterTypes[parameterTypes.length - 1].isArray() ) {
             // then it is a variable parameters function call
@@ -303,6 +307,7 @@ public abstract class BaseFEELFunction
         }
     }
 
+    @GwtIncompatible
     private Object[] calculateActualParams(EvaluationContext ctx, Method m, Object[] params, List<String> available) {
         Annotation[][] pas = m.getParameterAnnotations();
         List<String> names = new ArrayList<>( m.getParameterCount() );
@@ -364,6 +369,7 @@ public abstract class BaseFEELFunction
         return false;
     }
 
+    @GwtIncompatible
     private static class CandidateMethod {
         private Method   apply         = null;
         private Object[] actualParams  = null;

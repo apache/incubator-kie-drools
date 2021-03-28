@@ -29,11 +29,13 @@ public interface UnaryTests extends Expression {
     void setExpressionLanguage(String value);
 
     @Override
+    @GwtIncompatible
     default QName getTypeRef() {
         throw new UnsupportedOperationException("An instance of UnaryTests inherits an optional typeRef from Expression, which must not be used");
     }
 
     @Override
+    @GwtIncompatible
     default void setTypeRef(QName value) {
         throw new UnsupportedOperationException("An instance of UnaryTests inherits an optional typeRef from Expression, which must not be used");
     }

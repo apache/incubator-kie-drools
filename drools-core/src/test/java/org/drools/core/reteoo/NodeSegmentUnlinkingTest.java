@@ -98,7 +98,7 @@ public class NodeSegmentUnlinkingTest {
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
-        MockTupleSource mockTupleSource = new MockTupleSource( 9 );
+        MockTupleSource mockTupleSource = new MockTupleSource(9, buildContext);
 
         rule1 = new RuleImpl( "rule1" );
         rule2 = new RuleImpl( "rule2" );
@@ -179,7 +179,7 @@ public class NodeSegmentUnlinkingTest {
         BuildContext buildContext = new BuildContext( kBase );
 
         MockObjectSource mockObjectSource = new MockObjectSource( 8 );
-        MockTupleSource mockTupleSource = new MockTupleSource( 9 );
+        MockTupleSource mockTupleSource = new MockTupleSource(9, buildContext);
 
         // n2 is only node in it's segment
         ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );

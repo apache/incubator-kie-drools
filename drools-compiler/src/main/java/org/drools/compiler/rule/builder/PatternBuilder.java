@@ -252,6 +252,7 @@ public class PatternBuilder
 
             pattern = new Pattern(context.getNextPatternId(),
                                   0, // offset is 0 by default
+                                  0,  // offset is 0 by default
                                   objectType,
                                   patternIdentifier,
                                   patternDescr.isInternalFact(context));
@@ -261,7 +262,8 @@ public class PatternBuilder
             }
         } else {
             pattern = new Pattern(context.getNextPatternId(),
-                                  0, // offset is 0 by default
+                                  0, // tupleIndex is 0 by default
+                                  0, // patternIndex is 0 by default
                                   objectType,
                                   null);
         }
@@ -679,6 +681,9 @@ public class PatternBuilder
                                         "More than a single oopath constraint is not allowed in the same pattern");
                 return constraints;
             }
+
+            context.setXpathOffsetadjustment(patternDescr.getXpathStartDeclaration() == null ? 0 : -1);
+
             Constraint constraint = isXPath ?
                     buildXPathDescr(context, patternDescr, pattern, (ExpressionDescr)  d, mvelCtx) :
                     buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
@@ -771,6 +776,8 @@ public class PatternBuilder
         mvelCtx.setInXpath(true);
 
         try {
+            // If the OOPath is inside of a pattern it needs no adjustment, if the pattern is synthetic (i.e. a OOPath from a var)
+            // then the xpathoffset must be adjusted by -1, as pattern is not actually added to the rete network
             for (XpathAnalysis.XpathPart part : xpathAnalysis) {
                 XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy());
 
@@ -811,21 +818,27 @@ public class PatternBuilder
                         continue;
                     }
 
+                    // preserving this, as the recursive build() resets it
+                    int chunkNbr = context.getXpathChuckNr();
                     for (Constraint c : build(context, patternDescr, pattern, result, mvelCtx)) {
                         xpathChunk.addConstraint(c);
                     }
+                    context.setXpathChuckNr(chunkNbr);
                 }
+            }
+
+            xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
+            if (descr instanceof BindingDescr) {
+                Declaration pathDeclr = pattern.addDeclaration(((BindingDescr) descr).getVariable());
+                pathDeclr.setxPathOffset(context.getXpathChuckNr());
+                xpathConstraint.setDeclaration(pathDeclr);
+
             }
         } finally {
             mvelCtx.setInXpath(false);
             pattern.setBackRefDeclarations(null);
             pattern.setObjectType(originalType);
             context.resetXpathChuckNr();
-        }
-
-        xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
-        if (descr instanceof BindingDescr) {
-            xpathConstraint.setDeclaration(pattern.addDeclaration(((BindingDescr) descr).getVariable()));
         }
 
         return xpathConstraint;

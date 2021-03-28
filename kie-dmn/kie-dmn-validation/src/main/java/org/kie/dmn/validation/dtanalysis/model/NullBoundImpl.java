@@ -64,4 +64,9 @@ public class NullBoundImpl extends Bound {
         throw new IllegalStateException();
     }
 
+    @Override
+    public String toString() {
+        return "NullBoundImpl []";
+    }
+
 }

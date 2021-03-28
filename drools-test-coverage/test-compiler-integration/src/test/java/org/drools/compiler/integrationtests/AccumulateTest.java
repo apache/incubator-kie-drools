@@ -14,7 +14,6 @@
  */
 
 package org.drools.compiler.integrationtests;
-
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
@@ -1664,7 +1663,7 @@ public class AccumulateTest {
         }
     }
 
-    @Test //(timeout = 10000)
+    @Test(timeout = 10000)
     public void testAccumulateWithPreviouslyBoundVariables() {
 
         final String drl = "package org.drools.compiler\n" +

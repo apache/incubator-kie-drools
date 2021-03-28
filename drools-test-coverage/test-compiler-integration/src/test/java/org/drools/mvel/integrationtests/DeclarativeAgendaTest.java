@@ -171,7 +171,7 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test//(timeout=10000)
+    @Test(timeout=10000)
     public void testApplyBlockerFirst() {
         KieSession ksession = getStatefulKnowledgeSession();
 
