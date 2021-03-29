@@ -15,6 +15,9 @@
 
 package org.drools.core.phreak;
 
+import java.util.Arrays;
+
+import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;

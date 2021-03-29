@@ -17,13 +17,14 @@ package org.drools.mvel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -35,27 +36,42 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class FieldConstraintTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    private final boolean useLambdaConstraint;
+
+    public FieldConstraintTest(boolean useLambdaConstraint) {
+        this.useLambdaConstraint = useLambdaConstraint;
+    }
+
+    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{false});
+        parameters.add(new Object[]{true});
+        return parameters;
+    }
 
     @Before
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
-    }
-
-    public FieldConstraintTest() {
     }
 
     /**
@@ -78,9 +94,7 @@ public class FieldConstraintTest {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                 "type");
 
-        final MVELConstraint constraint = new MVELConstraintTestUtil( "type == \"cheddar\"",
-                                                                      FieldFactory.getInstance().getFieldValue( "cheddar" ),
-                                                                      extractor );
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(extractor, "cheddar", useLambdaConstraint);
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
@@ -118,9 +132,8 @@ public class FieldConstraintTest {
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                 "price");
 
-        final MVELConstraint constraint = new MVELConstraintTestUtil( "price == 5",
-                                                                      FieldFactory.getInstance().getFieldValue( 5 ),
-                                                                      extractor );
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheesePriceEqualsConstraint(extractor, 5, useLambdaConstraint);
+
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 

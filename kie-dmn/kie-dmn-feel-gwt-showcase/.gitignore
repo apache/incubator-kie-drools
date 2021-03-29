@@ -1,0 +1,22 @@
+/target
+/local
+
+/src/main/gwt-unitCache/
+/src/main/webapp/WEB-INF/classes/
+/src/main/webapp/WEB-INF/deploy/
+/src/main/webapp/WEB-INF/lib/
+/src/main/webapp/FEELShowcaseWebapp/
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+/**/.*
+!.gitignore
+/nbproject
+*.ipr
+*.iws
+*.iml
+**/gwt-unitCache/
+
+# Repository wide ignore mac DS_Store files
+.DS_Store
+

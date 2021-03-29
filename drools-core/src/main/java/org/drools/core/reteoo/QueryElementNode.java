@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -78,6 +79,7 @@ public class QueryElementNode extends LeftTupleSource
                             final BuildContext context) {
         super(id, context);
         setLeftTupleSource(tupleSource);
+        this.setObjectCount(leftInput.getObjectCount() + 1); // 'query' node increase the object count
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
@@ -763,7 +765,8 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     @Override
-    public void attach(BuildContext context ) {
+    public void doAttach(BuildContext context ) {
+        super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
     }
 

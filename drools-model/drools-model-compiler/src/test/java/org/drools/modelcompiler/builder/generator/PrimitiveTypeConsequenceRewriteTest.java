@@ -47,6 +47,18 @@ public class PrimitiveTypeConsequenceRewriteTest {
     }
 
     @Test
+    public void doNotConvertBinaryExpr() {
+        RuleContext context = createContext();
+        context.addDeclaration("$testDouble", Double.class);
+
+        String rewritten = new PrimitiveTypeConsequenceRewrite(context)
+                .rewrite("{    $integerToShort.setTestShort((short)((16 + $testDouble))); \n }");
+
+        assertThat(rewritten,
+                   equalToIgnoringWhiteSpace("{    $integerToShort.setTestShort((short) ((16 + $testDouble))); \n }"));
+    }
+
+    @Test
     public void shouldConvertCastOfShortToShortValueEnclosed() {
         RuleContext context = createContext();
         context.addDeclaration("$interimVar", int.class);
@@ -80,6 +92,7 @@ public class PrimitiveTypeConsequenceRewriteTest {
 
         String rewritten = new PrimitiveTypeConsequenceRewrite(context)
                 .rewrite("{ $address.setShortNumber((short)($interimVar.unboxed())); }");
+
 
         assertThat(rewritten,
                    equalToIgnoringWhiteSpace("{ $address.setShortNumber(java.lang.Integer.valueOf($interimVar.unboxed()).shortValue()); }"));

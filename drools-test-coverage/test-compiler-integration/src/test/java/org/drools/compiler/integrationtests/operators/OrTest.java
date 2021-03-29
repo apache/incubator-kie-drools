@@ -674,4 +674,39 @@ public class OrTest {
         }
     }
 
+    @Test
+    public void testOrWithDifferenceOffsetsForConsequence() {
+        // DROOLS-1604
+        final String drl =
+              "import " + Person.class.getCanonicalName() + ";" +
+              "global java.util.List list\n" +
+              "rule R dialect \"mvel\" when\n" +
+              "  ( $p : Person(name == \"Mark\")" +
+              "    or\n" +
+              "    $s : String() and $p : Person(name == $s) )\n" +
+              "then\n" +
+              "  list.add($p.getName());\n" +
+              "end";
+
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("or-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            ksession.insert( "Mark" );
+            ksession.insert(new Person("Mark", 37));
+
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal( "list", list );
+
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+            assertEquals( "Mark", list.get(0) );
+            assertEquals( "Mark", list.get(1) );
+        } finally {
+            ksession.dispose();
+        }
+    }
+
 }

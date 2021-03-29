@@ -113,10 +113,10 @@ public class BetaNodeBuilder {
             Declaration declr = new Declaration(leftVariableName,
                                                 extractor,
                                                 pattern);
-                betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
-                                                                                                        constraintFieldName,
-                                                                                                        declr,
-                                                                                                        constraintOperator), buildContext.getKnowledgeBase().getConfiguration());
+            betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
+                                                                                                    constraintFieldName,
+                                                                                                    declr,
+                                                                                                    constraintOperator), buildContext.getKnowledgeBase().getConfiguration());
         } else {
             betaConstraints = new EmptyBetaConstraints();
         }

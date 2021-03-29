@@ -64,7 +64,9 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     private Object getValue( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory, Declaration declaration ) {
-        return declaration.getValue( ( InternalWorkingMemory )workingMemory, declaration.getOffset() < tuple.size() ? tuple.get( declaration ) : handle );
+        // we already have the handle, so avoid tuple iteration if not needed.
+        // (is this really saving time, as get(int index) has pretty much the same check, at best saves some method call) (mdp)
+        return declaration.getValue( ( InternalWorkingMemory )workingMemory, declaration.getTupleIndex() < tuple.size() ? tuple.get( declaration ).getObject() : handle.getObject() );
     }
 
     @Override

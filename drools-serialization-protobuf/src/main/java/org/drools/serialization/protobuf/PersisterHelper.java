@@ -118,11 +118,8 @@ public class PersisterHelper extends MarshallingHelper {
 
     public static ProtobufMessages.Tuple createTuple( final Tuple leftTuple ) {
         ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
-        for( Tuple entry = leftTuple; entry != null ; entry = entry.getParent() ) {
-            if ( entry.getFactHandle() != null ) {
-                // can be null for eval, not and exists that have no right input
-                _tuple.addHandleId( entry.getFactHandle().getId() );
-            }
+        for( Tuple entry = leftTuple.skipEmptyHandles(); entry != null ; entry = entry.getParent() ) {
+            _tuple.addHandleId( entry.getFactHandle().getId() );
         }
         return _tuple.build();
     }

@@ -54,6 +54,8 @@ public interface LeftTuple extends Tuple {
 
     LeftTuple getParent();
 
+    LeftTuple getNextParentWithHandle();
+
     void setPeer(LeftTuple peer);
     LeftTuple getPeer();
 

@@ -22,7 +22,9 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class TimeFunction extends BaseFEELFunction {
     public static final TimeFunction INSTANCE = new TimeFunction();
 

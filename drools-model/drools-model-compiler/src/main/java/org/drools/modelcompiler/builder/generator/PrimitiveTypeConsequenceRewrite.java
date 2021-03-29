@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.Node;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.slf4j.Logger;
@@ -62,24 +62,29 @@ public class PrimitiveTypeConsequenceRewrite {
 
         TypedExpressionResult typedExpressionResult =
                 new ExpressionTyper(context)
-                .toTypedExpression(innerExpr);
+                        .toTypedExpression(innerExpr);
 
         Optional<TypedExpression> optTypeExpression = typedExpressionResult.getTypedExpression();
 
-        return optTypeExpression.map(typedExpression -> {
-            if (castType.isPresent() &&
-                    castType.get().equals(short.class) &&
-                    !typedExpression.isNumberLiteral() &&
-                    typedExpression.getRawClass().equals(int.class)
-            ) {
-                Expression unenclosedExpression = unEncloseExpr(typedExpression.getExpression());
-                Expression scope = StaticJavaParser.parseExpression(unenclosedExpression.toString());
+        return optTypeExpression
+                .filter(t -> shouldCoerce(castType, t))
+                .map(PrimitiveTypeConsequenceRewrite::coerceWithIntegerValueOfShortValue)
+                .orElse(ce);
+    }
 
-                MethodCallExpr integerValueOf = new MethodCallExpr(new NameExpr(Integer.class.getCanonicalName()), "valueOf", nodeList(scope));
-                MethodCallExpr shortValue = new MethodCallExpr(integerValueOf, "shortValue");
-                return shortValue;
-            }
-            return ce;
-        }).orElse( ce );
+    private static Expression coerceWithIntegerValueOfShortValue(TypedExpression typedExpression) {
+        Expression unenclosedExpression = unEncloseExpr(typedExpression.getExpression());
+        Expression scope = StaticJavaParser.parseExpression(unenclosedExpression.toString());
+
+        MethodCallExpr integerValueOf = new MethodCallExpr(new NameExpr(Integer.class.getCanonicalName()), "valueOf", nodeList(scope));
+        return new MethodCallExpr(integerValueOf, "shortValue");
+    }
+
+    private static boolean shouldCoerce(Optional<Class<?>> castType, TypedExpression typedExpression) {
+        return castType.isPresent() &&
+                castType.get().equals(short.class) &&
+                !typedExpression.isNumberLiteral() &&
+                !unEncloseExpr(typedExpression.getExpression()).isBinaryExpr() &&
+                typedExpression.getRawClass().equals(int.class);
     }
 }

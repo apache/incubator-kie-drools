@@ -42,6 +42,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -255,9 +256,9 @@ public class OOPathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Adult( $x: /children.age )\n" +
+                "  Adult( $x : /children[$y : age]/toys[$t : name] )\n" +
                 "then\n" +
-                "  list.add( $x );\n" +
+                "  list.add( $x.getName() + \":\" + $y + \":\" + $t );\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -267,13 +268,21 @@ public class OOPathTest {
         ksession.setGlobal( "list", list );
 
         final Man bob = new Man( "Bob", 40 );
-        bob.addChild( new Child( "Charles", 12 ) );
-        bob.addChild( new Child( "Debbie", 8 ) );
+        Child charles = new Child( "Charles", 12 );
+        charles.addToy(new Toy("t1"));
+        charles.addToy(new Toy("t2"));
+        bob.addChild( charles );
+
+        Child deb = new Child( "Debbie", 8 );
+        deb.addToy(new Toy("t3"));
+        deb.addToy(new Toy("t4"));
+        bob.addChild(deb );
 
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(2);
+        Assertions.assertThat(list).hasSize(4);
+        Assert.assertEquals( Arrays.asList(new String[] {"t2:12:t2", "t1:12:t1", "t4:8:t4", "t3:8:t3"}),list);
     }
     
     @Test   
@@ -285,7 +294,6 @@ public class OOPathTest {
                 "rule R2 when\n" +
                 "  Group( $id: name, $p: /members[age >= 20] )\n" +
                 "then\n" +
-                "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
  
@@ -334,7 +342,6 @@ public class OOPathTest {
                 "rule R2 when\n" +
                 "  Group( $id: name, $p: /members[age >= 20] )\n" +
                 "then\n" +
-                "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
  
@@ -376,7 +383,6 @@ public class OOPathTest {
                 "rule R2 when\n" +
                 "  Group( $id: name, $p: /members[age >= 30] )\n" +
                 "then\n" +
-                "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
@@ -428,7 +434,6 @@ public class OOPathTest {
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
-                "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
@@ -509,7 +514,6 @@ public class OOPathTest {
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
-                "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
@@ -851,7 +855,6 @@ public class OOPathTest {
                 "rule R2 when\n" +
                 "  TMFileSet( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
-                "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
 
@@ -924,7 +927,6 @@ public class OOPathTest {
                 "  $dir1 : TMFileSet( $ic1 : /files )\n" +
                 "  TMFileSet( this == $dir1, $ic2 : /files[name == $ic1.name], $ic2 != $ic1 )\n" +
                 "then\n" +
-                "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
@@ -958,7 +960,6 @@ public class OOPathTest {
                 "  $dir1 : TMFileSet( $ic1 : /files )\n" +
                 "  TMFileSet( this == $dir1, $ic2 : /files[this != $ic1], $ic2.name == $ic1.name )\n" +
                 "then\n" +
-                "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
@@ -992,7 +993,6 @@ public class OOPathTest {
                 "  $dir1 : TMFileSet( $ic1 : /files )\n" +
                 "  TMFileSet( this == $dir1, $ic2 : /files[name == $ic1.name, this != $ic1] )\n" +
                 "then\n" +
-                "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
@@ -1042,7 +1042,6 @@ public class OOPathTest {
                 "  $ic1 : TMFileWithParentObj( $curName : name,\n" +
                 "                              $ic2: /parent#TMFileSet/files[name == $curName, this != $ic1 ] )\n" +
                 "then\n" +
-                "  System.out.println( $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 
@@ -1094,7 +1093,6 @@ public class OOPathTest {
                 "  $ic1 : TMFileWithParentObj( $curName : name, $curId : id, \n" +
                 "                               $ic2: /parent#TMFileSetQuater/files[name == $curName, id != $curId ] )\n" +
                 "then\n" +
-                "  System.out.println( $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
 

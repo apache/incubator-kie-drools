@@ -33,7 +33,9 @@ import org.kie.dmn.feel.runtime.FEELFunction.Param;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class FunctionDefNode
         extends BaseNode {
 

@@ -55,7 +55,7 @@ public class BindingEvaluator {
     }
 
     public static Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
-        int offset = declaration.getOffset();
-        return declaration.getValue(workingMemory, tuple != null && offset < tuple.size() ? tuple.get(offset) : handle);
+        int tupleIndex = declaration.getTupleIndex();
+        return declaration.getValue(workingMemory, tuple != null && tupleIndex < tuple.size() ? tuple.get(tupleIndex) : handle);
     }
 }

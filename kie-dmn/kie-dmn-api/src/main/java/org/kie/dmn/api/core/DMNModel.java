@@ -26,6 +26,7 @@ import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.GwtIncompatible;
 
 public interface DMNModel extends DMNMessageContainer {
 
@@ -66,6 +67,7 @@ public interface DMNModel extends DMNMessageContainer {
     /**
      * If the model was created from a {@link Resource}, provide the original resource; null otherwise.
      */
+    @GwtIncompatible
     Resource getResource();
 
     Collection<DecisionServiceNode> getDecisionServices();

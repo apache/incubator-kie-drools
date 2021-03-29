@@ -30,8 +30,8 @@ public class ReteObjectTypeNode extends ObjectTypeNode {
         super(id, source, objectType, context);
     }
 
-    public void attach( BuildContext context ) {
-        super.attach( context );
+    public void doAttach( BuildContext context ) {
+        super.doAttach( context );
         if (context == null ) {
             return;
         }

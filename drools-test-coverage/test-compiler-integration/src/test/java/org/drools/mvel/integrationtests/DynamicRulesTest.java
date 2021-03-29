@@ -1099,7 +1099,7 @@ public class DynamicRulesTest {
 
     }
 
-    @Test//(timeout=10000)
+    @Test(timeout=10000)
     public void testSharedLIANodeRemoval() throws Exception {
         // it's not a true share, but the liaNode will have two sinks, due to subnetwork.
         String str = "global java.util.List list;\n";

@@ -55,7 +55,7 @@ public class RuleContext {
 
     private List<Rule> subRules;
 
-    private int patternIndex = -1;
+    private int patternIndex = 0; // 0 is reserved for optional InitialImpl, so always start the first pattern at 1.
     private boolean needStreamMode = false;
 
     public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
@@ -87,18 +87,6 @@ public class RuleContext {
         Declaration existing = declarations.get( variable );
         if (existing == null) {
             declarations.put( variable, pattern.getDeclaration() );
-        } else {
-            Pattern oldPattern = existing.getPattern();
-            for (Declaration declaration : declarations.values()) {
-                if (declaration.getPattern() == oldPattern && declaration.getTypeName().equals( existing.getTypeName() )) {
-                    declaration.setPattern( pattern );
-                }
-            }
-        }
-
-        Declaration dependant = dependantDeclarations == null ? null : dependantDeclarations.get( variable );
-        if (dependant != null) {
-            dependant.setPattern( pattern );
         }
     }
 
@@ -150,10 +138,6 @@ public class RuleContext {
             dependantDeclarations = new HashMap<>();
         }
         dependantDeclarations.put( dependingOn, declaration );
-    }
-
-    boolean isGroupKeyVariable( Variable groupKeyVar ) {
-        return groupKeyVariables == null ? false : groupKeyVariables.contains( groupKeyVar );
     }
 
     Accumulate getAccumulateSource( Variable variable) {

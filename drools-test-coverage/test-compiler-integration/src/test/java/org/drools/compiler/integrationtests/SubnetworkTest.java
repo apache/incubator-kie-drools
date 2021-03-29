@@ -63,7 +63,7 @@ public class SubnetworkTest {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testRightStagingOnSharedSubnetwork() {
         // RHBRMS-2624
         final String drl =
@@ -86,7 +86,8 @@ public class SubnetworkTest {
                         "then\n" +
                         "    $i.incrementAndGet();" +
                         "    update($i);" +
-                        "end\n";
+                        "end\n" +
+                        "\n";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("subnetwork-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kbase.newKieSession();
@@ -100,7 +101,7 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 10000)
     public void testUpdateOnSharedSubnetwork() {
         // DROOLS-1360
         final String drl =
@@ -147,7 +148,7 @@ public class SubnetworkTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testSubNetworks() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources("subnetwork-test", kieBaseTestConfiguration,
                                                                              "org/drools/compiler/integrationtests/test_SubNetworks.drl");
@@ -155,7 +156,7 @@ public class SubnetworkTest {
         session.dispose();
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testSubnetworkSharingWith2Sinks() {
         // DROOLS-1656
         final String drl =

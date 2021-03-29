@@ -41,6 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
@@ -344,6 +345,98 @@ public class Misc2Test {
     }
 
     @Test
+    public void testCorrectDeclarationsInConsequence() {
+        // This showed up a bug where consequences declarations were being held onto and not replaced
+
+        Address barcelonaCityCenter;
+        Address cottageInMountains;
+        Address cottageInDesert;
+        Person  johnFromBarcelona;
+        Person  elizabeth35Years;
+        Person  william25Years;
+        Person  peter70Years;
+        Person  mary33Years;
+
+        barcelonaCityCenter = new Address("City Center",1,"Barcelona");
+        cottageInMountains = new Address("Mountains",999,"Small Village");
+        cottageInDesert = new Address("Sand Street",1,"Desert Town");
+        johnFromBarcelona = new Person("John",18);
+        peter70Years = new Person("Peter",70);
+        mary33Years = new Person("Mary",33);
+        johnFromBarcelona.setAddress(barcelonaCityCenter);
+        elizabeth35Years = new Person("Elizabeth",35);
+        william25Years = new Person("William",25);
+
+        String str = "package org.drools.testcoverage.functional;\n" +
+                     "\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import java.lang.Integer;" +
+                     "" +
+                     "rule \"Row 1 moveToBiggerCities\"\n" +
+                     "dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "    $address : Address( $city : city)\n" +
+                     "    $inhabitantsCount : Integer( intValue() > 50000 , intValue() <= 100000 ) " +
+                     "           from accumulate ( $person : Person( address.city == $city ),\n" +
+                     "                             count($person)) \n" +
+                     "    $otherAddress : Address( $otherCity : city, this != $address )\n" +
+                     "    $person : Person( address == $otherAddress , likes == \"big city\" )\n" +
+                     "then\n" +
+                     "    $person.setAddress( $address );\n" +
+                     "end\n" +
+                     "";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+
+        KieSession ksession = kbase.newKieSession();
+
+
+        final Address brno   = producePeopleInCity(ksession,"Brno", 7000);
+        final Address prague = producePeopleInCity(ksession,"Prague", 30000);
+        final Address london = producePeopleInCity(ksession,"London", 60000);
+
+        final Address smallCity = new Address();
+        smallCity.setCity("city with just one person");
+
+        peter70Years.setAddress(smallCity);
+        peter70Years.setLikes("big city");
+
+        william25Years.setAddress(brno);
+        william25Years.setLikes("big city");
+
+        mary33Years.setAddress(prague);
+        mary33Years.setLikes("big city");
+
+        elizabeth35Years.setAddress(london);
+        elizabeth35Years.setLikes("big city");
+
+        ksession.insert(smallCity);
+        final FactHandle peter = ksession.insert(peter70Years);
+        final FactHandle wiliam = ksession.insert(william25Years);
+        final FactHandle mary = ksession.insert(mary33Years);
+        final FactHandle elizabeth = ksession.insert(elizabeth35Years);
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(3);
+    }
+
+    private Address producePeopleInCity(final KieSession ksession, final String city, final int countOfPeople) {
+        final Address address = new Address();
+        address.setCity(city);
+        ksession.insert(address);
+
+        for (int i = 0; i < countOfPeople; i++) {
+            final Person person = new Person();
+            person.setName("Inhabitant " + i);
+            person.setAddress(address);
+
+            ksession.insert(person);
+        }
+
+        return address;
+    }
+
+    @Test
     public void testEvalBeforeNot() {
         String str =
                 "package org.drools.mvel.compiler.integration; \n" +
@@ -354,19 +447,22 @@ public class Misc2Test {
                 "   salience 10\n" +
                 "   when\n" +
                 "      eval( list.size() == 0 ) \n" +
-                "      not  A( )" +
+                "      not  A( ) \n" +
+                "      a1 : A( f1 == 1 ) \n" +
+                "      not  A( f1 == 10 ) \n" +
+                "      a2 : A( f1 == 2 ) \n" +
                 "   then\n" +
-                "       System.out.println('xxx');\n" +
+                "       System.out.println('xxx' + a1.getF1() + \":\" + a2.getF2()); \n" +
                 "end\n" +
                 "\n";
-
-        System.out.println( str );
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
+        ksession.insert(new A(1));
+        ksession.insert(new A(2));
         ksession.fireAllRules();
     }
 
@@ -889,6 +985,10 @@ public class Misc2Test {
 
         public A() {
 
+        }
+
+        public A( int f1) {
+            this.f1 = f1;
         }
 
         public A( int f1, int f2, int f3, int f4 ) {
@@ -4318,7 +4418,6 @@ public class Misc2Test {
         for ( SimpleMessage msg : msgs ) {
             ksession.insert( msg );
         }
-
         ksession.fireAllRules();
 
         for ( SimpleMessage msg : msgs ) {
