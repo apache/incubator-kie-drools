@@ -78,7 +78,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     /**
      * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
-     * built starting from the given <code>Resource</code>
+     * built starting from the given <b>sourcePath</b> <code>String</code>
      * @param sourcePath
      * @return
      */
