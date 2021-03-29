@@ -15,8 +15,29 @@
     <maven.compiler.release>11</maven.compiler.release> 
   </properties>
 
-  <modules>
-    <module>kogito-springboot-archetype</module>
-    <module>kogito-quarkus-archetype</module>    
-  </modules>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>kogito-springboot-archetype</module>
+        <module>kogito-quarkus-archetype</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>productized</id>
+      <activation>
+        <property>
+          <name>productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-springboot-dm-archetype</module>
+        <module>kogito-quarkus-dm-archetype</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>

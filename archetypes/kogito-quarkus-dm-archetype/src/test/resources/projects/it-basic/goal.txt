@@ -1,0 +1,1 @@
+verify -Dversion.io.quarkus=${version.io.quarkus}
