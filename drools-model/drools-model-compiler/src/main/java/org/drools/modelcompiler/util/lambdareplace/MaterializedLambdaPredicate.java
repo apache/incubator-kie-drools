@@ -31,7 +31,7 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.model.functions.PredicateInformation;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
@@ -71,7 +71,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     private void createPredicateInformationMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("predicateInformation", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
-        ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) parseType(PredicateInformation.class.getCanonicalName());
+        ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) toJPType(PredicateInformation.class);
         methodDeclaration.setType(predicateInformationType);
 
         ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(

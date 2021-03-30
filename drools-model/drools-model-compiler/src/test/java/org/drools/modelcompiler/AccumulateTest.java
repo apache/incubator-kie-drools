@@ -3439,4 +3439,82 @@ public class AccumulateTest extends BaseModelTest {
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertEquals(0, (int)holder.get());
     }
+
+    @Test
+    public void testInnerClassInAccumulatingFunction() {
+        // DROOLS-6238
+        String str =
+                "import java.util.*;\n" +
+                        "import " + GroupByAccPersonSet.class.getCanonicalName() + ";\n" +
+                        "import " + GroupByAccSetSize.class.getCanonicalName() + ";\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  $sets : List( size > 0 ) from accumulate (\n" +
+                        "            Person($p: this),\n" +
+                        "                init( GroupByAccPersonSet acc = new GroupByAccPersonSet(); ),\n" +
+                        "                action( acc.action( $p ); ),\n" +
+                        "                reverse( acc.reverse( $p ); ),\n" +
+                        "                result( acc.result() )\n" +
+                        "         )\n" +
+                        "  $sizes : List( size > 0 ) from accumulate (\n" +
+                        "            Object($s: this) from $sets,\n" +
+                        "                init( GroupByAccSetSize acc2 = new GroupByAccSetSize(); ),\n" +
+                        "                action( acc2.action( (Set) $s ); ),\n" +
+                        "                reverse( acc2.reverse( (Set) $s ); ),\n" +
+                        "                result( acc2.result() )\n" +
+                        "         )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static class GroupByAccPersonSet {
+        private final List<Person> nonUnique  = new ArrayList<>(0);
+
+        public GroupByAccPersonSet() {
+
+        }
+
+        public void action(Person person) {
+            nonUnique.add(person);
+        }
+
+        public void reverse(Person person) {
+            nonUnique.remove(person);
+        }
+
+        public List<Set<Person>> result() {
+            return Collections.singletonList(new HashSet<>(nonUnique));
+        }
+
+    }
+
+    public static class GroupByAccSetSize {
+        private final List<Integer> sizes = new ArrayList<>(0);
+
+        public GroupByAccSetSize() {
+
+        }
+
+        public void action(Set<Person> set) {
+            sizes.add(set.size());
+        }
+
+        public void reverse(Set<Person> set) {
+            sizes.add(set.size());
+        }
+
+        public List<Integer> result() {
+            Integer max = sizes.stream()
+                    .mapToInt(i -> i)
+                    .max()
+                    .orElse(0);
+            return Collections.singletonList(max);
+        }
+    }
 }

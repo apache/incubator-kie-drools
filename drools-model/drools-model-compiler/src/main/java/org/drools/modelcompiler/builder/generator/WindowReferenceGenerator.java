@@ -54,11 +54,11 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class WindowReferenceGenerator {
 
@@ -112,7 +112,7 @@ public class WindowReferenceGenerator {
 
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
-        final Type initType = parseType(initClass.getCanonicalName());
+        final Type initType = toJPType(initClass);
         initializer.addArgument(new ClassExpr(initType));
 
         if (pattern.getSource() != null) {
