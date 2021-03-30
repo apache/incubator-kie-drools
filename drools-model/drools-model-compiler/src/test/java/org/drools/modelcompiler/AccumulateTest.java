@@ -43,10 +43,8 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Activation;
@@ -57,7 +55,6 @@ import org.drools.model.Variable;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
-import org.drools.model.patterns.PatternImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Adult;
@@ -80,7 +77,10 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -3398,193 +3398,6 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(grandParent);
         assertEquals( 1, ksession.fireAllRules() );
     }
-
-    @Test
-    public void testVariableScopingErrors() throws Exception {
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
-
-        final Variable<String> var_$key = D.declarationOf(String.class);
-        final Variable<Person> var_$p   = D.declarationOf(Person.class);
-        Variable<Integer> var_$age = D.declarationOf(Integer.class);
-        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
-        Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
-
-        Rule rule1 = D.rule("R1").build(
-              D.accumulate(
-                    // Patterns
-                    D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
-                    D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
-              // Filter
-              D.pattern(var_$age).expr(a -> a > 0),
-              // Consequence
-              D.on(var_$age, var_results)
-               .execute(($age, results) -> results.add($age)));
-
-        // this should not compile, age should not be visible. TODO for mario add assertion.
-        Model model = new ModelImpl().addRule(rule1).addGlobal(var_results);
-    }
-
-    @Test
-    public void testPatternsAfterAccMovedToEvalsOnResultPattern() throws Exception {
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
-
-        final Variable<String> var_$key = D.declarationOf(String.class);
-        final Variable<Person> var_$p   = D.declarationOf(Person.class);
-        Variable<Integer> var_$age = D.declarationOf(Integer.class);
-        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
-        Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
-
-        Predicate1<Integer> p1 =  a -> a > 0;
-        Predicate1<Long> p2 =  c -> c > 0;
-
-        Rule rule1 = D.rule("R1").build(
-              D.accumulate(
-                    // Patterns
-                    D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
-                    D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges),
-                    D.accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(var_$countOfPersons)),
-              // Filter
-              D.pattern(var_$sumOfAges).expr(p1),
-              D.pattern(var_$countOfPersons).expr(p2),
-              // Consequence
-              D.on(var_$sumOfAges, var_$countOfPersons, var_results)
-               .execute(($ages, $counts, results) -> results.add($ages + ":" + $counts)));
-
-        Model      model    = new ModelImpl().addRule(rule1).addGlobal(var_results);
-        KieBase    kbase    = KieBaseBuilder.createKieBaseFromModel(model);
-        RuleImpl   rule     = ( RuleImpl) kbase.getKiePackage("defaultpkg").getRules().toArray()[0];
-
-        // Ensure there is only a single root child
-        assertEquals(1, rule.getLhs().getChildren().size());
-
-        // The expression must be merged up into the acc pattern
-        Pattern          p = (Pattern) rule.getLhs().getChildren().get(0);
-        assertSame( Object[].class, p.getObjectType().getClassType());
-        LambdaConstraint l0 = (LambdaConstraint) p.getConstraints().get(0);
-        assertSame(p1, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
-
-        LambdaConstraint l1 = (LambdaConstraint) p.getConstraints().get(1);
-        assertSame(p2, ((Predicate1.Impl)l1.getEvaluator().getConstraint().getPredicate1()).getLambda());
-
-        KieSession ksession = kbase.newKieSession();
-
-        List<String> results = new ArrayList<String>();
-        ksession.setGlobal( "results", results );
-
-        ksession.insert( new Person( "Mark", 42 ) );
-
-        ksession.fireAllRules();
-
-        assertEquals("[42:1]",results.toString());
-    }
-
-    @Test
-    public void test2AccRewriteToNested() throws Exception {
-        final Global<List> var_results = D.globalOf( List.class, "defaultpkg", "results" );
-
-        final Variable<Person> var_$p = D.declarationOf( Person.class );
-        Variable<Integer> var_$age = D.declarationOf( Integer.class );
-        Variable<Integer> var_$sumOfAges = D.declarationOf( Integer.class );
-        Variable<Long> var_$countOfPersons = D.declarationOf( Long.class );
-
-        Predicate1<Long> cp =  c -> c > 0;
-
-        Rule rule1 = D.rule( "R1" ).build(
-              D.accumulate(
-                    D.pattern( var_$p ).bind( var_$age, person -> person.getAge(), D.reactOn( "age" ) ),
-                    D.accFunction( org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age ).as( var_$sumOfAges ) ),
-              D.accumulate(
-                    D.pattern( var_$sumOfAges ),
-                    D.accFunction( org.drools.core.base.accumulators.CountAccumulateFunction::new ).as( var_$countOfPersons ) ),
-              // Filter
-              D.pattern( var_$countOfPersons ).expr(cp),
-              // Consequence
-              D.on( var_$countOfPersons, var_results )
-               .execute( (drools, i, results) -> {
-                   Activation activation = (Activation) ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
-                   results.add(i + ":" + activation.getObjectsDeep());
-
-               } ) );
-
-        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
-        KieBase    kbase    = KieBaseBuilder.createKieBaseFromModel(model);
-        RuleImpl   rule     = ( RuleImpl) kbase.getKiePackage("defaultpkg").getRules().toArray()[0];
-        // Should only be a single child
-        assertEquals(1, rule.getLhs().getChildren().size());
-
-        // Check correct result type and the filter was moved up
-        Pattern    p1  = (Pattern) rule.getLhs().getChildren().get(0);
-        assertSame( Long.class, p1.getObjectType().getClassType());
-        LambdaConstraint l0 = (LambdaConstraint) p1.getConstraints().get(0);
-        assertSame(cp, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
-
-        // The second acc was sucessfully nested inside
-        Accumulate acc = (Accumulate) p1.getSource();
-        assertEquals(1, acc.getNestedElements().size());
-        Pattern p2 = (Pattern) acc.getNestedElements().get(0);
-        assertSame( Integer.class, p2.getObjectType().getClassType());
-
-        KieSession ksession = kbase.newKieSession();
-
-        List<String> results = new ArrayList<String>();
-        ksession.setGlobal( "results", results );
-
-        ksession.insert( new Person( "Mark", 42 ) );
-
-        ksession.fireAllRules();
-
-        assertEquals("[1:[1]]",results.toString());
-    }
-
-//    @Test
-//    public void testX() throws Exception {
-//        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
-//
-//        final Variable<String> var_$key = D.declarationOf(String.class);
-//        final Variable<Integer> var_$r   = D.declarationOf(Person.class);
-//        Variable<Integer> var_$age = D.declarationOf(Integer.class);
-//        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
-//        Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
-//
-//        Predicate1<Integer> p1 =  a -> a > 0;
-//        Predicate1<Long> p2 =  c -> c > 0;
-//
-//        Rule rule1 = D.rule("R1").build(
-//              D.accumulate(
-//                    // Patterns
-//                    D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
-//                    D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges),
-//              // Consequence
-//              D.on(var_$sumOfAges, var_$countOfPersons, var_results)
-//               .execute(($ages, $counts, results) -> results.add($ages + ":" + $counts)));
-//
-//        Model      model    = new ModelImpl().addRule(rule1).addGlobal(var_results);
-//        KieBase    kbase    = KieBaseBuilder.createKieBaseFromModel(model);
-//        RuleImpl   rule     = ( RuleImpl) kbase.getKiePackage("defaultpkg").getRules().toArray()[0];
-//
-//        // Ensure there is only a single root child
-//        assertEquals(1, rule.getLhs().getChildren().size());
-//
-//        // The expression must be merged up into the acc pattern
-//        Pattern          p = (Pattern) rule.getLhs().getChildren().get(0);
-//        assertSame( Object[].class, p.getObjectType().getClassType());
-//        LambdaConstraint l0 = (LambdaConstraint) p.getConstraints().get(0);
-//        assertSame(p1, ((Predicate1.Impl)l0.getEvaluator().getConstraint().getPredicate1()).getLambda());
-//
-//        LambdaConstraint l1 = (LambdaConstraint) p.getConstraints().get(1);
-//        assertSame(p2, ((Predicate1.Impl)l1.getEvaluator().getConstraint().getPredicate1()).getLambda());
-//
-//        KieSession ksession = kbase.newKieSession();
-//
-//        List<String> results = new ArrayList<String>();
-//        ksession.setGlobal( "results", results );
-//
-//        ksession.insert( new Person( "Mark", 42 ) );
-//
-//        ksession.fireAllRules();
-//
-//        assertEquals("[42:1]",results.toString());
-//    }
 
     public static class GrandChild {
 

@@ -168,7 +168,6 @@ import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class KiePackagesBuilder {
 
-    private static final ObjectType JAVA_CLASS_OBJECT_TYPE = new ClassObjectType( Object.class );
     private static final ObjectType JAVA_CLASS_ARRAY_TYPE = new ClassObjectType( Object[].class );
 
     private final RuleBaseConfiguration configuration;
@@ -577,19 +576,15 @@ public class KiePackagesBuilder {
             } else if (accumulatePattern.getAccumulateFunctions().length > 0 &&
                        ctx.getPattern(accumulatePattern.getAccumulateFunctions()[0].getResult()) != null) {
                 // Illegal executable model. Cannot have groupby or multi accumulate mapped to a single result object.
-                throw new RuntimeException("Only single accumulate functions, with no group by can optimize the result pattern to be the " +
-                                           "function return value");
+                throw new RuntimeException("Only single accumulate functions, with no group by can optimize the result pattern to be the function return value");
             }
         }
+
         boolean existingPattern = pattern != null;
         if (!existingPattern) {
-            ObjectType type;
-            if (!isGroupBy && accumulatePattern.getAccumulateFunctions().length == 1) {
-                type = new ClassObjectType(accumulatePattern.getAccumulateFunctions()[0].getResult().getType());
-            } else {
-                // groupby or multi function accumulate
-                type = JAVA_CLASS_ARRAY_TYPE;
-            }
+            ObjectType type = !isGroupBy && accumulatePattern.getAccumulateFunctions().length == 1 ?
+                new ClassObjectType(accumulatePattern.getAccumulateFunctions()[0].getResult().getType()) :
+                JAVA_CLASS_ARRAY_TYPE; // groupby or multi function accumulate
             pattern = new Pattern( ctx.getNextPatternIndex(), type );
         }
 
