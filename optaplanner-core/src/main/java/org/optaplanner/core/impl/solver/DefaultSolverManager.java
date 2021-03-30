@@ -46,10 +46,8 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
 
     private final BiConsumer<ProblemId_, Throwable> defaultExceptionHandler;
     private final SolverFactory<Solution_> solverFactory;
-    private final int parallelSolverCount;
     private final ExecutorService solverThreadPool;
-
-    private ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
+    private final ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> problemIdToSolverJobMap;
 
     public DefaultSolverManager(SolverFactory<Solution_> solverFactory,
             SolverManagerConfig solverManagerConfig) {
@@ -57,7 +55,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
                 "Solving failed for problemId ({}).", problemId, throwable);
         this.solverFactory = solverFactory;
         validateSolverFactory();
-        this.parallelSolverCount = solverManagerConfig.resolveParallelSolverCount();
+        int parallelSolverCount = solverManagerConfig.resolveParallelSolverCount();
         solverThreadPool = Executors.newFixedThreadPool(parallelSolverCount);
         problemIdToSolverJobMap = new ConcurrentHashMap<>(parallelSolverCount * 10);
     }
@@ -70,8 +68,15 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
         solverFactory.buildSolver();
     }
 
-    protected ConcurrentMap<Object, DefaultSolverJob<Solution_, ProblemId_>> getProblemIdToSolverJobMap() {
-        return problemIdToSolverJobMap;
+    private ProblemId_ getProblemIdOrThrow(ProblemId_ problemId) {
+        if (problemId != null) {
+            return problemId;
+        }
+        throw new NullPointerException("Invalid problemId (null) given to SolverManager.");
+    }
+
+    private DefaultSolverJob<Solution_, ProblemId_> getSolverJob(ProblemId_ problemId) {
+        return problemIdToSolverJobMap.get(getProblemIdOrThrow(problemId));
     }
 
     @Override
@@ -79,7 +84,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
             Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
-        return solve(problemId, problemFinder, null, finalBestSolutionConsumer, exceptionHandler);
+        return solve(getProblemIdOrThrow(problemId), problemFinder, null, finalBestSolutionConsumer, exceptionHandler);
     }
 
     @Override
@@ -88,7 +93,8 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
             Consumer<? super Solution_> bestSolutionConsumer,
             Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
-        return solve(problemId, problemFinder, bestSolutionConsumer, finalBestSolutionConsumer, exceptionHandler);
+        return solve(getProblemIdOrThrow(problemId), problemFinder, bestSolutionConsumer, finalBestSolutionConsumer,
+                exceptionHandler);
     }
 
     protected SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,
@@ -121,7 +127,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
 
     @Override
     public SolverStatus getSolverStatus(ProblemId_ problemId) {
-        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
         if (solverJob == null) {
             return SolverStatus.NOT_SOLVING;
         }
@@ -154,7 +160,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
 
     @Override
     public void terminateEarly(ProblemId_ problemId) {
-        DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
+        DefaultSolverJob<Solution_, ProblemId_> solverJob = getSolverJob(problemId);
         if (solverJob == null) {
             // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
             LOGGER.debug("Ignoring terminateEarly() call because problemId ({}) is not solving.", problemId);
@@ -166,6 +172,10 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     @Override
     public void close() {
         solverThreadPool.shutdownNow();
+    }
+
+    protected void unregisterSolverJob(ProblemId_ problemId) {
+        problemIdToSolverJobMap.remove(getProblemIdOrThrow(problemId));
     }
 
 }

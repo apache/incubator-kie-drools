@@ -114,7 +114,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     private void solvingTerminated() {
         solverStatusReference.set(SolverStatus.NOT_SOLVING);
-        solverManager.getProblemIdToSolverJobMap().remove(problemId);
+        solverManager.unregisterSolverJob(problemId);
         terminatedLatch.countDown();
     }
 
