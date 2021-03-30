@@ -72,10 +72,10 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {27, 34000, "street", 989.1},
-//                {49, 78000, "carpark", 1301.37},
-//                {57, 72000, "street", 1582.1},
-//                {61, 123000, "carpark", 1836.5699999999997},
-//                {18, 26000, "street", 845.1999999999999},
+                {49, 78000, "carpark", 1301.37},
+                {57, 72000, "street", 1582.1},
+                {61, 123000, "carpark", 1836.5699999999997},
+                {18, 26000, "street", 845.1999999999999}
         });
     }
 
