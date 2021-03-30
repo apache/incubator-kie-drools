@@ -239,7 +239,7 @@ void buildOptaweb(MavenCommand optawebCommand){
 
 void archiveCypressArtifacts() {
     if (!skipIntegrationTests()) {
-        archiveArtifacts(artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false, allowEmptyArchive: false)
+        archiveArtifacts(artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false, allowEmptyArchive: true)
     }
 }
 
