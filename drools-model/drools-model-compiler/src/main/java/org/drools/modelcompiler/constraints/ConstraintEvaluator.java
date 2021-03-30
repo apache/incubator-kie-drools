@@ -67,6 +67,14 @@ public class ConstraintEvaluator {
         this.innerEvaluator = initInnerEvaluator(findPatternAndRequiredDeclaration());
     }
 
+    public SingleConstraint getConstraint() {
+        return constraint;
+    }
+
+    public InnerEvaluator getInnerEvaluator() {
+        return innerEvaluator;
+    }
+
     private InnerEvaluator initInnerEvaluator(Declaration patternDeclaration) {
         if (isTemporal()) {
             setPatternDeclaration( patternDeclaration );
