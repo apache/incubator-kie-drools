@@ -17,6 +17,7 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -42,7 +43,13 @@ public class TaskManagementResource {
     private TaskManagementOperations taskService;
 
     @Inject
-    public TaskManagementResource(Processes processes, ProcessConfig processConfig) {
+    private Processes processes;
+
+    @Inject
+    private ProcessConfig processConfig;
+
+    @PostConstruct
+    private void init() {
         taskService = new TaskManagementService(processes, processConfig);
     }
 
