@@ -14,6 +14,12 @@
       <artifactId>kogito-maven-plugin</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency> <!-- make IT module to depend transitively on all deployments. -->
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-deployment</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -23,8 +29,8 @@
         <configuration>
           <streamLogs>true</streamLogs>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <settingsFile>src/it/settings.xml</settingsFile>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+          <useLocalRepository>true</useLocalRepository>
           <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
           <properties>
             <version.io.quarkus>${version.io.quarkus}</version.io.quarkus>
