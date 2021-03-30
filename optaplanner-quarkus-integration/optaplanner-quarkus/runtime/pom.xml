@@ -30,17 +30,56 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
       <exclusions>
+        <!-- Drools dependencies are replaced with Kogito equivalents. -->
         <exclusion>
-          <!-- Dynamic is not compatible with GraalVM native compilation -->
-          <groupId>org.kie.kogito</groupId>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-internal</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-canonical-model</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-model-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <!--
+            Dynamic is not compatible with GraalVM native compilation.
+            org.kie.kogito:drools-core brings in static.
+          -->
+          <groupId>org.drools</groupId>
           <artifactId>drools-core-dynamic</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <!-- Static replaces dynamic -->
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core-static</artifactId>
+      <artifactId>kogito-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-drools-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>

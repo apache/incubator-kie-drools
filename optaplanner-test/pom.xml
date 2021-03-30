@@ -39,6 +39,10 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
     <dependency>
@@ -63,24 +67,6 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <ignoredUsedUndeclaredDependencies>
-            <!-- We depend on the Kogito project to bring in the Drools API in any way they see fit. -->
-            <dependency>org.kie:*</dependency>
-            <!-- TODO Remove this and declare org.drools dependencies once their versions are managed by kogito-bom. -->
-            <dependency>org.drools:*</dependency>
-          </ignoredUsedUndeclaredDependencies>
-          <ignoredUnusedDeclaredDependencies>
-            <!-- Provides org.kie:* and org.drools:* dependencies. -->
-            <dependency>org.kie.kogito:kogito-api</dependency>
-            <dependency>org.kie.kogito:kogito-drools-model</dependency>
-            <dependency>org.kie.kogito:drools-core</dependency>
-          </ignoredUnusedDeclaredDependencies>
-        </configuration>
       </plugin>
     </plugins>
   </build>

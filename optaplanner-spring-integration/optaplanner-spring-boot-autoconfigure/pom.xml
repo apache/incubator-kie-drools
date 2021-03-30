@@ -51,7 +51,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
 
@@ -129,17 +129,9 @@
           <ignoredUsedUndeclaredDependencies>
             <dependency>org.springframework.boot:spring-boot</dependency>
             <dependency>org.springframework:*</dependency>
-            <!-- We depend on the Kogito project to bring in the Drools API in any way they see fit. -->
-            <dependency>org.kie:*</dependency>
-            <!-- TODO Remove this and declare org.drools dependencies once their versions are managed by kogito-bom. -->
-            <dependency>org.drools:*</dependency>
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
             <dependency>org.springframework.boot:*</dependency>
-            <!-- Provides org.kie:* and org.drools:* dependencies. -->
-            <dependency>org.kie.kogito:kogito-api</dependency>
-            <dependency>org.kie.kogito:kogito-drools-model</dependency>
-            <dependency>org.kie.kogito:drools-core</dependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>

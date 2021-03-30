@@ -23,7 +23,7 @@
     <!-- SNAPSHOT and KIE dependency versions -->
     <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
     <!-- Keep in sync with version.org.kie7 in kogito-runtimes: https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build-parent/pom.xml#L185 -->
-    <version.org.drools>7.52.0.t20210322</version.org.drools>
+    <version.org.kie7>7.52.0.Beta1</version.org.kie7>
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
@@ -82,7 +82,7 @@
     <jacoco.agent.argLine/>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
-    <revapi.oldKieVersion>7.39.0.Final</revapi.oldKieVersion>
+    <revapi.oldKieVersion>${version.org.kie7}</revapi.oldKieVersion>
     <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
@@ -139,11 +139,6 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-drools-model</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
         <artifactId>drools-core</artifactId>
         <version>${version.org.kie.kogito}</version>
         <exclusions>
@@ -151,28 +146,17 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-timer</artifactId>
           </exclusion>
-          <!-- TODO exclude XStream after switching to KieHelper -->
-<!--          <exclusion>-->
-<!--            <groupId>com.thoughtworks.xstream</groupId>-->
-<!--            <artifactId>xstream</artifactId>-->
-<!--          </exclusion>-->
-<!--          <exclusion>-->
-<!--            <groupId>org.kie.soup</groupId>-->
-<!--            <artifactId>kie-soup-xstream</artifactId>-->
-<!--          </exclusion>-->
         </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>drools-compiler</artifactId>
         <version>${version.org.kie.kogito}</version>
-        <exclusions>
-          <!-- TODO exclude XStream after switching to KieHelper -->
-<!--          <exclusion>-->
-<!--            <groupId>com.thoughtworks.xstream</groupId>-->
-<!--            <artifactId>xstream</artifactId>-->
-<!--          </exclusion>-->
-        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-drools-model</artifactId>
+        <version>${version.org.kie.kogito}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -180,19 +164,49 @@
         <version>${version.org.kie.kogito}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-core-static</artifactId>
-        <version>${version.org.kie.kogito}</version>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-api</artifactId>
+        <version>${version.org.kie7}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-internal</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-canonical-model</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-model-compiler</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core-dynamic</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
         <artifactId>drools-decisiontables</artifactId>
-        <version>${version.org.kie.kogito}</version>
+        <version>${version.org.kie7}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-alphanetwork-compiler</artifactId>
-        <version>${version.org.drools}</version>
+        <version>${version.org.kie7}</version>
       </dependency>
 
       <!-- Normal dependencies versions-->
@@ -418,7 +432,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>
-        <version>7.40.0.Final</version>
+        <version>${version.org.kie7}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
