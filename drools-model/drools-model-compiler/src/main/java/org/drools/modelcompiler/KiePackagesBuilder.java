@@ -59,6 +59,7 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.MultiAccumulate;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.PatternSource;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.QueryImpl;
@@ -167,7 +168,7 @@ import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class KiePackagesBuilder {
 
-    private static final ObjectType JAVA_CLASS_OBJECT_TYPE = new ClassObjectType( Object.class );
+    private static final ObjectType JAVA_CLASS_ARRAY_TYPE = new ClassObjectType( Object[].class );
 
     private final RuleBaseConfiguration configuration;
     private final KnowledgeBuilderConfiguration builderConf;
@@ -567,13 +568,24 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement buildAccumulate( RuleContext ctx, GroupElement group, AccumulatePattern accumulatePattern ) {
         Pattern pattern = null;
-        if (accumulatePattern.getAccumulateFunctions().length == 1) {
-            // non groupby with single accumulates can be optimized to directly return the result, rather than place in an array of 1
-            pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getResult() );
+        boolean isGroupBy = accumulatePattern instanceof GroupByPattern;
+        if (accumulatePattern.getAccumulateFunctions() != null) {
+            if (!isGroupBy && accumulatePattern.getAccumulateFunctions().length == 1) {
+                // non groupby with single accumulates can be optimized to directly return the result, rather than place in an array of 1
+                pattern = ctx.getPattern(accumulatePattern.getAccumulateFunctions()[0].getResult());
+            } else if (accumulatePattern.getAccumulateFunctions().length > 0 &&
+                       ctx.getPattern(accumulatePattern.getAccumulateFunctions()[0].getResult()) != null) {
+                // Illegal executable model. Cannot have groupby or multi accumulate mapped to a single result object.
+                throw new RuntimeException("Only single accumulate functions, with no group by can optimize the result pattern to be the function return value");
+            }
         }
+
         boolean existingPattern = pattern != null;
         if (!existingPattern) {
-            pattern = new Pattern( ctx.getNextPatternIndex(), JAVA_CLASS_OBJECT_TYPE );
+            ObjectType type = !isGroupBy && accumulatePattern.getAccumulateFunctions().length == 1 ?
+                new ClassObjectType(accumulatePattern.getAccumulateFunctions()[0].getResult().getType()) :
+                JAVA_CLASS_ARRAY_TYPE; // groupby or multi function accumulate
+            pattern = new Pattern( ctx.getNextPatternIndex(), type );
         }
 
         PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
@@ -982,6 +994,8 @@ public class KiePackagesBuilder {
 
     private Pattern addPatternForVariable( RuleContext ctx, GroupElement group, Variable patternVariable, Condition.Type type ) {
         Pattern pattern = null;
+
+        // If the variable is already bound to the result of previous accumulate result pattern, then find it.
         if ( patternVariable instanceof org.drools.model.Declaration ) {
             org.drools.model.Declaration decl = (org.drools.model.Declaration) patternVariable;
             if ( decl.getSource() == null ) {
@@ -997,6 +1011,19 @@ public class KiePackagesBuilder {
             }
         }
 
+        PatternSource priorSource = null;
+        if ( pattern != null && type == Condition.Type.ACCUMULATE) {
+            // variable was previous bound and now it's being used for the inner pattern of the next accumulate.
+            // if it was a single accumulate, then rewrite to nest. This is to support an OptaPlanner use case.
+            // I have only done this for single (mdp) because the current semantics involve a single binding,
+            // so it would be potentially tricky if this was a multi var, with multiple bindings.
+            if (pattern.getSource() instanceof SingleAccumulate ) {
+                group.getChildren().remove(pattern);
+                priorSource = pattern.getSource();
+                pattern = null;
+            }
+        }
+
         if ( pattern == null) {
             pattern = new Pattern( ctx.getNextPatternIndex(),
                                    0, // tupleIndex will be set by ReteooBuilder
@@ -1004,6 +1031,7 @@ public class KiePackagesBuilder {
                                    getObjectType( patternVariable ),
                                    patternVariable.getName(),
                                    true );
+            pattern.setSource(priorSource);
         }
 
         if ( patternVariable instanceof org.drools.model.Declaration ) {
