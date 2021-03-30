@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestGenKieSessionJournal {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionJournal.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenKieSessionJournal.class);
     private final TestGenKieSessionEventSupport eventSupport = new TestGenKieSessionEventSupport();
     private final HashMap<Object, TestGenFact> existingInstances = new HashMap<>();
     private final List<TestGenFact> facts;
@@ -86,7 +86,7 @@ public class TestGenKieSessionJournal {
     public void addFacts(Collection<Object> workingFacts) {
         int i = 0;
         for (Object instance : workingFacts) {
-            logger.trace("        Working fact added: {}[{}]", instance.getClass().getSimpleName(), instance);
+            LOGGER.trace("        Working fact added: {}[{}]", instance.getClass().getSimpleName(), instance);
             TestGenFact fact = new TestGenValueFact(i++, instance);
             facts.add(fact);
             existingInstances.put(instance, fact);
@@ -133,7 +133,7 @@ public class TestGenKieSessionJournal {
 
     public void fireAllRules() {
         TestGenKieSessionFireAllRules fire = new TestGenKieSessionFireAllRules(operationId++, assertMode);
-        logger.trace("        FIRE ALL RULES ({})", fire);
+        LOGGER.trace("        FIRE ALL RULES ({})", fire);
         updateJournal.add(fire);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class DefaultSolverManager<Solution_, ProblemId_> implements SolverManager<Solution_, ProblemId_> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSolverManager.class);
 
     private final BiConsumer<ProblemId_, Throwable> defaultExceptionHandler;
     private final SolverFactory<Solution_> solverFactory;
@@ -53,7 +53,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
 
     public DefaultSolverManager(SolverFactory<Solution_> solverFactory,
             SolverManagerConfig solverManagerConfig) {
-        defaultExceptionHandler = (problemId, throwable) -> logger.error(
+        defaultExceptionHandler = (problemId, throwable) -> LOGGER.error(
                 "Solving failed for problemId ({}).", problemId, throwable);
         this.solverFactory = solverFactory;
         validateSolverFactory();
@@ -157,7 +157,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
         DefaultSolverJob<Solution_, ProblemId_> solverJob = problemIdToSolverJobMap.get(problemId);
         if (solverJob == null) {
             // We cannot distinguish between "already terminated" and "never solved" without causing a memory leak.
-            logger.debug("Ignoring terminateEarly() call because problemId ({}) is not solving.", problemId);
+            LOGGER.debug("Ignoring terminateEarly() call because problemId ({}) is not solving.", problemId);
             return;
         }
         solverJob.terminateEarly();

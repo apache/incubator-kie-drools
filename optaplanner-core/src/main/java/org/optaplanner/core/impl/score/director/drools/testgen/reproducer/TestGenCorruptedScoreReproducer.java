@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemReproducer, TestGenKieSessionListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
     private final String analysis;
     private final TestGenDroolsScoreDirector<?, ?> scoreDirector;
 
@@ -67,12 +67,12 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
         } catch (RuntimeException e) {
             if (e.getMessage() != null && e.getMessage().startsWith("No fact handle for ")) {
                 // this is common when removing insert of a fact that is later updated - not interesting
-                logger.debug("    Can't remove insert: {}", e.toString());
+                LOGGER.debug("    Can't remove insert: {}", e.toString());
             } else if (e.getMessage() != null && e.getMessage().startsWith("Error evaluating constraint '")) {
                 // this is common after pruning setup code, which can lead to NPE during rule evaluation
-                logger.debug("    Can't drop field setup: {}", e.toString());
+                LOGGER.debug("    Can't drop field setup: {}", e.toString());
             } else {
-                logger.info("Unexpected exception", e);
+                LOGGER.info("Unexpected exception", e);
             }
             return false;
         }
@@ -91,7 +91,7 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
         Score<?> uncorruptedScore = extractScore(uncorruptedSession);
         Score<?> workingScore = extractScore(kieSession);
         if (!workingScore.equals(uncorruptedScore)) {
-            logger.debug("    Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
+            LOGGER.debug("    Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
             throw new TestGenCorruptedScoreException(workingScore, uncorruptedScore);
         }
     }

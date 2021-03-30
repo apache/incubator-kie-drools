@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class BenchmarkAggregator {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkAggregator.class);
 
     private File benchmarkDirectory = null;
     private BenchmarkReportConfig benchmarkReportConfig = null;
@@ -108,7 +108,7 @@ public class BenchmarkAggregator {
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
         benchmarkReport.writeReport();
 
-        logger.info("Aggregation ended: statistic html overview ({}).",
+        LOGGER.info("Aggregation ended: statistic html overview ({}).",
                 benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         return benchmarkReport.getHtmlOverviewFile().getAbsoluteFile();
     }

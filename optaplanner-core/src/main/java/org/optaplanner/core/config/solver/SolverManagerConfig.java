@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
 
     public static final String PARALLEL_SOLVER_COUNT_AUTO = "AUTO";
 
-    private static final Logger logger = LoggerFactory.getLogger(SolverManagerConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SolverManagerConfig.class);
 
     protected String parallelSolverCount = null;
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
@@ -98,7 +98,7 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
                     + ") that is lower than 1.");
         }
         if (resolvedParallelSolverCount > availableProcessorCount) {
-            logger.warn("The resolvedParallelSolverCount ({}) is higher "
+            LOGGER.warn("The resolvedParallelSolverCount ({}) is higher "
                     + "than the availableProcessorCount ({}), which is counter-efficient.",
                     resolvedParallelSolverCount, availableProcessorCount);
             // Still allow it, to reproduce issues of a high-end server machine on a low-end developer machine

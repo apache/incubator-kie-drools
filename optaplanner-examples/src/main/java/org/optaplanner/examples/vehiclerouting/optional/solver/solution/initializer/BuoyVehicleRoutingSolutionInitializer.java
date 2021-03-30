@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 // TODO PLANNER-380 Delete this class. Temporary implementation until BUOY_FIT is implemented as a Construction Heuristic
 public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand<VehicleRoutingSolution> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BuoyVehicleRoutingSolutionInitializer.class);
 
     @Override
     public void changeWorkingSolution(ScoreDirector<VehicleRoutingSolution> scoreDirector) {
@@ -47,21 +47,18 @@ public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand
         List<Standstill> standstillList = new ArrayList<>(vehicleList.size() + customerList.size());
         standstillList.addAll(vehicleList);
         standstillList.addAll(customerList);
-        logger.info("Starting sorting");
+        LOGGER.info("Starting sorting");
         Map<Standstill, Customer[]> nearbyMap = new HashMap<>(standstillList.size());
         for (final Standstill origin : standstillList) {
             Customer[] nearbyCustomers = customerList.toArray(new Customer[0]);
-            Arrays.sort(nearbyCustomers, new Comparator<Standstill>() {
-                @Override
-                public int compare(Standstill a, Standstill b) {
-                    double aDistance = origin.getLocation().getDistanceTo(a.getLocation());
-                    double bDistance = origin.getLocation().getDistanceTo(b.getLocation());
-                    return Double.compare(aDistance, bDistance);
-                }
+            Arrays.sort(nearbyCustomers, (Comparator<Standstill>) (a, b) -> {
+                double aDistance = origin.getLocation().getDistanceTo(a.getLocation());
+                double bDistance = origin.getLocation().getDistanceTo(b.getLocation());
+                return Double.compare(aDistance, bDistance);
             });
             nearbyMap.put(origin, nearbyCustomers);
         }
-        logger.info("Done sorting");
+        LOGGER.info("Done sorting");
 
         List<Standstill> buoyList = new ArrayList<>(vehicleList);
 
@@ -107,7 +104,7 @@ public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand
             stepEntity.setPreviousStandstill(stepValue);
             scoreDirector.afterVariableChanged(stepEntity, "previousStandstill");
             scoreDirector.triggerVariableListeners();
-            logger.debug("    Score ({}), assigned customer ({}) to stepValue ({}).", stepScore, stepEntity, stepValue);
+            LOGGER.debug("    Score ({}), assigned customer ({}) to stepValue ({}).", stepScore, stepEntity, stepValue);
         }
     }
 

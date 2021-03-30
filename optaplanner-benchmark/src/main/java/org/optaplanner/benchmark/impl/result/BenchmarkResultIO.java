@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class BenchmarkResultIO {
     private static final String SOLVER_CONFIG_XML_ELEMENT_NAME = "solverConfig";
     private static final String PLANNER_BENCHMARK_RESULT_FILENAME = "plannerBenchmarkResult.xml";
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkResultIO.class);
 
     private final GenericJaxbIO<PlannerBenchmarkResult> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkResult.class);
 
@@ -92,7 +92,7 @@ public class BenchmarkResultIO {
         try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), StandardCharsets.UTF_8)) {
             plannerBenchmarkResult = read(reader);
         } catch (OptaPlannerXmlSerializationException e) {
-            logger.warn("Failed reading plannerBenchmarkResultFile ({}).", plannerBenchmarkResultFile, e);
+            LOGGER.warn("Failed reading plannerBenchmarkResultFile ({}).", plannerBenchmarkResultFile, e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(

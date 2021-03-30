@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implements Runnable {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MoveThreadRunner.class);
 
     private final String logIndentation;
     private final int moveThreadIndex;
@@ -89,7 +89,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                             .createChildThreadScoreDirector(ChildThreadType.MOVE_THREAD);
                     stepIndex = 0;
                     lastStepScore = scoreDirector.calculateScore();
-                    logger.trace("{}            Move thread ({}) setup: step index ({}), score ({}).",
+                    LOGGER.trace("{}            Move thread ({}) setup: step index ({}), score ({}).",
                             logIndentation, moveThreadIndex, stepIndex, lastStepScore);
                     try {
                         // Don't consume another operation until every moveThread took this SetupOperation
@@ -99,7 +99,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                         break;
                     }
                 } else if (operation instanceof DestroyOperation) {
-                    logger.trace("{}            Move thread ({}) destroy: step index ({}).",
+                    LOGGER.trace("{}            Move thread ({}) destroy: step index ({}).",
                             logIndentation, moveThreadIndex, stepIndex);
                     calculationCount.set(scoreDirector.getCalculationCount());
                     break;
@@ -120,7 +120,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                     step.doMove(scoreDirector);
                     predictWorkingStepScore(step, score);
                     lastStepScore = score;
-                    logger.trace("{}            Move thread ({}) step: step index ({}), score ({}).",
+                    LOGGER.trace("{}            Move thread ({}) step: step index ({}), score ({}).",
                             logIndentation, moveThreadIndex, stepIndex, lastStepScore);
                     try {
                         // Don't consume an MoveEvaluationOperation until every moveThread took this ApplyStepOperation
@@ -140,7 +140,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                     }
                     Move<Solution_> move = moveEvaluationOperation.getMove().rebase(scoreDirector);
                     if (evaluateDoable && !move.isMoveDoable(scoreDirector)) {
-                        logger.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), not doable.",
+                        LOGGER.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), not doable.",
                                 logIndentation, moveThreadIndex, stepIndex, moveIndex);
                         resultQueue.addUndoableMove(moveThreadIndex, stepIndex, moveIndex, move);
                     } else {
@@ -148,7 +148,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                         if (assertExpectedUndoMoveScore) {
                             scoreDirector.assertExpectedUndoMoveScore(move, lastStepScore);
                         }
-                        logger.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), score ({}).",
+                        LOGGER.trace("{}            Move thread ({}) evaluation: step index ({}), move index ({}), score ({}).",
                                 logIndentation, moveThreadIndex, stepIndex, moveIndex, score);
                         // Deliberately add to fail fast if there is not enough capacity (which is impossible)
                         resultQueue.addMove(moveThreadIndex, stepIndex, moveIndex, move, score);
@@ -158,11 +158,11 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
                 }
                 // TODO checkYielding();
             }
-            logger.trace("{}            Move thread ({}) finished.", logIndentation, moveThreadIndex);
+            LOGGER.trace("{}            Move thread ({}) finished.", logIndentation, moveThreadIndex);
         } catch (RuntimeException | Error throwable) {
             // Any Exception or even Error that happens here (on a move thread) must be stored
             // in the resultQueue in order to be propagated to the solver thread.
-            logger.trace("{}            Move thread ({}) exception that will be propagated to the solver thread.",
+            LOGGER.trace("{}            Move thread ({}) exception that will be propagated to the solver thread.",
                     logIndentation, moveThreadIndex, throwable);
             resultQueue.addExceptionThrown(moveThreadIndex, throwable);
         } finally {
@@ -194,7 +194,7 @@ public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implement
     public long getCalculationCount() {
         long calculationCount = this.calculationCount.get();
         if (calculationCount == -1L) {
-            logger.info("{}Score calculation speed will be too low"
+            LOGGER.info("{}Score calculation speed will be too low"
                     + " because move thread ({})'s destroy wasn't processed soon enough.", logIndentation, moveThreadIndex);
             return 0L;
         }

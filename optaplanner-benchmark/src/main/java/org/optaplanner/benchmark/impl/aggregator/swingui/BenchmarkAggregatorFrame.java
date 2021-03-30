@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,8 +77,6 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BenchmarkAggregatorFrame extends JFrame {
 
@@ -128,8 +126,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
         benchmarkAggregatorFrame.init();
         benchmarkAggregatorFrame.setVisible(true);
     }
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final BenchmarkAggregator benchmarkAggregator;
     private final BenchmarkResultIO benchmarkResultIO;

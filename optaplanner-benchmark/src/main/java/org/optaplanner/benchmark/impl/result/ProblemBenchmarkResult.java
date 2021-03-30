@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProblemBenchmarkResult<Solution_> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProblemBenchmarkResult.class);
 
     @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private PlannerBenchmarkResult plannerBenchmarkResult;
@@ -439,7 +439,7 @@ public class ProblemBenchmarkResult<Solution_> {
         if (entityCount == null) {
             entityCount = registeringEntityCount;
         } else if (entityCount.longValue() != registeringEntityCount) {
-            logger.warn("The problemBenchmarkResult ({}) has different entityCount values ([{},{}]).\n"
+            LOGGER.warn("The problemBenchmarkResult ({}) has different entityCount values ([{},{}]).\n"
                     + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), entityCount, registeringEntityCount);
             // The entityCount is not unknown (null), but known to be ambiguous
@@ -448,7 +448,7 @@ public class ProblemBenchmarkResult<Solution_> {
         if (variableCount == null) {
             variableCount = registeringVariableCount;
         } else if (variableCount.longValue() != registeringVariableCount) {
-            logger.warn("The problemBenchmarkResult ({}) has different variableCount values ([{},{}]).\n"
+            LOGGER.warn("The problemBenchmarkResult ({}) has different variableCount values ([{},{}]).\n"
                     + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), variableCount, registeringVariableCount);
             // The variableCount is not unknown (null), but known to be ambiguous
@@ -457,7 +457,7 @@ public class ProblemBenchmarkResult<Solution_> {
         if (maximumValueCount == null) {
             maximumValueCount = registeringMaximumValueCount;
         } else if (maximumValueCount.longValue() != registeringMaximumValueCount) {
-            logger.warn("The problemBenchmarkResult ({}) has different maximumValueCount values ([{},{}]).\n"
+            LOGGER.warn("The problemBenchmarkResult ({}) has different maximumValueCount values ([{},{}]).\n"
                     + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), maximumValueCount, registeringMaximumValueCount);
             // The maximumValueCount is not unknown (null), but known to be ambiguous
@@ -466,7 +466,7 @@ public class ProblemBenchmarkResult<Solution_> {
         if (problemScale == null) {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
-            logger.warn("The problemBenchmarkResult ({}) has different problemScale values ([{},{}]).\n"
+            LOGGER.warn("The problemBenchmarkResult ({}) has different problemScale values ([{},{}]).\n"
                     + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), problemScale, registeringProblemScale);
             // The problemScale is not unknown (null), but known to be ambiguous

@@ -36,7 +36,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
 
     public static final String NAME_MDC = "subSingleBenchmark.name";
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubSingleBenchmarkRunner.class);
 
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
     private final boolean warmUp;
@@ -84,7 +84,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             runtime.gc();
             subSingleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
         }
-        logger.trace("Benchmark problem has been read for subSingleBenchmarkResult ({}).",
+        LOGGER.trace("Benchmark problem has been read for subSingleBenchmarkResult ({}).",
                 subSingleBenchmarkResult);
 
         SolverConfig solverConfig = singleBenchmarkResult.getSolverBenchmarkResult()

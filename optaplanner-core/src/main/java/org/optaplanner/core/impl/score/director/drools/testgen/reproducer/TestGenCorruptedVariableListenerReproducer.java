@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
         TestGenOriginalProblemReproducer,
         TestGenKieSessionListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedVariableListenerReproducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenCorruptedVariableListenerReproducer.class);
     private final String analysis;
     private final TestGenDroolsScoreDirector<?, ?> scoreDirector;
     private Score<?> lastWorkingScore;
@@ -70,17 +70,17 @@ public class TestGenCorruptedVariableListenerReproducer implements
         } catch (TestGenCorruptedScoreException e) {
             return true;
         } catch (ConsequenceException e) {
-            logger.debug("    Journal pruning not possible: {}", e.toString());
+            LOGGER.debug("    Journal pruning not possible: {}", e.toString());
             return false;
         } catch (RuntimeException e) {
             if (e.getMessage() != null && e.getMessage().startsWith("No fact handle for ")) {
                 // this is common when removing insert of a fact that is later updated - not interesting
-                logger.debug("    Can't remove insert: {}", e.toString());
+                LOGGER.debug("    Can't remove insert: {}", e.toString());
             } else if (e.getMessage() != null && e.getMessage().startsWith("Error evaluating constraint '")) {
                 // this is common after pruning setup code, which can lead to NPE during rule evaluation
-                logger.debug("    Can't drop field setup: {}", e.toString());
+                LOGGER.debug("    Can't drop field setup: {}", e.toString());
             } else {
-                logger.info("Unexpected exception", e);
+                LOGGER.info("Unexpected exception", e);
             }
             return false;
         }
@@ -91,7 +91,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
             TestGenKieSessionFireAllRules fire) {
         Score<?> workingScore = extractScore(kieSession);
         if (fire.isAssertFire()) {
-            logger.debug("    [Assert mode] Score: working[{}], uncorrupted[{}] ({})",
+            LOGGER.debug("    [Assert mode] Score: working[{}], uncorrupted[{}] ({})",
                     workingScore, lastWorkingScore, fire);
             // if this assertion fire's score is different from the previous fire it means that a shadow variable
             // update was corrupted
@@ -100,7 +100,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
                 throw new TestGenCorruptedScoreException(workingScore, lastWorkingScore);
             }
         } else {
-            logger.debug("      Score: {} ({})", workingScore, fire);
+            LOGGER.debug("      Score: {} ({})", workingScore, fire);
         }
         lastWorkingScore = workingScore;
         lastFireId = fire.getFireId();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestdataFaultyEntity extends TestdataEntity {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestdataFaultyEntity.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestdataFaultyEntity.class);
 
     public TestdataFaultyEntity() {
     }
@@ -35,7 +35,7 @@ public class TestdataFaultyEntity extends TestdataEntity {
     public void setValue(TestdataValue value) {
         super.setValue(value);
         if (Thread.currentThread().getName().matches("OptaPool-\\d+-PartThread-\\d+")) {
-            logger.info("Throwing exception on a partition thread.");
+            LOGGER.info("Throwing exception on a partition thread.");
             throw new TestException();
         }
     }

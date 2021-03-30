@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ import freemarker.template.TemplateException;
 
 public class BenchmarkReport {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkReport.class);
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 15;
     public static final int LOG_SCALE_MIN_DATASETS_COUNT = 5;
@@ -238,7 +238,7 @@ public class BenchmarkReport {
     // ************************************************************************
 
     public void writeReport() {
-        logger.info("Generating benchmark report...");
+        LOGGER.info("Generating benchmark report...");
         summaryDirectory = new File(plannerBenchmarkResult.getBenchmarkReportDirectory(), "summary");
         summaryDirectory.mkdir();
         plannerBenchmarkResult.accumulateResults(this);
@@ -271,7 +271,7 @@ public class BenchmarkReport {
                                         + subSingleStatistic + ") of SubSingleBenchmark (" + subSingleBenchmarkResult + ").",
                                         e);
                             }
-                            logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
+                            LOGGER.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
                                     + "({}) of sub single statistic ({}).", subSingleStatistic.getCsvFile().getAbsolutePath(),
                                     subSingleStatistic);
                         }

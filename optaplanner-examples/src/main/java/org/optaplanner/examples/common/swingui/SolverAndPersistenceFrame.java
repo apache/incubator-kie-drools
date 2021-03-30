@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,15 +65,11 @@ import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.swing.impl.TangoColorFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolverAndPersistenceFrame<Solution_> extends JFrame {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));

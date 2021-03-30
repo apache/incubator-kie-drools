@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class ThreadUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(ThreadUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThreadUtils.class);
 
     public static void shutdownAwaitOrKill(ExecutorService executor, String logIndentation, String name) {
         // Intentionally clearing the interrupted flag so that awaitTermination() in step 3 works.
@@ -46,7 +46,7 @@ public class ThreadUtils {
                 // Some solvers refused to complete. Busy threads will be interrupted in the finally block.
                 // We're only logging the error instead throwing an exception to prevent eating the original
                 // exception.
-                logger.error(
+                LOGGER.error(
                         "{}{}'s ExecutorService didn't terminate within timeout ({} seconds).",
                         logIndentation, name,
                         awaitingSeconds);

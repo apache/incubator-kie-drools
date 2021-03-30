@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SubSingleBenchmarkResult implements BenchmarkResult {
 
-    private static final Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 
     @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private SingleBenchmarkResult singleBenchmarkResult;
@@ -288,7 +288,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.hasAnyFailure()) {
                     newSubSingleStatistic.initPointList();
-                    logger.debug("Old result ({}) is a failure, skipping merge of its sub single statistic ({}).",
+                    LOGGER.debug("Old result ({}) is a failure, skipping merge of its sub single statistic ({}).",
                             oldResult, oldSubSingleStatistic);
                     continue;
                 } else {

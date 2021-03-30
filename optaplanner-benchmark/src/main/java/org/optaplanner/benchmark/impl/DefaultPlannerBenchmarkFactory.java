@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
     public static final Pattern VALID_NAME_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPlannerBenchmarkFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlannerBenchmarkFactory.class);
 
     protected final PlannerBenchmarkConfig plannerBenchmarkConfig;
 
@@ -201,7 +201,7 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
                             + ") that is lower than 1.");
         }
         if (resolvedParallelBenchmarkCount > availableProcessorCount) {
-            logger.warn("Because the resolvedParallelBenchmarkCount ({}) is higher "
+            LOGGER.warn("Because the resolvedParallelBenchmarkCount ({}) is higher "
                     + "than the availableProcessorCount ({}), it is reduced to "
                     + "availableProcessorCount.", resolvedParallelBenchmarkCount, availableProcessorCount);
             resolvedParallelBenchmarkCount = availableProcessorCount;

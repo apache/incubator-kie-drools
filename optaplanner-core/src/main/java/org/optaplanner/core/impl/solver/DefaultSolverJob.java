@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_>, Callable<Solution_> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSolverJob.class);
 
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
     private final DefaultSolver<Solution_> solver;
@@ -153,7 +153,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             terminatedLatch.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.warn("The terminateEarly() call is interrupted.", e);
+            LOGGER.warn("The terminateEarly() call is interrupted.", e);
         }
     }
 

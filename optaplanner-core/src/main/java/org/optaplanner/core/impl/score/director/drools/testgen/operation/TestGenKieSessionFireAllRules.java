@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionFireAllRules.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenKieSessionFireAllRules.class);
     private static int fireCounter = 0;
     private final int fireId;
     private final int id;
@@ -43,7 +43,7 @@ public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation
 
     @Override
     public void invoke(KieSession kieSession) {
-        logger.trace("        [{}] FIRE ALL RULES", id);
+        LOGGER.trace("        [{}] FIRE ALL RULES", id);
         kieSession.fireAllRules();
     }
 

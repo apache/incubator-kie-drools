@@ -109,6 +109,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SolutionDescriptor<Solution_> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SolutionDescriptor.class);
+
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             Class<?>... entityClasses) {
         return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses));
@@ -165,8 +167,6 @@ public class SolutionDescriptor<Solution_> {
     // Non-static members
     // ************************************************************************
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
     private final Class<Solution_> solutionClass;
     private SolutionCloner<Solution_> solutionCloner;
 
@@ -203,7 +203,7 @@ public class SolutionDescriptor<Solution_> {
         reversedEntityClassList = new ArrayList<>();
         domainAccessType = DomainAccessType.REFLECTION;
         if (solutionClass.getPackage() == null) {
-            logger.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
+            LOGGER.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
         }
     }
 
@@ -696,13 +696,13 @@ public class SolutionDescriptor<Solution_> {
         }
         problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(toSet());
         // And finally log the successful completion of processing.
-        if (logger.isTraceEnabled()) {
-            logger.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
             for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
                 EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
-                logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
+                LOGGER.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
                 for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
-                    logger.trace("            {} variable {} ({})",
+                    LOGGER.trace("            {} variable {} ({})",
                             variableDescriptor instanceof GenuineVariableDescriptor ? "Genuine" : "Shadow",
                             variableDescriptor.getVariableName(),
                             variableDescriptor.getMemberAccessorSpeedNote());

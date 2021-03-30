@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Because N Queens is not NP-complete or NP-hard, it can be cheated.
@@ -34,8 +32,6 @@ import org.slf4j.LoggerFactory;
  * (<a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">explicit solutions algorithm</a>).
  */
 public class CheatingNQueensPhaseCommand implements CustomPhaseCommand<NQueens> {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void changeWorkingSolution(ScoreDirector<NQueens> scoreDirector) {

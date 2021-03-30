@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 class TestGenTestWriter {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenTestWriter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenTestWriter.class);
     private StringBuilder sb;
     private TestGenKieSessionJournal journal;
     private String className;
@@ -188,18 +188,18 @@ class TestGenTestWriter {
         File parent = file.getAbsoluteFile().getParentFile();
         if (!parent.exists()) {
             if (!parent.mkdirs()) {
-                logger.warn("Couldn't create directory: {}", parent);
+                LOGGER.warn("Couldn't create directory: {}", parent);
             }
         }
         try (FileOutputStream fos = new FileOutputStream(file);
                 OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8.name())) {
             osw.append(sb);
         } catch (FileNotFoundException e) {
-            logger.error("Failed to open test file ({}).", file, e);
+            LOGGER.error("Failed to open test file ({}).", file, e);
         } catch (UnsupportedEncodingException e) {
-            logger.error("Failed to open writer.", e);
+            LOGGER.error("Failed to open writer.", e);
         } catch (IOException e) {
-            logger.error("Failed to write test file ({}).", file, e);
+            LOGGER.error("Failed to write test file ({}).", file, e);
         }
     }
 

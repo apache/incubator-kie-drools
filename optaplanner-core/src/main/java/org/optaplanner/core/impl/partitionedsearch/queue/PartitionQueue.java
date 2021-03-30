@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<Solution_>> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PartitionQueue.class);
 
     private BlockingQueue<PartitionChangedEvent<Solution_>> queue;
     private Map<Integer, PartitionChangedEvent<Solution_>> moveEventMap; // Key is partIndex
@@ -140,7 +140,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
                         long processedEventIndex = processedEventIndexMap.get(partIndex);
                         if (triggerEvent.getEventIndex() <= processedEventIndex) {
                             // Skip this one because it or a better version was already processed
-                            logger.trace("    Skipped event of partIndex ({}).", partIndex);
+                            LOGGER.trace("    Skipped event of partIndex ({}).", partIndex);
                             continue;
                         }
                         PartitionChangedEvent<Solution_> latestMoveEvent = moveEventMap.get(partIndex);

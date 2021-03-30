@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,6 @@ import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatis
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.scorecalculationspeed.ScoreCalculationSpeedProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 1 statistic of {@link ProblemBenchmarkResult}.
@@ -55,8 +53,6 @@ import org.slf4j.LoggerFactory;
         MemoryUseProblemStatistic.class
 })
 public abstract class ProblemStatistic {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     protected ProblemBenchmarkResult<Object> problemBenchmarkResult;

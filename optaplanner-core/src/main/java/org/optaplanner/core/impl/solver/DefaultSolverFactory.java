@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solution_> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSolverFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSolverFactory.class);
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
     private final SolverConfig solverConfig;
@@ -201,7 +201,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                         + ") that is lower than 1.");
             }
             if (resolvedMoveThreadCount > availableProcessorCount) {
-                logger.warn("The resolvedMoveThreadCount ({}) is higher "
+                LOGGER.warn("The resolvedMoveThreadCount ({}) is higher "
                         + "than the availableProcessorCount ({}), which is counter-efficient.",
                         resolvedMoveThreadCount, availableProcessorCount);
                 // Still allow it, to reproduce issues of a high-end server machine on a low-end developer machine

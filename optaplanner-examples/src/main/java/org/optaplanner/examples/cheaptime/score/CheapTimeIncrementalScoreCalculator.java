@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,16 +36,12 @@ import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CheapTimeIncrementalScoreCalculator
         implements ConstraintMatchAwareIncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore>,
         IncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
 
     protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.cheaptime.solver";
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private CheapTimeSolution cheapTimeSolution;
 

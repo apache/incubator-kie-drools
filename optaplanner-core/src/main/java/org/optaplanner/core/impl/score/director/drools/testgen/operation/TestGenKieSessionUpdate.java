@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionUpdate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenKieSessionUpdate.class);
     private final int id;
     private final TestGenFact entity;
     private final String variableName;
@@ -66,8 +66,8 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
     @Override
     public void invoke(KieSession kieSession) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("        [{}] {}.{}: {} → {}",
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("        [{}] {}.{}: {} → {}",
                     id,
                     entity.getInstance(),
                     accessor.getName(),

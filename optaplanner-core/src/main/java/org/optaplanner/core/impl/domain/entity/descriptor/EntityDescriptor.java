@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class EntityDescriptor<Solution_> {
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
             CustomShadowVariable.class };
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityDescriptor.class);
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -109,7 +109,7 @@ public class EntityDescriptor<Solution_> {
         this.entityClass = entityClass;
         isInitializedPredicate = this::isInitialized;
         if (entityClass.getPackage() == null) {
-            logger.warn("The entityClass ({}) should be in a proper java package.", entityClass);
+            LOGGER.warn("The entityClass ({}) should be in a proper java package.", entityClass);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class PartitionQueueTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PartitionQueueTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PartitionQueueTest.class);
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
@@ -42,7 +42,7 @@ public class PartitionQueueTest {
     public void tearDown() throws InterruptedException {
         executorService.shutdownNow();
         if (!executorService.awaitTermination(1, TimeUnit.MILLISECONDS)) {
-            logger.warn("Thread pool didn't terminate within the timeout.");
+            LOGGER.warn("Thread pool didn't terminate within the timeout.");
         }
     }
 

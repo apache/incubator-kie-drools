@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Remembers the {@link PlanningSolution best solution} that a {@link Solver} encounters.
@@ -34,8 +32,6 @@ import org.slf4j.LoggerFactory;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter<Solution_> {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected boolean assertInitialScoreFromScratch = false;
     protected boolean assertShadowVariablesAreNotStale = false;

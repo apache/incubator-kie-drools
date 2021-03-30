@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemReproducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenDroolsExceptionReproducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestGenDroolsExceptionReproducer.class);
     private final RuntimeException originalException;
     private final TestGenDroolsScoreDirector<?, ?> scoreDirector;
 
@@ -49,13 +49,13 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
                 if (reproducedException.getMessage() != null
                         && reproducedException.getMessage().startsWith("No fact handle for ")) {
                     // this is common when removing insert of a fact that is later updated - not interesting
-                    logger.debug("    Can't remove insert: {}", reproducedException.toString());
+                    LOGGER.debug("    Can't remove insert: {}", reproducedException.toString());
                 } else if (reproducedException.getMessage() != null
                         && reproducedException.getMessage().startsWith("Error evaluating constraint '")) {
                     // this is common after pruning setup code, which can lead to NPE during rule evaluation
-                    logger.debug("    Can't drop field setup: {}", reproducedException.toString());
+                    LOGGER.debug("    Can't drop field setup: {}", reproducedException.toString());
                 } else {
-                    logger.info("Unexpected exception", reproducedException);
+                    LOGGER.info("Unexpected exception", reproducedException);
                 }
                 return false;
             }

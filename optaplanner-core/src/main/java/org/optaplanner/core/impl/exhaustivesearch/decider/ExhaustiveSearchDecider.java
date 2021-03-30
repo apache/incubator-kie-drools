@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhaseLifecycleListener<Solution_> {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExhaustiveSearchDecider.class);
 
     protected final String logIndentation;
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
@@ -157,7 +157,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
                 scoreDirector.assertExpectedUndoMoveScore(move, (Score_) stepScope.getStartingStepScore());
             }
         }
-        logger.trace("{}        Move treeId ({}), score ({}), expandable ({}), move ({}).",
+        LOGGER.trace("{}        Move treeId ({}), score ({}), expandable ({}), move ({}).",
                 logIndentation,
                 moveNode.getTreeId(), moveNode.getScore(), moveNode.isExpandable(), moveNode.getMove());
     }

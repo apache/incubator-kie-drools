@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-    protected final transient Logger singleBenchmarkRunnerExceptionLogger = LoggerFactory.getLogger(
-            getClass().getName() + ".singleBenchmarkRunnerException");
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlannerBenchmark.class);
+    private static final Logger SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER =
+            LoggerFactory.getLogger(DefaultPlannerBenchmark.class + ".singleBenchmarkRunnerException");
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
 
@@ -113,7 +113,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         initBenchmarkDirectoryAndSubdirectories();
         plannerBenchmarkResult.initSystemProperties();
-        logger.info("Benchmarking started: parallelBenchmarkCount ({})"
+        LOGGER.info("Benchmarking started: parallelBenchmarkCount ({})"
                 + " for problemCount ({}), solverCount ({}), totalSubSingleCount ({}).",
                 plannerBenchmarkResult.getParallelBenchmarkCount(),
                 plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size(),
@@ -134,9 +134,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         if (plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit() <= 0L) {
             return;
         }
-        logger.info("================================================================================");
-        logger.info("Warm up started");
-        logger.info("================================================================================");
+        LOGGER.info("================================================================================");
+        LOGGER.info("Warm up started");
+        LOGGER.info("================================================================================");
         long timeLeftTotal = plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit();
         int parallelBenchmarkCount = plannerBenchmarkResult.getParallelBenchmarkCount();
         int solverBenchmarkResultCount = plannerBenchmarkResult.getSolverBenchmarkResultList().size();
@@ -169,9 +169,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalStateException("Impossible state: notFinishedWarmUpList (" + notFinishedWarmUpList
                     + ") is not empty.");
         }
-        logger.info("================================================================================");
-        logger.info("Warm up ended");
-        logger.info("================================================================================");
+        LOGGER.info("================================================================================");
+        LOGGER.info("Warm up ended");
+        LOGGER.info("================================================================================");
     }
 
     private void warmUpPopulate(Map<Future<SubSingleBenchmarkRunner>, SubSingleBenchmarkRunner> futureMap,
@@ -222,14 +222,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 subSingleBenchmarkRunner = futureMap.get(future);
-                singleBenchmarkRunnerExceptionLogger.error(
+                SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER.error(
                         "The warm up singleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 subSingleBenchmarkRunner = futureMap.get(future);
-                singleBenchmarkRunnerExceptionLogger.warn(
+                SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER.warn(
                         "The warm up singleBenchmarkRunner ({}) with random seed ({}) failed.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), cause);
                 failureThrowable = cause;
@@ -276,13 +276,13 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 subSingleBenchmarkRunner = future.get();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                singleBenchmarkRunnerExceptionLogger.error(
+                SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER.error(
                         "The subSingleBenchmarkRunner ({}) with random seed ({}) was interrupted.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
-                singleBenchmarkRunnerExceptionLogger.warn("The subSingleBenchmarkRunner ({}) with random seed ({}) failed.",
+                SINGLE_BENCHMARK_RUNNER_EXCEPTION_LOGGER.warn("The subSingleBenchmarkRunner ({}) with random seed ({}) failed.",
                         subSingleBenchmarkRunner, subSingleBenchmarkRunner.getRandomSeed(), cause);
                 failureThrowable = cause;
             }
@@ -309,12 +309,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 plannerBenchmarkResult);
         benchmarkReport.writeReport();
         if (plannerBenchmarkResult.getFailureCount() == 0) {
-            logger.info("Benchmarking ended: time spent ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
+            LOGGER.info("Benchmarking ended: time spent ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
                     plannerBenchmarkResult.getBenchmarkTimeMillisSpent(),
                     plannerBenchmarkResult.getFavoriteSolverBenchmarkResult().getName(),
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         } else {
-            logger.info("Benchmarking failed: time spent ({}), failureCount ({}), statistic html overview ({}).",
+            LOGGER.info("Benchmarking failed: time spent ({}), failureCount ({}), statistic html overview ({}).",
                     plannerBenchmarkResult.getBenchmarkTimeMillisSpent(),
                     plannerBenchmarkResult.getFailureCount(),
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
@@ -428,7 +428,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         File htmlOverviewFile = benchmarkReport.getHtmlOverviewFile();
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop == null || !desktop.isSupported(Desktop.Action.BROWSE)) {
-            logger.warn("The default browser can't be opened to show htmlOverviewFile ({}).", htmlOverviewFile);
+            LOGGER.warn("The default browser can't be opened to show htmlOverviewFile ({}).", htmlOverviewFile);
             return;
         }
         try {
