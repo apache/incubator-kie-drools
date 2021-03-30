@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -71,6 +70,7 @@ import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenc
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public abstract class AbstractExpressionBuilder {
 
@@ -314,7 +314,7 @@ public abstract class AbstractExpressionBuilder {
         Expression narrowed = rewriteNode( context, narrowExpressionToType(expression, leftType) );
         indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
-        indexedByDSL.addArgument(new ClassExpr(StaticJavaParser.parseType(expression.getRawClass().getCanonicalName())));
+        indexedByDSL.addArgument(new ClassExpr(toJPType(expression.getRawClass())));
     }
 
     String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {

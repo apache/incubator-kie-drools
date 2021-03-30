@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.StaticJavaParser;
 import org.drools.mvelcompiler.MvelCompilerException;
 
 import static java.util.stream.Stream.of;
@@ -32,5 +33,13 @@ public class TypeUtils {
             throw new MvelCompilerException("Unable to parse type");
         }
         return clazz;
+    }
+
+    public static com.github.javaparser.ast.type.Type toJPType(Type t) {
+        return toJPType(classFromType(t));
+    }
+
+    public static com.github.javaparser.ast.type.Type toJPType(Class<?> c) {
+        return StaticJavaParser.parseType(c.getCanonicalName());
     }
 }
