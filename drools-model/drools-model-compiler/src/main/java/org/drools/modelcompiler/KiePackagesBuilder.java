@@ -641,7 +641,7 @@ public class KiePackagesBuilder {
             c.getSubConditions().forEach(sc -> recursivelyAddConditions(ctx, group, allSubConditions, sc));
         } else if (c instanceof ExistentialPatternImpl) {
             if ( c.getType() == Condition.Type.FORALL ) {
-                allSubConditions.addChild( buildForAll( ctx, group, c ) );
+                allSubConditions.addChild( buildForAll( ctx, allSubConditions, c ) );
             } else {
                 GroupElement existGroupElement = new GroupElement( conditionToGroupElementType( c.getType() ) );
                 allSubConditions.addChild( existGroupElement );
@@ -649,11 +649,11 @@ public class KiePackagesBuilder {
             }
         } else if (c instanceof PatternImpl) {
             org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
+            RuleConditionElement rce = buildPattern( ctx, allSubConditions, pattern );
             if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
-                RuleConditionElement rce = buildPattern( ctx, group, pattern );
-                if (rce != null) {
+                //if (rce != null && !allSubConditions.getChildren().contains(pattern) ) {
                     allSubConditions.addChild( rce );
-                }
+                //}
             }
         } else if (c instanceof AccumulatePattern) {
             allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
@@ -755,10 +755,7 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement buildPattern(RuleContext ctx, GroupElement group, org.drools.model.Pattern<?> modelPattern) {
         Variable patternVariable = modelPattern.getPatternVariable();
-        boolean delegateDeclr = false;
-        if (ctx.getAccumulateSource( patternVariable ) != null) {
-            delegateDeclr = true;
-        } else {
+        if (ctx.getAccumulateSource( patternVariable ) == null) {
             ctx.setAfterAccumulate( false );
         }
 
@@ -767,7 +764,8 @@ public class KiePackagesBuilder {
         Arrays.stream( modelPattern.getWatchedProps() ).forEach( pattern::addWatchedProperty );
 
         for (Binding binding : modelPattern.getBindings()) {
-            Function1 f1 = getBindingFunction( ctx, patternVariable, delegateDeclr, binding );
+            // FIXME this is returning null for BindViewItem2, BindViewItem3 etc (mdp)
+            Function1 f1 = getBindingFunction( ctx, patternVariable, binding );
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
                                                       new LambdaReadAccessor(binding.getBoundVariable().getType(), f1),
                                                       pattern,
@@ -789,12 +787,11 @@ public class KiePackagesBuilder {
         return pattern;
     }
 
-    private Function1 getBindingFunction( RuleContext ctx, Variable patternVariable, boolean delegateDeclr, Binding binding ) {
-        if ( delegateDeclr ) {
-            // There is a pattern after the accumulate that creates more bindings targetting an existing result pattern declaration
-            // This is semantically the same as var1.getVar2(). Where var1 is a accumulate binding and var2 a binding in the follow up pattern.
-            // To make thsi work the first accessor is first called, with the second function using the result of that.
-            Declaration declr = ctx.getDeclaration( patternVariable );
+    private Function1 getBindingFunction( RuleContext ctx, Variable patternVariable, Binding binding ) {
+        Declaration declr = ctx.getDeclaration( patternVariable );
+        if ( !declr.isPatternDeclaration()) {
+            // The direct pattern binding is a delegate, that already exists,
+            // So first resolve that to pass to the next resolver.
             InternalReadAccessor reader = declr.getExtractor();
             return (o) -> binding.getBindingFunction().apply(reader.getValue(o));
         }
