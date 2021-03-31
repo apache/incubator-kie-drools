@@ -179,6 +179,10 @@ public interface KieSessionModel {
 
     KieSessionModel setThreadSafe( boolean threadSafe );
 
+    boolean isAccumulateNullPropagation();
+
+    KieSessionModel setAccumulateNullPropagation( boolean accumulateNullPropagation );
+
     enum KieSessionType {
         STATEFUL, STATELESS
     }

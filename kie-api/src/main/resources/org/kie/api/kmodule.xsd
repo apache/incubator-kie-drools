@@ -100,6 +100,7 @@
       <xsd:attribute name="beliefSystem" type="beliefSystemEnum"/>
       <xsd:attribute name="directFiring" type="xsd:boolean"/>
       <xsd:attribute name="threadSafe" type="xsd:boolean"/>
+      <xsd:attribute name="accumulateNullPropagation" type="xsd:boolean"/>
     </xsd:complexType>
   </xsd:element>
 

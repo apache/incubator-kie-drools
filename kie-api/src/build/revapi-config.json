@@ -122,6 +122,24 @@
                 "methodName": "setThreadSafe",
                 "elementKind": "method",
                 "justification": "support non-thread-safe on KieSession"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method boolean org.kie.api.builder.model.KieSessionModel::isAccumulateNullPropagation()",
+                "package": "org.kie.api.builder.model",
+                "classSimpleName": "KieSessionModel",
+                "methodName": "isAccumulateNullPropagation",
+                "elementKind": "method",
+                "justification": "configuration switch for allowing null propagation in accumulate"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.builder.model.KieSessionModel::setAccumulateNullPropagation(boolean)",
+                "package": "org.kie.api.builder.model",
+                "classSimpleName": "KieSessionModel",
+                "methodName": "setAccumulateNullPropagation",
+                "elementKind": "method",
+                "justification": "configuration switch for allowing null propagation in accumulate"
               }
             ]
         }
