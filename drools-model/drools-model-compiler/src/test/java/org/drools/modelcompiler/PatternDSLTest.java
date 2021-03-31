@@ -933,8 +933,8 @@ public class PatternDSLTest {
         ViewItem accumulate = PatternDSL.accumulate(aPattern, DSL.accFunction( CollectSetAccumulateFunction::new, accSource).as(accResult));
 
         PatternDSL.PatternDef secondPattern = PatternDSL.pattern(accResult);
-        PatternDSL.PatternDef thirdPattern = PatternDSL.pattern(wrapped)
-                .bind(unwrapped1, Pair::getKey); // If binding removed, test will pass.
+        PatternDSL.PatternDef thirdPattern =
+              PatternDSL.pattern(wrapped).bind(unwrapped1, Pair::getKey); // If binding removed, test will pass.
         ViewItem accumulate2 = PatternDSL.accumulate(PatternDSL.and(secondPattern, thirdPattern),
                 DSL.accFunction(CollectSetAccumulateFunction::new, wrapped).as(accResult2));
         Rule rule = PatternDSL.rule("R")
