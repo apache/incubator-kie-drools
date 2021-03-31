@@ -265,7 +265,7 @@ public class MultithreadTest {
                 "rule \"average temperature\"\n" +
                 "when\n" +
                 "  $s : Server (hostname == \"hiwaesdk\")\n" +
-                " $avg := Number( ) from accumulate ( " +
+                " $avg := Number( this != null ) from accumulate ( " +
                 "      IntEvent ( $temp : data ) over window:length(10) from entry-point ep01; " +
                 "      average ($temp)\n" +
                 "  )\n" +

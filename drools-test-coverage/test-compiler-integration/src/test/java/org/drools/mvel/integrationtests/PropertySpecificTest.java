@@ -2704,7 +2704,7 @@ public class PropertySpecificTest {
                 "import " + BigDecimalFact.class.getCanonicalName() + "\n" +
                 "rule R when\n" +
                 "        accumulate( BigDecimalFact( $bdVal: bdVal), $minVal : min($bdVal))\n" +
-                "        accumulate( BigDecimalFact( $bdVal2: bdVal, $bdVal2 > $minVal), $minVal2 : min($bdVal2))\n" +
+                "        accumulate( BigDecimalFact( $bdVal2: bdVal, $bdVal2 > $minVal), $minVal2 : min($bdVal2); $minVal2 != null)\n" + // guard for DROOLS-6064
                 "\n" +
                 "        \n" +
                 "        $minFact: BigDecimalFact( bdVal == new BigDecimal($minVal.intValue()))\n" +

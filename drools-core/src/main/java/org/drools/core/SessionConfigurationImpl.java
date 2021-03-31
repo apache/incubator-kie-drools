@@ -32,6 +32,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.DirectFiringOption;
@@ -77,6 +78,8 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     private boolean                        directFiring;
 
     private boolean                        threadSafe;
+
+    private boolean                        accumulateNullPropagation;
 
     private ForceEagerActivationFilter     forceEagerActivationFilter;
     private TimedRuleExecutionFilter       timedRuleExecutionFilter;
@@ -167,6 +170,8 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
         setThreadSafe(Boolean.valueOf( getPropertyValue( ThreadSafeOption.PROPERTY_NAME, "true" ) ));
 
+        setAccumulateNullPropagation(Boolean.valueOf( getPropertyValue( AccumulateNullPropagationOption.PROPERTY_NAME, "false" ) ));
+
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve( getPropertyValue( ForceEagerActivationOption.PROPERTY_NAME, "false" ) ).getFilter());
 
         setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve( getPropertyValue( TimedRuleExecutionOption.PROPERTY_NAME, "false" ) ).getFilter());
@@ -239,6 +244,15 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     public boolean isThreadSafe() {
         return this.threadSafe;
+    }
+
+    public void setAccumulateNullPropagation(boolean accumulateNullPropagation) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.accumulateNullPropagation = accumulateNullPropagation;
+    }
+
+    public boolean isAccumulateNullPropagation() {
+        return this.accumulateNullPropagation;
     }
 
     public void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {
