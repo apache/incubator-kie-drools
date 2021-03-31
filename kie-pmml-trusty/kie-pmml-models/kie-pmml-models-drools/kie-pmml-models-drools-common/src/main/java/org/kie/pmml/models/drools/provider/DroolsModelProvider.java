@@ -160,8 +160,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         List<GeneratedFile> generatedRuleFiles = generateRulesFiles(packageDescr);
         return generatedRuleFiles.stream()
                 .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-                                                  .replaceAll(File.separator, ".")
-                                          .replaceAll(".java", ""),
+                                                  .replace(File.separator, ".")
+                                          .replace(".java", ""),
                                           generatedFile -> new String(generatedFile.getData())));
 
     }
