@@ -24,7 +24,7 @@ rule "External Function" salience 80
     dialect "mvel"
     when
         $person : Person( $likes : likes )
-        $max    : Number( intValue >= 5 )
+        $max    : Number( this != null, intValue >= 5 )
                                from accumulate( $cheese : Cheese( type == $likes, $price : price ),
                                                 max( $price ) );
     then
