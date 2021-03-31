@@ -97,6 +97,7 @@ public class DecisionCodegen extends AbstractGenerator {
         DecisionValidation.dmnValidateResources(context(), r2cr.keySet());
         // DMN model processing; any semantic error during compilation will also be thrown accordingly
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .setRootClassLoader(context().getClassLoader()) // KOGITO-4788
                 .buildConfiguration()
                 .fromResources(r2cr.keySet())
                 .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
