@@ -61,7 +61,7 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
     }
 
     public List<KiePMMLExpression> getKiePMMLExpressions() {
-        return Collections.unmodifiableList(kiePMMLExpressions);
+        return  kiePMMLExpressions != null ? Collections.unmodifiableList(kiePMMLExpressions) : Collections.emptyList();
     }
 
     @Override
