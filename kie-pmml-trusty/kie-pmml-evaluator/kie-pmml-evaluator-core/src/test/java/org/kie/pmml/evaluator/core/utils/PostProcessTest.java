@@ -16,33 +16,64 @@
 
 package org.kie.pmml.evaluator.core.utils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImplTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PostProcessTest {
+
+    @Test
+    public void executeTargets() {
+        // Build model
+        String TARGET_NAME = "TARGET_NAME";
+        String FIELD_NAME = "FIELD_NAME";
+        KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, Collections.emptyList())
+                .withMin(4.34)
+                .withField(FIELD_NAME)
+                .build();
+        List<KiePMMLTarget> kiePMMLTargets = Arrays.asList(kiePMMLTarget, KiePMMLTarget.builder("NEW_TARGET", Collections.emptyList()).build());
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel model = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .withKiePMMLTargets(kiePMMLTargets)
+                .build();
+        // Build PMML4Result
+        PMML4Result toModify = new PMML4Result();
+        toModify.setResultCode(ResultCode.FAIL.getName());
+        toModify.addResultVariable(FIELD_NAME, 4.33);
+        assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
+        PostProcess.executeTargets(toModify, model);
+        assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
+        toModify.setResultCode(ResultCode.OK.getName());
+        PostProcess.executeTargets(toModify, model);
+        assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
+        toModify.setResultObjectName(FIELD_NAME);
+        PostProcess.executeTargets(toModify, model);
+        assertEquals(4.34, toModify.getResultVariables().get(FIELD_NAME));
+    }
 
     @Test
     public void populatePredictedOutputField() {
@@ -53,7 +84,8 @@ public class PostProcessTest {
         final PMML4Result toUpdate = new PMML4Result();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
-        KiePMMLModel kiePMMLModel = new KiePMMLModelA(Collections.emptyMap());
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .build();
         PostProcess.populatePredictedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
         assertTrue(toUpdate.getResultVariables().isEmpty());
         //
@@ -77,7 +109,9 @@ public class PostProcessTest {
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.ANTECEDENT)
                 .build();
-        PostProcess.populateTransformedOutputField(outputField, new PMML4Result(),new KiePMMLModelA(Collections.emptyMap()), Collections.emptyList());
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .build();
+        PostProcess.populateTransformedOutputField(outputField, new PMML4Result(), kiePMMLModel, Collections.emptyList());
     }
 
     @Test
@@ -99,7 +133,8 @@ public class PostProcessTest {
                     functionsMap.put("function" + i, toPut);
                 });
 
-        KiePMMLModel kiePMMLModel = new KiePMMLModelA(functionsMap);
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .build();
         PostProcess.populateTransformedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
         assertTrue(toUpdate.getResultVariables().isEmpty());
         //
@@ -123,7 +158,9 @@ public class PostProcessTest {
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.ANTECEDENT)
                 .build();
-        PostProcess.populateTransformedOutputField(outputField, new PMML4Result(),new KiePMMLModelA(Collections.emptyMap()), Collections.emptyList());
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .build();
+        PostProcess.populateTransformedOutputField(outputField, new PMML4Result(), kiePMMLModel, Collections.emptyList());
     }
 
     @Test
@@ -141,8 +178,9 @@ public class PostProcessTest {
                     };
                     functionsMap.put("function" + i, toPut);
                 });
-
-        KiePMMLModel kiePMMLModel = new KiePMMLModelA(functionsMap);
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .withFunctionsMap(functionsMap)
+                .build();
         //
         final  String nameValue = "NAMEVALUE";
         BiFunction<List<KiePMMLNameValue>, Object, Object>  toPut = (values, o) -> {
@@ -170,7 +208,8 @@ public class PostProcessTest {
         final String value = "String";
         KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), value);
 
-        KiePMMLModel kiePMMLModel = new KiePMMLModelA(Collections.emptyMap());
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .build();
         //
         Optional<Object>  retrieved = PostProcess.getValueFromKiePMMLExpression(kiePMMLConstant,
                                                                                 kiePMMLModel,
@@ -185,7 +224,8 @@ public class PostProcessTest {
         final String variableName = "variableName";
         KiePMMLExpression kiePMMLFieldRef = new KiePMMLFieldRef(variableName, Collections.emptyList(), mapMissingTo);
 
-        KiePMMLModel kiePMMLModel = new KiePMMLModelA(Collections.emptyMap());
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .build();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
         final Object variableValue = 543.65434;
@@ -212,8 +252,9 @@ public class PostProcessTest {
                     };
                     functionsMap.put("function" + i, toPut);
                 });
-
-        KiePMMLModel kiePMMLModel = new KiePMMLModelA(functionsMap);
+        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .withFunctionsMap(functionsMap)
+                .build();
         Optional<Object> retrieved = PostProcess.getValueFromKiePMMLApplyFunction(kiePMMLApply,
                                                                                   kiePMMLModel,
                                                                                   kiePMMLNameValues);
@@ -380,16 +421,4 @@ public class PostProcessTest {
         assertEquals(mapMissingTo, retrieved.get());
     }
 
-    private class KiePMMLModelA extends KiePMMLModel {
-
-        public KiePMMLModelA(final Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap) {
-            super(UUID.randomUUID().toString(), Collections.emptyList());
-            this.functionsMap = functionsMap;
-        }
-
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return null;
-        }
-    }
 }
