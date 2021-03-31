@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,8 +44,6 @@ import org.drools.scenariosimulation.backend.expression.DMNFeelExpressionEvaluat
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
-import org.drools.scenariosimulation.backend.model.Dispute;
-import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
@@ -142,13 +139,13 @@ public class DMNScenarioRunnerHelperTest {
         settings = new Settings();
         settings.setType(ScenarioSimulationModel.Type.DMN);
         settings.setDmnFilePath(DMN_FILE_PATH);
-        personFactIdentifier = FactIdentifier.create("Fact 1", Person.class.getCanonicalName());
+        personFactIdentifier = FactIdentifier.create("Fact 1", "Fact 1");
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
         firstNameGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(personFactIdentifier, firstNameGivenExpressionIdentifier);
         firstNameGivenFactMapping.addExpressionElement("Fact 1", String.class.getCanonicalName());
         firstNameGivenFactMapping.addExpressionElement("firstName", String.class.getCanonicalName());
 
-        disputeFactIdentifier = FactIdentifier.create("Fact 2", Dispute.class.getCanonicalName());
+        disputeFactIdentifier = FactIdentifier.create("Fact 2", "Fact 2");
         amountGivenExpressionIdentifier = ExpressionIdentifier.create("Amount Given", FactMappingType.GIVEN);
         amountNameGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(disputeFactIdentifier, amountGivenExpressionIdentifier);
         amountNameGivenFactMapping.addExpressionElement("Fact 2", BigDecimal.class.getCanonicalName());
@@ -353,10 +350,11 @@ public class DMNScenarioRunnerHelperTest {
         ArgumentCaptor<Object> setValueCaptor = ArgumentCaptor.forClass(Object.class);
         ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
 
-        FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "tBook");
-        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("imported.Person", "tPerson");
-        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("imported.Dispute", "tDispute");
-        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("imported.Book", "tBook");
+        FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "Book");
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("Person", "imported.Person");
+        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("Dispute", "imported.Dispute");
+        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("Book", "imported.Book");
+        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create("wr.Book", "imported.wr.Book");
 
         AbstractMap.SimpleEntry<String, Object> backgroundDisputeFactData = new AbstractMap.SimpleEntry<>("description", "Nice");
         AbstractMap.SimpleEntry<String, Object> backgroundPersonFactData = new AbstractMap.SimpleEntry<>("name", "Carl");
@@ -373,23 +371,25 @@ public class DMNScenarioRunnerHelperTest {
         AbstractMap.SimpleEntry<String, Object> givenImportedBookFactData2 = new AbstractMap.SimpleEntry<>("Title", "The awesome Test Scenario!");
         AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData = new AbstractMap.SimpleEntry<>("surname", "White");
         AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData2 = new AbstractMap.SimpleEntry<>("age", 67);
+        AbstractMap.SimpleEntry<String, Object> givenImportedWrBookFactData = new AbstractMap.SimpleEntry<>("Title", "I hate name with multi dots");
 
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
-        scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, instantiateMap(backgroundDisputeFactData))); //1
-        scenarioRunnerData.addBackground(new InstanceGiven(personFactIdentifier, instantiateMap(backgroundPersonFactData, backgroundPersonFactData2))); //2
-        scenarioRunnerData.addBackground(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(backgroundImportedPersonFactData, backgroundImportedPersonFactData2))); //2
-        scenarioRunnerData.addBackground(new InstanceGiven(importedDisputeFactIdentifier, instantiateMap(backgroundImportedDisputeFactData))); //3
+        scenarioRunnerData.addBackground(new InstanceGiven(disputeFactIdentifier, instantiateMap(backgroundDisputeFactData)));
+        scenarioRunnerData.addBackground(new InstanceGiven(personFactIdentifier, instantiateMap(backgroundPersonFactData, backgroundPersonFactData2)));
+        scenarioRunnerData.addBackground(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(backgroundImportedPersonFactData, backgroundImportedPersonFactData2)));
+        scenarioRunnerData.addBackground(new InstanceGiven(importedDisputeFactIdentifier, instantiateMap(backgroundImportedDisputeFactData)));
 
-        scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, instantiateMap(givenPersonFactData, givenPersonFactData2))); //2
-        scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(givenImportedPersonFactData, givenImportedPersonFactData2))); //2
-        scenarioRunnerData.addGiven(new InstanceGiven(bookFactIdentifier, instantiateMap(givenBookFactData, givenBookFactData2))); //6
-        scenarioRunnerData.addGiven(new InstanceGiven(importedBookFactIdentifier, instantiateMap(givenImportedBookFactData, givenImportedBookFactData2))); //5
+        scenarioRunnerData.addGiven(new InstanceGiven(personFactIdentifier, instantiateMap(givenPersonFactData, givenPersonFactData2)));
+        scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(givenImportedPersonFactData, givenImportedPersonFactData2)));
+        scenarioRunnerData.addGiven(new InstanceGiven(bookFactIdentifier, instantiateMap(givenBookFactData, givenBookFactData2)));
+        scenarioRunnerData.addGiven(new InstanceGiven(importedBookFactIdentifier, instantiateMap(givenImportedBookFactData, givenImportedBookFactData2)));
+        scenarioRunnerData.addGiven(new InstanceGiven(importedWrBookFactIdentifier, instantiateMap(givenImportedWrBookFactData)));
 
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, NAME);
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
 
-        List<String> expectedInputDataToLoad = asList("Fact 1", "Fact 2", "Book", "imported");
+        List<String> expectedInputDataToLoad = asList(personFactIdentifier.getName(), disputeFactIdentifier.getName(), bookFactIdentifier.getName(), "imported");
         int inputObjects = expectedInputDataToLoad.size();
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
@@ -400,34 +400,37 @@ public class DMNScenarioRunnerHelperTest {
         for (int i = 0; i < inputObjects; i++) {
             String key = setKeyCaptor.getAllValues().get(i);
             Map<String, Object> value = (Map<String, Object>) setValueCaptor.getAllValues().get(i);
-            if ("Fact 1".equals(key)) {
+            if (personFactIdentifier.getName().equals(key)) {
                 assertEquals(backgroundPersonFactData.getValue(), value.get(backgroundPersonFactData.getKey()));
                 assertNotEquals(backgroundPersonFactData2.getValue(), value.get(backgroundPersonFactData2.getKey()));
                 assertEquals(givenPersonFactData.getValue(), value.get(givenPersonFactData.getKey()));
                 assertEquals(givenPersonFactData2.getValue(), value.get(givenPersonFactData2.getKey()));
                 assertEquals(3, value.size());
-            } else if ("Fact 2".equals(key)) {
+            } else if (disputeFactIdentifier.getName().equals(key)) {
                 assertEquals(backgroundDisputeFactData.getValue(), value.get(backgroundDisputeFactData.getKey()));
                 assertEquals(1, value.size());
-            } else if ("Book".equals(key)) {
+            } else if (bookFactIdentifier.getName().equals(key)) {
                 assertEquals(givenBookFactData.getValue(), value.get(givenBookFactData.getKey()));
                 assertEquals(givenBookFactData2.getValue(), value.get(givenBookFactData2.getKey()));
                 assertEquals(2, value.size());
             } else if ("imported".equals(key)) {
-                Map<String, Object> subValueDispute = (Map<String, Object>) value.get("Dispute");
+                Map<String, Object> subValueDispute = (Map<String, Object>) value.get(importedDisputeFactIdentifier.getName());
                 assertEquals(backgroundImportedDisputeFactData.getValue(), subValueDispute.get(backgroundImportedDisputeFactData.getKey()));
                 assertEquals(1, subValueDispute.size());
-                Map<String, Object> subValueBook = (Map<String, Object>) value.get("Book");
+                Map<String, Object> subValueBook = (Map<String, Object>) value.get(importedBookFactIdentifier.getName());
                 assertEquals(givenImportedBookFactData.getValue(), subValueBook.get(givenImportedBookFactData.getKey()));
                 assertEquals(givenImportedBookFactData2.getValue(), subValueBook.get(givenImportedBookFactData2.getKey()));
                 assertEquals(2, subValueBook.size());
-                Map<String, Object> subValuePerson = (Map<String, Object>) value.get("Person");
+                Map<String, Object> subValuePerson = (Map<String, Object>) value.get(importedPersonFactIdentifier.getName());
                 assertEquals(backgroundImportedPersonFactData.getValue(), subValuePerson.get(backgroundImportedPersonFactData.getKey()));
                 assertNotEquals(backgroundImportedPersonFactData2.getValue(), subValuePerson.get(backgroundImportedPersonFactData2.getKey()));
                 assertEquals(givenImportedPersonFactData.getValue(), subValuePerson.get(givenImportedPersonFactData.getKey()));
                 assertEquals(givenImportedPersonFactData2.getValue(), subValuePerson.get(givenImportedPersonFactData2.getKey()));
                 assertEquals(3, subValuePerson.size());
-                assertEquals(3, value.size());
+                Map<String, Object> subValueWrBook = (Map<String, Object>) value.get(importedWrBookFactIdentifier.getName());
+                assertEquals(givenImportedWrBookFactData.getValue(), subValueWrBook.get(givenImportedWrBookFactData.getKey()));
+                assertEquals(1, subValueWrBook.size());
+                assertEquals(4, value.size());
             } else {
                 fail("Unexpected key: " + key);
             }
@@ -440,14 +443,6 @@ public class DMNScenarioRunnerHelperTest {
         assertThatThrownBy(() -> runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessageStartingWith("Impossible to run");
-
-        // test wrong imported type
-        FactIdentifier importedWrongBookFactIdentifier = FactIdentifier.create("imported.wr.Book", "tBook");
-        scenarioRunnerData.addGiven(new InstanceGiven(importedWrongBookFactIdentifier, null));
-        settings.setType(ScenarioSimulationModel.Type.DMN);
-        assertThatThrownBy(() -> runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Invalid FactIdentified name: imported.wr.Book");
     }
 
     private Map<String, Object> instantiateMap(AbstractMap.SimpleEntry<String, Object> ... entries) {

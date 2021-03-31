@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -100,15 +101,14 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
         for (InstanceGiven input : inputData) {
             String factName = input.getFactIdentifier().getName();
-            if (factName.contains(".")) {
-                String[] fullKey = retrieveKeys(factName);
-                String importedKey = fullKey[0];
-                String factKey = fullKey[1];
+            Optional<String> factPrefixOpt = input.getFactIdentifier().getFactPrefix();
+            if (factPrefixOpt.isPresent()) {
+                String importedKey = factPrefixOpt.get();
                 Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importedKey, k -> new HashMap<>());
-                Object value = groupedFacts.containsKey(factKey) ?
-                        mergeValues(groupedFacts.get(factKey), input.getValue()) :
+                Object value = groupedFacts.containsKey(factName) ?
+                        mergeValues(groupedFacts.get(factName), input.getValue()) :
                         input.getValue();
-                importedInputValues.get(importedKey).put(factKey, value);
+                importedInputValues.get(importedKey).put(factName, value);
             } else {
                 Object value = inputValues.containsKey(factName) ?
                         mergeValues(inputValues.get(factName), input.getValue()) :
@@ -135,14 +135,6 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         toReturn.putAll((Map<String, Object>) newValue);
 
         return toReturn;
-    }
-
-    private String[] retrieveKeys(String factIdentifierName) {
-        String[] factIdentifierNameParts = factIdentifierName.split("\\.");
-        if (factIdentifierNameParts.length > 2) {
-            throw new IllegalArgumentException("Invalid FactIdentified name: " + factIdentifierName);
-        }
-        return factIdentifierNameParts;
     }
 
     @Override
@@ -183,7 +175,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
         for (ScenarioExpect output : scenarioRunnerData.getExpects()) {
             FactIdentifier factIdentifier = output.getFactIdentifier();
-            String decisionName = factIdentifier.getName();
+            String decisionName = factIdentifier.getClassName();
             DMNDecisionResult decisionResult = dmnResult.getDecisionResultByName(decisionName);
             if (decisionResult == null) {
                 throw new ScenarioException("DMN execution has not generated a decision result with name " + decisionName);

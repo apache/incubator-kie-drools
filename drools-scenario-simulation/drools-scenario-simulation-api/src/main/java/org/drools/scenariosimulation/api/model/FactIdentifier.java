@@ -16,13 +16,23 @@
 package org.drools.scenariosimulation.api.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A fact is identified by its name and the canonical name of its class
  */
 public class FactIdentifier {
 
+    /**
+     * Fact name. Used in DMN Scenario only (eg. Violation)
+     */
     private String name;
+    /**
+     * Fact Type. (or full Fact Name) In RULE test scenario it represents the ClassName of the fact (eg. com.Author)
+     *            In DMN test scenario it represents the fullName of the Fact, most of the case the same value of the
+     *            name (eg. Violation). In case of imported node from external DMN, it contains the imported prefix
+     *            (eg. imp.Violation)
+     */
     private String className;
 
     public static final FactIdentifier INDEX = create("#", Integer.class.getCanonicalName());
@@ -59,6 +69,16 @@ public class FactIdentifier {
         } else {
             return "";
         }
+    }
+
+    /**
+     * To be used in DMN Scenario ONLY
+     * @return
+     */
+    public Optional<String> getFactPrefix() {
+        return Objects.equals(name, className) ?
+                Optional.empty() :
+                Optional.ofNullable(className.split("\\.")[0]);
     }
 
     public static FactIdentifier create(String name, String className) {
