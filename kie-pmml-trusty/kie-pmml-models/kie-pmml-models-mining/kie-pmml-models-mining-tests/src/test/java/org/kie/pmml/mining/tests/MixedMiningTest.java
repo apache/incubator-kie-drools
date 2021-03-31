@@ -36,6 +36,8 @@ public class MixedMiningTest extends AbstractPMMLTest {
     private static final String FILE_NAME = "MiningModel_Mixed.pmml";
     private static final String MODEL_NAME = "MixedMining";
     private static final String TARGET_FIELD = "categoricalResult";
+    private static final String NUMBER_OF_CLAIMS = "Number of Claims";
+    private static final String OUT_RESIDENCESTATE = "out_residenceState";
     private static PMMLRuntime pmmlRuntime;
 
     private String categoricalX;
@@ -93,5 +95,11 @@ public class MixedMiningTest extends AbstractPMMLTest {
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+
+        Assertions.assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(NUMBER_OF_CLAIMS)).isEqualTo(expectedResult);
+
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isEqualTo(residenceState);
     }
 }
