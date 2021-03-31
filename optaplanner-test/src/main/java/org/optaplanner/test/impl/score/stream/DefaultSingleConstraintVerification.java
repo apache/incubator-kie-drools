@@ -66,19 +66,19 @@ public final class DefaultSingleConstraintVerification<Solution_, Score_ extends
                 return;
             }
             // Group entities by the same ID.
-            Map<Optional<Long>, List<Object>> entitiesWithSameIdMap = clzFacts.stream()
+            Map<Optional<Object>, List<Object>> entitiesWithSameIdMap = clzFacts.stream()
                     .collect(Collectors.groupingBy(fact -> {
-                        Long planningId = (Long) planningIdAccessor.executeGetter(fact);
+                        Object planningId = planningIdAccessor.executeGetter(fact);
                         return Optional.ofNullable(planningId); // Return as reference to prevent null keys.
                     }));
             // Eliminate those matches where there are no duplicate IDs and find the first one.
-            Optional<Map.Entry<Optional<Long>, List<Object>>> firstDuplicateIdEntry = entitiesWithSameIdMap.entrySet()
+            Optional<Map.Entry<Optional<Object>, List<Object>>> firstDuplicateIdEntry = entitiesWithSameIdMap.entrySet()
                     .stream()
                     .filter(e -> e.getValue().size() > 1) // More than 1 instance means there is a duplicate ID.
                     .findFirst();
             firstDuplicateIdEntry.ifPresent(entry -> {
                 String value = entry.getKey()
-                        .map(id -> Long.toString(id))
+                        .map(Objects::toString)
                         .orElse("null");
                 throw new IllegalStateException(
                         "Multiple instances of " + PlanningEntity.class.getSimpleName() + "-annotated class ("
