@@ -246,14 +246,20 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         final Map<RESULT_FEATURE, List<KiePMMLOutputField>> outputFieldsByFeature = model.getKiePMMLOutputFields()
                 .stream()
                 .collect(Collectors.groupingBy(KiePMMLOutputField::getResultFeature));
-        outputFieldsByFeature.get(RESULT_FEATURE.PREDICTED_VALUE)
-                .forEach(outputField -> populatePredictedOutputField(outputField, toUpdate,
-                                                                     model,
-                                                                     kiePMMLNameValues));
-        outputFieldsByFeature.get(RESULT_FEATURE.TRANSFORMED_VALUE)
-                .forEach(outputField -> populateTransformedOutputField(outputField, toUpdate,
-                                                                       model,
-                                                                       kiePMMLNameValues));
+        List<KiePMMLOutputField> predictedOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.PREDICTED_VALUE);
+        if (predictedOutputFields != null) {
+            predictedOutputFields
+                    .forEach(outputField -> populatePredictedOutputField(outputField, toUpdate,
+                                                                         model,
+                                                                         kiePMMLNameValues));
+        }
+        List<KiePMMLOutputField> transformedOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.TRANSFORMED_VALUE);
+        if (transformedOutputFields != null) {
+            transformedOutputFields
+                    .forEach(outputField -> populateTransformedOutputField(outputField, toUpdate,
+                                                                           model,
+                                                                           kiePMMLNameValues));
+        }
     }
 
     void populatePredictedOutputField(final KiePMMLOutputField outputField,
@@ -264,8 +270,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         String targetFieldName = outputField.getTargetField().orElse(toUpdate.getResultObjectName());
         Optional<Object> variableValue = Optional.empty();
         if (targetFieldName != null) {
-            variableValue =  Stream.of(getValueFromPMMLResultByVariableName(targetFieldName, toUpdate),
-                      getValueFromKiePMMLNameValueByVariableName(targetFieldName, kiePMMLNameValues))
+            variableValue = Stream.of(getValueFromPMMLResultByVariableName(targetFieldName, toUpdate),
+                                      getValueFromKiePMMLNameValueByVariableName(targetFieldName, kiePMMLNameValues))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .findFirst();
@@ -362,7 +368,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     }
 
     private Optional<Object> getValueFromPMMLResultByVariableName(final String variableName,
-                                                                        final PMML4Result pmml4Result) {
+                                                                  final PMML4Result pmml4Result) {
         return Optional.ofNullable(pmml4Result.getResultVariables().get(variableName));
     }
 

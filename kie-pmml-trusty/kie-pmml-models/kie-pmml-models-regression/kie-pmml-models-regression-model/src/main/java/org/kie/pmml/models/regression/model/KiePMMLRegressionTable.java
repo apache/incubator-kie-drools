@@ -51,9 +51,7 @@ public abstract class KiePMMLRegressionTable {
         }
         resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         updateResult(result);
-        Object toReturn = result.get();
-        populateOutputFieldsMapWithResult(toReturn);
-        return toReturn;
+        return result.get();
     }
 
     public Map<String, Object> getOutputFieldsMap() {
@@ -81,7 +79,5 @@ public abstract class KiePMMLRegressionTable {
     }
 
     protected abstract void updateResult(final AtomicReference<Double> toUpdate);
-
-    protected abstract void populateOutputFieldsMapWithResult(final Object result);
 
 }
