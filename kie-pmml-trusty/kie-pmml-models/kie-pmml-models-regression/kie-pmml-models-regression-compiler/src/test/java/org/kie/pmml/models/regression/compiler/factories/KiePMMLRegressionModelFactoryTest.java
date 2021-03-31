@@ -55,6 +55,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.iinterfaces.SerializableFunction;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
@@ -222,15 +223,15 @@ public class KiePMMLRegressionModelFactoryTest {
 
     private void evaluateRegressionTable(KiePMMLRegressionTable regressionTable, RegressionTable originalRegressionTable) {
         assertEquals(originalRegressionTable.getIntercept(), regressionTable.getIntercept());
-        final Map<String, Function<Double, Double>> numericFunctionMap = regressionTable.getNumericFunctionMap();
+        final Map<String, SerializableFunction<Double, Double>> numericFunctionMap = regressionTable.getNumericFunctionMap();
         for (NumericPredictor numericPredictor : originalRegressionTable.getNumericPredictors()) {
             assertTrue(numericFunctionMap.containsKey(numericPredictor.getName().getValue()));
         }
-        final Map<String, Function<Object, Double>> categoricalFunctionMap = regressionTable.getCategoricalFunctionMap();
+        final Map<String, SerializableFunction<Object, Double>> categoricalFunctionMap = regressionTable.getCategoricalFunctionMap();
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
             assertTrue(categoricalFunctionMap.containsKey(categoricalPredictor.getName().getValue()));
         }
-        final Map<String, Function<Map<String, Object>, Double>> predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
+        final Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
             assertTrue(predictorTermsFunctionMap.containsKey(predictorTerm.getName().getValue()));
         }
