@@ -1108,7 +1108,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("this should use a strongly typed declared type")
     public void testUseAccumulateFunctionWithListMvelDialect() throws Exception {
         String str = "package org.test;" +
                 "import java.util.*; " +
@@ -1120,7 +1119,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  dialect 'mvel' " +
                 "when\n" +
                 "    accumulate ( $data : Data( $bias : bias )," +
-                "                 $tot : sum( $data.values[ 0 ] + $bias ) ) " +
+                "                 $tot : sum( ((Integer)$data.values[ 0 ]) + $bias ) ) " +
                 "then\n" +
                 "  insert($tot);\n" +
                 "end";
