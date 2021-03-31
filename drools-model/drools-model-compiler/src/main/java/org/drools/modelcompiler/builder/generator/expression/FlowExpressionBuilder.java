@@ -39,11 +39,11 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
@@ -209,7 +209,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
             MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
-            indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
+            indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
             indexedByDSL.addArgument(indexedByLeftOperandExtractor);
@@ -238,7 +238,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()) );
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
-        indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
+        indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
         indexedByDSL.addArgument( indexedByConstraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
         indexedByDSL.addArgument( indexedByLeftOperandExtractor );
