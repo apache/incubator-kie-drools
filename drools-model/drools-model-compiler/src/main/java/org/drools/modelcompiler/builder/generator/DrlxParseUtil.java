@@ -98,14 +98,16 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.core.util.MethodUtils.findMethod;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
-import static org.drools.core.util.MethodUtils.findMethod;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class DrlxParseUtil {
 
@@ -514,7 +516,7 @@ public class DrlxParseUtil {
         if (!skipFirstParamAsThis) {
             Type type;
             if (canResolve) {
-                type = StaticJavaParser.parseType(patternClass.get().getCanonicalName());
+                type = toJPType(patternClass.get());
             } else {
                 type = new UnknownType();
             }

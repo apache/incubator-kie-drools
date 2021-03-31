@@ -3,13 +3,14 @@ package org.drools.mvelcompiler.ast;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class VariableDeclaratorTExpr implements TypedExpression {
 
@@ -33,7 +34,7 @@ public class VariableDeclaratorTExpr implements TypedExpression {
     @Override
     public Node toJavaExpression() {
         Optional<Type> optInitType = initExpression.flatMap(TypedExpression::getType);
-        com.github.javaparser.ast.type.Type jpType = StaticJavaParser.parseType(this.type.getTypeName());
+        com.github.javaparser.ast.type.Type jpType = toJPType(this.type);
 
         return initExpression.map(ie -> {
 

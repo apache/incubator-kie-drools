@@ -27,7 +27,7 @@ public class KiePMMLModelUtils {
      * @return
      */
     public static String getSanitizedPackageName(String modelName) {
-        return modelName.replace(" ", "").replace("-", "").replace("_", "").toLowerCase();
+        return modelName.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
     }
 
     /**
@@ -37,6 +37,6 @@ public class KiePMMLModelUtils {
      */
     public static String getSanitizedClassName(String input) {
         String upperCasedInput = input.substring(0, 1).toUpperCase() + input.substring(1);
-        return upperCasedInput.replace(".", "").replace("-", "").replace("_", "").replace(" ", "");
+        return upperCasedInput.replaceAll("[^A-Za-z0-9]", "");
     }
 }

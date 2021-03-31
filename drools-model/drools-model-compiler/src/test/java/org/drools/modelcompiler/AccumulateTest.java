@@ -44,7 +44,19 @@ import java.util.stream.IntStream;
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Pattern;
+import org.drools.core.spi.Activation;
+import org.drools.model.Global;
+import org.drools.model.Model;
+import org.drools.model.Rule;
+import org.drools.model.Variable;
+import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.GroupKey;
+import org.drools.model.impl.ModelImpl;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Customer;
@@ -53,9 +65,11 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.TargetPolicy;
+import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -65,6 +79,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
@@ -3438,5 +3453,83 @@ public class AccumulateTest extends BaseModelTest {
 
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertEquals(0, (int)holder.get());
+    }
+
+    @Test
+    public void testInnerClassInAccumulatingFunction() {
+        // DROOLS-6238
+        String str =
+                "import java.util.*;\n" +
+                        "import " + GroupByAccPersonSet.class.getCanonicalName() + ";\n" +
+                        "import " + GroupByAccSetSize.class.getCanonicalName() + ";\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  $sets : List( size > 0 ) from accumulate (\n" +
+                        "            Person($p: this),\n" +
+                        "                init( GroupByAccPersonSet acc = new GroupByAccPersonSet(); ),\n" +
+                        "                action( acc.action( $p ); ),\n" +
+                        "                reverse( acc.reverse( $p ); ),\n" +
+                        "                result( acc.result() )\n" +
+                        "         )\n" +
+                        "  $sizes : List( size > 0 ) from accumulate (\n" +
+                        "            Object($s: this) from $sets,\n" +
+                        "                init( GroupByAccSetSize acc2 = new GroupByAccSetSize(); ),\n" +
+                        "                action( acc2.action( (Set) $s ); ),\n" +
+                        "                reverse( acc2.reverse( (Set) $s ); ),\n" +
+                        "                result( acc2.result() )\n" +
+                        "         )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static class GroupByAccPersonSet {
+        private final List<Person> nonUnique  = new ArrayList<>(0);
+
+        public GroupByAccPersonSet() {
+
+        }
+
+        public void action(Person person) {
+            nonUnique.add(person);
+        }
+
+        public void reverse(Person person) {
+            nonUnique.remove(person);
+        }
+
+        public List<Set<Person>> result() {
+            return Collections.singletonList(new HashSet<>(nonUnique));
+        }
+
+    }
+
+    public static class GroupByAccSetSize {
+        private final List<Integer> sizes = new ArrayList<>(0);
+
+        public GroupByAccSetSize() {
+
+        }
+
+        public void action(Set<Person> set) {
+            sizes.add(set.size());
+        }
+
+        public void reverse(Set<Person> set) {
+            sizes.add(set.size());
+        }
+
+        public List<Integer> result() {
+            Integer max = sizes.stream()
+                    .mapToInt(i -> i)
+                    .max()
+                    .orElse(0);
+            return Collections.singletonList(max);
+        }
     }
 }
