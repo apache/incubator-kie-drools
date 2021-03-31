@@ -25,9 +25,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.dmg.pmml.Apply;
+import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Expression;
+import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -42,12 +46,18 @@ import org.dmg.pmml.Value;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.model.KiePMMLTargetValue;
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
+import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
+import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
 import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
@@ -315,6 +325,104 @@ public class ModelUtils {
                                                        targetField,
                                                        resultFeature,
                                                        allowedValues);
+    }
+
+    /**
+     * Return a <code>List&lt;org.kie.pmml.commons.model.KiePMMLOutputField&gt;</code> out of a <code>org.dmg.pmml
+     * .Output</code>
+     * @param toConvert
+     * @return
+     */
+    public static List<KiePMMLOutputField> convertToKiePMMLOutputFieldList(final Output toConvert) {
+        if (toConvert == null) {
+            return Collections.emptyList();
+        }
+        return toConvert.getOutputFields()
+                .stream()
+                .map(outputField -> {
+                    return convertToKiePMMLOutputField(outputField);
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Return a <code>org.kie.pmml.commons.model.KiePMMLOutputField</code> out of a <code>org.dmg.pmml.OutputField</code>
+     *
+     * @param toConvert
+     * @return
+     */
+    public static KiePMMLOutputField convertToKiePMMLOutputField(final OutputField toConvert) {
+        String name = toConvert.getName() != null ? toConvert.getName().getValue() : "" + toConvert.hashCode();
+        KiePMMLOutputField.Builder builder = KiePMMLOutputField.builder(name, Collections.emptyList());
+        final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
+        if (targetField != null) {
+            builder.withTargetField(targetField);
+        }
+        final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
+                RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
+        if (resultFeature != null) {
+            builder = builder.withResultFeature(resultFeature);
+        }
+        if (toConvert.getRank() != null) {
+            builder = builder.withRank(toConvert.getRank());
+        }
+        if (toConvert.getExpression() != null) {
+            KiePMMLExpression kiePMMLExpression = convertToKiePMMLExpression(toConvert.getExpression());
+            builder = builder.withKiePMMLExpression(kiePMMLExpression);
+
+        }
+        return builder.build();
+    }
+
+    public static KiePMMLExpression convertToKiePMMLExpression(Expression toConvert) {
+        KiePMMLExpression toReturn = null;
+        String expressionType = toConvert.getClass().getSimpleName();
+        switch (expressionType) {
+            case "Apply":
+                toReturn = convertToKiePMMLApply((Apply)toConvert);
+                break;
+            case "Constant":
+                toReturn = convertToKiePMMLConstant((Constant)toConvert);
+                break;
+            case "FieldRef":
+                toReturn = convertToKiePMMLFieldRef((FieldRef)toConvert);
+                break;
+            default:
+                // Not implemented, yet
+
+        }
+        return toReturn;
+    }
+
+    public static KiePMMLApply convertToKiePMMLApply(Apply toConvert) {
+        String name = "" + toConvert.hashCode();
+        KiePMMLApply.Builder builder = KiePMMLApply.builder(name, Collections.emptyList(), toConvert.getFunction());
+        if (toConvert.getExpressions() != null) {
+            List<KiePMMLExpression> kiePMMLExpressions =  toConvert.getExpressions().stream()
+                    .map(ModelUtils::convertToKiePMMLExpression)
+                    .collect(Collectors.toList());
+            builder = builder.withKiePMMLExpressions(kiePMMLExpressions);
+        }
+        if (toConvert.getMapMissingTo() != null) {
+            builder = builder.withMapMissingTo(toConvert.getMapMissingTo());
+        }
+        if (toConvert.getDefaultValue() != null) {
+            builder = builder.withDefaultValue(toConvert.getDefaultValue());
+        }
+        if (toConvert.getInvalidValueTreatment() != null) {
+            builder = builder.withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()));
+        }
+
+        return builder.build();
+    }
+
+    public static KiePMMLConstant convertToKiePMMLConstant(Constant toConvert) {
+        String name = "" + toConvert.hashCode();
+        return new KiePMMLConstant(name, Collections.emptyList(), toConvert.getValue());
+    }
+
+    public static KiePMMLFieldRef convertToKiePMMLFieldRef(FieldRef toConvert) {
+        return new KiePMMLFieldRef(toConvert.getField().getValue(), Collections.emptyList(), toConvert.getMapMissingTo());
     }
 
     /**

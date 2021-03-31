@@ -64,8 +64,8 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {30.0, 10.0, "sunglasses"},
-                {5.0, 70.0, "umbrella"},
-                {10.0, 15.0, "nothing"}
+//                {5.0, 70.0, "umbrella"},
+//                {10.0, 15.0, "nothing"}
         });
     }
 

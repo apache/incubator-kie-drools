@@ -77,8 +77,8 @@ public class KiePMMLRegressionModelFactory {
         Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
         String fullClassName = packageName + "." + className;
         try {
-            Class<?> kiePMMLScorecardModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
-            return (KiePMMLRegressionModel) kiePMMLScorecardModelClass.newInstance();
+            Class<?> kiePMMLRegressionModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            return (KiePMMLRegressionModel) kiePMMLRegressionModelClass.newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
         }

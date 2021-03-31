@@ -22,6 +22,7 @@ import java.util.StringJoiner;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
@@ -33,6 +34,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     private String targetField = null;
     private Integer rank;
     private Object value;
+    private KiePMMLExpression kiePMMLExpression;
 
     private KiePMMLOutputField(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -58,6 +60,10 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         return rank;
     }
 
+    public KiePMMLExpression getKiePMMLExpression() {
+        return kiePMMLExpression;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", KiePMMLOutputField.class.getSimpleName() + "[", "]")
@@ -66,6 +72,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
                 .add("rank=" + rank)
                 .add("value=" + value)
                 .add("name='" + name + "'")
+                .add("kiePMMLExpression='" + kiePMMLExpression + "'")
                 .add("extensions=" + extensions)
                 .add("id='" + id + "'")
                 .add("parentId='" + parentId + "'")
@@ -119,5 +126,11 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
             toBuild.rank = rank;
             return this;
         }
+
+        public Builder withKiePMMLExpression(KiePMMLExpression kiePMMLExpression) {
+            toBuild.kiePMMLExpression = kiePMMLExpression;
+            return this;
+        }
+
     }
 }
