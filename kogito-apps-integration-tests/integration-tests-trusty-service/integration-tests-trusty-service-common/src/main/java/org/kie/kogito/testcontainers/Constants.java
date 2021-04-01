@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,8 @@
  */
 package org.kie.kogito.testcontainers;
 
-import org.testcontainers.containers.wait.strategy.Wait;
+import java.time.Duration;
 
-public class SpringBootKogitoServiceContainer extends KogitoServiceContainer {
-
-    public SpringBootKogitoServiceContainer(String kafkaBootstrapServer, String kogitoServiceUrl) {
-        super(kogitoServiceUrl);
-        addEnv("KOGITO_ADDON_TRACING_DECISION_KAFKA_BOOTSTRAPADDRESS", kafkaBootstrapServer);
-        waitingFor(Wait.forLogMessage(".*Started KogitoApplication in.*", 1))
-                .withStartupTimeout(Constants.DEFAULT_TIMEOUT);
-    }
+public class Constants {
+    public static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(8);
 }

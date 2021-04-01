@@ -28,6 +28,7 @@ public class InfinispanTrustyServiceContainer extends GenericContainer<Infinispa
         addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaBootstrapServer);
         addEnv("TRUSTY_EXPLAINABILITY_ENABLED", String.valueOf(explainabilityEnabled));
         addExposedPort(8080);
-        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 3));
+        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 3))
+                .withStartupTimeout(Constants.DEFAULT_TIMEOUT);
     }
 }

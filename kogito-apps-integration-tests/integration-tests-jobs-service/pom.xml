@@ -68,6 +68,7 @@
               <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
               <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
               <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+              <container.image.kafka>${container.image.kafka}</container.image.kafka>
             </systemPropertyVariables>
             <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           </configuration>

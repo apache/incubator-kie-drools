@@ -23,6 +23,7 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.testcontainers.ExplainabilityServiceMessagingContainer;
 import org.kie.kogito.testcontainers.InfinispanContainer;
 import org.kie.kogito.testcontainers.InfinispanTrustyServiceContainer;
+import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.KogitoServiceContainer;
 import org.kie.kogito.trusty.service.common.responses.ExecutionsResponse;
@@ -99,7 +100,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                         .withNetwork(network)
                         .withNetworkAliases(INFINISPAN_ALIAS);
 
-                final KafkaContainer kafka = new KafkaContainer()
+                final KafkaContainer kafka = new KogitoKafkaContainer()
                         .withNetwork(network)
                         .withNetworkAliases(KAFKA_ALIAS);
 

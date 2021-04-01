@@ -73,6 +73,7 @@
               <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
               <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
               <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+              <container.image.kafka>${container.image.kafka}</container.image.kafka>
             </systemPropertyVariables>
           </configuration>
           <executions>

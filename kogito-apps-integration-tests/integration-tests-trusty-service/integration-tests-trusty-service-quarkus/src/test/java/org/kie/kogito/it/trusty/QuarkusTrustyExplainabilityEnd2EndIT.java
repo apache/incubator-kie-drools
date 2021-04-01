@@ -15,10 +15,8 @@
  */
 package org.kie.kogito.it.trusty;
 
-import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.testcontainers.QuarkusKogitoServiceContainer;
 
-@Disabled("see https://issues.redhat.com/browse/KOGITO-4532")
 public class QuarkusTrustyExplainabilityEnd2EndIT extends AbstractTrustyExplainabilityEnd2EndIT {
 
     public QuarkusTrustyExplainabilityEnd2EndIT() {

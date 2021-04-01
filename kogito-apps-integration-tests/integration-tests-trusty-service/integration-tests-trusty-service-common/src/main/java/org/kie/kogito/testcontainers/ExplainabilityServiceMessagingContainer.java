@@ -27,6 +27,7 @@ public class ExplainabilityServiceMessagingContainer extends GenericContainer<Ex
         addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaBootstrapServers);
         addEnv("TRUSTY_EXPLAINABILITY_NUMBEROFSAMPLES", String.valueOf(numberOfSamples));
         addExposedPort(8080);
-        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 1));
+        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 1))
+                .withStartupTimeout(Constants.DEFAULT_TIMEOUT);
     }
 }

@@ -75,6 +75,7 @@
           <systemProperties>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <container.image.redis>${container.image.redis}</container.image.redis>
+            <container.image.kafka>${container.image.kafka}</container.image.kafka>
           </systemProperties>
         </configuration>
         <executions>

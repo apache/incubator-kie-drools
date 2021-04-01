@@ -27,6 +27,7 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
         addEnv("USER", "admin");
         addEnv("PASS", "admin");
         addExposedPort(11222);
-        waitingFor(Wait.forLogMessage(".*ISPN080001.*", 1));
+        waitingFor(Wait.forLogMessage(".*ISPN080001.*", 1))
+                .withStartupTimeout(Constants.DEFAULT_TIMEOUT);
     }
 }

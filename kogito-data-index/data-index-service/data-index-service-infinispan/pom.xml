@@ -98,6 +98,7 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
             <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+            <container.image.kafka>${container.image.kafka}</container.image.kafka>
           </systemPropertyVariables>
         </configuration>
         <executions>

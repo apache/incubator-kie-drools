@@ -84,6 +84,7 @@
             <systemPropertyVariables>
               <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
               <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+              <container.image.kafka>${container.image.kafka}</container.image.kafka>
               <container.image.explainability-service-messaging>${container.image.explainability-service-messaging}</container.image.explainability-service-messaging>
               <container.image.kogito-service>${container.image.kogito-service}</container.image.kogito-service>
               <container.image.trusty-service-infinispan>${container.image.trusty-service-infinispan}</container.image.trusty-service-infinispan>
