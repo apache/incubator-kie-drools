@@ -89,8 +89,12 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 Set<Class<?>> modelClasses = (Set) reflections.getSubTypesOf(Model.class);
 
                 // collect constructor parameters so the generated class can create constructor with injection
-                Set<Class<? extends ProcessInstancesFactory>> classes = reflections.getSubTypesOf(ProcessInstancesFactory.class);
-                Class<?> persistenceClass = classes.isEmpty() ? null : classes.iterator().next();
+                Class<?> persistenceClass = reflections.getSubTypesOf(ProcessInstancesFactory.class)
+                        .stream()
+                        .filter(c -> !c.isInterface())
+                        .findFirst()
+                        .orElse(null);
+
                 ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder()
                         .withPersistenceClass(persistenceClass)
                         .build(modelClasses);

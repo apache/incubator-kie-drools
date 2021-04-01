@@ -200,6 +200,7 @@
     <version.io.netty>4.1.52.Final</version.io.netty>
     <version.io.projectreactor>3.3.10.RELEASE</version.io.projectreactor>
     <version.io.projectreactor.kafka>1.2.2.RELEASE</version.io.projectreactor.kafka>
+    <version.io.vertx>3.9.2</version.io.vertx>
     <version.xerces>2.11.0</version.xerces>
   </properties>
 
@@ -707,6 +708,13 @@
         <groupId>com.redislabs</groupId>
         <artifactId>jredisearch</artifactId>
         <version>${version.io.jredisearch}</version>
+      </dependency>
+
+      <!-- PostgreSQL -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-pg-client</artifactId>
+        <version>${version.io.vertx}</version>
       </dependency>
 
       <!-- spring related -->

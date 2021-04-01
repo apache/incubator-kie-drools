@@ -180,7 +180,8 @@ public class ModelMetaData {
                 NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(null, Object.class.getSimpleName())));
         VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, "params");
         toMapBody.addStatement(
-                new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
+                new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null,
+                        HashMap.class.getSimpleName() + "<>"), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
         // setup of static fromMap method body        
         BlockStmt staticFromMap = new BlockStmt();

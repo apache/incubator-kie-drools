@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
  */
 package org.kie.kogito.persistence;
 
-import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.kie.kogito.infinispan.CacheProcessInstances;
+import org.kie.kogito.persistence.postgresql.PostgreProcessInstances;
 import org.kie.kogito.persistence.protobuf.ProtoStreamProcessInstancesFactory;
 import org.kie.kogito.process.Process;
+
+import io.vertx.pgclient.PgPool;
 
 /**
  * This class must always have exact FQCN as <code>org.kie.kogito.persistence.KogitoProcessInstancesFactory</code>
@@ -26,17 +27,26 @@ import org.kie.kogito.process.Process;
  */
 public abstract class KogitoProcessInstancesFactory implements ProtoStreamProcessInstancesFactory {
 
-    protected RemoteCacheManager cacheManager;
+    private final Long queryTimeout;
+    private final PgPool client;
+    private final boolean autoDDL;
 
-    public KogitoProcessInstancesFactory(RemoteCacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    protected KogitoProcessInstancesFactory() {
+        this(null, true, 10000L);
     }
 
-    public CacheProcessInstances createProcessInstances(Process<?> process) {
-        return new CacheProcessInstances(process, cacheManager, template(), proto(), marshallersAsArray());
+    public KogitoProcessInstancesFactory(PgPool client, Boolean autoDDL, Long queryTimeout) {
+        this.client = client;
+        this.autoDDL = autoDDL;
+        this.queryTimeout = queryTimeout;
     }
 
-    public String template() {
-        return null;
+    public PgPool client() {
+        return this.client;
+    }
+
+    @Override
+    public PostgreProcessInstances createProcessInstances(Process<?> process) {
+        return new PostgreProcessInstances(process, client(), autoDDL, queryTimeout, proto(), marshallersAsArray());
     }
 }

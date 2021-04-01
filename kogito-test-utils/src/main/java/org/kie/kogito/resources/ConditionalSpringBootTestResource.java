@@ -27,22 +27,22 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
  * Spring Boot test resource.
  *
  */
-public abstract class ConditionalSpringBootTestResource implements ApplicationContextInitializer<ConfigurableApplicationContext>, ApplicationListener<ContextClosedEvent> {
+public abstract class ConditionalSpringBootTestResource<T extends TestResource> implements ApplicationContextInitializer<ConfigurableApplicationContext>, ApplicationListener<ContextClosedEvent> {
 
-    private final TestResource testResource;
+    private final T testResource;
     private final ConditionHolder condition;
     private boolean conditionalEnabled = false;
 
-    public ConditionalSpringBootTestResource(TestResource testResource) {
+    public ConditionalSpringBootTestResource(T testResource) {
         this(testResource, new ConditionHolder(testResource.getResourceName()));
     }
 
-    public ConditionalSpringBootTestResource(TestResource testResource, ConditionHolder condition) {
+    public ConditionalSpringBootTestResource(T testResource, ConditionHolder condition) {
         this.testResource = testResource;
         this.condition = condition;
     }
 
-    public TestResource getTestResource() {
+    public T getTestResource() {
         return testResource;
     }
 

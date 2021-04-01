@@ -43,6 +43,16 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 public interface DependencyInjectionAnnotator {
 
     /**
+     * Annotates the given node with an annotation to produce a DI instance of the node target class, e.g. Produces,
+     * Bean. This is used by configuration classes in the DI, like a factory method.
+     * 
+     * @param node
+     * @param isDefault indicates if the bean instance is created only if there are not any other bean of this type
+     *        already declared in the application, e.g DefaultBean
+     */
+    <T extends NodeWithAnnotations<?>> T withProduces(T node, boolean isDefault);
+
+    /**
      * Annotates given node with name annotation e.g. Named, Qualifier
      *
      * @param node node to be annotated

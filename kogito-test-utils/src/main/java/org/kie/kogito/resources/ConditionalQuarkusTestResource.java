@@ -28,22 +28,22 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 /**
  * Quarkus resource to be run if and only if it was enabled.
  */
-public abstract class ConditionalQuarkusTestResource implements QuarkusTestResourceLifecycleManager {
+public abstract class ConditionalQuarkusTestResource<T extends TestResource> implements QuarkusTestResourceLifecycleManager {
 
-    private final TestResource testResource;
+    private final T testResource;
     private final ConditionHolder condition;
     private boolean conditionalEnabled = false;
 
-    public ConditionalQuarkusTestResource(TestResource testResource) {
+    public ConditionalQuarkusTestResource(T testResource) {
         this(testResource, new ConditionHolder(testResource.getResourceName()));
     }
 
-    public ConditionalQuarkusTestResource(TestResource testResource, ConditionHolder condition) {
+    public ConditionalQuarkusTestResource(T testResource, ConditionHolder condition) {
         this.testResource = testResource;
         this.condition = condition;
     }
 
-    public TestResource getTestResource() {
+    public T getTestResource() {
         return testResource;
     }
 

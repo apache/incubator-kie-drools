@@ -44,6 +44,15 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
     @Override
+    public <T extends NodeWithAnnotations<?>> T withProduces(T node, boolean isDefault) {
+        node.addAnnotation("org.springframework.context.annotation.Bean");
+        if (isDefault) {
+            node.addAnnotation("org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean");
+        }
+        return node;
+    }
+
+    @Override
     public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
         node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Qualifier"), new StringLiteralExpr(name)));
         return node;

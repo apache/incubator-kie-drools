@@ -22,7 +22,7 @@ import org.kie.kogito.testcontainers.KogitoKafkaContainer;
  * Kafka quarkus resource that works within the test lifecycle.
  *
  */
-public class KafkaQuarkusTestResource extends ConditionalQuarkusTestResource {
+public class KafkaQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoKafkaContainer> {
 
     public static final String KOGITO_KAFKA_PROPERTY = "kafka.bootstrap.servers";
 

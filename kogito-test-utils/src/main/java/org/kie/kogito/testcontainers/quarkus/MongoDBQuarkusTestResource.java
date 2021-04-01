@@ -22,14 +22,12 @@ import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
  * MongoDB quarkus resource that works within the test lifecycle.
  *
  */
-public class MongoDBQuarkusTestResource extends ConditionalQuarkusTestResource {
+public class MongoDBQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoMongoDBContainer> {
 
     public static final String MONGODB_CONNECTION_PROPERTY = "quarkus.mongodb.connection-string";
 
-    private static final KogitoMongoDBContainer container = new KogitoMongoDBContainer();
-
     public MongoDBQuarkusTestResource() {
-        super(container);
+        super(new KogitoMongoDBContainer());
     }
 
     @Override
@@ -39,7 +37,7 @@ public class MongoDBQuarkusTestResource extends ConditionalQuarkusTestResource {
 
     @Override
     protected String getKogitoPropertyValue() {
-        return container.getReplicaSetUrl();
+        return getTestResource().getReplicaSetUrl();
     }
 
     public static class Conditional extends MongoDBQuarkusTestResource {

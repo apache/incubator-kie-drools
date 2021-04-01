@@ -38,6 +38,15 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
     @Override
+    public <T extends NodeWithAnnotations<?>> T withProduces(T node, boolean isDefault) {
+        node.addAndGetAnnotation("javax.enterprise.inject.Produces");
+        if (isDefault) {
+            node.addAndGetAnnotation("io.quarkus.arc.DefaultBean");
+        }
+        return node;
+    }
+
+    @Override
     public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
         node.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.inject.Named"), new StringLiteralExpr(name)));
         return node;

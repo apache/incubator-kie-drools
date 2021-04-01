@@ -22,7 +22,7 @@ import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
  * MongoDB spring boot resource that works within the test lifecycle.
  *
  */
-public class MongoDBSpringBootTestResource extends ConditionalSpringBootTestResource {
+public class MongoDBSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoMongoDBContainer> {
 
     public static final String MONGODB_CONNECTION_PROPERTY = "spring.data.mongodb.uri";
 

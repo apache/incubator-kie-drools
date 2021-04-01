@@ -50,6 +50,11 @@ class KogitoProcessInstancesFactoryTest {
             public List<BaseMarshaller<?>> marshallers() {
                 return myMarshallers;
             }
+
+            @Override
+            public String proto() {
+                return null;
+            }
         };
         Process<?> myProcess = new MyProcessImpl();
         CacheProcessInstances instances = factory.createProcessInstances(myProcess);

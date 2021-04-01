@@ -16,31 +16,34 @@
 package org.kie.kogito.testcontainers.springboot;
 
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
-import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
+import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
+
+import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL_CONNECTION_URI;
 
 /**
- * Infinispan spring boot resource that works within the test lifecycle.
+ * PostgreSQL spring boot resource that works within the test lifecycle.
  *
  */
-public class InfinispanSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoInfinispanContainer> {
+public class PostgreSqlSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoPostgreSqlContainer> {
 
-    public static final String KOGITO_INFINISPAN_PROPERTY = "infinispan.remote.server-list";
-
-    public InfinispanSpringBootTestResource() {
-        super(new KogitoInfinispanContainer());
+    public PostgreSqlSpringBootTestResource() {
+        super(new KogitoPostgreSqlContainer());
     }
 
     @Override
     protected String getKogitoProperty() {
-        return KOGITO_INFINISPAN_PROPERTY;
+        return POSTGRESQL_CONNECTION_URI;
     }
 
-    public static class Conditional extends InfinispanSpringBootTestResource {
+    @Override
+    protected String getKogitoPropertyValue() {
+        return getTestResource().getConnectionUri();
+    }
+
+    public static class Conditional extends PostgreSqlSpringBootTestResource {
 
         public Conditional() {
-            super();
             enableConditional();
         }
     }
-
 }

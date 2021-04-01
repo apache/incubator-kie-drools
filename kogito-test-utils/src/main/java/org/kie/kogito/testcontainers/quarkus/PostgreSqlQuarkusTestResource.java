@@ -13,34 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.testcontainers.springboot;
+package org.kie.kogito.testcontainers.quarkus;
 
-import org.kie.kogito.resources.ConditionalSpringBootTestResource;
-import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
+import org.kie.kogito.resources.ConditionalQuarkusTestResource;
+import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
+
+import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL_CONNECTION_URI;
 
 /**
- * Infinispan spring boot resource that works within the test lifecycle.
+ * PostgreSQL quarkus resource that works within the test lifecycle.
  *
  */
-public class InfinispanSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoInfinispanContainer> {
+public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoPostgreSqlContainer> {
 
-    public static final String KOGITO_INFINISPAN_PROPERTY = "infinispan.remote.server-list";
-
-    public InfinispanSpringBootTestResource() {
-        super(new KogitoInfinispanContainer());
+    public PostgreSqlQuarkusTestResource() {
+        super(new KogitoPostgreSqlContainer());
     }
 
     @Override
     protected String getKogitoProperty() {
-        return KOGITO_INFINISPAN_PROPERTY;
+        return POSTGRESQL_CONNECTION_URI;
     }
 
-    public static class Conditional extends InfinispanSpringBootTestResource {
+    @Override
+    protected String getKogitoPropertyValue() {
+        return getTestResource().getConnectionUri();
+    }
+
+    public static class Conditional extends PostgreSqlQuarkusTestResource {
 
         public Conditional() {
-            super();
             enableConditional();
         }
     }
-
 }

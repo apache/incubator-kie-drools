@@ -24,7 +24,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  * Kafka spring boot resource that works within the test lifecycle.
  *
  */
-public class KafkaSpringBootTestResource extends ConditionalSpringBootTestResource {
+public class KafkaSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoKafkaContainer> {
 
     public static final String KOGITO_KAFKA_PROPERTY = "spring.kafka.bootstrap-servers";
 

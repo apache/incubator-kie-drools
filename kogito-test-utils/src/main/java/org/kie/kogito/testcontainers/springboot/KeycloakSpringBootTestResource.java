@@ -22,7 +22,7 @@ import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
  * Keycloak spring boot resource that works within the test lifecycle.
  *
  */
-public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestResource {
+public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoKeycloakContainer> {
 
     public static final String KOGITO_KEYCLOAK_PROPERTY = "keycloak.auth-server-url";
 

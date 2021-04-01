@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Keycloak quarkus resource that works within the test lifecycle.
  */
-public class KeycloakQuarkusTestResource extends ConditionalQuarkusTestResource {
+public class KeycloakQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoKeycloakContainer> {
 
     public static final String KOGITO_KEYCLOAK_PROPERTY = "quarkus.oidc.auth-server-url";
     public static final String KOGITO_OIDC_TENANTS = "kogito.test.tenants";

@@ -22,7 +22,7 @@ import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
  * Infinispan quarkus resource that works within the test lifecycle.
  *
  */
-public class InfinispanQuarkusTestResource extends ConditionalQuarkusTestResource {
+public class InfinispanQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoInfinispanContainer> {
 
     public static final String KOGITO_INFINISPAN_PROPERTY = "quarkus.infinispan-client.server-list";
 
