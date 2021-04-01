@@ -18,17 +18,18 @@ package org.drools.scenariosimulation.api.model;
 
 import org.junit.Test;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 import static org.junit.Assert.assertEquals;
 
 public class FactIdentifierTest {
 
     @Test
     public void importedFactIdentifierTest() {
-        FactIdentifier factIdentifier = FactIdentifier.create("Book", "Book", "imp");
+        FactIdentifier factIdentifier = FactIdentifier.create("Book", "Book", IMPORTED_PREFIX);
         assertEquals("Book", factIdentifier.getName());
         assertEquals("Book", factIdentifier.getClassName());
-        assertEquals("imp", factIdentifier.getImportPrefix());
-        assertEquals("imp.Book", factIdentifier.getFullName());
+        assertEquals(IMPORTED_PREFIX, factIdentifier.getImportPrefix());
+        assertEquals("imported.Book", factIdentifier.getFullName());
     }
 
     @Test

@@ -67,6 +67,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 import static org.junit.Assert.assertEquals;
@@ -351,10 +352,10 @@ public class DMNScenarioRunnerHelperTest {
         ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
 
         FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "Book");
-        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("Person", "Person", "imported");
-        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("Dispute", "Dispute", "imported");
-        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("Book", "Book", "imported");
-        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create("wr.Book", "wr.Book", "imported");
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("Person", "Person", IMPORTED_PREFIX);
+        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("Dispute", "Dispute", IMPORTED_PREFIX);
+        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("Book", "Book", IMPORTED_PREFIX);
+        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create("wr.Book", "wr.Book", IMPORTED_PREFIX);
 
         AbstractMap.SimpleEntry<String, Object> backgroundDisputeFactData = new AbstractMap.SimpleEntry<>("description", "Nice");
         AbstractMap.SimpleEntry<String, Object> backgroundPersonFactData = new AbstractMap.SimpleEntry<>("name", "Carl");
@@ -389,7 +390,7 @@ public class DMNScenarioRunnerHelperTest {
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), false));
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, singletonList(factMappingValue), true));
 
-        List<String> expectedInputDataToLoad = asList(personFactIdentifier.getName(), disputeFactIdentifier.getName(), bookFactIdentifier.getName(), "imported");
+        List<String> expectedInputDataToLoad = asList(personFactIdentifier.getName(), disputeFactIdentifier.getName(), bookFactIdentifier.getName(), IMPORTED_PREFIX);
         int inputObjects = expectedInputDataToLoad.size();
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
@@ -413,7 +414,7 @@ public class DMNScenarioRunnerHelperTest {
                 assertEquals(givenBookFactData.getValue(), value.get(givenBookFactData.getKey()));
                 assertEquals(givenBookFactData2.getValue(), value.get(givenBookFactData2.getKey()));
                 assertEquals(2, value.size());
-            } else if ("imported".equals(key)) {
+            } else if (IMPORTED_PREFIX.equals(key)) {
                 Map<String, Object> subValueDispute = (Map<String, Object>) value.get(importedDisputeFactIdentifier.getName());
                 assertEquals(backgroundImportedDisputeFactData.getValue(), subValueDispute.get(backgroundImportedDisputeFactData.getKey()));
                 assertEquals(1, subValueDispute.size());
