@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.kafka.KafkaClient;
@@ -42,6 +43,13 @@ public class KafkaSpringBootTestResourceTest {
     private ConfigurableListableBeanFactory beanFactory;
 
     private KafkaSpringBootTestResource resource;
+
+    private static final String IMAGE = "confluentinc/cp-kafka:1.0";
+
+    @BeforeEach
+    public void setup() {
+        System.setProperty(KogitoKafkaContainer.KAFKA_PROPERTY, IMAGE);
+    }
 
     @Test
     public void shouldGetProperty() {

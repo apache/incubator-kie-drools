@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * Kafka Container for Kogito examples.
@@ -27,10 +28,12 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 public class KogitoKafkaContainer extends KafkaContainer implements TestResource {
 
     public static final String NAME = "kafka";
+    public static final String KAFKA_PROPERTY = "container.image." + NAME;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoKafkaContainer.class);
 
     public KogitoKafkaContainer() {
+        super(DockerImageName.parse(System.getProperty(KAFKA_PROPERTY)));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
     }
 

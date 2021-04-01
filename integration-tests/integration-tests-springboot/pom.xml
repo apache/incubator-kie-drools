@@ -98,6 +98,7 @@
             <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
             <properties>
               <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+              <container.image.kafka>${container.image.kafka}</container.image.kafka>
             </properties>
           </configuration>
         </plugin>

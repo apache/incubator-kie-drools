@@ -26,13 +26,16 @@ import static org.mockito.Mockito.spy;
 public class KogitoKafkaContainerTest {
 
     private static final int MAPPED_PORT = 11113;
+    private static final String IMAGE = "confluentinc/cp-kafka:1.0";
 
     private KogitoKafkaContainer container;
 
     @BeforeEach
     public void setup() {
+        System.setProperty(KogitoKafkaContainer.KAFKA_PROPERTY, IMAGE);
         container = spy(new KogitoKafkaContainer());
         doNothing().when(container).start();
+        doNothing().when(container).setDockerImageName(IMAGE);
     }
 
     @Test

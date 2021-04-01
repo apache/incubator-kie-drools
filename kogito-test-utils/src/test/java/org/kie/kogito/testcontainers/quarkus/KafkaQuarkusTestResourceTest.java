@@ -15,7 +15,9 @@
  */
 package org.kie.kogito.testcontainers.quarkus;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,6 +27,13 @@ import static org.mockito.Mockito.spy;
 public class KafkaQuarkusTestResourceTest {
 
     private KafkaQuarkusTestResource resource;
+
+    private static final String IMAGE = "confluentinc/cp-kafka:1.0";
+
+    @BeforeEach
+    public void setup() {
+        System.setProperty(KogitoKafkaContainer.KAFKA_PROPERTY, IMAGE);
+    }
 
     @Test
     public void shouldGetProperty() {
