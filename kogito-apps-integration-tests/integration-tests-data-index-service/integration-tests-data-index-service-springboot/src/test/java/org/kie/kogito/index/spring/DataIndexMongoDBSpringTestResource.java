@@ -25,7 +25,7 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
 
 import static java.util.stream.Collectors.toList;
 
-public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource {
+public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource<DataIndexMongoDBResource> {
 
     public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.data-index-service.url";
 

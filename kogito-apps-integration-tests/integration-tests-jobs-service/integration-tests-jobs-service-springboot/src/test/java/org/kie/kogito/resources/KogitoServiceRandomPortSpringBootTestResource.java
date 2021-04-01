@@ -17,7 +17,7 @@ package org.kie.kogito.resources;
 
 import org.kie.kogito.it.KogitoServiceRandomPortTestResource;
 
-public class KogitoServiceRandomPortSpringBootTestResource extends ConditionalSpringBootTestResource {
+public class KogitoServiceRandomPortSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoServiceRandomPortTestResource> {
 
     public static final String SPRINGBOOT_SERVICE_HTTP_PORT = "server.port";
 

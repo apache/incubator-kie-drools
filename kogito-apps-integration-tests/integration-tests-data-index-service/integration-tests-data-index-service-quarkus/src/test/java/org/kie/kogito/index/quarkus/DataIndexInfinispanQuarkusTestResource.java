@@ -22,7 +22,7 @@ import java.util.Map;
 import org.kie.kogito.index.resources.DataIndexInfinispanResource;
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 
-public class DataIndexInfinispanQuarkusTestResource extends ConditionalQuarkusTestResource {
+public class DataIndexInfinispanQuarkusTestResource extends ConditionalQuarkusTestResource<DataIndexInfinispanResource> {
 
     public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.data-index-service.url";
 

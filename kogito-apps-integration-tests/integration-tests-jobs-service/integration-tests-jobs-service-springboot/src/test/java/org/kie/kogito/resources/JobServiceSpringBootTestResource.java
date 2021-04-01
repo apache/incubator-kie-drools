@@ -21,7 +21,7 @@ import org.kie.kogito.testcontainers.JobServiceContainer;
  * Infinispan spring boot resource that works within the test lifecycle.
  *
  */
-public class JobServiceSpringBootTestResource extends ConditionalSpringBootTestResource {
+public class JobServiceSpringBootTestResource extends ConditionalSpringBootTestResource<JobServiceContainer> {
 
     public static final String JOBS_SERVICE_URL = "kogito.jobs-service.url";
 
