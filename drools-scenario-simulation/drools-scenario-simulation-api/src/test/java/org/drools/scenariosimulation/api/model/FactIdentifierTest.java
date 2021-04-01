@@ -23,6 +23,15 @@ import static org.junit.Assert.assertEquals;
 public class FactIdentifierTest {
 
     @Test
+    public void importedFactIdentifierTest() {
+        FactIdentifier factIdentifier = FactIdentifier.create("Book", "Book", "imp");
+        assertEquals("Book", factIdentifier.getName());
+        assertEquals("Book", factIdentifier.getClassName());
+        assertEquals("imp", factIdentifier.getImportPrefix());
+        assertEquals("imp.Book", factIdentifier.getFullName());
+    }
+
+    @Test
     public void getClassNameWithoutPackage() {
         commonGetClassNameWithoutPackage("test", "com.Test", "Test");
     }
