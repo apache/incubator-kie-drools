@@ -16,35 +16,38 @@
 package org.drools.scenariosimulation.api.model;
 
 import java.util.Objects;
-import java.util.Optional;
+
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * A fact is identified by its name and the canonical name of its class
  */
 public class FactIdentifier {
 
-    /**
-     * Fact name. Used in DMN Scenario only (eg. Violation)
-     */
     private String name;
-    /**
-     * Fact Type. (or full Fact Name) In RULE test scenario it represents the ClassName of the fact (eg. com.Author)
-     *            In DMN test scenario it represents the fullName of the Fact, most of the case the same value of the
-     *            name (eg. Violation). In case of imported node from external DMN, it contains the imported prefix
-     *            (eg. imp.Violation)
-     */
     private String className;
+    @XStreamAsAttribute
+    private String importPrefix;
 
     public static final FactIdentifier INDEX = create("#", Integer.class.getCanonicalName());
     public static final FactIdentifier DESCRIPTION = create("Scenario description", String.class.getCanonicalName());
     public static final FactIdentifier EMPTY = create("Empty", Void.class.getName());
 
+    public static FactIdentifier create(String name, String className) {
+        return new FactIdentifier(name, className, null);
+    }
+
+    public static FactIdentifier create(String name, String className, String importPrefix) {
+        return new FactIdentifier(name, className, importPrefix);
+    }
+
     public FactIdentifier() {
     }
 
-    public FactIdentifier(String name, String className) {
+    public FactIdentifier(String name, String className, String importPrefix) {
         this.name = name;
         this.className = className;
+        this.importPrefix = importPrefix;
     }
 
     public String getName() {
@@ -71,18 +74,15 @@ public class FactIdentifier {
         }
     }
 
-    /**
-     * To be used in DMN Scenario ONLY
-     * @return
-     */
-    public Optional<String> getFactPrefix() {
-        return Objects.equals(name, className) ?
-                Optional.empty() :
-                Optional.ofNullable(className.split("\\.")[0]);
+    public String getImportPrefix() {
+        return importPrefix;
     }
 
-    public static FactIdentifier create(String name, String className) {
-        return new FactIdentifier(name, className);
+    public String getFullName() {
+        if (importPrefix != null && !importPrefix.isEmpty()) {
+            return importPrefix + "." + name;
+        }
+        return name;
     }
 
     @Override

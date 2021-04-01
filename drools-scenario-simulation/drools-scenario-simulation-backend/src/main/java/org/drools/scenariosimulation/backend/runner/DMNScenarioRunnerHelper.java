@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -101,9 +100,8 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
         for (InstanceGiven input : inputData) {
             String factName = input.getFactIdentifier().getName();
-            Optional<String> factPrefixOpt = input.getFactIdentifier().getFactPrefix();
-            if (factPrefixOpt.isPresent()) {
-                String importedKey = factPrefixOpt.get();
+            String importedKey = input.getFactIdentifier().getImportPrefix();
+            if (importedKey != null && !importedKey.isEmpty()) {
                 Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importedKey, k -> new HashMap<>());
                 Object value = groupedFacts.containsKey(factName) ?
                         mergeValues(groupedFacts.get(factName), input.getValue()) :
@@ -175,7 +173,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
         for (ScenarioExpect output : scenarioRunnerData.getExpects()) {
             FactIdentifier factIdentifier = output.getFactIdentifier();
-            String decisionName = factIdentifier.getClassName();
+            String decisionName = factIdentifier.getFullName();
             DMNDecisionResult decisionResult = dmnResult.getDecisionResultByName(decisionName);
             if (decisionResult == null) {
                 throw new ScenarioException("DMN execution has not generated a decision result with name " + decisionName);

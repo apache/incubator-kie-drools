@@ -351,10 +351,10 @@ public class DMNScenarioRunnerHelperTest {
         ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
 
         FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "Book");
-        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("Person", "imported.Person");
-        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("Dispute", "imported.Dispute");
-        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("Book", "imported.Book");
-        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create("wr.Book", "imported.wr.Book");
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("Person", "Person", "imported");
+        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("Dispute", "Dispute", "imported");
+        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("Book", "Book", "imported");
+        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create("wr.Book", "wr.Book", "imported");
 
         AbstractMap.SimpleEntry<String, Object> backgroundDisputeFactData = new AbstractMap.SimpleEntry<>("description", "Nice");
         AbstractMap.SimpleEntry<String, Object> backgroundPersonFactData = new AbstractMap.SimpleEntry<>("name", "Carl");
