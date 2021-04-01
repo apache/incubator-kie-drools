@@ -78,18 +78,12 @@ public class FactIdentifier {
         return importPrefix;
     }
 
-    public String getFullName() {
-        if (importPrefix != null && !importPrefix.isEmpty()) {
-            return importPrefix + "." + name;
-        }
-        return name;
-    }
-
     @Override
     public String toString() {
         return "FactIdentifier{" +
                 "name='" + name + '\'' +
                 ", className='" + className + '\'' +
+                ", importPrefix='" + importPrefix + '\'' +
                 '}';
     }
 
@@ -103,11 +97,11 @@ public class FactIdentifier {
         }
         FactIdentifier that = (FactIdentifier) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(className, that.className);
+                Objects.equals(className, that.className) && Objects.equals(importPrefix, that.importPrefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, className);
+        return Objects.hash(name, className, importPrefix);
     }
 }
