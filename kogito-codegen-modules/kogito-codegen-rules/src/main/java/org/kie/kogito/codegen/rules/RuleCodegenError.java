@@ -42,7 +42,8 @@ public class RuleCodegenError extends Error {
                 ex.getMessage() + "\n" +
                 Arrays.stream(errors)
                         .map(DroolsError::toString)
-                        .collect(Collectors.joining("\n")));
+                        .collect(Collectors.joining("\n")),
+                ex);
         this.errors = errors;
     }
 
