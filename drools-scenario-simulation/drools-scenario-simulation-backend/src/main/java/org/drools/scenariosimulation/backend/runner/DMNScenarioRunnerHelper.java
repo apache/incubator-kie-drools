@@ -100,13 +100,14 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
         for (InstanceGiven input : inputData) {
             String factName = input.getFactIdentifier().getName();
-            String importedKey = input.getFactIdentifier().getImportPrefix();
-            if (importedKey != null && !importedKey.isEmpty()) {
-                Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importedKey, k -> new HashMap<>());
-                Object value = groupedFacts.containsKey(factName) ?
-                        mergeValues(groupedFacts.get(factName), input.getValue()) :
+            String importPrefix = input.getFactIdentifier().getImportPrefix();
+            if (importPrefix != null && !importPrefix.isEmpty()) {
+                String importedFactName = factName.replaceFirst(importPrefix + ".", "");
+                Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importPrefix, k -> new HashMap<>());
+                Object value = groupedFacts.containsKey(importedFactName) ?
+                        mergeValues(groupedFacts.get(importedFactName), input.getValue()) :
                         input.getValue();
-                importedInputValues.get(importedKey).put(factName, value);
+                importedInputValues.get(importPrefix).put(importedFactName, value);
             } else {
                 Object value = inputValues.containsKey(factName) ?
                         mergeValues(inputValues.get(factName), input.getValue()) :
@@ -173,7 +174,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
         for (ScenarioExpect output : scenarioRunnerData.getExpects()) {
             FactIdentifier factIdentifier = output.getFactIdentifier();
-            String decisionName = factIdentifier.getFullName();
+            String decisionName = factIdentifier.getName();
             DMNDecisionResult decisionResult = dmnResult.getDecisionResultByName(decisionName);
             if (decisionResult == null) {
                 throw new ScenarioException("DMN execution has not generated a decision result with name " + decisionName);

@@ -352,10 +352,10 @@ public class DMNScenarioRunnerHelperTest {
         ArgumentCaptor<String> setKeyCaptor = ArgumentCaptor.forClass(String.class);
 
         FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "Book");
-        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create("Person", "Person", IMPORTED_PREFIX);
-        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create("Dispute", "Dispute", IMPORTED_PREFIX);
-        FactIdentifier importedBookFactIdentifier = FactIdentifier.create("Book", "Book", IMPORTED_PREFIX);
-        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create("wr.Book", "wr.Book", IMPORTED_PREFIX);
+        FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX);
+        FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Dispute", IMPORTED_PREFIX + ".Dispute", IMPORTED_PREFIX);
+        FactIdentifier importedBookFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Book", IMPORTED_PREFIX + ".Book", IMPORTED_PREFIX);
+        FactIdentifier importedWrBookFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".wr.Book", IMPORTED_PREFIX + ".wr.Book", IMPORTED_PREFIX);
 
         AbstractMap.SimpleEntry<String, Object> backgroundDisputeFactData = new AbstractMap.SimpleEntry<>("description", "Nice");
         AbstractMap.SimpleEntry<String, Object> backgroundPersonFactData = new AbstractMap.SimpleEntry<>("name", "Carl");
@@ -415,20 +415,20 @@ public class DMNScenarioRunnerHelperTest {
                 assertEquals(givenBookFactData2.getValue(), value.get(givenBookFactData2.getKey()));
                 assertEquals(2, value.size());
             } else if (IMPORTED_PREFIX.equals(key)) {
-                Map<String, Object> subValueDispute = (Map<String, Object>) value.get(importedDisputeFactIdentifier.getName());
+                Map<String, Object> subValueDispute = (Map<String, Object>) value.get("Dispute");
                 assertEquals(backgroundImportedDisputeFactData.getValue(), subValueDispute.get(backgroundImportedDisputeFactData.getKey()));
                 assertEquals(1, subValueDispute.size());
-                Map<String, Object> subValueBook = (Map<String, Object>) value.get(importedBookFactIdentifier.getName());
+                Map<String, Object> subValueBook = (Map<String, Object>) value.get("Book");
                 assertEquals(givenImportedBookFactData.getValue(), subValueBook.get(givenImportedBookFactData.getKey()));
                 assertEquals(givenImportedBookFactData2.getValue(), subValueBook.get(givenImportedBookFactData2.getKey()));
                 assertEquals(2, subValueBook.size());
-                Map<String, Object> subValuePerson = (Map<String, Object>) value.get(importedPersonFactIdentifier.getName());
+                Map<String, Object> subValuePerson = (Map<String, Object>) value.get("Person");
                 assertEquals(backgroundImportedPersonFactData.getValue(), subValuePerson.get(backgroundImportedPersonFactData.getKey()));
                 assertNotEquals(backgroundImportedPersonFactData2.getValue(), subValuePerson.get(backgroundImportedPersonFactData2.getKey()));
                 assertEquals(givenImportedPersonFactData.getValue(), subValuePerson.get(givenImportedPersonFactData.getKey()));
                 assertEquals(givenImportedPersonFactData2.getValue(), subValuePerson.get(givenImportedPersonFactData2.getKey()));
                 assertEquals(3, subValuePerson.size());
-                Map<String, Object> subValueWrBook = (Map<String, Object>) value.get(importedWrBookFactIdentifier.getName());
+                Map<String, Object> subValueWrBook = (Map<String, Object>) value.get("wr.Book");
                 assertEquals(givenImportedWrBookFactData.getValue(), subValueWrBook.get(givenImportedWrBookFactData.getKey()));
                 assertEquals(1, subValueWrBook.size());
                 assertEquals(4, value.size());

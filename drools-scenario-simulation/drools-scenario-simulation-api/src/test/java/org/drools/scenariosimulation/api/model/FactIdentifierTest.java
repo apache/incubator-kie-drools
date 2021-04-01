@@ -25,11 +25,11 @@ public class FactIdentifierTest {
 
     @Test
     public void importedFactIdentifierTest() {
-        FactIdentifier factIdentifier = FactIdentifier.create("Book", "Book", IMPORTED_PREFIX);
-        assertEquals("Book", factIdentifier.getName());
-        assertEquals("Book", factIdentifier.getClassName());
+        String importedBookName = IMPORTED_PREFIX + "." + "Book";
+        FactIdentifier factIdentifier = FactIdentifier.create(importedBookName, importedBookName, IMPORTED_PREFIX);
+        assertEquals(importedBookName, factIdentifier.getName());
+        assertEquals(importedBookName, factIdentifier.getClassName());
         assertEquals(IMPORTED_PREFIX, factIdentifier.getImportPrefix());
-        assertEquals("imported.Book", factIdentifier.getFullName());
     }
 
     @Test
