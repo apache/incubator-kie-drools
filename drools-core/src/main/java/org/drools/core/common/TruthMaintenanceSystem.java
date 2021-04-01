@@ -97,7 +97,7 @@ public class TruthMaintenanceSystem {
         if ( key == null ) {
             // no EqualityKey exits, so we construct one. We know it can only be justified.
             fh =  ep.getHandleFactory().newFactHandle(object, typeConf, ep.getInternalWorkingMemory(), ep );
-            key = new EqualityKey( fh, EqualityKey.JUSTIFIED );
+            key = new EqualityKey( fh, EqualityKey.Status.JUSTIFIED );
             fh.setEqualityKey( key );
             put(key);
         } else {
@@ -267,7 +267,7 @@ public class TruthMaintenanceSystem {
             if (handle != null && handle.getEqualityKey() == null) {
                 EqualityKey key = new EqualityKey(handle);
                 handle.setEqualityKey(key);
-                key.setStatus(EqualityKey.STATED);
+                key.setStatus(EqualityKey.Status.STATED);
                 put(key);
             }
         }

@@ -136,7 +136,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         }
 
 
-        if ( beliefSet.isEmpty() && fh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( beliefSet.isEmpty() && fh.getEqualityKey().getStatus() == EqualityKey.Status.JUSTIFIED ) {
             // the set is empty, so delete form the EP, so things are cleaned up.
             ep.delete(fh, fh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
                       null, activation != null ? activation.getTuple().getTupleSink() : null );
@@ -182,7 +182,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
             key.setLogicalFactHandle( null );
             key.setBeliefSet(null);
 
-            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+            if ( key.getStatus() == EqualityKey.Status.JUSTIFIED ) {
                 // if it's stated, there will be other handles, so leave it in the TMS
                 tms.remove( key );
             }

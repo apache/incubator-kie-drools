@@ -111,7 +111,7 @@ public class DefeasibilityTest {
 
 
     private void checkStatus( EqualityKey key, int support, DefeasibilityStatus status ) {
-        assertEquals( EqualityKey.JUSTIFIED, key.getStatus() );
+        assertEquals( EqualityKey.Status.JUSTIFIED, key.getStatus() );
         BeliefSet set = key.getBeliefSet();
         assertTrue( set instanceof DefeasibleBeliefSet );
         DefeasibleBeliefSet dfs = ( DefeasibleBeliefSet ) set;

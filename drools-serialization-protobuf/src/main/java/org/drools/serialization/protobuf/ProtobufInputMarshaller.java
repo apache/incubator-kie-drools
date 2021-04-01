@@ -605,11 +605,10 @@ public class ProtobufInputMarshaller {
                 typeConf.enableTMS();
             }
 
-            EqualityKey key = new EqualityKey( handle,
-                                               _key.getStatus() );
+            EqualityKey key = new EqualityKey( handle, EqualityKey.Status.toStatus( _key.getStatus() ) );
             handle.setEqualityKey( key );
 
-            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+            if ( key.getStatus() == EqualityKey.Status.JUSTIFIED ) {
                 // not yet added to the object stores
                 ((NamedEntryPoint) handle.getEntryPoint((( NamedEntryPoint ) wmep).getInternalWorkingMemory())).getObjectStore()
                         .addHandle( handle, handle.getObject() );

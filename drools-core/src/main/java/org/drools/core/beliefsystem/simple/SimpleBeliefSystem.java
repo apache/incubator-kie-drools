@@ -67,7 +67,7 @@ public class SimpleBeliefSystem
         beliefSet.add( node.getMode() );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
-        if ( empty && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( empty && bfh.getEqualityKey().getStatus() == EqualityKey.Status.JUSTIFIED ) {
             ep.insert( bfh,
                        bfh.getObject(),
                        node.getJustifier().getRule(),
@@ -89,7 +89,7 @@ public class SimpleBeliefSystem
         beliefSet.add( mode );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
-        if ( empty && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( empty && bfh.getEqualityKey().getStatus() == EqualityKey.Status.JUSTIFIED ) {
             ep.insert( bfh,
                        bfh.getObject(),
                        rule,
@@ -120,7 +120,7 @@ public class SimpleBeliefSystem
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
 
-        if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.Status.JUSTIFIED ) {
             ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
                       null, activation != null ? activation.getTuple().getTupleSink() : null);
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
@@ -137,7 +137,7 @@ public class SimpleBeliefSystem
             key.setLogicalFactHandle( null );
             key.setBeliefSet( null );
 
-            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+            if ( key.getStatus() == EqualityKey.Status.JUSTIFIED ) {
                 // if it's stated, there will be other handles, so leave it in the TMS
                 tms.remove( key );
             }
@@ -150,13 +150,13 @@ public class SimpleBeliefSystem
         // Remove the FH from the network
         ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(), null);
 
-        bfh.getEqualityKey().setStatus( EqualityKey.STATED ); // revert to stated
+        bfh.getEqualityKey().setStatus( EqualityKey.Status.STATED ); // revert to stated
     }
 
     public void unstage(PropagationContext context,
                         BeliefSet<SimpleMode> beliefSet) {
         InternalFactHandle bfh = beliefSet.getFactHandle();
-        bfh.getEqualityKey().setStatus( EqualityKey.JUSTIFIED ); // revert to justified
+        bfh.getEqualityKey().setStatus( EqualityKey.Status.JUSTIFIED ); // revert to justified
 
         // Add the FH back into the network
         ep.insert(bfh, bfh.getObject(), context.getRuleOrigin(), null, getObjectTypeConf(beliefSet) );

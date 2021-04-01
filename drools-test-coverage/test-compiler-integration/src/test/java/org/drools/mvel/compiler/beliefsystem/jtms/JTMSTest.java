@@ -267,11 +267,9 @@ public class JTMSTest {
     }
     
     @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
     public void testChangeInPositivePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
-                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.mvel.compiler.Person;" +
@@ -362,11 +360,9 @@ public class JTMSTest {
     }    
     
     @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
     public void testChangeInNegativePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
-                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.mvel.compiler.Person;" +
@@ -560,7 +556,6 @@ public class JTMSTest {
     }   
 
     @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
     public void testConflictTMS() {
         KieSession kSession = getSessionFromFile( "posNegTms.drl" );
 

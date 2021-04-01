@@ -493,7 +493,7 @@ public class ProtobufOutputMarshaller {
             // write the assert map of Equality keys
             for ( EqualityKey key : keys ) {
                 ProtobufMessages.EqualityKey.Builder _key = ProtobufMessages.EqualityKey.newBuilder();
-                _key.setStatus( key.getStatus() );
+                _key.setStatus( key.getStatus().toCode() );
                 _key.setHandleId( key.getFactHandle().getId() );
 
                 if ( key.size() > 1 ) {
@@ -609,7 +609,7 @@ public class ProtobufOutputMarshaller {
         }
 
         if ( handle.getEqualityKey() != null &&
-             handle.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+             handle.getEqualityKey().getStatus() == EqualityKey.Status.JUSTIFIED ) {
             _handle.setIsJustified( true );
         } else {
             _handle.setIsJustified( false );

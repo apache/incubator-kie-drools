@@ -206,14 +206,14 @@ public class NamedEntryPoint
                     TruthMaintenanceSystem truthMaintenanceSystem = getTruthMaintenanceSystem();
 
                     EqualityKey key;
-                    if ( handle != null && handle.getEqualityKey().getStatus() == EqualityKey.STATED ) {
+                    if ( handle != null && handle.getEqualityKey().getStatus() == EqualityKey.Status.STATED ) {
                         // it's already stated, so just return the handle
                         return handle;
                     } else {
                         key = truthMaintenanceSystem.get( object );
                     }
 
-                    if ( handle != null && key != null && key.getStatus() == EqualityKey.JUSTIFIED && handle != null) {
+                    if ( handle != null && key != null && key.getStatus() == EqualityKey.Status.JUSTIFIED && handle != null) {
                         // The justified set needs to be staged, before we can continue with the stated insert
                         BeliefSet bs = handle.getEqualityKey().getBeliefSet();
                         bs.getBeliefSystem().stage( propagationContext, bs ); // staging will set it's status to stated
@@ -222,7 +222,7 @@ public class NamedEntryPoint
                     handle = createHandle( object,
                             typeConf ); // we know the handle is null
                     if ( key == null ) {
-                        key = new EqualityKey( handle, EqualityKey.STATED  );
+                        key = new EqualityKey( handle, EqualityKey.Status.STATED  );
                         truthMaintenanceSystem.put( key );
                     } else {
                         key.addFactHandle( handle );
@@ -370,16 +370,15 @@ public class NamedEntryPoint
                     EqualityKey newKey = tms.get(object);
                     EqualityKey oldKey = handle.getEqualityKey();
 
-                    if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
-                        // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
-                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
-                                "Rule " + (activation == null ? "" : activation.getRule().getName()) + " attempted an illegal operation");
-                    }
+//                    if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
+//                        // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
+//                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
+//                                "Rule " + (activation == null ? "" : activation.getRule().getName()) + " attempted an illegal operation");
+//                    }
 
                     if (newKey == null) {
                         oldKey.removeFactHandle(handle);
-                        newKey = new EqualityKey(handle,
-                                EqualityKey.STATED); // updates are always stated
+                        newKey = new EqualityKey(handle, EqualityKey.Status.STATED); // updates are always stated
                         handle.setEqualityKey(newKey);
                         getTruthMaintenanceSystem().put(newKey);
                     } else if (newKey != oldKey) {
@@ -486,7 +485,7 @@ public class NamedEntryPoint
     }
 
     private void deleteStated( RuleImpl rule, TerminalNode terminalNode, InternalFactHandle handle, EqualityKey key ) {
-        if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( key != null && key.getStatus() == EqualityKey.Status.JUSTIFIED ) {
             return;
         }
 
@@ -532,7 +531,7 @@ public class NamedEntryPoint
     }
 
     private void deleteLogical(EqualityKey key) {
-        if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( key != null && key.getStatus() == EqualityKey.Status.JUSTIFIED ) {
             getTruthMaintenanceSystem().delete( key.getLogicalFactHandle() );
         }
     }

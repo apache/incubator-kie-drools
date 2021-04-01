@@ -316,7 +316,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                                                                                             workingMemory, ep );
         }
         if ( handle.getEqualityKey() == null ) {
-            handle.setEqualityKey( new EqualityKey( handle, EqualityKey.STATED ) );
+            handle.setEqualityKey( new EqualityKey( handle, EqualityKey.Status.STATED ) );
         } else {
             beliefSet = handle.getEqualityKey().getBeliefSet();
         }

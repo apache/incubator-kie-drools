@@ -477,7 +477,7 @@ public class AbductionTest {
 
         Bean b42 = (Bean) map.get( 42 );
         InternalFactHandle f42 = ( InternalFactHandle ) session.getFactHandle( b42 );
-        assertEquals( EqualityKey.JUSTIFIED, f42.getEqualityKey().getStatus() );
+        assertEquals( EqualityKey.Status.JUSTIFIED, f42.getEqualityKey().getStatus() );
 
     }
 

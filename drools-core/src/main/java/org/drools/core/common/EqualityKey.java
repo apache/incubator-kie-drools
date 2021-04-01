@@ -30,23 +30,33 @@ import org.drools.core.util.LinkedList;
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  */
-public class EqualityKey extends LinkedList<DefaultFactHandle>
-    implements
-    Externalizable {
-    public final static int    STATED    = 1;
-    public final static int    JUSTIFIED = 2;
+public class EqualityKey extends LinkedList<DefaultFactHandle> implements Externalizable {
 
-//    /** this is an optimisation so single stated equalities can tracked  without the overhead of  an ArrayList */
-//    private InternalFactHandle handle;
-//
-//    /** this is always lazily maintainned  and deleted  when empty to minimise memory consumption */
-//    private List<InternalFactHandle>               instances;
-    
+    public enum Status {
+        STATED, JUSTIFIED;
+
+        public static Status toStatus(int code) {
+            switch (code) {
+                case 1: return STATED;
+                case 2: return JUSTIFIED;
+            }
+            throw new IllegalArgumentException("Uknown status code: " + code);
+        }
+
+        public int toCode() {
+            switch (this) {
+                case STATED: return 1;
+                case JUSTIFIED: return 2;
+            }
+            throw new IllegalArgumentException("Uknown status: " + this);
+        }
+    }
+
     /** This is cached in the constructor from the first added Object */
     private int          hashCode;
 
     /** Tracks whether this Fact is Stated or Justified */
-    private int          status;
+    private Status          status;
     
     private  BeliefSet   beliefSet;
 
@@ -60,7 +70,7 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     }
 
     public EqualityKey(final InternalFactHandle handle,
-                       final int status) {
+                       final Status status) {
         super( ( DefaultFactHandle ) handle );
         this.hashCode = handle.getObjectHashCode();
         this.status = status;
@@ -69,13 +79,13 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         hashCode    = in.readInt();
-        status      = in.readInt();
+        status      = (Status) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeInt(hashCode);
-        out.writeInt(status);
+        out.writeObject(status);
     }
 
     public InternalFactHandle getLogicalFactHandle() {
@@ -110,7 +120,7 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     /**
      * @return the status
      */
-    public int getStatus() {
+    public Status getStatus() {
         return this.status;
     }  
 
@@ -125,20 +135,11 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     /**
      * @param status the status to set
      */
-    public void setStatus(final int status) {
+    public void setStatus(final Status status) {
         this.status = status;
     }
 
     public String toString() {
-        String str = null;
-        switch ( this.status ) {
-            case 1 :
-                str = "STATED";
-                break;
-            case 2 :
-                str = "JUSTIFIED";
-                break;
-        }
         return "[FactStatus status=" + this.status + "]";
     }
 
