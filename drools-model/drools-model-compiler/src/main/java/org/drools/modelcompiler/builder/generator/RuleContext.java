@@ -534,7 +534,7 @@ public class RuleContext {
     }
 
     public String getVar( String x ) {
-        if ( idGenerator.isGenerated( x ) ) {
+        if ( idGenerator.isGenerated( x ) || ruleUnitVars.containsKey( x ) ) {
             return DrlxParseUtil.toVar( x );
         }
         String var = x.endsWith( "sCoPe" ) ? x : definedVars.get(x);
