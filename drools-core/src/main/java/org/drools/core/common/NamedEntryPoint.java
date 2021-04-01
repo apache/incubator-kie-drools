@@ -370,12 +370,6 @@ public class NamedEntryPoint
                     EqualityKey newKey = tms.get(object);
                     EqualityKey oldKey = handle.getEqualityKey();
 
-//                    if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null) && newKey != oldKey) {
-//                        // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
-//                        throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
-//                                "Rule " + (activation == null ? "" : activation.getRule().getName()) + " attempted an illegal operation");
-//                    }
-
                     if (newKey == null) {
                         oldKey.removeFactHandle(handle);
                         newKey = new EqualityKey(handle, EqualityKey.Status.STATED); // updates are always stated
