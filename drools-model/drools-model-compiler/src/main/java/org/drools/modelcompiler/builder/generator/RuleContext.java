@@ -75,7 +75,7 @@ public class RuleContext {
     private RuleDescr descr;
     private final boolean generatePatternDSL;
 
-    private List<DeclarationSpec> allDeclarations = new ArrayList<>();
+    private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
     private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
@@ -98,6 +98,7 @@ public class RuleContext {
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
+    private int scopeCounter = 1;
     private Scope currentScope = new Scope();
     private Deque<Scope> scopesStack = new LinkedList<>();
     private Map<String, String> definedVars = new HashMap<>();
@@ -235,10 +236,9 @@ public class RuleContext {
     }
 
     public void removeDeclarationById(String id) {
-        DeclarationSpec removedDecl = scopedDeclarations.remove( getDeclarationKey( id ) );
-        if (removedDecl != null) {
-            this.allDeclarations.remove( removedDecl );
-        }
+        String declId = getDeclarationKey( id );
+        scopedDeclarations.remove( declId );
+        this.allDeclarations.remove( declId );
     }
 
     public boolean hasDeclaration(String id) {
@@ -317,9 +317,8 @@ public class RuleContext {
     }
 
     public DeclarationSpec addDeclaration(DeclarationSpec d) {
-        if (scopedDeclarations.putIfAbsent( d.getBindingId(), d ) == null) {
-            this.allDeclarations.add( d );
-        }
+        this.scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        this.allDeclarations.putIfAbsent( d.getBindingId(), d );
         return d;
     }
 
@@ -329,11 +328,8 @@ public class RuleContext {
         if (declarationById.isPresent()) {
             removeDeclarationById(bindingId);
         }
-        DeclarationSpec oldDecl = this.scopedDeclarations.put(d.getBindingId(), d);
-        if (oldDecl != null) {
-            this.allDeclarations.remove( oldDecl );
-        }
-        this.allDeclarations.add( d );
+        this.scopedDeclarations.put(d.getBindingId(), d);
+        this.allDeclarations.put(d.getBindingId(), d);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
@@ -343,7 +339,7 @@ public class RuleContext {
     }
 
     public Collection<DeclarationSpec> getAllDeclarations() {
-        return allDeclarations;
+        return allDeclarations.values();
     }
 
     public Collection<String> getAvailableBindings() {
@@ -555,7 +551,6 @@ public class RuleContext {
         return currentScope.forallFirstIdentifier;
     }
 
-    private static int scopeCounter = 1;
     private class Scope {
         private final String id;
         private final String forallFirstIdentifier;

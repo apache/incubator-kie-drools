@@ -255,4 +255,24 @@ public class ExisistentialTest extends BaseModelTest {
         ksession.insert( new Person("test", 18) );
         assertEquals( 0, ksession.fireAllRules() );
     }
+
+    @Test
+    public void test2NotsWithAnd() {
+        final String drl1 =
+                "package org.drools.compiler\n" +
+                "rule R when\n" +
+                "  (not (and Integer( $i : intValue )\n" +
+                "            String( length > $i ) \n" +
+                "       )\n" +
+                "  )\n" +
+                "  (not (and Integer( $i : intValue )\n" +
+                "            String( length > $i ) \n" +
+                "       )\n" +
+                "  )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
