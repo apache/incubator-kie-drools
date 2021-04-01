@@ -44,19 +44,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Pattern;
-import org.drools.core.spi.Activation;
-import org.drools.model.Global;
-import org.drools.model.Model;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
-import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.GroupKey;
-import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Customer;
@@ -65,11 +53,8 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.TargetPolicy;
-import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -79,7 +64,6 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
@@ -3530,5 +3514,35 @@ public class AccumulateTest extends BaseModelTest {
                     .orElse(0);
             return Collections.singletonList(max);
         }
+    }
+
+    @Test
+    public void testAccumulateWithSameBindingVariable() {
+        // DROOLS-6102
+        String str =
+                "import java.util.*;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;" +
+                "rule R when\n" +
+                "   accumulate ( $p : Person( age < 40 ), $tot1 : count( $p ) ) \n" +
+                "   accumulate ( $p : Integer( this > 40 ), $tot2 : count( $p ) ) \n" +
+                "then\n" +
+                "  list.add( $tot1.intValue() ); \n" +
+                "  list.add( $tot2.intValue() ); \n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(47);
+        ksession.insert(42);
+        ksession.insert(new Person("Edson", 38));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        assertEquals( 2, list.size() );
+        assertEquals( 1, (int) list.get(0) );
+        assertEquals( 2, (int) list.get(1) );
     }
 }
