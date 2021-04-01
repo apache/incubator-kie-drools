@@ -38,6 +38,7 @@ public class KiePMMLModelUtilsTest {
         packageNameMap.put("a spaced name", "aspacedname");
         packageNameMap.put("AnUpperCasedMame", "anuppercasedmame");
         packageNameMap.put("a_Mixed -name", "amixedname");
+        packageNameMap.put("C:\\w-ind_ow Path", "cwindowpath");
 
         classNameMap = new HashMap<>();
         classNameMap.put("a-dashed-name", "Adashedname");
@@ -46,6 +47,7 @@ public class KiePMMLModelUtilsTest {
         classNameMap.put("anUpperCasedName", "AnUpperCasedName");
         classNameMap.put("a.dotted.name", "Adottedname");
         classNameMap.put("a_.Mixed -name", "AMixedname");
+        classNameMap.put("C:\\w-ind_ow Path", "CwindowPath");
     }
 
     @Test
