@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 
 public class DRLIdGenerator {
 
@@ -31,7 +32,11 @@ public class DRLIdGenerator {
     private Map<PatternTypeDRLConstraint, String> generateAccumulateBindingId = new HashMap<>();
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
-        return md5Hash(patternType + drlConstraint);
+        return GENERATED_VARIABLE_PREFIX + md5Hash(patternType + drlConstraint);
+    }
+
+    public boolean isGenerated(String id) {
+        return id.startsWith( GENERATED_VARIABLE_PREFIX );
     }
 
     public String getCondId(Class<?> patternType, String drlConstraint) {

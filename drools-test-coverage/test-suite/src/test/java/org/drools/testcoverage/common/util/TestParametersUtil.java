@@ -184,7 +184,6 @@ public final class TestParametersUtil {
         }
 
         if (testAlsoExecutableModel) {
-            engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW);
             engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN);
         }
 
@@ -196,7 +195,6 @@ public final class TestParametersUtil {
         engineTestConfigurations.add(EngineTestConfiguration.CLOUD_MODE);
         engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
         engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
-        engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW);
         engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN);
 
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
