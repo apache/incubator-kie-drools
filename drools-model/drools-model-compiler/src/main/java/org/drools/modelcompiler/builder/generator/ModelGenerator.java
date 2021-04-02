@@ -130,12 +130,12 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel, boolean isPattern) {
+    public static void generateModel(KnowledgeBuilderImpl kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
         initPackageModel( kbuilder, pkg, typeResolver, packageDescr, packageModel );
 
         for(RuleDescr descr : packageDescr.getRules()) {
-            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
             context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQueryDef(packageModel, (QueryDescr) descr, context);
@@ -145,7 +145,7 @@ public class ModelGenerator {
         HashSet<RuleUnitDescription> ruleUnitDescriptions = new HashSet<>();
 
         for (RuleDescr descr : packageDescr.getRules()) {
-            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
             context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);

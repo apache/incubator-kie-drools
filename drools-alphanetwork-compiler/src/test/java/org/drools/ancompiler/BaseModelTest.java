@@ -25,7 +25,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.modelcompiler.ExecutableModelFlowProject;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -42,6 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -49,12 +49,10 @@ import static org.junit.Assert.fail;
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public enum RUN_TYPE {
-        FLOW_DSL( false ),
         PATTERN_DSL( false ),
         STANDARD_FROM_DRL( false ),
         STANDARD_WITH_ALPHA_NETWORK( true ),
-        PATTERN_WITH_ALPHA_NETWORK( true ),
-        FLOW_WITH_ALPHA_NETWORK( true );
+        PATTERN_WITH_ALPHA_NETWORK( true );
 
         private boolean alphaNetworkCompiler;
 
@@ -70,11 +68,9 @@ public abstract class BaseModelTest {
 
     final static Object[] WITH_ALPHA_NETWORK = {
             RUN_TYPE.STANDARD_FROM_DRL,
-            RUN_TYPE.FLOW_DSL,
             RUN_TYPE.PATTERN_DSL,
             RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK,
             RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK,
-            RUN_TYPE.FLOW_WITH_ALPHA_NETWORK,
     };
 
     @Parameters(name = "{0}")
@@ -137,9 +133,7 @@ public abstract class BaseModelTest {
         }
 
         KieBuilder kieBuilder;
-        if (asList(RUN_TYPE.FLOW_DSL, RUN_TYPE.FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
-            kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelFlowProject.class);
-        } else if (asList(RUN_TYPE.PATTERN_DSL, RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        if (asList(RUN_TYPE.PATTERN_DSL, RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         } else {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -46,7 +45,6 @@ import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
@@ -119,19 +117,14 @@ public class OOPathExprGenerator {
                 ).collect(Collectors.toList());
                 ooPathConditionExpressions.put(bindingId, conditionParseResult);
             } else {
-                if (context.isPatternDSL()) {
-                    ooPathConditionExpressions.put(bindingId, Collections.emptyList());
-                } else {
-                    final DrlxParseSuccess drlxParseResult = new SingleDrlxParseSuccess(fieldType, bindingId, new BooleanLiteralExpr(true), fieldType);
-                    ooPathConditionExpressions.put(bindingId, Collections.singletonList(drlxParseResult));
-                }
+                ooPathConditionExpressions.put(bindingId, Collections.emptyList());
             }
 
             previousBind = bindingId;
             previousClass = fieldType;
         }
 
-        ooPathConditionExpressions.forEach( context.isPatternDSL() ? this::toPatternExpr : this::toFlowExpr );
+        ooPathConditionExpressions.forEach( this::toPatternExpr );
     }
 
     private void toPatternExpr(String bindingId, List<DrlxParseResult> list) {
@@ -155,26 +148,5 @@ public class OOPathExprGenerator {
         }
 
         context.addExpression( patternExpr );
-    }
-
-    private void toFlowExpr(String bindingId, List<DrlxParseResult> list) {
-        final List<DrlxParseSuccess> value = list.stream()
-                .filter(DrlxParseResult::isSuccess)
-                .map(DrlxParseSuccess.class::cast)
-                .collect(Collectors.toList());
-
-        final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
-        value.forEach(e -> {
-            SingleDrlxParseSuccess singleDrlx = ( SingleDrlxParseSuccess ) e;
-            if (singleDrlx.getExprBinding() != null) {
-                MethodCallExpr expression = expressionBuilder.buildBinding( singleDrlx );
-                andDSL.addArgument( expression );
-            }
-            if (!(singleDrlx.getExpr() instanceof NameExpr)) {
-                MethodCallExpr expression = expressionBuilder.buildExpressionWithIndexing( singleDrlx );
-                andDSL.addArgument( expression );
-            }
-        });
-        context.addExpression( andDSL );
     }
 }
