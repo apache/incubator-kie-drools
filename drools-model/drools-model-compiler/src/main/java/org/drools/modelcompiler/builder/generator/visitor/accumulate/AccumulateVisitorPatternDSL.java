@@ -34,7 +34,6 @@ import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBu
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.LambdaUtil;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
 
 public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
@@ -126,7 +125,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             bindExpression.remove(name);
             LambdaExpr lambda = (LambdaExpr)bindExpression.getArgument( bindExpression.getArguments().size()-1 );
             if (lambda.getParameters().size() > 1) {
-                String formalArg = fromVar( name.getNameAsString() );
+                String formalArg = context.fromVar( name.getNameAsString() );
                 for (Parameter param : lambda.getParameters()) {
                     if (param.getNameAsString().equals( formalArg )) {
                         lambda.getParameters().remove( param );
