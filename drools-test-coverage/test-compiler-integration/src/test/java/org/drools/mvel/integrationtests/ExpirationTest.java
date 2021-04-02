@@ -771,8 +771,8 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, drl);
         final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
 
         //clock init to current time
