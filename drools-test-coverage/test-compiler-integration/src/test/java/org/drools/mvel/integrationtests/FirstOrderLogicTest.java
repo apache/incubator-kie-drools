@@ -1107,8 +1107,8 @@ public class FirstOrderLogicTest {
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ForallSlidingWindow.drl");
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), streamConfig, "test_ForallSlidingWindow.drl");
         KieSession ksession = kbase.newKieSession(conf, null);
 
         final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
