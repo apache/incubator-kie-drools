@@ -102,6 +102,7 @@ public abstract class AccumulateVisitor {
         final MethodCallExpr accumulateExprs = new MethodCallExpr(null, AND_CALL);
         accumulateDSL.addArgument(accumulateExprs);
 
+        this.context.pushScope(descr);
         pushAccumulateContext( accumulateExprs );
 
         try {
@@ -128,6 +129,7 @@ public abstract class AccumulateVisitor {
         } finally {
             context.popExprPointer();
             postVisit();
+            this.context.popScope();
         }
     }
 
@@ -169,7 +171,7 @@ public abstract class AccumulateVisitor {
             final MethodCallExpr functionDSL = new MethodCallExpr( null, ACC_FUNCTION_CALL );
 
             final String optBindingId = ofNullable( function.getBind() ).orElse( basePattern.getIdentifier() );
-            final String bindingId = ofNullable( optBindingId ).orElse( context.getOrCreateAccumulatorBindingId( function.getFunction() ) );
+            final String bindingId = context.getOutOfScopeVar( ofNullable( optBindingId ).orElse( context.getOrCreateAccumulatorBindingId( function.getFunction() ) ) );
 
             optNewBinding = Optional.empty();
 
@@ -182,7 +184,7 @@ public abstract class AccumulateVisitor {
 
             if ( bindingId != null ) {
                 final MethodCallExpr asDSL = new MethodCallExpr( functionDSL, BIND_AS_CALL );
-                asDSL.addArgument( context.getVarExpr( bindingId ) );
+                asDSL.addArgument( context.getVarExpr( bindingId, DrlxParseUtil.toVar(bindingId) ) );
                 accumulateDSL.addArgument( asDSL );
             }
         } finally {

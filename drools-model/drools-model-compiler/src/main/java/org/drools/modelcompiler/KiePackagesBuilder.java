@@ -651,9 +651,7 @@ public class KiePackagesBuilder {
             org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
             RuleConditionElement rce = buildPattern( ctx, allSubConditions, pattern );
             if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
-                //if (rce != null && !allSubConditions.getChildren().contains(pattern) ) {
-                    allSubConditions.addChild( rce );
-                //}
+                allSubConditions.addChild( rce );
             }
         } else if (c instanceof AccumulatePattern) {
             allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));

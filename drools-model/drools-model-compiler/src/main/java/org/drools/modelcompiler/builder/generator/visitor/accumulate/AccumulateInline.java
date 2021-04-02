@@ -102,7 +102,7 @@ public class AccumulateInline {
         this.packageModel = packageModel;
         this.accumulateDescr = descr;
         this.basePattern = basePattern;
-        this.mvelCompiler = createMvelCompiler(context.getTypeResolver(), context.getAllDeclarations());
+        this.mvelCompiler = createMvelCompiler(context, context.getAllDeclarations());
         singleAccumulateType = null;
     }
 

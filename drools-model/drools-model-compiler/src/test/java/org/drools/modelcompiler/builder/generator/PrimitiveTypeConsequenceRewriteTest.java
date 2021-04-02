@@ -115,7 +115,7 @@ public class PrimitiveTypeConsequenceRewriteTest {
 
     private RuleContext createContext() {
         TypeResolver typeResolver = new ClassTypeResolver(Collections.emptySet(), this.getClass().getClassLoader());
-        PackageModel packageModel = new PackageModel("", "", null, true, null, null);
+        PackageModel packageModel = new PackageModel("", "", null, true, null, new DRLIdGenerator());
         return new RuleContext(null, packageModel, typeResolver, true);
     }
 }

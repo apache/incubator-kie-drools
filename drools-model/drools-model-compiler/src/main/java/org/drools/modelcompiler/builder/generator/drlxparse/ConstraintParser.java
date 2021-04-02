@@ -579,7 +579,7 @@ public class ConstraintParser {
         allDeclarations.addAll(context.getAllDeclarations());
         typedExpression.getOriginalPatternType().ifPresent(pt -> allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt)));
 
-        MvelCompiler mvelCompiler = createMvelCompiler(context.getTypeResolver(), allDeclarations);
+        MvelCompiler mvelCompiler = createMvelCompiler(context, allDeclarations);
 
         CompiledExpressionResult compiledBlockResult = mvelCompiler.compileExpression(arg.toString());
 

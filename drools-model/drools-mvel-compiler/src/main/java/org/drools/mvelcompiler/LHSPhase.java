@@ -98,7 +98,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         return declaration.<TypedExpression>map(d -> new SimpleNameTExpr(n.getNameAsString(), d.getClazz()))
                 .orElseGet(() -> {
-                    mvelCompilerContext.addCreatedDeclaration(variableName, getRHSType());
+                    mvelCompilerContext.addDeclaration(variableName, getRHSType());
                     return new VariableDeclaratorTExpr(n, variableName, getRHSType(), rhs);
                 });
     }
