@@ -25,7 +25,6 @@ import org.drools.testcoverage.common.model.MyFact;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,11 +35,15 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class AccumulateConsistencyTest {
+    
+    Logger logger = LoggerFactory.getLogger(AccumulateConsistencyTest.class);
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
     private final boolean accumulateNullPropagation;
@@ -232,9 +235,10 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Ignore("Ignoring because this test is not essential to the original JIRA (DROOLS-6064) so will investigate in another JIRA: DROOLS-6254")
+    //@Ignore("Ignoring because this test is not essential to the original JIRA (DROOLS-6064) so will investigate in another JIRA: DROOLS-6254")
     @Test
     public void testMinMaxMatch() {
+        logger.warn("*** testMinMaxMatch start");
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -268,6 +272,7 @@ public class AccumulateConsistencyTest {
         } finally {
             kieSession.dispose();
         }
+        logger.warn("*** testMinMaxMatch end");
     }
 
     @Test
