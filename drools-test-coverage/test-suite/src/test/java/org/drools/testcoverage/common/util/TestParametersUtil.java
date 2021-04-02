@@ -257,6 +257,66 @@ public final class TestParametersUtil {
         return parameters;
     }
 
+    /**
+     * Returns KieBaseTestConfiguration instance with Equality while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getEqualityInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (!config.isIdentity()
+                    && config.isStreamMode() == orig.isStreamMode()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Equality instance of " + orig);
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Identity while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getIdentityInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (config.isIdentity()
+                    && config.isStreamMode() == orig.isStreamMode()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Identity instance of " + orig);
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Stream while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getStreamInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (config.isStreamMode()
+                    && config.isIdentity() == orig.isIdentity()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Stream instance of " + orig);
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Cloud while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getCloudInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (!config.isStreamMode()
+                    && config.isIdentity() == orig.isIdentity()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Cloud instance of " + orig);
+    }
+
     private TestParametersUtil() {
         // Creating instances of util classes should not be possible.
     }

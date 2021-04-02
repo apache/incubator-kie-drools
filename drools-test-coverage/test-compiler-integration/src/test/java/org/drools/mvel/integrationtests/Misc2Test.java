@@ -2722,8 +2722,8 @@ public class Misc2Test {
                 "    $f.setX( 2 );\n" +
                 "end";
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, str);
         KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "context", new ArrayList() {{
@@ -4544,8 +4544,8 @@ public class Misc2Test {
                 "then\n" +
                 "end\n";
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
         KieSession ksession = kbase.newKieSession();
 
         final AtomicInteger i = new AtomicInteger( 0 );

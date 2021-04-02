@@ -261,19 +261,9 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         return identity;
     }
 
-    // identity is mutable for test convenience but basically we don't need to use this (One test class should focus on identity or equality)
-    public void setIdentity(boolean identity) {
-        this.identity = identity;
-    }
-
     @Override
     public boolean isStreamMode() {
         return streamMode;
-    }
-
-    // streamMode is mutable for test convenience but basically we don't need to use this (One test class should focus on cloud or stream)
-    public void setStreamMode(boolean streamMode) {
-        this.streamMode = streamMode;
     }
 
     @Override
