@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.api.models;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -24,8 +25,9 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 /**
  * User-friendly representation of an <b>OutputField</b>
  */
-public class OutputField {
+public class OutputField implements Serializable {
 
+    private static final long serialVersionUID = 9103824387333264568L;
     private final String name;
     private final OP_TYPE opType;
     private final DATA_TYPE dataType;
@@ -38,7 +40,7 @@ public class OutputField {
                        final DATA_TYPE dataType,
                        final String targetField,
                        final RESULT_FEATURE resultFeature,
-                       List<String> allowedValues) {
+                       final List<String> allowedValues) {
         this.name = name;
         this.opType = opType;
         this.dataType = dataType;
