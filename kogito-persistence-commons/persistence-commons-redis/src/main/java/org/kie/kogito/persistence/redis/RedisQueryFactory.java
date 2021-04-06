@@ -30,12 +30,13 @@ public class RedisQueryFactory {
         components.add(String.format("@%s:%s", INDEX_NAME_FIELD, indexName));
         for (AttributeFilter attributeFilter : filters) {
             switch (attributeFilter.getCondition()) {
+                // Indexed values have to be escaped according to https://github.com/RediSearch/RediSearch/issues/1148
                 case EQUAL:
-                    components.add(String.format("@%s:%s", attributeFilter.getAttribute(), attributeFilter.getValue()));
+                    components.add(String.format("@%s:%s", attributeFilter.getAttribute(), Sanitizer.sanitize(attributeFilter.getValue())));
                     break;
                 case LIKE:
                     if (!"".equals(attributeFilter.getValue()) && !"*".equals(attributeFilter.getValue())) {
-                        components.add(String.format("@%s:%s", attributeFilter.getAttribute(), attributeFilter.getValue()));
+                        components.add(String.format("@%s:%s", attributeFilter.getAttribute(), Sanitizer.sanitize(attributeFilter.getValue())));
                     }
                     break;
             }
