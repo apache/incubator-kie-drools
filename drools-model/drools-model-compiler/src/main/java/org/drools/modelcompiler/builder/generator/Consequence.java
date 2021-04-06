@@ -59,7 +59,6 @@ import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.drools.modelcompiler.builder.errors.ConsequenceRewriteException;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.MvelCompilationError;
-import org.drools.modelcompiler.builder.errors.UnknownDeclarationException;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
@@ -290,32 +289,12 @@ public class Consequence {
             executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
         }
 
-
-        // Types in the executable model are promoted to boxed to type check the Java DSL.
-        for (String parameterName : verifiedDeclUsedInRHS) {
-            Parameter boxedParameter;
-            DeclarationSpec declaration = context.getDeclarationById(parameterName)
-                    .orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + parameterName));
-
-            Type boxedType = declaration.getBoxedType();
-
-            if (declaration.isBoxed()) {
-                String boxedParameterName = "_" + parameterName;
-                boxedParameter = new Parameter(boxedType, boxedParameterName);
-                Expression unboxedTypeDowncast = new VariableDeclarationExpr(new VariableDeclarator(declaration.getRawType(),
-                                                                                                    parameterName,
-                                                                                                    new NameExpr(boxedParameterName)));
-                ruleConsequence.addStatement(0, unboxedTypeDowncast);
-            } else {
-                boxedParameter = new Parameter(boxedType, parameterName);
-            }
-            executeLambda.addParameter(boxedParameter);
-        }
+        NodeList<Parameter> parameters = new BoxedParameter(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
+        parameters.forEach(executeLambda::addParameter);
 
         executeLambda.setBody(ruleConsequence);
         return executeCall;
     }
-
 
     private MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;

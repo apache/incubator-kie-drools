@@ -51,6 +51,7 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationException;
 import org.drools.modelcompiler.builder.errors.UnknownRuleUnitException;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
@@ -222,7 +223,7 @@ public class RuleContext {
     }
 
     public DeclarationSpec getDeclarationByIdWithException(String id) {
-        return getDeclarationById(id).orElseThrow(() -> new RuntimeException(id));
+        return getDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
     }
 
     private String getDeclarationKey( String id ) {
