@@ -65,7 +65,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenceRewrite.rewriteNode;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -303,8 +302,7 @@ public abstract class AbstractExpressionBuilder {
 
         TypedExpression expression = leftContainsThis ? right : left;
         indexedByRightOperandExtractor.setEnclosingParameters(true);
-        Expression narrowed = rewriteNode( context, narrowExpressionToType(expression, leftType) );
-        indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
+        indexedByRightOperandExtractor.setBody(new ExpressionStmt(expression.getExpression()));
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
         indexedByDSL.addArgument(new ClassExpr(toJPType(expression.getRawClass())));
     }

@@ -59,6 +59,7 @@ import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.drools.modelcompiler.builder.errors.ConsequenceRewriteException;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.MvelCompilationError;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationException;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
@@ -154,7 +155,7 @@ public class Consequence {
 
         switch (context.getRuleDialect()) {
             case JAVA:
-                rewriteReassignedDeclrations( ruleConsequence, usedDeclarationInRHS );
+                rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS );
                 return executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
             case MVEL:
                 return createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
@@ -170,7 +171,7 @@ public class Consequence {
                 .forEach( n -> n.replace( new EnclosedExpr(new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) ) );
     }
 
-    private void rewriteReassignedDeclrations( BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
+    private void rewriteReassignedDeclarations(BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
         for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
             String assignedVariable = assignExpr.getTarget().toString();
             if ( usedDeclarationInRHS.contains( assignedVariable ) ) {
@@ -217,12 +218,7 @@ public class Consequence {
     private BlockStmt rewriteConsequence(String consequence) {
         try {
             String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
-
-            String ruleConsequenceRewrittenForPrimitives =
-                    new PrimitiveTypeConsequenceRewrite(context)
-                            .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
-
-            return parseBlock( ruleConsequenceRewrittenForPrimitives );
+            return parseBlock( ruleConsequenceAsBlock );
         } catch (MvelCompilerException | ParseProblemException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage(), Optional.of(context.getRuleDescr()) ) );
         }
@@ -293,14 +289,33 @@ public class Consequence {
         if (requireDrools) {
             executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
         }
-        verifiedDeclUsedInRHS.stream().map(x -> {
-            DeclarationSpec declarationById = context.getDeclarationById(x).get();
 
-            return new Parameter(declarationById.getBoxedType(), x);
-        }).forEach(executeLambda::addParameter);
+
+        // Types in the executable model are promoted to boxed to type check the Java DSL.
+        for (String parameterName : verifiedDeclUsedInRHS) {
+            Parameter boxedParameter;
+            DeclarationSpec declaration = context.getDeclarationById(parameterName)
+                    .orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + parameterName));
+
+            Type boxedType = declaration.getBoxedType();
+
+            if (declaration.isBoxed()) {
+                String boxedParameterName = "_" + parameterName;
+                boxedParameter = new Parameter(boxedType, boxedParameterName);
+                Expression unboxedTypeDowncast = new VariableDeclarationExpr(new VariableDeclarator(declaration.getRawType(),
+                                                                                                    parameterName,
+                                                                                                    new NameExpr(boxedParameterName)));
+                ruleConsequence.addStatement(0, unboxedTypeDowncast);
+            } else {
+                boxedParameter = new Parameter(boxedType, parameterName);
+            }
+            executeLambda.addParameter(boxedParameter);
+        }
+
         executeLambda.setBody(ruleConsequence);
         return executeCall;
     }
+
 
     private MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
