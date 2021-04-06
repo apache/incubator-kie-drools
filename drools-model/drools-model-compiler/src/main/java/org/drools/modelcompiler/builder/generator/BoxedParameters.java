@@ -27,11 +27,11 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 
-public class BoxedParameter {
+public class BoxedParameters {
 
     RuleContext context;
 
-    public BoxedParameter(RuleContext context) {
+    public BoxedParameters(RuleContext context) {
         this.context = context;
     }
 

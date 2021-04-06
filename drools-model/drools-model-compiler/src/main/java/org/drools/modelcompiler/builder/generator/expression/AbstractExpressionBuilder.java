@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -41,17 +40,15 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.BoxedParameters;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -295,37 +292,13 @@ public abstract class AbstractExpressionBuilder {
                                            TypedExpression right,
                                            boolean leftContainsThis,
                                            MethodCallExpr indexedByDSL,
-                                           Collection<String> usedDeclarations,
-                                           java.lang.reflect.Type leftType,
-                                           SingleDrlxParseSuccess drlxParseResult) {
+                                           Collection<String> usedDeclarations) {
         LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
 
         BlockStmt lambdaBlock = new BlockStmt();
 
-        for (String declarationName : usedDeclarations) {
-
-
-            DeclarationSpec declaration = context.getDeclarationByIdWithException( declarationName );
-
-
-            Type boxedType = declaration.getBoxedType();
-            String parameterName = declarationName;
-
-            Parameter boxedParameter;
-            if (declaration.isBoxed()) {
-                String boxedParameterName = "_" + declarationName;
-                boxedParameter = new Parameter(boxedType, boxedParameterName);
-                Expression unboxedTypeDowncast = new VariableDeclarationExpr(new VariableDeclarator(declaration.getRawType(),
-                                                                                                    parameterName,
-                                                                                                    new NameExpr(boxedParameterName)));
-                lambdaBlock.addStatement(0, unboxedTypeDowncast);
-            } else {
-                boxedParameter = new Parameter(boxedType, parameterName);
-            }
-
-
-            indexedByRightOperandExtractor.addParameter(boxedParameter );
-        }
+        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(usedDeclarations, lambdaBlock);
+        parameters.forEach(indexedByRightOperandExtractor::addParameter);
 
         TypedExpression expression = leftContainsThis ? right : left;
         indexedByRightOperandExtractor.setEnclosingParameters(true);

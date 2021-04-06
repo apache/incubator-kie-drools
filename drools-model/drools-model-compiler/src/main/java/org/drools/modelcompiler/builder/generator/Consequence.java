@@ -289,7 +289,7 @@ public class Consequence {
             executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
         }
 
-        NodeList<Parameter> parameters = new BoxedParameter(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
+        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
         parameters.forEach(executeLambda::addParameter);
 
         executeLambda.setBody(ruleConsequence);
