@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
+import wait from 'waait';
 import {
   DataTable,
   getWrapper,
@@ -27,7 +28,6 @@ import TestTaskInboxDriver from './mocks/TestTaskInboxDriver';
 import { userTasks } from './mocks/MockData';
 import TaskInbox, { TaskInboxProps } from '../TaskInbox';
 import TaskInboxToolbar from '../../TaskInboxToolbar/TaskInboxToolbar';
-import wait from 'waait';
 import {
   getDefaultActiveTaskStates,
   getDefaultTaskStates
@@ -186,6 +186,52 @@ describe('TaskInbox tests', () => {
     expect(dataTable.props().data).toHaveLength(15);
 
     loadMore = wrapper.find(LoadMore);
+    expect(loadMore.exists()).toBeFalsy();
+  });
+
+  it('TaskInbox with initialState', async () => {
+    const driver = getTaskInboxDriver(15);
+
+    props.initialState = {
+      filters: {
+        taskNames: ['App'],
+        taskStates: ['Ready']
+      },
+      currentPage: {
+        offset: 10,
+        limit: 2
+      },
+      sortBy: {
+        property: 'lastUpdate',
+        direction: 'desc'
+      }
+    };
+
+    let wrapper;
+
+    await act(async () => {
+      wrapper = getTaskInboxWrapper();
+      wait();
+    });
+
+    wrapper = wrapper.update();
+
+    expect(driver.setInitialState).not.toHaveBeenCalled();
+    expect(driver.query).toHaveBeenCalledWith(0, 20);
+
+    const toolbar = wrapper.find(TaskInboxToolbar);
+    expect(toolbar.exists()).toBeTruthy();
+    expect(toolbar.props().activeFilter.taskStates).toHaveLength(1);
+    expect(toolbar.props().activeFilter.taskStates).toContain('Ready');
+    expect(toolbar.props().activeFilter.taskNames).toHaveLength(1);
+    expect(toolbar.props().activeFilter.taskNames).toContain('App');
+
+    const dataTable = wrapper.find(DataTable);
+    expect(dataTable.exists()).toBeTruthy();
+    expect(dataTable.props().isLoading).toBeFalsy();
+    expect(dataTable.props().data).toHaveLength(15);
+
+    const loadMore = wrapper.find(LoadMore);
     expect(loadMore.exists()).toBeFalsy();
   });
 

@@ -37,8 +37,7 @@ const TaskInboxContextProvider: React.FC<IOwnProps> = ({
       value={
         new TaskInboxGatewayApiImpl(
           appContext.getCurrentUser(),
-          new GraphQLTaskInboxQueries(apolloClient),
-          task => window.alert(`Task opened: ${task.id}`)
+          new GraphQLTaskInboxQueries(apolloClient)
         )
       }
     >

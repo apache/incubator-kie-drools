@@ -8,7 +8,8 @@ const BG_IMAGES_DIRNAME = 'bgimages';
 module.exports = {
   entry: {
     app: path.resolve(__dirname, 'src', 'index.tsx'),
-    'envelope/task-inbox': './src/envelope/task-inbox.ts'
+    'envelope/task-inbox': './src/envelope/task-inbox.ts',
+    'envelope/task-form': './src/envelope/task-form.ts'
   },
   plugins: [
     new HtmlWebpackPlugin({

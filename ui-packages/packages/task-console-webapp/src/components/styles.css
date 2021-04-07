@@ -17,3 +17,7 @@
 .kogito-task-console__full-size {
     height: 100%
 }
+
+.kogito-task-console__task-details-page {
+    margin-top: 21px;
+}

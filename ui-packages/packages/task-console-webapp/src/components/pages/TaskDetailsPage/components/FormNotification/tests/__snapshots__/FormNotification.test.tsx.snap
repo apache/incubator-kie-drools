@@ -1,0 +1,633 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormNotification test Notification with custom action 1`] = `
+<FormNotification
+  notification={
+    Object {
+      "close": [MockFunction],
+      "customAction": Object {
+        "label": "Custom action",
+        "onClick": [MockFunction],
+      },
+      "message": "The form has been submitted",
+      "type": "success",
+    }
+  }
+>
+  <Alert
+    actionClose={
+      <AlertActionCloseButton
+        onClose={[MockFunction]}
+      />
+    }
+    actionLinks={
+      <React.Fragment>
+        <AlertActionLink
+          onClick={[MockFunction]}
+        >
+          Custom action
+        </AlertActionLink>
+      </React.Fragment>
+    }
+    data-ouia-component-type="form-notification-alert"
+    data-ouia-safe={true}
+    isInline={true}
+    title="The form has been submitted"
+    variant="success"
+  >
+    <div
+      aria-label="Success Alert"
+      className="pf-c-alert pf-m-inline pf-m-success"
+      data-ouia-component-id="OUIA-Generated-Alert-success-2"
+      data-ouia-component-type="PF4/Alert"
+      data-ouia-safe={true}
+    >
+      <Component
+        variant="success"
+      >
+        <div
+          className="pf-c-alert__icon"
+        >
+          <CheckCircleIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          >
+            <svg
+              aria-hidden={true}
+              aria-labelledby={null}
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style={
+                Object {
+                  "verticalAlign": "-0.125em",
+                }
+              }
+              viewBox="0 0 512 512"
+              width="1em"
+            >
+              <path
+                d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"
+              />
+            </svg>
+          </CheckCircleIcon>
+        </div>
+      </Component>
+      <h4
+        className="pf-c-alert__title"
+      >
+        <span
+          className="pf-u-screen-reader"
+        >
+          Success alert:
+        </span>
+        The form has been submitted
+      </h4>
+      <div
+        className="pf-c-alert__action"
+      >
+        <AlertActionCloseButton
+          onClose={[MockFunction]}
+        >
+          <Button
+            aria-label="Close Success alert: alert: The form has been submitted"
+            onClick={[MockFunction]}
+            variant="plain"
+          >
+            <button
+              aria-disabled={false}
+              aria-label="Close Success alert: alert: The form has been submitted"
+              className="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-3"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[MockFunction]}
+              role={null}
+              type="button"
+            >
+              <TimesIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden={true}
+                  aria-labelledby={null}
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </TimesIcon>
+            </button>
+          </Button>
+        </AlertActionCloseButton>
+      </div>
+      <div
+        className="pf-c-alert__action-group"
+      >
+        <AlertActionLink
+          onClick={[MockFunction]}
+        >
+          <Button
+            className=""
+            isInline={true}
+            onClick={[MockFunction]}
+            variant="link"
+          >
+            <button
+              aria-disabled={false}
+              aria-label={null}
+              className="pf-c-button pf-m-link pf-m-inline"
+              data-ouia-component-id="OUIA-Generated-Button-link-2"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[MockFunction]}
+              role={null}
+              type="button"
+            >
+              Custom action
+            </button>
+          </Button>
+        </AlertActionLink>
+      </div>
+    </div>
+  </Alert>
+</FormNotification>
+`;
+
+exports[`FormNotification test Notification with details 1`] = `
+<FormNotification
+  notification={
+    Object {
+      "close": [MockFunction],
+      "details": "The details here!",
+      "message": "The form has been submitted",
+      "type": "error",
+    }
+  }
+>
+  <Alert
+    actionClose={
+      <AlertActionCloseButton
+        onClose={[MockFunction]}
+      />
+    }
+    actionLinks={
+      <React.Fragment>
+        <AlertActionLink
+          onClick={[Function]}
+        >
+          View details
+        </AlertActionLink>
+      </React.Fragment>
+    }
+    data-ouia-component-type="form-notification-alert"
+    data-ouia-safe={true}
+    isInline={true}
+    title="The form has been submitted"
+    variant="danger"
+  >
+    <div
+      aria-label="Danger Alert"
+      className="pf-c-alert pf-m-inline pf-m-danger"
+      data-ouia-component-id="OUIA-Generated-Alert-danger-1"
+      data-ouia-component-type="PF4/Alert"
+      data-ouia-safe={true}
+    >
+      <Component
+        variant="danger"
+      >
+        <div
+          className="pf-c-alert__icon"
+        >
+          <ExclamationCircleIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          >
+            <svg
+              aria-hidden={true}
+              aria-labelledby={null}
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style={
+                Object {
+                  "verticalAlign": "-0.125em",
+                }
+              }
+              viewBox="0 0 512 512"
+              width="1em"
+            >
+              <path
+                d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+              />
+            </svg>
+          </ExclamationCircleIcon>
+        </div>
+      </Component>
+      <h4
+        className="pf-c-alert__title"
+      >
+        <span
+          className="pf-u-screen-reader"
+        >
+          Danger alert:
+        </span>
+        The form has been submitted
+      </h4>
+      <div
+        className="pf-c-alert__action"
+      >
+        <AlertActionCloseButton
+          onClose={[MockFunction]}
+        >
+          <Button
+            aria-label="Close Danger alert: alert: The form has been submitted"
+            onClick={[MockFunction]}
+            variant="plain"
+          >
+            <button
+              aria-disabled={false}
+              aria-label="Close Danger alert: alert: The form has been submitted"
+              className="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-2"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[MockFunction]}
+              role={null}
+              type="button"
+            >
+              <TimesIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden={true}
+                  aria-labelledby={null}
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </TimesIcon>
+            </button>
+          </Button>
+        </AlertActionCloseButton>
+      </div>
+      <div
+        className="pf-c-alert__action-group"
+      >
+        <AlertActionLink
+          onClick={[Function]}
+        >
+          <Button
+            className=""
+            isInline={true}
+            onClick={[Function]}
+            variant="link"
+          >
+            <button
+              aria-disabled={false}
+              aria-label={null}
+              className="pf-c-button pf-m-link pf-m-inline"
+              data-ouia-component-id="OUIA-Generated-Button-link-1"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[Function]}
+              role={null}
+              type="button"
+            >
+              View details
+            </button>
+          </Button>
+        </AlertActionLink>
+      </div>
+    </div>
+  </Alert>
+</FormNotification>
+`;
+
+exports[`FormNotification test Notification with details 2`] = `
+<FormNotification
+  notification={
+    Object {
+      "close": [MockFunction],
+      "details": "The details here!",
+      "message": "The form has been submitted",
+      "type": "error",
+    }
+  }
+>
+  <Alert
+    actionClose={
+      <AlertActionCloseButton
+        onClose={[MockFunction]}
+      />
+    }
+    actionLinks={
+      <React.Fragment>
+        <AlertActionLink
+          onClick={[Function]}
+        >
+          View details
+        </AlertActionLink>
+      </React.Fragment>
+    }
+    data-ouia-component-type="form-notification-alert"
+    data-ouia-safe={true}
+    isInline={true}
+    title="The form has been submitted"
+    variant="danger"
+  >
+    <div
+      aria-label="Danger Alert"
+      className="pf-c-alert pf-m-inline pf-m-danger"
+      data-ouia-component-id="OUIA-Generated-Alert-danger-1"
+      data-ouia-component-type="PF4/Alert"
+      data-ouia-safe={true}
+    >
+      <Component
+        variant="danger"
+      >
+        <div
+          className="pf-c-alert__icon"
+        >
+          <ExclamationCircleIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          >
+            <svg
+              aria-hidden={true}
+              aria-labelledby={null}
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style={
+                Object {
+                  "verticalAlign": "-0.125em",
+                }
+              }
+              viewBox="0 0 512 512"
+              width="1em"
+            >
+              <path
+                d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+              />
+            </svg>
+          </ExclamationCircleIcon>
+        </div>
+      </Component>
+      <h4
+        className="pf-c-alert__title"
+      >
+        <span
+          className="pf-u-screen-reader"
+        >
+          Danger alert:
+        </span>
+        The form has been submitted
+      </h4>
+      <div
+        className="pf-c-alert__action"
+      >
+        <AlertActionCloseButton
+          onClose={[MockFunction]}
+        >
+          <Button
+            aria-label="Close Danger alert: alert: The form has been submitted"
+            onClick={[MockFunction]}
+            variant="plain"
+          >
+            <button
+              aria-disabled={false}
+              aria-label="Close Danger alert: alert: The form has been submitted"
+              className="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-2"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[MockFunction]}
+              role={null}
+              type="button"
+            >
+              <TimesIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden={true}
+                  aria-labelledby={null}
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </TimesIcon>
+            </button>
+          </Button>
+        </AlertActionCloseButton>
+      </div>
+      <div
+        className="pf-c-alert__action-group"
+      >
+        <AlertActionLink
+          onClick={[Function]}
+        >
+          <Button
+            className=""
+            isInline={true}
+            onClick={[Function]}
+            variant="link"
+          >
+            <button
+              aria-disabled={false}
+              aria-label={null}
+              className="pf-c-button pf-m-link pf-m-inline"
+              data-ouia-component-id="OUIA-Generated-Button-link-1"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[Function]}
+              role={null}
+              type="button"
+            >
+              View details
+            </button>
+          </Button>
+        </AlertActionLink>
+      </div>
+    </div>
+  </Alert>
+</FormNotification>
+`;
+
+exports[`FormNotification test Simple notification 1`] = `
+<FormNotification
+  notification={
+    Object {
+      "close": [MockFunction],
+      "message": "The form has been submitted",
+      "type": "success",
+    }
+  }
+>
+  <Alert
+    actionClose={
+      <AlertActionCloseButton
+        onClose={[MockFunction]}
+      />
+    }
+    actionLinks={<React.Fragment />}
+    data-ouia-component-type="form-notification-alert"
+    data-ouia-safe={true}
+    isInline={true}
+    title="The form has been submitted"
+    variant="success"
+  >
+    <div
+      aria-label="Success Alert"
+      className="pf-c-alert pf-m-inline pf-m-success"
+      data-ouia-component-id="OUIA-Generated-Alert-success-1"
+      data-ouia-component-type="PF4/Alert"
+      data-ouia-safe={true}
+    >
+      <Component
+        variant="success"
+      >
+        <div
+          className="pf-c-alert__icon"
+        >
+          <CheckCircleIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          >
+            <svg
+              aria-hidden={true}
+              aria-labelledby={null}
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style={
+                Object {
+                  "verticalAlign": "-0.125em",
+                }
+              }
+              viewBox="0 0 512 512"
+              width="1em"
+            >
+              <path
+                d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"
+              />
+            </svg>
+          </CheckCircleIcon>
+        </div>
+      </Component>
+      <h4
+        className="pf-c-alert__title"
+      >
+        <span
+          className="pf-u-screen-reader"
+        >
+          Success alert:
+        </span>
+        The form has been submitted
+      </h4>
+      <div
+        className="pf-c-alert__action"
+      >
+        <AlertActionCloseButton
+          onClose={[MockFunction]}
+        >
+          <Button
+            aria-label="Close Success alert: alert: The form has been submitted"
+            onClick={[MockFunction]}
+            variant="plain"
+          >
+            <button
+              aria-disabled={false}
+              aria-label="Close Success alert: alert: The form has been submitted"
+              className="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-1"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe={true}
+              disabled={false}
+              onClick={[MockFunction]}
+              role={null}
+              type="button"
+            >
+              <TimesIcon
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              >
+                <svg
+                  aria-hidden={true}
+                  aria-labelledby={null}
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </TimesIcon>
+            </button>
+          </Button>
+        </AlertActionCloseButton>
+      </div>
+      <div
+        className="pf-c-alert__action-group"
+      />
+    </div>
+  </Alert>
+</FormNotification>
+`;

@@ -22,6 +22,7 @@ import {
   UserTaskInstance
 } from '@kogito-apps/task-inbox/src';
 import {
+  OnOpenTaskListener,
   TaskInboxGatewayApi,
   TaskInboxGatewayApiImpl
 } from '../TaskInboxGatewayApi';
@@ -54,9 +55,11 @@ export const task: UserTaskInstance = {
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
 
+const getUserTaskByIdMock = jest.fn();
 const getUserTasksMock = jest.fn();
 
 const MockTaskInboxQueries = jest.fn<TaskInboxQueries, []>(() => ({
+  getUserTaskById: getUserTaskByIdMock,
   getUserTasks: getUserTasksMock
 }));
 
@@ -65,7 +68,6 @@ const user: User = new DefaultUser('jon snow', ['hero']);
 let initialState: TaskInboxState;
 let queries: TaskInboxQueries;
 let gatewayApi: TaskInboxGatewayApi;
-const onOpenTask = jest.fn();
 
 describe('TaskInboxChannelApiImpl tests', () => {
   beforeEach(() => {
@@ -85,7 +87,7 @@ describe('TaskInboxChannelApiImpl tests', () => {
       }
     };
     queries = new MockTaskInboxQueries();
-    gatewayApi = new TaskInboxGatewayApiImpl(user, queries, onOpenTask);
+    gatewayApi = new TaskInboxGatewayApiImpl(user, queries);
     getUserTasksMock.mockReturnValue(Promise.resolve([]));
   });
 
@@ -132,9 +134,17 @@ describe('TaskInboxChannelApiImpl tests', () => {
   });
 
   it('openTask', () => {
+    const listener: OnOpenTaskListener = {
+      onOpen: jest.fn()
+    };
+
+    const unsubscribe = gatewayApi.onOpenTaskListen(listener);
+
     gatewayApi.openTask(task);
 
-    expect(onOpenTask).toHaveBeenLastCalledWith(task);
+    expect(listener.onOpen).toHaveBeenLastCalledWith(task);
+
+    unsubscribe.unSubscribe();
   });
 
   it('getTaskById', async () => {

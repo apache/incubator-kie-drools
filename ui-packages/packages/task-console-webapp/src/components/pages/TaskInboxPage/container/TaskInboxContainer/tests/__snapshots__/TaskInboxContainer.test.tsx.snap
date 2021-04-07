@@ -18,10 +18,17 @@ exports[`TaskInboxContainer tests Snapshot 1`] = `
         "Skipped",
       ]
     }
+    data-ouia-component-type="task-inbox-container"
+    data-ouia-safe={true}
     driver={
       TaskInboxGatewayApiImpl {
-        "onOpenTask": [MockFunction],
+        "listeners": Array [
+          Object {
+            "onOpen": [Function],
+          },
+        ],
         "queries": Object {
+          "getUserTaskById": [MockFunction],
           "getUserTasks": [MockFunction],
         },
         "user": DefaultUser {

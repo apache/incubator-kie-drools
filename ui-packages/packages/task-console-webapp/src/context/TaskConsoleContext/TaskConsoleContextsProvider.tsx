@@ -17,6 +17,7 @@
 import React from 'react';
 import { ApolloClient } from 'apollo-client';
 import { TaskInboxContextProvider } from '../../channel/inbox';
+import TaskFormContextProvider from '../../channel/forms/TaskFormContextProvider';
 
 interface IOwnProps {
   client: ApolloClient<any>;
@@ -29,7 +30,7 @@ const TaskConsoleContextsProvider: React.FC<IOwnProps> = ({
 }) => {
   return (
     <TaskInboxContextProvider apolloClient={client}>
-      {children}
+      <TaskFormContextProvider>{children}</TaskFormContextProvider>
     </TaskInboxContextProvider>
   );
 };

@@ -3,10 +3,16 @@
 exports[`TaskInboxPage tests Snapshot 1`] = `
 <TaskInboxPage>
   <PageSection
+    data-ouia-component-id="header-[object Object]"
+    data-ouia-component-type="task-inbox-page"
+    data-ouia-safe={Object {}}
     variant="light"
   >
     <section
       className="pf-c-page__main-section pf-m-light"
+      data-ouia-component-id="header-[object Object]"
+      data-ouia-component-type="task-inbox-page"
+      data-ouia-safe={Object {}}
     >
       <PageTitle
         title="Task Inbox"
@@ -47,9 +53,16 @@ exports[`TaskInboxPage tests Snapshot 1`] = `
       </PageTitle>
     </section>
   </PageSection>
-  <PageSection>
+  <PageSection
+    data-ouia-component-id="content-[object Object]"
+    data-ouia-component-type="task-inbox-page"
+    data-ouia-safe={Object {}}
+  >
     <section
       className="pf-c-page__main-section"
+      data-ouia-component-id="content-[object Object]"
+      data-ouia-component-type="task-inbox-page"
+      data-ouia-safe={Object {}}
     >
       <Grid
         className="kogito-task-console__full-size"

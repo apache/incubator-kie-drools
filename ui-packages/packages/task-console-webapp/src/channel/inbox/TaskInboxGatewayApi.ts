@@ -32,23 +32,28 @@ export interface TaskInboxGatewayApi {
   getTaskById(uuid: string): Promise<UserTaskInstance>;
   openTask: (userTask: UserTaskInstance) => void;
   clearOpenTask: () => Promise<void>;
+
+  onOpenTaskListen: (listener: OnOpenTaskListener) => UnSubscribeHandler;
+}
+
+export interface OnOpenTaskListener {
+  onOpen: (userTask: UserTaskInstance) => void;
+}
+
+export interface UnSubscribeHandler {
+  unSubscribe: () => void;
 }
 
 export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
+  private readonly listeners: OnOpenTaskListener[] = [];
   private readonly user: User;
   private readonly queries: TaskInboxQueries;
-  private readonly onOpenTask: (task: UserTaskInstance) => void;
   private _taskInboxState: TaskInboxState;
   private activeTask: UserTaskInstance;
 
-  constructor(
-    user: User,
-    queries: TaskInboxQueries,
-    onOpenTask: (task: UserTaskInstance) => void
-  ) {
+  constructor(user: User, queries: TaskInboxQueries) {
     this.user = user;
     this.queries = queries;
-    this.onOpenTask = onOpenTask;
   }
 
   get taskInboxState(): TaskInboxState {
@@ -67,7 +72,7 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
 
   openTask(task: UserTaskInstance): Promise<void> {
     this.activeTask = task;
-    this.onOpenTask(task);
+    this.listeners.forEach(listener => listener.onOpen(task));
     return Promise.resolve();
   }
 
@@ -81,11 +86,11 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
     return Promise.resolve();
   }
 
-  getTaskById(uuid: string): Promise<UserTaskInstance> {
-    if (this.activeTask && this.activeTask.id === uuid) {
+  getTaskById(taskId: string): Promise<UserTaskInstance> {
+    if (this.activeTask && this.activeTask.id === taskId) {
       return Promise.resolve(this.activeTask);
     }
-    return Promise.resolve(undefined);
+    return this.queries.getUserTaskById(taskId);
   }
 
   query(offset: number, limit: number): Promise<UserTaskInstance[]> {
@@ -106,5 +111,20 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
           reject(reason);
         });
     });
+  }
+
+  onOpenTaskListen(listener: OnOpenTaskListener): UnSubscribeHandler {
+    this.listeners.push(listener);
+
+    const unSubscribe = () => {
+      const index = this.listeners.indexOf(listener);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
+    };
+
+    return {
+      unSubscribe
+    };
   }
 }

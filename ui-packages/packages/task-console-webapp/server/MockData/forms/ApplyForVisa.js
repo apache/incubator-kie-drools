@@ -38,7 +38,9 @@ module.exports = ApplyForVisaForm = {
           type: 'boolean'
         }
       },
-      required:['city']
+      required: ['city'],
+      input: true,
+      output: false
     },
     traveller: {
       type: 'object',
@@ -63,9 +65,10 @@ module.exports = ApplyForVisaForm = {
               type: 'string'
             }
           }
-        },
+        }
       },
-      disabled: true
+      input: true,
+      output: false
     },
     visaApplication: {
       type: 'object',
@@ -83,8 +86,10 @@ module.exports = ApplyForVisaForm = {
         },
         passportNumber: { type: 'string' },
         nationality: { type: 'string' }
-      }
+      },
+      input: true,
+      output: true
     }
   },
-  phases: ['complete',  'release']
+  phases: ['complete', 'release']
 };

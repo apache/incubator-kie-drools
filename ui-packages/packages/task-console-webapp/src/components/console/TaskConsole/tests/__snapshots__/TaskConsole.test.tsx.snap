@@ -129,67 +129,69 @@ exports[`TaskConsole tests Snapshot 1`] = `
           }
         }
       >
-        <BrowserRouter>
-          <Router
-            history={
-              Object {
-                "action": "POP",
-                "block": [Function],
-                "createHref": [Function],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
-              }
-            }
-          >
-            <Switch>
-              <Route
-                computedMatch={
-                  Object {
-                    "isExact": true,
-                    "params": Object {},
-                    "path": "/",
-                    "url": "/",
-                  }
-                }
-                location={
-                  Object {
+        <TaskFormContextProvider>
+          <BrowserRouter>
+            <Router
+              history={
+                Object {
+                  "action": "POP",
+                  "block": [Function],
+                  "createHref": [Function],
+                  "go": [Function],
+                  "goBack": [Function],
+                  "goForward": [Function],
+                  "length": 1,
+                  "listen": [Function],
+                  "location": Object {
                     "hash": "",
                     "pathname": "/",
                     "search": "",
                     "state": undefined,
-                  }
+                  },
+                  "push": [Function],
+                  "replace": [Function],
                 }
-                path="/"
-                render={[Function]}
-              >
-                <PageLayout
-                  BrandAltText="Task Console Logo"
-                  BrandClick={[Function]}
-                  BrandSrc="taskConsoleLogo.svg"
-                  PageNav={
-                    <MockedComponent
-                      pathname="/"
-                    />
+              }
+            >
+              <Switch>
+                <Route
+                  computedMatch={
+                    Object {
+                      "isExact": true,
+                      "params": Object {},
+                      "path": "/",
+                      "url": "/",
+                    }
                   }
-                  pageNavOpen={false}
+                  location={
+                    Object {
+                      "hash": "",
+                      "pathname": "/",
+                      "search": "",
+                      "state": undefined,
+                    }
+                  }
+                  path="/"
+                  render={[Function]}
                 >
-                  <MockedComponent />
-                </PageLayout>
-              </Route>
-            </Switch>
-          </Router>
-        </BrowserRouter>
+                  <PageLayout
+                    BrandAltText="Task Console Logo"
+                    BrandClick={[Function]}
+                    BrandSrc="taskConsoleLogo.svg"
+                    PageNav={
+                      <MockedComponent
+                        pathname="/"
+                      />
+                    }
+                    pageNavOpen={false}
+                  >
+                    <MockedComponent />
+                  </PageLayout>
+                </Route>
+              </Switch>
+            </Router>
+          </BrowserRouter>
+        </TaskFormContextProvider>
       </TaskInboxContextProvider>
     </TaskConsoleContextsProvider>
   </KogitoAppContextProvider>

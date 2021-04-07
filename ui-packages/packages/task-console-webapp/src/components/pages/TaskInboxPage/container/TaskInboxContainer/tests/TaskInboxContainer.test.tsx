@@ -23,6 +23,7 @@ import { TaskInboxQueries } from '../../../../../../channel/inbox/TaskInboxQueri
 import { TaskInboxGatewayApiImpl } from '../../../../../../channel/inbox/TaskInboxGatewayApi';
 
 const MockQueries = jest.fn<TaskInboxQueries, []>(() => ({
+  getUserTaskById: jest.fn(),
   getUserTasks: jest.fn()
 }));
 
@@ -30,11 +31,7 @@ jest
   .spyOn(TaskInboxContext, 'useTaskInboxGatewayApi')
   .mockImplementation(
     () =>
-      new TaskInboxGatewayApiImpl(
-        new DefaultUser('jon', []),
-        new MockQueries(),
-        jest.fn()
-      )
+      new TaskInboxGatewayApiImpl(new DefaultUser('jon', []), new MockQueries())
   );
 
 describe('TaskInboxContainer tests', () => {

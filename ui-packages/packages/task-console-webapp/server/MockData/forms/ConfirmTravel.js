@@ -38,7 +38,7 @@ module.exports = ConfirmTravelForm = {
           format: 'date-time'
         }
       },
-      disabled: true
+      input: true
     },
     hotel: {
       type: 'object',
@@ -73,7 +73,8 @@ module.exports = ConfirmTravelForm = {
           type: 'string'
         }
       },
-      disabled: true
+      input: true,
+      output: true
     }
   },
   phases: ['complete', 'release']
