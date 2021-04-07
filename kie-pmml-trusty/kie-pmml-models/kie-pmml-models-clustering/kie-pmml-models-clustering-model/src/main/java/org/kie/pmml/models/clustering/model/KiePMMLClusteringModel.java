@@ -15,46 +15,31 @@
  */
 package  org.kie.pmml.models.clustering.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.clustering.model.aggregate.AggregateFunction;
 import org.kie.pmml.models.clustering.model.compare.CompareFunction;
-import org.kie.pmml.models.clustering.model.compare.CompareFunctions;
 
-public class KiePMMLClusteringModel extends KiePMMLModel {
+public abstract class KiePMMLClusteringModel extends KiePMMLModel {
 
-    private static final CompareFunction DEFAULT_COMPARE_FN = CompareFunctions.absDiff();
+    public enum ModelClass {
+        CENTER_BASED,
+        DISTRIBUTION_BASED
+    }
 
-    private final ModelClass modelClass;
-    private final List<KiePMMLCluster> clusters;
-    private final List<KiePMMLClusteringField> clusteringFields;
-    private final KiePMMLComparisonMeasure comparisonMeasure;
-    private final KiePMMLMissingValueWeights missingValueWeights;
+    protected ModelClass modelClass;
+    protected List<KiePMMLCluster> clusters = new ArrayList<>();
+    protected List<KiePMMLClusteringField> clusteringFields = new ArrayList<>();
+    protected KiePMMLComparisonMeasure comparisonMeasure;
+    protected KiePMMLMissingValueWeights missingValueWeights;
 
-    public KiePMMLClusteringModel(
-            String modelName,
-            ModelClass modelClass,
-            List<KiePMMLCluster> clusters,
-            List<KiePMMLClusteringField> clusteringFields,
-            KiePMMLComparisonMeasure comparisonMeasure,
-            KiePMMLMissingValueWeights missingValueWeights
-    ) {
+    protected KiePMMLClusteringModel(String modelName) {
         super(modelName, Collections.emptyList());
-        this.modelClass = modelClass;
-        this.clusters = clusters;
-        this.clusteringFields = clusteringFields;
-        this.comparisonMeasure = comparisonMeasure;
-        this.missingValueWeights = missingValueWeights;
-
-        this.miningFunction = MINING_FUNCTION.CLUSTERING;
-        this.pmmlMODEL = PMML_MODEL.CLUSTERING_MODEL;
-        this.targetField = "class";
     }
 
     @Override
@@ -93,17 +78,4 @@ public class KiePMMLClusteringModel extends KiePMMLModel {
 
         return minIndex + 1;
     }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        // TODO
-//        throw new UnsupportedOperationException();
-        return Collections.emptyMap();
-    }
-
-    public enum ModelClass {
-        CENTER_BASED,
-        DISTRIBUTION_BASED
-    }
-
 }

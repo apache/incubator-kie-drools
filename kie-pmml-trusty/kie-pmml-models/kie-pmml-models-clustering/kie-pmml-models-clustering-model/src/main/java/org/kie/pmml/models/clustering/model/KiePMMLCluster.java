@@ -18,6 +18,8 @@ package org.kie.pmml.models.clustering.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KiePMMLCluster {
 
@@ -25,10 +27,14 @@ public class KiePMMLCluster {
     private final Optional<String> id;
     private final Optional<String> name;
 
-    public KiePMMLCluster(List<Double> values, String id, String name) {
+    public KiePMMLCluster(String id, String name, List<Double> values) {
         this.values = Collections.unmodifiableList(values);
         this.id = Optional.ofNullable(id);
         this.name = Optional.ofNullable(name);
+    }
+
+    public KiePMMLCluster(String id, String name, Double... values) {
+        this(id, name, Stream.of(values).collect(Collectors.toList()));
     }
 
     public List<Double> getValues() {

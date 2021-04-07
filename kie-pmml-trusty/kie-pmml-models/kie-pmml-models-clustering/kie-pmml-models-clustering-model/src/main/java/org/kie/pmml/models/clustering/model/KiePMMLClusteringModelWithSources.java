@@ -16,7 +16,6 @@
 package  org.kie.pmml.models.clustering.model;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -27,27 +26,8 @@ public class KiePMMLClusteringModelWithSources extends KiePMMLClusteringModel im
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 
-    public KiePMMLClusteringModelWithSources(
-            String modelName,
-            String kmodulePackageName,
-            Map<String, String> sourcesMap
-    ) {
-        super(modelName, null, null, null, null, null);
-        this.sourcesMap = sourcesMap;
-        this.kmodulePackageName = kmodulePackageName;
-    }
-
-    public KiePMMLClusteringModelWithSources(
-            String modelName,
-            ModelClass modelClass,
-            List<KiePMMLCluster> clusters,
-            List<KiePMMLClusteringField> clusteringFields,
-            KiePMMLComparisonMeasure comparisonMeasure,
-            KiePMMLMissingValueWeights missingValueWeights,
-            String kmodulePackageName,
-            Map<String, String> sourcesMap
-    ) {
-        super(modelName, modelClass, clusters, clusteringFields, comparisonMeasure, missingValueWeights);
+    public KiePMMLClusteringModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
+        super(modelName);
         this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
     }
