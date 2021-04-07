@@ -1256,6 +1256,24 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testMapAccessBinding() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "	 Map($type: \"type\", this[$type] == 'Goods' )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("type", "Goods");
+
+        ksession.insert( map );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
     public void testMapAccessProperty() {
         final String drl1 =
                 "import " + Person.class.getCanonicalName() + ";\n" +
