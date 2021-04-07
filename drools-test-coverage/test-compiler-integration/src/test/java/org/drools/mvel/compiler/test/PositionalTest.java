@@ -28,6 +28,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -42,7 +43,7 @@ public class PositionalTest {
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
      // TODO: EM failed with ttestPositional. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -67,13 +68,12 @@ public class PositionalTest {
         kSession.setGlobal( "list",
                             list );
 
-        kSession.insert( new Man( "john",
-                                  18,
-                                  84.2 ) );
+        kSession.insert( new Man( "john", 18, 84.2 ) );
+        kSession.insert( new Man( "john", 19, 85.2 ) );
         kSession.fireAllRules();
 
         assertTrue( list.contains( 84.2 ) );
-
+        assertFalse( list.contains( 85.2 ) );
     }
 
 

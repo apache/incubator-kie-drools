@@ -3545,4 +3545,37 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals( 1, (int) list.get(0) );
         assertEquals( 2, (int) list.get(1) );
     }
+
+    @Test
+    public void testPositionalAccumulate() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "declare Person\n" +
+                "    name : String \n" +
+                "    age : int \n" +
+                "end" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new Person(\"Mark\", 37));\n" +
+                "  insert(new Person(\"Edson\", 35));\n" +
+                "  insert(new Person(\"Mario\", 40));\n" +
+                "end\n" +
+                "rule X when\n" +
+                "  accumulate ( Person ( $name, $age; ); \n" +
+                "                $sum : sum($age)  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(112, results.iterator().next().getValue());
+    }
 }

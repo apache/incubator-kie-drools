@@ -16,9 +16,11 @@
 package org.drools.modelcompiler;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
@@ -171,5 +173,67 @@ public class TypeDeclarationTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
+    }
+
+    @Test
+    public void testPositionalWithLiteral() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "declare Person\n" +
+                "    name : String \n" +
+                "    age : int \n" +
+                "end" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new Person(\"Mark\", 37));\n" +
+                "  insert(new Person(\"Mario\", 40));\n" +
+                "end\n" +
+                "rule X when\n" +
+                "  Person ( \"Mark\", $age; )\n" +
+                "then\n" +
+                "  insert(new Result($age));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(37, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testPositionalWithJoin() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "declare Person\n" +
+                "    name : String \n" +
+                "    age : int \n" +
+                "end" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new Person(\"Mark\", 37));\n" +
+                "  insert(new Person(\"Mario\", 40));\n" +
+                "end\n" +
+                "rule X when\n" +
+                "  $s: String()" +
+                "  Person ( $s, $age; )\n" +
+                "then\n" +
+                "  insert(new Result($age));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "Mark" );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(37, results.iterator().next().getValue());
     }
 }

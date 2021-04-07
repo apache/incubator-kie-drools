@@ -112,12 +112,12 @@ public class BackwardChainingUnsupportedModelTest {
                 "end\n" +
                 "\n" +
                 "query cast( int $a )\n" +
-                " Integer( longValue == $a )\n" +
+                " Integer( intValue == $a )\n" +
                 " eval( $a == 178 )\n" +
                 "end\n" +
                 "" +
                 "query cast2( long $a )\n" +
-                " Integer( intValue == $a )\n" +
+                " Integer( longValue == $a )\n" +
                 " eval( $a == 178 )\n" +
                 "end\n" +
                 "\n" +
