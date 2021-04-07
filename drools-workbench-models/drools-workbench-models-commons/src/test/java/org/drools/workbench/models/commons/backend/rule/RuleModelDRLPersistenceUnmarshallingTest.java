@@ -74,6 +74,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSid
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +83,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest {
@@ -10073,6 +10075,35 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
 
         assertEqualsIgnoreWhitespace(expectedDRL,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void testContainsWithFormula() {
+
+        final String drl = "rule \"therule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "CustomerProfile( listValue contains ( String.join( \"-\", \"abc\",\"xyz\") )," +
+                "listValue not contains ( String.join( \"hello\", \" \",\"there\") ) )\n" +
+                "then\n" +
+                "end";
+
+        final PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m =  RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                           Collections.EMPTY_LIST,
+                                                           dmo);
+        assertNotNull(m);
+        assertTrue(m.lhs[0] instanceof FactPattern);
+
+        final FieldConstraint constraint = ((FactPattern) m.lhs[0]).getConstraint(0);
+        assertTrue(constraint instanceof SingleFieldConstraint);
+        assertEquals("contains", ((SingleFieldConstraint) constraint).getOperator());
+        assertEquals("String.join( \"-\", \"abc\",\"xyz\")",((SingleFieldConstraint)constraint).getValue());
+
+        final FieldConstraint constraintNot = ((FactPattern) m.lhs[0]).getConstraint(1);
+        assertTrue(constraintNot instanceof SingleFieldConstraint);
+        assertEquals("not contains", ((SingleFieldConstraint) constraintNot).getOperator());
+        assertEquals("String.join( \"hello\", \" \",\"there\")",((SingleFieldConstraint)constraintNot).getValue());
     }
 
     /**
