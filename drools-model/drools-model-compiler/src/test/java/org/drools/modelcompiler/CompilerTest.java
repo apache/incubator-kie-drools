@@ -1256,7 +1256,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testMapAccessBinding() {
+    public void testMapAccessBindingConstant() {
         final String drl1 =
                 "import java.util.Map;\n" +
                 "rule R1 when\n" +
@@ -1274,7 +1274,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testMapAccessBinding2() {
+    public void testMapAccessBinding() {
         final String drl1 =
                 "import java.util.Map;\n" +
                         "rule R1 when\n" +
