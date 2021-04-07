@@ -240,8 +240,8 @@ public class NullTest {
                 "  list.add( \"OK\" ); \n" +
                 "end";
 
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
 
         final java.util.List list = new java.util.ArrayList();

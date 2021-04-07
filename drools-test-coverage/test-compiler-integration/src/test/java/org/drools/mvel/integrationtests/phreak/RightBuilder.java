@@ -13,53 +13,60 @@
  * limitations under the License.
 */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TupleMemory;
 
-import java.util.ArrayList;
-import java.util.List;
+public class RightBuilder {
+    private InternalWorkingMemory      wm;
+    private RightTupleSink             sink;
+    private TupleSets<RightTuple>      rightTuples;
+    private Scenario                   scenario;
 
-public class RightMemory {
-
-    private Scenario scenario;
-
-    public RightMemory(Scenario scenario, Object... objects) {
+    public RightBuilder(Scenario scenario) {
+        this.wm = scenario.getWorkingMemory();
         this.scenario = scenario;
-        scenario.getRightMemory().addAll( getRightTuples( objects ) );
+        this.sink = scenario.getBetaNode();
+        this.rightTuples = scenario.getRightTuples();
     }
 
-    public List<RightTuple> getRightTuples(Object... objects) {
-        BetaNode node = scenario.getBetaNode();
-        BetaMemory bm = scenario.getBm();
-        TupleMemory rtm = bm.getRightTupleMemory();
-        InternalWorkingMemory wm = scenario.getWorkingMemory();
-
-        if ( objects == null ) {
-            objects = new Object[0];
+    public RightBuilder insert(Object... objects) {
+        for (Object object : objects) {
+            InternalFactHandle fh = (InternalFactHandle) wm.insert(object);
+            RightTuple rightTuple = new RightTupleImpl( fh, sink );
+            rightTuple.setPropagationContext( new PhreakPropagationContext() );
+            rightTuples.addInsert( rightTuple );
         }
-        
-        List<RightTuple> rightTuples = new ArrayList<RightTuple>();
+        return this;
+    }
+
+    public RightBuilder update(Object... objects) {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            RightTuple expectedRightTuple = new RightTupleImpl( fh, node ); //node.createLeftTuple( fh, node, true );
-            expectedRightTuple.setPropagationContext( new PhreakPropagationContext() );
-            rightTuples.add( expectedRightTuple );
+            RightTuple rightTuple = fh.getFirstRightTuple();
+            rightTuple.setPropagationContext( new PhreakPropagationContext() );
+            rightTuples.addUpdate( rightTuple );
         }
-        
-        scenario.setTestRightMemory( true );
-        
-        return rightTuples;
+        return this;
     }
-    
+
+    public RightBuilder delete(Object... objects) {
+        for ( Object object : objects ) {
+            InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
+            RightTuple rightTuple = fh.getFirstRightTuple();
+            rightTuple.setPropagationContext( new PhreakPropagationContext() );
+            rightTuples.addDelete( rightTuple );
+        }
+        return this;
+    }
+
     public StagedBuilder result() {
         StagedBuilder stagedBuilder = new StagedBuilder( scenario, null );
         scenario.setExpectedResultBuilder( stagedBuilder );
@@ -76,10 +83,9 @@ public class RightMemory {
         StagedBuilder stagedBuilder = new StagedBuilder( scenario, sm );
         scenario.addPostStagedBuilder( stagedBuilder );
         return stagedBuilder;        
-    }     
-
+    } 
+    
     public Scenario run() {
         return this.scenario.run();
-    }
-    
+    }      
 }

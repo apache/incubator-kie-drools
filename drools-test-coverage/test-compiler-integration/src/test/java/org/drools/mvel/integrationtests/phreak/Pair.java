@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 public class Pair {
     private Object o1;

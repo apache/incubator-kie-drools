@@ -210,8 +210,8 @@ public class QueryInRHSCepTest {
                 "  myGlobal.add(drools.getKieRuntime().getQueryResults(\"myQuery\"));\n"+
                 "end\n";
 
-        kieBaseTestConfiguration.setStreamMode(false); // CLOUD
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration cloudConfig = TestParametersUtil.getCloudInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", cloudConfig, drl);
         KieSession kSession = kbase.newKieSession();
 
         myGlobal = new ArrayList<>();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +37,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.mvel.MVELConstraintTestUtil;
 
 public class ReteTesterHelper {
 

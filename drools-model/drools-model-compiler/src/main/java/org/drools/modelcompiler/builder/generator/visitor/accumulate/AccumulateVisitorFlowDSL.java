@@ -40,7 +40,6 @@ import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuild
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.LambdaUtil;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
@@ -171,7 +170,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
         bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId)).ifPresent( name -> {
             LambdaExpr lambda = (LambdaExpr)bindExpression.getArgument( bindExpression.getArguments().size()-1 );
             if (lambda.getParameters().size() > 1) {
-                String formalArg = fromVar( name.getNameAsString() );
+                String formalArg = context.fromVar( name.getNameAsString() );
                 for (Parameter param : lambda.getParameters()) {
                     if (param.getNameAsString().equals( formalArg )) {
                         lambda.getParameters().remove( param );

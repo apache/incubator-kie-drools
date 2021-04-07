@@ -13,29 +13,29 @@
  * limitations under the License.
 */
 
-package org.drools.mvel.compiler.phreak;
+package org.drools.mvel.integrationtests.phreak;
 
 import org.kie.api.definition.type.Position;
 
-public class D {
+public class B {
 
     @Position(0)
     Object object;
 
-    public D(Object object) {
+    public B(Object object) {
         super();
         this.object = object;
     }
 
-    public static D b(Object object) {
-        return new D( object );
+    public static B b(Object object) {
+        return new B( object );
     }
 
-    public static D[] b(Object... objects) {
-        D[] bs = new D[objects.length];
+    public static B[] b(Object... objects) {
+        B[] bs = new B[objects.length];
         int i = 0;
         for ( Object object : objects ) {
-            bs[i++] = new D( object );
+            bs[i++] = new B( object );
         }
         return bs;
     }        
@@ -61,7 +61,7 @@ public class D {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        D other = (D) obj;
+        B other = (B) obj;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
@@ -70,7 +70,7 @@ public class D {
 
     @Override
     public String toString() {
-        return "D [" + object + "]";
+        return "B [" + object + "]";
     }
 
 }

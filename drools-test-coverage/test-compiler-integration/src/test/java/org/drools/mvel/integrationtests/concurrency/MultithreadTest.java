@@ -93,8 +93,8 @@ public class MultithreadTest {
 
         final List<Exception> errors = new ArrayList<>();
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, str);
 
         final KieSession ksession = kbase.newKieSession();
         final EntryPoint ep = ksession.getEntryPoint("X");
@@ -275,8 +275,8 @@ public class MultithreadTest {
                 "end\n" +
                 "\n";
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
 
 
         final KieSession session = kbase.newKieSession();
@@ -348,8 +348,8 @@ public class MultithreadTest {
                 "    list.add( $count ); \n" +
                 "end";
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
 
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ClockTypeOption.REALTIME);
@@ -562,8 +562,8 @@ public class MultithreadTest {
                 "then\n" +
                 "end";
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
 
         final KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
         ksconf.setOption(TimedRuleExecutionOption.YES);
@@ -612,8 +612,8 @@ public class MultithreadTest {
                 "then\n" +
                 "end";
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
 
         final KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
         ksconf.setOption(TimedRuleExecutionOption.YES);
