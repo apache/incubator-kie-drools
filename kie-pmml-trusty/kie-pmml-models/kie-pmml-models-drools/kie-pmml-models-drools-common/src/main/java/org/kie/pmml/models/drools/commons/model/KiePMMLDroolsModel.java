@@ -75,8 +75,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         String packageName =  fullClassName.contains(".") ? fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
         KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
                                                                           toReturn)
-                .withObjectsInSession(requestData, fieldTypeMap)
-                .withOutputFieldsMap(outputFieldsMap);
+                .withObjectsInSession(requestData, fieldTypeMap);
+//                .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {
             builder = builder.withAgendaEventListener(agendaEventListener);
         }
