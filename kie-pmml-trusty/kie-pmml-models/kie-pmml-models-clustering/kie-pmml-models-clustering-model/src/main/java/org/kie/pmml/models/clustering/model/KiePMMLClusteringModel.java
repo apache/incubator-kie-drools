@@ -15,15 +15,13 @@
  */
 package  org.kie.pmml.models.clustering.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.clustering.model.aggregate.AggregateFunction;
 import org.kie.pmml.models.clustering.model.compare.CompareFunction;
@@ -33,34 +31,40 @@ public class KiePMMLClusteringModel extends KiePMMLModel {
 
     private static final CompareFunction DEFAULT_COMPARE_FN = CompareFunctions.absDiff();
 
-    private AggregateFunction aggregateFn;
-    private CompareFunction compareFn;
-    private List<Cluster> clusters = new ArrayList<>();
-    private List<ClusteringField> clusteringFields = new ArrayList<>();
+    private final ModelClass modelClass;
+    private final List<KiePMMLCluster> clusters;
+    private final List<KiePMMLClusteringField> clusteringFields;
+    private final KiePMMLComparisonMeasure comparisonMeasure;
+    private final KiePMMLMissingValueWeights missingValueWeights;
 
-    public KiePMMLClusteringModel(String modelName, AggregateFunction aggregateFn) {
-        this(modelName, aggregateFn, null);
-    }
-
-    public KiePMMLClusteringModel(String modelName, AggregateFunction aggregateFn, CompareFunction compareFn) {
+    public KiePMMLClusteringModel(
+            String modelName,
+            ModelClass modelClass,
+            List<KiePMMLCluster> clusters,
+            List<KiePMMLClusteringField> clusteringFields,
+            KiePMMLComparisonMeasure comparisonMeasure,
+            KiePMMLMissingValueWeights missingValueWeights
+    ) {
         super(modelName, Collections.emptyList());
-        this.aggregateFn = aggregateFn;
-        this.compareFn = Optional.ofNullable(compareFn).orElse(DEFAULT_COMPARE_FN);
+        this.modelClass = modelClass;
+        this.clusters = clusters;
+        this.clusteringFields = clusteringFields;
+        this.comparisonMeasure = comparisonMeasure;
+        this.missingValueWeights = missingValueWeights;
+
+        this.miningFunction = MINING_FUNCTION.CLUSTERING;
+        this.pmmlMODEL = PMML_MODEL.CLUSTERING_MODEL;
+        this.targetField = "class";
     }
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        // TODO
-//        throw new UnsupportedOperationException();
-        System.out.println("--> knowledgeBase: " + knowledgeBase);
-        System.out.println("--> requestData..: " + requestData);
-
         CompareFunction[] compFn = clusteringFields.stream()
-                .map(cf -> cf.getCompareFunction().orElse(compareFn))
+                .map(cf -> cf.getCompareFunction().orElseGet(comparisonMeasure::getCompareFunction))
                 .toArray(CompareFunction[]::new);
 
         double[] inputs = clusteringFields.stream()
-                .map(ClusteringField::getField)
+                .map(KiePMMLClusteringField::getField)
                 .filter(requestData::containsKey)
                 .map(requestData::get)
                 .map(Double.class::cast)
@@ -71,8 +75,10 @@ public class KiePMMLClusteringModel extends KiePMMLModel {
                 .mapToDouble(x -> 1.0)
                 .toArray();
 
+        final AggregateFunction aggregateFunction = comparisonMeasure.getAggregateFunction();
+
         double[] aggregates = clusters.stream()
-                .mapToDouble(c -> aggregateFn.aggregate(compFn, inputs, c.seeds, weights, 1.0))
+                .mapToDouble(c -> aggregateFunction.aggregate(compFn, inputs, c.getValuesArray(), weights, 1.0))
                 .toArray();
 
         int minIndex = 0;
@@ -95,54 +101,9 @@ public class KiePMMLClusteringModel extends KiePMMLModel {
         return Collections.emptyMap();
     }
 
-    protected void addCluster(Cluster cluster) {
-        clusters.add(cluster);
-    }
-
-    protected void addClusteringField(ClusteringField field) {
-        clusteringFields.add(field);
-    }
-
-    public static class Cluster {
-        private final double[] seeds;
-
-        public Cluster(double[] seeds) {
-            this.seeds = seeds;
-        }
-
-        public double[] getSeeds() {
-            return seeds;
-        }
-
-        public static Cluster of(double... seeds) {
-            return new Cluster(seeds);
-        }
-    }
-
-    public static class ClusteringField {
-        private final String field;
-        private final CompareFunction compareFn;
-
-        public ClusteringField(String field, CompareFunction compareFn) {
-            this.field = field;
-            this.compareFn = compareFn;
-        }
-
-        public String getField() {
-            return field;
-        }
-
-        public Optional<CompareFunction> getCompareFunction() {
-            return Optional.ofNullable(compareFn);
-        }
-
-        public static ClusteringField of(String field) {
-            return new ClusteringField(field, null);
-        }
-
-        public static ClusteringField of(String field, CompareFunction compareFunction) {
-            return new ClusteringField(field, compareFunction);
-        }
+    public enum ModelClass {
+        CENTER_BASED,
+        DISTRIBUTION_BASED
     }
 
 }
