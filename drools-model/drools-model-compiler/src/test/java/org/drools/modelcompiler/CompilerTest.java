@@ -1274,6 +1274,38 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testMapAccessBindingConstantJoin() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "	 $p : Person($name: \"Andrea\", " +
+                        "parentP.childrenMap[$name] != null," +
+                        "parentP.childrenMap[$name].name != null )\n" +
+                "then\n" +
+                "  insert(new Result($p));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        Person luca = new Person("Luca", 37);
+        luca.setParentP(luca); // avoid NPE
+        Person andrea = new Person("Andrea", 0);
+        andrea.setParentP(luca);
+
+        luca.getChildrenMap().put("Andrea", andrea);
+
+        ksession.insert( luca );
+        ksession.insert( andrea );
+        assertEquals( 2, ksession.fireAllRules() );
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        Person result = (Person) results.iterator().next().getValue();
+        assertThat(result.getName()).isEqualTo("Andrea");
+    }
+
+    @Test
     public void testMapAccessBinding() {
         final String drl1 =
                 "import java.util.Map;\n" +
