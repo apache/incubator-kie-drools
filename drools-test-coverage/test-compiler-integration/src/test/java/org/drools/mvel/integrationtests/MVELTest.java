@@ -889,8 +889,8 @@ public class MVELTest {
                 "  list.add( \"OK\" ); \n" +
                 "end";
 
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
@@ -934,8 +934,8 @@ public class MVELTest {
                 "    }\n" +
                 "end";
 
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
         Human h = new Human(2);
         ksession.insert(h);
@@ -960,8 +960,8 @@ public class MVELTest {
                 "    }\n" +
                 "end";
 
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
         Human h = new Human(2);
         ksession.insert(h);
@@ -1020,8 +1020,8 @@ public class MVELTest {
                 "        System.out.println( $fact );\n" +
                 "end";
 
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
 
         Fact f = new Fact();

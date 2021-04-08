@@ -453,9 +453,9 @@ public class ParallelEvaluationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
@@ -496,9 +496,9 @@ public class ParallelEvaluationTest {
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
@@ -574,9 +574,9 @@ public class ParallelEvaluationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, sb.toString());
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
@@ -684,9 +684,9 @@ public class ParallelEvaluationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        kieBaseTestConfiguration.setStreamMode(true);
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, MultithreadEvaluationOption.YES );
+        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, drl);
+        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
 
         try {
