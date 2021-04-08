@@ -31,7 +31,7 @@ import org.drools.core.util.index.TupleList;
 public class PhreakGroupByNode extends PhreakAccumulateNode {
 
     @Override
-    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple) {
+    protected AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple) {
         GroupByContext accContext = new GroupByContext();
         leftTuple.setContextObject( accContext );
         // A lot less is done here, compared to super, as it needs to be done on demand during the Group creation.

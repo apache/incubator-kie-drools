@@ -187,4 +187,16 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     public short getStagedTypeOnRight() {
         return stagedTypeOnRight;
     }
+
+    public LeftTuple getStartTuple() {
+        LeftTupleSource startTupleSource = (( RightInputAdapterNode ) sink).getStartTupleSource();
+        LeftTuple lt = getLeftParent();
+        while (lt != null) {
+            if (lt.getLeftParent() == null || lt.getLeftParent().getTupleSink() == startTupleSource) {
+                break;
+            }
+            lt = lt.getLeftParent();
+        }
+        return lt;
+    }
 }

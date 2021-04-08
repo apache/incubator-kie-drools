@@ -31,8 +31,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     private int                index;
 
-    private LeftTuple          parent;
-
     // left and right tuples in parent
     private LeftTuple          leftParent;
 
@@ -73,7 +71,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          Sink sink) {
         setFactHandle( factHandle );
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple.getNextParentWithHandle();
         this.sink = sink;
     }
 
@@ -82,7 +80,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          PropagationContext pctx,
                          boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple.getNextParentWithHandle();
         setPropagationContext( pctx );
 
         if ( leftTupleMemoryEnabled ) {
@@ -103,7 +101,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          RightTuple rightTuple,
                          Sink sink) {
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple.getNextParentWithHandle();
         setFactHandle( rightTuple.getFactHandle() );
         setPropagationContext( rightTuple.getPropagationContext() );
 
@@ -149,7 +147,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          boolean leftTupleMemoryEnabled) {
         setFactHandle( rightTuple.getFactHandle() );
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple.getNextParentWithHandle();
         setPropagationContext( rightTuple.getPropagationContext() );
 
         if ( leftTupleMemoryEnabled ) {
@@ -204,7 +202,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public LeftTuple getNextParentWithHandle() {
         // if parent is null, then we are LIAN
-        return (handle!=null) ? this : parent != null ? parent.getNextParentWithHandle() : this;
+        return (handle!=null) ? this : leftParent != null ? leftParent.getNextParentWithHandle() : this;
     }
     
     @Override
@@ -515,10 +513,10 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             return false;
         }
 
-        if ( this.parent == null ) {
+        if ( this.leftParent == null ) {
             return (other.getParent() == null);
         } else {
-            return this.parent.equals( other.getParent() );
+            return this.leftParent.equals( other.getParent() );
         }
     }
 
@@ -602,7 +600,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     @Override
     public LeftTuple getParent() {
-        return parent;
+        return leftParent;
     }
 
     protected String toExternalString() {
@@ -629,7 +627,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     
     public void initPeer(BaseLeftTuple original, LeftTupleSink sink) {
         this.index = original.index;
-        this.parent = original.parent;
+        this.leftParent = original.leftParent;
         
         setFactHandle( original.getFactHandle() );
         setPropagationContext( original.getPropagationContext() );

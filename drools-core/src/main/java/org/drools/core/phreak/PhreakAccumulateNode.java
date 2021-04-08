@@ -183,7 +183,7 @@ public class PhreakAccumulateNode {
         constraints.resetTuple( contextEntry );
     }
 
-    BaseAccumulation initAccumulationContext( AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple ) {
+    protected BaseAccumulation initAccumulationContext( AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple ) {
         AccumulateContext accContext = new AccumulateContext();
         leftTuple.setContextObject(accContext);
 
@@ -679,17 +679,17 @@ public class PhreakAccumulateNode {
         return result;
     }
 
-    private void addMatch(final AccumulateNode accNode,
-                          final Accumulate accumulate,
-                          final LeftTuple leftTuple,
-                          final RightTuple rightTuple,
-                          final LeftTuple currentLeftChild,
-                          final LeftTuple currentRightChild,
-                          final InternalWorkingMemory wm,
-                          final AccumulateMemory am,
-                          final BaseAccumulation accctx,
-                          final boolean useLeftMemory,
-                          final boolean leftPropagation) {
+    protected void addMatch(final AccumulateNode accNode,
+                            final Accumulate accumulate,
+                            final LeftTuple leftTuple,
+                            final RightTuple rightTuple,
+                            final LeftTuple currentLeftChild,
+                            final LeftTuple currentRightChild,
+                            final InternalWorkingMemory wm,
+                            final AccumulateMemory am,
+                            final BaseAccumulation accctx,
+                            final boolean useLeftMemory,
+                            final boolean leftPropagation) {
         LeftTuple tuple = leftTuple;
         InternalFactHandle handle = rightTuple.getFactHandle();
 
@@ -729,14 +729,14 @@ public class PhreakAccumulateNode {
     /**
      * Removes a match between left and right tuple
      */
-    private boolean removeMatch(final AccumulateNode accNode,
-                                final Accumulate accumulate,
-                                final RightTuple rightTuple,
-                                final LeftTuple match,
-                                final InternalWorkingMemory wm,
-                                final AccumulateMemory am,
-                                final BaseAccumulation accctx,
-                                final boolean reaccumulate) {
+    protected boolean removeMatch(final AccumulateNode accNode,
+                                  final Accumulate accumulate,
+                                  final RightTuple rightTuple,
+                                  final LeftTuple match,
+                                  final InternalWorkingMemory wm,
+                                  final AccumulateMemory am,
+                                  final BaseAccumulation accctx,
+                                  final boolean reaccumulate) {
         // save the matching tuple
         LeftTuple leftParent = match.getLeftParent();
         RightTuple rightParent = match.getRightParent();
@@ -807,13 +807,13 @@ public class PhreakAccumulateNode {
         }
     }
 
-    private void removePreviousMatchesForRightTuple(final AccumulateNode accNode,
-                                                    final Accumulate accumulate,
-                                                    final RightTuple rightTuple,
-                                                    final InternalWorkingMemory workingMemory,
-                                                    final AccumulateMemory memory,
-                                                    final LeftTuple firstChild,
-                                                    final TupleSets<LeftTuple> trgLeftTuples) {
+    protected void removePreviousMatchesForRightTuple(final AccumulateNode accNode,
+                                                      final Accumulate accumulate,
+                                                      final RightTuple rightTuple,
+                                                      final InternalWorkingMemory workingMemory,
+                                                      final AccumulateMemory memory,
+                                                      final LeftTuple firstChild,
+                                                      final TupleSets<LeftTuple> trgLeftTuples) {
         for (LeftTuple match = firstChild; match != null; ) {
             final LeftTuple next = match.getRightParentNext();
 

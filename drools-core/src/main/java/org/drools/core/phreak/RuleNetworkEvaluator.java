@@ -84,6 +84,7 @@ public class RuleNetworkEvaluator {
     private static final PhreakNotNode          pNotNode    = PhreakNetworkNodeFactory.Factory.get().createPhreakNotNode();
     private static final PhreakExistsNode       pExistsNode = PhreakNetworkNodeFactory.Factory.get().createPhreakExistsNode();
     private static final PhreakAccumulateNode   pAccNode    = PhreakNetworkNodeFactory.Factory.get().createPhreakAccumulateNode();
+    private static final PhreakAccumulateSubnetworkNode   pAccSubnetworkNode = new PhreakAccumulateSubnetworkNode();
     private static final PhreakAccumulateNode   pGroupByNode = PhreakNetworkNodeFactory.Factory.get().createPhreakGroupByNode();
     private static final PhreakBranchNode       pBranchNode = PhreakNetworkNodeFactory.Factory.get().createPhreakBranchNode();
     private static final PhreakQueryNode        pQueryNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryNode();
@@ -585,7 +586,11 @@ public class RuleNetworkEvaluator {
                 if (accumulateNode.getAccumulate().isGroupBy()) {
                     pGroupByNode.doNode( accumulateNode, sink, am, wm, srcTuples, trgTuples, stagedLeftTuples );
                 } else {
-                    pAccNode.doNode( accumulateNode, sink, am, wm, srcTuples, trgTuples, stagedLeftTuples );
+                    if ( accumulateNode.isRightInputIsRiaNode() ) {
+                        pAccSubnetworkNode.doNode( accumulateNode, sink, am, wm, srcTuples, trgTuples, stagedLeftTuples );
+                    } else {
+                        pAccNode.doNode( accumulateNode, sink, am, wm, srcTuples, trgTuples, stagedLeftTuples );
+                    }
                 }
                 break;
             }

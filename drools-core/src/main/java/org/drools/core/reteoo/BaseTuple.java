@@ -134,7 +134,7 @@ public abstract class BaseTuple implements Tuple {
     @Override
     public void increaseActivationCountForEvents() {
         for ( Tuple entry = skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
-            if(entry.getFactHandle().isEvent()) {
+            if ( entry.getFactHandle() != null && entry.getFactHandle().isEvent() ) {
                 // can be null for eval, not and exists that have no right input
                 ((EventFactHandle)entry.getFactHandle()).increaseActivationsCount();
             }
@@ -144,7 +144,7 @@ public abstract class BaseTuple implements Tuple {
     @Override
     public void decreaseActivationCountForEvents() {
         for ( Tuple entry = skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
-            if(entry.getFactHandle().isEvent()) {
+            if ( entry.getFactHandle() != null && entry.getFactHandle().isEvent() ) {
                 // can be null for eval, not and exists that have no right input
                 ((EventFactHandle)entry.getFactHandle()).decreaseActivationsCount();
             }
