@@ -25,6 +25,7 @@ import java.util.Map;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
+import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.SingleBetaConstraints;
@@ -62,6 +63,7 @@ import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -199,6 +201,7 @@ public class IndexingTest {
             final JoinNode j5 = (JoinNode) j4.getSinkPropagator().getSinks()[0];
             final JoinNode j6 = (JoinNode) j5.getSinkPropagator().getSinks()[0];
             final JoinNode j7 = (JoinNode) j6.getSinkPropagator().getSinks()[0];
+            final JoinNode j8 = (JoinNode) j7.getSinkPropagator().getSinks()[0];
 
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
             assertTrue(c.isIndexed());
@@ -233,6 +236,11 @@ public class IndexingTest {
             c = (SingleBetaConstraints) j7.getRawConstraints();
             assertFalse(c.isIndexed());
             bm = (BetaMemory) wm.getNodeMemory(j7);
+            assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
+            assertTrue(bm.getRightTupleMemory() instanceof TupleList);
+
+            assertThat(j8.getRawConstraints()).isInstanceOf(EmptyBetaConstraints.class);
+            bm = (BetaMemory) wm.getNodeMemory(j8);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
             assertTrue(bm.getRightTupleMemory() instanceof TupleList);
         } finally {

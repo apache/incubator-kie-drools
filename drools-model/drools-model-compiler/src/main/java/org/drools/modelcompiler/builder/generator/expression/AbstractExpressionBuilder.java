@@ -181,11 +181,12 @@ public abstract class AbstractExpressionBuilder {
                 drlxParseResult.getPatternType() != null &&
                 isLeftIndexableExpression( left.getExpression() ) &&
                 areIndexableDeclaration( usedDeclarations ) &&
-                right != null && !right.getExpression().isArrayAccessExpr();
+                right != null && !right.getExpression().isArrayAccessExpr() && !right.getExpression().isNullLiteralExpr();
     }
 
     private boolean isLeftIndexableExpression( Expression expr ) {
         if (expr instanceof MethodCallExpr) {
+            // this is findRoot via scope
             if ( !getMethodChainScope(( MethodCallExpr ) expr).map( DrlxParseUtil::isThisExpression ).orElse( false ) ) {
                 return false;
             }
