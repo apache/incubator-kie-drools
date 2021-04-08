@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
+      <artifactId>drools-legacy-test-util</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

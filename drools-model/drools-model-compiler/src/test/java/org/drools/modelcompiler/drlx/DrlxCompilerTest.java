@@ -98,15 +98,13 @@ public class DrlxCompilerTest {
                         new ReleaseIdImpl("", "", ""),
                         packageDescr.getName(),
                         new KnowledgeBuilderConfigurationImpl(),
-                        false,
                         new DialectCompiletimeRegistry(),
                         new DRLIdGenerator());
         ModelGenerator.generateModel(
                 kbuilder,
                 knowledgePackage,
                 packageDescr,
-                packageModel,
-                false);
+                packageModel);
 
         assertEquals(1, packageModel.getRuleUnits().size());
     }

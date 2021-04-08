@@ -225,8 +225,11 @@ public class AccumulateInline {
         MethodDeclaration accumulateMethod = getMethodFromTemplateClass("accumulate");
 
         String actionCode = accumulateDescr.getActionCode();
-        if(blockIsNonEmptyWithoutSemicolon(actionCode)) {
-            throw new MissingSemicolonInlineAccumulateException("action");
+
+        if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
+            actionCode = addSemicolonWhenMissing( actionCode);
+        } else if ( blockIsNonEmptyWithoutSemicolon( actionCode ) ) {
+            throw new MissingSemicolonInlineAccumulateException( "action" );
         }
 
         CompiledBlockResult actionBlockCompilationResult = mvelCompiler.compileStatement(addCurlyBracesToBlock(actionCode));
@@ -259,7 +262,10 @@ public class AccumulateInline {
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
 
         if (reverseCode != null) {
-            if(blockIsNonEmptyWithoutSemicolon(reverseCode)) {
+
+            if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
+                reverseCode = addSemicolonWhenMissing(reverseCode);
+            } else if (blockIsNonEmptyWithoutSemicolon(reverseCode)) {
                 throw new MissingSemicolonInlineAccumulateException(REVERSE);
             }
 
@@ -338,5 +344,12 @@ public class AccumulateInline {
 
     private boolean blockIsNonEmptyWithoutSemicolon(String block) {
         return !"".equals(block) && !block.endsWith(";");
+    }
+
+    private String addSemicolonWhenMissing(String block) {
+        if ( !"".equals(block) && !block.endsWith(";") ) {
+            return block + ";";
+        }
+        return block;
     }
 }

@@ -646,7 +646,7 @@ public class ProtobufInputMarshaller {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
                     ActivationKey activationKey = getActivationKey( context, _activation );
-                    Activation activation = (Activation) context.getFilter().getTuplesCache().get(activationKey).getContextObject();
+                    Activation activation = (Activation) context.getFilter().getTuplesCache().get(activationKey);
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;
