@@ -45,17 +45,16 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_END_AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_END_OR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_OR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
-
-    public static final String EXPR_CALL = "expr";
-    public static final String REACT_ON_CALL = "D.reactOn";
-    public static final String BIND_CALL = "bind";
-    public static final String OR_CALL = "or";
-    public static final String AND_CALL = "and";
-    public static final String END_OR_CALL = "endOr";
-    public static final String END_AND_CALL = "endAnd";
 
     public PatternExpressionBuilder(RuleContext context) {
         super(context);
@@ -81,13 +80,13 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     public MethodCallExpr buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult) {
         if (drlxParseResult instanceof MultipleDrlxParseSuccess) {
             MultipleDrlxParseSuccess multi = ( MultipleDrlxParseSuccess ) drlxParseResult;
-            MethodCallExpr exprDSL = new MethodCallExpr(null, multi.getOperator() == BinaryExpr.Operator.OR ? OR_CALL : AND_CALL);
+            MethodCallExpr exprDSL = new MethodCallExpr(null, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_OR_CALL : EXPR_AND_CALL );
             for (DrlxParseSuccess child : multi.getResults()) {
                 MethodCallExpr childExpr = buildExpressionWithIndexing(child);
                 childExpr.setScope( exprDSL );
                 exprDSL = childExpr;
             }
-            return new MethodCallExpr(exprDSL, multi.getOperator() == BinaryExpr.Operator.OR ? END_OR_CALL : END_AND_CALL);
+            return new MethodCallExpr(exprDSL, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_END_OR_CALL : EXPR_END_AND_CALL );
         }
         return buildSingleExpressionWithIndexing((SingleDrlxParseSuccess ) drlxParseResult);
     }

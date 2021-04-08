@@ -73,7 +73,6 @@ public class RuleContext {
     private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
     private RuleDescr descr;
-    private final boolean generatePatternDSL;
 
     private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
@@ -119,13 +118,12 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, boolean generatePatternDSL) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
-        this.generatePatternDSL = generatePatternDSL;
     }
 
     private void findUnitDescr() {
@@ -178,10 +176,6 @@ public class RuleContext {
                 }
             }
         }
-    }
-
-    public boolean isPatternDSL() {
-        return generatePatternDSL;
     }
 
     public RuleUnitDescription getRuleUnitDescr() {
