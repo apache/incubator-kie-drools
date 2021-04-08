@@ -58,7 +58,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
     public BeliefSystemLogicalCallback(MarshallerReaderContext context) throws IOException {
         this.handle = context.getHandles().get( context.readLong() );
         this.context = context.getPropagationContexts().get( context.readLong() );
-        this.activation = (Activation) context.getTerminalTupleMap().get( context.readInt() ).getContextObject();
+        this.activation = (Activation) context.getTerminalTupleMap().get( context.readInt() );
     }
 
     public boolean isUpdate() {

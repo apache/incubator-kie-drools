@@ -239,7 +239,6 @@ public class DefaultAgenda
                           salience,
                           context,
                           ruleAgendaItem, agendaGroup);
-        rtnLeftTuple.setContextObject( rtnLeftTuple );
         return rtnLeftTuple;
     }
 
