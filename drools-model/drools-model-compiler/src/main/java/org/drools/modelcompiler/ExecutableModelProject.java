@@ -24,5 +24,5 @@ import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.api.builder.KieBuilder;
 
 public class ExecutableModelProject implements KieBuilder.ProjectType {
-    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelKieProject.create(true);
+    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = CanonicalModelKieProject.create();
 }

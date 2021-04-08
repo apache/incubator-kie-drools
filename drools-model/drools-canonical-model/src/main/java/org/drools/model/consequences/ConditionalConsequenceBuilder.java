@@ -24,7 +24,7 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.view.ExprViewItem;
 
-import static org.drools.model.FlowDSL.expr;
+import static org.drools.model.DSL.expr;
 
 public class ConditionalConsequenceBuilder implements RuleItemBuilder<ConditionalConsequence> {
 

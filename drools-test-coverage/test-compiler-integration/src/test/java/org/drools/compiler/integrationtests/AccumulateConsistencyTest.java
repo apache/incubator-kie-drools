@@ -55,10 +55,8 @@ public class AccumulateConsistencyTest {
     public static Collection<Object[]> getParameters() {
         Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, false});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, false});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, false});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, true});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, true});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, true});
         return parameters;
     }
