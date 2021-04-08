@@ -15,11 +15,9 @@
  */
 package org.kie.kogito.codegen.tests;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -29,8 +27,6 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class MessageStartEventTest extends AbstractCodegenTest {
 
@@ -76,46 +72,6 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("customerId");
         assertThat(result.toMap().get("customerId")).isNotNull().isEqualTo("CUS-00998877");
-    }
-
-    @Test
-    public void testRESTApiForMessageStartEvent() throws Exception {
-
-        Application app = generateCodeProcessesOnly("messagestartevent/MessageStartEvent.bpmn2");
-        assertThat(app).isNotNull();
-
-        Class<?> resourceClazz = Class.forName("org.kie.kogito.test.MessageStartEventResource", true, testClassLoader());
-        assertNotNull(resourceClazz);
-        Method[] methods = resourceClazz.getMethods();
-        for (Method m : methods) {
-            if (m.getName().startsWith("createResource")) {
-                fail("For processes without none start event there should not be create resource method");
-            }
-        }
-    }
-
-    @Test
-    public void testRESTApiForMessageEndEvent() throws Exception {
-
-        Application app = generateCodeProcessesOnly("messagestartevent/MessageEndEvent.bpmn2");
-        assertThat(app).isNotNull();
-
-        Class<?> resourceClazz = Class.forName("org.kie.kogito.test.MessageStartEventResource", true, testClassLoader());
-        assertNotNull(resourceClazz);
-        Method[] methods = resourceClazz.getMethods();
-        assertThat(methods).haveAtLeast(1, new Condition<Method>(m -> m.getName().startsWith("createResource"), "Must have method with name 'createResource'"));
-    }
-
-    @Test
-    public void testMessageProducerForMessageEndEvent() throws Exception {
-
-        Application app = generateCodeProcessesOnly("messagestartevent/MessageStartAndEndEvent.bpmn2");
-        assertThat(app).isNotNull();
-        // class name is with suffix that represents node id as there might be multiple end message events
-        Class<?> resourceClazz = Class.forName("org.kie.kogito.test.MessageStartEventMessageProducer_3", true, testClassLoader());
-        assertNotNull(resourceClazz);
-        Method[] methods = resourceClazz.getMethods();
-        assertThat(methods).haveAtLeast(1, new Condition<Method>(m -> m.getName().equals("produce"), "Must have method with name 'produce'"));
     }
 
     @Test

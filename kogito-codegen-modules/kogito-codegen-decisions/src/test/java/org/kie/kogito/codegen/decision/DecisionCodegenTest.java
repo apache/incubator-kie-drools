@@ -16,7 +16,9 @@
 package org.kie.kogito.codegen.decision;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -51,13 +53,19 @@ public class DecisionCodegenTest {
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(6);
-        assertThat(fileNames(generatedFiles)).containsAll(Arrays.asList("decision/InputSet.java",
+
+        Collection<String> expectedResources = new ArrayList<>(Arrays.asList("decision/InputSet.java",
                 "decision/OutputSet.java",
                 "decision/TEmployee.java",
                 "decision/TAddress.java",
                 "decision/TPayroll.java",
-                "decision/VacationsResource.java",
                 "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
+
+        if (contextBuilder.build().hasREST()) {
+            expectedResources.add("decision/VacationsResource.java");
+        }
+
+        assertThat(fileNames(generatedFiles)).containsAll(expectedResources);
 
         assertNotEmptySectionCompilationUnit(codeGenerator);
     }
@@ -69,10 +77,15 @@ public class DecisionCodegenTest {
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
-        assertThat(fileNames(generatedFiles)).containsAll(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
+
+        Collection<String> expectedResources = new ArrayList<>(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
                 "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OutputSet.java",
-                "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java",
                 "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
+        if (contextBuilder.build().hasREST()) {
+            expectedResources.add("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java");
+        }
+
+        assertThat(fileNames(generatedFiles)).containsAll(expectedResources);
 
         assertNotEmptySectionCompilationUnit(codeGenerator);
     }
@@ -82,16 +95,18 @@ public class DecisionCodegenTest {
     public void givenADMNModelWhenMonitoringIsActiveThenGrafanaDashboardsAreGenerated(KogitoBuildContext.Builder contextBuilder) throws Exception {
         List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withMonitoring(true).withPrometheusMonitoring(true).build(), contextBuilder);
 
-        JGrafana vacationOperationalDashboard =
-                JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
+        if (contextBuilder.build().hasREST()) {
+            JGrafana vacationOperationalDashboard =
+                    JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
-        assertEquals(6, vacationOperationalDashboard.getDashboard().panels.size());
-        assertEquals(0, vacationOperationalDashboard.getDashboard().links.size());
+            assertEquals(6, vacationOperationalDashboard.getDashboard().panels.size());
+            assertEquals(0, vacationOperationalDashboard.getDashboard().links.size());
 
-        JGrafana vacationDomainDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("domain-dashboard-Vacations.json")).findFirst().get().contents()));
+            JGrafana vacationDomainDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("domain-dashboard-Vacations.json")).findFirst().get().contents()));
 
-        assertEquals(1, vacationDomainDashboard.getDashboard().panels.size());
-        assertEquals(0, vacationDomainDashboard.getDashboard().links.size());
+            assertEquals(1, vacationDomainDashboard.getDashboard().panels.size());
+            assertEquals(0, vacationDomainDashboard.getDashboard().links.size());
+        }
     }
 
     @ParameterizedTest
@@ -99,14 +114,16 @@ public class DecisionCodegenTest {
     public void givenADMNModelWhenMonitoringAndTracingAreActiveThenTheGrafanaDashboardsContainsTheAuditUILink(KogitoBuildContext.Builder contextBuilder) throws Exception {
         List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withMonitoring(true).withPrometheusMonitoring(true).withTracing(true).build(), contextBuilder);
 
-        JGrafana vacationOperationalDashboard =
-                JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
+        if (contextBuilder.build().hasREST()) {
+            JGrafana vacationOperationalDashboard =
+                    JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
-        assertEquals(1, vacationOperationalDashboard.getDashboard().links.size());
+            assertEquals(1, vacationOperationalDashboard.getDashboard().links.size());
 
-        JGrafana vacationDomainDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("domain-dashboard-Vacations.json")).findFirst().get().contents()));
+            JGrafana vacationDomainDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("domain-dashboard-Vacations.json")).findFirst().get().contents()));
 
-        assertEquals(1, vacationDomainDashboard.getDashboard().links.size());
+            assertEquals(1, vacationDomainDashboard.getDashboard().links.size());
+        }
     }
 
     @ParameterizedTest
@@ -218,7 +235,8 @@ public class DecisionCodegenTest {
                 .filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE))
                 .collect(Collectors.toList());
 
-        assertEquals(2, dashboards.size());
+        int expectedDashboards = contextBuilder.build().hasREST() ? 2 : 0;
+        assertEquals(expectedDashboards, dashboards.size());
 
         return dashboards;
     }

@@ -23,7 +23,6 @@ import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.AbstractApplicationSection;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -42,7 +41,6 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
     private final List<RuleUnitGenerator> ruleUnits;
     private final TemplatedGenerator templatedGenerator;
-    private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
     public RuleUnitContainerGenerator(KogitoBuildContext context) {
         super(context, SECTION_CLASS_NAME);

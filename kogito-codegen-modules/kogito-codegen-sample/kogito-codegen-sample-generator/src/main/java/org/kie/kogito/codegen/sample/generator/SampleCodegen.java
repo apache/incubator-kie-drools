@@ -87,9 +87,7 @@ public class SampleCodegen implements Generator {
                     SampleCodegen::isSampleRuntimeField).forEach(SampleCodegen::initializeSampleRuntimeField);
         }
 
-        return Collections.singleton(new GeneratedFile(REST_TYPE,
-                generator.generatedFilePath(),
-                compilationUnit.toString()));
+        return context.hasREST() ? Collections.singleton(new GeneratedFile(REST_TYPE, generator.generatedFilePath(), compilationUnit.toString())) : Collections.emptyList();
     }
 
     @Override

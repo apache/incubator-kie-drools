@@ -11,18 +11,6 @@
     <artifactId>kogito-codegen-integration-tests</artifactId>
     <name>Kogito :: Codegen Integration Tests</name>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- resteasy-core-spi is used for testing, and cannot be listed in kogito-runtimes or it would impact either Quarkus or SB platform version  -->
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-core-spi</artifactId>
-                <version>${version.org.jboss.resteasy.spi.test}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
 
         <!-- test -->
@@ -55,30 +43,6 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-codegen-predictions</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-
-<!--    Required by compilation of BusinessRuleTaskTest.testDecision() -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-core-spi</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency> <!-- quarkus-jackson incorporates this -->
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <dependency>

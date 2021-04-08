@@ -16,18 +16,16 @@
 package org.kie.kogito.codegen.api.context.impl;
 
 import org.kie.kogito.codegen.api.di.impl.SpringDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.api.rest.impl.SpringRestAnnotator;
 
 public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public static final String CONTEXT_NAME = "Spring";
+    public static final String SPRING_REST = "org.springframework.web.bind.annotation.RestController";
+    public static final String SPRING_DI = "org.springframework.beans.factory.annotation.Autowired";
 
     protected SpringBootKogitoBuildContext(SpringBootKogitoBuildContextBuilder builder) {
-        super(builder, new SpringDependencyInjectionAnnotator(), CONTEXT_NAME);
-    }
-
-    @Override
-    public boolean hasREST() {
-        return hasClassAvailable("org.springframework.web.bind.annotation.RestController");
+        super(builder, new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(), CONTEXT_NAME);
     }
 
     public static Builder builder() {
@@ -46,7 +44,7 @@ public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
 
         @Override
         public String toString() {
-            return "SpringBoot";
+            return SpringBootKogitoBuildContext.CONTEXT_NAME;
         }
     }
 }

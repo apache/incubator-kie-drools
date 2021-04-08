@@ -175,7 +175,6 @@
     <version.org.infinispan.starter>2.3.3.Final</version.org.infinispan.starter>
     <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
     <version.org.jboss.resteasy>4.5.9.Final</version.org.jboss.resteasy>
-    <version.org.jboss.resteasy.spi.test>4.5.9.Final</version.org.jboss.resteasy.spi.test> <!-- align codegen test to target platforms, which use Resteasy -->
     <version.org.json>20200518</version.org.json>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.junit.minor>7.0</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
@@ -195,7 +194,6 @@
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
     <version.org.springframework>5.2.9.RELEASE</version.org.springframework>
-    <version.org.springframework.kafka>2.5.6.RELEASE</version.org.springframework.kafka>
     <version.org.springdoc>1.5.2</version.org.springdoc>
     <version.org.testcontainers>1.15.1</version.org.testcontainers>
     <version.org.xmlunit>2.2.1</version.org.xmlunit>
@@ -720,21 +718,6 @@
       </dependency>
 
       <!-- spring related -->
-      <dependency>
-        <groupId>org.springframework.kafka</groupId>
-        <artifactId>spring-kafka</artifactId>
-        <version>${version.org.springframework.kafka}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-spring-boot-starter</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>${version.org.springframework}</version>
-      </dependency>
       <dependency>
         <groupId>io.projectreactor</groupId>
         <artifactId>reactor-core</artifactId>

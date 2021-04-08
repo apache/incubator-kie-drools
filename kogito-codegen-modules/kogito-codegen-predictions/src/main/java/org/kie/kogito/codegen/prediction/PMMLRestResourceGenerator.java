@@ -155,6 +155,7 @@ public class PMMLRestResourceGenerator {
         String outputRef = String.format("/%s#/definitions/OutputSet", jsonFile);
         NodeList<AnnotationExpr> annotations = template.getMethodsByName("descriptive").get(0)
                 .getAnnotations();
+
         switch (context.name()) {
             case "Quarkus":
                 setQuarkusOASAnnotations(annotations, inputRef, outputRef);

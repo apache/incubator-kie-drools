@@ -63,6 +63,7 @@ import static java.util.stream.Collectors.toList;
 public class DecisionCodegen extends AbstractGenerator {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DecisionCodegen.class);
+    public static final String GENERATOR_NAME = "decisions";
 
     public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
     public static String VALIDATION_CONFIGURATION_KEY = "kogito.decisions.validation";
@@ -87,7 +88,7 @@ public class DecisionCodegen extends AbstractGenerator {
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
     public DecisionCodegen(KogitoBuildContext context, List<CollectedResource> cResources) {
-        super(context, "decisions", new DecisionConfigGenerator(context));
+        super(context, GENERATOR_NAME, new DecisionConfigGenerator(context));
         this.cResources = cResources;
     }
 
@@ -152,12 +153,14 @@ public class DecisionCodegen extends AbstractGenerator {
             rgs.add(resourceGenerator);
         }
 
-        for (DecisionRestResourceGenerator resourceGenerator : rgs) {
-            if (context().getAddonsConfig().usePrometheusMonitoring()) {
-                generateAndStoreGrafanaDashboards(resourceGenerator);
-            }
+        if (context().hasREST()) {
+            for (DecisionRestResourceGenerator resourceGenerator : rgs) {
+                if (context().getAddonsConfig().usePrometheusMonitoring()) {
+                    generateAndStoreGrafanaDashboards(resourceGenerator);
+                }
 
-            storeFile(REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+                storeFile(REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+            }
         }
 
         DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();

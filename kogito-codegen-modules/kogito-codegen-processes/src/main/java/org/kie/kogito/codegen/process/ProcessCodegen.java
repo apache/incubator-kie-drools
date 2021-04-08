@@ -71,6 +71,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class ProcessCodegen extends AbstractGenerator {
 
+    public static final String GENERATOR_NAME = "processes";
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessCodegen.class);
 
     private static final GeneratedFileType PROCESS_TYPE = GeneratedFileType.of("PROCESS", GeneratedFileType.Category.SOURCE);
@@ -171,7 +172,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private final Set<GeneratedFile> generatedFiles = new HashSet<>();
 
     public ProcessCodegen(KogitoBuildContext context, Collection<? extends Process> processes) {
-        super(context, "processes", new ProcessConfigGenerator(context));
+        super(context, GENERATOR_NAME, new ProcessConfigGenerator(context));
         this.processes = new HashMap<>();
         for (Process process : processes) {
             if (this.processes.containsKey(process.getId())) {
@@ -360,9 +361,11 @@ public class ProcessCodegen extends AbstractGenerator {
             }
         }
 
-        for (ProcessResourceGenerator resourceGenerator : rgs) {
-            storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
-                    resourceGenerator.generate());
+        if (context().hasREST()) {
+            for (ProcessResourceGenerator resourceGenerator : rgs) {
+                storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
+                        resourceGenerator.generate());
+            }
         }
 
         for (MessageDataEventGenerator messageDataEventGenerator : mdegs) {
@@ -391,16 +394,18 @@ public class ProcessCodegen extends AbstractGenerator {
             });
         }
 
-        if (context().getAddonsConfig().useKnativeEventing()) {
+        if (context().getAddonsConfig().useKnativeEventing() && context().hasREST()) {
             LOGGER.info("Knative Eventing addon enabled, generating CloudEvent HTTP listener");
             final CloudEventsResourceGenerator ceGenerator =
                     new CloudEventsResourceGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate());
         }
 
-        final CloudEventMetaFactoryGenerator topicsGenerator =
-                new CloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
-        storeFile(REST_TYPE, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
+        if (context().hasREST()) {
+            final CloudEventMetaFactoryGenerator topicsGenerator =
+                    new CloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
+            storeFile(REST_TYPE, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
+        }
 
         for (ProcessInstanceGenerator pi : pis) {
             storeFile(PROCESS_INSTANCE_TYPE, pi.generatedFilePath(), pi.generate());

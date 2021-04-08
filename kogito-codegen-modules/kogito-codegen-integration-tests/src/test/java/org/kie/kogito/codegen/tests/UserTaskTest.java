@@ -15,18 +15,13 @@
  */
 package org.kie.kogito.codegen.tests;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.ws.rs.Path;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 import org.jbpm.process.instance.impl.humantask.phases.Claim;
@@ -469,45 +464,6 @@ public class UserTaskTest extends AbstractCodegenTest {
         processInstance.completeWorkItem(workItems.get(0).getId(), null, policy);
 
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.status());
-    }
-
-    @Test
-    public void testRESTApiForUserTasks() throws Exception {
-        class Dummy {
-
-            @Path("/{id}/FirstTask/{taskId}")
-            void post1() {
-
-            }
-
-            @Path("/{id}/SecondTask/{taskId}")
-            void post2() {
-
-            }
-        }
-
-        Annotation firstTask = Dummy.class.getDeclaredMethod("post1").getAnnotation(Path.class);
-        Annotation secondTask = Dummy.class.getDeclaredMethod("post2").getAnnotation(Path.class);
-        testRESTApiForUserTasks("Path", firstTask, secondTask);
-    }
-
-    public final void testRESTApiForUserTasks(String postPathAnnotation, Annotation firstTask, Annotation secondTask) throws Exception {
-        Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");
-        assertThat(app).isNotNull();
-
-        Class<?> resourceClazz = Class.forName("org.kie.kogito.test.UserTasksProcessResource", true, testClassLoader());
-        assertNotNull(resourceClazz);
-        List<Annotation> completeTaskPaths = new ArrayList<>();
-        Method[] methods = resourceClazz.getMethods();
-        Stream.of(methods)
-                .filter(m -> m.getName().startsWith("completeTask"))
-                .map(Method::getAnnotations)
-                .flatMap(Stream::of)
-                .filter(a -> a.annotationType().getSimpleName().equals(postPathAnnotation))
-                .forEach(completeTaskPaths::add);
-
-        // there must be two distinct paths for user tasks
-        assertThat(completeTaskPaths).hasSize(2).containsOnly(firstTask, secondTask);
     }
 
     @Test

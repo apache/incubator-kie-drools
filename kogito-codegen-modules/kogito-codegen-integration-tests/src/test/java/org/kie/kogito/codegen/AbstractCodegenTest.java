@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.kogito.Application;
@@ -143,25 +142,6 @@ public class AbstractCodegenTest {
 
     public static Collection<CollectedResource> toCollectedResources(List<String> strings) {
         return toCollectedResources(TEST_RESOURCES, strings);
-    }
-
-    private static List<File> toFiles(List<String> strings, String path) {
-        return strings
-                .stream()
-                .map(resource -> new File(path, resource))
-                .collect(Collectors.toList());
-    }
-
-    public void withSpringContext() {
-        throw new UnsupportedOperationException("To be fixed KOGITO-4000");
-    }
-
-    public void withQuarkusContext() {
-        throw new UnsupportedOperationException("To be fixed KOGITO-4000");
-    }
-
-    public void withJavaContext() {
-        throw new UnsupportedOperationException("To be fixed KOGITO-4000");
     }
 
     protected Application generateCodeProcessesOnly(String... processes) throws Exception {

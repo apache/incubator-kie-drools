@@ -19,12 +19,10 @@ package org.kie.kogito.codegen.api.di.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
 
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
@@ -173,24 +171,6 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     @Override
     public <T extends NodeWithAnnotations<?>> T withEagerStartup(T node) {
         return node;
-    }
-
-    @Override
-    public <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node) {
-        return Stream.of("PostMapping", "GetMapping", "PutMapping", "DeleteMapping")
-                .map(node::getAnnotationByName)
-                .anyMatch(Optional::isPresent);
-    }
-
-    @Override
-    public <T extends NodeWithAnnotations<?>> Optional<String> getEndpointValue(T node) {
-        Optional<AnnotationExpr> path = node.getAnnotationByName("PostMapping");
-        return path
-                .flatMap(p -> p.asNormalAnnotationExpr()
-                        .getPairs()
-                        .stream()
-                        .filter(x -> "value".equals(x.getName().asString())).findFirst())
-                .map(value -> value.getValue().asStringLiteralExpr().asString());
     }
 
     @Override

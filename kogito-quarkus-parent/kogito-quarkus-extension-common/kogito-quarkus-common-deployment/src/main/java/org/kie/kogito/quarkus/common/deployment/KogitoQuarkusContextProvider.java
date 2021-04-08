@@ -20,24 +20,35 @@ import java.util.function.Predicate;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.utils.AppPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KogitoQuarkusContextProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoQuarkusContextProvider.class);
 
     private KogitoQuarkusContextProvider() {
         // utility class
     }
 
-    public static KogitoBuildContext context(AppPaths appPaths, ClassLoader classLoader) {
-        return context(appPaths, classLoader, className -> hasClassOnClasspath(classLoader, className));
-    }
-
     public static KogitoBuildContext context(AppPaths appPaths, ClassLoader classLoader, Predicate<String> classAvailabilityResolver) {
-        return QuarkusKogitoBuildContext.builder()
+        KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
                 .withApplicationProperties(appPaths.getResourceFiles())
                 .withClassLoader(classLoader)
                 .withClassAvailabilityResolver(classAvailabilityResolver)
                 .withAppPaths(appPaths)
                 .build();
+
+        if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_REST)) {
+            LOGGER.info("Disabling REST generation because class '" + QuarkusKogitoBuildContext.QUARKUS_REST + "' is not available");
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+        }
+        if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_DI)) {
+            LOGGER.info("Disabling dependency injection generation because class '" + QuarkusKogitoBuildContext.QUARKUS_DI + "' is not available");
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_DI, "false");
+        }
+
+        return context;
     }
 
     private static boolean hasClassOnClasspath(ClassLoader cl, String className) {

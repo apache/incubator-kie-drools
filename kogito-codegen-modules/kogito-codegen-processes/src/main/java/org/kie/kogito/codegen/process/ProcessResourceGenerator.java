@@ -274,7 +274,7 @@ public class ProcessResourceGenerator {
     private void securityAnnotated(ClassOrInterfaceDeclaration template) {
         if (context.hasDI() && process.getMetaData().containsKey("securityRoles")) {
             String[] roles = ((String) process.getMetaData().get("securityRoles")).split(",");
-            template.findAll(MethodDeclaration.class).stream().filter(context.getDependencyInjectionAnnotator()::isRestAnnotated)
+            template.findAll(MethodDeclaration.class).stream().filter(context.getRestAnnotator()::isRestAnnotated)
                     .forEach(md -> context.getDependencyInjectionAnnotator().withSecurityRoles(md, roles));
         }
     }

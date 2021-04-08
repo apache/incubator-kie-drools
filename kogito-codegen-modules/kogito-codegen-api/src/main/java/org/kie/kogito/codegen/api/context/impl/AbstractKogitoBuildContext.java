@@ -33,6 +33,7 @@ import javax.lang.model.SourceVersion;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.api.rest.RestAnnotator;
 import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
 import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.slf4j.Logger;
@@ -53,13 +54,16 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final Map<String, Object> contextAttributes;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
+    protected RestAnnotator restAnnotator;
 
     protected AbstractKogitoBuildContext(AbstractBuilder builder,
             DependencyInjectionAnnotator dependencyInjectionAnnotator,
+            RestAnnotator restAnnotator,
             String contextName) {
         this.packageName = builder.packageName;
         this.classAvailabilityResolver = builder.classAvailabilityResolver;
         this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
+        this.restAnnotator = restAnnotator;
         this.applicationProperties = builder.applicationProperties;
         this.addonsConfig = builder.addonsConfig != null ? builder.addonsConfig : AddonsConfigDiscovery.discover(this);
         this.classLoader = builder.classLoader;
@@ -95,6 +99,16 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     @Override
     public void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator) {
         this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
+    }
+
+    @Override
+    public RestAnnotator getRestAnnotator() {
+        return restAnnotator;
+    }
+
+    @Override
+    public void setRestAnnotator(RestAnnotator restAnnotator) {
+        this.restAnnotator = restAnnotator;
     }
 
     @Override

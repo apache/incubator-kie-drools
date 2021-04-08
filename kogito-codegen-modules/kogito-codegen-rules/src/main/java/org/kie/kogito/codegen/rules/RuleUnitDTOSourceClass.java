@@ -17,6 +17,8 @@ package org.kie.kogito.codegen.rules;
 
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.rules.SingletonStore;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -30,6 +32,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
 public class RuleUnitDTOSourceClass implements RuleFileGenerator {
+
+    private static final GeneratedFileType DTO_TYPE = GeneratedFileType.of("DTO", GeneratedFileType.Category.SOURCE, true, true);
 
     private final RuleUnitDescription ruleUnit;
 
@@ -53,7 +57,7 @@ public class RuleUnitDTOSourceClass implements RuleFileGenerator {
     }
 
     @Override
-    public String generate() {
+    public GeneratedFile generate() {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration(packageName);
 
@@ -77,7 +81,9 @@ public class RuleUnitDTOSourceClass implements RuleFileGenerator {
 
         supplierBlock.addStatement("return unit;");
 
-        return cu.toString();
+        return new GeneratedFile(DTO_TYPE,
+                generatedFilePath(),
+                cu.toString());
     }
 
     private static class FieldProcessor {

@@ -20,6 +20,8 @@ import java.util.NoSuchElementException;
 
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
@@ -49,13 +51,17 @@ import static org.kie.kogito.codegen.rules.QueryEndpointGenerator.setGeneric;
 
 public class QueryGenerator implements RuleFileGenerator {
 
+    private static final GeneratedFileType QUERY_TYPE = GeneratedFileType.of("QUERY", GeneratedFileType.Category.SOURCE, true, true);
+
     private final TemplatedGenerator generator;
+    private final KogitoBuildContext context;
     private final RuleUnitDescription ruleUnit;
     private final QueryModel query;
 
     private final String targetClassName;
 
     public QueryGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, QueryModel query, String name) {
+        this.context = context;
         this.ruleUnit = ruleUnit;
         this.query = query;
 
@@ -79,7 +85,7 @@ public class QueryGenerator implements RuleFileGenerator {
     }
 
     @Override
-    public String generate() {
+    public GeneratedFile generate() {
         CompilationUnit cu = generator.compilationUnitOrThrow();
 
         ClassOrInterfaceDeclaration clazz = cu
@@ -99,7 +105,10 @@ public class QueryGenerator implements RuleFileGenerator {
         generateConstructors(clazz);
         generateQueryMethod(cu, clazz, returnType);
         clazz.getMembers().sort(new BodyDeclarationComparator());
-        return cu.toString();
+
+        return new GeneratedFile(QUERY_TYPE,
+                generatedFilePath(),
+                cu.toString());
     }
 
     private void generateConstructors(ClassOrInterfaceDeclaration clazz) {

@@ -19,6 +19,7 @@ import java.util.Collections;
 
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
@@ -28,6 +29,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
+import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.RULE_TYPE;
 
 public class RuleUnitPojoGenerator implements RuleFileGenerator {
 
@@ -40,12 +43,15 @@ public class RuleUnitPojoGenerator implements RuleFileGenerator {
     }
 
     @Override
-    public String generate() {
-        return JavaParserCompiler.toPojoSource(
+    public GeneratedFile generate() {
+        String pojoSource = JavaParserCompiler.toPojoSource(
                 ruleUnitDescription.getPackageName(),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 classOrInterfaceDeclaration());
+        return new GeneratedFile(RULE_TYPE,
+                generatedFilePath(),
+                pojoSource);
     }
 
     private ClassOrInterfaceDeclaration classOrInterfaceDeclaration() {
@@ -81,9 +87,5 @@ public class RuleUnitPojoGenerator implements RuleFileGenerator {
 
     public String generatedFilePath() {
         return ruleUnitDescription.getPackageName().replace('.', '/') + "/" + ruleUnitDescription.getSimpleName() + ".java";
-    }
-
-    public String getClassName() {
-        return ruleUnitDescription.getRuleUnitName();
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.conf.DefaultEntryPoint;
 import org.kie.kogito.conf.EntryPoint;
@@ -44,6 +45,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
+import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.RULE_TYPE;
 
 public class RuleUnitInstanceGenerator implements RuleFileGenerator {
 
@@ -75,8 +78,10 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
     }
 
     @Override
-    public String generate() {
-        return compilationUnit().toString();
+    public GeneratedFile generate() {
+        return new GeneratedFile(RULE_TYPE,
+                generatedFilePath(),
+                compilationUnit().toString());
     }
 
     public CompilationUnit compilationUnit() {

@@ -58,7 +58,7 @@ public class ApplicationConfigGenerator {
         this.configGenerators.add(new ConfigBeanGenerator(context));
     }
 
-    public ApplicationConfigGenerator withConfigGenerator(ConfigGenerator configGenerator) {
+    public ApplicationConfigGenerator addConfigGenerator(ConfigGenerator configGenerator) {
         this.configGenerators.add(configGenerator);
         return this;
     }

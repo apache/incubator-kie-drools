@@ -59,21 +59,25 @@ class SampleCodegenTest {
 
         Collection<GeneratedFile> generatedFiles = codegen.generate();
 
-        assertThat(generatedFiles).hasSize(1);
-        List<GeneratedFile> generatedRests = generatedFiles.stream().filter(gf -> gf.type() == REST_TYPE).collect(Collectors.toList());
-        assertThat(generatedRests).hasSize(1);
+        if (contextBuilder.build().hasREST()) {
+            assertThat(generatedFiles).hasSize(1);
+            List<GeneratedFile> generatedRests = generatedFiles.stream().filter(gf -> gf.type() == REST_TYPE).collect(Collectors.toList());
+            assertThat(generatedRests).hasSize(1);
 
-        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(generatedRests.get(0).contents()));
-        Optional<FieldDeclaration> optionalFieldDeclaration = compilationUnit.findFirst(FieldDeclaration.class, SampleCodegen::isSampleRuntimeField);
+            CompilationUnit compilationUnit = StaticJavaParser.parse(new String(generatedRests.get(0).contents()));
+            Optional<FieldDeclaration> optionalFieldDeclaration = compilationUnit.findFirst(FieldDeclaration.class, SampleCodegen::isSampleRuntimeField);
 
-        assertThat(optionalFieldDeclaration).isNotEmpty();
+            assertThat(optionalFieldDeclaration).isNotEmpty();
 
-        FieldDeclaration fieldDeclaration = optionalFieldDeclaration.get();
+            FieldDeclaration fieldDeclaration = optionalFieldDeclaration.get();
 
-        if (context.hasDI()) {
-            assertThat(fieldDeclaration.getAnnotations()).isNotEmpty();
+            if (context.hasDI()) {
+                assertThat(fieldDeclaration.getAnnotations()).isNotEmpty();
+            } else {
+                assertThat(fieldDeclaration.getVariable(0).getInitializer()).isNotEmpty();
+            }
         } else {
-            assertThat(fieldDeclaration.getVariable(0).getInitializer()).isNotEmpty();
+            assertThat(generatedFiles).isEmpty();
         }
     }
 

@@ -69,6 +69,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     public static final String MONGODB_PERSISTENCE_TYPE = "mongodb";
     public static final String POSTGRESQL_PERSISTENCE_TYPE = "postgresql";
     public static final String KAFKA_PERSISTENCE_TYPE = "kafka";
+    public static final String GENERATOR_NAME = "persistence";
 
     protected static final String TEMPLATE_NAME = "templateName";
     protected static final String PATH_NAME = "path";
@@ -91,7 +92,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     private final ProtoGenerator protoGenerator;
 
     public PersistenceGenerator(KogitoBuildContext context, ProtoGenerator protoGenerator) {
-        super(context, "persistence");
+        super(context, GENERATOR_NAME);
         this.protoGenerator = protoGenerator;
     }
 

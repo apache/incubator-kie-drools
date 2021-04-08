@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
@@ -54,6 +55,7 @@ import com.github.javaparser.ast.type.Type;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classNameToReferenceType;
+import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
 
 public class QueryEndpointGenerator implements RuleFileGenerator {
@@ -131,7 +133,7 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
     }
 
     @Override
-    public String generate() {
+    public GeneratedFile generate() {
         CompilationUnit cu = generator.compilationUnitOrThrow("Could not create CompilationUnit");
         cu.setPackageDeclaration(query.getNamespace());
 
@@ -151,7 +153,10 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
         generateConstructors(clazz);
         generateQueryMethods(cu, clazz, returnType);
         clazz.getMembers().sort(new BodyDeclarationComparator());
-        return cu.toString();
+
+        return new GeneratedFile(REST_TYPE,
+                generatedFilePath(),
+                cu.toString());
     }
 
     public String getEndpointName() {
@@ -219,7 +224,7 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
             statements.addBefore(parseStatement("long endTime = System.nanoTime();"), returnStmt);
             String endpoint = nameURL;
             if (context.hasDI()) {
-                Optional<String> path = context.getDependencyInjectionAnnotator().getEndpointValue(md);
+                Optional<String> path = context.getRestAnnotator().getEndpointValue(md);
                 if (path.isPresent()) {
                     endpoint += path.get();
                 }

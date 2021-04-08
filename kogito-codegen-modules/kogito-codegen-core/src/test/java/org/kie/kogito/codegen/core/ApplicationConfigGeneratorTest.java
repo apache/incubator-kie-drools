@@ -35,7 +35,7 @@ public class ApplicationConfigGeneratorTest {
     public void withConfig() {
         final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(context);
         final ConfigGenerator mockGenerator = Mockito.mock(ConfigGenerator.class);
-        final ApplicationConfigGenerator returnedConfigGenerator = generator.withConfigGenerator(mockGenerator);
+        final ApplicationConfigGenerator returnedConfigGenerator = generator.addConfigGenerator(mockGenerator);
         assertThat(returnedConfigGenerator)
                 .isNotNull()
                 .isSameAs(generator);
@@ -44,7 +44,7 @@ public class ApplicationConfigGeneratorTest {
     @Test
     public void withConfigNull() {
         final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(context);
-        final ApplicationConfigGenerator returnedConfigGenerator = generator.withConfigGenerator(null);
+        final ApplicationConfigGenerator returnedConfigGenerator = generator.addConfigGenerator(null);
         assertThat(returnedConfigGenerator)
                 .isNotNull()
                 .isSameAs(generator);

@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.api.rest.RestAnnotator;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.kie.kogito.codegen.api.utils.KogitoCodeGenConstants;
@@ -32,29 +33,50 @@ public interface KogitoBuildContext {
 
     String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
     String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
+    String KOGITO_GENERATE_REST = "kogito.generate.rest";
+    String KOGITO_GENERATE_DI = "kogito.generate.di";
 
     boolean hasClassAvailable(String fqcn);
 
     /**
      * Return DependencyInjectionAnnotator if available or null
-     *
-     * @return
      */
     DependencyInjectionAnnotator getDependencyInjectionAnnotator();
 
     /**
      * Method to override default dependency injection annotator
-     *
-     * @param dependencyInjectionAnnotator
-     * @return
      */
     void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator);
 
+    /**
+     * Method to check if dependency injection is available and enabled.
+     * This is platform/classpath specific (e.g. Quarkus) but it can also be explicitly disabled using
+     * kogito.generate.di property
+     */
     default boolean hasDI() {
-        return getDependencyInjectionAnnotator() != null;
+        return getDependencyInjectionAnnotator() != null &&
+                "true".equalsIgnoreCase(getApplicationProperty(KOGITO_GENERATE_DI).orElse("true"));
     }
 
-    boolean hasREST();
+    /**
+     * Return RestAnnotator if available or null
+     */
+    RestAnnotator getRestAnnotator();
+
+    /**
+     * Method to override default REST annotator
+     */
+    void setRestAnnotator(RestAnnotator restAnnotator);
+
+    /**
+     * Method to check if REST is available and enabled.
+     * This is platform/classpath specific (e.g. Quarkus) but it can also be explicitly disabled using
+     * kogito.generate.rest property
+     */
+    default boolean hasREST() {
+        return getRestAnnotator() != null &&
+                "true".equalsIgnoreCase(getApplicationProperty(KOGITO_GENERATE_REST).orElse("true"));
+    }
 
     default boolean isValidationSupported() {
         return hasClassAvailable(KogitoCodeGenConstants.VALIDATION_CLASS);
@@ -100,8 +122,6 @@ public interface KogitoBuildContext {
     /**
      * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions
      * (see {@link TemplatedGenerator})
-     * 
-     * @return
      */
     String name();
 

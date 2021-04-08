@@ -86,10 +86,9 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
     public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
+    public static final String GENERATOR_NAME = "rules";
     private static final Logger LOGGER = LoggerFactory.getLogger(IncrementalRuleCodegen.class);
     private static final GeneratedFileType JSON_MAPPER_TYPE = GeneratedFileType.of("JSON_MAPPER", GeneratedFileType.Category.SOURCE);
-    private static final GeneratedFileType QUERY_TYPE = GeneratedFileType.of("QUERY", GeneratedFileType.Category.SOURCE, true, true);
-    private static final GeneratedFileType DTO_TYPE = GeneratedFileType.of("QUERY", GeneratedFileType.Category.SOURCE, true, true);
 
     public static IncrementalRuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         List<Resource> generatedRules = resources.stream()
@@ -124,7 +123,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private final Map<String, RuleUnitConfig> configs;
 
     private IncrementalRuleCodegen(KogitoBuildContext context, Collection<Resource> resources) {
-        super(context, "rules", new RuleConfigGenerator(context));
+        super(context, GENERATOR_NAME, new RuleConfigGenerator(context));
         this.resources = resources;
         this.kieModuleModel = findKieModuleModel(context.getAppPaths().getResourcePaths());
         setDefaultsforEmptyKieModule(kieModuleModel);
@@ -306,14 +305,14 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         for (RuleUnitGenerator ruleUnit : ruleUnitGenerators) {
             initRuleUnitHelper(ruleUnitHelper, ruleUnit.getRuleUnitDescription());
 
-            List<String> queryClasses = context().hasREST() ? generateQueriesEndpoint(errors, generatedFiles, ruleUnitHelper, ruleUnit) : Collections.emptyList();
+            List<String> queryClasses = generateQueriesEndpoint(errors, generatedFiles, ruleUnitHelper, ruleUnit);
 
-            generatedFiles.add(ruleUnit.generateFile(RULE_TYPE));
+            generatedFiles.add(ruleUnit.generate());
 
             RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(ruleUnitHelper, queryClasses);
-            generatedFiles.add(ruleUnitInstance.generateFile(RULE_TYPE));
+            generatedFiles.add(ruleUnitInstance.generate());
 
-            ruleUnit.pojo(ruleUnitHelper).ifPresent(p -> generatedFiles.add(p.generateFile(RULE_TYPE)));
+            ruleUnit.pojo(ruleUnitHelper).ifPresent(p -> generatedFiles.add(p.generate()));
         }
     }
 
@@ -324,11 +323,11 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         }
 
         if (!context().hasDI()) {
-            generatedFiles.add(new RuleUnitDTOSourceClass(ruleUnit.getRuleUnitDescription(), ruleUnitHelper).generateFile(DTO_TYPE));
+            generatedFiles.add(new RuleUnitDTOSourceClass(ruleUnit.getRuleUnitDescription(), ruleUnitHelper).generate());
         }
 
         return queries.stream().map(q -> generateQueryEndpoint(errors, generatedFiles, q))
-                .flatMap(o -> o.isPresent() ? Stream.of(o.get()) : Stream.empty()).collect(toList());
+                .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty)).collect(toList());
     }
 
     private void initRuleUnitHelper(RuleUnitHelper ruleUnitHelper, RuleUnitDescription ruleUnitDesc) {
@@ -342,23 +341,26 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     private Optional<String> generateQueryEndpoint(List<DroolsError> errors, List<GeneratedFile> generatedFiles, QueryEndpointGenerator query) {
-        if (context().getAddonsConfig().usePrometheusMonitoring()) {
-            String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(
-                    operationalDashboardDmnTemplate,
-                    query.getEndpointName(),
-                    context().getAddonsConfig().useTracing());
-            generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, query.getEndpointName() + ".json"));
+        if (!query.validate()) {
+            errors.add(query.getError());
+            return Optional.empty();
         }
 
-        if (query.validate()) {
-            generatedFiles.add(query.generateFile(QUERY_TYPE));
-            QueryGenerator queryGenerator = query.getQueryGenerator();
-            generatedFiles.add(query.getQueryGenerator().generateFile(QUERY_TYPE));
-            return Optional.of(queryGenerator.getQueryClassName());
+        if (context().hasREST()) {
+            if (context().getAddonsConfig().usePrometheusMonitoring()) {
+                String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(
+                        operationalDashboardDmnTemplate,
+                        query.getEndpointName(),
+                        context().getAddonsConfig().useTracing());
+                generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, query.getEndpointName() + ".json"));
+            }
+
+            generatedFiles.add(query.generate());
         }
 
-        errors.add(query.getError());
-        return Optional.empty();
+        QueryGenerator queryGenerator = query.getQueryGenerator();
+        generatedFiles.add(queryGenerator.generate());
+        return Optional.of(queryGenerator.getQueryClassName());
     }
 
     private void generateSessionUnits(List<GeneratedFile> generatedFiles) {

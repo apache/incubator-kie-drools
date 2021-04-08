@@ -17,18 +17,11 @@ package org.kie.kogito.codegen.rules;
 
 import org.drools.compiler.compiler.DroolsError;
 import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.api.GeneratedFileType;
 
 public interface RuleFileGenerator {
     String generatedFilePath();
 
-    String generate();
-
-    default GeneratedFile generateFile(GeneratedFileType fileType) {
-        return new GeneratedFile(fileType,
-                generatedFilePath(),
-                generate());
-    }
+    GeneratedFile generate();
 
     default boolean validate() {
         return true;

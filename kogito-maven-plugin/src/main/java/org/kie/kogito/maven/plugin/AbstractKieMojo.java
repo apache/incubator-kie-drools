@@ -21,6 +21,7 @@ import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -37,6 +38,11 @@ import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
 import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
+import org.kie.kogito.codegen.decision.DecisionCodegen;
+import org.kie.kogito.codegen.prediction.PredictionCodegen;
+import org.kie.kogito.codegen.process.ProcessCodegen;
+import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
+import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
@@ -100,14 +106,6 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         return context;
     }
 
-    private void additionalProperties(KogitoBuildContext context) {
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + "rules", generateRules);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + "processes", generateProcesses);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + "predictions", generatePredictions);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + "decisions", generateDecisions);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + "persistence", persistence);
-    }
-
     protected ClassLoader projectClassLoader() throws MojoExecutionException {
         return MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                 project,
@@ -119,6 +117,28 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         return KogitoBuildContext.DEFAULT_PACKAGE_NAME;
     }
 
+    private void additionalProperties(KogitoBuildContext context) {
+
+        classToCheckForREST().ifPresent(restClass -> {
+            if (!context.hasClassAvailable(restClass)) {
+                getLog().info("Disabling REST generation because class '" + restClass + "' is not available");
+                context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            }
+        });
+        classToCheckForDI().ifPresent(diClass -> {
+            if (!context.hasClassAvailable(diClass)) {
+                getLog().info("Disabling dependency injection generation because class '" + diClass + "' is not available");
+                context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_DI, "false");
+            }
+        });
+
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + IncrementalRuleCodegen.GENERATOR_NAME, generateRules);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + ProcessCodegen.GENERATOR_NAME, generateProcesses);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + PredictionCodegen.GENERATOR_NAME, generatePredictions);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + DecisionCodegen.GENERATOR_NAME, generateDecisions);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + PersistenceGenerator.GENERATOR_NAME, persistence);
+    }
+
     private KogitoBuildContext.Builder contextBuilder() {
         switch (discoverFramework()) {
             case QUARKUS:
@@ -127,6 +147,28 @@ public abstract class AbstractKieMojo extends AbstractMojo {
                 return SpringBootKogitoBuildContext.builder();
             default:
                 return JavaKogitoBuildContext.builder();
+        }
+    }
+
+    private Optional<String> classToCheckForREST() {
+        switch (discoverFramework()) {
+            case QUARKUS:
+                return Optional.of(QuarkusKogitoBuildContext.QUARKUS_REST);
+            case SPRING:
+                return Optional.of(SpringBootKogitoBuildContext.SPRING_REST);
+            default:
+                return Optional.empty();
+        }
+    }
+
+    private Optional<String> classToCheckForDI() {
+        switch (discoverFramework()) {
+            case QUARKUS:
+                return Optional.of(QuarkusKogitoBuildContext.QUARKUS_DI);
+            case SPRING:
+                return Optional.of(SpringBootKogitoBuildContext.SPRING_DI);
+            default:
+                return Optional.empty();
         }
     }
 

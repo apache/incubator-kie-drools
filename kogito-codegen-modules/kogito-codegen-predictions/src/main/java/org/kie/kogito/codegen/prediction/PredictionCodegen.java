@@ -56,6 +56,7 @@ import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKi
 public class PredictionCodegen extends AbstractGenerator {
 
     public static final String DMN_JPMML_CLASS = "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
+    public static final String GENERATOR_NAME = "predictions";
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
     private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
     private static final String DECLARED_TYPE_IDENTIFIER = "org.drools.core.factmodel.GeneratedFact";
@@ -63,7 +64,7 @@ public class PredictionCodegen extends AbstractGenerator {
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
     public PredictionCodegen(KogitoBuildContext context, List<PMMLResource> resources) {
-        super(context, "predictions", new PredictionConfigGenerator(context));
+        super(context, GENERATOR_NAME, new PredictionConfigGenerator(context));
         this.resources = resources;
     }
 
@@ -153,10 +154,10 @@ public class PredictionCodegen extends AbstractGenerator {
                     storeFile(GeneratedFileType.RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData()));
                 }
             }
-            if (!(model instanceof KiePMMLFactoryModel)) {
+            if (context().hasREST() && !(model instanceof KiePMMLFactoryModel)) {
                 PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model,
                         applicationCanonicalName());
-                storeFile(PMML_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+                storeFile(REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
                 final PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
                 try {
                     String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());

@@ -97,12 +97,7 @@ class AbstractKogitoBuildContextTest {
         }
 
         protected MockKogitoBuildContext(MockKogiotBuildContextBuilder builder) {
-            super(builder, null, "Mock");
-        }
-
-        @Override
-        public boolean hasREST() {
-            return true;
+            super(builder, null, null, "Mock");
         }
 
         public static class MockKogiotBuildContextBuilder extends AbstractKogitoBuildContext.AbstractBuilder {
