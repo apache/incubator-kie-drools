@@ -1282,7 +1282,7 @@ public class CompilerTest extends BaseModelTest {
                 "rule R1 when\n" +
                 "	 $p : Person($name: \"Andrea\", " +
                         "parentP.childrenMap[$name] != null," +
-                        "parentP.childrenMap[$name].name != null )\n" + // non deve indicizzare (e comunque dovrebbe essere alphaIndexedBy)
+                        "parentP.childrenMap[$name].name != null )\n" +
                 "then\n" +
                 "  insert(new Result($p));\n" +
                 "end\n";
