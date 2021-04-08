@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,16 +63,77 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer);
         executableBuilder.setActiveModel(settings.getDmnFilePath());
 
-        loadInputData(scenarioRunnerData.getBackgrounds(), executableBuilder);
-        loadInputData(scenarioRunnerData.getGivens(), executableBuilder);
+        defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
 
         return executableBuilder.run().getOutputs();
     }
 
-    protected void loadInputData(List<InstanceGiven> dataToLoad, DMNScenarioExecutableBuilder executableBuilder) {
-        for (InstanceGiven input : dataToLoad) {
-            executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
+    /**
+     * It returns a {@link Map} which contains the actual data in the DMN Executable Builder (BC) or DMN Context (Kogito)
+     * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value
+     * (another Map containing the fact properties)
+     * (eg.   "Driver": {
+     *              "Name": "string"
+     *         }
+     * )
+     * In case of a Imported Fact, i.e. a Decision or a Input node imported from an external DMN file, the Map contains
+     * the <b>Fact prefix as a Key</b>, which is the name of the imported DMN document, and another Map as value which
+     * contains all the Imported Fact with that prefix.
+     * (eg.   "imp" : {
+     *              "Violation": {
+     *                  "Code": "string"
+     *              }
+     *        }
+     * )
+     * If the the same fact is present in both Background and Given list, the Given one will override the background one.
+     * @param backgroundData,
+     * @param givenData
+     * @return
+     */
+    protected Map<String, Object> defineInputValues(List<InstanceGiven> backgroundData, List<InstanceGiven> givenData) {
+        List<InstanceGiven> inputData = new ArrayList<>();
+        inputData.addAll(backgroundData);
+        inputData.addAll(givenData);
+
+        Map<String, Object> inputValues = new HashMap<>();
+        Map<String, Map<String, Object>> importedInputValues = new HashMap<>();
+
+        for (InstanceGiven input : inputData) {
+            String factName = input.getFactIdentifier().getName();
+            String importPrefix = input.getFactIdentifier().getImportPrefix();
+            if (importPrefix != null && !importPrefix.isEmpty()) {
+                String importedFactName = factName.replaceFirst(importPrefix + ".", "");
+                Map<String, Object> groupedFacts = importedInputValues.computeIfAbsent(importPrefix, k -> new HashMap<>());
+                Object value = groupedFacts.containsKey(importedFactName) ?
+                        mergeValues(groupedFacts.get(importedFactName), input.getValue()) :
+                        input.getValue();
+                importedInputValues.get(importPrefix).put(importedFactName, value);
+            } else {
+                Object value = inputValues.containsKey(factName) ?
+                        mergeValues(inputValues.get(factName), input.getValue()) :
+                        input.getValue();
+                inputValues.put(factName, value);
+            }
         }
+
+        importedInputValues.forEach(inputValues::put);
+        return inputValues;
+    }
+
+    /**
+     * It manages the merge of two values in case a Fact is defined in both Background and Given input data.
+     * In case of DMN scenario, values are Maps. In case of properties present in both values map, the new Value
+     * will override the old one.
+     * @param oldValue
+     * @param newValue
+     * @return
+     */
+    private Map<String, Object> mergeValues(Object oldValue, Object newValue) {
+        Map<String, Object> toReturn = new HashMap<>();
+        toReturn.putAll((Map<String, Object>) oldValue);
+        toReturn.putAll((Map<String, Object>) newValue);
+
+        return toReturn;
     }
 
     @Override
