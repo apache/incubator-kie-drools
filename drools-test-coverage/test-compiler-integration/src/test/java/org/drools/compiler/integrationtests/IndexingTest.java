@@ -183,6 +183,7 @@ public class IndexingTest {
                         "   $p5 : Person(address.street == $p1.name)\n" + // indexed
                         "   $p6 : Person(addresses[0].street == $p1.name)\n" +  // indexed
                         "   $p7 : Person(name == $p1.address.street)\n" + //not indexed
+                        "   $p8 : Person(addresses[0].street == null)\n" +  // not indexed
                         "then\n" +
                         "end\n";
 

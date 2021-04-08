@@ -1282,7 +1282,7 @@ public class CompilerTest extends BaseModelTest {
                 "rule R1 when\n" +
                 "	 $p : Person($name: \"Andrea\", " +
                         "parentP.childrenMap[$name] != null," +
-                        "parentP.childrenMap[$name].name != null )\n" +
+                        "parentP.childrenMap[$name].name != null )\n" + // non deve indicizzare (e comunque dovrebbe essere alphaIndexedBy)
                 "then\n" +
                 "  insert(new Result($p));\n" +
                 "end\n";
@@ -1299,6 +1299,31 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( luca );
         ksession.insert( andrea );
         assertEquals( 2, ksession.fireAllRules() );
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        Person result = (Person) results.iterator().next().getValue();
+        assertThat(result.getName()).isEqualTo("Andrea");
+    }
+
+    @Test
+    public void test2() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "	 $p : Person($name: \"Andrea\", " +
+                        "age > $name.length)\n" +
+                "then\n" +
+                "  insert(new Result($p));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        Person andrea = new Person("Andrea", 37);
+
+        ksession.insert( andrea );
+        assertEquals( 1, ksession.fireAllRules() );
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         Person result = (Person) results.iterator().next().getValue();
