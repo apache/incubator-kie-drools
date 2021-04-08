@@ -35,7 +35,7 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrint
 
 public class RuleWriter {
 
-    public static final boolean EXTERNALIZE_LAMBDAS = false;
+    public static final boolean EXTERNALIZE_LAMBDAS = true;
 
     public static final String DROOLS_CHECK_NON_EXTERNALISED_LAMBDA = "drools.check.nonExternalisedLambda";
     private static boolean checkNonExternalisedLambda = Boolean.parseBoolean(System.getProperty(DROOLS_CHECK_NON_EXTERNALISED_LAMBDA, "false"));
