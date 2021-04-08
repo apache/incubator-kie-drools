@@ -39,6 +39,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -116,7 +117,7 @@ public class RuleContext {
         MVEL;
     }
 
-    public BaseDescr parentDesc = null;
+    private AndDescr parentDescr;
 
     public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
@@ -624,6 +625,14 @@ public class RuleContext {
 
     public void resetCurrentConstraintDescr() {
         this.currentConstraintDescr = empty();
+    }
+
+    public void setParentDescr( AndDescr parentDescr ) {
+        this.parentDescr = parentDescr;
+    }
+
+    public AndDescr getParentDescr() {
+        return parentDescr;
     }
 
     @Override

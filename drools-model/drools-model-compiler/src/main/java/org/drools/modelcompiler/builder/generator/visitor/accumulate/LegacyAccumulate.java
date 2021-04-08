@@ -80,13 +80,13 @@ public class LegacyAccumulate {
 
         ruleBuildContext = new RuleBuildContext(context.getKbuilder(), ruleDescr, dialectCompiletimeRegistry, pkg, defaultDialect);
         ruleBuildContext.setDeclarationResolver( new DelegateDeclarationScopeResolver(ruleBuildContext.getDeclarationResolver(), context, externalDeclrs ) );
+        ruleBuildContext.setDialect( defaultDialect ); // enforce java dialect even if the rule declares the mvel one
         for (int i = 0; i < context.getLegacyAccumulateCounter(); i++) {
             ruleBuildContext.getNextId();
         }
     }
 
     public void build() {
-
         Pattern pattern = (Pattern) new PatternBuilder().build(ruleBuildContext, basePattern);
         Accumulate accumulate = (Accumulate) pattern.getSource();
 
@@ -231,6 +231,7 @@ public class LegacyAccumulate {
             for (String externalDeclr : externalDeclrs) {
                 context.getDeclarationById( externalDeclr ).ifPresent( dSpec -> declarationMap.put(externalDeclr, dSpec.asDeclaration()) );
             }
+            declarationMap.putAll( delegate.getDeclarations( rule ) );
             return declarationMap;
         }
 
