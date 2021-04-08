@@ -16,6 +16,7 @@
 package org.drools.mvel.compiler.beliefsystem.defeasible;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.BeliefSystemType;
@@ -28,22 +29,21 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EqualityBehaviorOption;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -51,28 +51,31 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class DefeasibilityTest {
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DefeasibilityTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs (maybe unsupported)
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
+
     protected KieSession getSessionFromString( String drlString) {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KieBase kBase;
 
         try {
             System.setProperty("drools.negatable", "on");
-            kBuilder.add(ResourceFactory.newByteArrayResource(drlString.getBytes()),
-                         ResourceType.DRL);
-            if (kBuilder.hasErrors()) {
-                System.err.println(kBuilder.getErrors());
-                fail();
-            }
+            KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+            kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, drlString);
         } finally {
             System.setProperty("drools.negatable", "off");
         }
-
-        KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kieBaseConfiguration.setOption( EqualityBehaviorOption.EQUALITY );
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( kieBaseConfiguration );
-        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
@@ -83,24 +86,15 @@ public class DefeasibilityTest {
 
 
     protected KieSession getSession( String ruleFile ) {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KieBase kBase;
 
         try {
             System.setProperty("drools.negatable", "on");
-            kBuilder.add(ResourceFactory.newClassPathResource(ruleFile),
-                         ResourceType.DRL);
-            if (kBuilder.hasErrors()) {
-                System.err.println(kBuilder.getErrors());
-                fail();
-            }
+            KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+            kBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), equalityConfig, ruleFile);
         } finally {
             System.setProperty("drools.negatable", "off");
         }
-
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EqualityBehaviorOption.EQUALITY );
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase(conf);
-        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
