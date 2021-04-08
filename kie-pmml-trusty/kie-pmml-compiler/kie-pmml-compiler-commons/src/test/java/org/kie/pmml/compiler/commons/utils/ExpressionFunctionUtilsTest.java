@@ -131,6 +131,7 @@ public class ExpressionFunctionUtilsTest {
                                                 "variableapplyVariableConstant1, variableapplyVariableFieldRef2);\n" +
                                                 "    return applyVariable;\n" +
                                                 "}", methodName);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         //
         ParameterField parameterField = new ParameterField(FieldName.create("FIELD_REF"));
@@ -149,6 +150,7 @@ public class ExpressionFunctionUtilsTest {
                 "variableapplyVariableFieldRef2);\n" +
                 "    return applyVariable;\n" +
                 "}", methodName);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -294,6 +296,7 @@ public class ExpressionFunctionUtilsTest {
                 "    java.lang.Object VARIABLE_NAME = this.FUNCTION_NAME(param1, variableVARIABLE_NAMEConstant1, " +
                 "variableVARIABLE_NAMEFieldRef2);\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -324,6 +327,7 @@ public class ExpressionFunctionUtilsTest {
                 "    java.lang.Object VARIABLE_NAME = this.EXTERNAL_FUNCTION_NAME(param1, " +
                 "variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEApply2);\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -341,6 +345,7 @@ public class ExpressionFunctionUtilsTest {
                                         Double.class.getName(),
                                         variableName,
                                         constant.getValue());
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         constant.setDataType(DataType.STRING);
         constant.setValue("STRING_VALUE");
@@ -353,6 +358,7 @@ public class ExpressionFunctionUtilsTest {
                                  String.class.getName(),
                                  variableName,
                                  constant.getValue());
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -376,6 +382,7 @@ public class ExpressionFunctionUtilsTest {
                 "    java.lang.Object VARIABLE_NAME = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons" +
                 ".model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
         fieldRef.setMapMissingTo(mapMissingTo);
@@ -388,6 +395,7 @@ public class ExpressionFunctionUtilsTest {
                 "    java.lang.Object VARIABLE_NAME = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons" +
                 ".model.tuples.KiePMMLNameValue::getValue).orElse(\"MAP_MISSING_TO\");\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -403,6 +411,7 @@ public class ExpressionFunctionUtilsTest {
         String expected = "{\n" +
                 "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) null;\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
         fieldRef.setMapMissingTo(mapMissingTo);
@@ -411,6 +420,7 @@ public class ExpressionFunctionUtilsTest {
         expected = "{\n" +
                 "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) \"MAP_MISSING_TO\";\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -462,6 +472,7 @@ public class ExpressionFunctionUtilsTest {
                 ".KiePMMLNameValue> param1) {\n" +
                 "    return VARIABLE_NAME;\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 

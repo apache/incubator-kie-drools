@@ -182,6 +182,7 @@ public class DerivedFieldFunctionUtilsTest {
                 "variableapplyVariableFieldRef2);\n" +
                 "    return applyVariable;\n" +
                 "}";
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
