@@ -45,8 +45,8 @@ public class AndVisitor {
             exprStackSize++;
         }
 
+        this.context.setParentDescr( descr );
         for (BaseDescr subDescr : descr.getDescrs()) {
-            this.context.parentDesc = descr;
             subDescr.accept(visitor);
         }
 

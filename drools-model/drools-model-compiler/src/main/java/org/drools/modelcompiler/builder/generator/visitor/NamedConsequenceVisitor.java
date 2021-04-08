@@ -62,7 +62,7 @@ public class NamedConsequenceVisitor {
     }
 
     public void visit(ConditionalBranchDescr desc) {
-        PatternDescr patternRelated = Objects.requireNonNull((PatternDescr) getReferringPatternDescr(desc, (AndDescr) context.parentDesc),
+        PatternDescr patternRelated = Objects.requireNonNull((PatternDescr) getReferringPatternDescr(desc, context.getParentDescr()),
                                                              "Related pattern cannot be found!");
         Class<?> patternRelatedClass = getClassFromContext(context.getTypeResolver(), patternRelated.getObjectType());
         MethodCallExpr whenBlock = whenThenDSL(desc, patternRelated, patternRelatedClass, WHEN_CALL, null);
