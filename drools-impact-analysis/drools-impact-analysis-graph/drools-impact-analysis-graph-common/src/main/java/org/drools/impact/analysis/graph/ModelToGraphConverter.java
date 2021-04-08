@@ -37,6 +37,14 @@ public class ModelToGraphConverter {
 
     private static Logger logger = LoggerFactory.getLogger(ModelToGraphConverter.class);
 
+    private boolean positiveOnly = false;
+
+    public ModelToGraphConverter() {}
+
+    public ModelToGraphConverter(boolean positiveOnly) {
+        this.positiveOnly = positiveOnly;
+    }
+
     public Graph toGraph(AnalysisModel model) {
         GraphAnalysis graphAnalysis = generateGraphAnalysis(model);
         parseGraphAnalysis(model, graphAnalysis);
@@ -103,7 +111,7 @@ public class ModelToGraphConverter {
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
         for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(insertedClass)) {
             Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
-            Node.linkNodes(source, target, reactedRule.getReactivityType());
+            linkNodesIfExpected(source, target, reactedRule.getReactivityType());
         }
     }
 
@@ -113,7 +121,7 @@ public class ModelToGraphConverter {
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
         for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(deletedClass)) {
             Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
-            Node.linkNodes(source, target, reactedRule.getReactivityType().negate());
+            linkNodesIfExpected(source, target, reactedRule.getReactivityType().negate());
         }
     }
 
@@ -157,8 +165,16 @@ public class ModelToGraphConverter {
                     combinedLinkType = combinedLinkType.negate();
                 }
                 Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
-                Node.linkNodes(source, target, combinedLinkType);
+                linkNodesIfExpected(source, target, combinedLinkType);
             }
+        }
+    }
+
+    private void linkNodesIfExpected(Node source, Node target, ReactivityType type) {
+        if (positiveOnly && type != ReactivityType.POSITIVE) {
+            // don't link
+        } else {
+            Node.linkNodes(source, target, type);
         }
     }
 
