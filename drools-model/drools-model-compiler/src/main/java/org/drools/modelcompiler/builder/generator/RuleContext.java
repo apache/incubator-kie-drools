@@ -39,6 +39,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -73,7 +74,6 @@ public class RuleContext {
     private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
     private RuleDescr descr;
-    private final boolean generatePatternDSL;
 
     private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
@@ -117,15 +117,14 @@ public class RuleContext {
         MVEL;
     }
 
-    public BaseDescr parentDesc = null;
+    private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, boolean generatePatternDSL) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
-        this.generatePatternDSL = generatePatternDSL;
     }
 
     private void findUnitDescr() {
@@ -178,10 +177,6 @@ public class RuleContext {
                 }
             }
         }
-    }
-
-    public boolean isPatternDSL() {
-        return generatePatternDSL;
     }
 
     public RuleUnitDescription getRuleUnitDescr() {
@@ -630,6 +625,14 @@ public class RuleContext {
 
     public void resetCurrentConstraintDescr() {
         this.currentConstraintDescr = empty();
+    }
+
+    public void setParentDescr( AndDescr parentDescr ) {
+        this.parentDescr = parentDescr;
+    }
+
+    public AndDescr getParentDescr() {
+        return parentDescr;
     }
 
     @Override

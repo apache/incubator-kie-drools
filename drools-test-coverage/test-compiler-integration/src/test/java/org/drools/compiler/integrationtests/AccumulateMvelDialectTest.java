@@ -51,17 +51,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
-public class AccumulateUnsupportedWithModelTest {
+public class AccumulateMvelDialectTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public AccumulateUnsupportedWithModelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public AccumulateMvelDialectTest( final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     // See https://issues.jboss.org/browse/DROOLS-2733
@@ -219,10 +219,10 @@ public class AccumulateUnsupportedWithModelTest {
                 "when " +
                 "    Tick( $index : tick ) " +
                 "    accumulate ( $data : Data( $bias : bias )," +
-                "                 $tot : sum( $data.values[ $index ] + $bias ) ) " +
+                "                 $tot : sum( ((Integer) $data.values[ $index ]) + $bias ) ) " +
                 "then " +
                 "    System.out.println( $tot + ' for J ' + $index ); " +
-                "    list.add( $tot ); " +
+                "    list.add( $tot.intValue() ); " +
                 "end " +
 
                 "rule J " +
@@ -232,7 +232,7 @@ public class AccumulateUnsupportedWithModelTest {
                 "                 $tot : sum( ((Integer)$data.getValues().get( $index )) + $bias ) ) " +
                 "then " +
                 "    System.out.println( $tot + ' for M ' + $index ); " +
-                "    list2.add( $tot ); " +
+                "    list2.add( $tot.intValue() ); " +
                 "end ";
 
         final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "accumulate-test", "1");
@@ -255,18 +255,18 @@ public class AccumulateUnsupportedWithModelTest {
 
             // init data
             ks.fireAllRules();
-            assertEquals(Collections.singletonList(8.0), list);
-            assertEquals(Collections.singletonList(8.0), list2);
+            assertEquals(Collections.singletonList(8), list);
+            assertEquals(Collections.singletonList(8), list2);
 
             ks.insert(1);
             ks.fireAllRules();
-            assertEquals(asList(8.0, 10.0), list);
-            assertEquals(asList(8.0, 10.0), list2);
+            assertEquals(asList(8, 10), list);
+            assertEquals(asList(8, 10), list2);
 
             ks.insert(2);
             ks.fireAllRules();
-            assertEquals(asList(8.0, 10.0, 12.0), list);
-            assertEquals(asList(8.0, 10.0, 12.0), list2);
+            assertEquals(asList(8, 10, 12), list);
+            assertEquals(asList(8, 10, 12), list2);
         } finally {
             ks.dispose();
         }

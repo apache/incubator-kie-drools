@@ -135,7 +135,7 @@ public class GenerateModel {
     public static class ValidationBootstrapProject extends CanonicalModelKieProject {
 
         public ValidationBootstrapProject(InternalKieModule kieModule, ClassLoader classLoader) {
-            super(true, kieModule, classLoader);
+            super(kieModule, classLoader);
         }
 
         @Override
