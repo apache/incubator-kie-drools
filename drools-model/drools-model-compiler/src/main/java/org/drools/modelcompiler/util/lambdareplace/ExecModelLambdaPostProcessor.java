@@ -48,8 +48,6 @@ import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
-import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
-import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +55,10 @@ import org.slf4j.LoggerFactory;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
@@ -116,8 +117,7 @@ public class ExecModelLambdaPostProcessor {
 
     public void convertLambdas() {
 
-        clone.findAll(MethodCallExpr.class, mc -> PatternExpressionBuilder.EXPR_CALL.equals(mc.getNameAsString()) ||
-                                                  FlowExpressionBuilder.EXPR_CALL.equals(mc.getNameAsString()))
+        clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()) || EVAL_EXPR_CALL.equals(mc.getNameAsString()))
              .forEach(methodCallExpr1 -> {
                  if (containsTemporalPredicate(methodCallExpr1)) {
                      this.convertTemporalExpr(methodCallExpr1);
@@ -136,11 +136,8 @@ public class ExecModelLambdaPostProcessor {
         clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
              .forEach(this::convertIndexedByCall);
 
-        clone.findAll(MethodCallExpr.class, mc -> PatternExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
+        clone.findAll(MethodCallExpr.class, mc -> BIND_CALL.equals(mc.getNameAsString()))
              .forEach(this::convertBindCall);
-
-        clone.findAll(MethodCallExpr.class, mc -> FlowExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
-             .forEach(this::convertBindCallForFlowDSL);
 
         clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
                                                   REACTIVE_FROM_CALL.equals(mc.getNameAsString()))

@@ -21,7 +21,7 @@ import org.drools.model.Query3Def;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
-import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query3DefImpl<T1, T2, T3> extends QueryDefImpl implements ModelComponent, Query3Def<T1, T2, T3> {

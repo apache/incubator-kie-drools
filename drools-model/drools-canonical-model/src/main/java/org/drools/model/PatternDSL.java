@@ -1430,19 +1430,19 @@ public class PatternDSL extends DSL {
     // -- Conditional Named Consequnce --
 
     public static <A> ConditionalConsequenceBuilder when( Variable<A> var, Predicate1<A> predicate ) {
-        return when( FlowDSL.expr( var, predicate ) );
+        return when( expr( var, predicate ) );
     }
 
     public static <A> ConditionalConsequenceBuilder when( String exprId, Variable<A> var, Predicate1<A> predicate ) {
-        return when( FlowDSL.expr( exprId, var, predicate ) );
+        return when( expr( exprId, var, predicate ) );
     }
 
     public static <A, B> ConditionalConsequenceBuilder when( Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate ) {
-        return when( FlowDSL.expr( var1, var2, predicate ) );
+        return when( expr( var1, var2, predicate ) );
     }
 
     public static <A, B> ConditionalConsequenceBuilder when( String exprId, Variable<A> var1, Variable<B> var2, Predicate2<A, B> predicate ) {
-        return when( FlowDSL.expr( exprId, var1, var2, predicate ) );
+        return when( expr( exprId, var1, var2, predicate ) );
     }
 
     public static ConditionalConsequenceBuilder when( ExprViewItem expr ) {

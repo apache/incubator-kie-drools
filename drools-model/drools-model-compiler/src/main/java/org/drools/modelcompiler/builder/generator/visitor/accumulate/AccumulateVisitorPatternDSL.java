@@ -34,7 +34,8 @@ import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBu
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.LambdaUtil;
 
-import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
 
 public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
@@ -94,13 +95,13 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             LambdaExpr tmpOldBindLambda = oldBindLambda.clone();
             Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(tmpOldBindLambda, newBindLambda);
 
-            MethodCallExpr newComposedBinding = new MethodCallExpr(PatternExpressionBuilder.BIND_CALL, newBindingExpression.getArgument(0), newComposedLambda);
+            MethodCallExpr newComposedBinding = new MethodCallExpr(BIND_CALL, newBindingExpression.getArgument(0), newComposedLambda);
             newComposedBinding.setScope(oldBind.getScope().orElseThrow(RuntimeException::new));
 
             Optional<MethodCallExpr> optReactOn = oldBind.getArguments().stream()
                                                          .filter(MethodCallExpr.class::isInstance)
                                                          .map(MethodCallExpr.class::cast)
-                                                         .filter(exp -> exp.getName().asString().equals(PatternExpressionBuilder.REACT_ON_CALL))
+                                                         .filter(exp -> exp.getName().asString().equals(REACT_ON_CALL))
                                                          .findFirst();
             if (optReactOn.isPresent()) {
                 newComposedBinding.addArgument(optReactOn.get().clone());

@@ -62,17 +62,15 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final Function<PackageModel, T> sourcesGenerator;
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private final ReleaseId releaseId;
-    private final boolean isPattern;
     private final boolean oneClassPerRule;
     private final Collection<T> packageSources = new ArrayList<>();
 
     private Map<String, CompositePackageDescr> compositePackagesMap;
 
-    public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
+    public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean oneClassPerRule) {
         super(configuration);
         this.sourcesGenerator = sourcesGenerator;
         this.releaseId = releaseId;
-        this.isPattern = isPattern;
         this.oneClassPerRule = oneClassPerRule;
     }
 
@@ -271,15 +269,15 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
-        generateModel(this, pkg, packageDescr, model, isPattern);
+        generateModel(this, pkg, packageDescr, model);
     }
 
     protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry,  String pkgName) {
         return packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
             return packageDescr.getPreferredPkgUUID()
-                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
-                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator));
+                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
+                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator));
         });
     }
 

@@ -21,7 +21,7 @@ import org.drools.model.Query10Def;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
-import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query10DefImpl<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> extends QueryDefImpl implements ModelComponent, Query10Def<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> {

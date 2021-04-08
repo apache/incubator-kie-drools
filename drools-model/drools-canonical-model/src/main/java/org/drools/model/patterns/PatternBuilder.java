@@ -30,7 +30,7 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.impl.DataSourceDefinitionImpl;
 
-import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.DSL.declarationOf;
 
 public class PatternBuilder {
 

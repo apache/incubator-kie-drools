@@ -69,11 +69,7 @@ public class PatternVisitor {
         }
 
         final boolean allConstraintsPositional = areAllConstraintsPositional(constraintDescrs);
-        if (context.isPatternDSL()) {
-            return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType);
-        } else {
-            return new FlowDSLPattern(context, packageModel, pattern, constraintDescrs, patternType, allConstraintsPositional);
-        }
+        return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType);
     }
 
     private DSLNode parsePatternWithClass(PatternDescr pattern, String className) {
@@ -92,11 +88,7 @@ public class PatternVisitor {
         }
 
         if ( pattern.getIdentifier() == null && className.equals( "Object" ) && pattern.getSource() instanceof AccumulateDescr) {
-            if ( context.isPatternDSL() ) {
-                return new PatternAccumulateConstraint(context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
-            } else {
-                return new FlowAccumulateConstraint(context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
-            }
+            return new PatternAccumulateConstraint(context, packageModel, pattern, (( AccumulateDescr ) pattern.getSource()), constraintDescrs );
         }
         return null;
     }

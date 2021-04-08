@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.modelcompiler.ExecutableModelFlowProject;
 import org.drools.modelcompiler.ExecutableModelProject;
 
 /**
@@ -98,11 +97,6 @@ public final class TestParametersUtil {
         }
 
         if (testConfiguration.getExecutableModelProjectClass().isPresent()) {
-            if (testConfiguration.getExecutableModelProjectClass().get().equals(ExecutableModelFlowProject.class)
-                    && !engineTestConfigurationSet.contains(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW)) {
-                return false;
-            }
-
             if (testConfiguration.getExecutableModelProjectClass().get().equals(ExecutableModelProject.class)
                     && !engineTestConfigurationSet.contains(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN)) {
                 return false;

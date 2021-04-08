@@ -59,6 +59,16 @@ public class DslMethodNames {
     public static final String ACC_WITH_EXTERNAL_DECLRS_CALL = "with";
     public static final String EVAL_CALL = "D.eval";
 
+    // expressions
+    public static final String EVAL_EXPR_CALL = "D.expr";
+    public static final String EXPR_CALL = "expr";
+    public static final String REACT_ON_CALL = "D.reactOn";
+    public static final String BIND_CALL = "bind";
+    public static final String EXPR_OR_CALL = "or";
+    public static final String EXPR_AND_CALL = "and";
+    public static final String EXPR_END_OR_CALL = "endOr";
+    public static final String EXPR_END_AND_CALL = "endAnd";
+
     // indexing
     public static final String INDEXED_BY_CALL = "indexedBy";
     public static final String ALPHA_INDEXED_BY_CALL = "D.alphaIndexedBy";

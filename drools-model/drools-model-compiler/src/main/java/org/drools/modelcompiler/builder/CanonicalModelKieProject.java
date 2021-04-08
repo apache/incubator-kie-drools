@@ -45,17 +45,14 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
-    private final boolean isPattern;
-
-    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create(boolean isPattern) {
-        return (internalKieModule, classLoader) -> new CanonicalModelKieProject(isPattern, internalKieModule, classLoader);
+    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create() {
+        return (internalKieModule, classLoader) -> new CanonicalModelKieProject(internalKieModule, classLoader);
     }
 
     protected Map<String, ModelBuilderImpl> modelBuilders = new HashMap<>();
 
-    public CanonicalModelKieProject(boolean isPattern, InternalKieModule kieModule, ClassLoader classLoader) {
+    public CanonicalModelKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
-        this.isPattern = isPattern;
     }
 
     @Override
@@ -68,7 +65,6 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
                                                                                builderConfiguration,
                                                                                kModule.getReleaseId(),
-                                                                               isPattern,
                                                                                false);
         modelBuilders.put(kBaseModel.getName(), modelBuilder);
         return modelBuilder;
