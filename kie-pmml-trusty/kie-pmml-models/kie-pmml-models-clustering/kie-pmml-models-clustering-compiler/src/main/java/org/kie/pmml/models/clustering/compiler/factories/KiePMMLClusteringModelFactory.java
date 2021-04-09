@@ -42,6 +42,7 @@ import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;
+import org.dmg.pmml.clustering.MissingValueWeights;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -55,6 +56,7 @@ import org.kie.pmml.models.clustering.model.KiePMMLCluster;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
+import org.kie.pmml.models.clustering.model.KiePMMLMissingValueWeights;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +138,10 @@ public class KiePMMLClusteringModelFactory {
 
         body.addStatement(assignExprFrom("comparisonMeasure", comparisonMeasureCreationExprFrom(model.getComparisonMeasure())));
 
+        if (model.getMissingValueWeights() != null) {
+            body.addStatement(assignExprFrom("missingValueWeights", missingValueWeightsCreationExprFrom(model.getMissingValueWeights())));
+        }
+
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
 
@@ -155,7 +161,7 @@ public class KiePMMLClusteringModelFactory {
                         .map(DoubleLiteralExpr::new)
                         .forEach(arguments::add);
             } catch (NumberFormatException e) {
-                logger.error("Can't parse \"real\" cluster with value \"" + arrayStringValue + "\"", e);
+                logger.error("Can't parse \"real\" missing value weights with value \"" + arrayStringValue + "\"", e);
             }
         }
         return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLCluster.class.getCanonicalName()), arguments);
@@ -182,6 +188,24 @@ public class KiePMMLClusteringModelFactory {
         arguments.add(literalExprFrom(compareFunctionFrom(comparisonMeasure.getCompareFunction())));
 
         return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLComparisonMeasure.class.getCanonicalName()), arguments);
+    }
+
+    private static ObjectCreationExpr missingValueWeightsCreationExprFrom(MissingValueWeights missingValueWeights) {
+        NodeList<Expression> arguments = new NodeList<>();
+
+        if (missingValueWeights.getArray() != null && missingValueWeights.getArray().getType() == Array.Type.REAL) {
+            String arrayStringValue = (String) missingValueWeights.getArray().getValue();
+            try {
+                Arrays.stream(arrayStringValue.split(" "))
+                        .map(Double::parseDouble)
+                        .map(DoubleLiteralExpr::new)
+                        .forEach(arguments::add);
+            } catch (NumberFormatException e) {
+                logger.error("Can't parse \"real\" cluster with value \"" + arrayStringValue + "\"", e);
+            }
+        }
+
+        return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLMissingValueWeights.class.getCanonicalName()), arguments);
     }
 
     private static AssignExpr assignExprFrom(String target, Expression value) {
