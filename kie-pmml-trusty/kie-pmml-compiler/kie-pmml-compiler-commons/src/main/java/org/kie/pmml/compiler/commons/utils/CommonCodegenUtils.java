@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -57,6 +58,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
+import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
@@ -379,11 +381,30 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
+     * Set the <b>value</b> of the given <b>parameterName</b> in the given <code>ConstructorDeclaration</code>
+     * @param constructorDeclaration
+     * @param parameterName
+     * @param value
+     *
+     * @throws KiePMMLException if the given parameter is not found
+     */
+    public static void setExplicitConstructorInvocationArgument(final ConstructorDeclaration constructorDeclaration, final String parameterName, final String value) {
+        final BlockStmt body = constructorDeclaration.getBody();
+        final ExplicitConstructorInvocationStmt superStatement =
+                CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(superStatement, parameterName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION, parameterName, constructorDeclaration)));
+        parameterExpr.setName(value);
+    }
+
+    /**
+     * Set the <b>value</b> of the given <b>parameterName</b> in the given <code>ExplicitConstructorInvocationStmt</code>
      * @param constructorInvocationStmt
      * @param parameterName
      * @param value
-     * @return <code>Optional&lt;NameExpr&gt;</code> with the found <code>NameExpr</code>, or <code>Optional.empty()</code> if none is found
+     *
+     * @throws KiePMMLException if the given parameter is not found
      */
     public static void setExplicitConstructorInvocationArgument(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName, final String value) {
         final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(constructorInvocationStmt, parameterName)
