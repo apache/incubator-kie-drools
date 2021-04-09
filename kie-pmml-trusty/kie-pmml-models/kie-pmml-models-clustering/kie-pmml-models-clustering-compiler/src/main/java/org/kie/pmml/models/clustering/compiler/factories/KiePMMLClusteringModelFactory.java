@@ -18,18 +18,30 @@ package  org.kie.pmml.models.clustering.compiler.factories;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.ClusteringModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
+
 public class KiePMMLClusteringModelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLClusteringModelFactory.class.getName());
+    static final String KIE_PMML_CLUSTERING_MODEL_TEMPLATE_JAVA = "KiePMMLClusteringModelTemplate.tmpl";
+    static final String KIE_PMML_CLUSTERING_MODEL_TEMPLATE = "KiePMMLClusteringModelTemplate";
 
     private KiePMMLClusteringModelFactory(){
         // Avoid instantiation
@@ -41,9 +53,12 @@ public class KiePMMLClusteringModelFactory {
                                                                        final String packageName,
                                                                        final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLClusteringModel {} {}", dataDictionary, model);
+
+        String canonicalClassName = packageName + "." + getSanitizedClassName(model.getModelName());
+
         Map<String, String> sourcesMap = getKiePMMLClusteringModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
         try {
-            Class<?> clusteringModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, HARDCODED_MODEL_CLASS_NAME);
+            Class<?> clusteringModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, canonicalClassName);
             return (KiePMMLClusteringModel) clusteringModelClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new KiePMMLException(e);
@@ -55,9 +70,23 @@ public class KiePMMLClusteringModelFactory {
                                                                                  final ClusteringModel model,
                                                                                  final String packageName) {
 
-        logger.trace("getKiePMMLClusteringModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+        logger.warn("getKiePMMLClusteringModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+
+        String simpleClassName = getSanitizedClassName(model.getModelName());
+
+        CompilationUnit compilationUnit = JavaParserUtils.getKiePMMLModelCompilationUnit(simpleClassName, packageName, KIE_PMML_CLUSTERING_MODEL_TEMPLATE_JAVA, KIE_PMML_CLUSTERING_MODEL_TEMPLATE);
+        ClassOrInterfaceDeclaration modelTemplate = compilationUnit.getClassByName(simpleClassName)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + simpleClassName));
+
+        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        constructorDeclaration.setName(simpleClassName);
+
         Map<String, String> sourcesMap = new HashMap<>();
-        sourcesMap.put(HARDCODED_MODEL_CLASS_NAME, HARDCODED_MODEL_CLASS_SOURCE);
+        sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
+
+        System.out.println(sourcesMap);
+
+//        sourcesMap.put(HARDCODED_MODEL_CLASS_NAME, HARDCODED_MODEL_CLASS_SOURCE);
         return sourcesMap;
     }
 

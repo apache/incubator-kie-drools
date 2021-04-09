@@ -1,0 +1,52 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.pmml.models.clustering;
+
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.models.clustering.model.KiePMMLCluster;
+import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;
+import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
+import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
+import org.kie.pmml.models.clustering.model.aggregate.AggregateFunctions;
+import org.kie.pmml.models.clustering.model.compare.CompareFunctions;
+
+public class KiePMMLClusteringModelTemplate extends KiePMMLClusteringModel {
+
+    public KiePMMLClusteringModelTemplate() {
+        super("SingleIrisKMeans");
+
+        // KiePMMLModel
+        pmmlMODEL = PMML_MODEL.CLUSTERING_MODEL;
+        miningFunction = MINING_FUNCTION.CLUSTERING;
+        targetField = "class";
+
+        // KiePMMLClusteringModel
+        modelClass = ModelClass.CENTER_BASED;
+
+        clusters.add(new KiePMMLCluster(null, null, 6.9125000000000005, 3.0999999999999999, 5.846874999999999, 2.1312499999999996));
+        clusters.add(new KiePMMLCluster(null, null, 6.2365853658536600, 2.8585365853658535, 4.807317073170731, 1.62195121951219433));
+        clusters.add(new KiePMMLCluster(null, null, 5.0059999999999990, 3.4180000000000006, 1.464000000000000, 0.24399999999999999));
+        clusters.add(new KiePMMLCluster(null, null, 5.5296296296296290, 2.6222222222222222, 3.940740740740741, 1.21851851851851886));
+
+        clusteringFields.add(new KiePMMLClusteringField("sepal_length", 1.0, true, CompareFunctions.absDiff(), null));
+        clusteringFields.add(new KiePMMLClusteringField("sepal_width", 1.0, true, CompareFunctions.absDiff(), null));
+        clusteringFields.add(new KiePMMLClusteringField("petal_length", 1.0, true, CompareFunctions.absDiff(), null));
+        clusteringFields.add(new KiePMMLClusteringField("petal_width", 1.0, true, CompareFunctions.absDiff(), null));
+
+        comparisonMeasure = new KiePMMLComparisonMeasure(KiePMMLComparisonMeasure.Kind.DISTANCE, AggregateFunctions::squaredEuclidean, CompareFunctions.absDiff());
+    }
+}
