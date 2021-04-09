@@ -70,6 +70,7 @@ public class PlanActivityTreeTest extends AbstractPMMLTest {
     @Test
     public void testPlanActivity() {
         final Map<String, Object> inputData = new HashMap<>();
+
         inputData.put("workToDo", this.workToDo);
         inputData.put("weather", this.weather);
         inputData.put("friendsAvailable", this.friendsAvailable);
