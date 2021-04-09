@@ -42,6 +42,8 @@
         </property>
       </activation>
       <modules>
+        <module>cloudevents</module>
+        <module>events</module>
         <module>monitoring</module>
       </modules>
     </profile>
