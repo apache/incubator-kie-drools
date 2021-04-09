@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.clustering;
 
-import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
+package org.kie.pmml.models.clustering.model.aggregate;
 
-public class KiePMMLClusteringModelTemplate extends KiePMMLClusteringModel {
+import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
 
-    public KiePMMLClusteringModelTemplate() {
-        super(name);
+public enum KiePMMLAggregateFunction {
+    EUCLIDEAN,
+    SQUARED_EUCLIDEAN,
+    CHEBYCHEV,
+    CITY_BLOCK,
+    MINKOWSKI,
+    SIMPLE_MATCHING,
+    JACCARD,
+    TANIMOTO,
+    BINARY_SIMILARITY;
+
+    public interface Function {
+        double aggregate(KiePMMLCompareFunction.Function[] compare, double[] inputs, double[] seeds, double[] weights, double adjust);
     }
 }

@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.models.clustering.model.aggregate.AggregateFunction;
-import org.kie.pmml.models.clustering.model.compare.CompareFunction;
+import org.kie.pmml.models.clustering.model.aggregate.KiePMMLAggregateFunction;
+import org.kie.pmml.models.clustering.model.aggregate.KiePMMLAggregateFunctionImpl;
+import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
+import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunctionImpl;
 
 public abstract class KiePMMLClusteringModel extends KiePMMLModel {
 
@@ -44,9 +46,9 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        CompareFunction[] compFn = clusteringFields.stream()
-                .map(cf -> cf.getCompareFunction().orElseGet(comparisonMeasure::getCompareFunction))
-                .toArray(CompareFunction[]::new);
+        KiePMMLCompareFunction.Function[] compFn = clusteringFields.stream()
+                .map(cf -> toCompareFunctionFunction(cf.getCompareFunction().orElseGet(comparisonMeasure::getCompareFunction), cf))
+                .toArray(KiePMMLCompareFunction.Function[]::new);
 
         double[] inputs = clusteringFields.stream()
                 .map(KiePMMLClusteringField::getField)
@@ -60,7 +62,7 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
                 .mapToDouble(x -> 1.0)
                 .toArray();
 
-        final AggregateFunction aggregateFunction = comparisonMeasure.getAggregateFunction();
+        final KiePMMLAggregateFunction.Function aggregateFunction = toAggregateFunctionFunction(comparisonMeasure.getAggregateFunction());
 
         double[] aggregates = clusters.stream()
                 .mapToDouble(c -> aggregateFunction.aggregate(compFn, inputs, c.getValuesArray(), weights, 1.0))
@@ -77,5 +79,33 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         }
 
         return minIndex + 1;
+    }
+
+    private KiePMMLAggregateFunction.Function toAggregateFunctionFunction(KiePMMLAggregateFunction compareFunction) {
+        switch (compareFunction) {
+            case EUCLIDEAN:
+                return KiePMMLAggregateFunctionImpl::euclidean;
+            case SQUARED_EUCLIDEAN:
+                return KiePMMLAggregateFunctionImpl::squaredEuclidean;
+        }
+        throw new IllegalStateException("Unknown or unsupported compare function: " + compareFunction);
+    }
+
+    private KiePMMLCompareFunction.Function toCompareFunctionFunction(KiePMMLCompareFunction compareFunction, KiePMMLClusteringField clusteringField) {
+        switch (compareFunction) {
+            case ABS_DIFF:
+                return KiePMMLCompareFunctionImpl.absDiff();
+            case GAUSS_SIM:
+                double similarityScale = clusteringField.getSimilarityScale()
+                        .orElseThrow(() -> new IllegalStateException("\"gaussSim\" compare function used in field with no similarity scale: \"" + clusteringField.getField() + "\""));
+                return KiePMMLCompareFunctionImpl.gaussSim(similarityScale);
+            case DELTA:
+                return KiePMMLCompareFunctionImpl.delta();
+            case EQUAL:
+                return KiePMMLCompareFunctionImpl.equal();
+            case TABLE:
+                return KiePMMLCompareFunctionImpl.table();
+        }
+        throw new IllegalStateException("Unknown compare function: " + compareFunction);
     }
 }

@@ -36,6 +36,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Array;
+import org.dmg.pmml.ComparisonMeasure;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.Cluster;
@@ -53,7 +54,7 @@ import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.kie.pmml.models.clustering.model.KiePMMLCluster;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
-import org.kie.pmml.models.clustering.model.compare.CompareFunctions;
+import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,10 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
+import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.aggregateFunctionFrom;
+import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.compareFunctionFrom;
+import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.comparisonMeasureKindFrom;
+import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.modelClassFrom;
 
 public class KiePMMLClusteringModelFactory {
 
@@ -129,25 +134,14 @@ public class KiePMMLClusteringModelFactory {
                 .map(expr -> methodCallExprFrom("clusteringFields", "add", expr))
                 .forEach(body::addStatement);
 
-//        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
+        body.addStatement(assignExprFrom("comparisonMeasure", comparisonMeasureCreationExprFrom(model.getComparisonMeasure())));
 
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
 
         System.out.println(sourcesMap);
 
-//        sourcesMap.put(HARDCODED_MODEL_CLASS_NAME, HARDCODED_MODEL_CLASS_SOURCE);
         return sourcesMap;
-    }
-
-    private static KiePMMLClusteringModel.ModelClass modelClassFrom(ClusteringModel.ModelClass input) {
-        switch (input) {
-            case CENTER_BASED:
-                return KiePMMLClusteringModel.ModelClass.CENTER_BASED;
-            case DISTRIBUTION_BASED:
-                return KiePMMLClusteringModel.ModelClass.DISTRIBUTION_BASED;
-        }
-        throw new IllegalStateException("Invalid model class " + input);
     }
 
     private static ObjectCreationExpr clusterCreationExprFrom(Cluster cluster) {
@@ -177,18 +171,31 @@ public class KiePMMLClusteringModelFactory {
         arguments.add(literalExprFrom(clusteringField.getField().getValue()));
         arguments.add(new DoubleLiteralExpr(fieldWeight));
         arguments.add(new BooleanLiteralExpr(isCenterField));
-        arguments.add(clusteringField.getCompareFunction() == null ? new NullLiteralExpr() : new NameExpr(CompareFunctions.class.getCanonicalName() + "." + clusteringField.getCompareFunction().value() + "()"));
+        arguments.add(clusteringField.getCompareFunction() == null ? new NullLiteralExpr() : literalExprFrom(compareFunctionFrom(clusteringField.getCompareFunction())));
         arguments.add(new NullLiteralExpr());
 
         return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLClusteringField.class.getCanonicalName()), arguments);
     }
 
+    private static ObjectCreationExpr comparisonMeasureCreationExprFrom(ComparisonMeasure comparisonMeasure) {
+        NodeList<Expression> arguments = new NodeList<>();
+        arguments.add(literalExprFrom(comparisonMeasureKindFrom(comparisonMeasure.getKind())));
+        arguments.add(literalExprFrom(aggregateFunctionFrom(comparisonMeasure.getMeasure())));
+        arguments.add(literalExprFrom(compareFunctionFrom(comparisonMeasure.getCompareFunction())));
+
+        return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLComparisonMeasure.class.getCanonicalName()), arguments);
+    }
+
+    private static AssignExpr assignExprFrom(String target, Expression value) {
+        return new AssignExpr(new NameExpr(target), value, AssignExpr.Operator.ASSIGN);
+    }
+
     private static AssignExpr assignExprFrom(String target, Enum<?> value) {
-        return new AssignExpr(new NameExpr(target), literalExprFrom(value), AssignExpr.Operator.ASSIGN);
+        return assignExprFrom(target, literalExprFrom(value));
     }
 
     private static AssignExpr assignExprFrom(String target, String value) {
-        return new AssignExpr(new NameExpr(target), literalExprFrom(value), AssignExpr.Operator.ASSIGN);
+        return assignExprFrom(target, literalExprFrom(value));
     }
 
     private static Expression literalExprFrom(Enum<?> input) {

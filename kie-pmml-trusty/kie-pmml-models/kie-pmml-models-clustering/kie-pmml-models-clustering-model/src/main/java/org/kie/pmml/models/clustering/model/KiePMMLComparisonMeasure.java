@@ -15,16 +15,16 @@
  */
 package org.kie.pmml.models.clustering.model;
 
-import org.kie.pmml.models.clustering.model.aggregate.AggregateFunction;
-import org.kie.pmml.models.clustering.model.compare.CompareFunction;
+import org.kie.pmml.models.clustering.model.aggregate.KiePMMLAggregateFunction;
+import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
 
 public class KiePMMLComparisonMeasure {
 
     private final Kind kind;
-    private final AggregateFunction aggregateFunction;
-    private final CompareFunction compareFunction;
+    private final KiePMMLAggregateFunction aggregateFunction;
+    private final KiePMMLCompareFunction compareFunction;
 
-    public KiePMMLComparisonMeasure(Kind kind, AggregateFunction aggregateFunction, CompareFunction compareFunction) {
+    public KiePMMLComparisonMeasure(Kind kind, KiePMMLAggregateFunction aggregateFunction, KiePMMLCompareFunction compareFunction) {
         this.kind = kind;
         this.aggregateFunction = aggregateFunction;
         this.compareFunction = compareFunction;
@@ -34,11 +34,11 @@ public class KiePMMLComparisonMeasure {
         return kind;
     }
 
-    public AggregateFunction getAggregateFunction() {
+    public KiePMMLAggregateFunction getAggregateFunction() {
         return aggregateFunction;
     }
 
-    public CompareFunction getCompareFunction() {
+    public KiePMMLCompareFunction getCompareFunction() {
         return compareFunction;
     }
 

@@ -17,17 +17,17 @@ package org.kie.pmml.models.clustering.model;
 
 import java.util.Optional;
 
-import org.kie.pmml.models.clustering.model.compare.CompareFunction;
+import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
 
 public class KiePMMLClusteringField {
 
     private final String field;
     private final Double fieldWeight;
     private final Boolean isCenterField;
-    private final Optional<CompareFunction> compareFunction;
+    private final Optional<KiePMMLCompareFunction> compareFunction;
     private final Optional<Double> similarityScale;
 
-    public KiePMMLClusteringField(String field, Double fieldWeight, Boolean isCenterField, CompareFunction compareFunction, Double similarityScale) {
+    public KiePMMLClusteringField(String field, Double fieldWeight, Boolean isCenterField, KiePMMLCompareFunction compareFunction, Double similarityScale) {
         this.field = field;
         this.fieldWeight = fieldWeight;
         this.isCenterField = isCenterField;
@@ -47,7 +47,7 @@ public class KiePMMLClusteringField {
         return isCenterField;
     }
 
-    public Optional<CompareFunction> getCompareFunction() {
+    public Optional<KiePMMLCompareFunction> getCompareFunction() {
         return compareFunction;
     }
 
