@@ -41,7 +41,7 @@ public class OptaPlannerConstraintVerifierBavetStreamImplTest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class)
-                    .addAsResource("org/optaplanner/quarkus/bavetSolverConfig.xml", "solverConfig.xml"));
+                    .addAsResource("org/optaplanner/quarkus/verifier/bavetSolverConfig.xml", "solverConfig.xml"));
 
     @Inject
     ConstraintVerifier<TestdataQuarkusConstraintProvider, TestdataQuarkusSolution> constraintVerifier;
