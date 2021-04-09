@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -30,17 +29,15 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public class BavetNodeBuildPolicy<Solution_> {
 
-    private final BavetConstraintSession session;
+    private final BavetConstraintSession<Solution_, ?> session;
+    private final Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
+            new HashMap<>();
+    private final Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>();
 
     private int nextNodeIndex = 0;
-    private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
-    private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
-            new HashMap<>();
-    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>();
 
-    public BavetNodeBuildPolicy(BavetConstraintSession session, int constraintCount) {
+    public BavetNodeBuildPolicy(BavetConstraintSession<Solution_, ?> session) {
         this.session = session;
-        constraintIdToScoringNodeMap = new LinkedHashMap<>(constraintCount);
     }
 
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
@@ -52,24 +49,16 @@ public class BavetNodeBuildPolicy<Solution_> {
         return sharedNode;
     }
 
-    public void addScoringNode(BavetScoringNode scoringNode) {
-        constraintIdToScoringNodeMap.put(scoringNode.getConstraintId(), scoringNode);
-    }
-
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public BavetConstraintSession getSession() {
+    public BavetConstraintSession<Solution_, ?> getSession() {
         return session;
     }
 
     public int nextNodeIndex() {
         return nextNodeIndex++;
-    }
-
-    public Map<String, BavetScoringNode> getConstraintIdToScoringNodeMap() {
-        return constraintIdToScoringNodeMap;
     }
 
     public Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> getJoinConstraintStreamToJoinBridgeNodeMap() {
@@ -79,7 +68,7 @@ public class BavetNodeBuildPolicy<Solution_> {
     public List<BavetNode> getCreatedNodes() {
         // Make a sequential list of unique nodes.
         SortedMap<Integer, BavetNode> nodeIndexToNodeMap = sharableNodeMap.keySet().stream()
-                .collect(Collectors.toMap(k -> k.getNodeIndex(), Function.identity(), (a, b) -> {
+                .collect(Collectors.toMap(BavetAbstractNode::getNodeIndex, Function.identity(), (a, b) -> {
                     throw new IllegalStateException("Impossible state: 2 nodes (" + a + ", " + b +
                             ") share the same index (" + a.getNodeIndex() + ").");
                 }, TreeMap::new));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,40 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
+public final class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
 
-    protected int score;
+    private int score;
 
     protected SimpleScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, SimpleScore.ZERO);
     }
 
     @Override
-    public IntWeightedScoreImpacter buildWeightedScoreImpacter(SimpleScore constraintWeight) {
-        if (constraintWeight.equals(SimpleScore.ZERO)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+    public IntWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            SimpleScore constraintWeight) {
+        assertNonZeroConstraintWeight(constraintWeight);
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         int simpleConstraintWeight = constraintWeight.getScore();
-        return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+        return (int matchWeight, JustificationsSupplier justificationsSupplier) -> {
             int impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
-            if (constraintMatchEnabled) {
-                matchScoreConsumer.accept(SimpleScore.of(impact));
+            UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
+            if (!constraintMatchEnabled) {
+                return undoScoreImpact;
             }
-            return () -> this.score -= impact;
+            Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                    constraintWeight, SimpleScore.of(impact), justificationsSupplier.get());
+            return () -> {
+                undoScoreImpact.run();
+                undoConstraintMatch.run();
+            };
         };
     }
 

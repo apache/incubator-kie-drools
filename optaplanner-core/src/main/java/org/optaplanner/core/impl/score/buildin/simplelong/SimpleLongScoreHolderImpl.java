@@ -55,11 +55,11 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
         super.configureConstraintWeight(rule, constraintWeight);
         LongMatchExecutor matchExecutor;
         if (constraintWeight.equals(SimpleLongScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, long matchWeight, Object... justifications) -> {
+            matchExecutor = (RuleContext kcontext, long matchWeight) -> {
             };
         } else {
-            matchExecutor = (RuleContext kcontext, long matchWeight, Object... justifications) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore() * matchWeight, justifications);
+            matchExecutor = (RuleContext kcontext, long matchWeight) -> addConstraintMatch(kcontext,
+                    constraintWeight.getScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }
@@ -89,17 +89,17 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, Object... justifications) {
-        impactScore(kcontext, 1L, justifications);
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, 1L);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
-        impactScore(kcontext, (long) weightMultiplier, justifications);
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, (long) weightMultiplier);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
         Rule rule = kcontext.getRule();
         LongMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
@@ -107,11 +107,11 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier, justifications);
+        matchExecutor.accept(kcontext, weightMultiplier);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
@@ -124,12 +124,10 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
 
     @Override
     public void addConstraintMatch(RuleContext kcontext, long weight) {
-        addConstraintMatch(kcontext, weight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addConstraintMatch(RuleContext kcontext, long weight, Object... justifications) {
         score += weight;
-        registerConstraintMatch(kcontext, () -> score -= weight, () -> SimpleLongScore.of(weight), justifications);
+        registerConstraintMatch(kcontext,
+                () -> score -= weight,
+                () -> SimpleLongScore.of(weight));
     }
 
     @Override

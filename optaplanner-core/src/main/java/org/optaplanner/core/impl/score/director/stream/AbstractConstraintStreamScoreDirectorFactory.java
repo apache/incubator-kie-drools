@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.director.stream;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -27,7 +26,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 /**
@@ -40,15 +38,13 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractScoreDirectorFactory<Solution_, Score_> {
 
-    private final ConstraintSessionFactory<Solution_, Score_> constraintSessionFactory;
-    private final Constraint[] constraints;
-
-    protected AbstractConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider,
-            Supplier<InnerConstraintFactory<Solution_>> constraintFactorySupplier) {
+    protected AbstractConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         super(solutionDescriptor);
-        InnerConstraintFactory<Solution_> constraintFactory = constraintFactorySupplier.get();
-        this.constraints = constraintProvider.defineConstraints(constraintFactory);
+    }
+
+    protected Constraint[] buildConstraints(ConstraintProvider constraintProvider,
+            InnerConstraintFactory<Solution_> constraintFactory) {
+        Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
         if (constraints == null) {
             throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
                     + ")'s defineConstraints() must not return null.\n"
@@ -59,20 +55,9 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
                     + ")'s defineConstraints() must not contain an element that is null.\n"
                     + "Maybe don't include any null elements in the " + Constraint.class.getSimpleName() + " array.");
         }
-        constraintSessionFactory =
-                (ConstraintSessionFactory<Solution_, Score_>) constraintFactory.buildSessionFactory(constraints);
-    }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    public ConstraintSessionFactory<Solution_, Score_> getConstraintSessionFactory() {
-        return constraintSessionFactory;
-    }
-
-    public Constraint[] getConstraints() {
         return constraints;
     }
+
+    public abstract Constraint[] getConstraints();
 
 }

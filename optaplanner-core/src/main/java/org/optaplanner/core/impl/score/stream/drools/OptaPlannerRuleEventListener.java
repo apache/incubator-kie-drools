@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.drools;
+package org.optaplanner.core.impl.score.stream.drools;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 final class OptaPlannerRuleEventListener implements RuleEventListener {
 
     @Override
     public void onUpdateMatch(Match match) {
-        undoPreviousMatch((AgendaItem) match);
+        undoPreviousMatch(match);
     }
 
     @Override
     public void onDeleteMatch(Match match) {
-        undoPreviousMatch((AgendaItem) match);
+        undoPreviousMatch(match);
     }
 
-    public void undoPreviousMatch(AgendaItem agendaItem) {
-        Object callback = agendaItem.getCallback();
-        // Some rules don't have a callback because their RHS doesn't do addConstraintMatch().
-        if (callback instanceof AbstractScoreHolder.ConstraintActivationUnMatchListener) {
-            ((AbstractScoreHolder.ConstraintActivationUnMatchListener) callback).run();
-            agendaItem.setCallback(null);
-        }
+    private static void undoPreviousMatch(Match match) {
+        AgendaItem<?> agendaItem = (AgendaItem<?>) match;
+        UndoScoreImpacter callback = (UndoScoreImpacter) agendaItem.getCallback();
+        callback.run();
+        agendaItem.setCallback(null);
     }
 
 }

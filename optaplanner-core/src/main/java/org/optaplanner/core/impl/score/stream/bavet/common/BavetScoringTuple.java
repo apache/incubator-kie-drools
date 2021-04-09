@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public interface BavetScoringTuple {
@@ -24,9 +23,5 @@ public interface BavetScoringTuple {
     UndoScoreImpacter getUndoScoreImpacter();
 
     void setUndoScoreImpacter(UndoScoreImpacter undoScoreImpacter);
-
-    Score<?> getMatchScore();
-
-    void setMatchScore(Score<?> matchScore);
 
 }

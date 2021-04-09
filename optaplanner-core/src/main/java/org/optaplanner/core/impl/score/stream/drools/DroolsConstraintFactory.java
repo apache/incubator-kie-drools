@@ -16,22 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static org.drools.model.DSL.globalOf;
-
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.drools.model.Global;
-import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
@@ -66,39 +59,18 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     // SessionFactory creation
     // ************************************************************************
 
-    @Override
-    public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
-        ModelImpl model = new ModelImpl();
-
-        AbstractScoreHolder<?> scoreHolder = solutionDescriptor.getScoreDefinition()
-                .buildScoreHolder(false);
-        Class<? extends AbstractScoreHolder<?>> scoreHolderClass = (Class<? extends AbstractScoreHolder<?>>) scoreHolder
-                .getClass();
-        Package pack = solutionDescriptor.getSolutionClass().getPackage();
-        Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal = globalOf(scoreHolderClass,
-                (pack == null) ? "" : pack.getName(),
-                DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
-        model.addGlobal(scoreHolderGlobal);
-
-        List<DroolsConstraint<Solution_>> droolsConstraintList = new ArrayList<>(constraints.length);
-        Set<String> constraintIdSet = new HashSet<>(constraints.length);
-        for (Constraint constraint : constraints) {
-            if (constraint.getConstraintFactory() != this) {
-                throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
-                        + ") must be created from the same constraintFactory.");
-            }
-            DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint<Solution_>) constraint;
-            boolean added = constraintIdSet.add(droolsConstraint.getConstraintId());
-            if (!added) {
+    public DroolsConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
+        Map<String, List<Constraint>> constraintsPerIdMap = Arrays.stream(constraints)
+                .collect(Collectors.groupingBy(Constraint::getConstraintId));
+        constraintsPerIdMap.forEach((constraintId, constraintList) -> {
+            if (constraintList.size() > 1) {
                 throw new IllegalStateException(
-                        "There are 2 constraints with the same constraintName (" + droolsConstraint.getConstraintName()
-                                + ") in the same constraintPackage (" + droolsConstraint.getConstraintPackage() + ").");
+                        "There are multiple constraints with the same name in a package (" + constraintId + ").");
             }
-            droolsConstraintList.add(droolsConstraint);
-            model.addRule(droolsConstraint.buildRule(scoreHolderGlobal));
-        }
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList,
-                droolsAlphaNetworkCompilationEnabled);
+        });
+
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, this, droolsAlphaNetworkCompilationEnabled,
+                constraints);
     }
 
     // ************************************************************************

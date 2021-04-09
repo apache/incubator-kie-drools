@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,21 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDecimalScore> {
+public final class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDecimalScore> {
 
-    private BigDecimal[] hardScores;
-    private BigDecimal[] softScores;
+    private final BigDecimal[] hardScores;
+    private final BigDecimal[] softScores;
 
     public BendableBigDecimalScoreInliner(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize));
         hardScores = new BigDecimal[hardLevelsSize];
         Arrays.fill(hardScores, BigDecimal.ZERO);
         softScores = new BigDecimal[softLevelsSize];
@@ -39,11 +40,9 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(BendableBigDecimalScore constraintWeight) {
-        if (constraintWeight.equals(BendableBigDecimalScore.zero(hardScores.length, softScores.length))) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
+            BendableBigDecimalScore constraintWeight) {
+        assertNonZeroConstraintWeight(constraintWeight);
         Integer singleLevel = null;
         for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
             if (!constraintWeight.getHardOrSoftScore(i).equals(BigDecimal.ZERO)) {
@@ -54,33 +53,50 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
                 singleLevel = i;
             }
         }
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         if (singleLevel != null) {
             BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+                return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     BigDecimal hardImpact = levelWeight.multiply(matchWeight);
                     this.hardScores[level] = this.hardScores[level].add(hardImpact);
-                    if (constraintMatchEnabled) {
-                        matchScoreConsumer.accept(
-                                BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact));
+                    UndoScoreImpacter undoScoreImpact =
+                            () -> this.hardScores[level] = this.hardScores[level].subtract(hardImpact);
+                    if (!constraintMatchEnabled) {
+                        return undoScoreImpact;
                     }
-                    return () -> this.hardScores[level] = this.hardScores[level].subtract(hardImpact);
+                    Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                            constraintWeight,
+                            BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
+                            justificationsSupplier.get());
+                    return () -> {
+                        undoScoreImpact.run();
+                        undoConstraintMatch.run();
+                    };
                 };
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+                return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     BigDecimal softImpact = levelWeight.multiply(matchWeight);
                     this.softScores[level] = this.softScores[level].add(softImpact);
-                    if (constraintMatchEnabled) {
-                        matchScoreConsumer.accept(
-                                BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact));
+                    UndoScoreImpacter undoScoreImpact =
+                            () -> this.softScores[level] = this.softScores[level].subtract(softImpact);
+                    if (!constraintMatchEnabled) {
+                        return undoScoreImpact;
                     }
-                    return () -> this.softScores[level] = this.softScores[level].subtract(softImpact);
+                    Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                            constraintWeight,
+                            BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
+                            justificationsSupplier.get());
+                    return () -> {
+                        undoScoreImpact.run();
+                        undoConstraintMatch.run();
+                    };
                 };
             }
         } else {
-            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+            return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                 BigDecimal[] hardImpacts = new BigDecimal[hardScores.length];
                 BigDecimal[] softImpacts = new BigDecimal[softScores.length];
                 for (int i = 0; i < hardImpacts.length; i++) {
@@ -91,16 +107,23 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
                     softImpacts[i] = constraintWeight.getSoftScore(i).multiply(matchWeight);
                     this.softScores[i] = this.softScores[i].add(softImpacts[i]);
                 }
-                if (constraintMatchEnabled) {
-                    matchScoreConsumer.accept(BendableBigDecimalScore.of(hardImpacts, softImpacts));
-                }
-                return () -> {
+                UndoScoreImpacter undoScoreImpact = () -> {
                     for (int i = 0; i < hardImpacts.length; i++) {
                         this.hardScores[i] = this.hardScores[i].subtract(hardImpacts[i]);
                     }
                     for (int i = 0; i < softImpacts.length; i++) {
                         this.softScores[i] = this.softScores[i].subtract(softImpacts[i]);
                     }
+                };
+                if (!constraintMatchEnabled) {
+                    return undoScoreImpact;
+                }
+                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
+                        constraintWeight, BendableBigDecimalScore.of(hardImpacts, softImpacts),
+                        justificationsSupplier.get());
+                return () -> {
+                    undoScoreImpact.run();
+                    undoConstraintMatch.run();
                 };
             };
         }

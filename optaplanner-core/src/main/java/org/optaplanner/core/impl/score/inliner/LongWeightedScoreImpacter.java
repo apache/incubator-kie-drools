@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,14 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-
 @FunctionalInterface
 public interface LongWeightedScoreImpacter extends WeightedScoreImpacter {
 
     /**
      * @param matchWeight never null
-     * @param scoreConsumer null if {@link InnerScoreDirector#isConstraintMatchEnabled()} is false
+     * @param justificationsSupplier never null
      * @return never null
      */
-    UndoScoreImpacter impactScore(long matchWeight, Consumer<Score<?>> scoreConsumer);
+    UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier);
 
 }

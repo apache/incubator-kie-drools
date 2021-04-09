@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * This is the base interface for all score holder implementations, used exclusively by Drools-based score calculators.
+ * This is the base interface for all score holder implementations.
  *
  * @param <Score_> the {@link Score} type
  */

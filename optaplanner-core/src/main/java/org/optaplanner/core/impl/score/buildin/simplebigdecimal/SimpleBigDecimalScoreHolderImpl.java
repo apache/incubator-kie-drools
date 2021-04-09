@@ -55,12 +55,12 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
         super.configureConstraintWeight(rule, constraintWeight);
         BigDecimalMatchExecutor matchExecutor;
         if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
             };
         } else {
             matchExecutor =
-                    (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> addConstraintMatch(kcontext,
-                            constraintWeight.getScore().multiply(matchWeight), justifications);
+                    (RuleContext kcontext, BigDecimal matchWeight) -> addConstraintMatch(kcontext,
+                            constraintWeight.getScore().multiply(matchWeight));
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }
@@ -90,22 +90,22 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, Object... justifications) {
-        impactScore(kcontext, BigDecimal.ONE, justifications);
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, BigDecimal.ONE);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         Rule rule = kcontext.getRule();
         BigDecimalMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
@@ -113,7 +113,7 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier, justifications);
+        matchExecutor.accept(kcontext, weightMultiplier);
     }
 
     // ************************************************************************
@@ -122,13 +122,8 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
 
     @Override
     public void addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
-        addConstraintMatch(kcontext, weight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addConstraintMatch(RuleContext kcontext, BigDecimal weight, Object... justifications) {
         score = score.add(weight);
-        registerConstraintMatch(kcontext, () -> score = score.subtract(weight), () -> SimpleBigDecimalScore.of(weight),
-                justifications);
+        registerConstraintMatch(kcontext, () -> score = score.subtract(weight), () -> SimpleBigDecimalScore.of(weight));
     }
 
     @Override

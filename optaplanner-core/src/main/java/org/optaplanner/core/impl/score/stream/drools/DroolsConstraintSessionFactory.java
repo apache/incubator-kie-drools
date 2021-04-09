@@ -16,14 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.util.LinkedHashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.drools.ancompiler.KieBaseUpdaterANC;
 import org.drools.model.Model;
@@ -33,7 +30,6 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseMutabilityOption;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -44,40 +40,29 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 
-public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
-        implements ConstraintSessionFactory<Solution_, Score_> {
+public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private final Model originalModel;
+    private final ScoreDefinition<Score_> scoreDefinition;
+    private final List<DroolsConstraint<Solution_>> constraintList;
     private final boolean droolsAlphaNetworkCompilationEnabled;
-    private final KieBase originalKieBase;
-    private final Map<Rule, DroolsConstraint<Solution_>> compiledRuleToConstraintMap;
-    private final Map<String, org.drools.model.Rule> constraintToModelRuleMap;
-    private KieBase currentKieBase;
-    private Set<String> currentlyDisabledConstraintIdSet = null;
 
-    public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            List<DroolsConstraint<Solution_>> constraints, boolean droolsAlphaNetworkCompilationEnabled) {
-        this.solutionDescriptor = Objects.requireNonNull(solutionDescriptor);
-        this.originalModel = Objects.requireNonNull(model);
+    private KieBaseCache<Solution_, Score_> kieBaseCache = null;
+
+    public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            DroolsConstraintFactory<Solution_> constraintFactory, boolean droolsAlphaNetworkCompilationEnabled,
+            Constraint... constraints) {
+        this.scoreDefinition = solutionDescriptor.getScoreDefinition();
+        this.constraintList = Arrays.stream(constraints)
+                .map(constraint -> {
+                    if (constraint.getConstraintFactory() != constraintFactory) {
+                        throw new IllegalStateException("Impossible state: The constraint (" +
+                                constraint.getConstraintId() + ") created by the wrong factory.");
+                    }
+                    return (DroolsConstraint<Solution_>) constraint;
+                }).collect(Collectors.toList());
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
-        this.originalKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
-        this.currentKieBase = originalKieBase;
-        this.compiledRuleToConstraintMap = constraints.stream()
-                .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
-                        constraint.getConstraintName()), Function.identity()));
-        this.constraintToModelRuleMap = constraints.stream()
-                .collect(toMap(Constraint::getConstraintId, constraint -> model.getRules().stream()
-                        .filter(rule -> Objects.equals(rule.getName(), constraint.getConstraintName()))
-                        .filter(rule -> Objects.equals(rule.getPackage(), constraint.getConstraintPackage()))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Impossible state: Rule for constraint (" +
-                                constraint + ") not found."))));
     }
 
     private static KieBase buildKieBaseFromModel(Model model, boolean droolsAlphaNetworkCompilationEnabled) {
@@ -103,41 +88,79 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
         return droolsAlphaNetworkCompilationEnabled;
     }
 
-    @Override
-    public KieSession buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
-        AbstractScoreHolder<Score_> scoreHolder = scoreDefinition.buildScoreHolder(constraintMatchEnabled);
-        // Determine which rules to enable based on the fact that their constraints carry weight.
+    public SessionDescriptor<Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         Score_ zeroScore = scoreDefinition.getZeroScore();
-        Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
-        compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
-            Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
-            scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
-            if (constraintWeight.equals(zeroScore)) {
-                disabledConstraintIdSet.add(constraint.getConstraintId());
-            }
-        });
-        // Determine the KieBase to use.
-        if (disabledConstraintIdSet.isEmpty()) { // Shortcut; don't change the original KieBase.
-            currentKieBase = originalKieBase;
-            currentlyDisabledConstraintIdSet = null;
-        } else if (!disabledConstraintIdSet.equals(currentlyDisabledConstraintIdSet)) {
-            // Only rebuild the active KieBase when the set of disabled constraints changed.
-            ModelImpl model = new ModelImpl().withGlobals(originalModel.getGlobals());
-            constraintToModelRuleMap.forEach((constraintId, modelRule) -> {
-                if (disabledConstraintIdSet.contains(constraintId)) {
-                    return;
-                }
-                model.addRule(modelRule);
-            });
-            currentKieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
-            currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
+
+        // Extract constraint weights, excluding constraints where weight is zero.
+        Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap = constraintList.stream()
+                .map(constraint -> {
+                    Object weight = constraint.extractConstraintWeight(workingSolution); // Expensive, only do once.
+                    return new Object[] { constraint, weight };
+                })
+                .filter(constraintAndWeight -> !constraintAndWeight[1].equals(zeroScore)) // Exclude zero-weighted.
+                .collect(Collectors.toMap(
+                        constraintAndWeight -> (DroolsConstraint<Solution_>) constraintAndWeight[0],
+                        constraintAndWeight -> (Score_) constraintAndWeight[1]));
+
+        // Creating KieBase is expensive. Therefore we only do it when there has been a change in constraint weights.
+        if (kieBaseCache == null || !kieBaseCache.isUpToDate(constraintWeightMap)) {
+            ScoreInliner<Score_> scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
+            Model model = constraintWeightMap.entrySet().stream()
+                    .map(entry -> entry.getKey().buildRule(scoreInliner, entry.getValue()))
+                    .reduce(new ModelImpl(), ModelImpl::addRule, (m, __) -> m);
+            KieBase kieBase = buildKieBaseFromModel(model, droolsAlphaNetworkCompilationEnabled);
+            kieBaseCache = new KieBaseCache<>(constraintWeightMap, kieBase, scoreInliner);
         }
+
         // Create the session itself.
-        KieSession kieSession = buildKieSessionFromKieBase(currentKieBase);
+        KieSession kieSession = buildKieSessionFromKieBase(kieBaseCache.getKieBase());
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
-        kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
-        return kieSession;
+        return new SessionDescriptor<>(kieSession, kieBaseCache.getScoreInliner());
+    }
+
+    public static final class SessionDescriptor<Score_ extends Score<Score_>> {
+
+        private final KieSession session;
+        private final ScoreInliner<Score_> scoreInliner;
+
+        public SessionDescriptor(KieSession session, ScoreInliner<Score_> scoreInliner) {
+            this.session = session;
+            this.scoreInliner = scoreInliner;
+        }
+
+        public KieSession getSession() {
+            return session;
+        }
+
+        public ScoreInliner<Score_> getScoreInliner() {
+            return scoreInliner;
+        }
+    }
+
+    public static final class KieBaseCache<Solution_, Score_ extends Score<Score_>> {
+
+        private final Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap;
+        private final KieBase kieBase;
+        private final ScoreInliner<Score_> scoreInliner;
+
+        public KieBaseCache(Map<DroolsConstraint<Solution_>, Score_> constraintWeightMap, KieBase kieBase,
+                ScoreInliner<Score_> scoreInliner) {
+            this.constraintWeightMap = Objects.requireNonNull(constraintWeightMap);
+            this.kieBase = Objects.requireNonNull(kieBase);
+            this.scoreInliner = Objects.requireNonNull(scoreInliner);
+        }
+
+        public boolean isUpToDate(Map<DroolsConstraint<Solution_>, Score_> currentConstraintWeightMap) {
+            return constraintWeightMap.equals(currentConstraintWeightMap);
+        }
+
+        public KieBase getKieBase() {
+            return kieBase;
+        }
+
+        public ScoreInliner<Score_> getScoreInliner() {
+            return scoreInliner;
+        }
     }
 
 }

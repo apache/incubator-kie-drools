@@ -30,8 +30,8 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
 
 /**
  * FP streams implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
@@ -47,7 +47,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     protected KieSession session;
-    protected AbstractScoreHolder<Score_> scoreHolder;
+    protected ScoreInliner<Score_> scoreInliner;
 
     public DroolsConstraintStreamScoreDirector(
             DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
@@ -70,8 +70,10 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         if (session != null) {
             session.dispose();
         }
-        session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
-        scoreHolder = (AbstractScoreHolder<Score_>) session.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
+        DroolsConstraintSessionFactory.SessionDescriptor<Score_> sessionDescriptor =
+                scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
+        session = sessionDescriptor.getSession();
+        scoreInliner = sessionDescriptor.getScoreInliner();
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
             session.insert(fact);
@@ -82,7 +84,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         session.fireAllRules();
-        Score_ score = scoreHolder.extractScore(workingInitScore);
+        Score_ score = scoreInliner.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
     }
@@ -99,7 +101,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
         }
         session.fireAllRules();
-        return scoreHolder.getConstraintMatchTotalMap();
+        return scoreInliner.getConstraintMatchTotalMap();
     }
 
     @Override
@@ -109,7 +111,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
         session.fireAllRules();
-        return scoreHolder.getIndictmentMap();
+        return scoreInliner.getIndictmentMap();
     }
 
     @Override
@@ -117,7 +119,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         super.close();
         session.dispose();
         session = null;
-        scoreHolder = null;
+        scoreInliner = null;
     }
 
     // ************************************************************************

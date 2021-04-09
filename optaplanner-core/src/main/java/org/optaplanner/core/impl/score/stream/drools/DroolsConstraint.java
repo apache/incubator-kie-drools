@@ -19,10 +19,10 @@ package org.optaplanner.core.impl.score.stream.drools;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.drools.model.Global;
 import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleBuilder;
@@ -44,8 +44,10 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
     // Getters/setters
     // ************************************************************************
 
-    public Rule buildRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        return ruleBuilder.apply(this, scoreHolderGlobal);
+    public <Score_ extends Score<Score_>> Rule buildRule(ScoreInliner<Score_> scoreInliner, Score_ constraintWeight) {
+        WeightedScoreImpacter impacter =
+                scoreInliner.buildWeightedScoreImpacter(getConstraintPackage(), getConstraintName(), constraintWeight);
+        return ruleBuilder.apply(this, impacter);
     }
 
     @Override

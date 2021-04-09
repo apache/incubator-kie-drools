@@ -49,8 +49,9 @@ final class BavetSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Sc
         BavetConstraintSession<Solution_, Score_> constraintSession =
                 constraintStreamScoreDirectorFactory.newSession(true, null);
         Arrays.stream(facts).forEach(constraintSession::insert);
-        return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory, constraintSession.calculateScore(0),
-                constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
+        return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory,
+                constraintSession.calculateScore(0), constraintSession.getConstraintMatchTotalMap(),
+                constraintSession.getIndictmentMap());
     }
 
 }

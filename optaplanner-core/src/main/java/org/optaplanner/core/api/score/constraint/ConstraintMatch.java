@@ -83,7 +83,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     // ************************************************************************
 
     public String getConstraintId() {
-        return constraintPackage + "/" + constraintName;
+        return ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
     }
 
     public String getIdentificationString() {
