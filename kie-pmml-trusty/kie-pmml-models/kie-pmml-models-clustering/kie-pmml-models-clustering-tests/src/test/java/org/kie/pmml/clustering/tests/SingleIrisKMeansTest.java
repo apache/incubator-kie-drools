@@ -45,12 +45,12 @@ public class SingleIrisKMeansTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {4.4, 3.0, 1.3, 0.2, "Iris-setosa"},
-                {5.0, 3.3, 1.4, 0.2, "Iris-setosa"},
-                {7.0, 3.2, 4.7, 1.4, "Iris-versicolor"},
-                {5.7, 2.8, 4.1, 1.3, "Iris-versicolor"},
-                {6.3, 3.3, 6.0, 2.5, "Iris-virginica"},
-                {6.7, 3.0, 5.2, 2.3, "Iris-virginica"}
+                {4.4, 3.0, 1.3, 0.2, "3"},
+                {5.0, 3.3, 1.4, 0.2, "3"},
+                {7.0, 3.2, 4.7, 1.4, "2"},
+                {5.7, 2.8, 4.1, 1.3, "4"},
+                {6.3, 3.3, 6.0, 2.5, "1"},
+                {6.7, 3.0, 5.2, 2.3, "1"}
         });
     }
 
@@ -61,8 +61,6 @@ public class SingleIrisKMeansTest extends AbstractPMMLTest {
         inputData.put("sepal_width", sepalWidth);
         inputData.put("petal_length", petalLength);
         inputData.put("petal_width", petalWidth);
-
-        System.out.println(inputData);
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 

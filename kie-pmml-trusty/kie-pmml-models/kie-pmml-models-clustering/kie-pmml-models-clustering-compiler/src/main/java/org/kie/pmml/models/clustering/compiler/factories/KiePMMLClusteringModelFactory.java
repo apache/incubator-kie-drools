@@ -102,7 +102,7 @@ public class KiePMMLClusteringModelFactory {
                                                                                  final ClusteringModel model,
                                                                                  final String packageName) {
 
-        logger.warn("getKiePMMLClusteringModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+        logger.trace("getKiePMMLClusteringModelSourcesMap {} {} {}", dataDictionary, model, packageName);
 
         String simpleClassName = getSanitizedClassName(model.getModelName());
 
@@ -138,8 +138,6 @@ public class KiePMMLClusteringModelFactory {
 
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
-
-        System.out.println(sourcesMap);
 
         return sourcesMap;
     }
@@ -209,44 +207,4 @@ public class KiePMMLClusteringModelFactory {
     private static MethodCallExpr methodCallExprFrom(String scope, String name, Expression... arguments) {
         return new MethodCallExpr(new NameExpr(scope), name, new NodeList<>(arguments));
     }
-
-    private static final String HARDCODED_MODEL_CLASS_NAME = "singleiriskmeans.SingleIrisKMeansClusteringModel";
-    private static final String HARDCODED_MODEL_CLASS_SOURCE = "" +
-            "package singleiriskmeans;\n" +
-            "\n" +
-            "import org.kie.pmml.api.enums.MINING_FUNCTION;\n" +
-            "import org.kie.pmml.api.enums.PMML_MODEL;\n" +
-            "import org.kie.pmml.models.clustering.model.KiePMMLCluster;\n" +
-            "import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;\n" +
-            "import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;\n" +
-            "import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;\n" +
-            "import org.kie.pmml.models.clustering.model.aggregate.AggregateFunctions;\n" +
-            "import org.kie.pmml.models.clustering.model.compare.CompareFunctions;\n" +
-            "\n" +
-            "public class SingleIrisKMeansClusteringModel extends KiePMMLClusteringModel {\n" +
-            "\n" +
-            "    public SingleIrisKMeansClusteringModel() {\n" +
-            "        super(\"SingleIrisKMeans\");\n" +
-            "\n" +
-            "        // KiePMMLModel\n" +
-            "        pmmlMODEL = PMML_MODEL.CLUSTERING_MODEL;\n" +
-            "        miningFunction = MINING_FUNCTION.CLUSTERING;\n" +
-            "        targetField = \"class\";\n" +
-            "\n" +
-            "        // KiePMMLClusteringModel\n" +
-            "        modelClass = ModelClass.CENTER_BASED;\n" +
-            "\n" +
-            "        clusters.add(new KiePMMLCluster(null, null, 6.9125000000000005, 3.0999999999999999, 5.846874999999999, 2.1312499999999996));\n" +
-            "        clusters.add(new KiePMMLCluster(null, null, 6.2365853658536600, 2.8585365853658535, 4.807317073170731, 1.62195121951219433));\n" +
-            "        clusters.add(new KiePMMLCluster(null, null, 5.0059999999999990, 3.4180000000000006, 1.464000000000000, 0.24399999999999999));\n" +
-            "        clusters.add(new KiePMMLCluster(null, null, 5.5296296296296290, 2.6222222222222222, 3.940740740740741, 1.21851851851851886));\n" +
-            "\n" +
-            "        clusteringFields.add(new KiePMMLClusteringField(\"sepal_length\", 1.0, true, CompareFunctions.absDiff(), null));\n" +
-            "        clusteringFields.add(new KiePMMLClusteringField(\"sepal_width\", 1.0, true, CompareFunctions.absDiff(), null));\n" +
-            "        clusteringFields.add(new KiePMMLClusteringField(\"petal_length\", 1.0, true, CompareFunctions.absDiff(), null));\n" +
-            "        clusteringFields.add(new KiePMMLClusteringField(\"petal_width\", 1.0, true, CompareFunctions.absDiff(), null));\n" +
-            "\n" +
-            "        comparisonMeasure = new KiePMMLComparisonMeasure(KiePMMLComparisonMeasure.Kind.DISTANCE, AggregateFunctions::squaredEuclidean, CompareFunctions.absDiff());\n" +
-            "    }\n" +
-            "}";
 }
