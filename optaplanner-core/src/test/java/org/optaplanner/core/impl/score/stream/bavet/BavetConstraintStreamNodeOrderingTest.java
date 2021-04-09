@@ -30,8 +30,8 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirector;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBridgeBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
@@ -60,10 +60,10 @@ public class BavetConstraintStreamNodeOrderingTest {
 
     @BeforeEach
     void initializeSession() {
-        ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+        BavetConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 buildScoreDirector(constraintProvider);
         scoreDirector.setWorkingSolution(TestdataLavishSolution.generateSolution());
-        session = (BavetConstraintSession<TestdataLavishSolution, SimpleScore>) scoreDirector.getSession();
+        session = scoreDirector.getSession();
     }
 
     @Test
@@ -160,7 +160,7 @@ public class BavetConstraintStreamNodeOrderingTest {
                 .isEqualTo(13);
     }
 
-    protected ConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
+    protected BavetConstraintStreamScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
             Function<ConstraintFactory, Constraint> function) {
         BavetConstraintStreamScoreDirectorFactory<TestdataLavishSolution, SimpleScore> scoreDirectorFactory =
                 new BavetConstraintStreamScoreDirectorFactory<>(TestdataLavishSolution.buildSolutionDescriptor(),

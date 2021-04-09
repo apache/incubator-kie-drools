@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -42,8 +41,7 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
-public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>>
-        implements ConstraintSession<Solution_, Score_> {
+public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>> {
 
     private final boolean constraintMatchEnabled;
     private final Score_ zeroScore;
@@ -120,7 +118,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         });
     }
 
-    @Override
     public void insert(Object fact) {
         Class<?> factClass = fact.getClass();
         List<BavetFromUniNode<Object>> fromNodeList = findFromNodeList(factClass);
@@ -136,7 +133,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         }
     }
 
-    @Override
     public void update(Object fact) {
         List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.get(fact);
         if (tupleList == null) {
@@ -147,7 +143,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         }
     }
 
-    @Override
     public void retract(Object fact) {
         List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.remove(fact);
         if (tupleList == null) {
@@ -178,7 +173,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         nodeIndexToDirtyTupleQueueMap.get(tuple.getNodeIndex()).add(tuple);
     }
 
-    @Override
     public Score_ calculateScore(int initScore) {
         for (int i = 0; i < nodeCount; i++) {
             Queue<BavetAbstractTuple> queue = nodeIndexToDirtyTupleQueueMap.get(i);
@@ -191,7 +185,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         return scoreInliner.extractScore(initScore);
     }
 
-    @Override
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap =
                 new LinkedHashMap<>(constraintIdToScoringNodeMap.size());
@@ -202,7 +195,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         return constraintMatchTotalMap;
     }
 
-    @Override
     public Map<Object, Indictment<Score_>> getIndictmentMap() {
         // TODO This is temporary, inefficient code, replace it!
         Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
@@ -220,10 +212,6 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             }
         }
         return indictmentMap;
-    }
-
-    @Override
-    public void close() {
     }
 
     // ************************************************************************

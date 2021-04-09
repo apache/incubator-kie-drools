@@ -20,6 +20,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
@@ -27,6 +28,18 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
     public BavetConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider) {
         super(solutionDescriptor, constraintProvider, () -> new BavetConstraintFactory<>(solutionDescriptor));
+    }
+
+    @Override
+    public BavetConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference) {
+        return new BavetConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
+    }
+
+    public BavetConstraintSession<Solution_, Score_> newSession(boolean constraintMatchEnabled,
+            Solution_ workingSolution) {
+        return (BavetConstraintSession<Solution_, Score_>) getConstraintSessionFactory().buildSession(constraintMatchEnabled,
+                workingSolution);
     }
 
 }

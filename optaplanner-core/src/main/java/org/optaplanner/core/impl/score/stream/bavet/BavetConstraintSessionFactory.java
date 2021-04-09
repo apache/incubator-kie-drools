@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.Map;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
 public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
@@ -43,7 +42,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
     // ************************************************************************
 
     @Override
-    public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
+    public BavetConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
             Solution_ workingSolution) {
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         Score_ zeroScore = scoreDefinition.getZeroScore();

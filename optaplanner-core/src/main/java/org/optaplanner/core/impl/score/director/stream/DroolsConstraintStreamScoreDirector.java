@@ -19,15 +19,19 @@ package org.optaplanner.core.impl.score.director.stream;
 import java.util.Collection;
 import java.util.Map;
 
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
 /**
  * FP streams implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
@@ -37,14 +41,19 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
-public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
-        extends AbstractScoreDirector<Solution_, Score_, AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
+public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
-    protected ConstraintSession<Solution_, Score_> session;
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    public ConstraintStreamScoreDirector(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
+    protected KieSession session;
+    protected AbstractScoreHolder<Score_> scoreHolder;
+
+    public DroolsConstraintStreamScoreDirector(
+            DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
+        this.solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
     }
 
     // ************************************************************************
@@ -59,9 +68,10 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
 
     private void resetConstraintStreamingSession() {
         if (session != null) {
-            session.close();
+            session.dispose();
         }
         session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
+        scoreHolder = (AbstractScoreHolder<Score_>) session.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
             session.insert(fact);
@@ -71,7 +81,8 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
     @Override
     public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score_ score = session.calculateScore(workingInitScore);
+        session.fireAllRules();
+        Score_ score = scoreHolder.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
     }
@@ -87,7 +98,8 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
         }
-        return session.getConstraintMatchTotalMap();
+        session.fireAllRules();
+        return scoreHolder.getConstraintMatchTotalMap();
     }
 
     @Override
@@ -96,14 +108,16 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
-        return session.getIndictmentMap();
+        session.fireAllRules();
+        return scoreHolder.getIndictmentMap();
     }
 
     @Override
     public void close() {
         super.close();
-        session.close();
+        session.dispose();
         session = null;
+        scoreHolder = null;
     }
 
     // ************************************************************************
@@ -129,7 +143,7 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
 
     @Override
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
-        session.update(entity);
+        update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
     }
 
@@ -137,7 +151,7 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
 
     @Override
     public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        session.retract(entity);
+        retract(entity);
         super.afterEntityRemoved(entityDescriptor, entity);
     }
 
@@ -160,7 +174,7 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
 
     @Override
     public void afterProblemPropertyChanged(Object problemFactOrEntity) {
-        session.update(problemFactOrEntity);
+        update(problemFactOrEntity);
         super.afterProblemPropertyChanged(problemFactOrEntity);
     }
 
@@ -168,15 +182,26 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
 
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
-        session.retract(problemFact);
+        retract(problemFact);
         super.afterProblemFactRemoved(problemFact);
     }
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    public ConstraintSession<Solution_, Score_> getSession() {
-        return session;
+    private void update(Object fact) {
+        FactHandle factHandle = session.getFactHandle(fact);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The fact (" + fact
+                    + ") was never added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is not in the return values of the "
+                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
+                    + solutionDescriptor.getEntityMemberAndEntityCollectionMemberNames() + ") or fact members ("
+                    + solutionDescriptor.getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
+        }
+        session.update(factHandle, fact);
     }
+
+    private void retract(Object fact) {
+        FactHandle factHandle = session.getFactHandle(fact);
+        session.delete(factHandle);
+    }
+
 }

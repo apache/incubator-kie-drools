@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,6 @@ public interface ConstraintSessionFactory<Solution_, Score_ extends Score<Score_
      * @param workingSolution if null, uniform synthetic constraint weights will be applied
      * @return never null
      */
-    ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
+    Object buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
 
 }

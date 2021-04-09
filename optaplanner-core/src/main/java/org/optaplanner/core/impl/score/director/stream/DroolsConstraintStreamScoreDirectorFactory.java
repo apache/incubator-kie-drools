@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -28,6 +29,16 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
             ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
         super(solutionDescriptor, constraintProvider,
                 () -> new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled));
+    }
+
+    @Override
+    public DroolsConstraintStreamScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference) {
+        return new DroolsConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
+    }
+
+    public KieSession newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+        return (KieSession) getConstraintSessionFactory().buildSession(constraintMatchEnabled, workingSolution);
     }
 
 }
