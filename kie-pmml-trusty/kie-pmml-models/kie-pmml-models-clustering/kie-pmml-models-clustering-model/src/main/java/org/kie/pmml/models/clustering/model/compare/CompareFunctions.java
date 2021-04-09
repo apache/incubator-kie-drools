@@ -18,15 +18,15 @@ public class CompareFunctions {
         return (x,y) -> Math.exp(NEGATIVE_LN_2 * Math.pow(x - y, 2.0) / Math.pow(similarityScale, 2.0));
     }
 
-    public static CompareFunction delta(double x, double y) {
+    public static CompareFunction delta() {
         return DELTA;
     }
 
-    public static CompareFunction equal(double x, double y) {
+    public static CompareFunction equal() {
         return EQUAL;
     }
 
-    public static CompareFunction table(double x, double y) {
+    public static CompareFunction table() {
         throw new UnsupportedOperationException("\"table\" compare function not implemented");
     }
 

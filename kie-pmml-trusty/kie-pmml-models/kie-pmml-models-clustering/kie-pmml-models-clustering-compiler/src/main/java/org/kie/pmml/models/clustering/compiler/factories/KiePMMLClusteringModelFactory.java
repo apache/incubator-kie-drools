@@ -15,20 +15,45 @@
  */
 package  org.kie.pmml.models.clustering.compiler.factories;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.clustering.Cluster;
+import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.models.MiningField;
+import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.compiler.commons.utils.ModelUtils;
+import org.kie.pmml.models.clustering.model.KiePMMLCluster;
+import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
+import org.kie.pmml.models.clustering.model.compare.CompareFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +61,8 @@ import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 public class KiePMMLClusteringModelFactory {
 
@@ -81,6 +108,29 @@ public class KiePMMLClusteringModelFactory {
         ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         constructorDeclaration.setName(simpleClassName);
 
+        List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(model.getMiningSchema(), dataDictionary);
+        List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(model.getOutput(), dataDictionary);
+        setKiePMMLModelConstructor(simpleClassName, constructorDeclaration, model.getModelName(), miningFields, outputFields);
+
+        BlockStmt body = constructorDeclaration.getBody();
+        body.addStatement(assignExprFrom("pmmlMODEL", PMML_MODEL.CLUSTERING_MODEL));
+        body.addStatement(assignExprFrom("miningFunction", MINING_FUNCTION.byName(model.getMiningFunction().value())));
+        body.addStatement(assignExprFrom("targetField", getTargetFieldName(dataDictionary, model).orElse(null)));
+
+        body.addStatement(assignExprFrom("modelClass", modelClassFrom(model.getModelClass())));
+
+        model.getClusters().stream()
+                .map(KiePMMLClusteringModelFactory::clusterCreationExprFrom)
+                .map(expr -> methodCallExprFrom("clusters", "add", expr))
+                .forEach(body::addStatement);
+
+        model.getClusteringFields().stream()
+                .map(KiePMMLClusteringModelFactory::clusteringFieldCreationExprFrom)
+                .map(expr -> methodCallExprFrom("clusteringFields", "add", expr))
+                .forEach(body::addStatement);
+
+//        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
+
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
 
@@ -88,6 +138,69 @@ public class KiePMMLClusteringModelFactory {
 
 //        sourcesMap.put(HARDCODED_MODEL_CLASS_NAME, HARDCODED_MODEL_CLASS_SOURCE);
         return sourcesMap;
+    }
+
+    private static KiePMMLClusteringModel.ModelClass modelClassFrom(ClusteringModel.ModelClass input) {
+        switch (input) {
+            case CENTER_BASED:
+                return KiePMMLClusteringModel.ModelClass.CENTER_BASED;
+            case DISTRIBUTION_BASED:
+                return KiePMMLClusteringModel.ModelClass.DISTRIBUTION_BASED;
+        }
+        throw new IllegalStateException("Invalid model class " + input);
+    }
+
+    private static ObjectCreationExpr clusterCreationExprFrom(Cluster cluster) {
+        NodeList<Expression> arguments = new NodeList<>();
+        arguments.add(literalExprFrom(cluster.getId()));
+        arguments.add(literalExprFrom(cluster.getName()));
+
+        if (cluster.getArray() != null && cluster.getArray().getType() == Array.Type.REAL) {
+            String arrayStringValue = (String) cluster.getArray().getValue();
+            try {
+                Arrays.stream(arrayStringValue.split(" "))
+                        .map(Double::parseDouble)
+                        .map(DoubleLiteralExpr::new)
+                        .forEach(arguments::add);
+            } catch (NumberFormatException e) {
+                logger.error("Can't parse \"real\" cluster with value \"" + arrayStringValue + "\"", e);
+            }
+        }
+        return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLCluster.class.getCanonicalName()), arguments);
+    }
+
+    private static ObjectCreationExpr clusteringFieldCreationExprFrom(ClusteringField clusteringField) {
+        double fieldWeight = clusteringField.getFieldWeight() == null ? 1.0 : clusteringField.getFieldWeight().doubleValue();
+        boolean isCenterField = clusteringField.getCenterField() == null || clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
+
+        NodeList<Expression> arguments = new NodeList<>();
+        arguments.add(literalExprFrom(clusteringField.getField().getValue()));
+        arguments.add(new DoubleLiteralExpr(fieldWeight));
+        arguments.add(new BooleanLiteralExpr(isCenterField));
+        arguments.add(clusteringField.getCompareFunction() == null ? new NullLiteralExpr() : new NameExpr(CompareFunctions.class.getCanonicalName() + "." + clusteringField.getCompareFunction().value() + "()"));
+        arguments.add(new NullLiteralExpr());
+
+        return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLClusteringField.class.getCanonicalName()), arguments);
+    }
+
+    private static AssignExpr assignExprFrom(String target, Enum<?> value) {
+        return new AssignExpr(new NameExpr(target), literalExprFrom(value), AssignExpr.Operator.ASSIGN);
+    }
+
+    private static AssignExpr assignExprFrom(String target, String value) {
+        return new AssignExpr(new NameExpr(target), literalExprFrom(value), AssignExpr.Operator.ASSIGN);
+    }
+
+    private static Expression literalExprFrom(Enum<?> input) {
+        return input == null ? new NullLiteralExpr() : new NameExpr(input.getClass().getCanonicalName() + "." + input.name());
+    }
+
+    private static Expression literalExprFrom(String input) {
+        return input == null ? new NullLiteralExpr() : new StringLiteralExpr(input);
+    }
+
+    private static MethodCallExpr methodCallExprFrom(String scope, String name, Expression... arguments) {
+        return new MethodCallExpr(new NameExpr(scope), name, new NodeList<>(arguments));
     }
 
     private static final String HARDCODED_MODEL_CLASS_NAME = "singleiriskmeans.SingleIrisKMeansClusteringModel";
