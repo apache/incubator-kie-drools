@@ -3855,36 +3855,6 @@ public class AccumulateTest extends BaseModelTest {
     }
   
     @Test
-    public void testAccumulateWithSameBindingVariable() {
-        // DROOLS-6102
-        String str =
-                "import java.util.*;\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "global java.util.List list;" +
-                "rule R when\n" +
-                "   accumulate ( $p : Person( age < 40 ), $tot1 : count( $p ) ) \n" +
-                "   accumulate ( $p : Integer( this > 40 ), $tot2 : count( $p ) ) \n" +
-                "then\n" +
-                "  list.add( $tot1.intValue() ); \n" +
-                "  list.add( $tot2.intValue() ); \n" +
-                "end\n";
-
-        KieSession ksession = getKieSession(str);
-
-        List<Integer> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        ksession.insert(47);
-        ksession.insert(42);
-        ksession.insert(new Person("Edson", 38));
-        assertEquals( 1, ksession.fireAllRules() );
-
-        assertEquals( 2, list.size() );
-        assertEquals( 1, (int) list.get(0) );
-        assertEquals( 2, (int) list.get(1) );
-    }
-
-    @Test
     public void testPositionalAccumulate() {
         // DROOLS-6128
         String str =
