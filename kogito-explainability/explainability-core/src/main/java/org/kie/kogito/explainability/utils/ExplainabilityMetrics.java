@@ -17,9 +17,11 @@ package org.kie.kogito.explainability.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.LocalExplainer;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
@@ -240,4 +243,220 @@ public class ExplainabilityMetrics {
         Map.Entry<List<String>, Long> maxEntry = Collections.max(collect.entrySet(), Map.Entry.comparingByValue());
         return Pair.of(maxEntry.getKey(), maxEntry.getValue());
     }
+
+    /**
+     * Evaluate the recall of a local saliency explainer on a given model.
+     * Get the predictions having outputs with the highest score for the given decision and pair them with predictions
+     * whose outputs have the lowest score for the same decision.
+     * Get the top k (most important) features (according to the saliency) for the most important outputs and
+     * "paste" them on each paired input corresponding to an output with low score (for the target decision).
+     * Perform prediction on the "masked" input, if the output on the masked input is equals to the output for the
+     * input the mask features were take from, that's considered a true positive, otherwise it's a false positive.
+     * see Section 3.2.1 of https://openreview.net/attachment?id=B1xBAA4FwH&name=original_pdf
+     *
+     * @param outputName decision to evaluate recall for
+     * @param predictionProvider the prediction provider to test
+     * @param localExplainer the explainer to evaluate
+     * @param dataDistribution the data distribution used to obtain inputs for evaluation
+     * @param k the no. of features to extract
+     * @param chunkSize the size of the chunk of predictions to use for evaluation
+     * @return the saliency recall
+     */
+    public static double getLocalSaliencyRecall(String outputName, PredictionProvider predictionProvider,
+            LocalExplainer<Map<String, Saliency>> localExplainer,
+            DataDistribution dataDistribution, int k, int chunkSize)
+            throws InterruptedException, ExecutionException, TimeoutException {
+
+        // get all samples from the data distribution
+        List<Prediction> sorted = getScoreSortedPredictions(outputName, predictionProvider, dataDistribution);
+
+        // get the top and bottom 'chunkSize' predictions
+        List<Prediction> topChunk = new ArrayList<>(sorted.subList(0, chunkSize));
+        List<Prediction> bottomChunk = new ArrayList<>(sorted.subList(sorted.size() - chunkSize, sorted.size()));
+
+        double truePositives = 0;
+        double falseNegatives = 0;
+        int currentChunk = 0;
+        // for each of the top scored predictions, get the top influencing features and copy them over a low scored
+        // input, then feed the model with this masked input and check the output is equals to the top scored one.
+        for (Prediction prediction : topChunk) {
+            Optional<Output> optionalOutput = prediction.getOutput().getByName(outputName);
+            if (optionalOutput.isPresent()) {
+                Output output = optionalOutput.get();
+                Map<String, Saliency> stringSaliencyMap = localExplainer.explainAsync(prediction, predictionProvider)
+                        .get(Config.DEFAULT_ASYNC_TIMEOUT, Config.DEFAULT_ASYNC_TIMEUNIT);
+                if (stringSaliencyMap.containsKey(outputName)) {
+                    Saliency saliency = stringSaliencyMap.get(outputName);
+                    List<FeatureImportance> topFeatures = saliency.getPerFeatureImportance().stream()
+                            .sorted((f1, f2) -> Double.compare(f2.getScore(), f1.getScore())).limit(k).collect(Collectors.toList());
+
+                    PredictionInput input = bottomChunk.get(currentChunk).getInput();
+                    PredictionInput maskedInput = maskInput(topFeatures, input);
+
+                    List<PredictionOutput> predictionOutputList = predictionProvider.predictAsync(List.of(maskedInput))
+                            .get(Config.DEFAULT_ASYNC_TIMEOUT, Config.DEFAULT_ASYNC_TIMEUNIT);
+                    if (!predictionOutputList.isEmpty()) {
+                        PredictionOutput predictionOutput = predictionOutputList.get(0);
+                        Optional<Output> optionalNewOutput = predictionOutput.getByName(outputName);
+                        if (optionalNewOutput.isPresent()) {
+                            Output newOutput = optionalOutput.get();
+                            if (output.getValue().equals(newOutput.getValue())) {
+                                truePositives++;
+                            } else {
+                                falseNegatives++;
+                            }
+                        }
+                    }
+                    currentChunk++;
+                }
+            }
+        }
+        if ((truePositives + falseNegatives) > 0) {
+            return truePositives / (truePositives + falseNegatives);
+        } else {
+            // if topChunk is empty or the target output (by name) is not an output of the model.
+            return Double.NaN;
+        }
+    }
+
+    private static PredictionInput maskInput(List<FeatureImportance> topFeatures, PredictionInput input) {
+        List<Feature> importantFeatures = new ArrayList<>();
+        for (FeatureImportance featureImportance : topFeatures) {
+            importantFeatures.add(featureImportance.getFeature());
+        }
+
+        return replaceAllFeatures(importantFeatures, input);
+    }
+
+    private static List<Prediction> getScoreSortedPredictions(String outputName, PredictionProvider predictionProvider,
+            DataDistribution dataDistribution)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        List<PredictionInput> inputs = dataDistribution.getAllSamples();
+        List<PredictionOutput> predictionOutputs = predictionProvider.predictAsync(inputs)
+                .get(Config.DEFAULT_ASYNC_TIMEOUT, Config.DEFAULT_ASYNC_TIMEUNIT);
+        List<Prediction> predictions = DataUtils.getPredictions(inputs, predictionOutputs);
+
+        // sort the predictions by Output#getScore, in descending order
+        return predictions.stream().sorted((p1, p2) -> {
+            Optional<Output> optionalOutput1 = p1.getOutput().getByName(outputName);
+            Optional<Output> optionalOutput2 = p2.getOutput().getByName(outputName);
+            if (optionalOutput1.isPresent() && optionalOutput2.isPresent()) {
+                Output o1 = optionalOutput1.get();
+                Output o2 = optionalOutput2.get();
+                return Double.compare(o2.getScore(), o1.getScore());
+            } else {
+                return 0;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Evaluate the precision of a local saliency explainer on a given model.
+     * Get the predictions having outputs with the lowest score for the given decision and pair them with predictions
+     * whose outputs have the highest score for the same decision.
+     * Get the bottom k (less important) features (according to the saliency) for the less important outputs and
+     * "paste" them on each paired input corresponding to an output with high score (for the target decision).
+     * Perform prediction on the "masked" input, if the output changes that's considered a false negative, otherwise
+     * it's a true positive.
+     * see Section 3.2.1 of https://openreview.net/attachment?id=B1xBAA4FwH&name=original_pdf
+     *
+     * @param outputName decision to evaluate recall for
+     * @param predictionProvider the prediction provider to test
+     * @param localExplainer the explainer to evaluate
+     * @param dataDistribution the data distribution used to obtain inputs for evaluation
+     * @param k the no. of features to extract
+     * @param chunkSize the size of the chunk of predictions to use for evaluation
+     * @return the saliency precision
+     */
+    public static double getLocalSaliencyPrecision(String outputName, PredictionProvider predictionProvider,
+            LocalExplainer<Map<String, Saliency>> localExplainer,
+            DataDistribution dataDistribution, int k, int chunkSize)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        List<Prediction> sorted = getScoreSortedPredictions(outputName, predictionProvider, dataDistribution);
+
+        // get the top and bottom 'chunkSize' predictions
+        List<Prediction> topChunk = new ArrayList<>(sorted.subList(0, chunkSize));
+        List<Prediction> bottomChunk = new ArrayList<>(sorted.subList(sorted.size() - chunkSize, sorted.size()));
+
+        double truePositives = 0;
+        double falsePositives = 0;
+        int currentChunk = 0;
+
+        for (Prediction prediction : bottomChunk) {
+            Map<String, Saliency> stringSaliencyMap = localExplainer.explainAsync(prediction, predictionProvider)
+                    .get(Config.DEFAULT_ASYNC_TIMEOUT, Config.DEFAULT_ASYNC_TIMEUNIT);
+            if (stringSaliencyMap.containsKey(outputName)) {
+                Saliency saliency = stringSaliencyMap.get(outputName);
+                List<FeatureImportance> topFeatures = saliency.getPerFeatureImportance().stream()
+                        .sorted(Comparator.comparingDouble(FeatureImportance::getScore)).limit(k).collect(Collectors.toList());
+
+                Prediction topPrediction = topChunk.get(currentChunk);
+                PredictionInput input = topPrediction.getInput();
+                PredictionInput maskedInput = maskInput(topFeatures, input);
+
+                List<PredictionOutput> predictionOutputList = predictionProvider.predictAsync(List.of(maskedInput))
+                        .get(Config.DEFAULT_ASYNC_TIMEOUT, Config.DEFAULT_ASYNC_TIMEUNIT);
+                if (!predictionOutputList.isEmpty()) {
+                    PredictionOutput predictionOutput = predictionOutputList.get(0);
+                    Optional<Output> newOptionalOutput = predictionOutput.getByName(outputName);
+                    if (newOptionalOutput.isPresent()) {
+                        Output newOutput = newOptionalOutput.get();
+                        Optional<Output> optionalOutput = topPrediction.getOutput().getByName(outputName);
+                        if (optionalOutput.isPresent()) {
+                            Output output = optionalOutput.get();
+                            if (output.getValue().equals(newOutput.getValue())) {
+                                truePositives++;
+                            } else {
+                                falsePositives++;
+                            }
+                        }
+                    }
+                }
+                currentChunk++;
+            }
+        }
+        if ((truePositives + falsePositives) > 0) {
+            return truePositives / (truePositives + falsePositives);
+        } else {
+            // if bottomChunk is empty or the target output (by name) is not an output of the model.
+            return Double.NaN;
+        }
+    }
+
+    /**
+     * Get local saliency F1 score.
+     *
+     * see <a href="https://en.wikipedia.org/wiki/F-score"/>
+     * See {@link #getLocalSaliencyPrecision(String, PredictionProvider, LocalExplainer, DataDistribution, int, int)}
+     * See {@link #getLocalSaliencyRecall(String, PredictionProvider, LocalExplainer, DataDistribution, int, int)}
+     *
+     * @param outputName decision to evaluate recall for
+     * @param predictionProvider the prediction provider to test
+     * @param localExplainer the explainer to evaluate
+     * @param dataDistribution the data distribution used to obtain inputs for evaluation
+     * @param k the no. of features to extract
+     * @param chunkSize the size of the chunk of predictions to use for evaluation
+     * @return the saliency F1
+     */
+    public static double getLocalSaliencyF1(String outputName, PredictionProvider predictionProvider,
+            LocalExplainer<Map<String, Saliency>> localExplainer,
+            DataDistribution dataDistribution, int k, int chunkSize)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        double precision = getLocalSaliencyPrecision(outputName, predictionProvider, localExplainer, dataDistribution, k, chunkSize);
+        double recall = getLocalSaliencyRecall(outputName, predictionProvider, localExplainer, dataDistribution, k, chunkSize);
+        if (Double.isFinite(precision + recall) && (precision + recall) > 0) {
+            return 2 * precision * recall / (precision + recall);
+        } else {
+            return Double.NaN;
+        }
+    }
+
+    private static PredictionInput replaceAllFeatures(List<Feature> importantFeatures, PredictionInput input) {
+        List<Feature> features = List.copyOf(input.getFeatures());
+        for (Feature f : importantFeatures) {
+            features = DataUtils.replaceFeatures(f, features);
+        }
+        return new PredictionInput(features);
+    }
+
 }

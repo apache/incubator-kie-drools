@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.decision.DecisionModel;
@@ -32,14 +33,18 @@ import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.utils.DataUtils;
+import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -78,7 +83,9 @@ class LoanEligibilityDmnLimeExplainerTest {
         Random random = new Random();
         for (int i = 0; i < 5; i++) {
             random.setSeed(i);
-            LimeConfig limeConfig = new LimeConfig().withSamples(300).withPerturbationContext(new PerturbationContext(random, 1));
+            PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+            LimeConfig limeConfig = new LimeConfig().withSamples(300)
+                    .withPerturbationContext(perturbationContext);
             LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
             Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                     .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -87,6 +94,17 @@ class LoanEligibilityDmnLimeExplainerTest {
             }
             assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
                     0.5, 0.5));
+
+            String decision = "Eligibility";
+            List<PredictionInput> inputs = new ArrayList<>();
+            for (int n = 0; n < 10; n++) {
+                inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+            }
+            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+            int k = 2;
+            int chunkSize = 2;
+            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+            AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
         }
     }
 }

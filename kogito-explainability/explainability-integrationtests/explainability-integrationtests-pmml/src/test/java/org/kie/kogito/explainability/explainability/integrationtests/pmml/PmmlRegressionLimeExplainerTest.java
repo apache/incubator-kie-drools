@@ -22,18 +22,21 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
@@ -61,9 +64,10 @@ class PmmlRegressionLimeExplainerTest {
         Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
             random.setSeed(seed);
+            PerturbationContext perturbationContext = new PerturbationContext(random, 1);
             LimeConfig limeConfig = new LimeConfig()
                     .withSamples(1000)
-                    .withPerturbationContext(new PerturbationContext(random, 1));
+                    .withPerturbationContext(perturbationContext);
             LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
             List<Feature> features = new ArrayList<>();
             features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
@@ -81,6 +85,7 @@ class PmmlRegressionLimeExplainerTest {
                             features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
                     PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
                     String species = result.getResultVariables().get("Species").toString();
+                    double score = Double.parseDouble(result.getResultVariables().get("Probability_" + species).toString());
                     PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), 1d)));
                     outputs.add(predictionOutput);
                 }
@@ -102,6 +107,22 @@ class PmmlRegressionLimeExplainerTest {
             }
             assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
                     0.0, 0.0));
+
+            String decision = "species";
+            List<PredictionInput> inputs = new ArrayList<>();
+            for (int i = 0; i < 100; i++) {
+                List<Feature> fs = new ArrayList<>();
+                fs.add(FeatureFactory.newNumericalFeature("sepalLength", i + 1));
+                fs.add(FeatureFactory.newNumericalFeature("sepalWidth", i + 1));
+                fs.add(FeatureFactory.newNumericalFeature("petalLength", i + 1));
+                fs.add(FeatureFactory.newNumericalFeature("petalWidth", i + 1));
+                inputs.add(new PredictionInput(fs));
+            }
+            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+            int k = 2;
+            int chunkSize = 5;
+            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+            AssertionsForClassTypes.assertThat(f1).isBetween(0d, 1d);
         }
     }
 }

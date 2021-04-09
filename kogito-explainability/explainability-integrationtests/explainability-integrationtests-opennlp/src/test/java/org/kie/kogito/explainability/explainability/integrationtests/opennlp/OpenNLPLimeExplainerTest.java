@@ -16,24 +16,28 @@
 package org.kie.kogito.explainability.explainability.integrationtests.opennlp;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
@@ -47,6 +51,7 @@ import opennlp.tools.langdetect.LanguageDetector;
 import opennlp.tools.langdetect.LanguageDetectorME;
 import opennlp.tools.langdetect.LanguageDetectorModel;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -85,8 +90,9 @@ class OpenNLPLimeExplainerTest {
         });
 
         String inputText = "italiani,spaghetti pizza mandolino";
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newFulltextFeature("text", inputText, s -> Arrays.asList(s.split("\\W"))));
+        List<Feature> features = new ArrayList<>();
+        Function<String, List<String>> tokenizer = s -> Arrays.asList(s.split("\\W"));
+        features.add(FeatureFactory.newFulltextFeature("text", inputText, tokenizer));
         PredictionInput input = new PredictionInput(features);
 
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input)).get();
@@ -110,5 +116,20 @@ class OpenNLPLimeExplainerTest {
         }
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 2,
                 0.8, 0.8));
+
+        List<String> texts = List.of("we want your money", "please reply quickly", "you are the lucky winner",
+                "italiani, spaghetti pizza mandolino", "guten tag", "allez les bleus", "daje roma");
+
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (String text : texts) {
+            inputs.add(new PredictionInput(List.of(FeatureFactory.newFulltextFeature("text", text, tokenizer))));
+        }
+
+        String decision = "lang";
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 2;
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(f1).isBetween(0.5d, 1d);
     }
 }

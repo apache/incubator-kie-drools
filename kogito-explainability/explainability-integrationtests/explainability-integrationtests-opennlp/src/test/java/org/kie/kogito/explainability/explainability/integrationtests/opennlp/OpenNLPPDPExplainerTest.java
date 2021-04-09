@@ -44,7 +44,6 @@ class OpenNLPPDPExplainerTest {
 
     @Test
     void testOpenNLPLangDetect() throws Exception {
-
         PartialDependencePlotExplainer partialDependencePlotExplainer = new PartialDependencePlotExplainer();
         InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
         LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
@@ -80,7 +79,6 @@ class OpenNLPPDPExplainerTest {
         }
         List<PartialDependenceGraph> pdps = partialDependencePlotExplainer.explainFromPredictions(model, predictions);
         assertThat(pdps).isNotEmpty();
-
     }
 
 }
