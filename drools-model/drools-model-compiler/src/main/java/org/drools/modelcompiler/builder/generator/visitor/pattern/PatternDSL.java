@@ -115,7 +115,7 @@ public abstract class PatternDSL implements DSLNode {
 
     private Optional<String> findFirstInnerBinding(List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
         return constraintDescrs.stream()
-                .map( constraint -> ConstraintExpression.createConstraintExpression( patternType, constraint, isPositional(constraint) ).getExpression() )
+                .map( constraint -> ConstraintExpression.createConstraintExpression( context, patternType, constraint, isPositional(constraint) ).getExpression() )
                 .map( DrlxParseUtil::parseExpression )
                 .filter( drlx -> drlx.getBind() != null )
                 .map( drlx -> drlx.getBind().asString() )
@@ -131,7 +131,7 @@ public abstract class PatternDSL implements DSLNode {
 
             boolean isPositional = isPositional(constraint);
 
-            ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression(patternType, constraint, isPositional);
+            ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression(context, patternType, constraint, isPositional);
 
             DrlxParseResult drlxParseResult;
             try {
