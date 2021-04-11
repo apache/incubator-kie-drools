@@ -1,8 +1,14 @@
 package net.tarilabs.experiment.retediagram;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,35 +44,24 @@ import org.drools.core.spi.ObjectType;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-
 public class ReteDiagram {
-    
-    public enum PredefinedOutputPath {
-        CWD("./");
-        private String path;
-        PredefinedOutputPath(String path) {
-            this.path = path;
-        }
-        public String getPath() {
-            return path;
-        }
-    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(ReteDiagram.class);
+
     public enum Layout {
         PARTITION, VLEVEL
     }
 
     private Layout layout;
-    private String outputPath;
+    private File outputPath;
     private boolean prefixTimestamp;
     private boolean outputSVG;
     private boolean outputPNG;
@@ -80,11 +75,17 @@ public class ReteDiagram {
      * With default settings.
      */
     public static ReteDiagram newInstance() {
+        File outpath = new File(".");
+        try {
+            outpath = Files.createTempDirectory("retediagram").toFile();
+        } catch (Exception e) {
+            // do nothing.
+        }
         return new ReteDiagram()
                 .configLayout(Layout.VLEVEL)
-                .configFilenameScheme(PredefinedOutputPath.CWD, true)
-                .configGraphviz(true, true)
-                .configOpenFile(true, false)
+                .configFilenameScheme(outpath, true)
+                .configGraphvizRender(true, true)
+                .configOpenFile(false, false)
                 ;
     }
     
@@ -101,16 +102,13 @@ public class ReteDiagram {
         return this;
     }
 
-    public ReteDiagram configFilenameScheme(String outputPath, boolean prefixTimestamp) {
+    public ReteDiagram configFilenameScheme(File outputPath, boolean prefixTimestamp) {
         this.outputPath = outputPath;
         this.prefixTimestamp = prefixTimestamp;
         return this;
     }
-    public ReteDiagram configFilenameScheme(PredefinedOutputPath predefinedPath, boolean prefixTimestamp) {
-        return configFilenameScheme(predefinedPath.getPath(), prefixTimestamp);
-    }
     
-    public ReteDiagram configGraphviz(boolean outputSVG, boolean outputPNG) {
+    public ReteDiagram configGraphvizRender(boolean outputSVG, boolean outputPNG) {
         this.outputSVG = outputSVG;
         this.outputPNG = outputPNG;
         return this;
@@ -139,12 +137,15 @@ public class ReteDiagram {
     }
 
     public void diagramRete(Rete rete) {
-        String timestampPrefix = (new SimpleDateFormat("yyyyMMddHHmmss")).format(new Date());
-        String fileNameNoExtension = outputPath + (prefixTimestamp?timestampPrefix+".":"") + rete.getKnowledgeBase().getId();
+        String timestampPrefix = (new SimpleDateFormat("yyyyMMddHHmmssSSS")).format(new Date());
+        String fileNameNoExtension = (prefixTimestamp?timestampPrefix+".":"") + rete.getKnowledgeBase().getId();
         String gvFileName = fileNameNoExtension + ".gv";
         String svgFileName = fileNameNoExtension + ".svg";
         String pngFileName = fileNameNoExtension + ".png";
-        try (PrintStream out = new PrintStream(new FileOutputStream(gvFileName));) {
+        File gvFile = new File(outputPath, gvFileName);
+        File svgFile = new File(outputPath, svgFileName);
+        File pngFile = new File(outputPath, pngFileName);
+        try (PrintStream out = new PrintStream(new FileOutputStream(gvFile));) {
             out.println("digraph g {\n" +
                     "graph [fontname = \"Overpass\" fontsize=11];\n" + 
                     " node [fontname = \"Overpass\" fontsize=11];\n" + 
@@ -173,39 +174,42 @@ public class ReteDiagram {
             
             out.println("}");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error building diagram", e);
         }
+        LOG.info("Written gvFile: {}", gvFile);
 
         if (outputSVG) {
-        try {
-            MutableGraph g = new Parser().read(new File(gvFileName));
-            Graphviz.fromGraph(g).render(Format.SVG).toFile(new File(svgFileName));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                MutableGraph g = new Parser().read(gvFile);
+                Graphviz.fromGraph(g).render(Format.SVG).toFile(svgFile);
+                LOG.info("Written svgFile: {}", svgFile);
+            } catch (Exception e) {
+                LOG.error("Error building SVG file", e);
+            }
         }
         if (outputPNG) {
-        try {
-            MutableGraph g = new Parser().read(new File(gvFileName));
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(pngFileName));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                MutableGraph g = new Parser().read(gvFile);
+                Graphviz.fromGraph(g).render(Format.PNG).toFile(pngFile);
+                LOG.info("Written pngFile: {}", pngFile);
+            } catch (Exception e) {
+                LOG.error("Error building PNG file", e);
+            }
         }
         
         if (outputSVG && openSVG) {
-        try {
-            java.awt.Desktop.getDesktop().open(new File(svgFileName));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                java.awt.Desktop.getDesktop().open(svgFile);
+            } catch (Exception e) {
+                LOG.error("Error opening SVG file", e);
+            }
         }
         if (outputPNG && openPNG) {
-        try {
-            java.awt.Desktop.getDesktop().open(new File(svgFileName));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                java.awt.Desktop.getDesktop().open(pngFile);
+            } catch (Exception e) {
+                LOG.error("Error opening PNG file", e);
+            }
         }
     }
     
@@ -219,7 +223,11 @@ public class ReteDiagram {
         printNodeMapNodes(nodeMap.get(EntryPointNode.class), out);
         printNodeMapNodes(nodeMap.get(ObjectTypeNode.class), out);
         printNodeMapNodes(nodeMap.getOrDefault(AlphaNode.class, Collections.emptyList()), out);
-        printNodeMapNodes(nodeMap.get(LeftInputAdapterNode.class), out);
+        // LIAs
+        List<BaseNode> l3 = nodeMap.entrySet().stream()
+                .filter(kv->LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
+                .flatMap(kv->kv.getValue().stream()).collect(toList());
+        printNodeMapNodes(l3, out);
         printNodeMapNodes(nodeMap.getOrDefault(RightInputAdapterNode.class, Collections.emptyList()), out);
         // Level 4: BN
         List<BaseNode> l4 = nodeMap.entrySet().stream()

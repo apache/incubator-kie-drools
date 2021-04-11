@@ -15,21 +15,21 @@
 
 package net.tarilabs.experiment.retediagram;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 import net.tarilabs.experiment.retediagram.ReteDiagram.Layout;
 import net.tarilabs.model.Measurement;
 import org.drools.mvel.CommonTestMethodBase;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.ReteDumper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -38,6 +38,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,8 +47,10 @@ public class RuleTest extends CommonTestMethodBase {
 	static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
 
     @BeforeClass
-    public static void init() {
-        System.setProperty("java.awt.headless", "false");
+    public static void init() { // route dependencies using java util Logging to slf4j 
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        java.util.logging.Logger.getLogger("").setLevel(Level.FINEST); 
     }
 	
 	@Test
@@ -88,9 +91,27 @@ public class RuleTest extends CommonTestMethodBase {
 	    System.out.println("---");
 	    ReteDiagram.newInstance()
 	            .configLayout(Layout.VLEVEL)
-	            .configOpenFile(true, true)
-	            .diagramRete(((InternalKnowledgeBase)session.getKieBase()));
+                .configFilenameScheme(new File("./target"), true)
+	            // needs: System.setProperty("java.awt.headless", "false"); for: .configOpenFile(true, true)
+	            .diagramRete(session.getKieBase());
 	}
+
+    @Test
+    public void testVeryBasic() {
+        String drl =
+                "import net.tarilabs.model.*;\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  $p : Person( age > 18 )\n" + 
+                "then\n" + 
+                "  System.out.println(\"Person can drive \"+$p);\n"+
+                "end"
+                ;
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+ 
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+    }
 	
 	@Test
     public void testManyAccumulatesWithSubnetworks() {
@@ -151,7 +172,7 @@ public class RuleTest extends CommonTestMethodBase {
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
         assertEquals( 1, num );
-        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete(ksession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).configLayout(Layout.PARTITION).diagramRete(ksession);
     }
 
 
@@ -211,7 +232,7 @@ public class RuleTest extends CommonTestMethodBase {
         assertEquals( 2, list.get( 0 ).intValue() );
         assertEquals( 2, list.get( 1 ).intValue() );
         
-        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
     }
     
     @Test
@@ -241,40 +262,38 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
  
-        ReteDiagram.newInstance().diagramRete(kieSession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
     }
     
     @Test
     public void testMario20161021() {
-        String drl = "import java.util.Set;\n"
-                + "declare Notification end\n"
-                + "declare Fall end\n"
-                + "declare NetworkElement end\n"
-                + 
-                
-"rule R1 when\n" +
-"        $notification : Notification()\n" +
-"        $epcs : Set() from collect( Fall() )\n" +
-"    then\n" +
-"end\n" +
-"\n" +
-"rule R2 when\n" +
-"        $notification : Notification()\n" +
-"        not Fall()\n" +
-"        $epcs : Set() from collect(Fall())\n" +
-"\n" +
-"    then\n" +
-"end\n" +
-"\n" +
-"rule R3 when\n" +
-"        $ne : NetworkElement()\n" +
-"    then\n" +
-"end";
+        String drl = "import java.util.Set;\n" +
+                "declare Notification end\n" +
+                "declare Fall end\n" +
+                "declare NetworkElement end\n" +
+                "rule R1 when\n" +
+                "        $notification : Notification()\n" +
+                "        $epcs : Set() from collect( Fall() )\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "        $notification : Notification()\n" +
+                "        not Fall()\n" +
+                "        $epcs : Set() from collect(Fall())\n" +
+                "\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "        $ne : NetworkElement()\n" +
+                "    then\n" +
+                "end";
         
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                 .build().newKieSession();
         ReteDumper.dumpRete(kieSession);
-ReteDiagram.newInstance().diagramRete(kieSession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
     }
     
     @Test
@@ -305,7 +324,7 @@ ReteDiagram.newInstance().diagramRete(kieSession);
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                 .build().newKieSession();
         ReteDumper.dumpRete(kieSession);
-ReteDiagram.newInstance().diagramRete(kieSession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
     }
     
     @Test
@@ -313,12 +332,12 @@ ReteDiagram.newInstance().diagramRete(kieSession);
         String drl =
                 "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
-//                "rule R1y when\n" +
-//                "    AtomicInteger() \n" +
-//                "    Number() from accumulate ( AtomicInteger( ) and $s : String( ) ; count($s) )" +
-//                "    eval(false)\n" +
-//                "then\n" +
-//                "end\n" +
+                //                "rule R1y when\n" +
+                //                "    AtomicInteger() \n" +
+                //                "    Number() from accumulate ( AtomicInteger( ) and $s : String( ) ; count($s) )" +
+                //                "    eval(false)\n" +
+                //                "then\n" +
+                //                "end\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "    $i : AtomicInteger( get() < 3 )\n" +
@@ -335,12 +354,12 @@ ReteDiagram.newInstance().diagramRete(kieSession);
                 "then\n" +
                 "    list.add($c);" +
                 "end\n"
-;
+                ;
         
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                 .build().newKieSession();
         ReteDumper.dumpRete(kieSession);
-ReteDiagram.newInstance().diagramRete(kieSession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
     }
     
     @Test
@@ -369,7 +388,7 @@ ReteDiagram.newInstance().diagramRete(kieSession);
         
         KieSession session = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
         ReteDumper.dumpRete(session);
-        ReteDiagram.newInstance().diagramRete(session);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(session);
     }
     
     @Test
@@ -398,7 +417,7 @@ ReteDiagram.newInstance().diagramRete(kieSession);
             
             KieSession session = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
             ReteDumper.dumpRete(session);
-            ReteDiagram.newInstance().diagramRete(session);
+            ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(session);
     }
     
     public static class MyPojo {
@@ -524,7 +543,7 @@ ReteDiagram.newInstance().diagramRete(kieSession);
                     .addContent(drl, ResourceType.DRL)
                     .build().newKieSession();
         
-        ReteDiagram.newInstance().diagramRete(kieSession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
         kieSession.addEventListener(new DebugAgendaEventListener());
 
         kieSession.insert(new LongHolder(12345L));
@@ -578,7 +597,6 @@ ReteDiagram.newInstance().diagramRete(kieSession);
                      "then\n" +
                      "    list.add($i);\n" +
                      "end";
-
         KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         KieBase kbase = loadKnowledgeBaseFromString(kbConf, drl);
 
@@ -587,6 +605,6 @@ ReteDiagram.newInstance().diagramRete(kieSession);
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
         //        assertEquals(1, num);
-        ReteDiagram.newInstance().configLayout(Layout.PARTITION).configPrintDebugVerticalCluster(false).diagramRete(ksession);
+        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).configLayout(Layout.PARTITION).diagramRete(ksession);
     }
 }

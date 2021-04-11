@@ -47,7 +47,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <drools-version>7.51.0-SNAPSHOT</drools-version>
+    <drools-version>7.53.0-SNAPSHOT</drools-version>
     <slf4j-version>1.7.7</slf4j-version>
     <junit-version>4.13.1</junit-version>
   </properties>
@@ -109,10 +109,16 @@
       <version>${junit-version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
+    <dependency> <!-- route dependencies using java util Logging to slf4j -->
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <artifactId>jul-to-slf4j</artifactId>
       <version>${slf4j-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,13 +1,18 @@
 package net.tarilabs.model;
 
-
 public class Person {
-    private final String name;
-    private final Cheese favouriteCheese;
+    private String name;
+    private long age;
+    private Cheese favouriteCheese;
+
     public Person(String name, Cheese favouriteCheese) {
-        super();
         this.name = name;
         this.favouriteCheese = favouriteCheese;
+    }
+
+    public Person(String name, long age) {
+        this.name = name;
+        this.age = age;
     }
     
     public String getName() {
@@ -18,4 +23,7 @@ public class Person {
         return favouriteCheese;
     }
     
+    public long getAge() {
+        return age;
+    }
 }
