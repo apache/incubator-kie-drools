@@ -34,39 +34,39 @@ Given the following rules in the Knowledge Base:
 rule "For color"
 no-loop
 when
-	Measurement( id == "color", $colorVal : val )
+  Measurement( id == "color", $colorVal : val )
 then
-	controlSet.add($colorVal);
+  controlSet.add($colorVal);
 end
 
 rule "Likes cheddar"
 when
-    Cheese( $cheddar : name == "cheddar" )
-    $person : Person( favouriteCheese == $cheddar )
+  Cheese( $cheddar : name == "cheddar" )
+  $person : Person( favouriteCheese == $cheddar )
 then
-    System.out.println( $person.getName() + " likes cheddar" );
+  System.out.println( $person.getName() + " likes cheddar" );
 end
 
 rule "Don't like cheddar"
 when
-    Cheese( $cheddar : name == "cheddar" )
-    $person : Person( favouriteCheese != $cheddar )
+  Cheese( $cheddar : name == "cheddar" )
+  $person : Person( favouriteCheese != $cheddar )
 then
-    System.out.println( $person.getName() + " does not like cheddar" );
+  System.out.println( $person.getName() + " does not like cheddar" );
 end
 
 rule "Color count"
 when
-    accumulate( $m: Measurement( id == "color" ); $c: count($m) )
+  accumulate( $m: Measurement( id == "color" ); $c: count($m) )
 then
-    System.out.println( $c );
+  System.out.println( $c );
 end
 
 rule "Not a Color"
 when
-    not ( Measurement( id == "color" ) and String() )
+  not ( Measurement( id == "color" ) and String() )
 then
-    System.out.println( "no color yet." );
+  System.out.println( "no color yet." );
 end
 ```
 
@@ -88,28 +88,28 @@ Given the following rules in the Knowledge Base:
 
 ```
 rule R0 when
-    $i : Integer( intValue == 0 )
-    String( toString == $i.toString )
+  $i : Integer( intValue == 0 )
+  String( toString == $i.toString )
 then
-    list.add($i);
+  list.add($i);
 end
 rule R1 when
-    $i : Integer( intValue == 1 )
-    String( toString == $i.toString )
+  $i : Integer( intValue == 1 )
+  String( toString == $i.toString )
 then
-    list.add($i);
+  list.add($i);
 end
 rule R2 when
-    $i : Integer( intValue == 2 )
-    String( toString == $i.toString )
+  $i : Integer( intValue == 2 )
+  String( toString == $i.toString )
 then
-    list.add($i);
+  list.add($i);
 end
 rule R3 when
-    $i : Integer( intValue == 2 )
-    String( length == $i )
+  $i : Integer( intValue == 2 )
+  String( length == $i )
 then
-    list.add($i);
+  list.add($i);
 end
 ```
 

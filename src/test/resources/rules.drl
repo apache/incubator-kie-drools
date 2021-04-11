@@ -1,4 +1,4 @@
-package net.tarilabs.model;
+package org.drools.retediagram.model;
 
 global java.util.Set controlSet;
 

@@ -1,21 +1,24 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package net.tarilabs.experiment.retediagram;
+package org.drools.retediagram;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,10 +26,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
-import net.tarilabs.experiment.retediagram.ReteDiagram.Layout;
-import net.tarilabs.model.Measurement;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.core.reteoo.ReteDumper;
+import org.drools.mvel.CommonTestMethodBase;
+import org.drools.retediagram.ReteDiagram.Layout;
+import org.drools.retediagram.model.Measurement;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -39,9 +42,6 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RuleTest extends CommonTestMethodBase {
 	static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
@@ -91,7 +91,6 @@ public class RuleTest extends CommonTestMethodBase {
 	    System.out.println("---");
 	    ReteDiagram.newInstance()
 	            .configLayout(Layout.VLEVEL)
-                .configFilenameScheme(new File("./target"), true)
 	            // needs: System.setProperty("java.awt.headless", "false"); for: .configOpenFile(true, true)
 	            .diagramRete(session.getKieBase());
 	}
@@ -99,7 +98,7 @@ public class RuleTest extends CommonTestMethodBase {
     @Test
     public void testVeryBasic() {
         String drl =
-                "import net.tarilabs.model.*;\n" +
+                "import org.drools.retediagram.model.*;\n" +
                 "rule R1\n" +
                 "when\n" +
                 "  $p : Person( age > 18 )\n" + 
@@ -110,7 +109,7 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
  
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+        ReteDiagram.newInstance().diagramRete(kieSession);
     }
 	
 	@Test
@@ -172,7 +171,7 @@ public class RuleTest extends CommonTestMethodBase {
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
         assertEquals( 1, num );
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).configLayout(Layout.PARTITION).diagramRete(ksession);
+        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete(ksession);
     }
 
 
@@ -232,7 +231,7 @@ public class RuleTest extends CommonTestMethodBase {
         assertEquals( 2, list.get( 0 ).intValue() );
         assertEquals( 2, list.get( 1 ).intValue() );
         
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
+        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
     }
     
     @Test
@@ -262,7 +261,7 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
  
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+        ReteDiagram.newInstance().diagramRete(kieSession);
     }
     
     @Test
@@ -293,7 +292,7 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                 .build().newKieSession();
         ReteDumper.dumpRete(kieSession);
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+        ReteDiagram.newInstance().diagramRete(kieSession);
     }
     
     @Test
@@ -324,7 +323,7 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                 .build().newKieSession();
         ReteDumper.dumpRete(kieSession);
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+        ReteDiagram.newInstance().diagramRete(kieSession);
     }
     
     @Test
@@ -359,7 +358,7 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                 .build().newKieSession();
         ReteDumper.dumpRete(kieSession);
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+        ReteDiagram.newInstance().diagramRete(kieSession);
     }
     
     @Test
@@ -388,7 +387,7 @@ public class RuleTest extends CommonTestMethodBase {
         
         KieSession session = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
         ReteDumper.dumpRete(session);
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(session);
+        ReteDiagram.newInstance().diagramRete(session);
     }
     
     @Test
@@ -417,7 +416,7 @@ public class RuleTest extends CommonTestMethodBase {
             
             KieSession session = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
             ReteDumper.dumpRete(session);
-            ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(session);
+            ReteDiagram.newInstance().diagramRete(session);
     }
     
     public static class MyPojo {
@@ -543,7 +542,7 @@ public class RuleTest extends CommonTestMethodBase {
                     .addContent(drl, ResourceType.DRL)
                     .build().newKieSession();
         
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).diagramRete(kieSession);
+        ReteDiagram.newInstance().diagramRete(kieSession);
         kieSession.addEventListener(new DebugAgendaEventListener());
 
         kieSession.insert(new LongHolder(12345L));
@@ -601,10 +600,6 @@ public class RuleTest extends CommonTestMethodBase {
         KieBase kbase = loadKnowledgeBaseFromString(kbConf, drl);
 
         KieSession ksession = kbase.newKieSession();
-
-        int num = ksession.fireAllRules();
-        // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
-        //        assertEquals(1, num);
-        ReteDiagram.newInstance().configFilenameScheme(new File("./target"), true).configLayout(Layout.PARTITION).diagramRete(ksession);
+        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete(ksession);
     }
 }
