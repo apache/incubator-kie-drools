@@ -54,10 +54,8 @@ public class AccumulateConsistencyTest {
     public static Collection<Object[]> getParameters() {
         Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, false});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, false});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, false});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, true});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_FLOW, true});
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, true});
         return parameters;
     }
@@ -257,8 +255,8 @@ public class AccumulateConsistencyTest {
         kieSession.setGlobal("result", result);
 
         try {
-            kieSession.insert(new Person("John", 20));
-            kieSession.insert(new Person("John", 60));
+            kieSession.insert(new Person(0, "John", 20));
+            kieSession.insert(new Person(1, "John", 60));
 
             assertEquals(1, kieSession.fireAllRules());
             assertEquals(20, result.get("min").intValue());

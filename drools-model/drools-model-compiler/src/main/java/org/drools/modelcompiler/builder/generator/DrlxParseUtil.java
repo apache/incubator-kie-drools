@@ -476,10 +476,6 @@ public class DrlxParseUtil {
         }
     }
 
-    public static String fromVar(String key) {
-        return key.substring( "var_".length() );
-    }
-
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
         return StaticJavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending
     }
@@ -820,8 +816,8 @@ public class DrlxParseUtil {
         }
     }
 
-    public static MvelCompiler createMvelCompiler(TypeResolver typeResolver, Collection<DeclarationSpec> declarations) {
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
+    public static MvelCompiler createMvelCompiler(RuleContext context, Collection<DeclarationSpec> declarations) {
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
 
         for (DeclarationSpec ds : declarations) {
             mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());

@@ -75,7 +75,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
                 {49, 78000, "carpark", 1301.37},
                 {57, 72000, "street", 1582.1},
                 {61, 123000, "carpark", 1836.5699999999997},
-                {18, 26000, "street", 845.1999999999999},
+                {18, 26000, "street", 845.1999999999999}
         });
     }
 

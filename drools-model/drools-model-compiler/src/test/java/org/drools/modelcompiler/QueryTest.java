@@ -908,4 +908,72 @@ public class QueryTest extends BaseModelTest {
         assertEquals(1, list.size());
         assertEquals("Mario", list.get(0));
     }
+
+    @Test
+    public void testPositionalQueryWithAccumulate() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "declare Person\n" +
+                        "    name : String \n" +
+                        "    age : int \n" +
+                        "end" +
+                        "\n" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "  insert(new Person(\"Mark\", 37));\n" +
+                        "  insert(new Person(\"Edson\", 35));\n" +
+                        "  insert(new Person(\"Mario\", 40));\n" +
+                        "end\n" +
+                        "query accAge(String arg)\n" +
+                        "  accumulate ( Person ( arg, $age; ); \n" +
+                        "                $sum : sum($age)  \n" +
+                        "              )                          \n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+
+        QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
+
+        assertEquals( 1, results.size() );
+        final QueryResultsRow firstResult = results.iterator().next();
+
+        Object resultDrlx = firstResult.get("$sum");
+        assertEquals(37, resultDrlx);
+    }
+
+    @Test
+    public void testPositionalQueryWithAmbigousName() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "declare Person\n" +
+                        "    name : String \n" +
+                        "    age : int \n" +
+                        "end" +
+                        "\n" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "  insert(new Person(\"Mark\", 37));\n" +
+                        "  insert(new Person(\"Edson\", 35));\n" +
+                        "  insert(new Person(\"Mario\", 40));\n" +
+                        "end\n" +
+                        "query accAge(String arg)\n" +
+                        "  accumulate ( Person ( arg, age; ); \n" +
+                        "                $sum : sum(age)  \n" +
+                        "              )                          \n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+
+        QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
+
+        assertEquals( 1, results.size() );
+        final QueryResultsRow firstResult = results.iterator().next();
+
+        Object resultDrlx = firstResult.get("$sum");
+        assertEquals(37, resultDrlx);
+    }
 }

@@ -101,6 +101,16 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertNodeLink(graph, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
 
         generatePng(graph);
+
+        ModelToGraphConverter converterPositiveOnly = new ModelToGraphConverter(true);
+        Graph graph2 = converterPositiveOnly.toGraph(analysisModel);
+
+        assertNodeLink(graph2, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertNoNodeLink(graph2, "mypkg.R1", "mypkg.R3");
+        assertNodeLink(graph2, "mypkg.R2", "mypkg.R4", ReactivityType.POSITIVE);
+        assertNodeLink(graph2, "mypkg.R3", "mypkg.R4", ReactivityType.POSITIVE);
+
+        generatePng(graph2, "_positiveOnly");
     }
 
     @Test

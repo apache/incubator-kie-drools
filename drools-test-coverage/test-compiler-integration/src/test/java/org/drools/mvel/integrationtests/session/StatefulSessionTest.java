@@ -133,8 +133,8 @@ public class StatefulSessionTest {
 
     @Test
     public void testGetFactHandleEqualityBehavior() throws Exception {
-        kieBaseTestConfiguration.setIdentity(false); // EQUALITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig);
         KieSession ksession = kbase.newKieSession();
 
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);
@@ -145,8 +145,8 @@ public class StatefulSessionTest {
 
     @Test
     public void testGetFactHandleIdentityBehavior() throws Exception {
-        kieBaseTestConfiguration.setIdentity(true); // IDENTITY
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
+        KieBaseTestConfiguration identityConfig = TestParametersUtil.getIdentityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", identityConfig);
         KieSession ksession = kbase.newKieSession();
 
         final CheeseEqual cheese = new CheeseEqual("stilton", 10);

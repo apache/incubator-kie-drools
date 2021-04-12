@@ -65,7 +65,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenceRewrite.rewriteNode;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -91,13 +90,6 @@ public abstract class AbstractExpressionBuilder {
     }
 
     public abstract void processExpression(SingleDrlxParseSuccess drlxParseResult);
-
-    protected MethodCallExpr createInputExpression(String identifier) {
-        MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
-        exprDSL.addArgument( context.getVarExpr(identifier) );
-
-        return exprDSL;
-    }
 
     public void processExpression(MultipleDrlxParseSuccess drlxParseResult) {
         if ( drlxParseResult.isValidExpression() ) {
@@ -240,7 +232,7 @@ public abstract class AbstractExpressionBuilder {
     }
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
-        return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
+        return new PatternExpressionBuilder( context );
     }
 
     protected Expression narrowExpressionToType( TypedExpression right, java.lang.reflect.Type leftType ) {

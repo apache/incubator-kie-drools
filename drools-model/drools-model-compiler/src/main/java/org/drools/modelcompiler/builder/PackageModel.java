@@ -107,7 +107,6 @@ public class PackageModel {
     private static final int RULES_DECLARATION_PER_CLASS = 1000;
 
     private final String name;
-    private final boolean isPattern;
     private final DialectCompiletimeRegistry dialectCompiletimeRegistry;
 
     private final String rulesFileName;
@@ -158,18 +157,17 @@ public class PackageModel {
 
     private boolean oneClassPerRule;
 
-    public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
+    public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+        this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
 
-    public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
+    public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+        this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
     }
 
-    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
         this.name = name;
         this.pkgUUID = pkgUUID;
-        this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
@@ -777,11 +775,7 @@ public class PackageModel {
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
-        if(isPattern) {
-            cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
-        } else {
-            cu.addImport("org.drools.modelcompiler.dsl.flow.D");
-        }
+        cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
         cu.addImport("org.drools.model.Index.ConstraintType");
 
         // imports from DRL:

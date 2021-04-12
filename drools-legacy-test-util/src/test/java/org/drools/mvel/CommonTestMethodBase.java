@@ -26,7 +26,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.mvel.integrationtests.SerializationHelper;
+import org.drools.core.integrationtests.SerializationHelper;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;

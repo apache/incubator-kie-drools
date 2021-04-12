@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -47,8 +48,7 @@ public class FunctionsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testFunctionException, testFunctionCallingFunctionWithEclipse, testFunctionCallingFunctionWithJanino. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -84,8 +84,7 @@ public class FunctionsTest {
             ksession.fireAllRules();
             fail( "Should throw an Exception from the Function" );
         } catch ( final Exception e ) {
-            assertEquals( "this should throw an exception",
-                          e.getCause().getMessage() );
+            Assertions.assertThat(e.getCause().getMessage()).contains("this should throw an exception");
         }
     }
 

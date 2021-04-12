@@ -160,8 +160,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         List<GeneratedFile> generatedRuleFiles = generateRulesFiles(packageDescr);
         return generatedRuleFiles.stream()
                 .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-                                                  .replaceAll(File.separator, ".")
-                                          .replaceAll(".java", ""),
+                                                  .replace(File.separator, ".")
+                                          .replace(".java", ""),
                                           generatedFile -> new String(generatedFile.getData())));
 
     }
@@ -176,7 +176,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
                                                                                new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()),
                                                                                new ReleaseIdImpl("dummy:dummy:0.0.0"),
-                                                                               true, false);
+                                                                               false);
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         batch.add(new DescrResource(packageDescr), ResourceType.DESCR);
         try {

@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.api.models;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -24,8 +25,9 @@ import org.kie.pmml.api.enums.OP_TYPE;
 /**
  * User-friendly representation of a <b>MiningField</b>
  */
-public class MiningField {
+public class MiningField implements Serializable {
 
+    private static final long serialVersionUID = -7718478772317847187L;
     private final String name;
     private final FIELD_USAGE_TYPE usageType;
     private final OP_TYPE opType;
@@ -34,13 +36,13 @@ public class MiningField {
     private final List<String> allowedValues;
     private final List<Interval> intervals;
 
-    public MiningField(String name,
-                       FIELD_USAGE_TYPE usageType,
-                       OP_TYPE opType,
-                       DATA_TYPE dataType,
-                       String missingValueReplacement,
-                       List<String> allowedValues,
-                       List<Interval> intervals) {
+    public MiningField(final String name,
+                       final FIELD_USAGE_TYPE usageType,
+                       final OP_TYPE opType,
+                       final DATA_TYPE dataType,
+                       final String missingValueReplacement,
+                       final List<String> allowedValues,
+                       final List<Interval> intervals) {
         this.name = name;
         this.usageType = usageType;
         this.opType = opType;

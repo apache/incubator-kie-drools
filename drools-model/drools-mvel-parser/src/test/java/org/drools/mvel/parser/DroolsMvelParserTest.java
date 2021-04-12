@@ -103,6 +103,7 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
+    @Test
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(" + newLine() + "addresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -111,6 +112,7 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
+    @Test
     public void testBinaryWithNewLineEnd() {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + newLine() + ")").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));

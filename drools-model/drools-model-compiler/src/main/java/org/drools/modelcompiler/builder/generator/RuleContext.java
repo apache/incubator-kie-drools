@@ -39,6 +39,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -73,9 +74,8 @@ public class RuleContext {
     private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
     private RuleDescr descr;
-    private final boolean generatePatternDSL;
 
-    private List<DeclarationSpec> allDeclarations = new ArrayList<>();
+    private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
     private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
@@ -98,6 +98,7 @@ public class RuleContext {
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
+    private int scopeCounter = 1;
     private Scope currentScope = new Scope();
     private Deque<Scope> scopesStack = new LinkedList<>();
     private Map<String, String> definedVars = new HashMap<>();
@@ -116,15 +117,14 @@ public class RuleContext {
         MVEL;
     }
 
-    public BaseDescr parentDesc = null;
+    private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, boolean generatePatternDSL) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
-        this.generatePatternDSL = generatePatternDSL;
     }
 
     private void findUnitDescr() {
@@ -179,10 +179,6 @@ public class RuleContext {
         }
     }
 
-    public boolean isPatternDSL() {
-        return generatePatternDSL;
-    }
-
     public RuleUnitDescription getRuleUnitDescr() {
         return ruleUnitDescr;
     }
@@ -235,7 +231,9 @@ public class RuleContext {
     }
 
     public void removeDeclarationById(String id) {
-        scopedDeclarations.remove( getDeclarationKey( id ) );
+        String declId = getDeclarationKey( id );
+        scopedDeclarations.remove( declId );
+        this.allDeclarations.remove( declId );
     }
 
     public boolean hasDeclaration(String id) {
@@ -303,14 +301,19 @@ public class RuleContext {
     }
 
     private String defineVar(String var) {
-        String bindingId = currentScope.id + var;
+        String bindingId = currentScope.getBindingVar( var );
         definedVars.put(var, bindingId);
         currentScope.vars.add(var);
         return bindingId;
     }
 
+    public String getCurrentScopeSuffix() {
+        return currentScope.id;
+    }
+
     public DeclarationSpec addDeclaration(DeclarationSpec d) {
-        scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        this.scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        this.allDeclarations.putIfAbsent( d.getBindingId(), d );
         return d;
     }
 
@@ -321,6 +324,7 @@ public class RuleContext {
             removeDeclarationById(bindingId);
         }
         this.scopedDeclarations.put(d.getBindingId(), d);
+        this.allDeclarations.put(d.getBindingId(), d);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
@@ -330,12 +334,7 @@ public class RuleContext {
     }
 
     public Collection<DeclarationSpec> getAllDeclarations() {
-        if (allDeclarations.isEmpty()) {
-            return scopedDeclarations.values();
-        }
-        List declrs = new ArrayList( scopedDeclarations.values() );
-        declrs.addAll( allDeclarations );
-        return declrs;
+        return allDeclarations.values();
     }
 
     public Collection<String> getAvailableBindings() {
@@ -497,12 +496,24 @@ public class RuleContext {
         return unusableOrBinding;
     }
 
+    public String fromVar(String key) {
+        return key.substring( "var_".length(), key.length() - currentScope.id.length() );
+    }
+
+    public String getOutOfScopeVar( String x ) {
+        return x == null ? null : x + scopesStack.getLast().id;
+    }
+
     public Expression getVarExpr(String x) {
+        return getVarExpr( x, getVar( x ) );
+    }
+
+    public Expression getVarExpr( String x, String var ) {
         if (!isQuery()) {
-            new NameExpr( getVar( x ) );
+            new NameExpr( var );
         }
 
-        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals(x));
+        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals( x ));
         return optQueryParameter.map(qp -> {
 
             final String queryDef = getQueryName().orElseThrow(RuntimeException::new);
@@ -510,12 +521,15 @@ public class RuleContext {
             final int queryParameterIndex = getQueryParameters().indexOf(qp) + 1;
             return (Expression)new MethodCallExpr(new NameExpr(queryDef), toQueryArg(queryParameterIndex));
 
-        }).orElse(new NameExpr( getVar( x ) ));
+        }).orElse(new NameExpr( var ));
     }
 
     public String getVar( String x ) {
-        String var = x.startsWith( "sCoPe" ) ? x : definedVars.get(x);
-        return DrlxParseUtil.toVar(var != null ? var : currentScope.id + x);
+        if ( idGenerator.isGenerated( x ) || ruleUnitVars.containsKey( x ) ) {
+            return DrlxParseUtil.toVar( x );
+        }
+        String var = x.endsWith( "sCoPe" ) ? x : definedVars.get(x);
+        return DrlxParseUtil.toVar(var != null ? var : x + currentScope.id);
     }
 
     public void pushScope(ConditionalElementDescr scopeElement) {
@@ -532,10 +546,8 @@ public class RuleContext {
         return currentScope.forallFirstIdentifier;
     }
 
-    private static int scopeCounter = 1;
     private class Scope {
         private final String id;
-        private final ConditionalElementDescr scopeElement;
         private final String forallFirstIdentifier;
         private List<String> vars = new ArrayList<>();
 
@@ -544,22 +556,30 @@ public class RuleContext {
         }
 
         private Scope( ConditionalElementDescr scopeElement ) {
-            this( "sCoPe" + scopeCounter++ + "_", scopeElement );
+            this( "_" + scopeCounter++ + "_sCoPe", scopeElement );
         }
 
         private Scope( String id, ConditionalElementDescr scopeElement ) {
             this.id = id;
-            this.scopeElement = scopeElement;
-            forallFirstIdentifier =
+            this.forallFirstIdentifier =
                 (scopeElement instanceof ForallDescr && scopeElement.getDescrs().size() == 2 && scopeElement.getDescrs().get( 0 ) instanceof PatternDescr) ?
                 (( PatternDescr ) scopeElement.getDescrs().get( 0 )).getIdentifier() : null;
         }
 
         private void clear() {
             vars.forEach( v -> {
-                definedVars.remove(v);
-                allDeclarations.add( scopedDeclarations.remove( id + v ) );
+                definedVars.remove( v );
+                scopedDeclarations.remove( getBindingVar( v ) );
             } );
+        }
+
+        private String getBindingVar( String var ) {
+            return idGenerator.isGenerated( var ) ? var : var + id;
+        }
+
+        @Override
+        public String toString() {
+            return "Scope: " + id;
         }
     }
 
@@ -605,6 +625,14 @@ public class RuleContext {
 
     public void resetCurrentConstraintDescr() {
         this.currentConstraintDescr = empty();
+    }
+
+    public void setParentDescr( AndDescr parentDescr ) {
+        this.parentDescr = parentDescr;
+    }
+
+    public AndDescr getParentDescr() {
+        return parentDescr;
     }
 
     @Override
