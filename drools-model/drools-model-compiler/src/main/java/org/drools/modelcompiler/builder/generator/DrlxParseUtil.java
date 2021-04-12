@@ -495,6 +495,7 @@ public class DrlxParseUtil {
                                                              Optional<Class<?>> patternClass) {
         return generateLambdaWithoutParameters(usedDeclarations, expr, skipFirstParamAsThis, patternClass, null);
     }
+
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations,
                                                              Expression expr,
                                                              boolean skipFirstParamAsThis,
