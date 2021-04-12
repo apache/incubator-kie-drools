@@ -165,6 +165,7 @@ public class DefineFunctionUtilsTest {
                                                 "    java.lang.Object applyVariable = this.FUNCTION_NAME(param1, variableapplyVariableConstant1, variableapplyVariableFieldRef2);\n" +
                                                 "    return applyVariable;\n" +
                                                 "}", methodName);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -176,6 +177,7 @@ public class DefineFunctionUtilsTest {
                                                 "    java.lang.Double constantVariable = 34.6;\n" +
                                                 "    return constantVariable;\n" +
                                                 "}", methodName);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
@@ -197,6 +199,7 @@ public class DefineFunctionUtilsTest {
                                                 ": (java.lang.String) null;\n" +
                                                 "    return fieldRefVariable;\n" +
                                                 "}", methodName);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
         fieldRef.setMapMissingTo(mapMissingTo);
@@ -206,6 +209,7 @@ public class DefineFunctionUtilsTest {
                                          ": (java.lang.String) \"MAP_MISSING_TO\";\n" +
                                                 "    return fieldRefVariable;\n" +
                                                 "}", methodName);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
