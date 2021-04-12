@@ -27,7 +27,7 @@ public class KiePMMLModelUtils {
      * @return
      */
     public static String getSanitizedPackageName(String modelName) {
-        return modelName.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+        return modelName.replaceAll("[^A-Za-z0-9.]", "").toLowerCase();
     }
 
     /**
