@@ -18,9 +18,11 @@ package org.optaplanner.core.impl.score.buildin.simplelong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.Consumer;
+
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
@@ -29,28 +31,25 @@ public class SimpleLongScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        JustificationsSupplier justificationsSupplier = null;
+        Consumer<Score<?>> scoreConsumer = null;
 
         SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.ZERO);
 
-        LongWeightedScoreImpacter impacter1 =
-                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-90L));
-        UndoScoreImpacter undo1 = impacter1.impactScore(1L, justificationsSupplier);
+        LongWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-90L));
+        UndoScoreImpacter undo1 = impacter1.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-90L));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-800L))
-                .impactScore(1L, justificationsSupplier);
+        scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-800L)).impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-890L));
-        undo1.run();
+        undo1.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-800L));
 
-        LongWeightedScoreImpacter impacter2 =
-                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleLongScore.of(-1L));
-        UndoScoreImpacter undo2 = impacter2.impactScore(3L, justificationsSupplier);
+        LongWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-1L));
+        UndoScoreImpacter undo2 = impacter2.impactScore(3L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-803L));
-        impacter2.impactScore(10L, justificationsSupplier);
+        impacter2.impactScore(10L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-813L));
-        undo2.run();
+        undo2.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-810L));
     }
 

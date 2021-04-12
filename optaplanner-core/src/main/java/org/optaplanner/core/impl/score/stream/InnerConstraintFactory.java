@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
@@ -101,6 +102,18 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
                     + ").");
         }
     }
+
+    // ************************************************************************
+    // SessionFactory creation
+    // ************************************************************************
+
+    /**
+     * This method is thread-safe.
+     *
+     * @param constraints never null
+     * @return never null
+     */
+    public abstract ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints);
 
     // ************************************************************************
     // Getters/setters

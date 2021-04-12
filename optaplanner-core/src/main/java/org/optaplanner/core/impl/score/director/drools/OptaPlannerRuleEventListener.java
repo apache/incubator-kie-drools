@@ -21,7 +21,7 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
-final class OptaPlannerRuleEventListener implements RuleEventListener {
+public final class OptaPlannerRuleEventListener implements RuleEventListener {
 
     @Override
     public void onUpdateMatch(Match match) {
@@ -35,7 +35,7 @@ final class OptaPlannerRuleEventListener implements RuleEventListener {
 
     public void undoPreviousMatch(AgendaItem agendaItem) {
         Object callback = agendaItem.getCallback();
-        // Some rules don't have a callback because their RHS doesn't do addConstraintMatch().
+        // Some rules don't have a callback because their RHS doesn't do addConstraintMatch()
         if (callback instanceof AbstractScoreHolder.ConstraintActivationUnMatchListener) {
             ((AbstractScoreHolder.ConstraintActivationUnMatchListener) callback).run();
             agendaItem.setCallback(null);

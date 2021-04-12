@@ -18,9 +18,11 @@ package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.Consumer;
+
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
@@ -29,44 +31,42 @@ public class BendableLongScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        JustificationsSupplier justificationsSupplier = null;
+        Consumer<Score<?>> scoreConsumer = null;
 
         BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.zero(1, 2));
 
         LongWeightedScoreImpacter hardImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofHard(1, 2, 0, -90L));
-        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableLongScore.ofHard(1, 2, 0, -90L));
+        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -90L }, new long[] { 0L, 0L }));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofHard(1, 2, 0, -800L))
-                .impactScore(1L, justificationsSupplier);
+        scoreInliner.buildWeightedScoreImpacter(BendableLongScore.ofHard(1, 2, 0, -800L)).impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -890L }, new long[] { 0L, 0L }));
-        hardUndo.run();
+        hardUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }));
 
         LongWeightedScoreImpacter mediumImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofSoft(1, 2, 0, -7L));
-        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1L, justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableLongScore.ofSoft(1, 2, 0, -7L));
+        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { -7L, 0L }));
-        mediumUndo.run();
+        mediumUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }));
 
         LongWeightedScoreImpacter softImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName", BendableLongScore.ofSoft(1, 2, 1, -1L));
-        UndoScoreImpacter softUndo = softImpacter.impactScore(3L, justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableLongScore.ofSoft(1, 2, 1, -1L));
+        UndoScoreImpacter softUndo = softImpacter.impactScore(3L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -3L }));
-        softImpacter.impactScore(10L, justificationsSupplier);
+        softImpacter.impactScore(10L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -13L }));
-        softUndo.run();
+        softUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }));
 
         LongWeightedScoreImpacter allLevelsImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
-                        BendableLongScore.of(new long[] { -1000L }, new long[] { -2000L, -3000L }));
-        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableLongScore.of(new long[] { -1000L }, new long[] { -2000L, -3000L }));
+        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableLongScore.of(new long[] { -1800L }, new long[] { -2000L, -3010L }));
-        allLevelsUndo.run();
+        allLevelsUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }));
     }
 

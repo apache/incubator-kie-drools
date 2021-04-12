@@ -16,9 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.function.BiFunction;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
 
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
@@ -26,14 +32,24 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 
 public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> implements BavetScoringNode {
 
+    private final String constraintPackage;
+    private final String constraintName;
     private final Score<?> constraintWeight;
-    private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
+    private final TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
 
-    public BavetScoringBiNode(BavetConstraintSession session, int nodeIndex, Score<?> constraintWeight,
-            BiFunction<A, B, UndoScoreImpacter> scoreImpacter) {
+    private final boolean constraintMatchEnabled;
+    private final Set<BavetScoringBiTuple<A, B>> tupleSet;
+
+    public BavetScoringBiNode(BavetConstraintSession session, int nodeIndex,
+            String constraintPackage, String constraintName, Score<?> constraintWeight,
+            TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeIndex);
+        this.constraintPackage = constraintPackage;
+        this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
         this.scoreImpacter = scoreImpacter;
+        this.constraintMatchEnabled = session.isConstraintMatchEnabled();
+        tupleSet = constraintMatchEnabled ? new HashSet<>() : null;
     }
 
     // ************************************************************************
@@ -58,19 +74,69 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         B b = tuple.getFactB();
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
         if (oldUndoScoreImpacter != null) {
-            oldUndoScoreImpacter.run();
+            oldUndoScoreImpacter.undoScoreImpact();
+            if (constraintMatchEnabled) {
+                tuple.setMatchScore(null);
+                boolean removed = tupleSet.remove(tuple);
+                if (!removed) {
+                    throw new IllegalStateException("Impossible state: The node with constraintId ("
+                            + getConstraintId() + ") could not remove the tuple (" + tuple + ") from the tupleSet.");
+                }
+            }
         }
         if (tuple.isActive()) {
-            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a, b);
+            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a, b, tuple::setMatchScore);
             tuple.setUndoScoreImpacter(undoScoreImpacter);
+            if (constraintMatchEnabled) {
+                boolean added = tupleSet.add(tuple);
+                if (!added) {
+                    throw new IllegalStateException("Impossible state: The node with constraintId ("
+                            + getConstraintId() + ") could not add the tuple (" + tuple + ") to the tupleSet.");
+                }
+            }
         } else {
             tuple.setUndoScoreImpacter(null);
         }
     }
 
     @Override
+    public <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore) {
+        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = new DefaultConstraintMatchTotal<>(constraintPackage,
+                constraintName, (Score_) constraintWeight, zeroScore);
+        for (BavetScoringBiTuple<A, B> tuple : tupleSet) {
+            constraintMatchTotal.addConstraintMatch(
+                    Arrays.asList(tuple.getFactA(), tuple.getFactB()), (Score_) tuple.getMatchScore());
+        }
+        return constraintMatchTotal;
+    }
+
+    @Override
     public String toString() {
         return "Scoring(" + constraintWeight + ")";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    @Override
+    public String getConstraintPackage() {
+        return constraintPackage;
+    }
+
+    @Override
+    public String getConstraintName() {
+        return constraintName;
+    }
+
+    @Override
+    public String getConstraintId() {
+        return ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Score<?> getConstraintWeight() {
+        return constraintWeight;
     }
 
 }

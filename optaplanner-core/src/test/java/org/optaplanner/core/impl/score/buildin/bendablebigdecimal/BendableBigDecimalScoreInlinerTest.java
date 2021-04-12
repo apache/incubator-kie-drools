@@ -19,11 +19,12 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public class BendableBigDecimalScoreInlinerTest {
@@ -31,67 +32,61 @@ public class BendableBigDecimalScoreInlinerTest {
     @Test
     public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        JustificationsSupplier justificationsSupplier = null;
+        Consumer<Score<?>> scoreConsumer = null;
 
         BendableBigDecimalScoreInliner scoreInliner = new BendableBigDecimalScoreInliner(constraintMatchEnabled, 1, 2);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableBigDecimalScore.zero(1, 2));
 
         BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
-                        BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("-90")));
-        UndoScoreImpacter hardUndo = hardImpacter.impactScore(new BigDecimal("1"), justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("-90")));
+        UndoScoreImpacter hardUndo = hardImpacter.impactScore(new BigDecimal("1"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-90") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
-        scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
-                        BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("-800")))
-                .impactScore(new BigDecimal("1"), justificationsSupplier);
+        scoreInliner.buildWeightedScoreImpacter(BendableBigDecimalScore.ofHard(1, 2, 0, new BigDecimal("-800")))
+                .impactScore(new BigDecimal("1"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-890") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
-        hardUndo.run();
+        hardUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
 
         BigDecimalWeightedScoreImpacter mediumImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
-                        BendableBigDecimalScore.ofSoft(1, 2, 0, new BigDecimal("-7")));
-        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(new BigDecimal("1"), justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableBigDecimalScore.ofSoft(1, 2, 0, new BigDecimal("-7")));
+        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(new BigDecimal("1"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("-7"), new BigDecimal("0") }));
-        mediumUndo.run();
+        mediumUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0") }));
 
         BigDecimalWeightedScoreImpacter softImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
-                        BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("-1")));
-        UndoScoreImpacter softUndo = softImpacter.impactScore(new BigDecimal("3"), justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("-1")));
+        UndoScoreImpacter softUndo = softImpacter.impactScore(new BigDecimal("3"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-3") }));
-        softImpacter.impactScore(new BigDecimal("10"), justificationsSupplier);
+        softImpacter.impactScore(new BigDecimal("10"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-13") }));
-        softUndo.run();
+        softUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-10") }));
 
         BigDecimalWeightedScoreImpacter allLevelsImpacter = scoreInliner
-                .buildWeightedScoreImpacter("constraintPackage", "constraintName",
-                        BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-1000") },
-                                new BigDecimal[] { new BigDecimal("-2000"), new BigDecimal("-3000") }));
-        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(new BigDecimal("1"), justificationsSupplier);
+                .buildWeightedScoreImpacter(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-1000") },
+                        new BigDecimal[] { new BigDecimal("-2000"), new BigDecimal("-3000") }));
+        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(new BigDecimal("1"), scoreConsumer);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-1800") },
                         new BigDecimal[] { new BigDecimal("-2000"), new BigDecimal("-3010") }));
-        allLevelsUndo.run();
+        allLevelsUndo.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-800") },
                         new BigDecimal[] { new BigDecimal("0"), new BigDecimal("-10") }));

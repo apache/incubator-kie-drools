@@ -21,7 +21,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * This is the base interface for all score holder implementations.
+ * This is the base interface for all score holder implementations, used exclusively by Drools-based score calculators.
  *
  * @param <Score_> the {@link Score} type
  */

@@ -18,11 +18,12 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.function.BiFunction;
 
+import org.drools.model.Global;
 import org.drools.model.consequences.ConsequenceBuilder.ValidBuilder;
-import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 @FunctionalInterface
 interface ConsequenceBuilder<Solution_>
-        extends BiFunction<DroolsConstraint<Solution_>, WeightedScoreImpacter, ValidBuilder> {
+        extends BiFunction<DroolsConstraint<Solution_>, Global<? extends AbstractScoreHolder<?>>, ValidBuilder> {
 }

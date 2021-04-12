@@ -33,9 +33,9 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
 final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Score_>>
         implements SessionBasedAssertionBuilder<Solution_, Score_> {
@@ -50,26 +50,24 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
     @Override
     public DefaultMultiConstraintAssertion<Solution_, Score_> multiConstraintGiven(
             ConstraintProvider constraintProvider, Object... facts) {
-        ScoreInliner<Score_> scoreInliner = runSession(facts);
-        return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreInliner.extractScore(0),
-                scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
+        AbstractScoreHolder<Score_> scoreHolder = runSession(facts);
+        return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreHolder.extractScore(0),
+                scoreHolder.getConstraintMatchTotalMap(), scoreHolder.getIndictmentMap());
     }
 
     @Override
     public DefaultSingleConstraintAssertion<Solution_, Score_> singleConstraintGiven(Object... facts) {
         assertDistinctPlanningIds(constraintStreamScoreDirectorFactory.getSolutionDescriptor(), facts);
-        ScoreInliner<Score_> scoreInliner = runSession(facts);
-        return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory, scoreInliner.extractScore(0),
-                scoreInliner.getConstraintMatchTotalMap(), scoreInliner.getIndictmentMap());
+        AbstractScoreHolder<Score_> scoreHolder = runSession(facts);
+        return new DefaultSingleConstraintAssertion<>(constraintStreamScoreDirectorFactory, scoreHolder.extractScore(0),
+                scoreHolder.getConstraintMatchTotalMap(), scoreHolder.getIndictmentMap());
     }
 
-    private ScoreInliner<Score_> runSession(Object... facts) {
-        DroolsConstraintSessionFactory.SessionDescriptor<Score_> sessionDescriptor =
-                constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
-        KieSession session = sessionDescriptor.getSession();
+    private AbstractScoreHolder<Score_> runSession(Object... facts) {
+        KieSession session = constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
         Arrays.stream(facts).forEach(session::insert);
         session.fireAllRules();
-        return sessionDescriptor.getScoreInliner();
+        return (AbstractScoreHolder<Score_>) session.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
     }
 
     private void assertDistinctPlanningIds(SolutionDescriptor<Solution_> solutionDescriptor, Object... facts) {

@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import static java.util.Collections.singletonList;
-
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -110,20 +110,19 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
     protected BavetScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
-        WeightedScoreImpacter weightedScoreImpacter =
-                scoreInliner.buildWeightedScoreImpacter(constraint.getConstraintPackage(),
-                        constraint.getConstraintName(), constraintWeight);
-        Function<A, UndoScoreImpacter> scoreImpacter;
+        WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
+        BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
         if (weightedScoreImpacter instanceof IntWeightedScoreImpacter) {
             IntWeightedScoreImpacter castedWeightedScoreImpacter = (IntWeightedScoreImpacter) weightedScoreImpacter;
             if (intMatchWeigher != null) {
-                scoreImpacter = a -> {
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = a -> castedWeightedScoreImpacter.impactScore(1, () -> singletonList(a));
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter.impactScore(1,
+                        matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -133,13 +132,14 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         } else if (weightedScoreImpacter instanceof LongWeightedScoreImpacter) {
             LongWeightedScoreImpacter castedWeightedScoreImpacter = (LongWeightedScoreImpacter) weightedScoreImpacter;
             if (longMatchWeigher != null) {
-                scoreImpacter = a -> {
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = a -> castedWeightedScoreImpacter.impactScore(1L, () -> singletonList(a));
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter.impactScore(1L,
+                        matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -150,13 +150,14 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
                     (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
             if (bigDecimalMatchWeigher != null) {
-                scoreImpacter = a -> {
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = a -> castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, () -> singletonList(a));
+                scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(BigDecimal.ONE, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + UniConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -166,8 +167,11 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        return new BavetScoringUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
+        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
+                parentNode, constraint.getConstraintPackage(), constraint.getConstraintName(), constraintWeight,
                 scoreImpacter);
+        buildPolicy.addScoringNode(node);
+        return node;
     }
 
     @Override

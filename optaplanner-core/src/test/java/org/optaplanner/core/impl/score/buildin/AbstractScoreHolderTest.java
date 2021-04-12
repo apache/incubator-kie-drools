@@ -137,17 +137,17 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, int weightMultiplier) {
+            public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, long weightMultiplier) {
+            public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
                 throw new UnsupportedOperationException();
             }
         };

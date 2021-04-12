@@ -16,14 +16,19 @@
 
 package org.optaplanner.core.impl.score.inliner;
 
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+
 @FunctionalInterface
 public interface IntWeightedScoreImpacter extends WeightedScoreImpacter {
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier never null, supplier only pays the list creation penalty on actual access
+     * @param matchScoreConsumer null if {@link InnerScoreDirector#isConstraintMatchEnabled()} is false
      * @return never null
      */
-    UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
+    UndoScoreImpacter impactScore(int matchWeight, Consumer<Score<?>> matchScoreConsumer);
 
 }

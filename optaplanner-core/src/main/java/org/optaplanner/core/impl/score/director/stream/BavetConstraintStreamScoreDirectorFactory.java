@@ -17,26 +17,17 @@
 package org.optaplanner.core.impl.score.director.stream;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSessionFactory;
 
 public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
-    private final BavetConstraintSessionFactory<Solution_, Score_> constraintSessionFactory;
-    private final Constraint[] constraints;
-
     public BavetConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider) {
-        super(solutionDescriptor);
-        BavetConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
-        constraints = buildConstraints(constraintProvider, constraintFactory);
-        this.constraintSessionFactory =
-                (BavetConstraintSessionFactory<Solution_, Score_>) constraintFactory.buildSessionFactory(constraints);
+        super(solutionDescriptor, constraintProvider, () -> new BavetConstraintFactory<>(solutionDescriptor));
     }
 
     @Override
@@ -47,11 +38,8 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
 
     public BavetConstraintSession<Solution_, Score_> newSession(boolean constraintMatchEnabled,
             Solution_ workingSolution) {
-        return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
+        return (BavetConstraintSession<Solution_, Score_>) getConstraintSessionFactory().buildSession(constraintMatchEnabled,
+                workingSolution);
     }
 
-    @Override
-    public Constraint[] getConstraints() {
-        return constraints;
-    }
 }

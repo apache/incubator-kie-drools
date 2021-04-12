@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
-import static java.util.Arrays.asList;
-
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Consumer;
 
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -112,20 +112,19 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
     protected BavetScoringTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
         ScoreInliner scoreInliner = buildPolicy.getSession().getScoreInliner();
-        WeightedScoreImpacter weightedScoreImpacter =
-                scoreInliner.buildWeightedScoreImpacter(constraint.getConstraintPackage(),
-                        constraint.getConstraintName(), constraintWeight);
-        TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
+        WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraintWeight);
+        QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter;
         if (weightedScoreImpacter instanceof IntWeightedScoreImpacter) {
             IntWeightedScoreImpacter castedWeightedScoreImpacter = (IntWeightedScoreImpacter) weightedScoreImpacter;
             if (intMatchWeigher != null) {
-                scoreImpacter = (a, b, c) -> {
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a, b, c);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> asList(a, b, c));
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(1, () -> asList(a, b, c));
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(1, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -135,13 +134,14 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else if (weightedScoreImpacter instanceof LongWeightedScoreImpacter) {
             LongWeightedScoreImpacter castedWeightedScoreImpacter = (LongWeightedScoreImpacter) weightedScoreImpacter;
             if (longMatchWeigher != null) {
-                scoreImpacter = (a, b, c) -> {
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a, b, c);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> asList(a, b, c));
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (a, b, c) -> castedWeightedScoreImpacter.impactScore(1L, () -> asList(a, b, c));
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(1L, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -152,14 +152,14 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
             BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
                     (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
             if (bigDecimalMatchWeigher != null) {
-                scoreImpacter = (a, b, c) -> {
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b, c);
                     constraint.assertCorrectImpact(matchWeight);
-                    return castedWeightedScoreImpacter.impactScore(matchWeight, () -> asList(a, b, c));
+                    return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter =
-                        (a, b, c) -> castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, () -> asList(a, b, c));
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(BigDecimal.ONE, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -169,8 +169,11 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         } else {
             throw new IllegalStateException("Unsupported weightedScoreImpacter (" + weightedScoreImpacter + ").");
         }
-        return new BavetScoringTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), constraintWeight,
-                scoreImpacter);
+        BavetScoringTriNode<A, B, C> node = new BavetScoringTriNode<>(buildPolicy.getSession(),
+                buildPolicy.nextNodeIndex(), constraint.getConstraintPackage(), constraint.getConstraintName(),
+                constraintWeight, scoreImpacter);
+        buildPolicy.addScoringNode(node);
+        return node;
     }
 
     @Override

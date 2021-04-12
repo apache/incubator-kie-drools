@@ -16,27 +16,19 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
 
 public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
-    private final DroolsConstraintSessionFactory<Solution_, Score_> constraintSessionFactory;
-    private final Constraint[] constraints;
-
     public DroolsConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider, boolean droolsAlphaNetworkCompilationEnabled) {
-        super(solutionDescriptor);
-        DroolsConstraintFactory<Solution_> constraintFactory =
-                new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled);
-        constraints = buildConstraints(constraintProvider, constraintFactory);
-        this.constraintSessionFactory =
-                (DroolsConstraintSessionFactory<Solution_, Score_>) constraintFactory.buildSessionFactory(constraints);
+        super(solutionDescriptor, constraintProvider,
+                () -> new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled));
     }
 
     @Override
@@ -45,17 +37,8 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         return new DroolsConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
-    public DroolsConstraintSessionFactory.SessionDescriptor<Score_>
-            newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
+    public KieSession newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+        return (KieSession) getConstraintSessionFactory().buildSession(constraintMatchEnabled, workingSolution);
     }
 
-    public DroolsConstraintSessionFactory<Solution_, Score_> getConstraintSessionFactory() {
-        return constraintSessionFactory;
-    }
-
-    @Override
-    public Constraint[] getConstraints() {
-        return constraints;
-    }
 }

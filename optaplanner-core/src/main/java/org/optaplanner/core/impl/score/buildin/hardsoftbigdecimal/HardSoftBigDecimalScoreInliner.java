@@ -17,79 +17,60 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDecimalScore> {
+public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDecimalScore> {
 
-    private BigDecimal hardScore = BigDecimal.ZERO;
-    private BigDecimal softScore = BigDecimal.ZERO;
+    protected BigDecimal hardScore = BigDecimal.ZERO;
+    protected BigDecimal softScore = BigDecimal.ZERO;
 
     protected HardSoftBigDecimalScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, HardSoftBigDecimalScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            HardSoftBigDecimalScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(HardSoftBigDecimalScore constraintWeight) {
+        if (constraintWeight.equals(HardSoftBigDecimalScore.ZERO)) {
+            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
+                    + " this constraint should have been culled during node creation.");
+        }
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
         if (softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
-                UndoScoreImpacter undoScoreImpact = () -> this.hardScore = this.hardScore.subtract(hardImpact);
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftBigDecimalScore.ofHard(hardImpact));
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftBigDecimalScore.ofHard(hardImpact), justificationsSupplier.get());
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
+                return () -> this.hardScore = this.hardScore.subtract(hardImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
-                UndoScoreImpacter undoScoreImpact = () -> this.softScore = this.softScore.subtract(softImpact);
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftBigDecimalScore.ofSoft(softImpact));
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftBigDecimalScore.ofSoft(softImpact), justificationsSupplier.get());
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
+                return () -> this.softScore = this.softScore.subtract(softImpact);
             };
         } else {
-            return (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 this.softScore = this.softScore.add(softImpact);
-                UndoScoreImpacter undoScoreImpact = () -> {
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftBigDecimalScore.of(hardImpact, softImpact));
+                }
+                return () -> {
                     this.hardScore = this.hardScore.subtract(hardImpact);
                     this.softScore = this.softScore.subtract(softImpact);
-                };
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftBigDecimalScore.of(hardImpact, softImpact),
-                        justificationsSupplier.get());
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
                 };
             };
         }

@@ -16,77 +16,60 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-public final class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
+public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
 
-    private long hardScore;
-    private long softScore;
+    protected long hardScore;
+    protected long softScore;
 
     protected HardSoftLongScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, HardSoftLongScore.ZERO);
+        super(constraintMatchEnabled);
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(String constraintPackage, String constraintName,
-            HardSoftLongScore constraintWeight) {
-        assertNonZeroConstraintWeight(constraintWeight);
-        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName); // Cache.
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(HardSoftLongScore constraintWeight) {
+        if (constraintWeight.equals(HardSoftLongScore.ZERO)) {
+            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
+                    + " this constraint should have been culled during node creation.");
+        }
         long hardConstraintWeight = constraintWeight.getHardScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0L) {
-            return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
-                UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftLongScore.ofHard(hardImpact));
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftLongScore.ofHard(hardImpact), justificationsSupplier.get());
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
+                return () -> this.hardScore -= hardImpact;
             };
         } else if (hardConstraintWeight == 0L) {
-            return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
-                UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftLongScore.ofSoft(softImpact));
                 }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftLongScore.ofSoft(softImpact), justificationsSupplier.get());
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
+                return () -> this.softScore -= softImpact;
             };
         } else {
-            return (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 long softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 this.softScore += softImpact;
-                UndoScoreImpacter undoScoreImpact = () -> {
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftLongScore.of(hardImpact, softImpact));
+                }
+                return () -> {
                     this.hardScore -= hardImpact;
                     this.softScore -= softImpact;
-                };
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraintId, constraintPackage, constraintName,
-                        constraintWeight, HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier.get());
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
                 };
             };
         }

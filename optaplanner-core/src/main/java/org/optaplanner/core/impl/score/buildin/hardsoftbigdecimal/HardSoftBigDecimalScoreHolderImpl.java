@@ -62,20 +62,20 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
         super.configureConstraintWeight(rule, constraintWeight);
         BigDecimalMatchExecutor matchExecutor;
         if (constraintWeight.equals(HardSoftBigDecimalScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> {
             };
         } else if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
             matchExecutor =
-                    (RuleContext kcontext, BigDecimal matchWeight) -> addHardConstraintMatch(kcontext,
-                            constraintWeight.getHardScore().multiply(matchWeight));
+                    (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> addHardConstraintMatch(kcontext,
+                            constraintWeight.getHardScore().multiply(matchWeight), justifications);
         } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
             matchExecutor =
-                    (RuleContext kcontext, BigDecimal matchWeight) -> addSoftConstraintMatch(kcontext,
-                            constraintWeight.getSoftScore().multiply(matchWeight));
+                    (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> addSoftConstraintMatch(kcontext,
+                            constraintWeight.getSoftScore().multiply(matchWeight), justifications);
         } else {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addMultiConstraintMatch(
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> addMultiConstraintMatch(
                     kcontext, constraintWeight.getHardScore().multiply(matchWeight),
-                    constraintWeight.getSoftScore().multiply(matchWeight));
+                    constraintWeight.getSoftScore().multiply(matchWeight), justifications);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
@@ -119,22 +119,22 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
     }
 
     @Override
-    public void impactScore(RuleContext kcontext) {
-        impactScore(kcontext, BigDecimal.ONE);
+    public void impactScore(RuleContext kcontext, Object... justifications) {
+        impactScore(kcontext, BigDecimal.ONE, justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
         Rule rule = kcontext.getRule();
         BigDecimalMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
@@ -142,7 +142,7 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier);
+        matchExecutor.accept(kcontext, weightMultiplier, justifications);
     }
 
     private void impactScore(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal softWeightMultiplier) {
@@ -162,22 +162,33 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
 
     @Override
     public void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight) {
+        addHardConstraintMatch(kcontext, hardWeight, EMPTY_OBJECT_ARRAY);
+    }
+
+    private void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, Object... justifications) {
         hardScore = hardScore.add(hardWeight);
-        registerConstraintMatch(kcontext,
-                () -> hardScore = hardScore.subtract(hardWeight),
-                () -> HardSoftBigDecimalScore.ofHard(hardWeight));
+        registerConstraintMatch(kcontext, () -> hardScore = hardScore.subtract(hardWeight),
+                () -> HardSoftBigDecimalScore.ofHard(hardWeight), justifications);
     }
 
     @Override
     public void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight) {
+        addSoftConstraintMatch(kcontext, softWeight, EMPTY_OBJECT_ARRAY);
+    }
+
+    private void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight, Object... justifications) {
         softScore = softScore.add(softWeight);
-        registerConstraintMatch(kcontext,
-                () -> softScore = softScore.subtract(softWeight),
-                () -> HardSoftBigDecimalScore.ofSoft(softWeight));
+        registerConstraintMatch(kcontext, () -> softScore = softScore.subtract(softWeight),
+                () -> HardSoftBigDecimalScore.ofSoft(softWeight), justifications);
     }
 
     @Override
     public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal softWeight) {
+        addMultiConstraintMatch(kcontext, hardWeight, softWeight, EMPTY_OBJECT_ARRAY);
+    }
+
+    private void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal softWeight,
+            Object... justifications) {
         hardScore = hardScore.add(hardWeight);
         softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext,
@@ -185,7 +196,8 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
                     hardScore = hardScore.subtract(hardWeight);
                     softScore = softScore.subtract(softWeight);
                 },
-                () -> HardSoftBigDecimalScore.of(hardWeight, softWeight));
+                () -> HardSoftBigDecimalScore.of(hardWeight, softWeight),
+                justifications);
     }
 
     @Override

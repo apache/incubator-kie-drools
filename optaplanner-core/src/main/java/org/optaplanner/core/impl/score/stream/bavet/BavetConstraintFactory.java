@@ -24,6 +24,7 @@ import java.util.Set;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
@@ -59,7 +60,8 @@ public final class BavetConstraintFactory<Solution_> extends InnerConstraintFact
     // SessionFactory creation
     // ************************************************************************
 
-    public BavetConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
+    @Override
+    public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
         List<BavetConstraint<Solution_>> bavetConstraintList = new ArrayList<>(constraints.length);
         Set<String> constraintIdSet = new HashSet<>(constraints.length);
         for (Constraint constraint : constraints) {

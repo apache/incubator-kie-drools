@@ -18,10 +18,12 @@ package org.optaplanner.core.impl.score.buildin.simple;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.Consumer;
+
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
-import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
 public class SimpleScoreInlinerTest {
@@ -29,28 +31,25 @@ public class SimpleScoreInlinerTest {
     @Test
     public void buildIntWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
-        JustificationsSupplier justificationsSupplier = null;
+        Consumer<Score<?>> scoreConsumer = null;
 
         SimpleScoreInliner scoreInliner = new SimpleScoreInliner(constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.ZERO);
 
-        IntWeightedScoreImpacter impacter1 =
-                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-90));
-        UndoScoreImpacter undo1 = impacter1.impactScore(1, justificationsSupplier);
+        IntWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-90));
+        UndoScoreImpacter undo1 = impacter1.impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-90));
-        scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-800)).impactScore(1,
-                justificationsSupplier);
+        scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-800)).impactScore(1, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-890));
-        undo1.run();
+        undo1.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-800));
 
-        IntWeightedScoreImpacter impacter2 =
-                scoreInliner.buildWeightedScoreImpacter("constraintPackage", "constraintName", SimpleScore.of(-1));
-        UndoScoreImpacter undo2 = impacter2.impactScore(3, justificationsSupplier);
+        IntWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-1));
+        UndoScoreImpacter undo2 = impacter2.impactScore(3, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-803));
-        impacter2.impactScore(10, justificationsSupplier);
+        impacter2.impactScore(10, scoreConsumer);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-813));
-        undo2.run();
+        undo2.undoScoreImpact();
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-810));
     }
 
