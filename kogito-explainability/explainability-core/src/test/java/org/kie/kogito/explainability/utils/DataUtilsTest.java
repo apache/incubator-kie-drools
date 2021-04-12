@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -48,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DataUtilsTest {
 
@@ -344,7 +346,9 @@ class DataUtilsTest {
     @Test
     void toCSV() {
         Feature feature = mock(Feature.class);
+        when(feature.getName()).thenReturn("feature-1");
         Output output = mock(Output.class);
+        when(output.getName()).thenReturn("decision-1");
         List<Value> x = new ArrayList<>();
         x.add(new Value(1));
         x.add(new Value(2));
@@ -355,6 +359,28 @@ class DataUtilsTest {
         y.add(new Value(4));
         PartialDependenceGraph partialDependenceGraph = new PartialDependenceGraph(feature, output, x, y);
         assertDoesNotThrow(() -> DataUtils.toCSV(partialDependenceGraph, Paths.get("target/test-pdp.csv")));
+    }
+
+    @Test
+    void testReadCsv() throws IOException {
+        List<Type> schema = new ArrayList<>();
+        schema.add(Type.CATEGORICAL);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.BOOLEAN);
+        schema.add(Type.NUMBER);
+        schema.add(Type.NUMBER);
+        DataDistribution dataDistribution = DataUtils.readCSV(
+                Paths.get(getClass().getResource("/mini-train.csv").getFile()), schema);
+        assertThat(dataDistribution).isNotNull();
+        assertThat(dataDistribution.getAllSamples()).hasSize(10);
     }
 
     @Test
