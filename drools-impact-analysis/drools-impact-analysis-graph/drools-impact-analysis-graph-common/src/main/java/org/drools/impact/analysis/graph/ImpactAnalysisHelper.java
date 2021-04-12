@@ -29,6 +29,14 @@ public class ImpactAnalysisHelper {
 
     private static Logger logger = LoggerFactory.getLogger(ImpactAnalysisHelper.class);
 
+    private boolean positiveOnly = false;
+
+    public ImpactAnalysisHelper() {}
+
+    public ImpactAnalysisHelper(boolean positiveOnly) {
+        this.positiveOnly = positiveOnly;
+    }
+
     public Graph filterImpactedNodes(Graph graph, Node changedNode) {
 
         Collection<Node> impactedNodes = new HashSet<Node>();
@@ -45,6 +53,7 @@ public class ImpactAnalysisHelper {
         changedNode.setStatus(Status.IMPACTED);
         impactedNodes.add(changedNode);
         changedNode.getOutgoingLinks().stream()
+                   .filter(link -> (!positiveOnly || positiveOnly && link.getReactivityType() == ReactivityType.POSITIVE))
                    .map(Link::getTarget)
                    .filter(node -> !impactedNodes.contains(node))
                    .forEach(node -> collectImpactedNodes(node, impactedNodes));

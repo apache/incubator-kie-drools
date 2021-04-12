@@ -64,7 +64,7 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
     }
 
     @Override
-    public void buildPackages(Collection<CompositePackageDescr> packages) {
+    protected void doFirstBuildStep( Collection<CompositePackageDescr> packages ) {
         this.compositePackages = packages;
     }
 
@@ -106,15 +106,15 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
     }
 
     @Override
-    public void postBuild() {
-        Collection<CompositePackageDescr> packages = findPackages();
+    protected void doSecondBuildStep(Collection<CompositePackageDescr> compositePackages) {
+        Collection<CompositePackageDescr> packages = findPackages(compositePackages);
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildOtherDeclarations(packages);
         buildRules(packages);
     }
 
-    private Collection<CompositePackageDescr> findPackages() {
+    private Collection<CompositePackageDescr> findPackages(Collection<CompositePackageDescr> compositePackages) {
         Collection<CompositePackageDescr> packages;
         if (compositePackages != null && !compositePackages.isEmpty()) {
             packages = compositePackages;
@@ -197,8 +197,8 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
         return packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
             return packageDescr.getPreferredPkgUUID()
-                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), true, dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
-                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), true, dialectCompiletimeRegistry, exprIdGenerator));
+                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
+                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator));
         });
     }
 

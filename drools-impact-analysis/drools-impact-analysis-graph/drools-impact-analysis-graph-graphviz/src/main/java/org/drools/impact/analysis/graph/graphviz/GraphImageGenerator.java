@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import guru.nidi.graphviz.attribute.Color;
@@ -28,12 +29,12 @@ import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.GraphvizCmdLineEngine;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
 
-import static guru.nidi.graphviz.attribute.Rank.RankDir.TOP_TO_BOTTOM;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static guru.nidi.graphviz.model.Factory.to;
@@ -45,7 +46,11 @@ public class GraphImageGenerator {
     private String graphName;
     private int width = 0; // when 0, auto-sized
     private int height = 0; // when 0, auto-sized
+    private int totalMemory = 1000000000; // 1GB by default
     private String outputDir = DEFAULT_OUTPUT_DIR;
+
+    private Rank.RankDir rankDir = Rank.RankDir.LEFT_TO_RIGHT; // LEFT_TO_RIGHT gives a better view when you have a large number of nodes
+    private double sep = 10; // interval between levels
 
     public GraphImageGenerator(String graphName) {
         this.graphName = graphName;
@@ -57,6 +62,12 @@ public class GraphImageGenerator {
         this.height = height;
     }
 
+    public void configureGraphvizCmdLineEngine() {
+        GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine();
+        engine.timeout(10, TimeUnit.MINUTES);
+        Graphviz.useEngine(engine);
+    }
+
     public String getOutputDir() {
         return outputDir;
     }
@@ -65,9 +76,33 @@ public class GraphImageGenerator {
         this.outputDir = outputDir;
     }
 
-    public void generatePng(Graph g) {
+    public Rank.RankDir getRankDir() {
+        return rankDir;
+    }
+
+    public void setRankDir(Rank.RankDir rankDir) {
+        this.rankDir = rankDir;
+    }
+
+    public double getSep() {
+        return sep;
+    }
+
+    public void setSep(double sep) {
+        this.sep = sep;
+    }
+
+    public int getTotalMemory() {
+        return totalMemory;
+    }
+
+    public void setTotalMemory(int totalMemory) {
+        this.totalMemory = totalMemory;
+    }
+
+    private guru.nidi.graphviz.model.Graph convertGraph(Graph g) {
         guru.nidi.graphviz.model.Graph graph = graph(graphName).directed()
-                                      .graphAttr().with(Rank.dir(TOP_TO_BOTTOM));
+                                                               .graphAttr().with(Rank.dir(rankDir).sep(sep));
 
         List<Node> nodeList = g.getNodeMap().values().stream().collect(Collectors.toList());
         for (Node n : nodeList) {
@@ -91,10 +126,39 @@ public class GraphImageGenerator {
             }
             graph = graph.with(node);
         }
+        return graph;
+    }
+
+    public void generateDot(Graph g) {
+        guru.nidi.graphviz.model.Graph graph = convertGraph(g);
+
+        try {
+            String filePath = outputDir + File.separator + graphName + ".dot";
+            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
+            System.out.println("--- Graph dot format is generated to " + filePath);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public void generatePng(Graph g) {
+        guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
             String filePath = outputDir + File.separator + graphName + ".png";
-            Graphviz.fromGraph(graph).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
+            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
+            System.out.println("--- Graph image is generated to " + filePath);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public void generateSvg(Graph g) {
+        guru.nidi.graphviz.model.Graph graph = convertGraph(g);
+
+        try {
+            String filePath = outputDir + File.separator + graphName + ".svg";
+            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
             System.out.println("--- Graph image is generated to " + filePath);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

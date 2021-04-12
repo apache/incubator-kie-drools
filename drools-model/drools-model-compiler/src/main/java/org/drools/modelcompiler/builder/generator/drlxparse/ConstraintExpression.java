@@ -20,7 +20,10 @@ import java.lang.reflect.Field;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.kie.api.definition.type.Position;
+
+import static org.drools.core.util.StringUtils.isIdentifier;
 
 public class ConstraintExpression {
 
@@ -33,8 +36,8 @@ public class ConstraintExpression {
         this.expression = expression;
     }
 
-    public static ConstraintExpression createConstraintExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
-        String expression = parseConstraintExpression(patternType, constraint, isPositional);
+    public static ConstraintExpression createConstraintExpression( RuleContext context, Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
+        String expression = parseConstraintExpression(context, patternType, constraint, isPositional);
 
         int unifPos = expression.indexOf( ":=" );
         if (unifPos > 0) {
@@ -54,10 +57,16 @@ public class ConstraintExpression {
         return new ConstraintExpression( expressionWithoutNewLines );
     }
 
-    public static String parseConstraintExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional) {
+    private static String parseConstraintExpression( RuleContext context, Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
         if (isPositional) {
+            String expr = constraint.toString();
+            boolean isConstraint = !isIdentifier(expr) || context.getDeclarationById( expr ).isPresent();
             int position = ((ExprConstraintDescr ) constraint).getPosition();
-            return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
+            String field = getFieldAtPosition(patternType, position);
+
+            return isConstraint ?
+                    field + " == " + expr :
+                    expr + (context.isQuery() && !expr.equals( field ) ? " := " : " : ") + field;
         }
         return constraint.toString();
     }
