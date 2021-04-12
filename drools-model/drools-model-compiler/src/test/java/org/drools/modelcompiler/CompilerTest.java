@@ -1278,16 +1278,20 @@ public class CompilerTest extends BaseModelTest {
         final String drl1 =
                 "import java.util.Map;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
-                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
                 "rule R1 when\n" +
-                "	 $p : Person($name: \"Andrea\", " +
+                "$p : Person($name: \"Andrea\", " +
                         "parentP.childrenMap[$name] != null," +
                         "parentP.childrenMap[$name].name != null )\n" +
                 "then\n" +
-                "  insert(new Result($p));\n" +
+                "  results.add($p.getName());\n" +
                 "end\n";
 
         KieSession ksession = getKieSession( drl1 );
+
+        ArrayList<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
 
         Person luca = new Person("Luca", 37);
         luca.setParentP(luca); // avoid NPE
@@ -1300,9 +1304,7 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( andrea );
         assertEquals( 2, ksession.fireAllRules() );
 
-        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
-        Person result = (Person) results.iterator().next().getValue();
-        assertThat(result.getName()).isEqualTo("Andrea");
+        assertThat(results).containsExactlyInAnyOrder("Andrea", "Luca");
     }
 
     @Test
