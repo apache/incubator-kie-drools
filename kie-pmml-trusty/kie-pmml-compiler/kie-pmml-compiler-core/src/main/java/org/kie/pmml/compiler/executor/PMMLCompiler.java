@@ -44,7 +44,6 @@ public interface PMMLCompiler {
     /**
      * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code> following a
      * <b>kie-maven-plugin</b> invocation
-     * @param factoryClassName the name of the <b>Factory</b> class to generate, containing the generated <code>KiePmmlModel</code>s
      * @param packageName the package into which put all the generated classes out of the given <code>InputStream</code>
      * @param inputStream
      * @param fileName
@@ -53,5 +52,5 @@ public interface PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getKiePMMLModelsWithSources(/*final String factoryClassName, */final String packageName, final InputStream inputStream, final String fileName, final HasClassLoader hasClassloader);
+    List<KiePMMLModel> getKiePMMLModelsWithSources(final String packageName, final InputStream inputStream, final String fileName, final HasClassLoader hasClassloader);
 }
