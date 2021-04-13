@@ -53,5 +53,5 @@ public interface PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getKiePMMLModelsWithSources(final String factoryClassName, final String packageName, final InputStream inputStream, final String fileName, final HasClassLoader hasClassloader);
+    List<KiePMMLModel> getKiePMMLModelsWithSources(/*final String factoryClassName, */final String packageName, final InputStream inputStream, final String fileName, final HasClassLoader hasClassloader);
 }
