@@ -16,11 +16,13 @@
 package org.kie.kogito.internal.process.event;
 
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.Transition;
 
 public interface KogitoProcessEventSupport {
@@ -62,6 +64,16 @@ public interface KogitoProcessEventSupport {
     void fireOnSignal(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String signalName, Object signalObject);
 
     void fireOnMessage(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String messageName, Object messageObject);
+
+    void fireOnTaskNotStartedDeadline(KogitoProcessInstance instance,
+            HumanTaskWorkItem workItem,
+            Map<String, Object> notification,
+            KieRuntime kruntime);
+
+    void fireOnTaskNotCompletedDeadline(KogitoProcessInstance instance,
+            HumanTaskWorkItem workItem,
+            Map<String, Object> notification,
+            KieRuntime kruntime);
 
     void reset();
 }

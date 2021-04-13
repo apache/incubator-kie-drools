@@ -172,7 +172,8 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
             String user = identity.getName();
             String currentOwner = getActualOwner();
             // if actual owner is already set always enforce same user
-            if (currentOwner != null && !currentOwner.trim().isEmpty() && !user.equals(currentOwner)) {
+            if (currentOwner != null && !currentOwner.trim().isEmpty() && !user.equals(currentOwner) &&
+                    (getAdminUsers() == null || !getAdminUsers().contains(user))) {
                 logger.debug("Work item {} has already owner assigned so requesting user must match - owner '{}' == requestor '{}'", getStringId(), currentOwner, user);
                 throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getStringId());
             }

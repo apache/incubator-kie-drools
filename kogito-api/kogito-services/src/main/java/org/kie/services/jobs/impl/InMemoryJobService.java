@@ -76,7 +76,8 @@ public class InMemoryJobService implements JobsService {
             future = scheduler.scheduleAtFixedRate(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), false, description.expirationTime().repeatLimit()),
                     calculateDelay(description), description.expirationTime().repeatInterval(), TimeUnit.MILLISECONDS);
         } else {
-            future = scheduler.schedule(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), true, -1), calculateDelay(description), TimeUnit.MILLISECONDS);
+            future = scheduler.schedule(new SignalProcessInstanceOnExpiredTimer(description.id(), description
+                    .processInstanceId(), true, 1), calculateDelay(description), TimeUnit.MILLISECONDS);
         }
         scheduledJobs.put(description.id(), future);
         return description.id();
@@ -151,11 +152,11 @@ public class InMemoryJobService implements JobsService {
                         limit--;
                         pi.signalEvent("timerTriggered", TimerInstance.with(Long.valueOf(ids[1]), id, limit));
                         if (limit == 0) {
-                            scheduledJobs.remove(id).cancel(false);
+                            cancel(id);
                         }
                     } else {
                         // since owning process instance does not exist cancel timers
-                        scheduledJobs.remove(id).cancel(false);
+                        cancel(id);
                     }
 
                     return null;
@@ -166,6 +167,13 @@ public class InMemoryJobService implements JobsService {
                     scheduledJobs.remove(id);
                 }
             }
+        }
+    }
+
+    private void cancel(String timerId) {
+        ScheduledFuture<?> timer = scheduledJobs.remove(timerId);
+        if (timer != null) {
+            timer.cancel(false);
         }
     }
 
@@ -233,7 +241,7 @@ public class InMemoryJobService implements JobsService {
             try {
                 LOGGER.debug("Job {} started", id);
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
-                    KogitoProcessInstance pi = (KogitoProcessInstance) processRuntime.createProcessInstance(processId, null);
+                    KogitoProcessInstance pi = processRuntime.createProcessInstance(processId, null);
                     if (pi != null) {
                         processRuntime.startProcessInstance(pi.getStringId(), TRIGGER);
                     }

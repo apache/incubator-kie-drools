@@ -18,12 +18,14 @@ package org.jbpm.workflow.instance.node;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -77,10 +79,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.process.core.context.variable.VariableScope.VARIABLE_SCOPE;
+import static org.kie.api.runtime.process.WorkItem.ABORTED;
+import static org.kie.api.runtime.process.WorkItem.COMPLETED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
-import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.ABORTED;
-import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.COMPLETED;
 
 /**
  * Runtime counterpart of a work item node.
@@ -200,7 +202,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         workItem = newWorkItem();
         workItem.setName(work.getName());
         workItem.setProcessInstanceId(getProcessInstance().getStringId());
-        workItem.setParameters(new HashMap<>(work.getParameters()));
+
+        Collection<String> metaParameters = work.getMetaParameters();
+        for (Entry<String, Object> e : work.getParameters().entrySet()) {
+            if (!metaParameters.contains(e.getKey())) {
+                workItem.setParameter(e.getKey(), e.getValue());
+            }
+        }
+
         workItem.setStartDate(new Date());
         // if there are any dynamic parameters add them
         if (dynamicParameters != null) {
@@ -407,16 +416,21 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         addExceptionProcessListener();
     }
 
-    private void addWorkItemListener() {
+    protected void addWorkItemListener() {
         getProcessInstance().addEventListener("workItemCompleted", this, false);
         getProcessInstance().addEventListener("workItemAborted", this, false);
+    }
+
+    protected void removeWorkItemListener() {
+        getProcessInstance().removeEventListener("workItemCompleted", this, false);
+        getProcessInstance().removeEventListener("workItemAborted", this, false);
     }
 
     @Override
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().removeEventListener("workItemCompleted", this, false);
-        getProcessInstance().removeEventListener("workItemAborted", this, false);
+        removeWorkItemListener();
+
     }
 
     @Override
@@ -435,6 +449,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
     }
 
+    @Override
     public String[] getEventTypes() {
         if (exceptionHandlingProcessInstanceId != null) {
             return new String[] { "workItemCompleted", "processInstanceCompleted:" + exceptionHandlingProcessInstanceId };

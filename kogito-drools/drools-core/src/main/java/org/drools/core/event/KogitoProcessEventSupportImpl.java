@@ -16,6 +16,7 @@
 package org.drools.core.event;
 
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -27,12 +28,15 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.event.process.SignalEvent;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent;
+import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent.DeadlineType;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.WorkUnit;
@@ -234,6 +238,32 @@ public class KogitoProcessEventSupportImpl extends AbstractEventSupport<KogitoPr
                     messageObject);
             notifyAllListeners(event, ProcessEventListener::onMessage);
         }
+    }
+
+    @Override
+    public void fireOnTaskNotStartedDeadline(KogitoProcessInstance instance,
+            HumanTaskWorkItem workItem,
+            Map<String, Object> notification,
+            KieRuntime kruntime) {
+        fireTaskNotification(instance, workItem, notification, DeadlineType.Started, kruntime);
+    }
+
+    @Override
+    public void fireOnTaskNotCompletedDeadline(KogitoProcessInstance instance,
+            HumanTaskWorkItem workItem,
+            Map<String, Object> notification,
+            KieRuntime kruntime) {
+        fireTaskNotification(instance, workItem, notification, DeadlineType.Completed, kruntime);
+    }
+
+    private void fireTaskNotification(KogitoProcessInstance instance,
+            HumanTaskWorkItem workItem,
+            Map<String, Object> notification,
+            DeadlineType type,
+            KieRuntime kruntime) {
+        final HumanTaskDeadlineEvent event = new HumanTaskDeadlineEventImpl(instance, workItem, notification, type, kruntime);
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event,
+                e -> notifyAllListeners(event, KogitoProcessEventListener::onHumanTaskDeadline)));
     }
 
     @Override

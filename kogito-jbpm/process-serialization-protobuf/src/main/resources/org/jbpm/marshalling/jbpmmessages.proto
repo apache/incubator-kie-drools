@@ -113,7 +113,22 @@ message ProcessInstance {
             repeated string timer_instance_id = 2;
             optional string error_handling_process_instance_id = 3;
             optional HumanTaskWorkItem workitem = 4;
+            map<string, Deadline> start_deadlines = 5;
+            map<string, Deadline> completed_deadlines = 6;
+            map<string, Reassignment> start_reassigments = 7;
+            map<string, Reassignment> completed_reassigments = 8;
+            
         }
+        
+        message Deadline {
+            map<string, string> content = 1;
+        }
+        
+        message Reassignment {
+            repeated string users = 1;
+            repeated string groups = 2;
+        }
+        
         message WorkItemNode {
             optional string work_item_id = 1;
             repeated string timer_instance_id = 2;

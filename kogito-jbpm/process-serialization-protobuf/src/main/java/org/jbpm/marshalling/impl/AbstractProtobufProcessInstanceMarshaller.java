@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.DefaultFactHandle;
@@ -35,6 +36,8 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufMessages.Header;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent;
+import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline;
+import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.Builder;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType;
 import org.jbpm.process.core.Context;
@@ -46,6 +49,7 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.Reassignment;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -273,19 +277,24 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _content.setRuleSet(_ruleSet.build());
 
         } else if (nodeInstance instanceof HumanTaskNodeInstance) {
+            HumanTaskNodeInstance humanTaskNode = (HumanTaskNodeInstance) nodeInstance;
             JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder _task = JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.newBuilder()
-                    .setWorkItemId(((HumanTaskNodeInstance) nodeInstance).getWorkItemId())
-                    .setWorkitem(writeHumanTaskWorkItem(context, (HumanTaskWorkItem) ((HumanTaskNodeInstance) nodeInstance).getWorkItem()));
-            List<String> timerInstances =
-                    ((HumanTaskNodeInstance) nodeInstance).getTimerInstances();
+                    .setWorkItemId(humanTaskNode.getWorkItemId())
+                    .setWorkitem(writeHumanTaskWorkItem(context, (HumanTaskWorkItem) (humanTaskNode.getWorkItem())));
+            List<String> timerInstances = humanTaskNode.getTimerInstances();
             if (timerInstances != null) {
                 for (String id : timerInstances) {
                     _task.addTimerInstanceId(id);
                 }
             }
-            if (((WorkItemNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId() != null) {
+            if (humanTaskNode.getExceptionHandlingProcessInstanceId() != null) {
                 _task.setErrorHandlingProcessInstanceId(((HumanTaskNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
             }
+            writeDeadlineMap(humanTaskNode.getNotStartedDeadlineTimers(), _task::putStartDeadlines);
+            writeDeadlineMap(humanTaskNode.getNotCompletedDeadlineTimers(), _task::putCompletedDeadlines);
+            writeReassignmentMap(humanTaskNode.getNotStartedReassignments(), _task::putStartReassigments);
+            writeReassignmentMap(humanTaskNode.getNotCompletedReassigments(), _task::putCompletedReassigments);
+
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType(NodeInstanceType.HUMAN_TASK_NODE)
                     .setHumanTask(_task.build());
@@ -533,6 +542,28 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             throw new IllegalArgumentException("Unknown node instance type: " + nodeInstance);
         }
         return _content.build();
+    }
+
+    private void writeDeadlineMap(Map<String, Map<String, Object>> deadlineTimers,
+            BiConsumer<String, Deadline> consumer) {
+        for (Map.Entry<String, Map<String, Object>> deadlineTimer : deadlineTimers.entrySet()) {
+
+            Builder builder = Deadline.newBuilder();
+            for (Map.Entry<String, Object> pair : deadlineTimer.getValue().entrySet()) {
+                builder.putContent(pair.getKey(), pair.getValue().toString());
+            }
+            consumer.accept(deadlineTimer.getKey(), builder.build());
+        }
+    }
+
+    private void writeReassignmentMap(Map<String, Reassignment> timers,
+            BiConsumer<String, JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> consumer) {
+        for (Map.Entry<String, Reassignment> timer : timers.entrySet()) {
+            consumer.accept(timer.getKey(), JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.newBuilder()
+                    .addAllUsers(timer.getValue().getPotentialUsers()).addAllGroups(timer.getValue()
+                            .getPotentialGroups())
+                    .build());
+        }
     }
 
     public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,
@@ -1023,16 +1054,29 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 break;
             case HUMAN_TASK_NODE:
                 nodeInstance = new HumanTaskNodeInstance();
-                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId(_content.getHumanTask().getWorkItemId());
-                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem((InternalKogitoWorkItem) readHumanTaskWorkItem(context, _content.getHumanTask().getWorkitem()));
+                HumanTaskNodeInstance humanNode = (HumanTaskNodeInstance) nodeInstance;
+                humanNode.internalSetWorkItemId(_content.getHumanTask().getWorkItemId());
+                humanNode.internalSetWorkItem((InternalKogitoWorkItem) readHumanTaskWorkItem(context, _content
+                        .getHumanTask().getWorkitem()));
                 if (_content.getHumanTask().getTimerInstanceIdCount() > 0) {
                     List<String> timerInstances = new ArrayList<>();
                     for (String _timerId : _content.getHumanTask().getTimerInstanceIdList()) {
                         timerInstances.add(_timerId);
                     }
-                    ((HumanTaskNodeInstance) nodeInstance).internalSetTimerInstances(timerInstances);
+                    humanNode.internalSetTimerInstances(timerInstances);
                 }
                 ((WorkItemNodeInstance) nodeInstance).internalSetProcessInstanceId(_content.getHumanTask().getErrorHandlingProcessInstanceId());
+                readDeadlineTimers(_content.getHumanTask().getStartDeadlinesMap(), (k,
+                        v) -> humanNode
+                                .getNotStartedDeadlineTimers()
+                                .put(k, v));
+                readDeadlineTimers(_content.getHumanTask().getCompletedDeadlinesMap(), (k,
+                        v) -> humanNode
+                                .getNotCompletedDeadlineTimers()
+                                .put(k, v));
+                readReassignments(_content.getHumanTask().getStartReassigmentsMap(), humanNode.getNotStartedReassignments());
+                readReassignments(_content.getHumanTask().getCompletedReassigmentsMap(), humanNode
+                        .getNotCompletedReassigments());
                 break;
             case WORK_ITEM_NODE:
                 nodeInstance = new WorkItemNodeInstance();
@@ -1147,5 +1191,24 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         }
         return nodeInstance;
 
+    }
+
+    private void readDeadlineTimers(Map<String, Deadline> deadlines, BiConsumer<String, Map<String, Object>> consumer) {
+        for (Map.Entry<String, Deadline> entry : deadlines.entrySet()) {
+            Map<String, Object> notification = new HashMap<>();
+            for (Map.Entry<String, String> pair : entry.getValue().getContentMap().entrySet()) {
+                notification.put(pair.getKey(), pair.getValue());
+            }
+            consumer.accept(entry.getKey(), notification);
+        }
+    }
+
+    private void readReassignments(Map<String, JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> persistent,
+            Map<String, Reassignment> memory) {
+        for (Map.Entry<String, JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> entry : persistent
+                .entrySet()) {
+            memory.put(entry.getKey(), new Reassignment(entry.getValue().getUsersList().stream().collect(Collectors
+                    .toSet()), entry.getValue().getGroupsList().stream().collect(Collectors.toSet())));
+        }
     }
 }

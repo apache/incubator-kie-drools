@@ -7238,6 +7238,162 @@ public final class JBPMMessages {
                  * <code>optional .org.jbpm.marshalling.HumanTaskWorkItem workitem = 4;</code>
                  */
                 org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItemOrBuilder getWorkitemOrBuilder();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+                int getStartDeadlinesCount();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+                boolean containsStartDeadlines(
+                        java.lang.String key);
+
+                /**
+                 * Use {@link #getStartDeadlinesMap()} instead.
+                 */
+                @java.lang.Deprecated
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                        getStartDeadlines();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                        getStartDeadlinesMap();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getStartDeadlinesOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline defaultValue);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getStartDeadlinesOrThrow(
+                        java.lang.String key);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+                int getCompletedDeadlinesCount();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+                boolean containsCompletedDeadlines(
+                        java.lang.String key);
+
+                /**
+                 * Use {@link #getCompletedDeadlinesMap()} instead.
+                 */
+                @java.lang.Deprecated
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                        getCompletedDeadlines();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                        getCompletedDeadlinesMap();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getCompletedDeadlinesOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline defaultValue);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getCompletedDeadlinesOrThrow(
+                        java.lang.String key);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+                int getStartReassigmentsCount();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+                boolean containsStartReassigments(
+                        java.lang.String key);
+
+                /**
+                 * Use {@link #getStartReassigmentsMap()} instead.
+                 */
+                @java.lang.Deprecated
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                        getStartReassigments();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                        getStartReassigmentsMap();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getStartReassigmentsOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment defaultValue);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getStartReassigmentsOrThrow(
+                        java.lang.String key);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+                int getCompletedReassigmentsCount();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+                boolean containsCompletedReassigments(
+                        java.lang.String key);
+
+                /**
+                 * Use {@link #getCompletedReassigmentsMap()} instead.
+                 */
+                @java.lang.Deprecated
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                        getCompletedReassigments();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+                java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                        getCompletedReassigmentsMap();
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getCompletedReassigmentsOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment defaultValue);
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getCompletedReassigmentsOrThrow(
+                        java.lang.String key);
             }
 
             /**
@@ -7326,6 +7482,58 @@ public final class JBPMMessages {
                                     bitField0_ |= 0x00000004;
                                     break;
                                 }
+                                case 42: {
+                                    if (!((mutable_bitField0_ & 0x00000010) != 0)) {
+                                        startDeadlines_ = com.google.protobuf.MapField.newMapField(
+                                                StartDeadlinesDefaultEntryHolder.defaultEntry);
+                                        mutable_bitField0_ |= 0x00000010;
+                                    }
+                                    com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> startDeadlines__ =
+                                            input.readMessage(
+                                                    StartDeadlinesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                                    startDeadlines_.getMutableMap().put(
+                                            startDeadlines__.getKey(), startDeadlines__.getValue());
+                                    break;
+                                }
+                                case 50: {
+                                    if (!((mutable_bitField0_ & 0x00000020) != 0)) {
+                                        completedDeadlines_ = com.google.protobuf.MapField.newMapField(
+                                                CompletedDeadlinesDefaultEntryHolder.defaultEntry);
+                                        mutable_bitField0_ |= 0x00000020;
+                                    }
+                                    com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> completedDeadlines__ =
+                                            input.readMessage(
+                                                    CompletedDeadlinesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                                    completedDeadlines_.getMutableMap().put(
+                                            completedDeadlines__.getKey(), completedDeadlines__.getValue());
+                                    break;
+                                }
+                                case 58: {
+                                    if (!((mutable_bitField0_ & 0x00000040) != 0)) {
+                                        startReassigments_ = com.google.protobuf.MapField.newMapField(
+                                                StartReassigmentsDefaultEntryHolder.defaultEntry);
+                                        mutable_bitField0_ |= 0x00000040;
+                                    }
+                                    com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> startReassigments__ =
+                                            input.readMessage(
+                                                    StartReassigmentsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                                    startReassigments_.getMutableMap().put(
+                                            startReassigments__.getKey(), startReassigments__.getValue());
+                                    break;
+                                }
+                                case 66: {
+                                    if (!((mutable_bitField0_ & 0x00000080) != 0)) {
+                                        completedReassigments_ = com.google.protobuf.MapField.newMapField(
+                                                CompletedReassigmentsDefaultEntryHolder.defaultEntry);
+                                        mutable_bitField0_ |= 0x00000080;
+                                    }
+                                    com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> completedReassigments__ =
+                                            input.readMessage(
+                                                    CompletedReassigmentsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                                    completedReassigments_.getMutableMap().put(
+                                            completedReassigments__.getKey(), completedReassigments__.getValue());
+                                    break;
+                                }
                                 default: {
                                     if (!parseUnknownField(
                                             input, unknownFields, extensionRegistry, tag)) {
@@ -7352,6 +7560,25 @@ public final class JBPMMessages {
                 public static final com.google.protobuf.Descriptors.Descriptor
                         getDescriptor() {
                     return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor;
+                }
+
+                @SuppressWarnings({ "rawtypes" })
+                @java.lang.Override
+                protected com.google.protobuf.MapField internalGetMapField(
+                        int number) {
+                    switch (number) {
+                        case 5:
+                            return internalGetStartDeadlines();
+                        case 6:
+                            return internalGetCompletedDeadlines();
+                        case 7:
+                            return internalGetStartReassigments();
+                        case 8:
+                            return internalGetCompletedReassigments();
+                        default:
+                            throw new RuntimeException(
+                                    "Invalid map field number: " + number);
+                    }
                 }
 
                 @java.lang.Override
@@ -7550,6 +7777,378 @@ public final class JBPMMessages {
                     return workitem_ == null ? org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.getDefaultInstance() : workitem_;
                 }
 
+                public static final int START_DEADLINES_FIELD_NUMBER = 5;
+
+                private static final class StartDeadlinesDefaultEntryHolder {
+                    static final com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> defaultEntry =
+                            com.google.protobuf.MapEntry.<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> newDefaultInstance(
+                                    org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartDeadlinesEntry_descriptor,
+                                    com.google.protobuf.WireFormat.FieldType.STRING,
+                                    "",
+                                    com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.getDefaultInstance());
+                }
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> startDeadlines_;
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                        internalGetStartDeadlines() {
+                    if (startDeadlines_ == null) {
+                        return com.google.protobuf.MapField.emptyMapField(
+                                StartDeadlinesDefaultEntryHolder.defaultEntry);
+                    }
+                    return startDeadlines_;
+                }
+
+                @Override
+                public int getStartDeadlinesCount() {
+                    return internalGetStartDeadlines().getMap().size();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+
+                @java.lang.Override
+                public boolean containsStartDeadlines(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    return internalGetStartDeadlines().getMap().containsKey(key);
+                }
+
+                /**
+                 * Use {@link #getStartDeadlinesMap()} instead.
+                 */
+                @java.lang.Override
+                @java.lang.Deprecated
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getStartDeadlines() {
+                    return getStartDeadlinesMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+                @java.lang.Override
+
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getStartDeadlinesMap() {
+                    return internalGetStartDeadlines().getMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getStartDeadlinesOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline defaultValue) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                            internalGetStartDeadlines().getMap();
+                    return map.containsKey(key) ? map.get(key) : defaultValue;
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getStartDeadlinesOrThrow(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                            internalGetStartDeadlines().getMap();
+                    if (!map.containsKey(key)) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
+                    return map.get(key);
+                }
+
+                public static final int COMPLETED_DEADLINES_FIELD_NUMBER = 6;
+
+                private static final class CompletedDeadlinesDefaultEntryHolder {
+                    static final com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> defaultEntry =
+                            com.google.protobuf.MapEntry.<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> newDefaultInstance(
+                                    org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedDeadlinesEntry_descriptor,
+                                    com.google.protobuf.WireFormat.FieldType.STRING,
+                                    "",
+                                    com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.getDefaultInstance());
+                }
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> completedDeadlines_;
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                        internalGetCompletedDeadlines() {
+                    if (completedDeadlines_ == null) {
+                        return com.google.protobuf.MapField.emptyMapField(
+                                CompletedDeadlinesDefaultEntryHolder.defaultEntry);
+                    }
+                    return completedDeadlines_;
+                }
+
+                @Override
+                public int getCompletedDeadlinesCount() {
+                    return internalGetCompletedDeadlines().getMap().size();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+
+                @java.lang.Override
+                public boolean containsCompletedDeadlines(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    return internalGetCompletedDeadlines().getMap().containsKey(key);
+                }
+
+                /**
+                 * Use {@link #getCompletedDeadlinesMap()} instead.
+                 */
+                @java.lang.Override
+                @java.lang.Deprecated
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getCompletedDeadlines() {
+                    return getCompletedDeadlinesMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+                @java.lang.Override
+
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getCompletedDeadlinesMap() {
+                    return internalGetCompletedDeadlines().getMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getCompletedDeadlinesOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline defaultValue) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                            internalGetCompletedDeadlines().getMap();
+                    return map.containsKey(key) ? map.get(key) : defaultValue;
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getCompletedDeadlinesOrThrow(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                            internalGetCompletedDeadlines().getMap();
+                    if (!map.containsKey(key)) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
+                    return map.get(key);
+                }
+
+                public static final int START_REASSIGMENTS_FIELD_NUMBER = 7;
+
+                private static final class StartReassigmentsDefaultEntryHolder {
+                    static final com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> defaultEntry =
+                            com.google.protobuf.MapEntry.<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> newDefaultInstance(
+                                    org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartReassigmentsEntry_descriptor,
+                                    com.google.protobuf.WireFormat.FieldType.STRING,
+                                    "",
+                                    com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.getDefaultInstance());
+                }
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> startReassigments_;
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                        internalGetStartReassigments() {
+                    if (startReassigments_ == null) {
+                        return com.google.protobuf.MapField.emptyMapField(
+                                StartReassigmentsDefaultEntryHolder.defaultEntry);
+                    }
+                    return startReassigments_;
+                }
+
+                @Override
+                public int getStartReassigmentsCount() {
+                    return internalGetStartReassigments().getMap().size();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+
+                @java.lang.Override
+                public boolean containsStartReassigments(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    return internalGetStartReassigments().getMap().containsKey(key);
+                }
+
+                /**
+                 * Use {@link #getStartReassigmentsMap()} instead.
+                 */
+                @java.lang.Override
+                @java.lang.Deprecated
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getStartReassigments() {
+                    return getStartReassigmentsMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+                @java.lang.Override
+
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getStartReassigmentsMap() {
+                    return internalGetStartReassigments().getMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getStartReassigmentsOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment defaultValue) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                            internalGetStartReassigments().getMap();
+                    return map.containsKey(key) ? map.get(key) : defaultValue;
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getStartReassigmentsOrThrow(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                            internalGetStartReassigments().getMap();
+                    if (!map.containsKey(key)) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
+                    return map.get(key);
+                }
+
+                public static final int COMPLETED_REASSIGMENTS_FIELD_NUMBER = 8;
+
+                private static final class CompletedReassigmentsDefaultEntryHolder {
+                    static final com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> defaultEntry =
+                            com.google.protobuf.MapEntry.<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> newDefaultInstance(
+                                    org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedReassigmentsEntry_descriptor,
+                                    com.google.protobuf.WireFormat.FieldType.STRING,
+                                    "",
+                                    com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.getDefaultInstance());
+                }
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> completedReassigments_;
+
+                private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                        internalGetCompletedReassigments() {
+                    if (completedReassigments_ == null) {
+                        return com.google.protobuf.MapField.emptyMapField(
+                                CompletedReassigmentsDefaultEntryHolder.defaultEntry);
+                    }
+                    return completedReassigments_;
+                }
+
+                @Override
+                public int getCompletedReassigmentsCount() {
+                    return internalGetCompletedReassigments().getMap().size();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+
+                @java.lang.Override
+                public boolean containsCompletedReassigments(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    return internalGetCompletedReassigments().getMap().containsKey(key);
+                }
+
+                /**
+                 * Use {@link #getCompletedReassigmentsMap()} instead.
+                 */
+                @java.lang.Override
+                @java.lang.Deprecated
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getCompletedReassigments() {
+                    return getCompletedReassigmentsMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+                @java.lang.Override
+
+                public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getCompletedReassigmentsMap() {
+                    return internalGetCompletedReassigments().getMap();
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getCompletedReassigmentsOrDefault(
+                        java.lang.String key,
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment defaultValue) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                            internalGetCompletedReassigments().getMap();
+                    return map.containsKey(key) ? map.get(key) : defaultValue;
+                }
+
+                /**
+                 * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                 */
+                @java.lang.Override
+
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getCompletedReassigmentsOrThrow(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                            internalGetCompletedReassigments().getMap();
+                    if (!map.containsKey(key)) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
+                    return map.get(key);
+                }
+
                 private byte memoizedIsInitialized = -1;
 
                 @java.lang.Override
@@ -7579,6 +8178,30 @@ public final class JBPMMessages {
                     if (((bitField0_ & 0x00000004) != 0)) {
                         output.writeMessage(4, getWorkitem());
                     }
+                    com.google.protobuf.GeneratedMessageV3
+                            .serializeStringMapTo(
+                                    output,
+                                    internalGetStartDeadlines(),
+                                    StartDeadlinesDefaultEntryHolder.defaultEntry,
+                                    5);
+                    com.google.protobuf.GeneratedMessageV3
+                            .serializeStringMapTo(
+                                    output,
+                                    internalGetCompletedDeadlines(),
+                                    CompletedDeadlinesDefaultEntryHolder.defaultEntry,
+                                    6);
+                    com.google.protobuf.GeneratedMessageV3
+                            .serializeStringMapTo(
+                                    output,
+                                    internalGetStartReassigments(),
+                                    StartReassigmentsDefaultEntryHolder.defaultEntry,
+                                    7);
+                    com.google.protobuf.GeneratedMessageV3
+                            .serializeStringMapTo(
+                                    output,
+                                    internalGetCompletedReassigments(),
+                                    CompletedReassigmentsDefaultEntryHolder.defaultEntry,
+                                    8);
                     unknownFields.writeTo(output);
                 }
 
@@ -7606,6 +8229,46 @@ public final class JBPMMessages {
                     if (((bitField0_ & 0x00000004) != 0)) {
                         size += com.google.protobuf.CodedOutputStream
                                 .computeMessageSize(4, getWorkitem());
+                    }
+                    for (java.util.Map.Entry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> entry : internalGetStartDeadlines().getMap()
+                            .entrySet()) {
+                        com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> startDeadlines__ =
+                                StartDeadlinesDefaultEntryHolder.defaultEntry.newBuilderForType()
+                                        .setKey(entry.getKey())
+                                        .setValue(entry.getValue())
+                                        .build();
+                        size += com.google.protobuf.CodedOutputStream
+                                .computeMessageSize(5, startDeadlines__);
+                    }
+                    for (java.util.Map.Entry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> entry : internalGetCompletedDeadlines().getMap()
+                            .entrySet()) {
+                        com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> completedDeadlines__ =
+                                CompletedDeadlinesDefaultEntryHolder.defaultEntry.newBuilderForType()
+                                        .setKey(entry.getKey())
+                                        .setValue(entry.getValue())
+                                        .build();
+                        size += com.google.protobuf.CodedOutputStream
+                                .computeMessageSize(6, completedDeadlines__);
+                    }
+                    for (java.util.Map.Entry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> entry : internalGetStartReassigments().getMap()
+                            .entrySet()) {
+                        com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> startReassigments__ =
+                                StartReassigmentsDefaultEntryHolder.defaultEntry.newBuilderForType()
+                                        .setKey(entry.getKey())
+                                        .setValue(entry.getValue())
+                                        .build();
+                        size += com.google.protobuf.CodedOutputStream
+                                .computeMessageSize(7, startReassigments__);
+                    }
+                    for (java.util.Map.Entry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> entry : internalGetCompletedReassigments()
+                            .getMap().entrySet()) {
+                        com.google.protobuf.MapEntry<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> completedReassigments__ =
+                                CompletedReassigmentsDefaultEntryHolder.defaultEntry.newBuilderForType()
+                                        .setKey(entry.getKey())
+                                        .setValue(entry.getValue())
+                                        .build();
+                        size += com.google.protobuf.CodedOutputStream
+                                .computeMessageSize(8, completedReassigments__);
                     }
                     size += unknownFields.getSerializedSize();
                     memoizedSize = size;
@@ -7647,6 +8310,18 @@ public final class JBPMMessages {
                                 .equals(other.getWorkitem()))
                             return false;
                     }
+                    if (!internalGetStartDeadlines().equals(
+                            other.internalGetStartDeadlines()))
+                        return false;
+                    if (!internalGetCompletedDeadlines().equals(
+                            other.internalGetCompletedDeadlines()))
+                        return false;
+                    if (!internalGetStartReassigments().equals(
+                            other.internalGetStartReassigments()))
+                        return false;
+                    if (!internalGetCompletedReassigments().equals(
+                            other.internalGetCompletedReassigments()))
+                        return false;
                     if (!unknownFields.equals(other.unknownFields))
                         return false;
                     return true;
@@ -7674,6 +8349,22 @@ public final class JBPMMessages {
                     if (hasWorkitem()) {
                         hash = (37 * hash) + WORKITEM_FIELD_NUMBER;
                         hash = (53 * hash) + getWorkitem().hashCode();
+                    }
+                    if (!internalGetStartDeadlines().getMap().isEmpty()) {
+                        hash = (37 * hash) + START_DEADLINES_FIELD_NUMBER;
+                        hash = (53 * hash) + internalGetStartDeadlines().hashCode();
+                    }
+                    if (!internalGetCompletedDeadlines().getMap().isEmpty()) {
+                        hash = (37 * hash) + COMPLETED_DEADLINES_FIELD_NUMBER;
+                        hash = (53 * hash) + internalGetCompletedDeadlines().hashCode();
+                    }
+                    if (!internalGetStartReassigments().getMap().isEmpty()) {
+                        hash = (37 * hash) + START_REASSIGMENTS_FIELD_NUMBER;
+                        hash = (53 * hash) + internalGetStartReassigments().hashCode();
+                    }
+                    if (!internalGetCompletedReassigments().getMap().isEmpty()) {
+                        hash = (37 * hash) + COMPLETED_REASSIGMENTS_FIELD_NUMBER;
+                        hash = (53 * hash) + internalGetCompletedReassigments().hashCode();
                     }
                     hash = (29 * hash) + unknownFields.hashCode();
                     memoizedHashCode = hash;
@@ -7800,6 +8491,44 @@ public final class JBPMMessages {
                         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor;
                     }
 
+                    @Override
+                    @SuppressWarnings({ "rawtypes" })
+                    protected com.google.protobuf.MapField internalGetMapField(
+                            int number) {
+                        switch (number) {
+                            case 5:
+                                return internalGetStartDeadlines();
+                            case 6:
+                                return internalGetCompletedDeadlines();
+                            case 7:
+                                return internalGetStartReassigments();
+                            case 8:
+                                return internalGetCompletedReassigments();
+                            default:
+                                throw new RuntimeException(
+                                        "Invalid map field number: " + number);
+                        }
+                    }
+
+                    @Override
+                    @SuppressWarnings({ "rawtypes" })
+                    protected com.google.protobuf.MapField internalGetMutableMapField(
+                            int number) {
+                        switch (number) {
+                            case 5:
+                                return internalGetMutableStartDeadlines();
+                            case 6:
+                                return internalGetMutableCompletedDeadlines();
+                            case 7:
+                                return internalGetMutableStartReassigments();
+                            case 8:
+                                return internalGetMutableCompletedReassigments();
+                            default:
+                                throw new RuntimeException(
+                                        "Invalid map field number: " + number);
+                        }
+                    }
+
                     @java.lang.Override
                     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
                             internalGetFieldAccessorTable() {
@@ -7841,6 +8570,10 @@ public final class JBPMMessages {
                             workitemBuilder_.clear();
                         }
                         bitField0_ = (bitField0_ & ~0x00000008);
+                        internalGetMutableStartDeadlines().clear();
+                        internalGetMutableCompletedDeadlines().clear();
+                        internalGetMutableStartReassigments().clear();
+                        internalGetMutableCompletedReassigments().clear();
                         return this;
                     }
 
@@ -7891,6 +8624,14 @@ public final class JBPMMessages {
                             }
                             to_bitField0_ |= 0x00000004;
                         }
+                        result.startDeadlines_ = internalGetStartDeadlines();
+                        result.startDeadlines_.makeImmutable();
+                        result.completedDeadlines_ = internalGetCompletedDeadlines();
+                        result.completedDeadlines_.makeImmutable();
+                        result.startReassigments_ = internalGetStartReassigments();
+                        result.startReassigments_.makeImmutable();
+                        result.completedReassigments_ = internalGetCompletedReassigments();
+                        result.completedReassigments_.makeImmutable();
                         result.bitField0_ = to_bitField0_;
                         onBuilt();
                         return result;
@@ -7970,6 +8711,14 @@ public final class JBPMMessages {
                         if (other.hasWorkitem()) {
                             mergeWorkitem(other.getWorkitem());
                         }
+                        internalGetMutableStartDeadlines().mergeFrom(
+                                other.internalGetStartDeadlines());
+                        internalGetMutableCompletedDeadlines().mergeFrom(
+                                other.internalGetCompletedDeadlines());
+                        internalGetMutableStartReassigments().mergeFrom(
+                                other.internalGetStartReassigments());
+                        internalGetMutableCompletedReassigments().mergeFrom(
+                                other.internalGetCompletedReassigments());
                         this.mergeUnknownFields(other.unknownFields);
                         onChanged();
                         return this;
@@ -8462,6 +9211,614 @@ public final class JBPMMessages {
                         return workitemBuilder_;
                     }
 
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> startDeadlines_;
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                            internalGetStartDeadlines() {
+                        if (startDeadlines_ == null) {
+                            return com.google.protobuf.MapField.emptyMapField(
+                                    StartDeadlinesDefaultEntryHolder.defaultEntry);
+                        }
+                        return startDeadlines_;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                            internalGetMutableStartDeadlines() {
+                        onChanged();
+                        ;
+                        if (startDeadlines_ == null) {
+                            startDeadlines_ = com.google.protobuf.MapField.newMapField(
+                                    StartDeadlinesDefaultEntryHolder.defaultEntry);
+                        }
+                        if (!startDeadlines_.isMutable()) {
+                            startDeadlines_ = startDeadlines_.copy();
+                        }
+                        return startDeadlines_;
+                    }
+
+                    @Override
+                    public int getStartDeadlinesCount() {
+                        return internalGetStartDeadlines().getMap().size();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+
+                    @java.lang.Override
+                    public boolean containsStartDeadlines(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        return internalGetStartDeadlines().getMap().containsKey(key);
+                    }
+
+                    /**
+                     * Use {@link #getStartDeadlinesMap()} instead.
+                     */
+                    @java.lang.Override
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getStartDeadlines() {
+                        return getStartDeadlinesMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getStartDeadlinesMap() {
+                        return internalGetStartDeadlines().getMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getStartDeadlinesOrDefault(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline defaultValue) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                                internalGetStartDeadlines().getMap();
+                        return map.containsKey(key) ? map.get(key) : defaultValue;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getStartDeadlinesOrThrow(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                                internalGetStartDeadlines().getMap();
+                        if (!map.containsKey(key)) {
+                            throw new java.lang.IllegalArgumentException();
+                        }
+                        return map.get(key);
+                    }
+
+                    public Builder clearStartDeadlines() {
+                        internalGetMutableStartDeadlines().getMutableMap()
+                                .clear();
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+
+                    public Builder removeStartDeadlines(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableStartDeadlines().getMutableMap()
+                                .remove(key);
+                        return this;
+                    }
+
+                    /**
+                     * Use alternate mutation accessors instead.
+                     */
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                            getMutableStartDeadlines() {
+                        return internalGetMutableStartDeadlines().getMutableMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+                    public Builder putStartDeadlines(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline value) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        if (value == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableStartDeadlines().getMutableMap()
+                                .put(key, value);
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; start_deadlines = 5;</code>
+                     */
+
+                    public Builder putAllStartDeadlines(
+                            java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> values) {
+                        internalGetMutableStartDeadlines().getMutableMap()
+                                .putAll(values);
+                        return this;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> completedDeadlines_;
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                            internalGetCompletedDeadlines() {
+                        if (completedDeadlines_ == null) {
+                            return com.google.protobuf.MapField.emptyMapField(
+                                    CompletedDeadlinesDefaultEntryHolder.defaultEntry);
+                        }
+                        return completedDeadlines_;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                            internalGetMutableCompletedDeadlines() {
+                        onChanged();
+                        ;
+                        if (completedDeadlines_ == null) {
+                            completedDeadlines_ = com.google.protobuf.MapField.newMapField(
+                                    CompletedDeadlinesDefaultEntryHolder.defaultEntry);
+                        }
+                        if (!completedDeadlines_.isMutable()) {
+                            completedDeadlines_ = completedDeadlines_.copy();
+                        }
+                        return completedDeadlines_;
+                    }
+
+                    @Override
+                    public int getCompletedDeadlinesCount() {
+                        return internalGetCompletedDeadlines().getMap().size();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+
+                    @java.lang.Override
+                    public boolean containsCompletedDeadlines(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        return internalGetCompletedDeadlines().getMap().containsKey(key);
+                    }
+
+                    /**
+                     * Use {@link #getCompletedDeadlinesMap()} instead.
+                     */
+                    @java.lang.Override
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getCompletedDeadlines() {
+                        return getCompletedDeadlinesMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> getCompletedDeadlinesMap() {
+                        return internalGetCompletedDeadlines().getMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getCompletedDeadlinesOrDefault(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline defaultValue) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                                internalGetCompletedDeadlines().getMap();
+                        return map.containsKey(key) ? map.get(key) : defaultValue;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getCompletedDeadlinesOrThrow(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> map =
+                                internalGetCompletedDeadlines().getMap();
+                        if (!map.containsKey(key)) {
+                            throw new java.lang.IllegalArgumentException();
+                        }
+                        return map.get(key);
+                    }
+
+                    public Builder clearCompletedDeadlines() {
+                        internalGetMutableCompletedDeadlines().getMutableMap()
+                                .clear();
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+
+                    public Builder removeCompletedDeadlines(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableCompletedDeadlines().getMutableMap()
+                                .remove(key);
+                        return this;
+                    }
+
+                    /**
+                     * Use alternate mutation accessors instead.
+                     */
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline>
+                            getMutableCompletedDeadlines() {
+                        return internalGetMutableCompletedDeadlines().getMutableMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+                    public Builder putCompletedDeadlines(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline value) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        if (value == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableCompletedDeadlines().getMutableMap()
+                                .put(key, value);
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline&gt; completed_deadlines = 6;</code>
+                     */
+
+                    public Builder putAllCompletedDeadlines(
+                            java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline> values) {
+                        internalGetMutableCompletedDeadlines().getMutableMap()
+                                .putAll(values);
+                        return this;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> startReassigments_;
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                            internalGetStartReassigments() {
+                        if (startReassigments_ == null) {
+                            return com.google.protobuf.MapField.emptyMapField(
+                                    StartReassigmentsDefaultEntryHolder.defaultEntry);
+                        }
+                        return startReassigments_;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                            internalGetMutableStartReassigments() {
+                        onChanged();
+                        ;
+                        if (startReassigments_ == null) {
+                            startReassigments_ = com.google.protobuf.MapField.newMapField(
+                                    StartReassigmentsDefaultEntryHolder.defaultEntry);
+                        }
+                        if (!startReassigments_.isMutable()) {
+                            startReassigments_ = startReassigments_.copy();
+                        }
+                        return startReassigments_;
+                    }
+
+                    @Override
+                    public int getStartReassigmentsCount() {
+                        return internalGetStartReassigments().getMap().size();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+
+                    @java.lang.Override
+                    public boolean containsStartReassigments(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        return internalGetStartReassigments().getMap().containsKey(key);
+                    }
+
+                    /**
+                     * Use {@link #getStartReassigmentsMap()} instead.
+                     */
+                    @java.lang.Override
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getStartReassigments() {
+                        return getStartReassigmentsMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getStartReassigmentsMap() {
+                        return internalGetStartReassigments().getMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getStartReassigmentsOrDefault(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment defaultValue) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                                internalGetStartReassigments().getMap();
+                        return map.containsKey(key) ? map.get(key) : defaultValue;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getStartReassigmentsOrThrow(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                                internalGetStartReassigments().getMap();
+                        if (!map.containsKey(key)) {
+                            throw new java.lang.IllegalArgumentException();
+                        }
+                        return map.get(key);
+                    }
+
+                    public Builder clearStartReassigments() {
+                        internalGetMutableStartReassigments().getMutableMap()
+                                .clear();
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+
+                    public Builder removeStartReassigments(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableStartReassigments().getMutableMap()
+                                .remove(key);
+                        return this;
+                    }
+
+                    /**
+                     * Use alternate mutation accessors instead.
+                     */
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                            getMutableStartReassigments() {
+                        return internalGetMutableStartReassigments().getMutableMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+                    public Builder putStartReassigments(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment value) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        if (value == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableStartReassigments().getMutableMap()
+                                .put(key, value);
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; start_reassigments = 7;</code>
+                     */
+
+                    public Builder putAllStartReassigments(
+                            java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> values) {
+                        internalGetMutableStartReassigments().getMutableMap()
+                                .putAll(values);
+                        return this;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> completedReassigments_;
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                            internalGetCompletedReassigments() {
+                        if (completedReassigments_ == null) {
+                            return com.google.protobuf.MapField.emptyMapField(
+                                    CompletedReassigmentsDefaultEntryHolder.defaultEntry);
+                        }
+                        return completedReassigments_;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                            internalGetMutableCompletedReassigments() {
+                        onChanged();
+                        ;
+                        if (completedReassigments_ == null) {
+                            completedReassigments_ = com.google.protobuf.MapField.newMapField(
+                                    CompletedReassigmentsDefaultEntryHolder.defaultEntry);
+                        }
+                        if (!completedReassigments_.isMutable()) {
+                            completedReassigments_ = completedReassigments_.copy();
+                        }
+                        return completedReassigments_;
+                    }
+
+                    @Override
+                    public int getCompletedReassigmentsCount() {
+                        return internalGetCompletedReassigments().getMap().size();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+
+                    @java.lang.Override
+                    public boolean containsCompletedReassigments(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        return internalGetCompletedReassigments().getMap().containsKey(key);
+                    }
+
+                    /**
+                     * Use {@link #getCompletedReassigmentsMap()} instead.
+                     */
+                    @java.lang.Override
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getCompletedReassigments() {
+                        return getCompletedReassigmentsMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> getCompletedReassigmentsMap() {
+                        return internalGetCompletedReassigments().getMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getCompletedReassigmentsOrDefault(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment defaultValue) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                                internalGetCompletedReassigments().getMap();
+                        return map.containsKey(key) ? map.get(key) : defaultValue;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+                    @java.lang.Override
+
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getCompletedReassigmentsOrThrow(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> map =
+                                internalGetCompletedReassigments().getMap();
+                        if (!map.containsKey(key)) {
+                            throw new java.lang.IllegalArgumentException();
+                        }
+                        return map.get(key);
+                    }
+
+                    public Builder clearCompletedReassigments() {
+                        internalGetMutableCompletedReassigments().getMutableMap()
+                                .clear();
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+
+                    public Builder removeCompletedReassigments(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableCompletedReassigments().getMutableMap()
+                                .remove(key);
+                        return this;
+                    }
+
+                    /**
+                     * Use alternate mutation accessors instead.
+                     */
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment>
+                            getMutableCompletedReassigments() {
+                        return internalGetMutableCompletedReassigments().getMutableMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+                    public Builder putCompletedReassigments(
+                            java.lang.String key,
+                            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment value) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        if (value == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableCompletedReassigments().getMutableMap()
+                                .put(key, value);
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment&gt; completed_reassigments = 8;</code>
+                     */
+
+                    public Builder putAllCompletedReassigments(
+                            java.util.Map<java.lang.String, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment> values) {
+                        internalGetMutableCompletedReassigments().getMutableMap()
+                                .putAll(values);
+                        return this;
+                    }
+
                     @java.lang.Override
                     public final Builder setUnknownFields(
                             final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -8509,6 +9866,1809 @@ public final class JBPMMessages {
 
                 @java.lang.Override
                 public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode getDefaultInstanceForType() {
+                    return DEFAULT_INSTANCE;
+                }
+
+            }
+
+            public interface DeadlineOrBuilder extends
+                    // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline)
+                    com.google.protobuf.MessageOrBuilder {
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+                int getContentCount();
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+                boolean containsContent(
+                        java.lang.String key);
+
+                /**
+                 * Use {@link #getContentMap()} instead.
+                 */
+                @java.lang.Deprecated
+                java.util.Map<java.lang.String, java.lang.String>
+                        getContent();
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+                java.util.Map<java.lang.String, java.lang.String>
+                        getContentMap();
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+
+                java.lang.String getContentOrDefault(
+                        java.lang.String key,
+                        java.lang.String defaultValue);
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+
+                java.lang.String getContentOrThrow(
+                        java.lang.String key);
+            }
+
+            /**
+             * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline}
+             */
+            public static final class Deadline extends
+                    com.google.protobuf.GeneratedMessageV3 implements
+                    // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline)
+                    DeadlineOrBuilder {
+                private static final long serialVersionUID = 0L;
+
+                // Use Deadline.newBuilder() to construct.
+                private Deadline(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+                    super(builder);
+                }
+
+                private Deadline() {
+                }
+
+                @java.lang.Override
+                @SuppressWarnings({ "unused" })
+                protected java.lang.Object newInstance(
+                        UnusedPrivateParameter unused) {
+                    return new Deadline();
+                }
+
+                @java.lang.Override
+                public final com.google.protobuf.UnknownFieldSet
+                        getUnknownFields() {
+                    return this.unknownFields;
+                }
+
+                private Deadline(
+                        com.google.protobuf.CodedInputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    this();
+                    if (extensionRegistry == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    int mutable_bitField0_ = 0;
+                    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+                            com.google.protobuf.UnknownFieldSet.newBuilder();
+                    try {
+                        boolean done = false;
+                        while (!done) {
+                            int tag = input.readTag();
+                            switch (tag) {
+                                case 0:
+                                    done = true;
+                                    break;
+                                case 10: {
+                                    if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                                        content_ = com.google.protobuf.MapField.newMapField(
+                                                ContentDefaultEntryHolder.defaultEntry);
+                                        mutable_bitField0_ |= 0x00000001;
+                                    }
+                                    com.google.protobuf.MapEntry<java.lang.String, java.lang.String> content__ = input.readMessage(
+                                            ContentDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                                    content_.getMutableMap().put(
+                                            content__.getKey(), content__.getValue());
+                                    break;
+                                }
+                                default: {
+                                    if (!parseUnknownField(
+                                            input, unknownFields, extensionRegistry, tag)) {
+                                        done = true;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                        throw e.setUnfinishedMessage(this);
+                    } catch (java.io.IOException e) {
+                        throw new com.google.protobuf.InvalidProtocolBufferException(
+                                e).setUnfinishedMessage(this);
+                    } finally {
+                        this.unknownFields = unknownFields.build();
+                        makeExtensionsImmutable();
+                    }
+                }
+
+                public static final com.google.protobuf.Descriptors.Descriptor
+                        getDescriptor() {
+                    return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor;
+                }
+
+                @SuppressWarnings({ "rawtypes" })
+                @java.lang.Override
+                protected com.google.protobuf.MapField internalGetMapField(
+                        int number) {
+                    switch (number) {
+                        case 1:
+                            return internalGetContent();
+                        default:
+                            throw new RuntimeException(
+                                    "Invalid map field number: " + number);
+                    }
+                }
+
+                @java.lang.Override
+                protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+                        internalGetFieldAccessorTable() {
+                    return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_fieldAccessorTable
+                            .ensureFieldAccessorsInitialized(
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.class,
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.Builder.class);
+                }
+
+                public static final int CONTENT_FIELD_NUMBER = 1;
+
+                private static final class ContentDefaultEntryHolder {
+                    static final com.google.protobuf.MapEntry<java.lang.String, java.lang.String> defaultEntry =
+                            com.google.protobuf.MapEntry.<java.lang.String, java.lang.String> newDefaultInstance(
+                                    org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_ContentEntry_descriptor,
+                                    com.google.protobuf.WireFormat.FieldType.STRING,
+                                    "",
+                                    com.google.protobuf.WireFormat.FieldType.STRING,
+                                    "");
+                }
+
+                private com.google.protobuf.MapField<java.lang.String, java.lang.String> content_;
+
+                private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+                        internalGetContent() {
+                    if (content_ == null) {
+                        return com.google.protobuf.MapField.emptyMapField(
+                                ContentDefaultEntryHolder.defaultEntry);
+                    }
+                    return content_;
+                }
+
+                @Override
+                public int getContentCount() {
+                    return internalGetContent().getMap().size();
+                }
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+
+                @java.lang.Override
+                public boolean containsContent(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    return internalGetContent().getMap().containsKey(key);
+                }
+
+                /**
+                 * Use {@link #getContentMap()} instead.
+                 */
+                @java.lang.Override
+                @java.lang.Deprecated
+                public java.util.Map<java.lang.String, java.lang.String> getContent() {
+                    return getContentMap();
+                }
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+                @java.lang.Override
+
+                public java.util.Map<java.lang.String, java.lang.String> getContentMap() {
+                    return internalGetContent().getMap();
+                }
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+                @java.lang.Override
+
+                public java.lang.String getContentOrDefault(
+                        java.lang.String key,
+                        java.lang.String defaultValue) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, java.lang.String> map =
+                            internalGetContent().getMap();
+                    return map.containsKey(key) ? map.get(key) : defaultValue;
+                }
+
+                /**
+                 * <code>map&lt;string, string&gt; content = 1;</code>
+                 */
+                @java.lang.Override
+
+                public java.lang.String getContentOrThrow(
+                        java.lang.String key) {
+                    if (key == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    java.util.Map<java.lang.String, java.lang.String> map =
+                            internalGetContent().getMap();
+                    if (!map.containsKey(key)) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
+                    return map.get(key);
+                }
+
+                private byte memoizedIsInitialized = -1;
+
+                @java.lang.Override
+                public final boolean isInitialized() {
+                    byte isInitialized = memoizedIsInitialized;
+                    if (isInitialized == 1)
+                        return true;
+                    if (isInitialized == 0)
+                        return false;
+
+                    memoizedIsInitialized = 1;
+                    return true;
+                }
+
+                @java.lang.Override
+                public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+                    com.google.protobuf.GeneratedMessageV3
+                            .serializeStringMapTo(
+                                    output,
+                                    internalGetContent(),
+                                    ContentDefaultEntryHolder.defaultEntry,
+                                    1);
+                    unknownFields.writeTo(output);
+                }
+
+                @java.lang.Override
+                public int getSerializedSize() {
+                    int size = memoizedSize;
+                    if (size != -1)
+                        return size;
+
+                    size = 0;
+                    for (java.util.Map.Entry<java.lang.String, java.lang.String> entry : internalGetContent().getMap().entrySet()) {
+                        com.google.protobuf.MapEntry<java.lang.String, java.lang.String> content__ = ContentDefaultEntryHolder.defaultEntry.newBuilderForType()
+                                .setKey(entry.getKey())
+                                .setValue(entry.getValue())
+                                .build();
+                        size += com.google.protobuf.CodedOutputStream
+                                .computeMessageSize(1, content__);
+                    }
+                    size += unknownFields.getSerializedSize();
+                    memoizedSize = size;
+                    return size;
+                }
+
+                @java.lang.Override
+                public boolean equals(final java.lang.Object obj) {
+                    if (obj == this) {
+                        return true;
+                    }
+                    if (!(obj instanceof org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline)) {
+                        return super.equals(obj);
+                    }
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline other =
+                            (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline) obj;
+
+                    if (!internalGetContent().equals(
+                            other.internalGetContent()))
+                        return false;
+                    if (!unknownFields.equals(other.unknownFields))
+                        return false;
+                    return true;
+                }
+
+                @java.lang.Override
+                public int hashCode() {
+                    if (memoizedHashCode != 0) {
+                        return memoizedHashCode;
+                    }
+                    int hash = 41;
+                    hash = (19 * hash) + getDescriptor().hashCode();
+                    if (!internalGetContent().getMap().isEmpty()) {
+                        hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+                        hash = (53 * hash) + internalGetContent().hashCode();
+                    }
+                    hash = (29 * hash) + unknownFields.hashCode();
+                    memoizedHashCode = hash;
+                    return hash;
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        java.nio.ByteBuffer data)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        java.nio.ByteBuffer data,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        com.google.protobuf.ByteString data)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        com.google.protobuf.ByteString data,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(byte[] data)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        byte[] data,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(java.io.InputStream input)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        java.io.InputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseDelimitedFrom(java.io.InputStream input)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseDelimitedWithIOException(PARSER, input);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseDelimitedFrom(
+                        java.io.InputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        com.google.protobuf.CodedInputStream input)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parseFrom(
+                        com.google.protobuf.CodedInputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input, extensionRegistry);
+                }
+
+                @java.lang.Override
+                public Builder newBuilderForType() {
+                    return newBuilder();
+                }
+
+                public static Builder newBuilder() {
+                    return DEFAULT_INSTANCE.toBuilder();
+                }
+
+                public static Builder newBuilder(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline prototype) {
+                    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+                }
+
+                @java.lang.Override
+                public Builder toBuilder() {
+                    return this == DEFAULT_INSTANCE
+                            ? new Builder()
+                            : new Builder().mergeFrom(this);
+                }
+
+                @java.lang.Override
+                protected Builder newBuilderForType(
+                        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                    Builder builder = new Builder(parent);
+                    return builder;
+                }
+
+                /**
+                 * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline}
+                 */
+                public static final class Builder extends
+                        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+                        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline)
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.DeadlineOrBuilder {
+                    public static final com.google.protobuf.Descriptors.Descriptor
+                            getDescriptor() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor;
+                    }
+
+                    @Override
+                    @SuppressWarnings({ "rawtypes" })
+                    protected com.google.protobuf.MapField internalGetMapField(
+                            int number) {
+                        switch (number) {
+                            case 1:
+                                return internalGetContent();
+                            default:
+                                throw new RuntimeException(
+                                        "Invalid map field number: " + number);
+                        }
+                    }
+
+                    @Override
+                    @SuppressWarnings({ "rawtypes" })
+                    protected com.google.protobuf.MapField internalGetMutableMapField(
+                            int number) {
+                        switch (number) {
+                            case 1:
+                                return internalGetMutableContent();
+                            default:
+                                throw new RuntimeException(
+                                        "Invalid map field number: " + number);
+                        }
+                    }
+
+                    @java.lang.Override
+                    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+                            internalGetFieldAccessorTable() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_fieldAccessorTable
+                                .ensureFieldAccessorsInitialized(
+                                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.class,
+                                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.Builder.class);
+                    }
+
+                    // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.newBuilder()
+                    private Builder() {
+                        maybeForceBuilderInitialization();
+                    }
+
+                    private Builder(
+                            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                        super(parent);
+                        maybeForceBuilderInitialization();
+                    }
+
+                    private void maybeForceBuilderInitialization() {
+                        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
+                        }
+                    }
+
+                    @java.lang.Override
+                    public Builder clear() {
+                        super.clear();
+                        internalGetMutableContent().clear();
+                        return this;
+                    }
+
+                    @java.lang.Override
+                    public com.google.protobuf.Descriptors.Descriptor
+                            getDescriptorForType() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor;
+                    }
+
+                    @java.lang.Override
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getDefaultInstanceForType() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.getDefaultInstance();
+                    }
+
+                    @java.lang.Override
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline build() {
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline result = buildPartial();
+                        if (!result.isInitialized()) {
+                            throw newUninitializedMessageException(result);
+                        }
+                        return result;
+                    }
+
+                    @java.lang.Override
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline buildPartial() {
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline result =
+                                new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline(this);
+                        int from_bitField0_ = bitField0_;
+                        result.content_ = internalGetContent();
+                        result.content_.makeImmutable();
+                        onBuilt();
+                        return result;
+                    }
+
+                    @java.lang.Override
+                    public Builder clone() {
+                        return super.clone();
+                    }
+
+                    @java.lang.Override
+                    public Builder setField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field,
+                            java.lang.Object value) {
+                        return super.setField(field, value);
+                    }
+
+                    @java.lang.Override
+                    public Builder clearField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field) {
+                        return super.clearField(field);
+                    }
+
+                    @java.lang.Override
+                    public Builder clearOneof(
+                            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                        return super.clearOneof(oneof);
+                    }
+
+                    @java.lang.Override
+                    public Builder setRepeatedField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field,
+                            int index, java.lang.Object value) {
+                        return super.setRepeatedField(field, index, value);
+                    }
+
+                    @java.lang.Override
+                    public Builder addRepeatedField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field,
+                            java.lang.Object value) {
+                        return super.addRepeatedField(field, value);
+                    }
+
+                    @java.lang.Override
+                    public Builder mergeFrom(com.google.protobuf.Message other) {
+                        if (other instanceof org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline) {
+                            return mergeFrom((org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline) other);
+                        } else {
+                            super.mergeFrom(other);
+                            return this;
+                        }
+                    }
+
+                    public Builder mergeFrom(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline other) {
+                        if (other == org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline.getDefaultInstance())
+                            return this;
+                        internalGetMutableContent().mergeFrom(
+                                other.internalGetContent());
+                        this.mergeUnknownFields(other.unknownFields);
+                        onChanged();
+                        return this;
+                    }
+
+                    @java.lang.Override
+                    public final boolean isInitialized() {
+                        return true;
+                    }
+
+                    @java.lang.Override
+                    public Builder mergeFrom(
+                            com.google.protobuf.CodedInputStream input,
+                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                            throws java.io.IOException {
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline parsedMessage = null;
+                        try {
+                            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                            parsedMessage = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline) e.getUnfinishedMessage();
+                            throw e.unwrapIOException();
+                        } finally {
+                            if (parsedMessage != null) {
+                                mergeFrom(parsedMessage);
+                            }
+                        }
+                        return this;
+                    }
+
+                    private int bitField0_;
+
+                    private com.google.protobuf.MapField<java.lang.String, java.lang.String> content_;
+
+                    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+                            internalGetContent() {
+                        if (content_ == null) {
+                            return com.google.protobuf.MapField.emptyMapField(
+                                    ContentDefaultEntryHolder.defaultEntry);
+                        }
+                        return content_;
+                    }
+
+                    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+                            internalGetMutableContent() {
+                        onChanged();
+                        ;
+                        if (content_ == null) {
+                            content_ = com.google.protobuf.MapField.newMapField(
+                                    ContentDefaultEntryHolder.defaultEntry);
+                        }
+                        if (!content_.isMutable()) {
+                            content_ = content_.copy();
+                        }
+                        return content_;
+                    }
+
+                    @Override
+                    public int getContentCount() {
+                        return internalGetContent().getMap().size();
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+
+                    @java.lang.Override
+                    public boolean containsContent(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        return internalGetContent().getMap().containsKey(key);
+                    }
+
+                    /**
+                     * Use {@link #getContentMap()} instead.
+                     */
+                    @java.lang.Override
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, java.lang.String> getContent() {
+                        return getContentMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.util.Map<java.lang.String, java.lang.String> getContentMap() {
+                        return internalGetContent().getMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.lang.String getContentOrDefault(
+                            java.lang.String key,
+                            java.lang.String defaultValue) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, java.lang.String> map =
+                                internalGetContent().getMap();
+                        return map.containsKey(key) ? map.get(key) : defaultValue;
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+                    @java.lang.Override
+
+                    public java.lang.String getContentOrThrow(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        java.util.Map<java.lang.String, java.lang.String> map =
+                                internalGetContent().getMap();
+                        if (!map.containsKey(key)) {
+                            throw new java.lang.IllegalArgumentException();
+                        }
+                        return map.get(key);
+                    }
+
+                    public Builder clearContent() {
+                        internalGetMutableContent().getMutableMap()
+                                .clear();
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+
+                    public Builder removeContent(
+                            java.lang.String key) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableContent().getMutableMap()
+                                .remove(key);
+                        return this;
+                    }
+
+                    /**
+                     * Use alternate mutation accessors instead.
+                     */
+                    @java.lang.Deprecated
+                    public java.util.Map<java.lang.String, java.lang.String>
+                            getMutableContent() {
+                        return internalGetMutableContent().getMutableMap();
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+                    public Builder putContent(
+                            java.lang.String key,
+                            java.lang.String value) {
+                        if (key == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        if (value == null) {
+                            throw new java.lang.NullPointerException();
+                        }
+                        internalGetMutableContent().getMutableMap()
+                                .put(key, value);
+                        return this;
+                    }
+
+                    /**
+                     * <code>map&lt;string, string&gt; content = 1;</code>
+                     */
+
+                    public Builder putAllContent(
+                            java.util.Map<java.lang.String, java.lang.String> values) {
+                        internalGetMutableContent().getMutableMap()
+                                .putAll(values);
+                        return this;
+                    }
+
+                    @java.lang.Override
+                    public final Builder setUnknownFields(
+                            final com.google.protobuf.UnknownFieldSet unknownFields) {
+                        return super.setUnknownFields(unknownFields);
+                    }
+
+                    @java.lang.Override
+                    public final Builder mergeUnknownFields(
+                            final com.google.protobuf.UnknownFieldSet unknownFields) {
+                        return super.mergeUnknownFields(unknownFields);
+                    }
+
+                    // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline)
+                }
+
+                // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Deadline)
+                private static final org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline DEFAULT_INSTANCE;
+                static {
+                    DEFAULT_INSTANCE = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline();
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getDefaultInstance() {
+                    return DEFAULT_INSTANCE;
+                }
+
+                @java.lang.Deprecated
+                public static final com.google.protobuf.Parser<Deadline> PARSER = new com.google.protobuf.AbstractParser<Deadline>() {
+                    @java.lang.Override
+                    public Deadline parsePartialFrom(
+                            com.google.protobuf.CodedInputStream input,
+                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                            throws com.google.protobuf.InvalidProtocolBufferException {
+                        return new Deadline(input, extensionRegistry);
+                    }
+                };
+
+                public static com.google.protobuf.Parser<Deadline> parser() {
+                    return PARSER;
+                }
+
+                @java.lang.Override
+                public com.google.protobuf.Parser<Deadline> getParserForType() {
+                    return PARSER;
+                }
+
+                @java.lang.Override
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Deadline getDefaultInstanceForType() {
+                    return DEFAULT_INSTANCE;
+                }
+
+            }
+
+            public interface ReassignmentOrBuilder extends
+                    // @@protoc_insertion_point(interface_extends:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment)
+                    com.google.protobuf.MessageOrBuilder {
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @return A list containing the users.
+                 */
+                java.util.List<java.lang.String>
+                        getUsersList();
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @return The count of users.
+                 */
+                int getUsersCount();
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @param index The index of the element to return.
+                 * @return The users at the given index.
+                 */
+                java.lang.String getUsers(int index);
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @param index The index of the value to return.
+                 * @return The bytes of the users at the given index.
+                 */
+                com.google.protobuf.ByteString
+                        getUsersBytes(int index);
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @return A list containing the groups.
+                 */
+                java.util.List<java.lang.String>
+                        getGroupsList();
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @return The count of groups.
+                 */
+                int getGroupsCount();
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @param index The index of the element to return.
+                 * @return The groups at the given index.
+                 */
+                java.lang.String getGroups(int index);
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @param index The index of the value to return.
+                 * @return The bytes of the groups at the given index.
+                 */
+                com.google.protobuf.ByteString
+                        getGroupsBytes(int index);
+            }
+
+            /**
+             * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment}
+             */
+            public static final class Reassignment extends
+                    com.google.protobuf.GeneratedMessageV3 implements
+                    // @@protoc_insertion_point(message_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment)
+                    ReassignmentOrBuilder {
+                private static final long serialVersionUID = 0L;
+
+                // Use Reassignment.newBuilder() to construct.
+                private Reassignment(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+                    super(builder);
+                }
+
+                private Reassignment() {
+                    users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                    groups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                }
+
+                @java.lang.Override
+                @SuppressWarnings({ "unused" })
+                protected java.lang.Object newInstance(
+                        UnusedPrivateParameter unused) {
+                    return new Reassignment();
+                }
+
+                @java.lang.Override
+                public final com.google.protobuf.UnknownFieldSet
+                        getUnknownFields() {
+                    return this.unknownFields;
+                }
+
+                private Reassignment(
+                        com.google.protobuf.CodedInputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    this();
+                    if (extensionRegistry == null) {
+                        throw new java.lang.NullPointerException();
+                    }
+                    int mutable_bitField0_ = 0;
+                    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+                            com.google.protobuf.UnknownFieldSet.newBuilder();
+                    try {
+                        boolean done = false;
+                        while (!done) {
+                            int tag = input.readTag();
+                            switch (tag) {
+                                case 0:
+                                    done = true;
+                                    break;
+                                case 10: {
+                                    com.google.protobuf.ByteString bs = input.readBytes();
+                                    if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                                        users_ = new com.google.protobuf.LazyStringArrayList();
+                                        mutable_bitField0_ |= 0x00000001;
+                                    }
+                                    users_.add(bs);
+                                    break;
+                                }
+                                case 18: {
+                                    com.google.protobuf.ByteString bs = input.readBytes();
+                                    if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                                        groups_ = new com.google.protobuf.LazyStringArrayList();
+                                        mutable_bitField0_ |= 0x00000002;
+                                    }
+                                    groups_.add(bs);
+                                    break;
+                                }
+                                default: {
+                                    if (!parseUnknownField(
+                                            input, unknownFields, extensionRegistry, tag)) {
+                                        done = true;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                        throw e.setUnfinishedMessage(this);
+                    } catch (java.io.IOException e) {
+                        throw new com.google.protobuf.InvalidProtocolBufferException(
+                                e).setUnfinishedMessage(this);
+                    } finally {
+                        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+                            users_ = users_.getUnmodifiableView();
+                        }
+                        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+                            groups_ = groups_.getUnmodifiableView();
+                        }
+                        this.unknownFields = unknownFields.build();
+                        makeExtensionsImmutable();
+                    }
+                }
+
+                public static final com.google.protobuf.Descriptors.Descriptor
+                        getDescriptor() {
+                    return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_descriptor;
+                }
+
+                @java.lang.Override
+                protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+                        internalGetFieldAccessorTable() {
+                    return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_fieldAccessorTable
+                            .ensureFieldAccessorsInitialized(
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.class,
+                                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.Builder.class);
+                }
+
+                public static final int USERS_FIELD_NUMBER = 1;
+                private com.google.protobuf.LazyStringList users_;
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @return A list containing the users.
+                 */
+                @Override
+                public com.google.protobuf.ProtocolStringList
+                        getUsersList() {
+                    return users_;
+                }
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @return The count of users.
+                 */
+                @Override
+                public int getUsersCount() {
+                    return users_.size();
+                }
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @param index The index of the element to return.
+                 * @return The users at the given index.
+                 */
+                @Override
+                public java.lang.String getUsers(int index) {
+                    return users_.get(index);
+                }
+
+                /**
+                 * <code>repeated string users = 1;</code>
+                 * 
+                 * @param index The index of the value to return.
+                 * @return The bytes of the users at the given index.
+                 */
+                @Override
+                public com.google.protobuf.ByteString
+                        getUsersBytes(int index) {
+                    return users_.getByteString(index);
+                }
+
+                public static final int GROUPS_FIELD_NUMBER = 2;
+                private com.google.protobuf.LazyStringList groups_;
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @return A list containing the groups.
+                 */
+                @Override
+                public com.google.protobuf.ProtocolStringList
+                        getGroupsList() {
+                    return groups_;
+                }
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @return The count of groups.
+                 */
+                @Override
+                public int getGroupsCount() {
+                    return groups_.size();
+                }
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @param index The index of the element to return.
+                 * @return The groups at the given index.
+                 */
+                @Override
+                public java.lang.String getGroups(int index) {
+                    return groups_.get(index);
+                }
+
+                /**
+                 * <code>repeated string groups = 2;</code>
+                 * 
+                 * @param index The index of the value to return.
+                 * @return The bytes of the groups at the given index.
+                 */
+                @Override
+                public com.google.protobuf.ByteString
+                        getGroupsBytes(int index) {
+                    return groups_.getByteString(index);
+                }
+
+                private byte memoizedIsInitialized = -1;
+
+                @java.lang.Override
+                public final boolean isInitialized() {
+                    byte isInitialized = memoizedIsInitialized;
+                    if (isInitialized == 1)
+                        return true;
+                    if (isInitialized == 0)
+                        return false;
+
+                    memoizedIsInitialized = 1;
+                    return true;
+                }
+
+                @java.lang.Override
+                public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+                    for (int i = 0; i < users_.size(); i++) {
+                        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, users_.getRaw(i));
+                    }
+                    for (int i = 0; i < groups_.size(); i++) {
+                        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, groups_.getRaw(i));
+                    }
+                    unknownFields.writeTo(output);
+                }
+
+                @java.lang.Override
+                public int getSerializedSize() {
+                    int size = memoizedSize;
+                    if (size != -1)
+                        return size;
+
+                    size = 0;
+                    {
+                        int dataSize = 0;
+                        for (int i = 0; i < users_.size(); i++) {
+                            dataSize += computeStringSizeNoTag(users_.getRaw(i));
+                        }
+                        size += dataSize;
+                        size += 1 * getUsersList().size();
+                    }
+                    {
+                        int dataSize = 0;
+                        for (int i = 0; i < groups_.size(); i++) {
+                            dataSize += computeStringSizeNoTag(groups_.getRaw(i));
+                        }
+                        size += dataSize;
+                        size += 1 * getGroupsList().size();
+                    }
+                    size += unknownFields.getSerializedSize();
+                    memoizedSize = size;
+                    return size;
+                }
+
+                @java.lang.Override
+                public boolean equals(final java.lang.Object obj) {
+                    if (obj == this) {
+                        return true;
+                    }
+                    if (!(obj instanceof org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment)) {
+                        return super.equals(obj);
+                    }
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment other =
+                            (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment) obj;
+
+                    if (!getUsersList()
+                            .equals(other.getUsersList()))
+                        return false;
+                    if (!getGroupsList()
+                            .equals(other.getGroupsList()))
+                        return false;
+                    if (!unknownFields.equals(other.unknownFields))
+                        return false;
+                    return true;
+                }
+
+                @java.lang.Override
+                public int hashCode() {
+                    if (memoizedHashCode != 0) {
+                        return memoizedHashCode;
+                    }
+                    int hash = 41;
+                    hash = (19 * hash) + getDescriptor().hashCode();
+                    if (getUsersCount() > 0) {
+                        hash = (37 * hash) + USERS_FIELD_NUMBER;
+                        hash = (53 * hash) + getUsersList().hashCode();
+                    }
+                    if (getGroupsCount() > 0) {
+                        hash = (37 * hash) + GROUPS_FIELD_NUMBER;
+                        hash = (53 * hash) + getGroupsList().hashCode();
+                    }
+                    hash = (29 * hash) + unknownFields.hashCode();
+                    memoizedHashCode = hash;
+                    return hash;
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        java.nio.ByteBuffer data)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        java.nio.ByteBuffer data,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        com.google.protobuf.ByteString data)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        com.google.protobuf.ByteString data,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(byte[] data)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        byte[] data,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws com.google.protobuf.InvalidProtocolBufferException {
+                    return PARSER.parseFrom(data, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(java.io.InputStream input)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        java.io.InputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseDelimitedFrom(java.io.InputStream input)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseDelimitedWithIOException(PARSER, input);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseDelimitedFrom(
+                        java.io.InputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        com.google.protobuf.CodedInputStream input)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input);
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parseFrom(
+                        com.google.protobuf.CodedInputStream input,
+                        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                        throws java.io.IOException {
+                    return com.google.protobuf.GeneratedMessageV3
+                            .parseWithIOException(PARSER, input, extensionRegistry);
+                }
+
+                @java.lang.Override
+                public Builder newBuilderForType() {
+                    return newBuilder();
+                }
+
+                public static Builder newBuilder() {
+                    return DEFAULT_INSTANCE.toBuilder();
+                }
+
+                public static Builder newBuilder(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment prototype) {
+                    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+                }
+
+                @java.lang.Override
+                public Builder toBuilder() {
+                    return this == DEFAULT_INSTANCE
+                            ? new Builder()
+                            : new Builder().mergeFrom(this);
+                }
+
+                @java.lang.Override
+                protected Builder newBuilderForType(
+                        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                    Builder builder = new Builder(parent);
+                    return builder;
+                }
+
+                /**
+                 * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment}
+                 */
+                public static final class Builder extends
+                        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+                        // @@protoc_insertion_point(builder_implements:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment)
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ReassignmentOrBuilder {
+                    public static final com.google.protobuf.Descriptors.Descriptor
+                            getDescriptor() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_descriptor;
+                    }
+
+                    @java.lang.Override
+                    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+                            internalGetFieldAccessorTable() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_fieldAccessorTable
+                                .ensureFieldAccessorsInitialized(
+                                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.class,
+                                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.Builder.class);
+                    }
+
+                    // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.newBuilder()
+                    private Builder() {
+                        maybeForceBuilderInitialization();
+                    }
+
+                    private Builder(
+                            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                        super(parent);
+                        maybeForceBuilderInitialization();
+                    }
+
+                    private void maybeForceBuilderInitialization() {
+                        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
+                        }
+                    }
+
+                    @java.lang.Override
+                    public Builder clear() {
+                        super.clear();
+                        users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                        bitField0_ = (bitField0_ & ~0x00000001);
+                        groups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                        bitField0_ = (bitField0_ & ~0x00000002);
+                        return this;
+                    }
+
+                    @java.lang.Override
+                    public com.google.protobuf.Descriptors.Descriptor
+                            getDescriptorForType() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_descriptor;
+                    }
+
+                    @java.lang.Override
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getDefaultInstanceForType() {
+                        return org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.getDefaultInstance();
+                    }
+
+                    @java.lang.Override
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment build() {
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment result = buildPartial();
+                        if (!result.isInitialized()) {
+                            throw newUninitializedMessageException(result);
+                        }
+                        return result;
+                    }
+
+                    @java.lang.Override
+                    public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment buildPartial() {
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment result =
+                                new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment(this);
+                        int from_bitField0_ = bitField0_;
+                        if (((bitField0_ & 0x00000001) != 0)) {
+                            users_ = users_.getUnmodifiableView();
+                            bitField0_ = (bitField0_ & ~0x00000001);
+                        }
+                        result.users_ = users_;
+                        if (((bitField0_ & 0x00000002) != 0)) {
+                            groups_ = groups_.getUnmodifiableView();
+                            bitField0_ = (bitField0_ & ~0x00000002);
+                        }
+                        result.groups_ = groups_;
+                        onBuilt();
+                        return result;
+                    }
+
+                    @java.lang.Override
+                    public Builder clone() {
+                        return super.clone();
+                    }
+
+                    @java.lang.Override
+                    public Builder setField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field,
+                            java.lang.Object value) {
+                        return super.setField(field, value);
+                    }
+
+                    @java.lang.Override
+                    public Builder clearField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field) {
+                        return super.clearField(field);
+                    }
+
+                    @java.lang.Override
+                    public Builder clearOneof(
+                            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                        return super.clearOneof(oneof);
+                    }
+
+                    @java.lang.Override
+                    public Builder setRepeatedField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field,
+                            int index, java.lang.Object value) {
+                        return super.setRepeatedField(field, index, value);
+                    }
+
+                    @java.lang.Override
+                    public Builder addRepeatedField(
+                            com.google.protobuf.Descriptors.FieldDescriptor field,
+                            java.lang.Object value) {
+                        return super.addRepeatedField(field, value);
+                    }
+
+                    @java.lang.Override
+                    public Builder mergeFrom(com.google.protobuf.Message other) {
+                        if (other instanceof org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment) {
+                            return mergeFrom((org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment) other);
+                        } else {
+                            super.mergeFrom(other);
+                            return this;
+                        }
+                    }
+
+                    public Builder mergeFrom(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment other) {
+                        if (other == org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment.getDefaultInstance())
+                            return this;
+                        if (!other.users_.isEmpty()) {
+                            if (users_.isEmpty()) {
+                                users_ = other.users_;
+                                bitField0_ = (bitField0_ & ~0x00000001);
+                            } else {
+                                ensureUsersIsMutable();
+                                users_.addAll(other.users_);
+                            }
+                            onChanged();
+                        }
+                        if (!other.groups_.isEmpty()) {
+                            if (groups_.isEmpty()) {
+                                groups_ = other.groups_;
+                                bitField0_ = (bitField0_ & ~0x00000002);
+                            } else {
+                                ensureGroupsIsMutable();
+                                groups_.addAll(other.groups_);
+                            }
+                            onChanged();
+                        }
+                        this.mergeUnknownFields(other.unknownFields);
+                        onChanged();
+                        return this;
+                    }
+
+                    @java.lang.Override
+                    public final boolean isInitialized() {
+                        return true;
+                    }
+
+                    @java.lang.Override
+                    public Builder mergeFrom(
+                            com.google.protobuf.CodedInputStream input,
+                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                            throws java.io.IOException {
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment parsedMessage = null;
+                        try {
+                            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                            parsedMessage = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment) e.getUnfinishedMessage();
+                            throw e.unwrapIOException();
+                        } finally {
+                            if (parsedMessage != null) {
+                                mergeFrom(parsedMessage);
+                            }
+                        }
+                        return this;
+                    }
+
+                    private int bitField0_;
+
+                    private com.google.protobuf.LazyStringList users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+
+                    private void ensureUsersIsMutable() {
+                        if (!((bitField0_ & 0x00000001) != 0)) {
+                            users_ = new com.google.protobuf.LazyStringArrayList(users_);
+                            bitField0_ |= 0x00000001;
+                        }
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @return A list containing the users.
+                     */
+                    @Override
+                    public com.google.protobuf.ProtocolStringList
+                            getUsersList() {
+                        return users_.getUnmodifiableView();
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @return The count of users.
+                     */
+                    @Override
+                    public int getUsersCount() {
+                        return users_.size();
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @param index The index of the element to return.
+                     * @return The users at the given index.
+                     */
+                    @Override
+                    public java.lang.String getUsers(int index) {
+                        return users_.get(index);
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @param index The index of the value to return.
+                     * @return The bytes of the users at the given index.
+                     */
+                    @Override
+                    public com.google.protobuf.ByteString
+                            getUsersBytes(int index) {
+                        return users_.getByteString(index);
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @param index The index to set the value at.
+                     * @param value The users to set.
+                     * @return This builder for chaining.
+                     */
+                    public Builder setUsers(
+                            int index, java.lang.String value) {
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+                        ensureUsersIsMutable();
+                        users_.set(index, value);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @param value The users to add.
+                     * @return This builder for chaining.
+                     */
+                    public Builder addUsers(
+                            java.lang.String value) {
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+                        ensureUsersIsMutable();
+                        users_.add(value);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @param values The users to add.
+                     * @return This builder for chaining.
+                     */
+                    public Builder addAllUsers(
+                            java.lang.Iterable<java.lang.String> values) {
+                        ensureUsersIsMutable();
+                        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                                values, users_);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @return This builder for chaining.
+                     */
+                    public Builder clearUsers() {
+                        users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                        bitField0_ = (bitField0_ & ~0x00000001);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string users = 1;</code>
+                     * 
+                     * @param value The bytes of the users to add.
+                     * @return This builder for chaining.
+                     */
+                    public Builder addUsersBytes(
+                            com.google.protobuf.ByteString value) {
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+                        ensureUsersIsMutable();
+                        users_.add(value);
+                        onChanged();
+                        return this;
+                    }
+
+                    private com.google.protobuf.LazyStringList groups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+
+                    private void ensureGroupsIsMutable() {
+                        if (!((bitField0_ & 0x00000002) != 0)) {
+                            groups_ = new com.google.protobuf.LazyStringArrayList(groups_);
+                            bitField0_ |= 0x00000002;
+                        }
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @return A list containing the groups.
+                     */
+                    @Override
+                    public com.google.protobuf.ProtocolStringList
+                            getGroupsList() {
+                        return groups_.getUnmodifiableView();
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @return The count of groups.
+                     */
+                    @Override
+                    public int getGroupsCount() {
+                        return groups_.size();
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @param index The index of the element to return.
+                     * @return The groups at the given index.
+                     */
+                    @Override
+                    public java.lang.String getGroups(int index) {
+                        return groups_.get(index);
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @param index The index of the value to return.
+                     * @return The bytes of the groups at the given index.
+                     */
+                    @Override
+                    public com.google.protobuf.ByteString
+                            getGroupsBytes(int index) {
+                        return groups_.getByteString(index);
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @param index The index to set the value at.
+                     * @param value The groups to set.
+                     * @return This builder for chaining.
+                     */
+                    public Builder setGroups(
+                            int index, java.lang.String value) {
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+                        ensureGroupsIsMutable();
+                        groups_.set(index, value);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @param value The groups to add.
+                     * @return This builder for chaining.
+                     */
+                    public Builder addGroups(
+                            java.lang.String value) {
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+                        ensureGroupsIsMutable();
+                        groups_.add(value);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @param values The groups to add.
+                     * @return This builder for chaining.
+                     */
+                    public Builder addAllGroups(
+                            java.lang.Iterable<java.lang.String> values) {
+                        ensureGroupsIsMutable();
+                        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                                values, groups_);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @return This builder for chaining.
+                     */
+                    public Builder clearGroups() {
+                        groups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                        bitField0_ = (bitField0_ & ~0x00000002);
+                        onChanged();
+                        return this;
+                    }
+
+                    /**
+                     * <code>repeated string groups = 2;</code>
+                     * 
+                     * @param value The bytes of the groups to add.
+                     * @return This builder for chaining.
+                     */
+                    public Builder addGroupsBytes(
+                            com.google.protobuf.ByteString value) {
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+                        ensureGroupsIsMutable();
+                        groups_.add(value);
+                        onChanged();
+                        return this;
+                    }
+
+                    @java.lang.Override
+                    public final Builder setUnknownFields(
+                            final com.google.protobuf.UnknownFieldSet unknownFields) {
+                        return super.setUnknownFields(unknownFields);
+                    }
+
+                    @java.lang.Override
+                    public final Builder mergeUnknownFields(
+                            final com.google.protobuf.UnknownFieldSet unknownFields) {
+                        return super.mergeUnknownFields(unknownFields);
+                    }
+
+                    // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment)
+                }
+
+                // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.Reassignment)
+                private static final org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment DEFAULT_INSTANCE;
+                static {
+                    DEFAULT_INSTANCE = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment();
+                }
+
+                public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getDefaultInstance() {
+                    return DEFAULT_INSTANCE;
+                }
+
+                @java.lang.Deprecated
+                public static final com.google.protobuf.Parser<Reassignment> PARSER = new com.google.protobuf.AbstractParser<Reassignment>() {
+                    @java.lang.Override
+                    public Reassignment parsePartialFrom(
+                            com.google.protobuf.CodedInputStream input,
+                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                            throws com.google.protobuf.InvalidProtocolBufferException {
+                        return new Reassignment(input, extensionRegistry);
+                    }
+                };
+
+                public static com.google.protobuf.Parser<Reassignment> parser() {
+                    return PARSER;
+                }
+
+                @java.lang.Override
+                public com.google.protobuf.Parser<Reassignment> getParserForType() {
+                    return PARSER;
+                }
+
+                @java.lang.Override
+                public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Reassignment getDefaultInstanceForType() {
                     return DEFAULT_INSTANCE;
                 }
 
@@ -44974,6 +48134,20 @@ public final class JBPMMessages {
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartDeadlinesEntry_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartDeadlinesEntry_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedDeadlinesEntry_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedDeadlinesEntry_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartReassigmentsEntry_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartReassigmentsEntry_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedReassigmentsEntry_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedReassigmentsEntry_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_ContentEntry_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_ContentEntry_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor;
@@ -45025,7 +48199,7 @@ public final class JBPMMessages {
         java.lang.String[] descriptorData = {
                 "\n\022jbpmmessages.proto\022\024org.jbpm.marshalli" +
                         "ng\0326org/drools/serialization/protobuf/dr" +
-                        "oolsmessages.proto\"\343 \n\017ProcessInstance\022\024" +
+                        "oolsmessages.proto\"\252*\n\017ProcessInstance\022\024" +
                         "\n\014process_type\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\022\n\nproc" +
                         "ess_id\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\022\035\n\025node_inst" +
                         "ance_counter\030\005 \001(\003\022\023\n\013process_xml\030\013 \001(\t\022" +
@@ -45056,7 +48230,7 @@ public final class JBPMMessages {
                         "\001(\t\022\024\n\014sla_due_date\030\007 \001(\003\022\026\n\016sla_complia" +
                         "nce\030\010 \001(\005\022\024\n\014trigger_date\030\t \001(\003\0328\n\026Exclu" +
                         "siveGroupInstance\022\036\n\026group_node_instance" +
-                        "_id\030\001 \003(\t\032\323\024\n\023NodeInstanceContent\022D\n\004typ" +
+                        "_id\030\001 \003(\t\032\232\036\n\023NodeInstanceContent\022D\n\004typ" +
                         "e\030\001 \001(\01626.org.jbpm.marshalling.ProcessIn" +
                         "stance.NodeInstanceType\022W\n\010rule_set\030\002 \001(" +
                         "\0132E.org.jbpm.marshalling.ProcessInstance" +
@@ -45090,101 +48264,132 @@ public final class JBPMMessages {
                         "\0132R.org.jbpm.marshalling.ProcessInstance" +
                         ".NodeInstanceContent.RuleSetNode.TextMap" +
                         "Entry\022\027\n\017rule_flow_group\030\003 \001(\t\032+\n\014TextMa" +
-                        "pEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032\247\001\n\r" +
+                        "pEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032\240\t\n\r" +
                         "HumanTaskNode\022\024\n\014work_item_id\030\001 \001(\t\022\031\n\021t" +
                         "imer_instance_id\030\002 \003(\t\022*\n\"error_handling" +
                         "_process_instance_id\030\003 \001(\t\0229\n\010workitem\030\004" +
                         " \001(\0132\'.org.jbpm.marshalling.HumanTaskWor" +
-                        "kItem\032\235\001\n\014WorkItemNode\022\024\n\014work_item_id\030\001" +
-                        " \001(\t\022\031\n\021timer_instance_id\030\002 \003(\t\022*\n\"error" +
-                        "_handling_process_instance_id\030\003 \001(\t\0220\n\010w" +
-                        "orkitem\030\004 \001(\0132\036.org.jbpm.marshalling.Wor" +
-                        "kItem\032H\n\016SubProcessNode\022\033\n\023process_insta" +
-                        "nce_id\030\001 \001(\t\022\031\n\021timer_instance_id\030\002 \003(\t\032" +
-                        "*\n\rMilestoneNode\022\031\n\021timer_instance_id\030\001 " +
-                        "\003(\t\032\013\n\tEventNode\032\035\n\tTimerNode\022\020\n\010timer_i" +
-                        "d\030\001 \001(\t\032\234\001\n\010JoinNode\022_\n\007trigger\030\001 \003(\0132N." +
+                        "kItem\022t\n\017start_deadlines\030\005 \003(\0132[.org.jbp" +
+                        "m.marshalling.ProcessInstance.NodeInstan" +
+                        "ceContent.HumanTaskNode.StartDeadlinesEn" +
+                        "try\022|\n\023completed_deadlines\030\006 \003(\0132_.org.j" +
+                        "bpm.marshalling.ProcessInstance.NodeInst" +
+                        "anceContent.HumanTaskNode.CompletedDeadl" +
+                        "inesEntry\022z\n\022start_reassigments\030\007 \003(\0132^." +
                         "org.jbpm.marshalling.ProcessInstance.Nod" +
-                        "eInstanceContent.JoinNode.JoinTrigger\032/\n" +
-                        "\013JoinTrigger\022\017\n\007node_id\030\001 \001(\003\022\017\n\007counter" +
-                        "\030\002 \001(\005\032&\n\tStateNode\022\031\n\021timer_instance_id" +
-                        "\030\001 \003(\t\032\304\002\n\024CompositeContextNode\022\031\n\021timer" +
-                        "_instance_id\030\002 \003(\t\0220\n\010variable\030\003 \003(\0132\036.o" +
-                        "rg.jbpm.marshalling.Variable\022I\n\rnode_ins" +
-                        "tance\030\004 \003(\01322.org.jbpm.marshalling.Proce" +
-                        "ssInstance.NodeInstance\022U\n\017exclusive_gro" +
-                        "up\030\005 \003(\0132<.org.jbpm.marshalling.ProcessI" +
-                        "nstance.ExclusiveGroupInstance\022=\n\017iterat" +
-                        "ionLevels\030\006 \003(\0132$.org.jbpm.marshalling.I" +
-                        "terationLevel\032\311\001\n\013ForEachNode\022I\n\rnode_in" +
-                        "stance\030\001 \003(\01322.org.jbpm.marshalling.Proc" +
-                        "essInstance.NodeInstance\0220\n\010variable\030\002 \003" +
-                        "(\0132\036.org.jbpm.marshalling.Variable\022=\n\017it" +
-                        "erationLevels\030\003 \003(\0132$.org.jbpm.marshalli" +
-                        "ng.IterationLevel\032$\n\016AsyncEventNode\022\022\n\ne" +
-                        "vent_type\030\001 \001(\t\"\276\002\n\020NodeInstanceType\022\021\n\r" +
-                        "RULE_SET_NODE\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016" +
-                        "WORK_ITEM_NODE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n" +
-                        "\016MILESTONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIM" +
-                        "ER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010" +
-                        "\022\032\n\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH" +
-                        "_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPR" +
-                        "OCESS_NODE\020\014\022\024\n\020ASYNC_EVENT_NODE\020\r\022\024\n\020SU" +
-                        "B_PROCESS_NODE\020\016\"R\n\010Variable\022\014\n\004name\030\001 \001" +
-                        "(\t\022\026\n\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(" +
-                        "\014\022\021\n\tdata_type\030\004 \001(\t\"\230\002\n\010WorkItem\022\n\n\002id\030" +
-                        "\001 \001(\t\022\034\n\024process_instances_id\030\002 \001(\t\022\014\n\004n" +
-                        "ame\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variable\030\005 \003" +
-                        "(\0132\036.org.jbpm.marshalling.Variable\022\025\n\rde" +
-                        "ployment_id\030\006 \001(\t\022\030\n\020node_instance_id\030\007 " +
-                        "\001(\t\022\017\n\007node_id\030\010 \001(\003\022\020\n\010phase_id\030\t \001(\t\022\024" +
-                        "\n\014phase_status\030\n \001(\t\022\022\n\nstart_date\030\013 \001(\003" +
-                        "\022\025\n\rcomplete_date\030\014 \001(\003\"L\n\007Comment\022\n\n\002id" +
-                        "\030\001 \001(\t\022\017\n\007content\030\002 \001(\t\022\021\n\tupdatedAt\030\003 \001" +
-                        "(\003\022\021\n\tupdatedBy\030\004 \001(\t\"]\n\nAttachment\022\n\n\002i" +
-                        "d\030\001 \001(\t\022\017\n\007content\030\002 \001(\t\022\021\n\tupdatedAt\030\003 " +
-                        "\001(\003\022\021\n\tupdatedBy\030\004 \001(\t\022\014\n\004name\030\005 \001(\t\"\352\004\n" +
-                        "\021HumanTaskWorkItem\022\n\n\002id\030\001 \001(\t\022\034\n\024proces" +
-                        "s_instances_id\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\r\n\005st" +
-                        "ate\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.m" +
-                        "arshalling.Variable\022\025\n\rdeployment_id\030\006 \001" +
-                        "(\t\022\030\n\020node_instance_id\030\007 \001(\t\022\017\n\007node_id\030" +
-                        "\010 \001(\003\022\020\n\010phase_id\030\t \001(\t\022\024\n\014phase_status\030" +
-                        "\n \001(\t\022\022\n\nstart_date\030\013 \001(\003\022\025\n\rcomplete_da" +
-                        "te\030\014 \001(\003\022\021\n\ttask_name\030\r \001(\t\022\030\n\020task_desc" +
-                        "ription\030\016 \001(\t\022\025\n\rtask_priority\030\017 \001(\t\022\024\n\014" +
-                        "actual_owner\030\020 \001(\t\022\021\n\tpot_users\030\021 \003(\t\022\022\n" +
-                        "\npot_groups\030\022 \003(\t\022\026\n\016excluded_users\030\023 \003(" +
-                        "\t\022\023\n\013admin_users\030\024 \003(\t\022\024\n\014admin_groups\030\025" +
-                        " \003(\t\022\033\n\023task_reference_name\030\026 \001(\t\022/\n\010com" +
-                        "ments\030\027 \003(\0132\035.org.jbpm.marshalling.Comme" +
-                        "nt\0225\n\013attachments\030\030 \003(\0132 .org.jbpm.marsh" +
-                        "alling.Attachment\"\356\002\n\014ProcessTimer\022?\n\005ti" +
-                        "mer\030\001 \001(\01320.org.jbpm.marshalling.Process" +
-                        "Timer.TimerInstance\022;\n\007trigger\030\002 \001(\0132*.o" +
-                        "rg.drools.serialization.protobuf.Trigger" +
-                        "\032\337\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_" +
-                        "id\030\002 \001(\t\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022" +
-                        "\033\n\023process_instance_id\030\005 \001(\t\022\026\n\016activate" +
-                        "d_time\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003\022\034\n\024" +
-                        "DEPRECATED_sessionId\030\010 \001(\005\022\021\n\tsessionId\030" +
-                        "\t \001(\003\022\023\n\013repeatLimit\030\n \001(\005\"+\n\016IterationL" +
-                        "evel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021Varia" +
-                        "bleContainer\0220\n\010variable\030\001 \003(\0132\036.org.jbp" +
-                        "m.marshalling.Variable:o\n\020process_instan" +
-                        "ce\022..org.drools.serialization.protobuf.P" +
-                        "rocessData\030\n \003(\0132%.org.jbpm.marshalling." +
-                        "ProcessInstance:a\n\twork_item\022..org.drool" +
-                        "s.serialization.protobuf.ProcessData\030\013 \003" +
-                        "(\0132\036.org.jbpm.marshalling.WorkItem:@\n\010ti" +
-                        "mer_id\022..org.drools.serialization.protob" +
-                        "uf.ProcessData\030\r \001(\003:i\n\rprocess_timer\022.." +
-                        "org.drools.serialization.protobuf.Proces" +
-                        "sData\030\014 \003(\0132\".org.jbpm.marshalling.Proce" +
-                        "ssTimer:g\n\nproc_timer\022/.org.drools.seria" +
-                        "lization.protobuf.Timers.Timer\030d \001(\0132\".o" +
-                        "rg.jbpm.marshalling.ProcessTimerB)\n\031org." +
-                        "jbpm.marshalling.implB\014JBPMMessages"
+                        "eInstanceContent.HumanTaskNode.StartReas" +
+                        "sigmentsEntry\022\202\001\n\026completed_reassigments" +
+                        "\030\010 \003(\0132b.org.jbpm.marshalling.ProcessIns" +
+                        "tance.NodeInstanceContent.HumanTaskNode." +
+                        "CompletedReassigmentsEntry\032y\n\023StartDeadl" +
+                        "inesEntry\022\013\n\003key\030\001 \001(\t\022Q\n\005value\030\002 \001(\0132B." +
+                        "org.jbpm.marshalling.ProcessInstance.Nod" +
+                        "eInstanceContent.Deadline:\0028\001\032}\n\027Complet" +
+                        "edDeadlinesEntry\022\013\n\003key\030\001 \001(\t\022Q\n\005value\030\002" +
+                        " \001(\0132B.org.jbpm.marshalling.ProcessInsta" +
+                        "nce.NodeInstanceContent.Deadline:\0028\001\032\200\001\n" +
+                        "\026StartReassigmentsEntry\022\013\n\003key\030\001 \001(\t\022U\n\005" +
+                        "value\030\002 \001(\0132F.org.jbpm.marshalling.Proce" +
+                        "ssInstance.NodeInstanceContent.Reassignm" +
+                        "ent:\0028\001\032\204\001\n\032CompletedReassigmentsEntry\022\013" +
+                        "\n\003key\030\001 \001(\t\022U\n\005value\030\002 \001(\0132F.org.jbpm.ma" +
+                        "rshalling.ProcessInstance.NodeInstanceCo" +
+                        "ntent.Reassignment:\0028\001\032\234\001\n\010Deadline\022`\n\007c" +
+                        "ontent\030\001 \003(\0132O.org.jbpm.marshalling.Proc" +
+                        "essInstance.NodeInstanceContent.Deadline" +
+                        ".ContentEntry\032.\n\014ContentEntry\022\013\n\003key\030\001 \001" +
+                        "(\t\022\r\n\005value\030\002 \001(\t:\0028\001\032-\n\014Reassignment\022\r\n" +
+                        "\005users\030\001 \003(\t\022\016\n\006groups\030\002 \003(\t\032\235\001\n\014WorkIte" +
+                        "mNode\022\024\n\014work_item_id\030\001 \001(\t\022\031\n\021timer_ins" +
+                        "tance_id\030\002 \003(\t\022*\n\"error_handling_process" +
+                        "_instance_id\030\003 \001(\t\0220\n\010workitem\030\004 \001(\0132\036.o" +
+                        "rg.jbpm.marshalling.WorkItem\032H\n\016SubProce" +
+                        "ssNode\022\033\n\023process_instance_id\030\001 \001(\t\022\031\n\021t" +
+                        "imer_instance_id\030\002 \003(\t\032*\n\rMilestoneNode\022" +
+                        "\031\n\021timer_instance_id\030\001 \003(\t\032\013\n\tEventNode\032" +
+                        "\035\n\tTimerNode\022\020\n\010timer_id\030\001 \001(\t\032\234\001\n\010JoinN" +
+                        "ode\022_\n\007trigger\030\001 \003(\0132N.org.jbpm.marshall" +
+                        "ing.ProcessInstance.NodeInstanceContent." +
+                        "JoinNode.JoinTrigger\032/\n\013JoinTrigger\022\017\n\007n" +
+                        "ode_id\030\001 \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNo" +
+                        "de\022\031\n\021timer_instance_id\030\001 \003(\t\032\304\002\n\024Compos" +
+                        "iteContextNode\022\031\n\021timer_instance_id\030\002 \003(" +
+                        "\t\0220\n\010variable\030\003 \003(\0132\036.org.jbpm.marshalli" +
+                        "ng.Variable\022I\n\rnode_instance\030\004 \003(\01322.org" +
+                        ".jbpm.marshalling.ProcessInstance.NodeIn" +
+                        "stance\022U\n\017exclusive_group\030\005 \003(\0132<.org.jb" +
+                        "pm.marshalling.ProcessInstance.Exclusive" +
+                        "GroupInstance\022=\n\017iterationLevels\030\006 \003(\0132$" +
+                        ".org.jbpm.marshalling.IterationLevel\032\311\001\n" +
+                        "\013ForEachNode\022I\n\rnode_instance\030\001 \003(\01322.or" +
+                        "g.jbpm.marshalling.ProcessInstance.NodeI" +
+                        "nstance\0220\n\010variable\030\002 \003(\0132\036.org.jbpm.mar" +
+                        "shalling.Variable\022=\n\017iterationLevels\030\003 \003" +
+                        "(\0132$.org.jbpm.marshalling.IterationLevel" +
+                        "\032$\n\016AsyncEventNode\022\022\n\nevent_type\030\001 \001(\t\"\276" +
+                        "\002\n\020NodeInstanceType\022\021\n\rRULE_SET_NODE\020\000\022\023" +
+                        "\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022" +
+                        "\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020\004" +
+                        "\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN" +
+                        "_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CON" +
+                        "TEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMI" +
+                        "C_NODE\020\013\022\031\n\025EVENT_SUBPROCESS_NODE\020\014\022\024\n\020A" +
+                        "SYNC_EVENT_NODE\020\r\022\024\n\020SUB_PROCESS_NODE\020\016\"" +
+                        "R\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016strategy_in" +
+                        "dex\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\022\021\n\tdata_type\030\004 " +
+                        "\001(\t\"\230\002\n\010WorkItem\022\n\n\002id\030\001 \001(\t\022\034\n\024process_" +
+                        "instances_id\030\002 \001(\t\022\014\n\004name\030\003 \001(\t\022\r\n\005stat" +
+                        "e\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.mar" +
+                        "shalling.Variable\022\025\n\rdeployment_id\030\006 \001(\t" +
+                        "\022\030\n\020node_instance_id\030\007 \001(\t\022\017\n\007node_id\030\010 " +
+                        "\001(\003\022\020\n\010phase_id\030\t \001(\t\022\024\n\014phase_status\030\n " +
+                        "\001(\t\022\022\n\nstart_date\030\013 \001(\003\022\025\n\rcomplete_date" +
+                        "\030\014 \001(\003\"L\n\007Comment\022\n\n\002id\030\001 \001(\t\022\017\n\007content" +
+                        "\030\002 \001(\t\022\021\n\tupdatedAt\030\003 \001(\003\022\021\n\tupdatedBy\030\004" +
+                        " \001(\t\"]\n\nAttachment\022\n\n\002id\030\001 \001(\t\022\017\n\007conten" +
+                        "t\030\002 \001(\t\022\021\n\tupdatedAt\030\003 \001(\003\022\021\n\tupdatedBy\030" +
+                        "\004 \001(\t\022\014\n\004name\030\005 \001(\t\"\352\004\n\021HumanTaskWorkIte" +
+                        "m\022\n\n\002id\030\001 \001(\t\022\034\n\024process_instances_id\030\002 " +
+                        "\001(\t\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010vari" +
+                        "able\030\005 \003(\0132\036.org.jbpm.marshalling.Variab" +
+                        "le\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020node_instan" +
+                        "ce_id\030\007 \001(\t\022\017\n\007node_id\030\010 \001(\003\022\020\n\010phase_id" +
+                        "\030\t \001(\t\022\024\n\014phase_status\030\n \001(\t\022\022\n\nstart_da" +
+                        "te\030\013 \001(\003\022\025\n\rcomplete_date\030\014 \001(\003\022\021\n\ttask_" +
+                        "name\030\r \001(\t\022\030\n\020task_description\030\016 \001(\t\022\025\n\r" +
+                        "task_priority\030\017 \001(\t\022\024\n\014actual_owner\030\020 \001(" +
+                        "\t\022\021\n\tpot_users\030\021 \003(\t\022\022\n\npot_groups\030\022 \003(\t" +
+                        "\022\026\n\016excluded_users\030\023 \003(\t\022\023\n\013admin_users\030" +
+                        "\024 \003(\t\022\024\n\014admin_groups\030\025 \003(\t\022\033\n\023task_refe" +
+                        "rence_name\030\026 \001(\t\022/\n\010comments\030\027 \003(\0132\035.org" +
+                        ".jbpm.marshalling.Comment\0225\n\013attachments" +
+                        "\030\030 \003(\0132 .org.jbpm.marshalling.Attachment" +
+                        "\"\356\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320.org.j" +
+                        "bpm.marshalling.ProcessTimer.TimerInstan" +
+                        "ce\022;\n\007trigger\030\002 \001(\0132*.org.drools.seriali" +
+                        "zation.protobuf.Trigger\032\337\001\n\rTimerInstanc" +
+                        "e\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\t\022\r\n\005delay" +
+                        "\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_instan" +
+                        "ce_id\030\005 \001(\t\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016l" +
+                        "ast_triggered\030\007 \001(\003\022\034\n\024DEPRECATED_sessio" +
+                        "nId\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\022\023\n\013repeatLi" +
+                        "mit\030\n \001(\005\"+\n\016IterationLevel\022\n\n\002id\030\001 \001(\t\022" +
+                        "\r\n\005level\030\002 \001(\005\"E\n\021VariableContainer\0220\n\010v" +
+                        "ariable\030\001 \003(\0132\036.org.jbpm.marshalling.Var" +
+                        "iable:o\n\020process_instance\022..org.drools.s" +
+                        "erialization.protobuf.ProcessData\030\n \003(\0132" +
+                        "%.org.jbpm.marshalling.ProcessInstance:a" +
+                        "\n\twork_item\022..org.drools.serialization.p" +
+                        "rotobuf.ProcessData\030\013 \003(\0132\036.org.jbpm.mar" +
+                        "shalling.WorkItem:@\n\010timer_id\022..org.droo" +
+                        "ls.serialization.protobuf.ProcessData\030\r " +
+                        "\001(\003:i\n\rprocess_timer\022..org.drools.serial" +
+                        "ization.protobuf.ProcessData\030\014 \003(\0132\".org" +
+                        ".jbpm.marshalling.ProcessTimer:g\n\nproc_t" +
+                        "imer\022/.org.drools.serialization.protobuf" +
+                        ".Timers.Timer\030d \001(\0132\".org.jbpm.marshalli" +
+                        "ng.ProcessTimerB)\n\031org.jbpm.marshalling." +
+                        "implB\014JBPMMessages"
         };
         descriptor = com.google.protobuf.Descriptors.FileDescriptor
                 .internalBuildGeneratedFileFrom(descriptorData,
@@ -45232,34 +48437,73 @@ public final class JBPMMessages {
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(1);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor,
-                new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", "Workitem", });
-        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor =
+                new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", "Workitem", "StartDeadlines", "CompletedDeadlines", "StartReassigments",
+                        "CompletedReassigments", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartDeadlinesEntry_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor.getNestedTypes().get(0);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartDeadlinesEntry_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartDeadlinesEntry_descriptor,
+                new java.lang.String[] { "Key", "Value", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedDeadlinesEntry_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor.getNestedTypes().get(1);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedDeadlinesEntry_fieldAccessorTable =
+                new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedDeadlinesEntry_descriptor,
+                        new java.lang.String[] { "Key", "Value", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartReassigmentsEntry_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor.getNestedTypes().get(2);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartReassigmentsEntry_fieldAccessorTable =
+                new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_StartReassigmentsEntry_descriptor,
+                        new java.lang.String[] { "Key", "Value", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedReassigmentsEntry_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_descriptor.getNestedTypes().get(3);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedReassigmentsEntry_fieldAccessorTable =
+                new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_CompletedReassigmentsEntry_descriptor,
+                        new java.lang.String[] { "Key", "Value", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor =
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(2);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor,
+                new java.lang.String[] { "Content", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_ContentEntry_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_descriptor.getNestedTypes().get(0);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_ContentEntry_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Deadline_ContentEntry_descriptor,
+                new java.lang.String[] { "Key", "Value", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(3);
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_Reassignment_descriptor,
+                new java.lang.String[] { "Users", "Groups", });
+        internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor =
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(4);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_descriptor,
                 new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", "Workitem", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(3);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(5);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_descriptor,
                 new java.lang.String[] { "ProcessInstanceId", "TimerInstanceId", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(4);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(6);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_descriptor,
                 new java.lang.String[] { "TimerInstanceId", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(5);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(7);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_descriptor,
                 new java.lang.String[] {});
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(6);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(8);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_descriptor,
                 new java.lang.String[] { "TimerId", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(7);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(9);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_descriptor,
                 new java.lang.String[] { "Trigger", });
@@ -45269,22 +48513,22 @@ public final class JBPMMessages {
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_descriptor,
                 new java.lang.String[] { "NodeId", "Counter", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(8);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(10);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_descriptor,
                 new java.lang.String[] { "TimerInstanceId", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(9);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(11);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_descriptor,
                 new java.lang.String[] { "TimerInstanceId", "Variable", "NodeInstance", "ExclusiveGroup", "IterationLevels", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(10);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(12);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor,
                 new java.lang.String[] { "NodeInstance", "Variable", "IterationLevels", });
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor =
-                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(11);
+                internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(13);
         internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor,
                 new java.lang.String[] { "EventType", });

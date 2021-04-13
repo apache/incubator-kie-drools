@@ -15,8 +15,12 @@
  */
 package org.jbpm.process.core;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import org.jbpm.process.instance.impl.humantask.DeadlineInfo;
+import org.jbpm.process.instance.impl.humantask.Reassignment;
 
 public interface Work {
 
@@ -41,5 +45,33 @@ public interface Work {
     String[] getParameterNames();
 
     ParameterDefinition getParameterDefinition(String name);
+
+    Set<String> getMetaParameters();
+
+    /**
+     * Retrieve information about non started deadlines.
+     * <P>
+     * Deadline information consist of the expiration date (which can be a exact date
+     * or a potentially repeatable duration)and a list of key value pairs with arbitrary
+     * information about the notification itself.
+     * 
+     * @return a collection containing deadline information.
+     */
+    Collection<DeadlineInfo<Map<String, Object>>> getNotStartedDeadlines();
+
+    /**
+     * Retrieve information about non completed deadlines.
+     * <P>
+     * Deadline information consist of the expiration date (which can be a exact date
+     * or a potentially repeatable duration)and a list of key value pairs with arbitrary
+     * information about the notification itself.
+     * 
+     * @return a collection containing deadline information.
+     */
+    Collection<DeadlineInfo<Map<String, Object>>> getNotCompletedDeadlines();
+
+    Collection<DeadlineInfo<Reassignment>> getNotStartedReassignments();
+
+    Collection<DeadlineInfo<Reassignment>> getNotCompletedReassigments();
 
 }

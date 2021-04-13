@@ -33,6 +33,7 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.kogito.Addons;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
+import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent;
 import org.kie.kogito.internal.process.event.KogitoProcessVariableChangedEvent;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -41,6 +42,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
+import org.kie.kogito.services.event.UserTaskDeadlineDataEvent;
 import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 import org.kie.kogito.services.event.VariableInstanceDataEvent;
 
@@ -70,6 +72,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
         Map<String, UserTaskInstanceEventBody> userTaskInstances = new LinkedHashMap<>();
         Set<VariableInstanceEventBody> variables = new LinkedHashSet<>();
 
+        Collection<DataEvent<?>> processedEvents = new ArrayList<>();
         for (ProcessEvent event : rawEvents) {
             ProcessInstanceEventBody body = processInstances.computeIfAbsent(((KogitoProcessInstance) event.getProcessInstance()).getStringId(), key -> create(event));
 
@@ -83,16 +86,38 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 handleProcessWorkItemTransitionEvent((ProcessWorkItemTransitionEvent) event, userTaskInstances);
             } else if (event instanceof ProcessVariableChangedEvent) {
                 handleProcessVariableChangedEvent((KogitoProcessVariableChangedEvent) event, variables);
+            } else if (event instanceof HumanTaskDeadlineEvent) {
+                processedEvents.add(buildUserTaskDeadlineEvent((HumanTaskDeadlineEvent) event));
             }
         }
-
-        Collection<DataEvent<?>> processedEvents = new ArrayList<>();
-
         processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
         userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
         variables.stream().map(pi -> new VariableInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.metaData(), pi)).forEach(processedEvents::add);
-
         return processedEvents;
+    }
+
+    private DataEvent<?> buildUserTaskDeadlineEvent(HumanTaskDeadlineEvent event) {
+
+        HumanTaskWorkItem workItem = event.getWorkItem();
+        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+        UserTaskDeadlineEventBody body = UserTaskDeadlineEventBody.create(workItem.getStringId(), event
+                .getNotification())
+                .state(workItem.getPhaseStatus())
+                .taskName(workItem.getTaskName())
+                .taskDescription(workItem.getTaskDescription())
+                .taskPriority(workItem.getTaskPriority())
+                .referenceName(workItem.getReferenceName())
+                .actualOwner(workItem.getActualOwner())
+                .startDate(workItem.getStartDate())
+                .processInstanceId(pi.getStringId())
+                .rootProcessInstanceId(pi.getRootProcessInstanceId())
+                .processId(pi.getProcessId())
+                .rootProcessId(pi.getRootProcessId())
+                .inputs(workItem.getParameters())
+                .outputs(workItem.getResults()).build();
+        return new UserTaskDeadlineDataEvent("UserTaskDeadline" + event.getType(), buildSource(pi.getProcessId()),
+                addons.toString(), body, pi.getStringId(), pi.getRootProcessInstanceId(), pi.getProcessId(), pi
+                        .getRootProcessId());
     }
 
     protected void handleProcessCompletedEvent(ProcessCompletedEvent event, ProcessInstanceEventBody body) {
@@ -240,7 +265,10 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected String extractRuntimeSource(Map<String, String> metadata) {
-        String processId = metadata.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA);
+        return buildSource(metadata.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA));
+    }
+
+    private String buildSource(String processId) {
         if (processId == null) {
             return null;
         } else {

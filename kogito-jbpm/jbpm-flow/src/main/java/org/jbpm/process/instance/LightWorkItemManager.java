@@ -208,7 +208,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
                 completePhase.apply(workItem, transition);
                 internalCompleteWorkItem(workItem);
             }
-
+            processInstance.signalEvent("workItemTransition", transition);
             eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
         } else {
             throw new KogitoWorkItemHandlerNotFoundException(workItem.getName());

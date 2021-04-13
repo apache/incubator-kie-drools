@@ -33,5 +33,8 @@ public interface KogitoProcessEventListener extends ProcessEventListener {
      * @param event
      */
     default void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {
-    };
+    }
+
+    default void onHumanTaskDeadline(HumanTaskDeadlineEvent event) {
+    }
 }
