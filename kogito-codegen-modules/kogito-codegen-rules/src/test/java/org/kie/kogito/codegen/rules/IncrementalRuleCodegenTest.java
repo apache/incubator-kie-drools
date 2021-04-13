@@ -175,7 +175,7 @@ public class IncrementalRuleCodegenTest {
                 .withMonitoring(true)
                 .build());
 
-        int expectedDashboards = contextBuilder.build().hasREST() ? 2 : 0;
+        int expectedDashboards = contextBuilder.build().hasREST() ? 3 : 1; // The domain dashboard to monitor the RuleUnit is always generated.
 
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,

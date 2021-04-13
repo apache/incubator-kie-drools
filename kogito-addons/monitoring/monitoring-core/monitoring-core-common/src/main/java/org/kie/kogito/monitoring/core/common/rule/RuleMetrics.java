@@ -30,12 +30,12 @@ public class RuleMetrics {
         return second * NANOSECONDS_PER_MICROSECOND;
     }
 
-    public static DistributionSummary getDroolsEvaluationTimeHistogram(String appId, String processId) {
+    public static DistributionSummary getDroolsEvaluationTimeHistogram(String appId, String rule) {
         DistributionSummary distributionSummary = DistributionSummary.builder("drl_match_fired_nanosecond")
                 .minimumExpectedValue((double) toMicro(1))
                 .maximumExpectedValue((double) toMicro(10))
                 .description("Drools Firing Time")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId)))
+                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("rule", rule)))
                 .register(MonitoringRegistry.getDefaultMeterRegistry());
         return distributionSummary;
     }
