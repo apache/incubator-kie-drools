@@ -41,13 +41,14 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.BoxedParameters;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -65,7 +66,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenceRewrite.rewriteNode;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -292,19 +292,20 @@ public abstract class AbstractExpressionBuilder {
                                            TypedExpression right,
                                            boolean leftContainsThis,
                                            MethodCallExpr indexedByDSL,
-                                           Collection<String> usedDeclarations,
-                                           java.lang.reflect.Type leftType,
-                                           SingleDrlxParseSuccess drlxParseResult) {
+                                           Collection<String> usedDeclarations) {
         LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
-        for (String declarationName : usedDeclarations) {
-            DeclarationSpec declarationById = context.getDeclarationByIdWithException( declarationName );
-            indexedByRightOperandExtractor.addParameter( new Parameter( declarationById.getBoxedType(), declarationName ) );
-        }
+
+        BlockStmt lambdaBlock = new BlockStmt();
+
+        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(usedDeclarations, lambdaBlock);
+        parameters.forEach(indexedByRightOperandExtractor::addParameter);
 
         TypedExpression expression = leftContainsThis ? right : left;
         indexedByRightOperandExtractor.setEnclosingParameters(true);
-        Expression narrowed = rewriteNode( context, narrowExpressionToType(expression, leftType) );
-        indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
+
+        lambdaBlock.addStatement(new ReturnStmt(expression.getExpression()));
+
+        indexedByRightOperandExtractor.setBody(lambdaBlock);
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
         indexedByDSL.addArgument(new ClassExpr(toJPType(expression.getRawClass())));
     }
