@@ -65,8 +65,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     }
 
     @Override
-    public List<KiePMMLModel> getKiePMMLModelsWithSources(/*final String factoryClassName,*/
-                                                          final String packageName,
+    public List<KiePMMLModel> getKiePMMLModelsWithSources(final String packageName,
                                                           final InputStream inputStream,
                                                           final String fileName,
                                                           final HasClassLoader hasClassloader) {

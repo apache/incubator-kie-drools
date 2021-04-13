@@ -112,11 +112,9 @@ public class PMMLCompilerService {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
                                                                    PMMLCompilerService::getCompiler);
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-        String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
         try {
-            final List<KiePMMLModel> toReturn = pmmlCompiler.getKiePMMLModelsWithSources(/*factoryClassName, */
-                                                                                         packageName,
+            final List<KiePMMLModel> toReturn = pmmlCompiler.getKiePMMLModelsWithSources(packageName,
                                                                                          resource.getInputStream(),
                                                                                          getFileName(resource.getSourcePath()),
                                                                                          new HasKnowledgeBuilderImpl(kbuilderImpl));
