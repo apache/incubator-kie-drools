@@ -176,26 +176,23 @@ public abstract class AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
-        return left != null && (left.getFieldName() != null || isThisExpression( left.getExpression() )) &&
+        return left != null && (left.getFieldName() != null || isThisExpression(left.getExpression())) &&
                 drlxParseResult.getDecodeConstraintType() != null &&
                 drlxParseResult.getPatternType() != null &&
-                isLeftIndexableExpression( left.getExpression() ) &&
-                areIndexableDeclaration( usedDeclarations ) &&
-                right != null && !right.getExpression().isArrayAccessExpr();
+                isLeftIndexableExpression(left.getExpression()) &&
+                areIndexableDeclaration(usedDeclarations) &&
+                right != null && !right.getExpression().isArrayAccessExpr() && !right.getExpression().isNullLiteralExpr();
     }
 
-    private boolean isLeftIndexableExpression( Expression expr ) {
+    private boolean isLeftIndexableExpression(Expression expr) {
         if (expr instanceof MethodCallExpr) {
-            if ( !getMethodChainScope(( MethodCallExpr ) expr).map( DrlxParseUtil::isThisExpression ).orElse( false ) ) {
+            Optional<Expression> methodChainScope = DrlxParseUtil.findRootNodeViaScope(expr);
+
+            if (!methodChainScope.map(DrlxParseUtil::isThisExpression).orElse(false)) {
                 return false;
             }
         }
         return true;
-    }
-
-    private Optional<Expression> getMethodChainScope(MethodCallExpr expr) {
-        Optional<Expression> scope = expr.getScope();
-        return scope.isPresent() && scope.get() instanceof MethodCallExpr ? getMethodChainScope( (MethodCallExpr) scope.get()) : scope;
     }
 
     private boolean areIndexableDeclaration( Collection<String> usedDeclarations ) {

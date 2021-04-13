@@ -57,7 +57,7 @@ public class ConstraintConcurrencyTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test(timeout = 300000)
@@ -78,15 +78,22 @@ public class ConstraintConcurrencyTest {
 
         List<Exception> exceptions = new ArrayList<>();
 
+        KieBase kieBase = null;
+        if(kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
+            kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+        }
         for (int i = 0; i < LOOP; i++) {
-            final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+            if(!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+                kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+            }
             ExecutorService executor = Executors.newFixedThreadPool(THREADS);
             CountDownLatch latch = new CountDownLatch(THREADS);
             for (int j = 0; j < REQUESTS; j++) {
+                KieBase finalKieBase = kieBase;
                 executor.execute(new Runnable() {
 
                     public void run() {
-                        KieSession kSession = kieBase.newKieSession();
+                        KieSession kSession = finalKieBase.newKieSession();
 
                         Bus bus1 = new Bus("red", 30);
                         bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
