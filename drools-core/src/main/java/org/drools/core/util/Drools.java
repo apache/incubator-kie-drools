@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import org.drools.core.base.CoreComponentsBuilder;
 
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 public class Drools {
 
@@ -126,7 +126,7 @@ public class Drools {
 
         private static boolean checkXStream() {
             try {
-                createTrustingXStream();
+                createNonTrustingXStream();
                 return true;
             } catch (Throwable e){
                 return false;

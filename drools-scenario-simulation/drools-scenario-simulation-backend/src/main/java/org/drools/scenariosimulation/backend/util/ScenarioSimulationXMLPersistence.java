@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
 import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.BackgroundData;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -35,8 +36,8 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
-import org.kie.soup.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.xstream.XStreamUtils;
 import org.w3c.dom.Document;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
@@ -55,7 +56,11 @@ public class ScenarioSimulationXMLPersistence {
     private MigrationStrategy migrationStrategy = new InMemoryMigrationStrategy();
 
     private ScenarioSimulationXMLPersistence() {
-        xt = XStreamUtils.createTrustingXStream(new DomDriver());
+        xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
+
+        xt.addPermission(new WildcardTypePermission( new String[] {
+                "org.drools.scenariosimulation.api.model.*"
+        }));
 
         xt.setMode(XStream.NO_REFERENCES);
         xt.autodetectAnnotations(true);

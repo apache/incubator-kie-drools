@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.soup.xstream.XStreamUtils;
 
@@ -29,7 +30,11 @@ public class GuidedScoreCardXMLPersistence {
     private static final GuidedScoreCardXMLPersistence INSTANCE = new GuidedScoreCardXMLPersistence();
 
     private GuidedScoreCardXMLPersistence() {
-        xt = XStreamUtils.createTrustingXStream(new DomDriver());
+        xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
+
+        xt.addPermission(new WildcardTypePermission( new String[] {
+                "org.drools.workbench.models.guided.scorecard.shared.*"
+        }));
 
         //All numerical values are historically BigDecimal
         xt.alias( "valueNumeric", Number.class,
