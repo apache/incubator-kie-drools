@@ -16,17 +16,26 @@
 package org.kie.kogito.services.event;
 
 import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.CloudEventExtensionConstants;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
 
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoParentProcessinstanceId;
+
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoProcessinstanceState;
+
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_REFERENCE_ID)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoReferenceId;
+
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_START_FROM_NODE)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoStartFromNode;
 

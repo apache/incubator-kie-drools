@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.events.knative.ce.http;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -26,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.CloudEventExtensionConstants;
 
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.junit.QuarkusTest;
@@ -51,7 +50,7 @@ class CloudEventListenerResourceTest {
                 .header("ce-source", "/from/unit/test")
                 .header("ce-specversion", "1.0")
                 .header("ce-id", UUID.randomUUID().toString())
-                .header("ce-kogitoReferenceId", "12345")
+                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
                 .post("/")
                 .then()
@@ -67,17 +66,17 @@ class CloudEventListenerResourceTest {
                 .header("ce-source", source)
                 .header("ce-specversion", "1.0")
                 .header("ce-id", UUID.randomUUID().toString())
-                .header("ce-kogitoReferenceId", "12345")
+                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .post("/")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .body(Matchers.equalTo("{ \"message\": \"Hola Mundo!\" }"))
-                .header("ce-kogitoreferenceid", "12345");
+                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345");
     }
 
     @Test
-    void verifyHttpRequestWithJSONPayloadExpectsPOJO() throws URISyntaxException, IOException {
+    void verifyHttpRequestWithJSONPayloadExpectsPOJO() {
         final String source = "/from/unit/test";
 
         Message msg = given()
@@ -87,7 +86,7 @@ class CloudEventListenerResourceTest {
                 .header("ce-source", source)
                 .header("ce-specversion", "1.0")
                 .header("ce-id", UUID.randomUUID().toString())
-                .header("ce-kogitoReferenceId", "12345")
+                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .post("/")
                 .then()
@@ -99,23 +98,21 @@ class CloudEventListenerResourceTest {
     }
 
     @Test
-    void verifyHttpRequestWithCEPayloadExpectsPOJO() throws URISyntaxException, IOException {
+    void verifyHttpRequestWithCEPayloadExpectsPOJO() {
         final String source = "/from/unit/test";
-
-        final Message msg = given().when()
-                .body("{\"kogitoReferenceId\":\"12345!\", \"data\":{\"message\":\"Hi World!\"},\"id\":\"x10\",\"source\":\"/from/unit/test\",\"specversion\":\"1.0\",\"type\":\"myevent\",\"datacontenttype\":\"application/json\"}")
+        given().when()
+                .body("{\"" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID
+                        + "\":\"12345!\", \"data\":{\"message\":\"Hi World!\"},\"id\":\"x10\",\"source\":\"/from/unit/test\",\"specversion\":\"1.0\",\"type\":\"myevent\",\"datacontenttype\":\"application/json\"}")
                 .contentType(MediaType.valueOf(JsonFormat.CONTENT_TYPE).withCharset(StandardCharsets.UTF_8.name()).toString())
                 .post("/")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .header("ce-source", source)
-                .header("ce-kogitoReferenceId", "12345!")
-                .extract().body().as(Message.class);
-
+                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345!");
     }
 
     @Test
-    void verifyHttpRequestWithCEPayloadExpectsString() throws URISyntaxException, IOException {
+    void verifyHttpRequestWithCEPayloadExpectsString() {
         final String source = "/from/unit/test";
         final Message msg = given().when()
                 .body("{\"data\":{\"message\":\"Hi World!\"},\"id\":\"x10\",\"source\":\"/from/unit/test\",\"specversion\":\"1.0\",\"type\":\"myevent\",\"datacontenttype\":\"application/json\"}")

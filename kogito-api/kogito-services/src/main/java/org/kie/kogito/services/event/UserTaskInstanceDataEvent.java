@@ -18,16 +18,20 @@ package org.kie.kogito.services.event;
 import java.util.Map;
 
 import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.CloudEventExtensionConstants;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanceEventBody> {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID)
     private final String kogitoUserTaskinstanceId;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE)
     private final String kogitoUserTaskinstanceState;
 
     public UserTaskInstanceDataEvent(String source, String addons, Map<String, String> metaData, UserTaskInstanceEventBody body) {

@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.CloudEventExtensionConstants;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -91,7 +92,7 @@ class CloudEventConverterTest {
     void verifyDataEventWithProcessDataCloudEventConversion() throws IOException {
         // this is a typical HTTP post message
         final String messageJson = "{\n" +
-                "  \"kogitoReferenceId\": \"12345\",\n" +
+                "  \"" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID + "\": \"12345\",\n" +
                 "  \"specversion\": \"0.3\",\n" +
                 "  \"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\",\n" +
                 "  \"source\": \"/process/instance/12345\",\n" +
@@ -112,7 +113,7 @@ class CloudEventConverterTest {
         final String convertedEvent = new String(objectMapper.writeValueAsBytes(event));
         assertThat(convertedEvent)
                 .contains("jan.kowalski@example.com")
-                .contains("kogitoReferenceId")
+                .contains(CloudEventExtensionConstants.PROCESS_REFERENCE_ID)
                 .contains("12345");
     }
 

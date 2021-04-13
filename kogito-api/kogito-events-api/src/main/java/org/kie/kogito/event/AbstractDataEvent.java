@@ -65,13 +65,22 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
 
     private T data;
 
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_INSTANCE_ID)
     private String kogitoProcessinstanceId;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID)
     private String kogitoRootProcessinstanceId;
+
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_ID)
     private String kogitoProcessId;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID)
     private String kogitoRootProcessId;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.ADDONS)
     private String kogitoAddons;
 
     public AbstractDataEvent() {

@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.CloudEventExtensionConstants;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -38,14 +39,14 @@ class KogitoProcessExtensionTest {
     void verifyKogitoExtensionCanBeRead() {
         final KogitoProcessExtension kpe = new KogitoProcessExtension();
         kpe.readFrom(getExampleCloudEvent());
-        assertThat(kpe.getValue(KogitoProcessExtension.REF_ID)).isNotNull().isInstanceOf(String.class).isEqualTo("12345");
-        assertThat(kpe.getValue(KogitoProcessExtension.PROCESS_ID)).isNotNull().isInstanceOf(String.class).isEqualTo("super_process");
-        assertThat((String) kpe.getValue(KogitoProcessExtension.PROCESS_INSTANCE_ID)).isBlank();
-        assertThat((String) kpe.getValue(KogitoProcessExtension.PROCESS_INSTANCE_STATE)).isBlank();
-        assertThat((String) kpe.getValue(KogitoProcessExtension.ROOT_PROCESS_INSTANCE_ID)).isBlank();
-        assertThat((String) kpe.getValue(KogitoProcessExtension.ROOT_PROCESS_ID)).isBlank();
-        assertThat((String) kpe.getValue(KogitoProcessExtension.PARENT_PROCESS_INSTANCE_ID)).isBlank();
-        assertThat((String) kpe.getValue(KogitoProcessExtension.ADDONS)).isBlank();
+        assertThat(kpe.getValue(CloudEventExtensionConstants.PROCESS_REFERENCE_ID)).isNotNull().isInstanceOf(String.class).isEqualTo("12345");
+        assertThat(kpe.getValue(CloudEventExtensionConstants.PROCESS_ID)).isNotNull().isInstanceOf(String.class).isEqualTo("super_process");
+        assertThat((String) kpe.getValue(CloudEventExtensionConstants.PROCESS_INSTANCE_ID)).isBlank();
+        assertThat((String) kpe.getValue(CloudEventExtensionConstants.PROCESS_INSTANCE_STATE)).isBlank();
+        assertThat((String) kpe.getValue(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID)).isBlank();
+        assertThat((String) kpe.getValue(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID)).isBlank();
+        assertThat((String) kpe.getValue(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID)).isBlank();
+        assertThat((String) kpe.getValue(CloudEventExtensionConstants.ADDONS)).isBlank();
     }
 
     @Test
@@ -60,8 +61,8 @@ class KogitoProcessExtensionTest {
                 .withType("example.demo")
                 .withSource(URI.create("http://example.com"))
                 .withData("application/json", "{}".getBytes())
-                .withExtension(KogitoProcessExtension.REF_ID, "12345")
-                .withExtension(KogitoProcessExtension.PROCESS_ID, "super_process")
+                .withExtension(CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345")
+                .withExtension(CloudEventExtensionConstants.PROCESS_ID, "super_process")
                 .build();
     }
 }
