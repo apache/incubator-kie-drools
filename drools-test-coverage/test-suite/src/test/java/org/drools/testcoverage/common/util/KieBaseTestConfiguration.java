@@ -211,7 +211,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         return Optional.ofNullable(executableModelProjectClass);
     }
 
-    public boolean isExecutabelModel() {
+    public boolean isExecutableModel() {
         return executableModelProjectClass != null;
     }
 

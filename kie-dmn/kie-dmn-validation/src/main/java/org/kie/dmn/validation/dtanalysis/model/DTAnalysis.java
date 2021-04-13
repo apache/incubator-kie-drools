@@ -269,7 +269,7 @@ public class DTAnalysis {
         }
         for (Collection<Integer> duplicateRulesTuple : getDuplicateRulesTuples()) {
             results.add(new DMNDTAnalysisMessage(this,
-                                                 Severity.ERROR,
+                                                 sourceDT.getHitPolicy() == HitPolicy.COLLECT ? Severity.WARN : Severity.ERROR,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES,
                                                                        duplicateRulesTuple),
                                                  Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType(), duplicateRulesTuple));

@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -37,15 +38,19 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 public class KieModuleMarshaller {
 
     static final KieModuleMarshaller MARSHALLER = new KieModuleMarshaller();
 
-    private final XStream xStream = createTrustingXStream(new DomDriver());
+    private final XStream xStream = createNonTrustingXStream(new DomDriver());
 
     private KieModuleMarshaller() {
+        xStream.addPermission(new WildcardTypePermission( new String[] {
+                "org.drools.compiler.kproject.models.*"
+        }));
+
         xStream.registerConverter(new KieModuleConverter());
         xStream.registerConverter(new KieBaseModelImpl.KBaseConverter());
         xStream.registerConverter(new KieSessionModelImpl.KSessionConverter());
