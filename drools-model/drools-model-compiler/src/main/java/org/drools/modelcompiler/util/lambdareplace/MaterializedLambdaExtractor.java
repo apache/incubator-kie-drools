@@ -24,13 +24,14 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class MaterializedLambdaExtractor extends MaterializedLambda {
 
@@ -50,8 +51,14 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
 
         setMethodParameter(methodDeclaration);
 
-        ExpressionStmt clone = (ExpressionStmt) lambdaExpr.getBody().clone();
-        methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
+        Statement clonedBody = lambdaExpr.getBody().clone();
+        if (clonedBody.isExpressionStmt()) {
+            methodDeclaration.setBody(new BlockStmt(nodeList(new ReturnStmt(clonedBody
+                                                                                    .asExpressionStmt()
+                                                                                    .getExpression()))));
+        } else if (clonedBody.isBlockStmt()) {
+            methodDeclaration.setBody(clonedBody.asBlockStmt());
+        }
     }
 
     private Type returnTypeJP() {
@@ -63,10 +70,10 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
         ClassOrInterfaceType functionType = functionType();
 
         List<Type> typeArguments = lambdaParametersToType();
-        NodeList<Type> implementedGenericType = NodeList.nodeList(typeArguments);
+        NodeList<Type> implementedGenericType = nodeList(typeArguments);
         implementedGenericType.add(returnTypeJP());
         functionType.setTypeArguments(implementedGenericType);
-        return NodeList.nodeList(functionType, lambdaExtractorType());
+        return nodeList(functionType, lambdaExtractorType());
     }
 
     @Override

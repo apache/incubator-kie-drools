@@ -204,7 +204,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
         if ( drlxParseResult.isBetaConstraint() ) {
-            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType, drlxParseResult);
+            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations);
         } else {
             indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
         }
