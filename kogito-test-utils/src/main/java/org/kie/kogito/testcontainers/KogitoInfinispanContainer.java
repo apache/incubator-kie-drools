@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.testcontainers;
 
+import java.time.Duration;
+
 import org.kie.kogito.resources.TestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,7 @@ public class KogitoInfinispanContainer extends GenericContainer<KogitoInfinispan
     public KogitoInfinispanContainer() {
         addExposedPort(PORT);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        waitingFor(Wait.forHttp("/"));
+        waitingFor(Wait.forHttp("/").withStartupTimeout(Duration.ofMinutes(5)));
         setDockerImageName(System.getProperty(INFINISPAN_PROPERTY));
         withClasspathResourceMapping("testcontainers/infinispan/infinispan-local.xml", CONF_PATH + "infinispan-local.xml", BindMode.READ_ONLY);
         withClasspathResourceMapping("testcontainers/infinispan/users.properties", CONF_PATH + "users.properties", BindMode.READ_ONLY);
