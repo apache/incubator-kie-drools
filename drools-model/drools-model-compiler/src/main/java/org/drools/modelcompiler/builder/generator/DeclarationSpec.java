@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -40,6 +41,7 @@ public class DeclarationSpec {
 
     private String boundVariable;
     private MethodCallExpr bindingExpr;
+    private boolean boxed = false;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
@@ -93,11 +95,11 @@ public class DeclarationSpec {
         return variableName;
     }
 
-    public com.github.javaparser.ast.type.Type getBoxedType() {
-        return DrlxParseUtil.classToReferenceType(getDeclarationClass());
+    public Type getBoxedType() {
+        return DrlxParseUtil.classToReferenceType(this);
     }
 
-    public com.github.javaparser.ast.type.Type getRawType() {
+    public Type getRawType() {
         return DrlxParseUtil.toType(getDeclarationClass());
     }
 
@@ -127,6 +129,7 @@ public class DeclarationSpec {
                 "bindingId='" + bindingId + '\'' +
                 ", declarationClass=" + declarationClass +
                 ", isGlobal=" + isGlobal +
+                ", boxed=" + boxed +
                 '}';
     }
 
@@ -134,5 +137,13 @@ public class DeclarationSpec {
         Declaration decl = new Declaration( bindingId, new PatternExtractor( new ClassObjectType( declarationClass ) ), null );
         decl.setDeclarationClass( declarationClass );
         return decl;
+    }
+
+    public void setBoxed(boolean boxed) {
+        this.boxed = boxed;
+    }
+
+    public boolean isBoxed() {
+        return boxed;
     }
 }

@@ -441,36 +441,36 @@ public class ModelGenerator {
         }
     }
 
-    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl, RuleContext context, boolean domainClass) {
-        if (decl.getDeclarationClass() == null) {
-            kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
+    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec declaration, RuleContext context, boolean domainClass) {
+        if (declaration.getDeclarationClass() == null) {
+            kbuilder.addBuilderResult( new UnknownDeclarationError( declaration.getBindingId() ) );
             return;
         }
-        Type declType = classToReferenceType( decl.getDeclarationClass() );
+        Type declType = classToReferenceType( declaration );
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(Variable.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(decl.getBindingId()), Modifier.finalModifier());
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(declaration.getBindingId()), Modifier.finalModifier());
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
 
-        declarationOfCall.addArgument(new ClassExpr( decl.getBoxedType() ));
+        declarationOfCall.addArgument(new ClassExpr( declaration.getBoxedType() ));
 
         if (domainClass) {
-            String domainClassSourceName = asJavaSourceName( decl.getDeclarationClass() );
+            String domainClassSourceName = asJavaSourceName( declaration.getDeclarationClass() );
             declarationOfCall.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + context.getPackageModel().getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
         }
 
-        declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
+        declarationOfCall.addArgument(new StringLiteralExpr(declaration.getVariableName().orElse(declaration.getBindingId())));
 
-        decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
+        declaration.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
 
-        decl.getEntryPoint().ifPresent( ep -> {
+        declaration.getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
             entryPointCall.addArgument( new StringLiteralExpr(ep ) );
             declarationOfCall.addArgument( entryPointCall );
         } );
-        for ( BehaviorDescr behaviorDescr : decl.getBehaviors() ) {
+        for ( BehaviorDescr behaviorDescr : declaration.getBehaviors() ) {
             MethodCallExpr windowCall = new MethodCallExpr(null, WINDOW_CALL);
             if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
                 windowCall.addArgument( "org.drools.model.Window.Type.TIME" );

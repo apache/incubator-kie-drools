@@ -521,7 +521,7 @@ public class DrlxParseUtil {
         usedDeclarations.stream()
                         .map(s -> {
                             if (canResolve) {
-                                return new Parameter(getDelarationType(ruleContext, s), s);
+                                return new Parameter(getDeclarationType(ruleContext, s), s);
                             } else {
                                 return new Parameter(new UnknownType(), s);
                             }
@@ -539,26 +539,49 @@ public class DrlxParseUtil {
         if (usedDeclarations.isEmpty()) {
             return true;
         }
-        return usedDeclarations.stream().map(decl -> getDelarationType(ruleContext, decl)).noneMatch(type -> type instanceof UnknownType);
+        return usedDeclarations.stream().map(decl -> getDeclarationType(ruleContext, decl)).noneMatch(type -> type instanceof UnknownType);
     }
 
-    private static Type getDelarationType(RuleContext ruleContext, String variableName) {
+    private static Type getDeclarationType(RuleContext ruleContext, String variableName) {
         if (ruleContext == null) {
             return new UnknownType();
         }
         return ruleContext.getDelarationType(variableName);
     }
 
-    public static Type classToReferenceType(Class<?> declClass) {
-        String className = declClass.getCanonicalName();
-        return classNameToReferenceType(className);
+    public static Type classToReferenceType(Class<?> declarationClass) {
+        String className = declarationClass.getCanonicalName();
+        return classNameToReferenceTypeWithBoxing(className).parsedType;
+    }
+
+    public static Type classToReferenceType(DeclarationSpec declaration) {
+        Class<?> declarationClass = declaration.getDeclarationClass();
+        String className = declarationClass.getCanonicalName();
+        ReferenceType parsedType = classNameToReferenceTypeWithBoxing(className);
+        declaration.setBoxed(parsedType.wasBoxed);
+        return parsedType.parsedType;
     }
 
     public static Type classNameToReferenceType(String className) {
+        return classNameToReferenceTypeWithBoxing(className).parsedType;
+    }
+
+    private static ReferenceType classNameToReferenceTypeWithBoxing(String className) {
         Type parsedType = parseType(className);
-        return parsedType instanceof PrimitiveType ?
-                ((PrimitiveType) parsedType).toBoxedType() :
-                parsedType;
+        if (parsedType instanceof PrimitiveType) {
+            return new ReferenceType(((PrimitiveType) parsedType).toBoxedType(), true);
+        }
+        return new ReferenceType(parsedType, false);
+    }
+
+    static class ReferenceType {
+        Type parsedType;
+        Boolean wasBoxed;
+
+        public ReferenceType(Type parsedType, Boolean wasBoxed) {
+            this.parsedType = parsedType;
+            this.wasBoxed = wasBoxed;
+        }
     }
 
     public static Type toType(Class<?> declClass) {
