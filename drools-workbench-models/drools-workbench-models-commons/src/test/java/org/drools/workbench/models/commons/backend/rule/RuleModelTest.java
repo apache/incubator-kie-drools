@@ -218,7 +218,7 @@ public class RuleModelTest {
         assertTrue( model.isBoundFactUsed( "q" ) );
         assertFalse( model.isBoundFactUsed( "x" ) );
 
-        final XStream xt = XStreamUtils.createTrustingXStream();
+        final XStream xt = XStreamUtils.createNonTrustingXStream();
 
         xt.alias( "rule",
                 RuleModel.class );
