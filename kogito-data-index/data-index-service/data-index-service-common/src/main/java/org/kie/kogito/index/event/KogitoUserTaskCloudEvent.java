@@ -18,6 +18,7 @@ package org.kie.kogito.index.event;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
+import org.kie.kogito.event.CloudEventExtensionConstants;
 import org.kie.kogito.index.model.UserTaskInstance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,10 +28,10 @@ import static java.lang.String.format;
 
 public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance> {
 
-    @JsonProperty("kogitoUserTaskinstanceId")
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID)
     private String userTaskInstanceId;
 
-    @JsonProperty("kogitoUserTaskinstanceState")
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE)
     private String state;
 
     public static Builder builder() {

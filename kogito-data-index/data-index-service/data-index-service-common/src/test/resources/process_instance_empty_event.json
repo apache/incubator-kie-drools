@@ -9,11 +9,11 @@
     "unknownProperty": ""
   },
   "id": "b50a3dd4-a955-49c4-a055-f30a4d768f87",
-  "kogitoParentProcessinstanceId": "  ",
-  "kogitoProcessId": "hotelBooking",
-  "kogitoProcessinstanceId": "",
-  "kogitoProcessinstanceState": "2",
-  "kogitoRootProcessId": "travels",
-  "kogitoRootProcessinstanceId": " ",
+  "kogitoparentprociid": "  ",
+  "kogitoprocid": "hotelBooking",
+  "kogitoprocinstanceid": "",
+  "kogitoprocist": "2",
+  "kogitorootprocid": "travels",
+  "kogitorootprociid": " ",
   "type": "ProcessInstanceEvent"
 }

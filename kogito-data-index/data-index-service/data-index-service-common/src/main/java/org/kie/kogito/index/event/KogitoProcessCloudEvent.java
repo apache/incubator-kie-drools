@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 
+import org.kie.kogito.event.CloudEventExtensionConstants;
 import org.kie.kogito.index.model.ProcessInstance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,9 +28,9 @@ import static java.util.Arrays.asList;
 
 public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
 
-    @JsonProperty("kogitoProcessinstanceState")
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_INSTANCE_STATE)
     private Integer state;
-    @JsonProperty("kogitoParentProcessinstanceId")
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID)
     private String parentProcessInstanceId;
 
     public static Builder builder() {
