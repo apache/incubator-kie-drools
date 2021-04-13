@@ -34,7 +34,7 @@ import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+//import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 public class KiePMMLModelRetriever {
 
@@ -64,9 +64,18 @@ public class KiePMMLModelRetriever {
         logger.trace("getFromCommonDataAndTransformationDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
-        String modelPackageName = getSanitizedPackageName(String.format("%s.%s", packageName, model.getModelName()));
+//        String modelPackageName = getSanitizedPackageName(String.format("%s.%s", packageName, model.getModelName()));
+//        return getModelImplementationProviderStream(model)
+//                .map(implementation -> implementation.getKiePMMLModel(modelPackageName,
+//                                                                      dataDictionary,
+//                                                                      transformationDictionary,
+//                                                                      model,
+//                                                                      hasClassloader))
+//                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
+//                .findFirst();
+
         return getModelImplementationProviderStream(model)
-                .map(implementation -> implementation.getKiePMMLModel(modelPackageName,
+                .map(implementation -> implementation.getKiePMMLModel(packageName,
                                                                       dataDictionary,
                                                                       transformationDictionary,
                                                                       model,
@@ -94,7 +103,16 @@ public class KiePMMLModelRetriever {
         logger.trace("getFromCommonDataAndTransformationDictionaryAndModelWithSources {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
-        String modelPackageName = getSanitizedPackageName(String.format("%s.%s", packageName, model.getModelName()));
+        String modelPackageName = String.format("%s.%s", packageName, model.getModelName()).replaceAll("[^A-Za-z0-9.]", "").toLowerCase();
+//        return getModelImplementationProviderStream(model)
+//                .map(implementation -> implementation.getKiePMMLModelWithSources(modelPackageName,
+//                                                                                 dataDictionary,
+//                                                                                 transformationDictionary,
+//                                                                                 model,
+//                                                                                 hasClassloader))
+//                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
+//                .findFirst();
+
         return getModelImplementationProviderStream(model)
                 .map(implementation -> implementation.getKiePMMLModelWithSources(modelPackageName,
                                                                                  dataDictionary,
