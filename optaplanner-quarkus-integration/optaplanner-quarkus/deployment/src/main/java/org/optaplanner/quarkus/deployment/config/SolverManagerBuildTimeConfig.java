@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.deployment;
+package org.optaplanner.quarkus.deployment.config;
 
 import java.util.Optional;
 
@@ -35,6 +35,6 @@ public class SolverManagerBuildTimeConfig {
      * Other options include a number or formula based on the available processor count.
      */
     @ConfigItem
-    Optional<String> parallelSolverCount;
+    public Optional<String> parallelSolverCount;
 
 }

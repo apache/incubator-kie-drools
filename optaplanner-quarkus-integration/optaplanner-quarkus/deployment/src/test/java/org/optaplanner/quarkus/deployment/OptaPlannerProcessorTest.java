@@ -25,6 +25,7 @@ import org.jboss.jandex.IndexView;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
 class OptaPlannerProcessorTest {
 

@@ -56,10 +56,10 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -293,7 +293,7 @@ class OptaPlannerProcessor {
         if (solverConfig.getDomainAccessType() == null) {
             solverConfig.setDomainAccessType(DomainAccessType.REFLECTION);
         }
-        applyTerminationProperties(solverConfig);
+        // Termination properties are set at runtime
     }
 
     private Class<?> findSolutionClass(RecorderContext recorderContext, IndexView indexView) {
@@ -491,18 +491,6 @@ class OptaPlannerProcessor {
         }
         ClassInfo classInfo = classInfos.iterator().next();
         return convertClassInfoToClass(classInfo);
-    }
-
-    private void applyTerminationProperties(SolverConfig solverConfig) {
-        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
-        if (terminationConfig == null) {
-            terminationConfig = new TerminationConfig();
-            solverConfig.setTerminationConfig(terminationConfig);
-        }
-        optaPlannerBuildTimeConfig.solver.termination.spentLimit.ifPresent(terminationConfig::setSpentLimit);
-        optaPlannerBuildTimeConfig.solver.termination.unimprovedSpentLimit
-                .ifPresent(terminationConfig::setUnimprovedSpentLimit);
-        optaPlannerBuildTimeConfig.solver.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
     }
 
     private String convertAnnotationInstancesToString(Collection<AnnotationInstance> annotationInstances) {

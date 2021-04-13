@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.deployment;
+package org.optaplanner.quarkus.deployment.config;
 
 import java.util.Optional;
 
@@ -43,7 +43,7 @@ public class OptaPlannerBuildTimeConfig {
      * If this property isn't specified, that solverConfig.xml is optional.
      */
     @ConfigItem
-    Optional<String> solverConfigXml;
+    public Optional<String> solverConfigXml;
 
     /**
      * A classpath resource to read the solver score DRL.
@@ -52,17 +52,16 @@ public class OptaPlannerBuildTimeConfig {
      * {@link IncrementalScoreCalculator} class exists.
      */
     @ConfigItem
-    Optional<String> scoreDrl;
+    public Optional<String> scoreDrl;
 
     /**
      * Configuration properties that overwrite OptaPlanner's {@link SolverConfig}.
      */
     @ConfigItem
-    SolverBuildTimeConfig solver;
+    public SolverBuildTimeConfig solver;
     /**
      * Configuration properties that overwrite OptaPlanner's {@link SolverManagerConfig}.
      */
     @ConfigItem
-    SolverManagerBuildTimeConfig solverManager;
-
+    public SolverManagerBuildTimeConfig solverManager;
 }

@@ -36,6 +36,8 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
@@ -43,12 +45,26 @@ import io.quarkus.arc.DefaultBean;
 
 public class OptaPlannerBeanProvider {
 
+    private void updateSolverConfigWithRuntimeProperties(SolverConfig solverConfig,
+            OptaPlannerRuntimeConfig optaPlannerRunTimeConfig) {
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        if (terminationConfig == null) {
+            terminationConfig = new TerminationConfig();
+            solverConfig.setTerminationConfig(terminationConfig);
+        }
+        optaPlannerRunTimeConfig.solver.termination.spentLimit.ifPresent(terminationConfig::setSpentLimit);
+        optaPlannerRunTimeConfig.solver.termination.unimprovedSpentLimit
+                .ifPresent(terminationConfig::setUnimprovedSpentLimit);
+        optaPlannerRunTimeConfig.solver.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
+    }
+
     @DefaultBean
     @Singleton
     @Produces
     <Solution_> SolverFactory<Solution_> solverFactory(OptaPlannerGizmoInitializer gizmoInitializer,
             OptaPlannerGizmoBeanFactory gizmoBeanFactory,
-            SolverConfig solverConfig) {
+            SolverConfig solverConfig, OptaPlannerRuntimeConfig optaPlannerRunTimeConfig) {
+        updateSolverConfigWithRuntimeProperties(solverConfig, optaPlannerRunTimeConfig);
         gizmoInitializer.setup();
         OptaPlannerGizmoBeanFactory.INSTANCE.setInstance(gizmoBeanFactory);
         return SolverFactory.create(solverConfig);
