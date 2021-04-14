@@ -4750,7 +4750,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
             String result = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
 
-            assertTrue("result DRL : " + result, result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");") != -1);
+            assertTrue("result DRL : " + result, result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"d-MMM-yyyy\");") != -1);
             assertTrue(result.indexOf("fact0.setDob( sdf.parse(\"31-Jan-2000\"") != -1);
 
             checkMarshalling(null, m);

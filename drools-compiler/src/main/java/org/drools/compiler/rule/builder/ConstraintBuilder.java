@@ -90,13 +90,6 @@ public interface ConstraintBuilder {
                                       Map<String, OperatorDescr> aliases);
 
 
-    Evaluator buildLiteralEvaluator( RuleBuildContext context,
-                                     InternalReadAccessor extractor,
-                                     LiteralRestrictionDescr literalRestrictionDescr,
-                                     ValueType vtype );
-
-    EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor );
-
     Evaluator getEvaluator( RuleBuildContext context,
                             BaseDescr descr,
                             ValueType valueType,
@@ -122,8 +115,6 @@ public interface ConstraintBuilder {
                                     boolean isIndexable );
 
     TimerExpression buildTimerExpression( String expression, RuleBuildContext context );
-
-    TimerExpression buildTimerExpression( String expression, ClassLoader classLoader, Map<String, Declaration> decls );
 
     AnalysisResult analyzeExpression(Class<?> thisClass, String expr);
 
@@ -173,16 +164,6 @@ public interface ConstraintBuilder {
         }
 
         @Override
-        public Evaluator buildLiteralEvaluator( RuleBuildContext context, InternalReadAccessor extractor, LiteralRestrictionDescr literalRestrictionDescr, ValueType vtype ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public EvaluatorDefinition.Target getRightTarget( InternalReadAccessor extractor ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public Evaluator getEvaluator( RuleBuildContext context, BaseDescr descr, ValueType valueType, String evaluatorString, boolean isNegated, String parameters, EvaluatorDefinition.Target left, EvaluatorDefinition.Target right ) {
             throw new UnsupportedOperationException();
         }
@@ -199,11 +180,6 @@ public interface ConstraintBuilder {
 
         @Override
         public TimerExpression buildTimerExpression( String expression, RuleBuildContext context ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TimerExpression buildTimerExpression( String expression, ClassLoader classLoader, Map<String, Declaration> decls ) {
             throw new UnsupportedOperationException();
         }
 

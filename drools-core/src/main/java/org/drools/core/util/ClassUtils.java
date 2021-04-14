@@ -494,7 +494,7 @@ public final class ClassUtils {
         }
     }
 
-    public static Member getFieldOrAccessor( Class clazz, String property) {
+    public static Member getFieldOrAccessor( Class clazz, String property ) {
         for (Field f : clazz.getFields()) {
             if (property.equals(f.getName())) {
                 if ((f.getModifiers() & PUBLIC) != 0) return f;
@@ -504,7 +504,7 @@ public final class ClassUtils {
         return getGetter(clazz, property);
     }
 
-    private static Method getGetter( Class clazz, String property) {
+    public static Method getGetter( Class clazz, String property ) {
         String simple = "get" + property;
         String simpleIsGet = "is" + property;
         String isGet = getIsGetter(property);
