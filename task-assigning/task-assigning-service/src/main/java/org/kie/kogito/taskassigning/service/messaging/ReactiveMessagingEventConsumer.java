@@ -25,6 +25,9 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.taskassigning.service.event.TaskAssigningServiceEventConsumer;
+import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
+import org.kie.kogito.taskassigning.service.util.TaskUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +38,11 @@ public class ReactiveMessagingEventConsumer {
 
     private static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
 
-    private UserTaskEventConsumer userTaskEventConsumer;
+    private TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
 
     @Inject
-    public ReactiveMessagingEventConsumer(UserTaskEventConsumer userTaskEventConsumer) {
-        this.userTaskEventConsumer = userTaskEventConsumer;
+    public ReactiveMessagingEventConsumer(TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer) {
+        this.taskAssigningServiceEventConsumer = taskAssigningServiceEventConsumer;
     }
 
     @Incoming(KOGITO_USERTASKINSTANCES_EVENTS)
@@ -53,6 +56,6 @@ public class ReactiveMessagingEventConsumer {
     }
 
     private void handleEvent(UserTaskEvent event) {
-        userTaskEventConsumer.accept(event);
+        taskAssigningServiceEventConsumer.accept(new TaskDataEvent(TaskUtil.fromUserTaskEvent(event)));
     }
 }

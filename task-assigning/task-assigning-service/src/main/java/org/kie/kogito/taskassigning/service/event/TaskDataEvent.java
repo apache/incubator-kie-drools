@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.service.messaging;
+package org.kie.kogito.taskassigning.service.event;
 
-import java.util.List;
-import java.util.function.Consumer;
+import org.kie.kogito.taskassigning.service.TaskData;
 
-public interface UserTaskEventConsumer extends Consumer<UserTaskEvent> {
+public class TaskDataEvent extends DataEvent<TaskData> {
 
-    void pause();
+    public TaskDataEvent(TaskData data) {
+        super(DataEventType.TASK_DATA_EVENT, data, data.getLastUpdate());
+    }
 
-    void resume();
-
-    List<UserTaskEvent> pollEvents();
-
-    int queuedEvents();
-
+    public String getTaskId() {
+        return data.getId();
+    }
 }

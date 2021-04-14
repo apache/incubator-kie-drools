@@ -37,6 +37,11 @@ import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigPro
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CLIENT_ID;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CREDENTIALS_SECRET;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_TENANT_ENABLED;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_CONNECTOR;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_SYNC_INTERVAL;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_SYNC_ON_RETRIES_EXCEEDED_STRATEGY;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRIES;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRY_INTERVAL;
 
 @ApplicationScoped
 public class TaskAssigningConfig {
@@ -45,7 +50,14 @@ public class TaskAssigningConfig {
     private static final String KEYCLOAK_AUTH_REALMS_SUB_PATH = "/auth/realms/";
     private static final String KEYCLOAK_SERVER_URL_UNEXPECTED_FORMAT_ERROR = "The configuration value for property: " + QUARKUS_OIDC_AUTH_SERVER_URL +
             ", %s doesn't look to be a valid Keycloak authentication domain configuration in the form " +
-            "\'https://host:port/auth/realms/{realm}\' where '{realm}' has to be replaced by the name of the Keycloak realm.";
+            "'https://host:port/auth/realms/{realm}' where '{realm}' has to be replaced by the name of the Keycloak realm.";
+
+    public static final String DEFAULT_USER_SERVICE_CONNECTOR = "PropertiesConnector";
+
+    public enum UserServiceSyncOnRetriesExceededStrategy {
+        SYNC_ON_NEXT_INTERVAL,
+        SYNC_IMMEDIATELY
+    }
 
     @Inject
     @ConfigProperty(name = QUARKUS_OIDC_TENANT_ENABLED)
@@ -90,6 +102,26 @@ public class TaskAssigningConfig {
     @Inject
     @ConfigProperty(name = PUBLISH_WINDOW_SIZE, defaultValue = "2")
     int publishWindowSize;
+
+    @Inject
+    @ConfigProperty(name = USER_SERVICE_CONNECTOR, defaultValue = DEFAULT_USER_SERVICE_CONNECTOR)
+    String userServiceConnector;
+
+    @Inject
+    @ConfigProperty(name = USER_SERVICE_SYNC_INTERVAL, defaultValue = "PT2H")
+    Duration userServiceSyncInterval;
+
+    @Inject
+    @ConfigProperty(name = USER_SERVICE_SYNC_RETRIES, defaultValue = "5")
+    int userServiceSyncRetries;
+
+    @Inject
+    @ConfigProperty(name = USER_SERVICE_SYNC_RETRY_INTERVAL, defaultValue = "PT20S")
+    Duration userServiceSyncRetryInterval;
+
+    @Inject
+    @ConfigProperty(name = USER_SERVICE_SYNC_ON_RETRIES_EXCEEDED_STRATEGY, defaultValue = "SYNC_IMMEDIATELY")
+    UserServiceSyncOnRetriesExceededStrategy userServiceSyncOnRetriesExceededStrategy;
 
     public boolean isOidcTenantEnabled() {
         return oidcTenantEnabled;
@@ -173,6 +205,26 @@ public class TaskAssigningConfig {
         return publishWindowSize;
     }
 
+    public String getUserServiceConnector() {
+        return userServiceConnector;
+    }
+
+    public Duration getUserServiceSyncInterval() {
+        return userServiceSyncInterval;
+    }
+
+    public int getUserServiceSyncRetries() {
+        return userServiceSyncRetries;
+    }
+
+    public UserServiceSyncOnRetriesExceededStrategy getUserServiceSyncOnRetriesExceededStrategy() {
+        return userServiceSyncOnRetriesExceededStrategy;
+    }
+
+    public Duration getUserServiceSyncRetryInterval() {
+        return userServiceSyncRetryInterval;
+    }
+
     @Override
     public String toString() {
         return "TaskAssigningConfig{" +
@@ -187,6 +239,11 @@ public class TaskAssigningConfig {
                 ", dataLoaderRetries=" + dataLoaderRetries +
                 ", dataLoaderPageSize=" + dataLoaderPageSize +
                 ", publishWindowSize=" + publishWindowSize +
+                ", userServiceConnector=" + userServiceConnector +
+                ", userServiceSyncInterval=" + userServiceSyncInterval +
+                ", userServiceSyncRetries=" + userServiceSyncRetries +
+                ", userServiceSyncOnRetriesExceededStrategy=" + userServiceSyncOnRetriesExceededStrategy +
+                ", usersServiceSyncRetryInterval=" + userServiceSyncRetryInterval +
                 '}';
     }
 }

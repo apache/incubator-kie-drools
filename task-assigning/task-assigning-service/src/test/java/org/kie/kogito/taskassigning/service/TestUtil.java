@@ -31,7 +31,7 @@ import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
-import org.kie.kogito.taskassigning.user.service.api.Group;
+import org.kie.kogito.taskassigning.user.service.Group;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -45,12 +45,12 @@ public class TestUtil {
         return ZonedDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
-    public static org.kie.kogito.taskassigning.user.service.api.User mockExternalUser(String id) {
+    public static org.kie.kogito.taskassigning.user.service.User mockExternalUser(String id) {
         return mockExternalUser(id, new ArrayList<>(), new HashMap<>());
     }
 
-    public static org.kie.kogito.taskassigning.user.service.api.User mockExternalUser(String id, List<String> groups, Map<String, Object> attributes) {
-        org.kie.kogito.taskassigning.user.service.api.User externalUser = mock(org.kie.kogito.taskassigning.user.service.api.User.class);
+    public static org.kie.kogito.taskassigning.user.service.User mockExternalUser(String id, List<String> groups, Map<String, Object> attributes) {
+        org.kie.kogito.taskassigning.user.service.User externalUser = mock(org.kie.kogito.taskassigning.user.service.User.class);
         doReturn(id).when(externalUser).getId();
         Set<Group> externalGroups = groups.stream().map(TestUtil::mockExternalGroup).collect(Collectors.toSet());
         doReturn(externalGroups).when(externalUser).getGroups();
@@ -58,8 +58,8 @@ public class TestUtil {
         return externalUser;
     }
 
-    public static org.kie.kogito.taskassigning.user.service.api.Group mockExternalGroup(String id) {
-        org.kie.kogito.taskassigning.user.service.api.Group externalGroup = mock(org.kie.kogito.taskassigning.user.service.api.Group.class);
+    public static org.kie.kogito.taskassigning.user.service.Group mockExternalGroup(String id) {
+        org.kie.kogito.taskassigning.user.service.Group externalGroup = mock(org.kie.kogito.taskassigning.user.service.Group.class);
         doReturn(id).when(externalGroup).getId();
         return externalGroup;
     }

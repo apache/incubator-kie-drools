@@ -27,6 +27,8 @@ import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigPro
 
 public class TaskAssigningConfigValidator {
 
+    private static final String PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR = "The config property: %s must be set with a non negative value, but is: %s";
+
     private TaskAssigningConfig config;
 
     private TaskAssigningConfigValidator(TaskAssigningConfig config) {
@@ -47,6 +49,7 @@ public class TaskAssigningConfigValidator {
         if (config.isBasicAuthSet()) {
             validateBasicAuth(config);
         }
+        validateUserSyncConfig(config);
     }
 
     private static void validateKeycloakConfig(TaskAssigningConfig config) {
@@ -64,6 +67,24 @@ public class TaskAssigningConfigValidator {
     private static void validateOptionalIsSet(String propertyName, Optional<?> value) {
         if (value.isEmpty()) {
             throw new IllegalArgumentException("A config value must be set for the property: " + propertyName);
+        }
+    }
+
+    private static void validateUserSyncConfig(TaskAssigningConfig config) {
+        if (config.getUserServiceSyncInterval().isNegative()) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.USER_SERVICE_SYNC_INTERVAL,
+                    config.getUserServiceSyncInterval()));
+        }
+        if (config.getUserServiceSyncRetries() < 0) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRIES,
+                    config.getUserServiceSyncRetries()));
+        }
+        if (config.getUserServiceSyncRetryInterval().isNegative()) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRY_INTERVAL,
+                    config.getUserServiceSyncRetryInterval()));
         }
     }
 }

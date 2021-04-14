@@ -69,7 +69,7 @@ class SolutionBuilderTest {
                 mockTaskData(TASK10, RESERVED.value(), USER1),
                 mockTaskData(TASK11, RESERVED.value(), USER_NOT_IN_THE_EXTERNAL_SYSTEM));
 
-        List<org.kie.kogito.taskassigning.user.service.api.User> externalUsers = Arrays.asList(mockExternalUser(USER1),
+        List<org.kie.kogito.taskassigning.user.service.User> externalUsers = Arrays.asList(mockExternalUser(USER1),
                 mockExternalUser(USER2),
                 mockExternalUser(USER3),
                 mockExternalUser(USER4));

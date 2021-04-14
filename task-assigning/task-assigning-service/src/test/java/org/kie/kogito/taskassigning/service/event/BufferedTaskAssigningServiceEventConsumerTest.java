@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.service.messaging;
+package org.kie.kogito.taskassigning.service.event;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,43 +34,43 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class BufferedUserTaskEventConsumerTest {
+class BufferedTaskAssigningServiceEventConsumerTest {
 
-    private BufferedUserTaskEventConsumer userTaskEventConsumer;
+    private BufferedTaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
 
     @Mock
-    private Consumer<List<UserTaskEvent>> consumer;
+    private Consumer<List<DataEvent<?>>> consumer;
 
     @Captor
-    private ArgumentCaptor<List<UserTaskEvent>> eventsCaptor;
+    private ArgumentCaptor<List<DataEvent<?>>> eventsCaptor;
 
     @Mock
-    private UserTaskEvent event1;
+    private TaskDataEvent event1;
 
     @Mock
-    private UserTaskEvent event2;
+    private UserDataEvent event2;
 
     @BeforeEach
     void setUp() {
-        userTaskEventConsumer = new BufferedUserTaskEventConsumer();
-        userTaskEventConsumer.setConsumer(consumer);
+        taskAssigningServiceEventConsumer = new BufferedTaskAssigningServiceEventConsumer();
+        taskAssigningServiceEventConsumer.setConsumer(consumer);
     }
 
     @Test
     void pause() {
-        userTaskEventConsumer.pause();
-        userTaskEventConsumer.accept(event1);
-        userTaskEventConsumer.accept(event2);
+        taskAssigningServiceEventConsumer.pause();
+        taskAssigningServiceEventConsumer.accept(event1);
+        taskAssigningServiceEventConsumer.accept(event2);
         verify(consumer, never()).accept(anyList());
     }
 
     @Test
     void resume() {
-        userTaskEventConsumer.pause();
-        userTaskEventConsumer.accept(event1);
-        userTaskEventConsumer.accept(event2);
+        taskAssigningServiceEventConsumer.pause();
+        taskAssigningServiceEventConsumer.accept(event1);
+        taskAssigningServiceEventConsumer.accept(event2);
         verify(consumer, never()).accept(anyList());
-        userTaskEventConsumer.resume();
+        taskAssigningServiceEventConsumer.resume();
         verify(consumer).accept(eventsCaptor.capture());
         assertThat(eventsCaptor.getValue()).isNotNull();
         assertThat(eventsCaptor.getValue()).containsExactlyElementsOf(Arrays.asList(event1, event2));
@@ -78,23 +78,23 @@ class BufferedUserTaskEventConsumerTest {
 
     @Test
     void pollEvents() {
-        userTaskEventConsumer.pause();
-        userTaskEventConsumer.accept(event1);
-        userTaskEventConsumer.accept(event2);
+        taskAssigningServiceEventConsumer.pause();
+        taskAssigningServiceEventConsumer.accept(event1);
+        taskAssigningServiceEventConsumer.accept(event2);
         verify(consumer, never()).accept(anyList());
-        List<UserTaskEvent> events = userTaskEventConsumer.pollEvents();
+        List<DataEvent<?>> events = taskAssigningServiceEventConsumer.pollEvents();
         assertThat(events)
                 .hasSize(2)
                 .containsExactlyElementsOf(Arrays.asList(event1, event2));
-        userTaskEventConsumer.resume();
+        taskAssigningServiceEventConsumer.resume();
         verify(consumer, never()).accept(anyList());
     }
 
     @Test
     void queuedEvents() {
-        userTaskEventConsumer.pause();
-        userTaskEventConsumer.accept(event1);
-        userTaskEventConsumer.accept(event2);
-        assertThat(userTaskEventConsumer.queuedEvents()).isEqualTo(2);
+        taskAssigningServiceEventConsumer.pause();
+        taskAssigningServiceEventConsumer.accept(event1);
+        taskAssigningServiceEventConsumer.accept(event2);
+        assertThat(taskAssigningServiceEventConsumer.queuedEvents()).isEqualTo(2);
     }
 }

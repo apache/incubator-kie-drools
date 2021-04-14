@@ -30,7 +30,7 @@ public class UserUtil {
     private UserUtil() {
     }
 
-    public static User fromExternalUser(org.kie.kogito.taskassigning.user.service.api.User externalUser) {
+    public static User fromExternalUser(org.kie.kogito.taskassigning.user.service.User externalUser) {
         final User user = new User(externalUser.getId(), true);
         final Set<Group> groups = new HashSet<>();
         user.setGroups(groups);
@@ -53,7 +53,7 @@ public class UserUtil {
      * @param externalUsers a collection with the external users to filter.
      * @return a Stream with the filtered users.
      */
-    public static Stream<org.kie.kogito.taskassigning.user.service.api.User> filterDuplicates(Collection<org.kie.kogito.taskassigning.user.service.api.User> externalUsers) {
+    public static Stream<org.kie.kogito.taskassigning.user.service.User> filterDuplicates(Collection<org.kie.kogito.taskassigning.user.service.User> externalUsers) {
         if (externalUsers == null) {
             return Stream.empty();
         } else {

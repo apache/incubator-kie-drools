@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.service.messaging;
+package org.kie.kogito.taskassigning.service.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +28,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class BufferedUserTaskEventConsumer implements UserTaskEventConsumer {
+public class BufferedTaskAssigningServiceEventConsumer implements TaskAssigningServiceEventConsumer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BufferedUserTaskEventConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BufferedTaskAssigningServiceEventConsumer.class);
 
-    private List<UserTaskEvent> buffer = new ArrayList<>();
+    private List<DataEvent<?>> buffer = new ArrayList<>();
 
     private AtomicBoolean paused = new AtomicBoolean(true);
 
     private ReentrantLock lock = new ReentrantLock();
 
-    private Consumer<List<UserTaskEvent>> consumer;
+    private Consumer<List<DataEvent<?>>> consumer;
 
-    public void setConsumer(Consumer<List<UserTaskEvent>> consumer) {
+    public void setConsumer(Consumer<List<DataEvent<?>>> consumer) {
         this.consumer = consumer;
     }
 
@@ -70,11 +70,11 @@ public class BufferedUserTaskEventConsumer implements UserTaskEventConsumer {
     }
 
     @Override
-    public List<UserTaskEvent> pollEvents() {
+    public List<DataEvent<?>> pollEvents() {
         lock.lock();
         try {
             LOGGER.debug("pollEvents was invoked with current buffer.size: {}", buffer.size());
-            List<UserTaskEvent> result = new ArrayList<>(buffer);
+            List<DataEvent<?>> result = new ArrayList<>(buffer);
             buffer.clear();
             return result;
         } finally {
@@ -93,11 +93,11 @@ public class BufferedUserTaskEventConsumer implements UserTaskEventConsumer {
     }
 
     @Override
-    public void accept(UserTaskEvent userTaskEvent) {
+    public void accept(DataEvent<?> dataEvent) {
         lock.lock();
         try {
-            LOGGER.debug("Event being accepted, current buffer.size: {},  paused: {}", buffer.size(), paused.get());
-            buffer.add(userTaskEvent);
+            LOGGER.debug("Event {} being accepted, current buffer.size: {},  paused: {}", dataEvent.getDataEventType(), buffer.size(), paused.get());
+            buffer.add(dataEvent);
             if (!paused.get()) {
                 LOGGER.debug("Delivering to consumer, current buffer.size: {}, paused: {}", buffer.size(), paused.get());
                 deliverToConsumer();
@@ -108,7 +108,7 @@ public class BufferedUserTaskEventConsumer implements UserTaskEventConsumer {
     }
 
     private void deliverToConsumer() {
-        List<UserTaskEvent> result = new ArrayList<>(buffer);
+        List<DataEvent<?>> result = new ArrayList<>(buffer);
         buffer.clear();
         consumer.accept(result);
     }

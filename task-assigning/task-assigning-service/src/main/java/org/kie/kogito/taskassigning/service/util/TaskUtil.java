@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 import org.kie.kogito.taskassigning.service.TaskData;
+import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.messaging.UserTaskEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,8 +43,14 @@ public class TaskUtil {
         return fromMappedType(userTaskInstances, UserTaskInstanceTaskData::new);
     }
 
-    public static List<TaskData> fromUserTaskEvents(List<UserTaskEvent> userTaskEvents) {
-        return fromMappedType(userTaskEvents, UserTaskEventTaskData::new);
+    public static List<TaskData> fromTaskDataEvents(List<TaskDataEvent> taskDataEvents) {
+        return taskDataEvents.stream()
+                .map(TaskDataEvent::getData)
+                .collect(Collectors.toList());
+    }
+
+    public static TaskData fromUserTaskEvent(UserTaskEvent userTaskEvent) {
+        return new UserTaskEventTaskData(userTaskEvent);
     }
 
     private static <T> List<TaskData> fromMappedType(List<T> values, Function<T, TaskData> mapper) {

@@ -41,6 +41,10 @@ class TaskAssigningConfigTest {
     private static final int DATA_LOADER_RETRIES = 5;
     private static final int DATA_LOADER_PAGE_SIZE = 10;
     private static final int PUBLISH_WINDOW_SIZE = 3;
+    private static final String USER_SERVICE_CONNECTOR = "USER_SERVICE_CONNECTOR";
+    private static final Duration USER_SERVICE_SYNC_INTERVAL = Duration.ofMillis(2000);
+    private static final int USER_SERVICE_SYNC_RETRIES = 6;
+    private static final Duration USER_SERVICE_SYNC_RETRY_INTERVAL = Duration.ofMillis(3000);
 
     private TaskAssigningConfig config;
 
@@ -189,5 +193,29 @@ class TaskAssigningConfigTest {
     void getPublishWindowSize() {
         config.publishWindowSize = PUBLISH_WINDOW_SIZE;
         assertThat(config.getPublishWindowSize()).isEqualTo(PUBLISH_WINDOW_SIZE);
+    }
+
+    @Test
+    void getUserServiceConnector() {
+        config.userServiceConnector = USER_SERVICE_CONNECTOR;
+        assertThat(config.getUserServiceConnector()).isEqualTo(USER_SERVICE_CONNECTOR);
+    }
+
+    @Test
+    void getUserServiceSyncInterval() {
+        config.userServiceSyncInterval = USER_SERVICE_SYNC_INTERVAL;
+        assertThat(config.getUserServiceSyncInterval()).isEqualTo(USER_SERVICE_SYNC_INTERVAL);
+    }
+
+    @Test
+    void getUserServiceSyncRetryInterval() {
+        config.userServiceSyncRetryInterval = USER_SERVICE_SYNC_RETRY_INTERVAL;
+        assertThat(config.getUserServiceSyncRetryInterval()).isEqualTo(USER_SERVICE_SYNC_RETRY_INTERVAL);
+    }
+
+    @Test
+    void getUserServiceSyncRetries() {
+        config.userServiceSyncRetries = USER_SERVICE_SYNC_RETRIES;
+        assertThat(config.getUserServiceSyncRetries()).isEqualTo(USER_SERVICE_SYNC_RETRIES);
     }
 }

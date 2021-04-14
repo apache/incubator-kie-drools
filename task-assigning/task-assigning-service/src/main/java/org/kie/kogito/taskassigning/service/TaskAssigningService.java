@@ -41,9 +41,12 @@ import org.kie.kogito.taskassigning.core.model.User;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AssignTaskProblemFactChange;
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfig;
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfigValidator;
-import org.kie.kogito.taskassigning.service.messaging.BufferedUserTaskEventConsumer;
-import org.kie.kogito.taskassigning.service.messaging.UserTaskEvent;
-import org.kie.kogito.taskassigning.user.service.api.UserServiceConnector;
+import org.kie.kogito.taskassigning.service.event.BufferedTaskAssigningServiceEventConsumer;
+import org.kie.kogito.taskassigning.service.event.DataEvent;
+import org.kie.kogito.taskassigning.service.event.TaskAssigningServiceEventConsumer;
+import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
+import org.kie.kogito.taskassigning.service.event.UserDataEvent;
+import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -57,7 +60,10 @@ import io.quarkus.runtime.Startup;
 import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.filterNonDummyAssignments;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestTaskEvents;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestTaskEventsInContext;
-import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromUserTaskEvents;
+import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestUserEvent;
+import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromTaskDataEvents;
+import static org.kie.kogito.taskassigning.service.util.TraceUtil.tracePlanning;
+import static org.kie.kogito.taskassigning.service.util.TraceUtil.traceSolution;
 
 @ApplicationScoped
 @Startup
@@ -65,7 +71,7 @@ public class TaskAssigningService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskAssigningService.class);
 
-    private static final Predicate<UserTaskEvent> IS_ACTIVE_TASK_EVENT = userTaskEvent -> !TaskState.isTerminal(userTaskEvent.getState());
+    private static final Predicate<TaskDataEvent> IS_ACTIVE_TASK_EVENT = taskDataEvent -> !TaskState.isTerminal(taskDataEvent.getData().getState());
 
     @Inject
     SolverFactory<TaskAssigningSolution> solverFactory;
@@ -80,13 +86,17 @@ public class TaskAssigningService {
     TaskServiceConnector taskServiceConnector;
 
     @Inject
-    UserServiceConnector userServiceConnector;
-
-    @Inject
-    BufferedUserTaskEventConsumer userTaskEventConsumer;
+    BufferedTaskAssigningServiceEventConsumer serviceEventConsumer;
 
     @Inject
     ClientServices clientServices;
+
+    @Inject
+    TaskAssigningServiceHelper serviceHelper;
+
+    private UserServiceConnector userServiceConnector;
+
+    private UserServiceAdapter userServiceAdapter;
 
     private SolverExecutor solverExecutor;
 
@@ -96,13 +106,13 @@ public class TaskAssigningService {
 
     private TaskAssigningServiceContext context;
 
-    private AtomicReference<TaskAssigningSolution> currentSolution = new AtomicReference<>(null);
+    private final AtomicReference<TaskAssigningSolution> currentSolution = new AtomicReference<>(null);
 
-    private AtomicBoolean applyingPlanningExecutionResult = new AtomicBoolean();
+    private final AtomicBoolean applyingPlanningExecutionResult = new AtomicBoolean();
 
-    private AtomicBoolean startingFromEvents = new AtomicBoolean();
+    private final AtomicBoolean startingFromEvents = new AtomicBoolean();
 
-    private List<UserTaskEvent> startingEvents;
+    private List<TaskDataEvent> startingEvents;
 
     /**
      * Synchronizes potential concurrent accesses between the different components that invoke callbacks on the service.
@@ -117,7 +127,7 @@ public class TaskAssigningService {
     void start() {
         startUpValidation();
         context = createContext();
-        userTaskEventConsumer.setConsumer(this::onTaskEvents);
+        serviceEventConsumer.setConsumer(this::onDataEvents);
         solverExecutor = createSolverExecutor(solverFactory, this::onBestSolutionChange);
         managedExecutor.execute(solverExecutor);
         planningExecutor = createPlanningExecutor(clientServices, config);
@@ -127,6 +137,7 @@ public class TaskAssigningService {
         solutionDataLoader.start(this::onSolutionDataLoad,
                 true, true,
                 config.getDataLoaderRetryInterval(), config.getDataLoaderRetries(), config.getDataLoaderPageSize());
+        userServiceAdapter = createUserServiceAdapter(config, serviceEventConsumer, managedExecutor, userServiceConnector);
     }
 
     /**
@@ -151,6 +162,7 @@ public class TaskAssigningService {
                     + ", includeUsers: {}, tasks: {}, users: {}", startingFromEvents, result.hasErrors(),
                     !startingFromEvents.get(), true, result.getTasks().size(), result.getUsers().size());
             if (result.hasErrors()) {
+                //b) try again for the configured number of retries.
                 solutionDataLoader.start(this::onSolutionDataLoad,
                         !startingFromEvents.get(), true,
                         config.getDataLoaderRetryInterval(), config.getDataLoaderRetries(), config.getDataLoaderPageSize());
@@ -158,22 +170,27 @@ public class TaskAssigningService {
                 TaskAssigningSolution solution;
                 List<TaskAssignment> taskAssignments;
                 if (startingFromEvents.get()) {
+                    //c) the initialization procedure has started after some startingEvents arrival, and the solution
+                    //data loader has responded with the users.
                     if (hasQueuedEvents()) {
-                        List<UserTaskEvent> newEvents = filterNewestTaskEventsInContext(context, pollEvents());
+                        //incorporate the events that could have been arrived in the middle while the users were being loaded.
+                        List<TaskDataEvent> newEvents = filterNewestTaskEventsInContext(context, pollEvents());
                         startingEvents = combineAndFilerNewestActiveTaskEvents(startingEvents, newEvents);
                     }
                     solution = SolutionBuilder.newBuilder()
-                            .withTasks(fromUserTaskEvents(startingEvents))
+                            .withTasks(fromTaskDataEvents(startingEvents))
                             .withUsers(result.getUsers())
                             .build();
                     startingFromEvents.set(false);
                     startingEvents = null;
                 } else {
+                    //normal initialization procedure after getting the tasks and users from the solution data loader
                     solution = SolutionBuilder.newBuilder()
                             .withTasks(result.getTasks())
                             .withUsers(result.getUsers())
                             .build();
                 }
+                //a) and c), if the solution has non dummy tasks the solver can be started.
                 taskAssignments = filterNonDummyAssignments(solution.getTaskAssignmentList());
                 if (!taskAssignments.isEmpty()) {
                     taskAssignments.forEach(taskAssignment -> {
@@ -181,6 +198,7 @@ public class TaskAssigningService {
                         context.setTaskLastEventTime(taskAssignment.getId(), taskAssignment.getTask().getLastUpdate());
                     });
                     solverExecutor.start(solution);
+                    userServiceAdapter.start();
                 } else {
                     resumeEvents();
                 }
@@ -190,9 +208,9 @@ public class TaskAssigningService {
         }
     }
 
-    private List<UserTaskEvent> combineAndFilerNewestActiveTaskEvents(List<UserTaskEvent> previousStartingEvents,
-            List<UserTaskEvent> newEvents) {
-        List<UserTaskEvent> combinedEvents = new ArrayList<>(previousStartingEvents);
+    private List<TaskDataEvent> combineAndFilerNewestActiveTaskEvents(List<TaskDataEvent> previousStartingEvents,
+            List<TaskDataEvent> newEvents) {
+        List<TaskDataEvent> combinedEvents = new ArrayList<>(previousStartingEvents);
         combinedEvents.addAll(newEvents);
         return filterNewestTaskEvents(combinedEvents)
                 .stream()
@@ -200,11 +218,11 @@ public class TaskAssigningService {
                 .collect(Collectors.toList());
     }
 
-    private void onTaskEvents(List<UserTaskEvent> events) {
+    private void onDataEvents(List<DataEvent<?>> events) {
         lock.lock();
         try {
             pauseEvents();
-            CompletableFuture.runAsync(() -> processTaskEvents(events));
+            CompletableFuture.runAsync(() -> processDataEvents(events));
         } finally {
             lock.unlock();
         }
@@ -221,16 +239,16 @@ public class TaskAssigningService {
      * 
      * @param events a list of events to process.
      */
-    void processTaskEvents(List<UserTaskEvent> events) {
+    void processDataEvents(List<DataEvent<?>> events) {
         lock.lock();
         try {
-            List<UserTaskEvent> newEvents = filterNewestTaskEventsInContext(context, events);
+            List<TaskDataEvent> newTaskDataEvents = filterNewestTaskEventsInContext(context, events);
             if (currentSolution.get() == null) {
-                // b) no solution exists, start if from the events information.
-                List<UserTaskEvent> activeTaskEvents = newEvents.stream()
+                List<TaskDataEvent> activeTaskEvents = newTaskDataEvents.stream()
                         .filter(IS_ACTIVE_TASK_EVENT)
                         .collect(Collectors.toList());
                 if (!activeTaskEvents.isEmpty()) {
+                    // b) no solution exists, store the events and get the users from the external user service.
                     startingEvents = activeTaskEvents;
                     startingFromEvents.set(true);
                     solutionDataLoader.start(this::onSolutionDataLoad,
@@ -240,17 +258,19 @@ public class TaskAssigningService {
                     resumeEvents();
                 }
             } else {
-                // a) a solution exists, calculate and apply the potential changes to apply.
+                // a) a solution exists, calculate and apply the potential changes if any.
+                UserDataEvent userDataEvent = filterNewestUserEvent(events);
                 List<ProblemFactChange<TaskAssigningSolution>> changes = SolutionChangesBuilder.create()
                         .forSolution(currentSolution.get())
                         .withContext(context)
                         .withUserServiceConnector(userServiceConnector)
-                        .fromTasksData(fromUserTaskEvents(newEvents))
+                        .fromTasksData(fromTaskDataEvents(newTaskDataEvents))
+                        .fromUserDataEvent(userDataEvent)
                         .build();
                 if (!changes.isEmpty()) {
                     solverExecutor.addProblemFactChanges(changes);
                 } else {
-                    resumeEvents();
+                    executePlanOrResumeEvents(currentSolution.get());
                 }
             }
         } finally {
@@ -294,38 +314,52 @@ public class TaskAssigningService {
         lock.lock();
         try {
             LOGGER.debug("process the next generated solution, applyingPlanningExecutionResult: {}", applyingPlanningExecutionResult.get());
+            if (LOGGER.isTraceEnabled()) {
+                traceSolution(LOGGER, solution);
+            }
             currentSolution.set(solution);
             context.setProcessedChangeSet(context.getCurrentChangeSetId());
             List<ProblemFactChange<TaskAssigningSolution>> pendingEventsChanges = null;
-            if (Boolean.TRUE.equals(applyingPlanningExecutionResult.get())) {
+            if (applyingPlanningExecutionResult.get()) {
+                // solution is the result of applying the pinning changes corresponding to the last executed plan,
+                // prioritize events that could have arrived in the middle if any.
                 applyingPlanningExecutionResult.set(false);
-                List<UserTaskEvent> pendingEvents = filterNewestTaskEventsInContext(context, pollEvents());
-                if (!pendingEvents.isEmpty()) {
+                List<DataEvent<?>> pendingEvents = pollEvents();
+                List<TaskDataEvent> pendingTaskDataEvents = filterNewestTaskEventsInContext(context, pendingEvents);
+                UserDataEvent pendingUserDataEvent = filterNewestUserEvent(pendingEvents);
+                if (!pendingTaskDataEvents.isEmpty() || pendingUserDataEvent != null) {
                     pendingEventsChanges = SolutionChangesBuilder.create()
                             .forSolution(solution)
                             .withContext(context)
                             .withUserServiceConnector(userServiceConnector)
-                            .fromTasksData(fromUserTaskEvents(pendingEvents))
+                            .fromTasksData(fromTaskDataEvents(pendingTaskDataEvents))
+                            .fromUserDataEvent(pendingUserDataEvent)
                             .build();
                 }
             }
-
             if (pendingEventsChanges != null && !pendingEventsChanges.isEmpty()) {
                 solverExecutor.addProblemFactChanges(pendingEventsChanges);
             } else {
-                List<PlanningItem> planningItems = PlanningBuilder.create()
-                        .forSolution(solution)
-                        .withContext(context)
-                        .withPublishWindowSize(config.getPublishWindowSize())
-                        .build();
-                if (!planningItems.isEmpty()) {
-                    planningExecutor.start(planningItems, this::onPlanningExecuted);
-                } else {
-                    resumeEvents();
-                }
+                executePlanOrResumeEvents(solution);
             }
         } finally {
             lock.unlock();
+        }
+    }
+
+    private void executePlanOrResumeEvents(TaskAssigningSolution solution) {
+        List<PlanningItem> planningItems = PlanningBuilder.create()
+                .forSolution(solution)
+                .withContext(context)
+                .withPublishWindowSize(config.getPublishWindowSize())
+                .build();
+        if (LOGGER.isTraceEnabled()) {
+            tracePlanning(LOGGER, planningItems);
+        }
+        if (!planningItems.isEmpty()) {
+            planningExecutor.start(planningItems, this::onPlanningExecuted);
+        } else {
+            resumeEvents();
         }
     }
 
@@ -391,11 +425,12 @@ public class TaskAssigningService {
     }
 
     /**
-     * Handles the TaskAssigningService finalization prodecure.
+     * Handles the TaskAssigningService finalization procedure.
      */
     void destroy() {
         try {
             LOGGER.info("Service is going down and will be destroyed.");
+            userServiceAdapter.destroy();
             solverExecutor.destroy();
             solutionDataLoader.destroy();
             planningExecutor.destroy();
@@ -407,6 +442,7 @@ public class TaskAssigningService {
 
     private void startUpValidation() {
         validateConfig();
+        validateAndSetUserService();
         validateSolver();
     }
 
@@ -414,24 +450,29 @@ public class TaskAssigningService {
         TaskAssigningConfigValidator.of(config).validate();
     }
 
+    private void validateAndSetUserService() {
+        userServiceConnector = serviceHelper.validateAndGetUserServiceConnector();
+        userServiceConnector.start();
+    }
+
     private void validateSolver() {
         solverFactory.buildSolver();
     }
 
     private void pauseEvents() {
-        userTaskEventConsumer.pause();
+        serviceEventConsumer.pause();
     }
 
     private void resumeEvents() {
-        userTaskEventConsumer.resume();
+        serviceEventConsumer.resume();
     }
 
-    private List<UserTaskEvent> pollEvents() {
-        return userTaskEventConsumer.pollEvents();
+    private List<DataEvent<?>> pollEvents() {
+        return serviceEventConsumer.pollEvents();
     }
 
     private boolean hasQueuedEvents() {
-        return userTaskEventConsumer.queuedEvents() > 0;
+        return serviceEventConsumer.queuedEvents() > 0;
     }
 
     TaskAssigningServiceContext createContext() {
@@ -448,5 +489,10 @@ public class TaskAssigningService {
 
     SolutionDataLoader createSolutionDataLoader(TaskServiceConnector taskServiceConnector, UserServiceConnector userServiceConnector) {
         return new SolutionDataLoader(taskServiceConnector, userServiceConnector);
+    }
+
+    UserServiceAdapter createUserServiceAdapter(TaskAssigningConfig config, TaskAssigningServiceEventConsumer serviceEventConsumer,
+            ManagedExecutor managedExecutor, UserServiceConnector userServiceConnector) {
+        return new UserServiceAdapter(config, serviceEventConsumer, managedExecutor, userServiceConnector);
     }
 }

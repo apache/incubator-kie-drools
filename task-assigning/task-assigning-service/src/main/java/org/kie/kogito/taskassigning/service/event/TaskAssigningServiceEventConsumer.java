@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.user.service.api;
+package org.kie.kogito.taskassigning.service.event;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
-public interface User {
+public interface TaskAssigningServiceEventConsumer {
 
-    String getId();
+    void pause();
 
-    Set<Group> getGroups();
+    void resume();
 
-    Map<String, Object> getAttributes();
+    List<DataEvent<?>> pollEvents();
+
+    int queuedEvents();
+
+    void accept(DataEvent<?> dataEvent);
 
 }

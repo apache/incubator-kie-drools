@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.user.service.api;
+package org.kie.kogito.taskassigning.user.service;
 
-public interface Group {
+import java.util.Map;
+import java.util.Set;
+
+public interface User {
 
     String getId();
+
+    Set<Group> getGroups();
+
+    Map<String, Object> getAttributes();
 
 }

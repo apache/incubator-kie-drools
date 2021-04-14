@@ -27,12 +27,14 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 import org.kie.kogito.taskassigning.service.TaskData;
+import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.messaging.UserTaskEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
+import static org.mockito.Mockito.mock;
 
 class TaskUtilTest {
 
@@ -90,7 +92,16 @@ class TaskUtilTest {
     }
 
     @Test
-    void fromUserTaskEvents() {
+    void fromTaskDataEvents() {
+        TaskData taskData1 = mock(TaskData.class);
+        TaskData taskData2 = mock(TaskData.class);
+        List<TaskData> result = TaskUtil.fromTaskDataEvents(Arrays.asList(new TaskDataEvent(taskData1),
+                new TaskDataEvent(taskData2)));
+        assertThat(result).containsExactly(taskData1, taskData2);
+    }
+
+    @Test
+    void fromUserTaskEvent() {
         UserTaskEvent userTaskEvent = new UserTaskEvent();
         userTaskEvent.setTaskId(TASK_ID);
         userTaskEvent.setDescription(TASK_DESCRIPTION);
@@ -112,10 +123,9 @@ class TaskUtilTest {
         userTaskEvent.setReferenceName(REFERENCE_NAME);
         userTaskEvent.setLastUpdate(LAST_UPDATE);
         userTaskEvent.setEndpoint(ENDPOINT);
-        List<TaskData> result = TaskUtil.fromUserTaskEvents(Collections.singletonList(userTaskEvent));
-        assertThat(result).hasSize(1);
-        TaskData taskData = result.get(0);
-        assertExpectedTaskData(taskData);
+        TaskData result = TaskUtil.fromUserTaskEvent(userTaskEvent);
+        assertThat(result).isNotNull();
+        assertExpectedTaskData(result);
     }
 
     @Test

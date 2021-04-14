@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.kie.kogito.taskassigning.user.service.api.User;
-import org.kie.kogito.taskassigning.user.service.api.UserServiceConnector;
+import org.kie.kogito.taskassigning.user.service.User;
+import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

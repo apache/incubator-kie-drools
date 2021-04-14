@@ -43,7 +43,7 @@ import static org.kie.kogito.taskassigning.service.util.UserUtil.filterDuplicate
 public class SolutionBuilder {
 
     private List<TaskData> taskDataList;
-    private List<org.kie.kogito.taskassigning.user.service.api.User> externalUsers;
+    private List<org.kie.kogito.taskassigning.user.service.User> externalUsers;
 
     private SolutionBuilder() {
     }
@@ -57,7 +57,7 @@ public class SolutionBuilder {
         return this;
     }
 
-    public SolutionBuilder withUsers(List<org.kie.kogito.taskassigning.user.service.api.User> externalUsers) {
+    public SolutionBuilder withUsers(List<org.kie.kogito.taskassigning.user.service.User> externalUsers) {
         this.externalUsers = externalUsers;
         return this;
     }

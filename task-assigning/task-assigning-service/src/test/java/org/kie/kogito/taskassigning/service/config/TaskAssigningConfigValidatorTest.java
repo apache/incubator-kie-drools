@@ -18,6 +18,8 @@ package org.kie.kogito.taskassigning.service.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +35,9 @@ class TaskAssigningConfigValidatorTest {
     private static final String CREDENTIALS_SECRET = "CREDENTIALS_SECRET";
     private static final String CLIENT_USER = "CLIENT_USER";
     private static final String CLIENT_PASSWORD = "CLIENT_PASSWORD";
+    private static final Duration SYNC_INTERVAL = Duration.of(1, ChronoUnit.MILLIS);
+    private static final int SYNC_RETRIES = 1;
+    private static final Duration SYNC_RETRY_INTERVAL = Duration.of(1, ChronoUnit.MILLIS);
 
     @Test
     void validateDataIndexUrlNotSet() {
@@ -94,7 +99,37 @@ class TaskAssigningConfigValidatorTest {
         config.dataIndexServerUrl = new URL(DATA_INDEX_SERVER_URL);
         config.clientAuthUser = Optional.of(CLIENT_USER);
         config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
+        config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.userServiceSyncRetryInterval = SYNC_RETRY_INTERVAL;
+        config.userServiceSyncRetries = SYNC_RETRIES;
         Assertions.assertDoesNotThrow(() -> TaskAssigningConfigValidator.of(config).validate());
+    }
+
+    @Test
+    void validateUserServiceSyncInterval() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForSyncConfigTest();
+        config.userServiceSyncInterval = Duration.of(-1, ChronoUnit.MILLIS);
+        assertThatThrownBy(() -> TaskAssigningConfigValidator.of(config).validate())
+                .hasMessageContaining(TaskAssigningConfigProperties.USER_SERVICE_SYNC_INTERVAL);
+    }
+
+    @Test
+    void validateUserServiceSyncRetries() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForSyncConfigTest();
+        config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.userServiceSyncRetries = -1;
+        assertThatThrownBy(() -> TaskAssigningConfigValidator.of(config).validate())
+                .hasMessageContaining(TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRIES);
+    }
+
+    @Test
+    void validateUserServiceSyncRetryInterval() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForSyncConfigTest();
+        config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.userServiceSyncRetries = SYNC_RETRIES;
+        config.userServiceSyncRetryInterval = Duration.of(-1, ChronoUnit.MILLIS);
+        assertThatThrownBy(() -> TaskAssigningConfigValidator.of(config).validate())
+                .hasMessageContaining(TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRY_INTERVAL);
     }
 
     private TaskAssigningConfig createValidKeycloakSet() throws MalformedURLException {
@@ -106,6 +141,16 @@ class TaskAssigningConfigValidatorTest {
         config.oidcCredentialsSecret = Optional.of(CREDENTIALS_SECRET);
         config.clientAuthUser = Optional.of(CLIENT_USER);
         config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
+        config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.userServiceSyncRetryInterval = SYNC_RETRY_INTERVAL;
+        config.userServiceSyncRetries = SYNC_RETRIES;
+        return config;
+    }
+
+    private TaskAssigningConfig createValidConfigForSyncConfigTest() throws MalformedURLException {
+        TaskAssigningConfig config = new TaskAssigningConfig();
+        config.dataIndexServerUrl = new URL(DATA_INDEX_SERVER_URL);
+        config.clientAuthUser = Optional.empty();
         return config;
     }
 }

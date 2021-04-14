@@ -29,8 +29,8 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
-import org.kie.kogito.taskassigning.user.service.api.User;
-import org.kie.kogito.taskassigning.user.service.api.UserServiceConnector;
+import org.kie.kogito.taskassigning.user.service.User;
+import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -134,8 +134,8 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
         return userTaskInstance;
     }
 
-    private static org.kie.kogito.taskassigning.user.service.api.User createExternalUser() {
-        return mock(org.kie.kogito.taskassigning.user.service.api.User.class);
+    private static org.kie.kogito.taskassigning.user.service.User createExternalUser() {
+        return mock(org.kie.kogito.taskassigning.user.service.User.class);
     }
 
     private class SolutionDataLoaderMock extends SolutionDataLoader {
