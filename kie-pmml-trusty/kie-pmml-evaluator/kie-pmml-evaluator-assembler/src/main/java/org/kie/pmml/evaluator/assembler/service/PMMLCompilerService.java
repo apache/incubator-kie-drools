@@ -126,29 +126,6 @@ public class PMMLCompilerService {
         }
     }
 
-//    /**
-//     * @param kbuilderImpl
-//     * @param resource
-//     * @return
-//     */
-//    public static List<KiePMMLModel> getKiePMMLModelsFromResourceWithSources(KnowledgeBuilderImpl kbuilderImpl,
-//                                                                             Resource resource) {
-//        PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
-//                                                                   PMMLCompilerService::getCompiler);
-//        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-//        String packageName = classNamePackageName[1];
-//        try {
-//            final List<KiePMMLModel> toReturn = pmmlCompiler.getKiePMMLModelsWithSources(packageName,
-//                                                                                         resource.getInputStream(),
-//                                                                                         getFileName(resource.getSourcePath()),
-//                                                                                         new HasKnowledgeBuilderImpl(kbuilderImpl));
-//            populateWithPMMLRuleMappers(toReturn, resource);
-//            return toReturn;
-//        } catch (IOException e) {
-//            throw new ExternalException("ExternalException", e);
-//        }
-//    }
-
     static void populateWithPMMLRuleMappers(final  List<KiePMMLModel> toReturn, final Resource resource) {
         for (KiePMMLModel kiePMMLModel : toReturn) {
             final List<String> generatedRuleMappers = new ArrayList<>();
