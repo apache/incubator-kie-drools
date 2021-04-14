@@ -17,8 +17,6 @@ package org.kie.pmml.models.clustering.model;
 
 import java.util.Optional;
 
-import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
-
 public class KiePMMLClusteringField {
 
     private final String field;

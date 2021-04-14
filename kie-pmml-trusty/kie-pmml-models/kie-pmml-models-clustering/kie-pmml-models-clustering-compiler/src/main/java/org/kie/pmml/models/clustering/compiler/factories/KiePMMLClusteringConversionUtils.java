@@ -29,10 +29,10 @@ import org.dmg.pmml.SimpleMatching;
 import org.dmg.pmml.SquaredEuclidean;
 import org.dmg.pmml.Tanimoto;
 import org.dmg.pmml.clustering.ClusteringModel;
+import org.kie.pmml.models.clustering.model.KiePMMLAggregateFunction;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
+import org.kie.pmml.models.clustering.model.KiePMMLCompareFunction;
 import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
-import org.kie.pmml.models.clustering.model.aggregate.KiePMMLAggregateFunction;
-import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
 
 public class KiePMMLClusteringConversionUtils {
 

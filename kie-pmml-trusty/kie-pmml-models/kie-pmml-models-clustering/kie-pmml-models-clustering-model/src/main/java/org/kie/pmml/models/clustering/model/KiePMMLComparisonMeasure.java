@@ -15,9 +15,6 @@
  */
 package org.kie.pmml.models.clustering.model;
 
-import org.kie.pmml.models.clustering.model.aggregate.KiePMMLAggregateFunction;
-import org.kie.pmml.models.clustering.model.compare.KiePMMLCompareFunction;
-
 public class KiePMMLComparisonMeasure {
 
     private final Kind kind;
