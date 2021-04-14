@@ -1,0 +1,221 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.trisotech.com/definitions/_a3671480-0abe-4221-9a22-1e5d82302923" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0" id="_a3671480-0abe-4221-9a22-1e5d82302923" name="Collect and 1NF duplicate Error Warning" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_a3671480-0abe-4221-9a22-1e5d82302923">
+  <dmn:extensionElements/>
+  <dmn:decision id="_778c067c-008d-4929-8633-cac0e520ae24" name="Determine loan SLAs">
+    <dmn:extensionElements/>
+    <dmn:variable id="_ddf7cabf-dadd-45e6-9fa1-e72a8ff4346e" name="Determine loan SLAs" typeRef="Any"/>
+    <dmn:informationRequirement id="_8bbeb899-ca43-4600-bd56-48e13dacd9ed">
+      <dmn:requiredInput href="#_ca899b24-7e2d-4117-8cf6-2c34cf163d59"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_17cb1f0b-6b9b-423a-b1d0-c9807dcd0898">
+      <dmn:requiredInput href="#_abeb93f1-ed5c-4b40-8179-ae4f2026a660"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_4237d55b-2589-48a5-8183-f9f4e0e00c07" typeRef="Any" hitPolicy="COLLECT" preferredOrientation="Rule-as-Row" outputLabel="Determine loan SLAs">
+      <dmn:input id="_3975aed6-26f8-4b8a-abb2-045c3e7b421e">
+        <dmn:inputExpression id="_1A78A95A-97E2-4711-B2D9-4C18ED053E31" typeRef="number">
+          <dmn:text>Amount</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_41d91d38-cb0c-4406-b2eb-c8442c76b802">
+        <dmn:inputExpression id="_E2C6F6F9-9B0F-4B7A-9AE0-1359FC3D8A2C" typeRef="string">
+          <dmn:text>Type</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_bf03d344-cc4b-40d0-bc86-bd5f734738d3" name="name" typeRef="string"/>
+      <dmn:output id="_6352d2d9-5022-4616-9c53-fdba0c921eb5" name="sequence" typeRef="number"/>
+      <dmn:output id="_91801cf3-034d-410e-a8c7-07911eb92c52" name="sla" typeRef="dayTimeDuration"/>
+      <dmn:annotation name="Description"/>
+      <dmn:rule id="_8450e9cd-6ef8-4c5b-a82c-6106982da2db">
+        <dmn:inputEntry id="_2c1be052-cc5f-43a0-9ebf-ac7751cbcd35">
+          <dmn:text>&lt;1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_e712bf7c-bad8-4aab-ae3f-a0024bde585d">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_31f18889-532c-4a75-9326-29a1b5617ef8">
+          <dmn:text>"Application Review"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_68be4033-ae2c-46b3-a78c-07c1085dfb1c">
+          <dmn:text>1</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_1a72b63d-0666-4302-8715-46e4b975d58f">
+          <dmn:text>duration("P3D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_408409d7-1f7e-415f-a2f3-bf5149e2d6c1">
+        <dmn:inputEntry id="_621fa2cd-5e7a-445b-9280-4167cb295146">
+          <dmn:text>&lt;1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_0b15f9ac-4e54-4b1d-85b4-e1ebf97dff53">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_5050f69c-d06c-4b55-aff6-5f3fffaac2d9">
+          <dmn:text>"Credit Check"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_a264d61b-89a0-4cf3-925b-f49d44cf4dbe">
+          <dmn:text>2</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_fa1576c3-4e5c-43de-a0f0-7b4d82e9db0b">
+          <dmn:text>duration("P1D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_be6c10e0-9cfd-466f-8b73-f6f4c56f1931">
+        <dmn:inputEntry id="_20fd142e-dc24-4e0f-893b-923e42ec8785">
+          <dmn:text>&lt;1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_fa6f78f1-6808-40c6-9303-5fbf0ee0a8c6">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_aba0de78-382f-45f0-ba46-e9eae54cc03f">
+          <dmn:text>"Final Approval"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_bf6cb991-057b-4792-b9f3-696dc126c325">
+          <dmn:text>3</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_5947841b-7e02-4096-bf4a-928a714f4fb3">
+          <dmn:text>duration("P3D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_c806ce00-c3ec-4d10-be21-a789f3fad404">
+        <dmn:inputEntry id="_4d6cfdf0-40b2-4ad9-bbc3-a443b1aa0330">
+          <dmn:text>&gt;=1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8750c7a7-47b4-4307-98c1-15ff4ea1be8f">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_3578b8ad-aeb2-4689-a6a1-1be8d60888a1">
+          <dmn:text>"Application Review"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_47f106ec-347e-4726-b343-f7487101f725">
+          <dmn:text>1</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_38ff7af8-5623-465e-813c-8af481d752d7">
+          <dmn:text>duration("P4D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_548d5b18-04a3-4eb7-9a40-8c4d0c812dd2">
+        <dmn:inputEntry id="_62c7de32-0422-439b-9627-2dcf0b8f7cdc">
+          <dmn:text>&gt;=1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_256bd2af-a9bc-4198-a850-830c0847fc4a">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_be6a66ef-22f7-4889-9a2a-32c1b057308e">
+          <dmn:text>"Credit Check"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_7f92f9c8-3180-4b3c-a4f0-828705f15fcf">
+          <dmn:text>2</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_59b40cbd-cf6e-413a-a020-2007d1d54732">
+          <dmn:text>duration("P1D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_4f79402f-1811-4019-a510-a87a7fd1970c">
+        <dmn:inputEntry id="_6f6beace-8735-4830-bfdf-763dc9ee68d7">
+          <dmn:text>&gt;=1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_afd6a4cd-a578-4b53-8358-3cf557032524">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_f82ec826-be8d-47db-bce9-e5c2723fa955">
+          <dmn:text>"Risk Evaluation"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_bdeef757-666d-4a07-ad8d-cffaa655cf14">
+          <dmn:text>3</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_c7d3fb17-9349-489c-bf59-0468c28425f9">
+          <dmn:text>duration("P3D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_ff076db0-3cb2-4673-9121-aee3ba0bf560">
+        <dmn:inputEntry id="_e1414a87-1931-47a1-a79f-1b4d304403c1">
+          <dmn:text>&gt;=1000</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_c595375e-5ad9-4cb2-acc8-ce4f9f99b15d">
+          <dmn:text>"Personal"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_8b62df49-74ba-4be6-a68f-fae65aab3a67">
+          <dmn:text>"Application Review"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_88e42ca3-9952-483b-a945-0573bc937a47">
+          <dmn:text>4</dmn:text>
+        </dmn:outputEntry>
+        <dmn:outputEntry id="_9ccfcd1b-b1cb-4927-a3ae-a252368f96ae">
+          <dmn:text>duration("P4D")</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_ca899b24-7e2d-4117-8cf6-2c34cf163d59" name="Amount">
+    <dmn:extensionElements/>
+    <dmn:variable id="_732ac542-a708-4fcc-93a3-34280d4620bf" name="Amount" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:inputData id="_abeb93f1-ed5c-4b40-8179-ae4f2026a660" name="Type">
+    <dmn:extensionElements/>
+    <dmn:variable id="_b0814b29-c031-43d3-853b-db7e7b071905" name="Type" typeRef="string"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_98522a97-148b-4287-a0a6-7ffb7f950665" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+          <kie:ComponentWidths dmnElementRef="_4237d55b-2589-48a5-8183-f9f4e0e00c07"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_778c067c-008d-4929-8633-cac0e520ae24" dmnElementRef="_778c067c-008d-4929-8633-cac0e520ae24" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="320" y="281" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_ca899b24-7e2d-4117-8cf6-2c34cf163d59" dmnElementRef="_ca899b24-7e2d-4117-8cf6-2c34cf163d59" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="146.7588291168213" y="205.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_abeb93f1-ed5c-4b40-8179-ae4f2026a660" dmnElementRef="_abeb93f1-ed5c-4b40-8179-ae4f2026a660" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="146.7588291168213" y="325.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_8bbeb899-ca43-4600-bd56-48e13dacd9ed" dmnElementRef="_8bbeb899-ca43-4600-bd56-48e13dacd9ed">
+        <di:waypoint x="275.9968013763428" y="255.99999618530273"/>
+        <di:waypoint x="320" y="301"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_17cb1f0b-6b9b-423a-b1d0-c9807dcd0898" dmnElementRef="_17cb1f0b-6b9b-423a-b1d0-c9807dcd0898">
+        <di:waypoint x="275.9968013763428" y="375.99999618530273"/>
+        <di:waypoint x="320" y="311"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

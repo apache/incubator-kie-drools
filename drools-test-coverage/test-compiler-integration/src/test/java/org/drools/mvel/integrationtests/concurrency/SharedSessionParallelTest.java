@@ -48,7 +48,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         List<Object[]> params = new ArrayList<>();
         for (Boolean[] baseParam : baseParams) {
             for (Object[] kbParam : kbParams) {
-                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutabelModel()) {
+                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutableModel()) {
                     // jitting & exec-model test is not required
                 } else {
                     params.add(new Object[] {baseParam[0], kbParam[0]});

@@ -3830,7 +3830,6 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    // Flow DSL is incorrectly adding a Person Pattern before the accumulate
     public void testAccumulateOnTwoPatterns() {
         // DROOLS-5738
         String str =
@@ -3853,5 +3852,38 @@ public class AccumulateTest extends BaseModelTest {
         List<Number> results = getObjectsIntoList(ksession, Number.class);
         assertEquals( 1, results.size() );
         assertEquals( 90, results.get(0) );
+    }
+  
+    @Test
+    public void testPositionalAccumulate() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "declare Person\n" +
+                "    name : String \n" +
+                "    age : int \n" +
+                "end" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new Person(\"Mark\", 37));\n" +
+                "  insert(new Person(\"Edson\", 35));\n" +
+                "  insert(new Person(\"Mario\", 40));\n" +
+                "end\n" +
+                "rule X when\n" +
+                "  accumulate ( Person ( $name, $age; ); \n" +
+                "                $sum : sum($age)  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(112, results.iterator().next().getValue());
     }
 }

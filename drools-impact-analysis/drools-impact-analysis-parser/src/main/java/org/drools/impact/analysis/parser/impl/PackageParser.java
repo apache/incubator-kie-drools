@@ -49,7 +49,7 @@ public class PackageParser {
     }
 
     private Rule parseRule( RuleDescr ruleDescr ) {
-        RuleContext context = new RuleContext(kbuilder, packageModel, pkgRegistry.getTypeResolver(), false);
+        RuleContext context = new RuleContext(kbuilder, packageModel, pkgRegistry.getTypeResolver());
         context.setDialectFromAttributes( packageDescr.getAttributes() );
         Rule rule = new Rule( packageDescr.getName(), ruleDescr.getName(), ruleDescr.getResource().getSourcePath() );
 

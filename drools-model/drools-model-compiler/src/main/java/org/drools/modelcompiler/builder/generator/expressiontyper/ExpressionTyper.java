@@ -336,6 +336,9 @@ public class ExpressionTyper {
     private Optional<TypedExpression> createMapAccessExpression(Expression index, Expression scope, java.lang.reflect.Type type) {
         MethodCallExpr mapAccessExpr = new MethodCallExpr(scope, "get" );
         mapAccessExpr.addArgument(index);
+        if(index.isNameExpr()) {
+            context.addUsedDeclarations(printConstraint(index));
+        }
         TypedExpression typedExpression = new TypedExpression(mapAccessExpr, type);
         return of(typedExpression);
     }
