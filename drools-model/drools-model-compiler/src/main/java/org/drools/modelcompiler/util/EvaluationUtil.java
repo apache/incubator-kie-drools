@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import org.drools.core.base.CoercionUtil;
+import org.drools.core.time.TimeUtils;
 import org.drools.core.util.DateUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetBitMask;
@@ -338,5 +339,13 @@ public class EvaluationUtil {
 
     public static LocalDateTime convertDateTimeLocal( String s) {
         return convertDateLocal(s).atStartOfDay();
+    }
+
+    public static int string2Int(String s) {
+        try {
+            return Integer.parseInt( s );
+        } catch (NumberFormatException nfe) {
+            return (int) TimeUtils.parseTimeString( s );
+        }
     }
 }

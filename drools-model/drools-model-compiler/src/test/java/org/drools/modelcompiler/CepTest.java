@@ -1260,4 +1260,5 @@ public class CepTest extends BaseModelTest {
         } finally {
             Locale.setDefault(defaultLoc);
         }
-    }}
+    }
+}

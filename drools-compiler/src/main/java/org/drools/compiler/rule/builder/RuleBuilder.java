@@ -465,16 +465,20 @@ public class RuleBuilder {
                 return null;
             }
 
-            TimerExpression times = ConstraintBuilder.get().buildTimerExpression( tok.nextToken().trim(), context );
-            TimerExpression period = tok.hasMoreTokens() ?
-                    ConstraintBuilder.get().buildTimerExpression( tok.nextToken().trim(), context ) :
-                    ConstraintBuilder.get().buildTimerExpression( "0", context );
+            TimerExpression times = createTimerExpression( context, exprCreator, tok.nextToken().trim() );
+            TimerExpression period = createTimerExpression( context, exprCreator, tok.hasMoreTokens() ? tok.nextToken().trim() : "0");
 
             return new ExpressionIntervalTimer( exprCreator.apply(startDate), exprCreator.apply(endDate), repeatLimit, times, period );
         }
 
         errorManager.accept( "Protocol for timer does not exist '" + timerString +"'" );
         return null;
+    }
+
+    private static TimerExpression createTimerExpression( RuleBuildContext context, Function<String, TimerExpression> exprCreator, String expression ) {
+        return context != null ?
+                ConstraintBuilder.get().buildTimerExpression( expression, context ) :
+                exprCreator.apply( expression );
     }
 
     private static String extractParam(String timerString, String name) {
