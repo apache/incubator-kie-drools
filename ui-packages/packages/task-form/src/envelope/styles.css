@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
-import { init } from '@kogito-apps/task-inbox';
-
-init({
-  container: document.getElementById('envelope-app')!,
-  bus: {
-    postMessage<D, Type>(
-      message: EnvelopeBusMessage<D, Type>,
-      targetOrigin?: string,
-      transfer?: any
-    ) {
-      window.parent.postMessage(message, '*', transfer);
-    }
-  }
-});
+.kogito-task-form-container {
+    height: 100%;
+}

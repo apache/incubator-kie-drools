@@ -18,13 +18,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { EnvelopeBus } from '@kogito-tooling/envelope-bus/dist/api';
 import { TaskInboxChannelApi, TaskInboxEnvelopeApi } from '../api';
-import { Envelope } from '@kogito-tooling/envelope';
 import { TaskInboxEnvelopeContext } from './TaskInboxEnvelopeContext';
 import {
   TaskInboxEnvelopeView,
   TaskInboxEnvelopeViewApi
 } from './TaskInboxEnvelopeView';
 import { TaskInboxEnvelopeApiImpl } from './TaskInboxEnvelopeApiImpl';
+import { Envelope, EnvelopeDivConfig } from '@kogito-tooling/envelope';
 
 /**
  * Function that starts an Envelope application.
@@ -33,7 +33,11 @@ import { TaskInboxEnvelopeApiImpl } from './TaskInboxEnvelopeApiImpl';
  * @param args.bus: The implementation of a `bus` that knows how to send messages to the Channel.
  *
  */
-export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
+export function init(args: {
+  config: EnvelopeDivConfig;
+  container: HTMLDivElement;
+  bus: EnvelopeBus;
+}) {
   /**
    * Creates a new generic Envelope, typed with the right interfaces.
    */
@@ -42,7 +46,7 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
     TaskInboxChannelApi,
     TaskInboxEnvelopeViewApi,
     TaskInboxEnvelopeContext
-  >(args.bus);
+  >(args.bus, args.config);
 
   /**
    * Function that knows how to render a TaskInbox.

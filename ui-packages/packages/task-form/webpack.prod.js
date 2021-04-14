@@ -28,7 +28,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'styles/styles.css',
+      filename: 'envelope/styles.css',
       chunkFilename: '[name].bundle.css'
     })
   ],
@@ -60,7 +60,7 @@ module.exports = merge(common, {
         use: [{
           loader: MiniCssExtractPlugin.loader,
           options: {
-            publicPath: '../../',
+            publicPath: '../',
           }
         }, 'css-loader']
       }

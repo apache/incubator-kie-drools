@@ -51,7 +51,6 @@ const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       allTaskStates={getAllTaskStates()}
       activeTaskStates={getActiveTaskStates()}
       targetOrigin={window.location.origin}
-      envelopePath={'/envelope/task-inbox.html'}
     />
   );
 };

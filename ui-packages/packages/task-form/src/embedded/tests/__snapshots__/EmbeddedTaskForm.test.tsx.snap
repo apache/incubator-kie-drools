@@ -8,7 +8,6 @@ exports[`EmbeddedTaskForm tests Snapshot 1`] = `
       "getTaskFormSchema": [MockFunction],
     }
   }
-  envelopePath="path"
   targetOrigin="origin"
   userTask={
     Object {
@@ -38,23 +37,7 @@ exports[`EmbeddedTaskForm tests Snapshot 1`] = `
   }
 >
   <ForwardRef>
-    <iframe
-      src="path"
-      style={
-        Object {
-          "border": "none",
-          "display": "flex",
-          "flex": 1,
-          "flexDirection": "column",
-          "height": "100%",
-          "margin": 0,
-          "overflow": "hidden",
-          "padding": 0,
-          "width": "100%",
-        }
-      }
-      title="X"
-    />
+    <div />
   </ForwardRef>
 </ForwardRef>
 `;

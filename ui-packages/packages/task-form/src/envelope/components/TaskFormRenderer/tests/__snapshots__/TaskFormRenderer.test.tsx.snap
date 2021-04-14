@@ -136,7 +136,7 @@ exports[`TaskFormRenderer Test Form rendering 1`] = `
   }
 >
   <div
-    data-ouia-component-type="task-form"
+    data-ouia-component-type="task-form-renderer"
     data-ouia-safe={true}
   >
     <MockedFormRenderer

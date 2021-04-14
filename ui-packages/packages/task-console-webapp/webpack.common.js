@@ -8,8 +8,6 @@ const BG_IMAGES_DIRNAME = 'bgimages';
 module.exports = {
   entry: {
     app: path.resolve(__dirname, 'src', 'index.tsx'),
-    'envelope/task-inbox': './src/envelope/task-inbox.ts',
-    'envelope/task-form': './src/envelope/task-form.ts'
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -24,11 +22,6 @@ module.exports = {
       KOGITO_TASK_STATES_LIST: 'Ready,Reserved,Completed,Aborted,Skipped',
       KOGITO_TASK_ACTIVE_STATES_LIST: 'Ready,Reserved',
       TEST_USER_SYSTEM_ENABLED: false
-    }),
-    new CopyPlugin({
-      patterns: [
-        { from: "./envelope", to: "./envelope" }
-      ],
     }),
   ],
   module: {
@@ -66,6 +59,9 @@ module.exports = {
           ),
           path.resolve(
               '../../node_modules/@kogito-apps/consoles-common/dist/src/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/task-form/dist/static'
           ),
           path.resolve('./src/static')
         ],
@@ -123,6 +119,9 @@ module.exports = {
           ),
           path.resolve(
               '../../node_modules/@kogito-apps/consoles-common/dist/src/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/task-form/dist/static'
           )
         ],
         use: [

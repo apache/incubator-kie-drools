@@ -57,7 +57,6 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
         }
       }}
       targetOrigin={window.location.origin}
-      envelopePath={'/envelope/task-form.html'}
     />
   );
 };

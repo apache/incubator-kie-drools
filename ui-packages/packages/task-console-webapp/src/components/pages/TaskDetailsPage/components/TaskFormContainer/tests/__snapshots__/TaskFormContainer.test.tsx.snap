@@ -40,7 +40,6 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
         "getTaskFormSchema": [Function],
       }
     }
-    envelopePath="/envelope/task-form.html"
     targetOrigin="http://localhost"
     userTask={
       Object {
@@ -70,23 +69,7 @@ exports[`TaskFormContainer tests Snapshot 1`] = `
     }
   >
     <ForwardRef>
-      <iframe
-        src="/envelope/task-form.html"
-        style={
-          Object {
-            "border": "none",
-            "display": "flex",
-            "flex": 1,
-            "flexDirection": "column",
-            "height": "100%",
-            "margin": 0,
-            "overflow": "hidden",
-            "padding": 0,
-            "width": "100%",
-          }
-        }
-        title="X"
-      />
+      <div />
     </ForwardRef>
   </ForwardRef>
 </TaskFormContainer>

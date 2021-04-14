@@ -39,11 +39,9 @@ describe('EmbeddedTaskInbox tests', () => {
     );
     expect(wrapper.props().driver).toStrictEqual(props.driver);
     expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-    expect(wrapper.props().envelopePath).toStrictEqual(props.envelopePath);
 
-    const iframe = wrapper.find('iframe');
+    const contentDiv = wrapper.find('div');
 
-    expect(iframe.exists()).toBeTruthy();
-    expect(iframe.props().src).toBe(props.envelopePath);
+    expect(contentDiv.exists()).toBeTruthy();
   });
 });

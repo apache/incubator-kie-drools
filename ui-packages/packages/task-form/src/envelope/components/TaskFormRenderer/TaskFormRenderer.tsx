@@ -79,7 +79,7 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   return (
-    <div {...componentOuiaProps(ouiaId, 'task-form', ouiaSafe)}>
+    <div {...componentOuiaProps(ouiaId, 'task-form-renderer', ouiaSafe)}>
       <FormRenderer
         formSchema={formSchema}
         model={formData || generateFormData(userTask)}

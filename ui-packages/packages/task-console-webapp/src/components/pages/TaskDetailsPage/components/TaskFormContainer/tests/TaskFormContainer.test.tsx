@@ -74,7 +74,6 @@ describe('TaskFormContainer tests', () => {
 
     const forwardRef = wrapper.childAt(0);
     expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().envelopePath).toBe('/envelope/task-form.html');
     expect(forwardRef.props().targetOrigin).toBe('http://localhost');
   });
 });

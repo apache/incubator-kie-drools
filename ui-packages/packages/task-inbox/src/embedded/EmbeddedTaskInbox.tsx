@@ -25,10 +25,12 @@ import {
   TaskInboxState
 } from '../api';
 import { TaskInboxChannelApiImpl } from './TaskInboxChannelApiImpl';
+import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { init } from '../envelope';
+import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
 
 export interface Props {
   targetOrigin: string;
-  envelopePath: string;
   initialState?: TaskInboxState;
   driver: TaskInboxDriver;
   allTaskStates?: string[];
@@ -42,8 +44,25 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
         envelopeServer: EnvelopeServer<
           TaskInboxChannelApi,
           TaskInboxEnvelopeApi
-        >
+        >,
+        container: () => HTMLDivElement
       ) => {
+        init({
+          config: {
+            containerType: ContainerType.DIV,
+            envelopeId: envelopeServer.id
+          },
+          container: container(),
+          bus: {
+            postMessage<D, Type>(
+              message: EnvelopeBusMessage<D, Type>,
+              targetOrigin?: string,
+              transfer?: any
+            ) {
+              window.parent.postMessage(message, '*', transfer);
+            }
+          }
+        });
         return envelopeServer.envelopeApi.requests.taskInbox__init(
           {
             origin: envelopeServer.origin,
@@ -72,10 +91,10 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
     const EmbeddedEnvelope = useMemo(() => {
       return EmbeddedEnvelopeFactory({
         api: new TaskInboxChannelApiImpl(props.driver),
-        envelopePath: props.envelopePath,
         origin: props.targetOrigin,
         refDelegate,
-        pollInit
+        pollInit,
+        config: { containerType: ContainerType.DIV }
       });
     }, []);
 

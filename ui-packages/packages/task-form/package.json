@@ -28,13 +28,13 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@kogito-apps/components-common": "^1.0.0",
+    "@kogito-apps/task-inbox": "^1.0.0",
+    "@types/json-schema": "^7.0.7",
     "ajv": "6.12.2",
     "uniforms": "3.0.0",
     "uniforms-bridge-json-schema": "3.0.0",
-    "uniforms-patternfly": "4.1.2",
-    "@types/json-schema": "^7.0.7",
-    "@kogito-apps/components-common": "^1.0.0",
-    "@kogito-apps/task-inbox": "^1.0.0"
+    "uniforms-patternfly": "4.1.2"
   },
   "devDependencies": {
     "babel-loader": "8.1.0",

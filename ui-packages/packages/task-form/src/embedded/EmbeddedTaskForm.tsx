@@ -25,10 +25,12 @@ import {
   TaskFormEnvelopeApi
 } from '../api';
 import { EmbeddedTaskFormChannelApiImpl } from './EmbeddedTaskFormChannelApiImpl';
+import { init } from '../envelope';
+import { ContainerType } from '@kogito-tooling/envelope/dist/api';
+import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
 
 export interface EmbeddedTaskFormProps {
   targetOrigin: string;
-  envelopePath: string;
   userTask: UserTaskInstance;
   driver: TaskFormDriver;
 }
@@ -39,8 +41,25 @@ export const EmbeddedTaskForm = React.forwardRef<
 >((props, forwardedRef) => {
   const pollInit = useCallback(
     (
-      envelopeServer: EnvelopeServer<TaskFormChannelApi, TaskFormEnvelopeApi>
+      envelopeServer: EnvelopeServer<TaskFormChannelApi, TaskFormEnvelopeApi>,
+      container: () => HTMLDivElement
     ) => {
+      init({
+        config: {
+          containerType: ContainerType.DIV,
+          envelopeId: envelopeServer.id
+        },
+        container: container(),
+        bus: {
+          postMessage<D, Type>(
+            message: EnvelopeBusMessage<D, Type>,
+            targetOrigin?: string,
+            transfer?: any
+          ) {
+            window.parent.postMessage(message, '*', transfer);
+          }
+        }
+      });
       return envelopeServer.envelopeApi.requests.taskForm__init(
         {
           origin: envelopeServer.origin,
@@ -62,10 +81,10 @@ export const EmbeddedTaskForm = React.forwardRef<
   const EmbeddedEnvelope = useMemo(() => {
     return EmbeddedEnvelopeFactory({
       api: new EmbeddedTaskFormChannelApiImpl(props.driver),
-      envelopePath: props.envelopePath,
       origin: props.targetOrigin,
       refDelegate,
-      pollInit
+      pollInit,
+      config: { containerType: ContainerType.DIV }
     });
   }, []);
 

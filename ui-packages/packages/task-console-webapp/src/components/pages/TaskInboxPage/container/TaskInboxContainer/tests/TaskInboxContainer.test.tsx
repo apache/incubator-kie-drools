@@ -53,7 +53,6 @@ describe('TaskInboxContainer tests', () => {
       'Skipped'
     ]);
     expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().envelopePath).toBe('/envelope/task-inbox.html');
     expect(forwardRef.props().targetOrigin).toBe('http://localhost');
   });
 });
