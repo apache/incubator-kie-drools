@@ -60,6 +60,20 @@
       <version>${version.io.quarkus}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -73,7 +87,7 @@
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
+          <systemPropertyVariables combine.children="append">
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
         </configuration>

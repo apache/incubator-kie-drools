@@ -128,10 +128,10 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <systemProperties>
+          <systemPropertyVariables>
             <!-- enforce strict variable checking for the sake of tests -->
             <org.jbpm.variable.strict>true</org.jbpm.variable.strict>
-          </systemProperties>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>

@@ -20,6 +20,26 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>process-management-addon</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -28,9 +48,6 @@
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
           <streamLogs>true</streamLogs>
-          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-          <useLocalRepository>true</useLocalRepository>
           <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
           <properties>
             <version.io.quarkus>${version.io.quarkus}</version.io.quarkus>

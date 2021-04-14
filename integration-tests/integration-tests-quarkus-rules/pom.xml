@@ -132,7 +132,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
+          <systemPropertyVariables combine.children="append">
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
           </systemPropertyVariables>
@@ -164,9 +164,9 @@
                   <goal>verify</goal>
                 </goals>
                 <configuration>
-                  <systemProperties>
+                  <systemPropertyVariables combine.children="append">
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                  </systemProperties>
+                  </systemPropertyVariables>
                 </configuration>
               </execution>
             </executions>

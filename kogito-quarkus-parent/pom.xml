@@ -43,7 +43,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
+          <systemPropertyVariables combine.children="append">
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
         </configuration>

@@ -82,9 +82,9 @@
                     <excludes>
                         <exclude>**/Native*IT.java</exclude>
                     </excludes>
-                    <systemProperties>
+                    <systemPropertyVariables combine.children="append">
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>

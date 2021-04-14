@@ -15,11 +15,26 @@
     <maven.compiler.release>11</maven.compiler.release> 
   </properties>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <configuration>
+            <localRepositoryPath>${session.request.localRepositoryPath.path}</localRepositoryPath>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <profiles>
     <profile>
       <id>default</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!productized</name>
+        </property>
       </activation>
       <modules>
         <module>kogito-springboot-archetype</module>
@@ -37,6 +52,29 @@
         <module>kogito-springboot-dm-archetype</module>
         <module>kogito-quarkus-dm-archetype</module>
       </modules>
+    </profile>
+    <profile>
+      <!--
+        This profile serves at optionally passing settingsFile property to archetype::integration-test goal.
+        Reason is that the ${session.request.userSettingsFile.path} property defaults to ~/.m2/settings.xml even
+        if that file does not actually exist. Tests were in such case failing.
+      -->
+      <id>set-settings-when-provided</id>
+      <activation>
+        <file><exists>${session.request.userSettingsFile.path}</exists></file>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-archetype-plugin</artifactId>
+              <configuration>
+                <settingsFile>${session.request.userSettingsFile.path}</settingsFile>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 

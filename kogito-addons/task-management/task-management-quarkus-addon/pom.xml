@@ -95,7 +95,7 @@
           <includes>
             <include>org/kie/kogito/task/management/test/*</include>
           </includes>
-          <systemPropertyVariables>
+          <systemPropertyVariables combine.children="append">
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
           </systemPropertyVariables>

@@ -98,13 +98,13 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>@version.surefire.plugin@</version>
                 <configuration>
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
                         <!-- quarkus plugin and being run by invoker, need to pass explicitly -->
                         <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
                         <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

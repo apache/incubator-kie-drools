@@ -96,7 +96,7 @@
               <goal>verify</goal>
             </goals>
             <configuration>
-              <systemPropertyVariables>
+              <systemPropertyVariables combine.children="append">
                 <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
               </systemPropertyVariables>
             </configuration>

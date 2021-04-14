@@ -45,6 +45,10 @@ import static org.hamcrest.Matchers.is;
 public class DevMojoIT extends RunAndCheckMojoTestBase {
 
     private static final String HTTP_TEST_PORT = "65535";
+    private static final String PROPERTY_MAVEN_REPO_LOCAL = "maven.repo.local";
+    private static final String PROPERTY_MAVEN_SETTINGS = "maven.settings";
+    private static final String MAVEN_REPO_LOCAL = System.getProperty(PROPERTY_MAVEN_REPO_LOCAL);
+    private static final String MAVEN_SETTINGS = System.getProperty(PROPERTY_MAVEN_SETTINGS);
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -90,7 +94,29 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
 
         // Since the Kogito extension split, this requires more memory, going for a default of 1GB, per surefire.
         args.add("-Djvm.args=-Xmx1024m");
+
+        args.addAll(getProvidedMavenProperties());
+
         running.execute(args, Collections.emptyMap());
+    }
+
+    private List<String> getProvidedMavenProperties() {
+        List<String> additionalArguments = new ArrayList<>();
+        if (MAVEN_REPO_LOCAL != null) {
+            additionalArguments.add(String.format("-D%s=%s", PROPERTY_MAVEN_REPO_LOCAL, MAVEN_REPO_LOCAL));
+        }
+        if (MAVEN_SETTINGS != null) {
+            /*
+             * Invoker would fail if the received settings.xml file did not exist.
+             * That can happen when ${session.request.userSettingsFile.path} is passed as value for maven.settings
+             * property from the pom.xml and at the same time user does not have settings.xml in ~/.m2/ nor they provided
+             * specific settings.xml using -s argument.
+             */
+            if (new File(MAVEN_SETTINGS).exists()) {
+                additionalArguments.add(String.format("-s %s", MAVEN_SETTINGS));
+            }
+        }
+        return additionalArguments;
     }
 
     @Test

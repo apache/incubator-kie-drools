@@ -20,6 +20,12 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-springboot-starter</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

@@ -34,7 +34,40 @@
        <scope>test</scope>
     </dependency>
 
-
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-cloudevents-spring-boot-addon</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>process-management-springboot-addon</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>task-management-springboot-addon</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-spring-boot-starter-remote</artifactId>
@@ -92,9 +125,6 @@
           <artifactId>maven-invoker-plugin</artifactId>
           <configuration>
             <streamLogs>true</streamLogs>
-            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-            <useLocalRepository>true</useLocalRepository>
             <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
             <properties>
               <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
@@ -127,6 +157,13 @@
           <name>persistence</name>
         </property>
       </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>infinispan-persistence-addon</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
