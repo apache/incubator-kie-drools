@@ -59,6 +59,7 @@ import org.drools.model.Rule;
 import org.drools.model.UnitData;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
@@ -90,6 +91,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DAT
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.StringUtil.toId;
+import static org.drools.modelcompiler.util.TimerUtil.validateTimer;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class ModelGenerator {
@@ -264,14 +266,14 @@ public class ModelGenerator {
                         Integer.parseInt( value );
                         attributeCall.addArgument( value );
                     } catch (NumberFormatException nfe) {
-                        addDynamicAttributeArgument( context, attributeCall, value );
+                        addDynamicAttributeArgument( context, attributeCall, value, int.class );
                     }
                     break;
                 case "enabled":
                     if (value.equalsIgnoreCase( "true" ) || value.equalsIgnoreCase( "false" )) {
                         attributeCall.addArgument( value.toLowerCase() );
                     } else {
-                        addDynamicAttributeArgument( context, attributeCall, value );
+                        addDynamicAttributeArgument( context, attributeCall, value, boolean.class );
                     }
                     break;
                 case "no-loop":
@@ -283,8 +285,14 @@ public class ModelGenerator {
                 case "activation-group":
                 case "ruleflow-group":
                 case "duration":
-                case "timer":
                     attributeCall.addArgument( new StringLiteralExpr( value ) );
+                    break;
+                case "timer":
+                    if (validateTimer(value)) {
+                        attributeCall.addArgument( new StringLiteralExpr( value ) );
+                    } else {
+                        context.addCompilationError( new InvalidExpressionErrorResult(value) );
+                    }
                     break;
                 case "calendars":
                     if (value.startsWith( "[" )) {
@@ -305,13 +313,23 @@ public class ModelGenerator {
         return ruleAttributes;
     }
 
-    private static void addDynamicAttributeArgument( RuleContext context, MethodCallExpr attributeCall, String value ) {
+    private static void addDynamicAttributeArgument( RuleContext context, MethodCallExpr attributeCall, String value, Class<?> requiredAttributeType ) {
         ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
         ExpressionTyper expressionTyper = new ExpressionTyper(context, Integer.class, null, false, expressionTyperContext);
         Expression salienceExpr = parseExpression( value );
         Optional<TypedExpression> typedExpression = expressionTyper.toTypedExpression(salienceExpr).getTypedExpression();
         if (typedExpression.isPresent()) {
-            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), typedExpression.get().getExpression(), true, Optional.empty());
+            Expression expr = typedExpression.get().getExpression();
+            java.lang.reflect.Type exprType = typedExpression.get().getType();
+            if (requiredAttributeType == int.class) {
+                if (exprType == String.class) {
+                    expr = new MethodCallExpr("org.drools.modelcompiler.util.EvaluationUtil.string2Int", expr);
+                } else if (exprType == long.class || exprType == Long.class) {
+                    expr = new MethodCallExpr(expr, "intValue");
+                }
+            }
+
+            Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), expr, true, Optional.empty());
             MethodCallExpr supplyCall = new MethodCallExpr(null, SUPPLY_CALL);
             expressionTyperContext.getUsedDeclarations().stream()
                     .map(context::getVarExpr)
