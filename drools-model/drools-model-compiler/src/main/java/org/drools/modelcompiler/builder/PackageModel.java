@@ -462,7 +462,8 @@ public class PackageModel {
         }
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
-                "public final static java.time.format.DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = java.time.format.DateTimeFormatter.ofPattern(org.drools.core.util.DateUtils.getDateFormatMask(), java.util.Locale.ENGLISH);\n");
+                "public final static java.time.format.DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD +
+                        " = new java.time.format.DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(org.drools.core.util.DateUtils.getDateFormatMask()).toFormatter(java.util.Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> getNameMethod = parseBodyDeclaration(
