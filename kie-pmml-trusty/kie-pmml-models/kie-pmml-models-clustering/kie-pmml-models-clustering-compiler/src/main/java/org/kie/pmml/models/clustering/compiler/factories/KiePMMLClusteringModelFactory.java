@@ -161,7 +161,7 @@ public class KiePMMLClusteringModelFactory {
                         .map(DoubleLiteralExpr::new)
                         .forEach(arguments::add);
             } catch (NumberFormatException e) {
-                logger.error("Can't parse \"real\" missing value weights with value \"" + arrayStringValue + "\"", e);
+                logger.error("Can't parse \"real\" cluster with value \"" + arrayStringValue + "\"", e);
             }
         }
         return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLCluster.class.getCanonicalName()), arguments);
@@ -201,7 +201,7 @@ public class KiePMMLClusteringModelFactory {
                         .map(DoubleLiteralExpr::new)
                         .forEach(arguments::add);
             } catch (NumberFormatException e) {
-                logger.error("Can't parse \"real\" cluster with value \"" + arrayStringValue + "\"", e);
+                logger.error("Can't parse \"real\" missing value weights with value \"" + arrayStringValue + "\"", e);
             }
         }
 

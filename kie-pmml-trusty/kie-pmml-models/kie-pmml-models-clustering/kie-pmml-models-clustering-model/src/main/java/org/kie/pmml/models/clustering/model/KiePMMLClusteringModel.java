@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -46,6 +48,12 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+        List<String> fieldNames = clusteringFields.stream()
+                .map(KiePMMLClusteringField::getField)
+                .collect(Collectors.toList());
+
+        double adjustmentFactor = computeAdjustmentFactor(fieldNames, requestData);
+
         KiePMMLCompareFunction.Function[] compFn = clusteringFields.stream()
                 .map(cf -> toCompareFunctionFunction(cf.getCompareFunction().orElseGet(comparisonMeasure::getCompareFunction), cf))
                 .toArray(KiePMMLCompareFunction.Function[]::new);
@@ -65,7 +73,7 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         final KiePMMLAggregateFunction.Function aggregateFunction = toAggregateFunctionFunction(comparisonMeasure.getAggregateFunction());
 
         double[] aggregates = clusters.stream()
-                .mapToDouble(c -> aggregateFunction.aggregate(compFn, inputs, c.getValuesArray(), weights, 1.0))
+                .mapToDouble(c -> aggregateFunction.aggregate(compFn, inputs, c.getValuesArray(), weights, adjustmentFactor))
                 .toArray();
 
         int minIndex = 0;
@@ -79,6 +87,29 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         }
 
         return minIndex + 1;
+    }
+
+    private double computeAdjustmentFactor(List<String> fieldNames, Map<String, Object> requestData) {
+        double numerator = 1.0;
+        double denumerator = 1.0;
+
+        for (int i = 0; i < fieldNames.size(); i++) {
+            double weight = missingValueWeightFor(i);
+            double nonMissingFactor = requestData.containsKey(fieldNames.get(i)) ? 1.0 : 0.0;
+
+            numerator *= weight;
+            denumerator *= weight * nonMissingFactor;
+        }
+
+        return numerator / denumerator;
+    }
+
+    private double missingValueWeightFor(int fieldNumber) {
+        return Optional.ofNullable(missingValueWeights)
+                .map(KiePMMLMissingValueWeights::getValues)
+                .filter(v -> v.size() >= fieldNumber)
+                .map(v -> v.get(fieldNumber))
+                .orElse(1.0);
     }
 
     private KiePMMLAggregateFunction.Function toAggregateFunctionFunction(KiePMMLAggregateFunction compareFunction) {

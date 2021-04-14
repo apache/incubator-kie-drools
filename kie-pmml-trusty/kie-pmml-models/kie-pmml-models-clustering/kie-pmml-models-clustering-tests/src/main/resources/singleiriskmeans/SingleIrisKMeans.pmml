@@ -37,6 +37,9 @@
     <ClusteringField field="sepal_width" compareFunction="absDiff"/>
     <ClusteringField field="petal_length" compareFunction="absDiff"/>
     <ClusteringField field="petal_width" compareFunction="absDiff"/>
+    <MissingValueWeights>
+      <Array type="real" n="4">1 1 1 1</Array>
+    </MissingValueWeights>
     <Cluster name="cluster_0" size="32">
       <Array n="4" type="real">6.9125000000000005 3.099999999999999 5.846874999999999 2.1312499999999996</Array>
     </Cluster>
