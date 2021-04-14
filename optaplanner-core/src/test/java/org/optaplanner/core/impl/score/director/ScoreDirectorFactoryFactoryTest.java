@@ -111,7 +111,7 @@ class ScoreDirectorFactoryFactoryTest {
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withEasyScoreCalculatorClass(TestCustomPropertiesEasyScoreCalculator.class)
                 .withIncrementalScoreCalculatorClass(TestCustomPropertiesIncrementalScoreCalculator.class)
-                .withScoreDrls(getClass().getPackage().getName().replace('.', '/') + "/dummyDroolsConstraints.drl");
+                .withScoreDrls(getClass().getPackage().getName().replace('.', '/') + "/dummySimpleScoreDroolsConstraints.drl");
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> buildTestdataScoreDirectoryFactory(config))
                 .withMessageContaining("scoreDirectorFactory")
                 .withMessageContaining("together");

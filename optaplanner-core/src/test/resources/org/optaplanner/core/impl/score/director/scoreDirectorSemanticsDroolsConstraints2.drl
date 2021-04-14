@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director;
+package packageOverwrittenOnField;
 dialect "java"
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
 global SimpleScoreHolder scoreHolder;
+
+rule "Second weight"
+when
+    TestdataEntity()
+then
+    // Don't do anything. Only exists so that OptaPlanner doesn't fail fast on constraint configuration.
+end

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -77,6 +78,9 @@ public class BavetNodeBuildPolicy<Solution_> {
     }
 
     public List<BavetNode> getCreatedNodes() {
+        if (sharableNodeMap.isEmpty()) { // No constraints have a constraint weight greater than zero.
+            return Collections.emptyList();
+        }
         // Make a sequential list of unique nodes.
         SortedMap<Integer, BavetNode> nodeIndexToNodeMap = sharableNodeMap.keySet().stream()
                 .collect(Collectors.toMap(k -> k.getNodeIndex(), Function.identity(), (a, b) -> {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain.constraintconfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
@@ -35,6 +36,26 @@ public class TestdataConstraintConfigurationSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataConstraintConfigurationSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataConstraintConfigurationSolution.class, TestdataEntity.class);
+    }
+
+    public static TestdataConstraintConfigurationSolution generateSolution(int valueListSize, int entityListSize) {
+        TestdataConstraintConfigurationSolution solution =
+                new TestdataConstraintConfigurationSolution("Generated Solution 0");
+        List<TestdataValue> valueList = new ArrayList<>(valueListSize);
+        for (int i = 0; i < valueListSize; i++) {
+            TestdataValue value = new TestdataValue("Generated Value " + i);
+            valueList.add(value);
+        }
+        solution.setValueList(valueList);
+        List<TestdataEntity> entityList = new ArrayList<>(entityListSize);
+        for (int i = 0; i < entityListSize; i++) {
+            TestdataValue value = valueList.get(i % valueListSize);
+            TestdataEntity entity = new TestdataEntity("Generated Entity " + i, value);
+            entityList.add(entity);
+        }
+        solution.setEntityList(entityList);
+        solution.setConstraintConfiguration(new TestdataConstraintConfiguration(solution.getCode()));
+        return solution;
     }
 
     private TestdataConstraintConfiguration constraintConfiguration;

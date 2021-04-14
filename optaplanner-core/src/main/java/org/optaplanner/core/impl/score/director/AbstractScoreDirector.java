@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
@@ -460,12 +461,20 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void afterProblemPropertyChanged(Object problemFactOrEntity) {
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+        if (isConstraintConfiguration(problemFactOrEntity)) {
+            setWorkingSolution(workingSolution); // Nuke everything and recalculate, constraint weights have changed.
+        } else {
+            variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
+        }
     }
 
     @Override
     public void beforeProblemFactRemoved(Object problemFact) {
-        // Do nothing
+        if (isConstraintConfiguration(problemFact)) {
+            throw new IllegalStateException("Attempted to remove constraint configuration (" + problemFact +
+                    ") from solution (" + workingSolution + ").\n" +
+                    "Maybe use before/afterProblemPropertyChanged(...) instead.");
+        }
     }
 
     @Override
@@ -774,6 +783,17 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             }
         }
         return constraintMatchMap;
+    }
+
+    protected boolean isConstraintConfiguration(Object problemFactOrEntity) {
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
+        ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor =
+                solutionDescriptor.getConstraintConfigurationDescriptor();
+        if (constraintConfigurationDescriptor == null) {
+            return false;
+        }
+        return constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                .isInstance(problemFactOrEntity);
     }
 
     @Override
