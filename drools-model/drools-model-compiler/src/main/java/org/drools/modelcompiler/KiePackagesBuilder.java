@@ -596,7 +596,9 @@ public class KiePackagesBuilder {
         }
 
         RuleConditionElement source;
-        if (accumulatePattern.isCompositePatterns()) {
+        if (accumulatePattern.isQuerySource()) {
+            source = buildQueryPattern( ctx, (( QueryCallPattern ) accumulatePattern.getCondition()) );
+        } else if (accumulatePattern.isCompositePatterns()) {
             CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCondition();
             GroupElement allSubConditions = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
             for (Condition c : compositePatterns.getSubConditions()) {
@@ -1019,11 +1021,11 @@ public class KiePackagesBuilder {
 
         if ( pattern == null) {
             pattern = new Pattern( ctx.getNextPatternIndex(),
-                                   0, // tupleIndex will be set by ReteooBuilder
-                                   0, // tupleIndex will be set by ReteooBuilder
-                                   getObjectType( patternVariable ),
-                                   patternVariable.getName(),
-                                   true );
+                                 0, // tupleIndex will be set by ReteooBuilder
+                                 0, // tupleIndex will be set by ReteooBuilder
+                                 getObjectType( patternVariable ),
+                                 patternVariable.getName(),
+                                 true );
             pattern.setSource(priorSource);
         }
 
@@ -1196,7 +1198,8 @@ public class KiePackagesBuilder {
     private ObjectType getClassObjectType( Class<?> patternClass ) {
         return objectTypeCache.computeIfAbsent( patternClass.getCanonicalName(), name -> {
             boolean isEvent = false;
-            if ((!name.startsWith( "java.lang" ) || packages.containsKey( patternClass.getPackage().getName() )) && !patternClass.isPrimitive()) {
+            if (patternClass.getPackage() != null && !patternClass.isPrimitive() &&
+                (!name.startsWith( "java.lang" ) || packages.containsKey( patternClass.getPackage().getName() ))) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
