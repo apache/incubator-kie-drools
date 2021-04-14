@@ -48,8 +48,6 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ShortVa
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
 
     @Test
@@ -912,7 +910,7 @@ public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
                 "when\n" +
                 "  $p : Person()\n" +
                 "then\n" +
-                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n" +
+                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"d-MMM-yyyy\");\n" +
                 "  modify( $p ) {\n" +
                 "    setDateOfBirth( sdf.parse(\"15-Jul-1985\") )\n" +
                 "  }\n" +
@@ -1092,7 +1090,7 @@ public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
                 "when\n" +
                 "  $p : Person()\n" +
                 "then\n" +
-                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n" +
+                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"d-MMM-yyyy\");\n" +
                 "  $p.setDateOfBirth( sdf.parse(\"15-Jul-1985\") );\n" +
                 "end";
 
@@ -1183,7 +1181,7 @@ public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
                 "when\n" +
                 "  Person( )\n" +
                 "then\n" +
-                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n" +
+                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"d-MMM-yyyy\");\n" +
                 "  Person $var0 = new Person();\n" +
                 "  $var0.setDateOfBirth( sdf.parse(\"15-Jul-1985\") );\n" +
                 "  insert( $var0 );\n" +
@@ -1219,7 +1217,7 @@ public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
                 "when\n" +
                 "  Person( )\n" +
                 "then\n" +
-                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n" +
+                "  java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"d-MMM-yyyy\");\n" +
                 "  Person $var0 = new Person();\n" +
                 "  $var0.setDateOfBirth( sdf.parse(\"15-Jul-1985\") );\n" +
                 "  insertLogical( $var0 );\n" +

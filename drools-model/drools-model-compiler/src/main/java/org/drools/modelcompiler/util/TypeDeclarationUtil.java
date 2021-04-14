@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
@@ -50,6 +51,7 @@ public class TypeDeclarationUtil {
 
         wireClassAnnotations( typeClass, typeDeclaration );
         wireMetaTypeAnnotations( metaType, typeDeclaration );
+        wireFields(typeClass, typeDeclaration);
 
         return typeDeclaration;
     }
@@ -111,6 +113,14 @@ public class TypeDeclarationUtil {
         }
     }
 
+    private static void wireFields(Class<?> typeClass, TypeDeclaration typeDeclaration) {
+        ClassDefinitionForModel typeClassDef = (ClassDefinitionForModel) typeDeclaration.getTypeClassDef();
+        List<String> properties = ClassUtils.getAccessibleProperties(typeClass);
+        for (String property : properties) {
+            typeClassDef.getField(property); // populates fields
+        }
+    }
+
     public static TypeDeclaration createTypeDeclaration(Class<?> cls, PropertySpecificOption propertySpecificOption) {
         TypeDeclaration typeDeclaration = createTypeDeclarationForBean( cls, propertySpecificOption );
 
@@ -154,8 +164,17 @@ public class TypeDeclarationUtil {
         public final FieldDefinition getField(final String fieldName) {
             return fields.computeIfAbsent( fieldName, name -> {
                 java.lang.reflect.Field f = ClassUtils.getField( getDefinedClass(), name );
-                return f == null ? null : new FieldDefinitionForModel( f );
+                return f == null ? null : new FieldDefinitionForModel( this, f );
             });
+        }
+
+        @Override
+        public Map<String, Object> getAsMap(Object bean) {
+            Map<String, Object> m = new HashMap<String, Object>(fields.size());
+            for (String field : fields.keySet()) {
+                m.put(field, get(bean, field));
+            }
+            return m;
         }
     }
 
@@ -215,18 +234,41 @@ public class TypeDeclarationUtil {
 
     public static class FieldDefinitionForModel extends FieldDefinition {
 
+        private ClassDefinitionForModel classDef;
+
         private java.lang.reflect.Field field;
 
         public FieldDefinitionForModel() { }
 
-        public FieldDefinitionForModel(java.lang.reflect.Field field) {
+        public FieldDefinitionForModel(ClassDefinitionForModel classDef, java.lang.reflect.Field field) {
             super(field.getName(), field.getGenericType().getTypeName());
+            this.classDef = classDef;
             this.field = field;
         }
 
         @Override
         public Class<?> getType() {
             return field.getType();
+        }
+
+        @Override
+        public Object getValue(Object bean) {
+            return this.classDef.get(bean, field.getName());
+        }
+
+        @Override
+        public void setValue(Object bean, Object value) {
+            this.classDef.set(bean, field.getName(), value);
+        }
+
+        @Override
+        public Object get(Object bean) {
+            return this.classDef.get(bean, field.getName());
+        }
+
+        @Override
+        public void set(Object bean, Object value) {
+            this.classDef.set(bean, field.getName(), value);
         }
     }
 

@@ -305,7 +305,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return expr;
     }
 
-    public Evaluator buildLiteralEvaluator( RuleBuildContext context,
+    private Evaluator buildLiteralEvaluator( RuleBuildContext context,
                                                    InternalReadAccessor extractor,
                                                    LiteralRestrictionDescr literalRestrictionDescr,
                                                    ValueType vtype) {
@@ -321,7 +321,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                              right );
     }
 
-    public EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
+    private EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
         return ( extractor.isSelfReference() &&
                  !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
                          Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
@@ -560,42 +560,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         } finally {
             context.setTypesafe( typesafe );
         }
-    }
-
-    @Override
-    public TimerExpression buildTimerExpression( String expression, ClassLoader classLoader, Map<String, Declaration> decls ) {
-        if (expression == null) {
-            return null;
-        }
-
-        ParserConfiguration conf = new ParserConfiguration();
-        conf.setClassLoader( classLoader );
-
-        MVELAnalysisResult analysis = analyzeExpression( expression, conf, new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ), null ) );
-
-        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-        int i = usedIdentifiers.getDeclrClasses().keySet().size();
-        Declaration[] previousDeclarations = new Declaration[i];
-        i = 0;
-        for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
-            previousDeclarations[i++] = decls.get( id );
-        }
-        Arrays.sort(previousDeclarations, RuleTerminalNode.SortDeclarations.instance);
-
-        MVELCompilationUnit unit = MVELDialect.getMVELCompilationUnit( expression,
-                analysis,
-                previousDeclarations,
-                null,
-                null,
-                null,
-                "drools",
-                KnowledgeHelper.class,
-                false,
-                MVELCompilationUnit.Scope.EXPRESSION );
-
-        MVELObjectExpression expr = new MVELObjectExpression( unit, "mvel" );
-        expr.compile( conf );
-        return expr;
     }
 
     @Override

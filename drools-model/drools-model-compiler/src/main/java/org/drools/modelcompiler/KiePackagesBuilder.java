@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
@@ -155,7 +154,6 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
-import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
 import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
@@ -163,6 +161,7 @@ import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
+import static org.drools.modelcompiler.util.TimerUtil.buildTimerExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
@@ -346,10 +345,9 @@ public class KiePackagesBuilder {
     }
 
     private org.drools.core.time.impl.Timer parseTimer( RuleImpl ruleImpl, String timerExpr, RuleContext ctx ) {
-        if (!hasMvel()) {
-            throw new RuntimeException("Timers can be used only with drools-mvel on classpath");
-        }
-        return buildTimer(ruleImpl, timerExpr, null, expr -> ConstraintBuilder.get().buildTimerExpression( expr, ctx.getClassLoader(), ctx.getDeclarations() ), null);
+        return buildTimer(ruleImpl, timerExpr, null, expr -> buildTimerExpression( expr, ctx.getDeclarations() ), e -> {
+            throw new IllegalArgumentException("Invalid timer expression: '" + e + "' in rule " + ruleImpl.getName());
+        });
     }
 
     private QueryImpl compileQuery( KnowledgePackageImpl pkg, Query query ) {

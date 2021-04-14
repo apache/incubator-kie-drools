@@ -154,7 +154,7 @@ public class Consequence {
 
         switch (context.getRuleDialect()) {
             case JAVA:
-                rewriteReassignedDeclrations( ruleConsequence, usedDeclarationInRHS );
+                rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS );
                 return executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
             case MVEL:
                 return createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
@@ -170,7 +170,7 @@ public class Consequence {
                 .forEach( n -> n.replace( new EnclosedExpr(new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) ) );
     }
 
-    private void rewriteReassignedDeclrations( BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
+    private void rewriteReassignedDeclarations(BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
         for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
             String assignedVariable = assignExpr.getTarget().toString();
             if ( usedDeclarationInRHS.contains( assignedVariable ) ) {
@@ -217,12 +217,7 @@ public class Consequence {
     private BlockStmt rewriteConsequence(String consequence) {
         try {
             String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
-
-            String ruleConsequenceRewrittenForPrimitives =
-                    new PrimitiveTypeConsequenceRewrite(context)
-                            .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
-
-            return parseBlock( ruleConsequenceRewrittenForPrimitives );
+            return parseBlock( ruleConsequenceAsBlock );
         } catch (MvelCompilerException | ParseProblemException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage(), Optional.of(context.getRuleDescr()) ) );
         }
@@ -293,11 +288,10 @@ public class Consequence {
         if (requireDrools) {
             executeLambda.addParameter(new Parameter(parseClassOrInterfaceType("org.drools.model.Drools"), "drools"));
         }
-        verifiedDeclUsedInRHS.stream().map(x -> {
-            DeclarationSpec declarationById = context.getDeclarationById(x).get();
 
-            return new Parameter(declarationById.getBoxedType(), x);
-        }).forEach(executeLambda::addParameter);
+        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
+        parameters.forEach(executeLambda::addParameter);
+
         executeLambda.setBody(ruleConsequence);
         return executeCall;
     }
