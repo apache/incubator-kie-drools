@@ -414,7 +414,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         newReactOnProperties.addAll( this.reactOnProperties );
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
-        return new SingleDrlxParseSuccess(patternType, patternBinding, new BinaryExpr(expr, otherDrlx.expr, operator), exprType)
+        return new SingleDrlxParseSuccess(patternType, patternBinding, new EnclosedExpr( new BinaryExpr(expr, otherDrlx.expr, operator) ), exprType)
                 .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
                 .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
                 .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
