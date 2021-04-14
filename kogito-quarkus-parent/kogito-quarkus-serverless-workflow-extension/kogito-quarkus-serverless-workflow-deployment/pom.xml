@@ -17,14 +17,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-serverless-workflow</artifactId>
-      <exclusions>
-        <!-- this is a deprecated module that will be removed on: https://issues.redhat.com/browse/KOGITO-4457   -->
-        <!-- and it's messing with some examples that also uses Kafka -->
-        <exclusion>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>knative-eventing-addon</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- Deployment -->
     <dependency>

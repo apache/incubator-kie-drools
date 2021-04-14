@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce.http;
+package org.kie.kogito.addon.cloudevents.quarkus.http;
 
 import javax.ws.rs.core.Response;
 
-import org.kie.kogito.events.knative.ce.Printer;
+import org.kie.kogito.cloudevents.Printer;
 
 import io.cloudevents.CloudEvent;
 

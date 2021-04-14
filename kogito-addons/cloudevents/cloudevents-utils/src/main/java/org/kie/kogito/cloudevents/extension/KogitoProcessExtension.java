@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce.extensions;
+package org.kie.kogito.cloudevents.extension;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import org.kie.kogito.event.CloudEventExtensionConstants;
 
 import io.cloudevents.CloudEventExtensions;
 import io.cloudevents.Extension;
+import io.cloudevents.core.provider.ExtensionProvider;
 
 // The size of this extension could be reevaluated since we could make use of `type`, `source` and `subject` for processId, referenceId and instanceState
 
@@ -59,6 +60,10 @@ public class KogitoProcessExtension implements Extension {
 
     public KogitoProcessExtension() {
         this.innerValues = new HashMap<>();
+    }
+
+    public static void register() {
+        ExtensionProvider.getInstance().registerExtension(KogitoProcessExtension.class, KogitoProcessExtension::new);
     }
 
     public String getKogitoProcessInstanceId() {
@@ -156,10 +161,7 @@ public class KogitoProcessExtension implements Extension {
     }
 
     private String getExtension(CloudEventExtensions extensions, String key) {
-        if (extensions.getExtension(key) == null) {
-            return "";
-        }
-        return extensions.getExtension(key).toString();
+        return Objects.toString(extensions.getExtension(key), "");
     }
 
     @Override

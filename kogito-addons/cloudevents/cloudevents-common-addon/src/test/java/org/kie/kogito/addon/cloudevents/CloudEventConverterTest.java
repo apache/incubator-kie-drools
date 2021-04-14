@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce;
+package org.kie.kogito.addon.cloudevents;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,13 +23,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.CloudEventExtensionConstants;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +37,7 @@ class CloudEventConverterTest {
     static final ObjectMapper objectMapper = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
 
     @Test
-    void verifyBasicCloudEventConversion() {
+    void verifyBasicCloudEventConversion() throws IOException {
         // given
         final String eventId = UUID.randomUUID().toString();
         final URI src = URI.create("/trigger");
@@ -54,8 +53,8 @@ class CloudEventConverterTest {
                         .withData(payload.getBytes())
                         .build();
 
-        final JsonObject ceJson = new JsonObject(Buffer.buffer(cloudEvent.getData()));
-        assertThat(ceJson.getString("message")).isNotEmpty().isEqualTo("Oi Mundo!");
+        final JsonNode ceJson = objectMapper.readTree(cloudEvent.getData());
+        assertThat(ceJson.get("message").asText()).isNotEmpty().isEqualTo("Oi Mundo!");
     }
 
     @Test

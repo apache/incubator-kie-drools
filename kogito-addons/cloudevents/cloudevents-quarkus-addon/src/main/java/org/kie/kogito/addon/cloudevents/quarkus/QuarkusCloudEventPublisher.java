@@ -15,35 +15,78 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.runtime.Startup;
 import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
 /**
  * Takes a @Channel event stream and re-exposes it as a Multi
  * (a subclass of {@link Publisher})
+ * 
+ * @see QuarkusCloudEventReceiver
+ * @see QuarkusCloudEventEmitter
  */
 @Startup
 @ApplicationScoped
 public class QuarkusCloudEventPublisher {
-    @Channel(KogitoEventStreams.INCOMING)
-    Multi<Message<String>> events;
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuarkusCloudEventPublisher.class);
 
+    protected BroadcastProcessor<String> processor = BroadcastProcessor.create();
+
+    /**
+     * Broadcasts the received/produced messages to subscribers
+     *
+     * @see <a href="https://smallrye.io/smallrye-mutiny/guides/hot-streams">How to create a hot stream?</a>
+     * @return A {@link Multi} message to subscribers
+     */
     @Produces
     @ApplicationScoped
     @Named(KogitoEventStreams.PUBLISHER)
-    public Multi<String> makeMulti() {
-        return events
-                .invoke(Message::ack)
-                .map(Message::getPayload)
-                .broadcast().toAllSubscribers();
+    public Multi<String> producerFactory() {
+        return processor;
+    }
+
+    /**
+     * Listens to a message published in the {@link KogitoEventStreams#INCOMING} channel
+     *
+     * @param message the given message in JSON format
+     * @return a {@link CompletionStage} after ack-ing the message
+     */
+    @Incoming(KogitoEventStreams.INCOMING)
+    public CompletionStage<Void> onEvent(Message<String> message) {
+        LOGGER.debug("Received message from channel {}: {}", KogitoEventStreams.INCOMING, message);
+        return message
+                .ack()
+                .exceptionally(e -> {
+                    LOGGER.error("Failed to ack message", e);
+                    return null;
+                })
+                .thenApply(r -> {
+                    produce(message.getPayload());
+                    return null;
+                });
+    }
+
+    /**
+     * Produces a message in the internal application bus
+     *
+     * @param message the given CE message in JSON format
+     */
+    public void produce(final String message) {
+        LOGGER.debug("Producing message to internal bus: {}", message);
+        processor.onNext(message);
     }
 }

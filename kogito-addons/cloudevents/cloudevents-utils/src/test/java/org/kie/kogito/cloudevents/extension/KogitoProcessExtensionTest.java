@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce.extensions;
+package org.kie.kogito.cloudevents.extension;
 
 import java.net.URI;
 import java.util.UUID;
@@ -52,6 +52,8 @@ class KogitoProcessExtensionTest {
     @Test
     void verifyKeysAreSet() {
         final KogitoProcessExtension kpe = ExtensionProvider.getInstance().parseExtension(KogitoProcessExtension.class, getExampleCloudEvent());
+        assertThat(kpe).isNotNull();
+        assertThat(kpe.getKeys()).isNotNull();
         assertThat(kpe.getKeys()).isNotEmpty();
     }
 

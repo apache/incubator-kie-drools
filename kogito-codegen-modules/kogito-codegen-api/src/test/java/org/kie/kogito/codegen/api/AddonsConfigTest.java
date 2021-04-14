@@ -49,9 +49,6 @@ public class AddonsConfigTest {
         assertThat(DEFAULT.usePersistence()).isFalse();
         assertThat(builder().withPersistence(true).build().usePersistence()).isTrue();
 
-        assertThat(DEFAULT.useKnativeEventing()).isFalse();
-        assertThat(builder().withKnativeEventing(true).build().useKnativeEventing()).isTrue();
-
         assertThat(DEFAULT.useCloudEvents()).isFalse();
         assertThat(builder().withCloudEvents(true).build().useCloudEvents()).isTrue();
 

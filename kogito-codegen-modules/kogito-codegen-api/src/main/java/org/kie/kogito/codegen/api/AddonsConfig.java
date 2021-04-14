@@ -22,7 +22,6 @@ public class AddonsConfig {
             .withTracing(false)
             .withMonitoring(false)
             .withPrometheusMonitoring(false)
-            .withKnativeEventing(false)
             .withCloudEvents(false)
             .withExplainability(false)
             .build();
@@ -31,19 +30,21 @@ public class AddonsConfig {
     private final boolean useTracing;
     private final boolean useMonitoring;
     private final boolean usePrometheusMonitoring;
-    private final boolean useKnativeEventing;
     private final boolean useCloudEvents;
     private final boolean useExplainability;
 
-    private AddonsConfig(boolean usePersistence, boolean useTracing, boolean useMonitoring, boolean usePrometheusMonitoring, boolean useKnativeEventing, boolean useCloudEvents,
+    private AddonsConfig(boolean usePersistence, boolean useTracing, boolean useMonitoring, boolean usePrometheusMonitoring, boolean useCloudEvents,
             boolean useExplainability) {
         this.usePersistence = usePersistence;
         this.useTracing = useTracing;
         this.useMonitoring = useMonitoring;
         this.usePrometheusMonitoring = usePrometheusMonitoring;
-        this.useKnativeEventing = useKnativeEventing;
         this.useCloudEvents = useCloudEvents;
         this.useExplainability = useExplainability;
+    }
+
+    public static AddonsConfigBuilder builder() {
+        return new AddonsConfigBuilder();
     }
 
     public boolean usePersistence() {
@@ -62,20 +63,12 @@ public class AddonsConfig {
         return usePrometheusMonitoring;
     }
 
-    public boolean useKnativeEventing() {
-        return useKnativeEventing;
-    }
-
     public boolean useCloudEvents() {
         return useCloudEvents;
     }
 
     public boolean useExplainability() {
         return useExplainability;
-    }
-
-    public static AddonsConfigBuilder builder() {
-        return new AddonsConfigBuilder();
     }
 
     @Override
@@ -85,7 +78,6 @@ public class AddonsConfig {
                 ", useTracing=" + useTracing +
                 ", useMonitoring=" + useMonitoring +
                 ", usePrometheusMonitoring=" + usePrometheusMonitoring +
-                ", useKnativeEventing=" + useKnativeEventing +
                 ", useCloudEvents=" + useCloudEvents +
                 ", useExplainability=" + useExplainability +
                 '}';
@@ -96,7 +88,6 @@ public class AddonsConfig {
         private boolean useTracing;
         private boolean useMonitoring;
         private boolean usePrometheusMonitoring;
-        private boolean useKnativeEventing;
         private boolean useCloudEvents;
         private boolean useExplainability;
 
@@ -123,11 +114,6 @@ public class AddonsConfig {
             return this;
         }
 
-        public AddonsConfigBuilder withKnativeEventing(boolean useKnativeEventing) {
-            this.useKnativeEventing = useKnativeEventing;
-            return this;
-        }
-
         public AddonsConfigBuilder withCloudEvents(boolean useCloudEvents) {
             this.useCloudEvents = useCloudEvents;
             return this;
@@ -139,7 +125,7 @@ public class AddonsConfig {
         }
 
         public AddonsConfig build() {
-            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useKnativeEventing, useCloudEvents, useExplainability);
+            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability);
         }
     }
 }

@@ -27,17 +27,15 @@ import org.slf4j.LoggerFactory;
  */
 public class AddonsConfigDiscovery {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AddonsConfigDiscovery.class);
-
     public static final String PERSISTENCE_FACTORY_CLASS = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     public static final String PROMETHEUS_CLASS = "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource";
     public static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
     public static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
-    public static final String KNATIVE_EVENTING_CLASS = "org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension";
     public static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventEmitter";
     public static final String SPRING_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.spring.SpringKafkaCloudEventEmitter";
     public static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
     public static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddonsConfigDiscovery.class);
 
     private AddonsConfigDiscovery() {
         // utility class
@@ -52,7 +50,6 @@ public class AddonsConfigDiscovery {
         boolean usePrometheusMonitoring = classAvailabilityResolver.test(PROMETHEUS_CLASS);
         boolean useMonitoring = usePrometheusMonitoring || classAvailabilityResolver.test(MONITORING_CORE_CLASS);
         boolean useTracing = classAvailabilityResolver.test(TRACING_CLASS);
-        boolean useKnativeEventing = classAvailabilityResolver.test(KNATIVE_EVENTING_CLASS);
         boolean useCloudEvents = classAvailabilityResolver.test(QUARKUS_CLOUD_EVENTS) || classAvailabilityResolver.test(SPRING_CLOUD_EVENTS);
         boolean useExplainability = classAvailabilityResolver.test(QUARKUS_EXPLAINABILITY) || classAvailabilityResolver.test(SPRING_EXPLAINABILITY);
 
@@ -61,7 +58,6 @@ public class AddonsConfigDiscovery {
                 .withMonitoring(useMonitoring)
                 .withPrometheusMonitoring(usePrometheusMonitoring)
                 .withTracing(useTracing)
-                .withKnativeEventing(useKnativeEventing)
                 .withCloudEvents(useCloudEvents)
                 .withExplainability(useExplainability)
                 .build();

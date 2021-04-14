@@ -49,6 +49,7 @@ import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
@@ -394,8 +395,8 @@ public class ProcessCodegen extends AbstractGenerator {
             });
         }
 
-        if (context().getAddonsConfig().useKnativeEventing() && context().hasREST()) {
-            LOGGER.info("Knative Eventing addon enabled, generating CloudEvent HTTP listener");
+        // Generic CloudEvents HTTP Endpoint will be handled by https://issues.redhat.com/browse/KOGITO-2956
+        if (context().getAddonsConfig().useCloudEvents() && context().hasREST() && context().name() == QuarkusKogitoBuildContext.CONTEXT_NAME) {
             final CloudEventsResourceGenerator ceGenerator =
                     new CloudEventsResourceGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate());

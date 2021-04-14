@@ -41,7 +41,7 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
                     .withQueryParameter(Collections.emptyMap())
                     .withHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
 
-    CloudEventHttpOutgoingDecorator() {
+    public CloudEventHttpOutgoingDecorator() {
 
     }
 

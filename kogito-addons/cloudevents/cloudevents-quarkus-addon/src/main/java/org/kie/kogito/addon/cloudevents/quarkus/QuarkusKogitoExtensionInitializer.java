@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.kie.kogito.cloudevents.extension.KogitoExtension;
+import org.kie.kogito.cloudevents.extension.KogitoProcessExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ public class QuarkusKogitoExtensionInitializer {
     private void onPostConstruct() {
         mapper.registerModule(JsonFormat.getCloudEventJacksonModule());
         KogitoExtension.register();
+        KogitoProcessExtension.register();
         LOG.info("Registered Kogito CloudEvent extension");
     }
 }

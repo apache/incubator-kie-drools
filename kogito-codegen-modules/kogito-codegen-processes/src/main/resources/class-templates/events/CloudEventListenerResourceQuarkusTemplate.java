@@ -15,25 +15,25 @@
  */
 package org.kie.kogito.app;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.CloudEvent;
-import io.cloudevents.jackson.JsonFormat;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.kie.kogito.event.KogitoEventStreams;
-import org.kie.kogito.events.knative.ce.Printer;
-import org.kie.kogito.events.knative.ce.http.Responses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventPublisher;
+import org.kie.kogito.addon.cloudevents.quarkus.http.Responses;
+import org.kie.kogito.cloudevents.Printer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 
 @Path("/")
 public class CloudEventListenerResource {
@@ -44,9 +44,8 @@ public class CloudEventListenerResource {
     @javax.inject.Inject
     ObjectMapper objectMapper;
 
-    @org.eclipse.microprofile.reactive.messaging.Channel(KogitoEventStreams.INCOMING)
     @javax.inject.Inject()
-    Emitter<String> emitter;
+    QuarkusCloudEventPublisher publisher;
 
     @javax.annotation.PostConstruct
     void setup() {
@@ -60,7 +59,7 @@ public class CloudEventListenerResource {
         try {
             LOGGER.debug("CloudEvent received: {}", Printer.beautify(event));
             // convert CloudEvent to JSON and send to internal channels
-            emitter.send(objectMapper.writeValueAsString(event));
+            publisher.produce(objectMapper.writeValueAsString(event));
             return javax.ws.rs.core.Response.ok().build();
         } catch (Exception ex) {
             return Responses.errorProcessingCloudEvent(ex);

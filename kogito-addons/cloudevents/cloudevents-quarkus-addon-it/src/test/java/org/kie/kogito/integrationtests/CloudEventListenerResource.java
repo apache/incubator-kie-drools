@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce.http;
+package org.kie.kogito.integrationtests;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,7 +22,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.kie.kogito.events.knative.ce.Printer;
+import org.kie.kogito.addon.cloudevents.quarkus.http.Responses;
+import org.kie.kogito.cloudevents.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

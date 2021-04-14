@@ -39,11 +39,7 @@
       <artifactId>quarkus-rest-client-jackson</artifactId>
     </dependency>
 
-    <!-- Knative -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>knative-eventing-addon</artifactId>
-    </dependency>
+    <!-- Support CloudEvents OotB -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-cloudevents-quarkus-addon</artifactId>
