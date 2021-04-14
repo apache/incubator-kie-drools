@@ -39,6 +39,7 @@ public class KiePMMLModelUtilsTest {
         packageNameMap.put("AnUpperCasedMame", "anuppercasedmame");
         packageNameMap.put("a_Mixed -name", "amixedname");
         packageNameMap.put("C:\\w-ind_ow Path", "cwindowpath");
+        packageNameMap.put("a.Dotted.pA th", "a.dotted.path");
 
         classNameMap = new HashMap<>();
         classNameMap.put("a-dashed-name", "Adashedname");
