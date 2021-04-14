@@ -307,6 +307,10 @@ public class PackageModel {
         ruleMethods.computeIfAbsent(unitName, k -> new ArrayList<>()).add( ruleMethod );
     }
 
+    public void putRuleUnit(String unitName) {
+        ruleMethods.computeIfAbsent(unitName, k -> new ArrayList<>());
+    }
+
     public void putQueryMethod(MethodDeclaration queryMethod) {
         this.queryMethods.put(queryMethod.getNameAsString(), queryMethod);
     }
