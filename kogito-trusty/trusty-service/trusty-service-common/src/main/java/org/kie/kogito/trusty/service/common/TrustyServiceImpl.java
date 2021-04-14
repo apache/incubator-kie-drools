@@ -22,12 +22,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
@@ -37,10 +40,13 @@ import org.kie.kogito.trusty.service.common.messaging.MessagingUtils;
 import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
+import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +127,7 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     @Override
-    public void processDecision(String executionId, String serviceUrl, Decision decision) {
+    public void processDecision(String executionId, Decision decision) {
         storeDecision(executionId, decision);
         if (isExplainabilityEnabled) {
             Map<String, TypedValue> inputs = decision.getInputs() != null
@@ -134,9 +140,9 @@ public class TrustyServiceImpl implements TrustyService {
                             .collect(HashMap::new, (m, v) -> m.put(v.getOutcomeName(), MessagingUtils.modelToTracingTypedValue(v.getOutcomeResult())), HashMap::putAll)
                     : Collections.emptyMap();
 
-            explainabilityRequestProducer.sendEvent(new ExplainabilityRequestDto(
+            explainabilityRequestProducer.sendEvent(new LIMEExplainabilityRequestDto(
                     executionId,
-                    serviceUrl,
+                    decision.getServiceUrl(),
                     createDecisionModelIdentifierDto(decision),
                     inputs,
                     outputs));
@@ -144,8 +150,8 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     @Override
-    public ExplainabilityResult getExplainabilityResultById(String executionId) {
-        Storage<String, ExplainabilityResult> storage = storageService.getExplainabilityResultStorage();
+    public BaseExplainabilityResult getExplainabilityResultById(String executionId) {
+        Storage<String, BaseExplainabilityResult> storage = storageService.getExplainabilityResultStorage();
         if (!storage.containsKey(executionId)) {
             throw new IllegalArgumentException(String.format("A explainability result with ID %s does not exist in the storage.", executionId));
         }
@@ -153,8 +159,8 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     @Override
-    public void storeExplainabilityResult(String executionId, ExplainabilityResult result) {
-        Storage<String, ExplainabilityResult> storage = storageService.getExplainabilityResultStorage();
+    public void storeExplainabilityResult(String executionId, BaseExplainabilityResult result) {
+        Storage<String, BaseExplainabilityResult> storage = storageService.getExplainabilityResultStorage();
         if (storage.containsKey(executionId)) {
             throw new IllegalArgumentException(String.format("A explainability result with ID %s is already present in the storage.", executionId));
         }
@@ -180,10 +186,94 @@ public class TrustyServiceImpl implements TrustyService {
         return storage.get(modelIdentifier.getIdentifier());
     }
 
+    @Override
+    public CounterfactualRequest requestCounterfactuals(String executionId,
+            List<TypedVariableWithValue> goals,
+            List<CounterfactualSearchDomain> searchDomains) {
+        Storage<String, Decision> storage = storageService.getDecisionsStorage();
+        if (!storage.containsKey(executionId)) {
+            throw new IllegalArgumentException(String.format("A decision with ID %s is not present in the storage. Counterfactuals cannot be requested.", executionId));
+        }
+        CounterfactualRequest counterfactualRequest = storeCounterfactualRequest(executionId, goals, searchDomains);
+        sendCounterfactualRequestEvent(executionId, goals, searchDomains);
+
+        return counterfactualRequest;
+    }
+
+    protected CounterfactualRequest storeCounterfactualRequest(String executionId,
+            List<TypedVariableWithValue> goals,
+            List<CounterfactualSearchDomain> searchDomains) {
+        String counterfactualId = UUID.randomUUID().toString();
+        CounterfactualRequest counterfactualRequest = new CounterfactualRequest(executionId, counterfactualId, goals, searchDomains);
+        Storage<String, CounterfactualRequest> storage = storageService.getCounterfactualRequestStorage();
+        storage.put(counterfactualId, counterfactualRequest);
+
+        return counterfactualRequest;
+    }
+
+    protected void sendCounterfactualRequestEvent(String executionId,
+            List<TypedVariableWithValue> goals,
+            List<CounterfactualSearchDomain> searchDomains) {
+        Decision decision = getDecisionById(executionId);
+
+        Map<String, TypedValue> originalInputs = decision.getInputs() != null
+                ? decision.getInputs().stream()
+                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToTracingTypedValue(v.getValue())), HashMap::putAll)
+                : Collections.emptyMap();
+
+        Map<String, TypedValue> requiredOutputs = goals != null
+                ? goals.stream()
+                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToTracingTypedValue(v)), HashMap::putAll)
+                : Collections.emptyMap();
+
+        Map<String, CounterfactualSearchDomainDto> searchDomainDtos = searchDomains != null
+                ? searchDomains.stream()
+                        .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToCounterfactualSearchDomainDto(v)), HashMap::putAll)
+                : Collections.emptyMap();
+
+        explainabilityRequestProducer.sendEvent(new CounterfactualExplainabilityRequestDto(
+                executionId,
+                decision.getServiceUrl(),
+                createDecisionModelIdentifierDto(decision),
+                originalInputs,
+                requiredOutputs,
+                searchDomainDtos));
+    }
+
+    @Override
+    public List<CounterfactualRequest> getCounterfactualRequests(String executionId) {
+        Storage<String, CounterfactualRequest> storage = storageService.getCounterfactualRequestStorage();
+
+        AttributeFilter<String> filterExecutionId = QueryFilterFactory.equalTo(CounterfactualRequest.EXECUTION_ID_FIELD, executionId);
+        List<CounterfactualRequest> counterfactuals = storage.query().filter(Collections.singletonList(filterExecutionId)).execute();
+
+        return List.copyOf(counterfactuals);
+    }
+
+    @Override
+    public CounterfactualRequest getCounterfactualRequest(String executionId, String counterfactualId) {
+        Storage<String, CounterfactualRequest> storage = storageService.getCounterfactualRequestStorage();
+
+        AttributeFilter<String> filterExecutionId = QueryFilterFactory.equalTo(CounterfactualRequest.EXECUTION_ID_FIELD, executionId);
+        AttributeFilter<String> filterCounterfactualId = QueryFilterFactory.equalTo(CounterfactualRequest.COUNTERFACTUAL_ID_FIELD, counterfactualId);
+        List<AttributeFilter<?>> filters = List.of(filterExecutionId, filterCounterfactualId);
+        List<CounterfactualRequest> counterfactuals = storage.query().filter(filters).execute();
+
+        if (counterfactuals.isEmpty()) {
+            throw new IllegalArgumentException(String.format("Counterfactual for Execution Id '%s' and Counterfactual Id '%s' does not exist in the storage.", executionId, counterfactualId));
+        }
+        if (counterfactuals.size() > 1) {
+            throw new IllegalArgumentException(String.format("Multiple Counterfactuals for Execution Id '%s' and Counterfactual Id '%s' found in the storage.", executionId, counterfactualId));
+        }
+
+        return counterfactuals.get(0);
+    }
+
     private ModelIdentifierDto createDecisionModelIdentifierDto(Decision decision) {
         String resourceId = decision.getExecutedModelNamespace() +
                 ModelIdentifierDto.RESOURCE_ID_SEPARATOR +
                 decision.getExecutedModelName();
         return new ModelIdentifierDto("dmn", resourceId);
     }
+
 }

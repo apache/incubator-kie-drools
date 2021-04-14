@@ -19,7 +19,7 @@ package org.kie.kogito.trusty.service.common.messaging.outgoing;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
 
 import io.reactivex.subscribers.TestSubscriber;
@@ -33,7 +33,7 @@ class ExplainabilityRequestProducerTest {
         ExplainabilityRequestProducer producer = new ExplainabilityRequestProducer();
         producer.getEventPublisher().subscribe(subscriber);
 
-        producer.sendEvent(new ExplainabilityRequestDto(
+        producer.sendEvent(new LIMEExplainabilityRequestDto(
                 "executionId", "http://localhost:8080/model",
                 new ModelIdentifierDto("dmn", "modelNamespace:model"),
                 Collections.emptyMap(),

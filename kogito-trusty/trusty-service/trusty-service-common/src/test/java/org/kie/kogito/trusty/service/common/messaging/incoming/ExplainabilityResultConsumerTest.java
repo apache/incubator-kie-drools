@@ -26,16 +26,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.explainability.api.ExplainabilityResultDto;
 import org.kie.kogito.explainability.api.FeatureImportanceDto;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
 import org.kie.kogito.explainability.api.SaliencyDto;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
+import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
+import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
@@ -67,7 +68,7 @@ class ExplainabilityResultConsumerTest {
     private static final String TEST_OUTCOME_1_NAME = "outcome1";
 
     private static final Decision TEST_DECISION = new Decision(
-            TEST_EXECUTION_ID, null, null, true, null, null, null,
+            TEST_EXECUTION_ID, null, null, null, true, null, null, null,
             List.of(
                     new DecisionInput(TEST_FEATURE_1_ID, TEST_FEATURE_1_NAME, null),
                     new DecisionInput(TEST_FEATURE_2_ID, TEST_FEATURE_2_NAME, null)),
@@ -77,20 +78,20 @@ class ExplainabilityResultConsumerTest {
     private static final FeatureImportanceDto TEST_FEATURE_IMPORTANCE_DTO_1 = new FeatureImportanceDto(TEST_FEATURE_1_NAME, 1d);
     private static final FeatureImportanceDto TEST_FEATURE_IMPORTANCE_DTO_2 = new FeatureImportanceDto(TEST_FEATURE_2_NAME, -1d);
     private static final SaliencyDto TEST_SALIENCY_DTO = new SaliencyDto(asList(TEST_FEATURE_IMPORTANCE_DTO_1, TEST_FEATURE_IMPORTANCE_DTO_2));
-    private static final ExplainabilityResultDto TEST_RESULT_DTO = ExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, singletonMap(TEST_OUTCOME_1_NAME, TEST_SALIENCY_DTO));
+    private static final LIMEExplainabilityResultDto TEST_RESULT_DTO = LIMEExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, singletonMap(TEST_OUTCOME_1_NAME, TEST_SALIENCY_DTO));
 
     private TrustyService trustyService;
     private ExplainabilityResultConsumer consumer;
 
-    public static CloudEvent buildExplainabilityCloudEvent(ExplainabilityResultDto resultDto) {
+    public static CloudEvent buildExplainabilityCloudEvent(LIMEExplainabilityResultDto resultDto) {
         return CloudEventUtils.build(
                 resultDto.getExecutionId(),
                 URI.create("explainabilityResult/test"),
                 resultDto,
-                ExplainabilityResultDto.class).get();
+                LIMEExplainabilityResultDto.class).get();
     }
 
-    public static String buildCloudEventJsonString(ExplainabilityResultDto resultDto) {
+    public static String buildCloudEventJsonString(LIMEExplainabilityResultDto resultDto) {
         return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto)).orElseThrow(IllegalStateException::new);
     }
 
@@ -108,8 +109,8 @@ class ExplainabilityResultConsumerTest {
 
     @Test
     void testCorrectCloudEvent() {
-        Message<String> message = mockMessage(buildCloudEventJsonString(ExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, emptyMap())));
-        doNothing().when(trustyService).storeExplainabilityResult(any(String.class), any(ExplainabilityResult.class));
+        Message<String> message = mockMessage(buildCloudEventJsonString(LIMEExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, emptyMap())));
+        doNothing().when(trustyService).storeExplainabilityResult(any(String.class), any(BaseExplainabilityResult.class));
 
         testNumberOfInvocations(message, 1);
     }
@@ -122,14 +123,14 @@ class ExplainabilityResultConsumerTest {
 
     @Test
     void testExceptionsAreCatched() {
-        Message<String> message = mockMessage(buildCloudEventJsonString(ExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, emptyMap())));
+        Message<String> message = mockMessage(buildCloudEventJsonString(LIMEExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, emptyMap())));
 
-        doThrow(new RuntimeException("Something really bad")).when(trustyService).storeExplainabilityResult(any(String.class), any(ExplainabilityResult.class));
+        doThrow(new RuntimeException("Something really bad")).when(trustyService).storeExplainabilityResult(any(String.class), any(BaseExplainabilityResult.class));
         Assertions.assertDoesNotThrow(() -> consumer.handleMessage(message));
     }
 
     private void testExplainabilityResultFromWith(Decision decision, String expectedOutcomeId) {
-        ExplainabilityResult explainabilityResult = ExplainabilityResultConsumer.explainabilityResultFrom(TEST_RESULT_DTO, decision);
+        LIMEExplainabilityResult explainabilityResult = (LIMEExplainabilityResult) ExplainabilityResultConsumer.explainabilityResultFrom(TEST_RESULT_DTO, decision);
         assertNotNull(explainabilityResult);
         assertEquals(TEST_RESULT_DTO.getExecutionId(), explainabilityResult.getExecutionId());
         assertNotNull(TEST_RESULT_DTO.getSaliencies());

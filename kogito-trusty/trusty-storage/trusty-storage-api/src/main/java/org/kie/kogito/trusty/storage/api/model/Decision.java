@@ -41,10 +41,10 @@ public class Decision extends Execution {
         super(ExecutionType.DECISION);
     }
 
-    public Decision(String executionId, String sourceUrl, Long executionTimestamp, Boolean hasSucceeded,
+    public Decision(String executionId, String sourceUrl, String serviceUrl, Long executionTimestamp, Boolean hasSucceeded,
             String executorName, String executedModelName, String executedModelNamespace,
             List<DecisionInput> inputs, List<DecisionOutcome> outcomes) {
-        super(executionId, sourceUrl, executionTimestamp, hasSucceeded, executorName,
+        super(executionId, sourceUrl, serviceUrl, executionTimestamp, hasSucceeded, executorName,
                 executedModelName, executedModelNamespace, ExecutionType.DECISION);
         this.inputs = inputs;
         this.outcomes = outcomes;

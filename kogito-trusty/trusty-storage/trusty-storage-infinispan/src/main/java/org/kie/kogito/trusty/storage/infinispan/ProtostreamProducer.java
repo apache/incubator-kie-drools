@@ -56,7 +56,7 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller explainabilityResultMarshaller() {
-        return new ExplainabilityResultMarshaller(mapper);
+        return new LIMEExplainabilityResultMarshaller(mapper);
     }
 
     @Produces
@@ -81,11 +81,42 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller typedValueMarshaller() {
-        return new TypedVariableMarshaller(mapper);
+        return new TypedVariableWithValueMarshaller(mapper);
     }
 
     @Produces
     org.infinispan.protostream.MessageMarshaller dmnModelMarshaller() {
         return new DMNModelWithMetadataMarshaller(mapper);
     }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller counterfactualMarshaller() {
+        return new CounterfactualMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller counterfactualDomainMarshaller() {
+        return new CounterfactualDomainMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller counterfactualDomainCategoricalMarshaller() {
+        return new CounterfactualDomainCategoricalMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller counterfactualDomainRangeMarshaller() {
+        return new CounterfactualDomainRangeMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller counterfactualSearchDomainMarshaller() {
+        return new CounterfactualSearchDomainMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller counterfactualResultMarshaller() {
+        return new CounterfactualResultMarshaller(mapper);
+    }
+
 }

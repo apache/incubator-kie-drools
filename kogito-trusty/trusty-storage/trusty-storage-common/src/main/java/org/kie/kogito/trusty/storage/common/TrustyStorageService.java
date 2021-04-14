@@ -17,14 +17,18 @@
 package org.kie.kogito.trusty.storage.common;
 
 import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualResult;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
 public interface TrustyStorageService {
 
     String DECISIONS_STORAGE = "decisions";
     String EXPLAINABILITY_RESULTS_STORAGE = "explainability-results";
+    String COUNTERFACTUALS_STORAGE = "counterfactuals";
+    String COUNTERFACTUAL_RESULTS_STORAGE = "counterfactual-results";
     String MODELS_STORAGE = "models";
 
     /**
@@ -39,7 +43,7 @@ public interface TrustyStorageService {
      *
      * @return The Storage for explainability results.
      */
-    Storage<String, ExplainabilityResult> getExplainabilityResultStorage();
+    Storage<String, BaseExplainabilityResult> getExplainabilityResultStorage();
 
     /**
      * Gets the model definition storage.
@@ -47,4 +51,18 @@ public interface TrustyStorageService {
      * @return The Storage for model definitions.
      */
     Storage<String, DMNModelWithMetadata> getModelStorage();
+
+    /**
+     * Gets the Counterfactual requests storage.
+     *
+     * @return The Storage for Counterfactual requests.
+     */
+    Storage<String, CounterfactualRequest> getCounterfactualRequestStorage();
+
+    /**
+     * Gets the Counterfactual results storage.
+     *
+     * @return The Storage for Counterfactual results.
+     */
+    Storage<String, CounterfactualResult> getCounterfactualResultStorage();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,20 @@ import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = BaseExplainabilityRequestDto.EXPLAINABILITY_TYPE_FIELD)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = LIMEExplainabilityRequestDto.class, name = LIMEExplainabilityRequestDto.EXPLAINABILITY_TYPE_NAME),
+        @JsonSubTypes.Type(value = CounterfactualExplainabilityRequestDto.class, name = CounterfactualExplainabilityRequestDto.EXPLAINABILITY_TYPE_NAME)
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExplainabilityRequestDto {
+public abstract class BaseExplainabilityRequestDto {
+
+    public static final String EXPLAINABILITY_TYPE_FIELD = "type";
 
     @JsonProperty("executionId")
     @NotNull(message = "executionId must be provided.")
@@ -48,10 +59,10 @@ public class ExplainabilityRequestDto {
     @JsonProperty("outputs")
     private Map<String, TypedValue> outputs;
 
-    private ExplainabilityRequestDto() {
+    protected BaseExplainabilityRequestDto() {
     }
 
-    public ExplainabilityRequestDto(String executionId, String serviceUrl, ModelIdentifierDto modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
+    public BaseExplainabilityRequestDto(String executionId, String serviceUrl, ModelIdentifierDto modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
         this.executionId = executionId;
         this.serviceUrl = serviceUrl;
         this.modelIdentifier = modelIdentifier;

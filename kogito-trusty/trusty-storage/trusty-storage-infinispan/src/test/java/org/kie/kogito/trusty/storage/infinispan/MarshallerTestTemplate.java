@@ -41,7 +41,14 @@ abstract class MarshallerTestTemplate<T> {
         this.modelClass = modelClass;
     }
 
-    private static Stream<Field> streamAllNonStaticFields(Class<?> type) {
+    protected static Stream<Field> streamNonStaticFields(Class<?> type) {
+        if (type == null || Object.class.equals(type)) {
+            return Stream.empty();
+        }
+        return Arrays.stream(type.getDeclaredFields()).filter(f -> (f.getModifiers() & Modifier.STATIC) == 0);
+    }
+
+    protected static Stream<Field> streamAllNonStaticFields(Class<?> type) {
         if (type == null || Object.class.equals(type)) {
             return Stream.empty();
         }

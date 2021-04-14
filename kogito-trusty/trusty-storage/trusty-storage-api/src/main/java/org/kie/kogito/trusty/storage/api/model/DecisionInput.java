@@ -32,12 +32,12 @@ public class DecisionInput {
     private String name;
 
     @JsonProperty(VALUE_FIELD)
-    private TypedVariable value;
+    private TypedVariableWithValue value;
 
     public DecisionInput() {
     }
 
-    public DecisionInput(String id, String name, TypedVariable value) {
+    public DecisionInput(String id, String name, TypedVariableWithValue value) {
         this.id = id;
         this.name = name;
         this.value = value;
@@ -59,11 +59,11 @@ public class DecisionInput {
         this.name = name;
     }
 
-    public TypedVariable getValue() {
+    public TypedVariableWithValue getValue() {
         return value;
     }
 
-    public void setValue(TypedVariable value) {
+    public void setValue(TypedVariableWithValue value) {
         this.value = value;
     }
 }

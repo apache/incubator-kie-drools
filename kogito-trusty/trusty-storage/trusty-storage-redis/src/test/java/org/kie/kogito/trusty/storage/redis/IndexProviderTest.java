@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.redis.RedisClientManager;
 import org.mockito.Mockito;
 
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUALS_STORAGE;
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUAL_RESULTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.DECISIONS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.EXPLAINABILITY_RESULTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.MODELS_STORAGE;
@@ -34,9 +36,11 @@ public class IndexProviderTest {
 
         indexProvider.createIndexes();
 
-        Assertions.assertEquals(3, redisIndexManager.getIndexNames().size());
+        Assertions.assertEquals(5, redisIndexManager.getIndexNames().size());
         Assertions.assertTrue(redisIndexManager.getIndexNames().contains(DECISIONS_STORAGE));
         Assertions.assertTrue(redisIndexManager.getIndexNames().contains(MODELS_STORAGE));
         Assertions.assertTrue(redisIndexManager.getIndexNames().contains(EXPLAINABILITY_RESULTS_STORAGE));
+        Assertions.assertTrue(redisIndexManager.getIndexNames().contains(COUNTERFACTUALS_STORAGE));
+        Assertions.assertTrue(redisIndexManager.getIndexNames().contains(COUNTERFACTUAL_RESULTS_STORAGE));
     }
 }

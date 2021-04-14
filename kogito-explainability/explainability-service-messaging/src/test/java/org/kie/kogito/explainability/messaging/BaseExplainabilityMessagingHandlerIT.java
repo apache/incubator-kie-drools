@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.kie.kogito.explainability.messaging;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -25,9 +25,10 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
-import org.kie.kogito.explainability.api.ExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
@@ -36,11 +37,9 @@ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
+import io.cloudevents.CloudEvent;
 import io.quarkus.test.junit.mockito.InjectMock;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,13 +49,16 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@QuarkusTest
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
-class ExplainabilityMessagingHandlerIT {
+abstract class BaseExplainabilityMessagingHandlerIT {
 
     private static final String TOPIC_REQUEST = "trusty-explainability-request-test";
     private static final String TOPIC_RESULT = "trusty-explainability-result-test";
-    private static Logger LOGGER = LoggerFactory.getLogger(ExplainabilityMessagingHandlerIT.class);
+
+    protected static final String EXECUTION_ID = "idException";
+    protected static final String SERVICE_URL = "http://localhost:8080";
+    protected static final ModelIdentifierDto MODEL_IDENTIFIER_DTO = new ModelIdentifierDto("dmn", "namespace:name");
+
+    private static Logger LOGGER = LoggerFactory.getLogger(BaseExplainabilityMessagingHandlerIT.class);
 
     @InjectMock
     ExplanationService explanationService;
@@ -71,13 +73,11 @@ class ExplainabilityMessagingHandlerIT {
     void explainabilityRequestIsProcessedAndAResultMessageIsSent() throws Exception {
         KafkaClient kafkaClient = new KafkaClient(kafkaBootstrapServers);
 
-        String executionId = "idException";
-        String serviceUrl = "http://localhost:8080";
-        ModelIdentifierDto modelIdentifierDto = new ModelIdentifierDto("dmn", "namespace:name");
+        BaseExplainabilityRequestDto request = buildRequest();
+        BaseExplainabilityResultDto result = buildResult();
 
-        ExplainabilityRequestDto request = new ExplainabilityRequestDto(executionId, serviceUrl, modelIdentifierDto, Collections.emptyMap(), Collections.emptyMap());
         when(explanationService.explainAsync(any(ExplainabilityRequest.class), any(PredictionProvider.class)))
-                .thenReturn(CompletableFuture.completedFuture(ExplainabilityResultDto.buildSucceeded(executionId, Collections.emptyMap())));
+                .thenReturn(CompletableFuture.completedFuture(result));
 
         kafkaClient.produce(ExplainabilityCloudEventBuilder.buildCloudEventJsonString(request), TOPIC_REQUEST);
 
@@ -87,16 +87,27 @@ class ExplainabilityMessagingHandlerIT {
 
         kafkaClient.consume(TOPIC_RESULT, s -> {
             LOGGER.info("Received from kafka: {}", s);
-            try {
-                ExplainabilityResultDto event = objectMapper.readValue(s, ExplainabilityResultDto.class);
-                assertNotNull(event);
-                countDownLatch.countDown();
-            } catch (JsonProcessingException e) {
-                LOGGER.error("Error parsing {}", s, e);
-                throw new RuntimeException(e);
-            }
+            CloudEventUtils.decode(s).ifPresent((CloudEvent cloudEvent) -> {
+                try {
+                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData(), BaseExplainabilityResultDto.class);
+                    assertNotNull(event);
+                    assertResult(event);
+                    countDownLatch.countDown();
+                } catch (IOException e) {
+                    LOGGER.error("Error parsing {}", s, e);
+                    throw new RuntimeException(e);
+                }
+            });
         });
 
         assertTrue(countDownLatch.await(5, TimeUnit.SECONDS));
+
+        kafkaClient.shutdown();
     }
+
+    protected abstract BaseExplainabilityRequestDto buildRequest();
+
+    protected abstract BaseExplainabilityResultDto buildResult();
+
+    protected abstract void assertResult(BaseExplainabilityResultDto result);
 }

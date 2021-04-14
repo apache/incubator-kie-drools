@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
-import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,8 +36,8 @@ public class DecisionOutcomeMarshaller extends AbstractModelMarshaller<DecisionO
                 reader.readString(DecisionOutcome.OUTCOME_ID_FIELD),
                 reader.readString(DecisionOutcome.OUTCOME_NAME_FIELD),
                 reader.readString(DecisionOutcome.EVALUATION_STATUS_FIELD),
-                reader.readObject(DecisionOutcome.OUTCOME_RESULT_FIELD, TypedVariable.class),
-                reader.readCollection(DecisionOutcome.OUTCOME_INPUTS_FIELD, new ArrayList<>(), TypedVariable.class),
+                reader.readObject(DecisionOutcome.OUTCOME_RESULT_FIELD, TypedVariableWithValue.class),
+                reader.readCollection(DecisionOutcome.OUTCOME_INPUTS_FIELD, new ArrayList<>(), TypedVariableWithValue.class),
                 reader.readCollection(DecisionOutcome.MESSAGES_FIELD, new ArrayList<>(), Message.class));
     }
 
@@ -46,8 +46,8 @@ public class DecisionOutcomeMarshaller extends AbstractModelMarshaller<DecisionO
         writer.writeString(DecisionOutcome.OUTCOME_ID_FIELD, input.getOutcomeId());
         writer.writeString(DecisionOutcome.OUTCOME_NAME_FIELD, input.getOutcomeName());
         writer.writeString(DecisionOutcome.EVALUATION_STATUS_FIELD, input.getEvaluationStatus());
-        writer.writeObject(DecisionOutcome.OUTCOME_RESULT_FIELD, input.getOutcomeResult(), TypedVariable.class);
-        writer.writeCollection(DecisionOutcome.OUTCOME_INPUTS_FIELD, input.getOutcomeInputs(), TypedVariable.class);
+        writer.writeObject(DecisionOutcome.OUTCOME_RESULT_FIELD, input.getOutcomeResult(), TypedVariableWithValue.class);
+        writer.writeCollection(DecisionOutcome.OUTCOME_INPUTS_FIELD, input.getOutcomeInputs(), TypedVariableWithValue.class);
         writer.writeCollection(DecisionOutcome.MESSAGES_FIELD, input.getMessages(), Message.class);
     }
 }

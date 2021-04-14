@@ -27,7 +27,7 @@ import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
-import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.testcontainers.shaded.org.apache.commons.lang.builder.CompareToBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -104,7 +104,7 @@ public class TraceEventTestUtils {
         assertMessageExceptionField(expected.getCause(), actual.getCause());
     }
 
-    public static void assertTypedVariable(TypedVariable expected, TypedVariable actual) {
+    public static void assertTypedVariable(TypedVariableWithValue expected, TypedVariableWithValue actual) {
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getTypeRef(), actual.getTypeRef());
         assertEquals(expected.getValue(), actual.getValue());
@@ -114,7 +114,7 @@ public class TraceEventTestUtils {
         return new CompareToBuilder()
                 .append(expected.getId(), actual.getId())
                 .append(expected.getName(), actual.getName())
-                .append(expected.getValue(), actual.getValue(), toObjectComparator(TypedVariable.class, TraceEventTestUtils::compareTypedVariable))
+                .append(expected.getValue(), actual.getValue(), toObjectComparator(TypedVariableWithValue.class, TraceEventTestUtils::compareTypedVariable))
                 .toComparison();
     }
 
@@ -123,7 +123,7 @@ public class TraceEventTestUtils {
                 .append(expected.getOutcomeId(), actual.getOutcomeId())
                 .append(expected.getOutcomeName(), actual.getOutcomeName())
                 .append(expected.getEvaluationStatus(), actual.getEvaluationStatus())
-                .append(expected.getOutcomeResult(), actual.getOutcomeResult(), toObjectComparator(TypedVariable.class, TraceEventTestUtils::compareTypedVariable))
+                .append(expected.getOutcomeResult(), actual.getOutcomeResult(), toObjectComparator(TypedVariableWithValue.class, TraceEventTestUtils::compareTypedVariable))
                 .toComparison();
     }
 
@@ -136,7 +136,7 @@ public class TraceEventTestUtils {
                 .toComparison();
     }
 
-    public static int compareTypedVariable(TypedVariable expected, TypedVariable actual) {
+    public static int compareTypedVariable(TypedVariableWithValue expected, TypedVariableWithValue actual) {
         return new CompareToBuilder()
                 .append(expected.getTypeRef(), actual.getTypeRef())
                 .append(expected.getName(), actual.getName())

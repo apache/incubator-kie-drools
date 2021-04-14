@@ -1,6 +1,7 @@
 {
   "executionId":"",
-  "sourceUrl":"http://localhost:8080/Traffic+Violation",
+  "sourceUrl":"http://localhost:8080/Traffic+Violation/model/service",
+  "serviceUrl":"http://localhost:8080/Traffic+Violation",
   "executionTimestamp":1594105482568,
   "hasSucceeded":true,
   "executorName":null,

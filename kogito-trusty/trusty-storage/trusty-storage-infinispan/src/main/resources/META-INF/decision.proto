@@ -12,28 +12,31 @@ message Decision {
     /* @Field(store = Store.YES) */
     optional string sourceUrl = 3;
 
-    /* @Field(store = Store.YES) 
+    /* @Field(store = Store.YES) */
+    optional string serviceUrl = 4;
+
+    /* @Field(store = Store.YES)
      * @SortableField
      */
-    optional int64 executionTimestamp = 4;
+    optional int64 executionTimestamp = 5;
 
     /* @Field(store = Store.YES) */
-    optional bool hasSucceeded = 5;
+    optional bool hasSucceeded = 6;
 
     /* @Field(store = Store.YES) */
-    optional string executorName = 6;
+    optional string executorName = 7;
 
     /* @Field(store = Store.YES) */
-    optional string executedModelName = 7;
+    optional string executedModelName = 8;
 
     /* @Field(store = Store.YES) */
-    optional string executedModelNamespace = 8;
+    optional string executedModelNamespace = 9;
 
     /* @Field(store = Store.YES) */
-    repeated DecisionInput inputs = 9;
+    repeated DecisionInput inputs = 10;
 
     /* @Field(store = Store.YES) */
-    repeated DecisionOutcome outcomes = 10;
+    repeated DecisionOutcome outcomes = 11;
 }
 
 /* @Indexed */
@@ -45,7 +48,7 @@ message DecisionInput {
     optional string name = 2;
 
     /* @Field(store = Store.YES) */
-    optional TypedVariable value = 3;
+    optional TypedVariableWithValue value = 3;
 }
 
 /* @Indexed */
@@ -60,10 +63,10 @@ message DecisionOutcome {
     optional string evaluationStatus = 3;
 
     /* @Field(store = Store.YES) */
-    optional TypedVariable outcomeResult = 4;
+    optional TypedVariableWithValue outcomeResult = 4;
 
     /* @Field(store = Store.YES) */
-    repeated TypedVariable outcomeInputs = 5;
+    repeated TypedVariableWithValue outcomeInputs = 5;
 
     /* @Field(store = Store.YES) */
     repeated ExecutionMessage messages = 6;
@@ -96,7 +99,7 @@ message ExecutionMessage {
 }
 
 /* @Indexed */
-message ExplainabilityResult {
+message LIMEExplainabilityResult {
     /* @Field(store = Store.YES) */
     optional string executionId = 1;
 
@@ -144,7 +147,7 @@ message SaliencyModel {
 }
 
 /* @Indexed */
-message TypedVariable {
+message TypedVariableWithValue {
     /* @Field(store = Store.YES) */
     optional string kind = 1;
 
@@ -158,7 +161,7 @@ message TypedVariable {
     optional string value = 4;
 
     /* @Field(store = Store.YES) */
-    repeated TypedVariable components = 5;
+    repeated TypedVariableWithValue components = 5;
 }
 
 /* @Indexed */
@@ -183,4 +186,87 @@ message DMNModelWithMetadata {
 
     /* @Field(store = Store.YES) */
     optional string model = 7;
+}
+
+/* @Indexed */
+message CounterfactualRequest {
+
+    /* @Field(store = Store.YES) */
+    optional string executionId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string counterfactualId = 2;
+
+    /* @Field(store = Store.YES) */
+    repeated TypedVariableWithValue goals = 3;
+
+    /* @Field(store = Store.YES) */
+    repeated CounterfactualSearchDomain searchDomains = 4;
+
+}
+
+/* @Indexed */
+message CounterfactualDomain {
+
+    /* @Field(store = Store.YES) */
+    optional string type = 1;
+
+    /* @Field(store = Store.YES) */
+    optional CounterfactualDomainCategorical categorical = 2;
+
+    /* @Field(store = Store.YES) */
+    optional CounterfactualDomainRange range = 3;
+
+}
+
+/* @Indexed */
+message CounterfactualDomainCategorical {
+
+    /* @Field(store = Store.YES) */
+    repeated string categories = 1;
+}
+
+/* @Indexed */
+message CounterfactualDomainRange {
+
+    /* @Field(store = Store.YES) */
+    optional string lowerBound = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string upperBound = 2;
+}
+
+/* @Indexed */
+message CounterfactualSearchDomain {
+
+    /* @Field(store = Store.YES) */
+    optional string kind = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string name = 2;
+
+    /* @Field(store = Store.YES) */
+    optional string typeRef = 3;
+
+    /* @Field(store = Store.YES) */
+    repeated CounterfactualSearchDomain components = 4;
+
+    /* @Field(store = Store.YES) */
+    optional bool isFixed = 5;
+
+    /* @Field(store = Store.YES) */
+    optional CounterfactualDomain domain  = 6;
+}
+
+/* @Indexed */
+message CounterfactualResult {
+
+    /* @Field(store = Store.YES) */
+    optional string executionId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string counterfactualId = 2;
+
+    /* @Field(store = Store.YES) */
+    optional string solutionId = 3;
 }

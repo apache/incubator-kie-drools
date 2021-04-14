@@ -62,7 +62,10 @@ public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
         TraceEventType traceEventType = payload.getHeader().getType();
 
         if (traceEventType == TraceEventType.DMN) {
-            service.processDecision(cloudEvent.getId(), payload.getHeader().getResourceId().getServiceUrl(), TraceEventConverter.toDecision(payload, cloudEvent.getSource().toString()));
+            String sourceUrl = cloudEvent.getSource().toString();
+            String serviceUrl = payload.getHeader().getResourceId().getServiceUrl();
+            service.processDecision(cloudEvent.getId(),
+                    TraceEventConverter.toDecision(payload, sourceUrl, serviceUrl));
         } else {
             LOG.error("Unsupported TraceEvent type {}", traceEventType);
         }

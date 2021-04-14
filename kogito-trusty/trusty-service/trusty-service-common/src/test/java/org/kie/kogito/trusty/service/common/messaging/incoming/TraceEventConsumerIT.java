@@ -53,8 +53,8 @@ public class TraceEventConsumerIT {
 
         String executionIdException = "idException";
         String executionIdNoException = "idNoException";
-        doThrow(new RuntimeException("Something really bad")).when(trustyService).processDecision(eq(executionIdException), any(String.class), any(Decision.class));
-        doNothing().when(trustyService).processDecision(eq(executionIdNoException), any(String.class), any(Decision.class));
+        doThrow(new RuntimeException("Something really bad")).when(trustyService).processDecision(eq(executionIdException), any(Decision.class));
+        doNothing().when(trustyService).processDecision(eq(executionIdNoException), any(Decision.class));
 
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(executionIdException)),
                 KafkaConstants.KOGITO_TRACING_TOPIC);
@@ -62,6 +62,6 @@ public class TraceEventConsumerIT {
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(executionIdNoException)),
                 KafkaConstants.KOGITO_TRACING_TOPIC);
 
-        verify(trustyService, timeout(3000).times(2)).processDecision(any(String.class), any(String.class), any(Decision.class));
+        verify(trustyService, timeout(3000).times(2)).processDecision(any(String.class), any(Decision.class));
     }
 }

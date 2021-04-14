@@ -41,13 +41,15 @@ import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_TIMEST
 import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_TYPE_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTOR_NAME_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Execution.HAS_SUCCEEDED_FIELD;
+import static org.kie.kogito.trusty.storage.api.model.Execution.SERVICE_URL_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Execution.SOURCE_URL_FIELD;
 
 public class DecisionMarshallerTest extends MarshallerTestTemplate<Decision> {
 
     private static final List<AbstractTestField<Decision, ?>> TEST_FIELD_LIST = List.of(
             new StringTestField<>(EXECUTION_ID_FIELD, "test", Decision::getExecutionId, Decision::setExecutionId),
-            new StringTestField<>(SOURCE_URL_FIELD, "http://localhost:8080/modelName", Decision::getSourceUrl, Decision::setSourceUrl),
+            new StringTestField<>(SOURCE_URL_FIELD, "http://localhost:8080/model/service", Decision::getSourceUrl, Decision::setSourceUrl),
+            new StringTestField<>(SERVICE_URL_FIELD, "http://localhost:8080/modelName", Decision::getServiceUrl, Decision::setServiceUrl),
             new LongTestField<>(EXECUTION_TIMESTAMP_FIELD, 0L, Decision::getExecutionTimestamp, Decision::setExecutionTimestamp),
             new StringTestField<>(EXECUTOR_NAME_FIELD, "jack", Decision::getExecutorName, Decision::setExecutorName),
             new StringTestField<>(EXECUTED_MODEL_NAME_FIELD, "modelName", Decision::getExecutedModelName, Decision::setExecutedModelName),

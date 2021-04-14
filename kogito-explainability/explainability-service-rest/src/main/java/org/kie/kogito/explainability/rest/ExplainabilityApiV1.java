@@ -34,7 +34,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.kie.kogito.explainability.ExplanationService;
 import org.kie.kogito.explainability.PredictionProviderFactory;
-import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
 
@@ -58,13 +58,13 @@ public class ExplainabilityApiV1 {
     @Path("/explain")
     @APIResponses(value = {
             @APIResponse(description = "Retrieve the explainability for a given decision.", responseCode = "200",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = ExplainabilityRequestDto.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = BaseExplainabilityRequestDto.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
     })
     @Operation(summary = "Retrieve the explainability for a given decision.", description = "Retrieve the explainability for a given decision.")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> explain(@Valid ExplainabilityRequestDto requestDto) {
+    public Uni<Response> explain(@Valid BaseExplainabilityRequestDto requestDto) {
         ExplainabilityRequest request = ExplainabilityRequest.from(requestDto);
         PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
         CompletionStage<Response> result = explanationService.explainAsync(request, provider)

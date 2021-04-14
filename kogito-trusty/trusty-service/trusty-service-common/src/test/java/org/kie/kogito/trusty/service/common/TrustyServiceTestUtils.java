@@ -16,7 +16,10 @@
 
 package org.kie.kogito.trusty.service.common;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -36,7 +39,8 @@ import io.cloudevents.jackson.JsonFormat;
 
 public class TrustyServiceTestUtils {
 
-    public static final String CLOUDEVENT_SOURCE = "http://localhost:8080/Traffic+Violation";
+    public static final String CLOUDEVENT_SOURCE = "http://localhost:8080/Traffic+Violation/model/service";
+    public static final String CLOUDEVENT_SERVICE = "http://localhost:8080/Traffic+Violation";
 
     public static final String CORRECT_CLOUDEVENT_ID = "correct-cloud-event-id";
     public static final String CLOUDEVENT_WITH_ERRORS_ID = "cloud-event-with-errors-id";
@@ -112,6 +116,14 @@ public class TrustyServiceTestUtils {
         return readResource("/events/correctModelEvent.json", ModelEvent.class);
     }
 
+    public static String getCounterfactualJsonRequest() {
+        return readResourceAsString("/requests/counterfactualRequest.json");
+    }
+
+    public static String getCounterfactualWithStructuredModelJsonRequest() {
+        return readResourceAsString("/requests/counterfactualWithStructuredModelRequest.json");
+    }
+
     public static ModelIdentifier getModelIdentifier() {
         return new ModelIdentifier("groupId", "artifactId", "version", "name", "namespace");
     }
@@ -133,5 +145,24 @@ public class TrustyServiceTestUtils {
         } catch (IOException e) {
             throw new RuntimeException("Can't read test resource");
         }
+    }
+
+    private static String readResourceAsString(String name) {
+        try {
+            return readFromInputStream(TrustyServiceTestUtils.class.getResourceAsStream(name));
+        } catch (IOException e) {
+            throw new RuntimeException("Can't read test resource");
+        }
+    }
+
+    private static String readFromInputStream(InputStream inputStream) throws IOException {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        }
+        return resultStringBuilder.toString();
     }
 }

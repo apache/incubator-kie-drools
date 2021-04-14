@@ -24,8 +24,9 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.kogito.explainability.api.ExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.FeatureImportanceDto;
+import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
 import org.kie.kogito.explainability.api.SaliencyDto;
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.model.Prediction;
@@ -56,7 +57,7 @@ public class ExplanationServiceImpl implements ExplanationService {
     }
 
     @Override
-    public CompletionStage<ExplainabilityResultDto> explainAsync(
+    public CompletionStage<BaseExplainabilityResultDto> explainAsync(
             ExplainabilityRequest request,
             PredictionProvider predictionProvider) {
         LOG.debug("Explainability request with executionId {} for model {}:{}",
@@ -72,8 +73,8 @@ public class ExplanationServiceImpl implements ExplanationService {
         }
     }
 
-    private static ExplainabilityResultDto createSucceededResultDto(String executionId, Map<String, Saliency> saliencies) {
-        return ExplainabilityResultDto.buildSucceeded(
+    private static BaseExplainabilityResultDto createSucceededResultDto(String executionId, Map<String, Saliency> saliencies) {
+        return LIMEExplainabilityResultDto.buildSucceeded(
                 executionId,
                 saliencies.entrySet().stream().collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -82,9 +83,9 @@ public class ExplanationServiceImpl implements ExplanationService {
                                 .collect(Collectors.toList())))));
     }
 
-    private static ExplainabilityResultDto createFailedResultDto(String executionId, Throwable throwable) {
+    private static BaseExplainabilityResultDto createFailedResultDto(String executionId, Throwable throwable) {
         LOG.error("Exception thrown during explainAsync", throwable);
-        return ExplainabilityResultDto.buildFailed(executionId, FAILED_STATUS_DETAILS);
+        return LIMEExplainabilityResultDto.buildFailed(executionId, FAILED_STATUS_DETAILS);
     }
 
     private static Prediction getPrediction(Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {

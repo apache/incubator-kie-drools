@@ -15,13 +15,22 @@
  */
 package org.kie.kogito.explainability.api;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = BaseExplainabilityResultDto.EXPLAINABILITY_TYPE_FIELD)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = LIMEExplainabilityResultDto.class, name = LIMEExplainabilityResultDto.EXPLAINABILITY_TYPE_NAME),
+        @JsonSubTypes.Type(value = CounterfactualExplainabilityResultDto.class, name = CounterfactualExplainabilityResultDto.EXPLAINABILITY_TYPE_NAME)
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExplainabilityResultDto {
+public abstract class BaseExplainabilityResultDto {
+
+    public static final String EXPLAINABILITY_TYPE_FIELD = "type";
 
     @JsonProperty("executionId")
     private String executionId;
@@ -32,17 +41,13 @@ public class ExplainabilityResultDto {
     @JsonProperty("statusDetails")
     private String statusDetails;
 
-    @JsonProperty("saliency")
-    private Map<String, SaliencyDto> saliencies;
-
-    private ExplainabilityResultDto() {
+    protected BaseExplainabilityResultDto() {
     }
 
-    private ExplainabilityResultDto(String executionId, ExplainabilityStatus status, String statusDetails, Map<String, SaliencyDto> saliencies) {
+    protected BaseExplainabilityResultDto(String executionId, ExplainabilityStatus status, String statusDetails) {
         this.executionId = executionId;
         this.status = status;
         this.statusDetails = statusDetails;
-        this.saliencies = saliencies;
     }
 
     public String getExecutionId() {
@@ -55,17 +60,5 @@ public class ExplainabilityResultDto {
 
     public String getStatusDetails() {
         return statusDetails;
-    }
-
-    public Map<String, SaliencyDto> getSaliencies() {
-        return saliencies;
-    }
-
-    public static ExplainabilityResultDto buildSucceeded(String executionId, Map<String, SaliencyDto> saliencies) {
-        return new ExplainabilityResultDto(executionId, ExplainabilityStatus.SUCCEEDED, null, saliencies);
-    }
-
-    public static ExplainabilityResultDto buildFailed(String executionId, String statusDetails) {
-        return new ExplainabilityResultDto(executionId, ExplainabilityStatus.FAILED, statusDetails, null);
     }
 }

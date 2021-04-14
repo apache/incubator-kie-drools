@@ -18,13 +18,13 @@ package org.kie.kogito.explainability;
 
 import java.util.concurrent.CompletionStage;
 
-import org.kie.kogito.explainability.api.ExplainabilityResultDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
 
 public interface ExplanationService {
 
-    CompletionStage<ExplainabilityResultDto> explainAsync(
+    CompletionStage<BaseExplainabilityResultDto> explainAsync(
             ExplainabilityRequest request,
             PredictionProvider predictionProvider);
 }

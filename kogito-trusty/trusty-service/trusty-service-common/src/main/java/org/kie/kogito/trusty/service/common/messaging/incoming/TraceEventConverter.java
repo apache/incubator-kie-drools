@@ -30,14 +30,14 @@ import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
-import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 
 public class TraceEventConverter {
 
     private TraceEventConverter() {
     }
 
-    public static Decision toDecision(TraceEvent event, String sourceUrl) {
+    public static Decision toDecision(TraceEvent event, String sourceUrl, String serviceUrl) {
 
         List<DecisionInput> inputs = event.getInputs() == null
                 ? null
@@ -50,6 +50,7 @@ public class TraceEventConverter {
         return new Decision(
                 event.getHeader().getExecutionId(),
                 sourceUrl,
+                serviceUrl,
                 event.getHeader().getStartTimestamp(),
                 decisionHasSucceeded(event.getOutputs()),
                 null,
@@ -63,13 +64,13 @@ public class TraceEventConverter {
         return new DecisionInput(eventInput.getId(), eventInput.getName(), toTypedVariable(eventInput.getName(), eventInput.getValue()));
     }
 
-    public static TypedVariable toTypedVariable(String name, TypedValue typedValue) {
+    public static TypedVariableWithValue toTypedVariable(String name, TypedValue typedValue) {
         if (typedValue == null) {
-            return TypedVariable.buildUnit(name, null, null);
+            return TypedVariableWithValue.buildUnit(name, null, null);
         }
         switch (typedValue.getKind()) {
             case STRUCTURE:
-                return TypedVariable.buildStructure(
+                return TypedVariableWithValue.buildStructure(
                         name,
                         typedValue.getType(),
                         Optional.ofNullable(typedValue.toStructure().getValue())
@@ -78,7 +79,7 @@ public class TraceEventConverter {
                                         .collect(Collectors.toList()))
                                 .orElse(null));
             case COLLECTION:
-                return TypedVariable.buildCollection(
+                return TypedVariableWithValue.buildCollection(
                         name,
                         typedValue.getType(),
                         Optional.ofNullable(typedValue.toCollection().getValue())
@@ -87,7 +88,7 @@ public class TraceEventConverter {
                                         .collect(Collectors.toList()))
                                 .orElse(null));
             case UNIT:
-                return TypedVariable.buildUnit(
+                return TypedVariableWithValue.buildUnit(
                         name,
                         typedValue.getType(),
                         typedValue.toUnit().getValue());

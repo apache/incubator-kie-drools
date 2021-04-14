@@ -18,7 +18,7 @@ package org.kie.kogito.trusty.service.common.responses;
 
 import java.util.List;
 
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -44,7 +44,7 @@ public class SalienciesResponse {
     private SalienciesResponse() {
     }
 
-    public SalienciesResponse(ExplainabilityResult explainabilityResult) {
+    public SalienciesResponse(LIMEExplainabilityResult explainabilityResult) {
         this(explainabilityResult.getStatus().name(), explainabilityResult.getStatusDetails(), explainabilityResult.getSaliencies());
     }
 

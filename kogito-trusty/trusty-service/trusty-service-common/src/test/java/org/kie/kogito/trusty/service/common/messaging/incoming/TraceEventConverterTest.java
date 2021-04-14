@@ -44,7 +44,7 @@ class TraceEventConverterTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static void doTest(TraceEvent traceEvent, Decision expectedDecision) throws JsonProcessingException, JSONException {
-        Decision actualDecision = TraceEventConverter.toDecision(traceEvent, TrustyServiceTestUtils.CLOUDEVENT_SOURCE);
+        Decision actualDecision = TraceEventConverter.toDecision(traceEvent, TrustyServiceTestUtils.CLOUDEVENT_SOURCE, TrustyServiceTestUtils.CLOUDEVENT_SERVICE);
         JSONAssert.assertEquals(MAPPER.writeValueAsString(expectedDecision), MAPPER.writeValueAsString(actualDecision), false);
     }
 

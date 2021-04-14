@@ -19,21 +19,21 @@ package org.kie.kogito.explainability.messaging;
 import java.net.URI;
 
 import org.kie.kogito.cloudevents.CloudEventUtils;
-import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 
 import io.cloudevents.CloudEvent;
 
 public class ExplainabilityCloudEventBuilder {
 
-    public static CloudEvent buildCloudEvent(ExplainabilityRequestDto request) {
+    public static CloudEvent buildCloudEvent(BaseExplainabilityRequestDto request) {
         return CloudEventUtils.build(
                 request.getExecutionId(),
                 URI.create("trustyService/test"),
                 request,
-                ExplainabilityRequestDto.class).get();
+                BaseExplainabilityRequestDto.class).get();
     }
 
-    public static String buildCloudEventJsonString(ExplainabilityRequestDto request) {
+    public static String buildCloudEventJsonString(BaseExplainabilityRequestDto request) {
         return CloudEventUtils.encode(buildCloudEvent(request)).orElseThrow(IllegalStateException::new);
     }
 }
