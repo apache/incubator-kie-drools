@@ -358,8 +358,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         } catch (ScenarioException exception) {
             assertTrue(exception.isFailedAssertion());
             assertEquals(ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage("Fact 2.amount",
-                                                                                                amountNameExpectedFactMappingValue.getErrorValue(),
-                                                                                                amountNameExpectedFactMappingValue.getRawValue()),
+                                                                                                amountNameExpectedFactMappingValue.getRawValue(),
+                                                                                                amountNameExpectedFactMappingValue.getErrorValue()),
                          exception.getMessage());
         }
 
