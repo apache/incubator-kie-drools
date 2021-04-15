@@ -50,7 +50,7 @@ public class GraphImageGenerator {
     private String outputDir = DEFAULT_OUTPUT_DIR;
 
     private Rank.RankDir rankDir = Rank.RankDir.LEFT_TO_RIGHT; // LEFT_TO_RIGHT gives a better view when you have a large number of nodes
-    private double sep = 10; // interval between levels
+    private double sep = 1; // interval between levels
 
     public GraphImageGenerator(String graphName) {
         this.graphName = graphName;
