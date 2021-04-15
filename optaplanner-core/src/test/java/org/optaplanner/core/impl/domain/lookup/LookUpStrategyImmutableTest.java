@@ -52,17 +52,17 @@ public class LookUpStrategyImmutableTest {
 
     public static Stream<Arguments> data() {
         return Stream.of(
-                arguments(true, Boolean.valueOf(true)),
-                arguments((byte) 1, Byte.valueOf((byte) 1)),
-                arguments((short) 1, Short.valueOf((short) 1)),
-                arguments(1, Integer.valueOf(1)),
-                arguments(1L, Long.valueOf(1)),
-                arguments(0.5f, Float.valueOf(0.5f)),
-                arguments(0.1d, Double.valueOf(0.1d)),
+                arguments(true, true),
+                arguments((byte) 1, (byte) 1),
+                arguments((short) 1, (short) 1),
+                arguments(1, 1),
+                arguments(1L, (long) 1),
+                arguments(0.5f, 0.5f),
+                arguments(0.1d, 0.1d),
                 arguments(BigInteger.ONE, new BigInteger("1")),
                 arguments(BigDecimal.ONE, new BigDecimal("1")),
-                arguments('!', Character.valueOf((char) 33)),
-                arguments("", new String()),
+                arguments('!', (char) 33),
+                arguments("", ""),
 
                 arguments(Instant.ofEpochMilli(12345L), Instant.ofEpochMilli(12345L)),
                 arguments(LocalDateTime.of(1, 2, 3, 4, 5), LocalDateTime.of(1, 2, 3, 4, 5)),
