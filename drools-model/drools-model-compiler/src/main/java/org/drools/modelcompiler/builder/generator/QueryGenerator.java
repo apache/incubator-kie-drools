@@ -42,6 +42,7 @@ import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -138,6 +139,11 @@ public class QueryGenerator {
 
         queryBody.addStatement(new ReturnStmt(queryBuildVarName));
         packageModel.putQueryMethod(queryMethod);
+
+        RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
+        if(ruleUnitDescr != null) {
+            packageModel.putRuleUnit(ruleUnitDescr.getSimpleName());
+        }
     }
 
     private static void parseQueryParameters(RuleContext context, PackageModel packageModel, QueryDescr descr) {
