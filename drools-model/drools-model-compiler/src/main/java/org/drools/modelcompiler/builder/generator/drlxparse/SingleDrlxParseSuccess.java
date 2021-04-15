@@ -80,6 +80,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private boolean requiresSplit;
     private boolean unification;
     private boolean temporal;
+    private boolean combined;
 
     private Optional<Expression> implicitCastExpression = Optional.empty();
 
@@ -111,6 +112,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.requiresSplit = drlx.isRequiresSplit();
         this.unification = drlx.isUnification();
         this.temporal = drlx.isTemporal();
+        this.combined = drlx.isCombined();
         this.implicitCastExpression = drlx.getImplicitCastExpression();
 
         this.watchedProperties = drlx.getWatchedProperties();
@@ -180,6 +182,11 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public SingleDrlxParseSuccess setTemporal(boolean temporal) {
         this.temporal = temporal;
+        return this;
+    }
+
+    public SingleDrlxParseSuccess setCombined(boolean combined) {
+        this.combined = combined;
         return this;
     }
 
@@ -326,6 +333,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return temporal;
     }
 
+    public boolean isCombined() {
+        return combined;
+    }
+
     public boolean isValidExpression( ) {
         if (this.isValidExpression) {
             return true;
@@ -414,9 +425,13 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         newReactOnProperties.addAll( this.reactOnProperties );
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
-        return new SingleDrlxParseSuccess(patternType, patternBinding, new BinaryExpr(expr, otherDrlx.expr, operator), exprType)
-                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
-                .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
+        return new SingleDrlxParseSuccess(patternType, patternBinding, new EnclosedExpr( new BinaryExpr(expr, otherDrlx.expr, operator) ), exprType)
+                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN)
+                .setUsedDeclarations(newUsedDeclarations)
+                .setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
+                .setUnification(this.isUnification() || otherDrlx.isUnification())
+                .setCombined( true )
+                .setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
                 .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
                 .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class));
     }
