@@ -34,10 +34,9 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
+import org.kie.dmn.feel.util.ClassUtil;
 import org.kie.dmn.feel.util.Msg;
-import org.kie.dmn.model.api.GwtIncompatible;
 
-@GwtIncompatible
 public class FunctionDefNode
         extends BaseNode {
 
@@ -150,7 +149,7 @@ public class FunctionDefNode
             throw e;
         }
     }
-    
+
     private static String feelMethodSignature(Method method) {
         StringBuilder sb = new StringBuilder(method.getName());
         sb.append("(");
@@ -159,7 +158,7 @@ public class FunctionDefNode
         sb.append(")");
         return sb.toString();
     }
-    
+
     private Class<?> getTypeInterceptinException(EvaluationContext ctx, String typeName, ClassLoader classLoader) {
         try {
             return getType(typeName, classLoader);
@@ -174,7 +173,7 @@ public class FunctionDefNode
         Class<?> type = convertPrimitiveNameToType( typeName );
         if( type == null ) {
             // if it is not, then try to load it
-            type = Class.forName(typeName, true, classLoader);
+            type = ClassUtil.forName(typeName, true, classLoader);
 
         }
         return type;

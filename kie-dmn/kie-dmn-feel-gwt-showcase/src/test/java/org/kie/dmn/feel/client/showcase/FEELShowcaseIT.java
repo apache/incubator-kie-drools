@@ -74,7 +74,7 @@ public class FEELShowcaseIT {
         assertEvaluation("1 in [1..10]", "true");
         assertEvaluation("1 in (1..10]", "false");
         assertEvaluation("string length(\"DMN\")", "3");
-        assertEvaluation("substring(\"Learn DMN in 15 minutes\", 6, 3)", "DMN");
+        assertEvaluation("substring(\"Learn DMN in 15 minutes\", 7, 3)", "DMN");
         assertEvaluation("lower case(\"LEARN-DMN-IN-15-MINUTES.COM\")", "learn-dmn-in-15-minutes.com");
         assertEvaluation("upper case(\"learn-dmn-in-15-minutes.com\")", "LEARN-DMN-IN-15-MINUTES.COM");
         assertEvaluation("sum([1, 2, 3, 4, 5])", "15");

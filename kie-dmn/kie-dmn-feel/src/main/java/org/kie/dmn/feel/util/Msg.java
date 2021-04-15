@@ -77,7 +77,7 @@ public final class Msg {
     }
     
     private static String buildMessage( Message message, Object... params ) {
-        return String.format( message.getMask(), params );
+        return StringUtil.format( message.getMask(), params );
     }
     
     public static interface Message {

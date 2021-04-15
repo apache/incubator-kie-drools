@@ -38,6 +38,15 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt-functions</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt-functions</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
       <exclusions>
         <exclusion>
@@ -198,6 +207,7 @@
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.kie:kie-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-feel</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie:kie-dmn-model</compileSourcesArtifact>
           </compileSourcesArtifacts>
