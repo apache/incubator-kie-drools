@@ -22,6 +22,7 @@ import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -44,7 +45,8 @@ public class SolverBenchmarkFactory {
         }
         solverBenchmarkResult.setSolverConfig(config.getSolverConfig());
         DefaultSolverFactory<Solution_> defaultSolverFactory = new DefaultSolverFactory<>(config.getSolverConfig());
-        SolutionDescriptor<Solution_> solutionDescriptor = defaultSolverFactory.buildSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor =
+                defaultSolverFactory.buildSolutionDescriptor(EnvironmentMode.REPRODUCIBLE);
         for (Solution_ extraProblem : extraProblems) {
             if (!solutionDescriptor.getSolutionClass().isInstance(extraProblem)) {
                 throw new IllegalArgumentException("The solverBenchmark name (" + config.getName()

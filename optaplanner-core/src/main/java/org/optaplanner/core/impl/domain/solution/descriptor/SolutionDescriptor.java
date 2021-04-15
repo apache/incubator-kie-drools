@@ -140,7 +140,6 @@ public class SolutionDescriptor<Solution_> {
             entityDescriptor.processAnnotations(descriptorPolicy);
         }
         solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
-        solutionDescriptor.setDomainAccessType(domainAccessType);
         return solutionDescriptor;
     }
 
@@ -168,9 +167,11 @@ public class SolutionDescriptor<Solution_> {
     // ************************************************************************
 
     private final Class<Solution_> solutionClass;
-    private SolutionCloner<Solution_> solutionCloner;
 
+    private DomainAccessType domainAccessType;
     private AutoDiscoverMemberType autoDiscoverMemberType;
+    private LookUpStrategyResolver lookUpStrategyResolver;
+
     private MemberAccessor constraintConfigurationMemberAccessor;
     private final Map<String, MemberAccessor> problemFactMemberAccessorMap;
     private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
@@ -183,11 +184,11 @@ public class SolutionDescriptor<Solution_> {
     private ConstraintConfigurationDescriptor<Solution_> constraintConfigurationDescriptor;
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
-
     private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMemoization =
             new ConcurrentMemoization<>();
-    private LookUpStrategyResolver lookUpStrategyResolver = null;
-    private DomainAccessType domainAccessType = null;
+
+    private SolutionCloner<Solution_> solutionCloner;
+    private boolean assertModelForCloning = false;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -201,18 +202,9 @@ public class SolutionDescriptor<Solution_> {
         entityCollectionMemberAccessorMap = new LinkedHashMap<>();
         entityDescriptorMap = new LinkedHashMap<>();
         reversedEntityClassList = new ArrayList<>();
-        domainAccessType = DomainAccessType.REFLECTION;
         if (solutionClass.getPackage() == null) {
             LOGGER.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
         }
-    }
-
-    public DomainAccessType getDomainAccessType() {
-        return domainAccessType;
-    }
-
-    public void setDomainAccessType(DomainAccessType domainAccessType) {
-        this.domainAccessType = domainAccessType;
     }
 
     public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
@@ -231,6 +223,7 @@ public class SolutionDescriptor<Solution_> {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy,
             List<Class<?>> entityClassList) {
+        domainAccessType = descriptorPolicy.getDomainAccessType();
         processSolutionAnnotations(descriptorPolicy);
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
@@ -273,7 +266,7 @@ public class SolutionDescriptor<Solution_> {
     /**
      * Only called if Drools score calculation is used.
      */
-    public void checkIfProblemFactsExist() {
+    public void assertProblemFactsExist() {
         if (problemFactCollectionMemberAccessorMap.isEmpty() && problemFactMemberAccessorMap.isEmpty()) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") must have at least 1 member with a "
@@ -291,33 +284,12 @@ public class SolutionDescriptor<Solution_> {
                     " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
         autoDiscoverMemberType = solutionAnnotation.autoDiscoverMemberType();
-        processSolutionCloner(descriptorPolicy, solutionAnnotation);
+        Class<? extends SolutionCloner> solutionClonerClass = solutionAnnotation.solutionCloner();
+        if (solutionClonerClass != PlanningSolution.NullSolutionCloner.class) {
+            solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
+        }
         lookUpStrategyResolver =
                 new LookUpStrategyResolver(descriptorPolicy.getDomainAccessType(), solutionAnnotation.lookUpStrategyType());
-    }
-
-    private void processSolutionCloner(DescriptorPolicy descriptorPolicy, PlanningSolution solutionAnnotation) {
-        Class<? extends SolutionCloner> solutionClonerClass = solutionAnnotation.solutionCloner();
-        if (solutionClonerClass == PlanningSolution.NullSolutionCloner.class) {
-            solutionClonerClass = null;
-        }
-        if (solutionClonerClass != null) {
-            solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
-        } else {
-            switch (descriptorPolicy.getDomainAccessType()) {
-                case GIZMO:
-                    solutionCloner = GizmoSolutionClonerFactory.build(this);
-                    break;
-
-                case REFLECTION:
-                    solutionCloner = new FieldAccessingSolutionCloner<>(this);
-                    break;
-
-                default:
-                    throw new IllegalStateException("The descriptorPolicy.getDomainAccessType() (" +
-                            domainAccessType + ") is not implemented.");
-            }
-        }
     }
 
     private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy,
@@ -709,6 +681,7 @@ public class SolutionDescriptor<Solution_> {
                 }
             }
         }
+        initSolutionCloner(descriptorPolicy);
     }
 
     private void determineGlobalShadowOrder() {
@@ -757,8 +730,31 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
+    private void initSolutionCloner(DescriptorPolicy descriptorPolicy) {
+        if (solutionCloner == null) {
+            switch (descriptorPolicy.getDomainAccessType()) {
+                case GIZMO:
+                    solutionCloner = GizmoSolutionClonerFactory.build(this);
+                    break;
+                case REFLECTION:
+                    solutionCloner = new FieldAccessingSolutionCloner<>(this);
+                    break;
+                default:
+                    throw new IllegalStateException("The domainAccessType (" + domainAccessType
+                            + ") is not implemented.");
+            }
+        }
+        if (assertModelForCloning) {
+            // TODO https://issues.redhat.com/browse/PLANNER-2395
+        }
+    }
+
     public Class<Solution_> getSolutionClass() {
         return solutionClass;
+    }
+
+    public DomainAccessType getDomainAccessType() {
+        return domainAccessType;
     }
 
     /**
@@ -770,10 +766,6 @@ public class SolutionDescriptor<Solution_> {
 
     public ScoreDefinition getScoreDefinition() {
         return scoreDefinition;
-    }
-
-    public SolutionCloner<Solution_> getSolutionCloner() {
-        return solutionCloner;
     }
 
     public Map<String, MemberAccessor> getProblemFactMemberAccessorMap() {
@@ -810,6 +802,14 @@ public class SolutionDescriptor<Solution_> {
 
     public Set<Class<?>> getProblemFactOrEntityClassSet() {
         return problemFactOrEntityClassSet;
+    }
+
+    public SolutionCloner<Solution_> getSolutionCloner() {
+        return solutionCloner;
+    }
+
+    public void setAssertModelForCloning(boolean assertModelForCloning) {
+        this.assertModelForCloning = assertModelForCloning;
     }
 
     // ************************************************************************

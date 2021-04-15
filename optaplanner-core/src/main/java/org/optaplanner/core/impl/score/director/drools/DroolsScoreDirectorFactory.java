@@ -57,12 +57,12 @@ public class DroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
     public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
         super(solutionDescriptor);
         this.kieBase = kieBase;
-        checkIfGlobalScoreHolderExists(kieBase);
+        assertGlobalScoreHolderExists(kieBase);
         createRuleToConstraintWeightExtractorMap(kieBase);
-        solutionDescriptor.checkIfProblemFactsExist();
+        solutionDescriptor.assertProblemFactsExist();
     }
 
-    protected void checkIfGlobalScoreHolderExists(KieBase kieBase) {
+    protected void assertGlobalScoreHolderExists(KieBase kieBase) {
         boolean hasGlobalScoreHolder = false;
         for (KiePackage kiePackage : kieBase.getKiePackages()) {
             for (Global global : kiePackage.getGlobalVariables()) {

@@ -33,6 +33,7 @@ import java.util.List;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.io.jaxb.ElementNamespaceOverride;
@@ -155,7 +156,8 @@ public class BenchmarkResultIO {
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
             DefaultSolverFactory<?> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
-            solverBenchmarkResult.setScoreDefinition(defaultSolverFactory.buildSolutionDescriptor().getScoreDefinition());
+            solverBenchmarkResult.setScoreDefinition(
+                    defaultSolverFactory.buildSolutionDescriptor(EnvironmentMode.REPRODUCIBLE).getScoreDefinition());
         }
     }
 

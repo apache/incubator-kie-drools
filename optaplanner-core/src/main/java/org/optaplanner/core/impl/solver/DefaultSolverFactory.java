@@ -107,7 +107,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
      * @return never null
      */
     public InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
-        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(environmentMode);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
                 ? new ScoreDirectorFactoryConfig()
                 : solverConfig.getScoreDirectorFactoryConfig();
@@ -118,9 +118,10 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     }
 
     /**
+     * @param environmentMode never null
      * @return never null
      */
-    public SolutionDescriptor<Solution_> buildSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> buildSolutionDescriptor(EnvironmentMode environmentMode) {
         if (solverConfig.getSolutionClass() == null) {
             throw new IllegalArgumentException("The solver configuration must have a solutionClass (" +
                     solverConfig.getSolutionClass() +
@@ -132,9 +133,14 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     solverConfig.getEntityClassList() + "). If you're using the Quarkus extension or Spring Boot starter, " +
                     "it should have been filled in already.");
         }
-        return SolutionDescriptor.buildSolutionDescriptor(solverConfig.determineDomainAccessType(),
-                (Class<Solution_>) solverConfig.getSolutionClass(),
-                solverConfig.getEntityClassList());
+        SolutionDescriptor<Solution_> solutionDescriptor =
+                SolutionDescriptor.buildSolutionDescriptor(solverConfig.determineDomainAccessType(),
+                        (Class<Solution_>) solverConfig.getSolutionClass(),
+                        solverConfig.getEntityClassList());
+        if (environmentMode.isAsserted()) {
+            solutionDescriptor.setAssertModelForCloning(true);
+        }
+        return solutionDescriptor;
     }
 
     protected RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
