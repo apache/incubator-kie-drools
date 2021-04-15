@@ -56,7 +56,9 @@ public class GuidedDTXMLPersistence {
     private GuidedDTXMLPersistence() {
         xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
         xt.addPermission(new WildcardTypePermission( new String[] {
-                "org.drools.workbench.models.guided.dtable.shared.**", "org.drools.workbench.models.datamodel.**"
+                "org.drools.workbench.models.guided.dtable.shared.**", 
+                "org.drools.workbench.models.datamodel.**",
+                "org.optaplanner.workbench.models.datamodel.rule.**"
         }));
 
         //Legacy model

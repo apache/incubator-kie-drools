@@ -74,7 +74,9 @@ public class RuleTemplateModelXMLPersistenceImpl
     protected RuleTemplateModelXMLPersistenceImpl() {
         this.xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
         this.xt.addPermission(new WildcardTypePermission( new String[] {
-                "org.drools.workbench.models.guided.template.shared.*", "org.drools.workbench.models.datamodel.rule.*"
+                "org.drools.workbench.models.guided.template.shared.*",
+                "org.drools.workbench.models.datamodel.rule.*",
+                "org.drools.workbench.models.datamodel.imports.**"
         }));
 
         this.xt.alias( "rule",
