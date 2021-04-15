@@ -24,15 +24,11 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Array;
@@ -62,6 +58,9 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.assignExprFrom;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.methodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
@@ -206,29 +205,5 @@ public class KiePMMLClusteringModelFactory {
         }
 
         return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLMissingValueWeights.class.getCanonicalName()), arguments);
-    }
-
-    private static AssignExpr assignExprFrom(String target, Expression value) {
-        return new AssignExpr(new NameExpr(target), value, AssignExpr.Operator.ASSIGN);
-    }
-
-    private static AssignExpr assignExprFrom(String target, Enum<?> value) {
-        return assignExprFrom(target, literalExprFrom(value));
-    }
-
-    private static AssignExpr assignExprFrom(String target, String value) {
-        return assignExprFrom(target, literalExprFrom(value));
-    }
-
-    private static Expression literalExprFrom(Enum<?> input) {
-        return input == null ? new NullLiteralExpr() : new NameExpr(input.getClass().getCanonicalName() + "." + input.name());
-    }
-
-    private static Expression literalExprFrom(String input) {
-        return input == null ? new NullLiteralExpr() : new StringLiteralExpr(input);
-    }
-
-    private static MethodCallExpr methodCallExprFrom(String scope, String name, Expression... arguments) {
-        return new MethodCallExpr(new NameExpr(scope), name, new NodeList<>(arguments));
     }
 }

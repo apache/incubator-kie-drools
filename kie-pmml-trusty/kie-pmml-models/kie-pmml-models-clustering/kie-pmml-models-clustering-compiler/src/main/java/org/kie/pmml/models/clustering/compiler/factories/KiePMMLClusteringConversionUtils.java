@@ -16,6 +16,9 @@
 
 package org.kie.pmml.models.clustering.compiler.factories;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.dmg.pmml.BinarySimilarity;
 import org.dmg.pmml.Chebychev;
 import org.dmg.pmml.CityBlock;
@@ -36,33 +39,25 @@ import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
 
 public class KiePMMLClusteringConversionUtils {
 
+    private static final Map<Class<? extends Measure>, KiePMMLAggregateFunction> AGGREGATE_FN_MAP = new HashMap<>(9);
+
+    static {
+        AGGREGATE_FN_MAP.put(Euclidean.class, KiePMMLAggregateFunction.EUCLIDEAN);
+        AGGREGATE_FN_MAP.put(SquaredEuclidean.class, KiePMMLAggregateFunction.SQUARED_EUCLIDEAN);
+        AGGREGATE_FN_MAP.put(Chebychev.class, KiePMMLAggregateFunction.CHEBYCHEV);
+        AGGREGATE_FN_MAP.put(CityBlock.class, KiePMMLAggregateFunction.CITY_BLOCK);
+        AGGREGATE_FN_MAP.put(Minkowski.class, KiePMMLAggregateFunction.MINKOWSKI);
+        AGGREGATE_FN_MAP.put(SimpleMatching.class, KiePMMLAggregateFunction.SIMPLE_MATCHING);
+        AGGREGATE_FN_MAP.put(Jaccard.class, KiePMMLAggregateFunction.JACCARD);
+        AGGREGATE_FN_MAP.put(Tanimoto.class, KiePMMLAggregateFunction.TANIMOTO);
+        AGGREGATE_FN_MAP.put(BinarySimilarity.class, KiePMMLAggregateFunction.BINARY_SIMILARITY);
+    }
+
     public static KiePMMLAggregateFunction aggregateFunctionFrom(Measure input) {
-        if (input instanceof Euclidean) {
-            return KiePMMLAggregateFunction.EUCLIDEAN;
-        }
-        if (input instanceof SquaredEuclidean) {
-            return KiePMMLAggregateFunction.SQUARED_EUCLIDEAN;
-        }
-        if (input instanceof Chebychev) {
-            return KiePMMLAggregateFunction.CHEBYCHEV;
-        }
-        if (input instanceof CityBlock) {
-            return KiePMMLAggregateFunction.CITY_BLOCK;
-        }
-        if (input instanceof Minkowski) {
-            return KiePMMLAggregateFunction.MINKOWSKI;
-        }
-        if (input instanceof SimpleMatching) {
-            return KiePMMLAggregateFunction.SIMPLE_MATCHING;
-        }
-        if (input instanceof Jaccard) {
-            return KiePMMLAggregateFunction.JACCARD;
-        }
-        if (input instanceof Tanimoto) {
-            return KiePMMLAggregateFunction.TANIMOTO;
-        }
-        if (input instanceof BinarySimilarity) {
-            return KiePMMLAggregateFunction.BINARY_SIMILARITY;
+        for (Map.Entry<Class<? extends Measure>, KiePMMLAggregateFunction> entry : AGGREGATE_FN_MAP.entrySet()) {
+            if (entry.getKey().isInstance(input)) {
+                return entry.getValue();
+            }
         }
         throw new IllegalStateException("Invalid aggregate function of class " + input.getClass());
     }

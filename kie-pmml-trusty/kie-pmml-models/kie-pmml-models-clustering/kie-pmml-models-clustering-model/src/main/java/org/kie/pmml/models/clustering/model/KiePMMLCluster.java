@@ -27,14 +27,10 @@ public class KiePMMLCluster {
     private final Optional<String> id;
     private final Optional<String> name;
 
-    public KiePMMLCluster(String id, String name, List<Double> values) {
-        this.values = Collections.unmodifiableList(values);
+    public KiePMMLCluster(String id, String name, Double... values) {
+        this.values = Collections.unmodifiableList(Stream.of(values).collect(Collectors.toList()));
         this.id = Optional.ofNullable(id);
         this.name = Optional.ofNullable(name);
-    }
-
-    public KiePMMLCluster(String id, String name, Double... values) {
-        this(id, name, Stream.of(values).collect(Collectors.toList()));
     }
 
     public List<Double> getValues() {
