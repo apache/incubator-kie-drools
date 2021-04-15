@@ -760,6 +760,7 @@ public class KiePackagesBuilder {
         Pattern pattern = addPatternForVariable( ctx, group, patternVariable, modelPattern.getType() );
 
         Arrays.stream( modelPattern.getWatchedProps() ).forEach( pattern::addWatchedProperty );
+        pattern.setPassive( modelPattern.isPassive() );
 
         for (Binding binding : modelPattern.getBindings()) {
             // FIXME this is returning null for BindViewItem2, BindViewItem3 etc (mdp)

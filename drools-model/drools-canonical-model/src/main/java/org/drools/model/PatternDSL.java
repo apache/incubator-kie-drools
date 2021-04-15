@@ -256,6 +256,8 @@ public class PatternDSL extends DSL {
         <A, U, V, W> PatternDef<T> bind( Variable<A> boundVar, Variable<U> otherVar1, Variable<V> otherVar2, Variable<W> otherVar3, Function4<T, U, V, W, A> f, ReactOn reactOn );
 
         PatternDef<T> watch( String... watch );
+
+        PatternDef<T> passive();
     }
 
     public static class PatternDefImpl<T> implements PatternDef<T> {
@@ -263,6 +265,7 @@ public class PatternDSL extends DSL {
         private final List<PatternItem<T>> items = new ArrayList<>();
 
         private String[] watch;
+        private boolean passive;
 
         public PatternDefImpl( Variable<T> variable ) {
             this.variable = variable;
@@ -283,6 +286,10 @@ public class PatternDSL extends DSL {
 
         public String[] getWatch() {
             return watch;
+        }
+
+        public boolean isPassive() {
+            return passive;
         }
 
         @Override
@@ -667,6 +674,12 @@ public class PatternDSL extends DSL {
         @Override
         public PatternDef<T> watch( String... watch ) {
             this.watch = watch;
+            return this;
+        }
+
+        @Override
+        public PatternDef<T> passive() {
+            this.passive = true;
             return this;
         }
     }

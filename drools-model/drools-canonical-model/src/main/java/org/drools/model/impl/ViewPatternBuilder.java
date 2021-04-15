@@ -131,6 +131,7 @@ public class ViewPatternBuilder implements ViewBuilder {
                 }
             }
             pattern.addWatchedProps(patternDef.getWatch());
+            pattern.setPassive(patternDef.isPassive());
             return pattern;
         }
 
