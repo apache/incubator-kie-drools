@@ -18,12 +18,25 @@ package org.kie.pmml.models.clustering.model;
 
 import java.math.BigDecimal;
 
-public enum KiePMMLCompareFunction {
-    ABS_DIFF,
-    GAUSS_SIM,
-    DELTA,
-    EQUAL,
-    TABLE;
+import org.kie.pmml.api.enums.Named;
+
+public enum KiePMMLCompareFunction implements Named {
+    ABS_DIFF("absDiff"),
+    GAUSS_SIM("gaussSim"),
+    DELTA("delta"),
+    EQUAL("equal"),
+    TABLE("table");
+
+    private final String name;
+
+    KiePMMLCompareFunction(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     public double apply(KiePMMLClusteringField field, double x, double y) {
         switch (this) {

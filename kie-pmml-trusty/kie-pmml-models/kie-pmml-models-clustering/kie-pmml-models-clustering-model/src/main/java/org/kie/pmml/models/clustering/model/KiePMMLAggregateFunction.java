@@ -18,16 +18,29 @@ package org.kie.pmml.models.clustering.model;
 
 import java.util.List;
 
-public enum KiePMMLAggregateFunction {
-    EUCLIDEAN,
-    SQUARED_EUCLIDEAN,
-    CHEBYCHEV,
-    CITY_BLOCK,
-    MINKOWSKI,
-    SIMPLE_MATCHING,
-    JACCARD,
-    TANIMOTO,
-    BINARY_SIMILARITY;
+import org.kie.pmml.api.enums.Named;
+
+public enum KiePMMLAggregateFunction implements Named {
+    EUCLIDEAN("euclidean"),
+    SQUARED_EUCLIDEAN("squaredEuclidean"),
+    CHEBYCHEV("chebychev"),
+    CITY_BLOCK("cityBlock"),
+    MINKOWSKI("minkowski"),
+    SIMPLE_MATCHING("simpleMatching"),
+    JACCARD("jaccard"),
+    TANIMOTO("tanimoto"),
+    BINARY_SIMILARITY("binarySimilarity");
+
+    private final String name;
+
+    KiePMMLAggregateFunction(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     public double apply(List<KiePMMLClusteringField> fields, KiePMMLCompareFunction defaultCompare, Double[] inputs, double[] seeds, double adjust) {
         switch (this) {

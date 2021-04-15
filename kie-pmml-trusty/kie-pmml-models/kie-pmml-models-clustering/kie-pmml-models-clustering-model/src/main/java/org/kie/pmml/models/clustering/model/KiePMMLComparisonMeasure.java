@@ -15,7 +15,25 @@
  */
 package org.kie.pmml.models.clustering.model;
 
+import org.kie.pmml.api.enums.Named;
+
 public class KiePMMLComparisonMeasure {
+
+    public enum Kind implements Named {
+        DISTANCE("distance"),
+        SIMILARITY("similarity");
+
+        private final String name;
+
+        Kind(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
 
     private final Kind kind;
     private final KiePMMLAggregateFunction aggregateFunction;
@@ -37,10 +55,5 @@ public class KiePMMLComparisonMeasure {
 
     public KiePMMLCompareFunction getCompareFunction() {
         return compareFunction;
-    }
-
-    public enum Kind {
-        DISTANCE,
-        SIMILARITY
     }
 }

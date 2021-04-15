@@ -37,6 +37,8 @@ import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 import org.kie.pmml.models.clustering.model.KiePMMLCompareFunction;
 import org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure;
 
+import static org.kie.pmml.api.utils.EnumUtils.enumByName;
+
 public class KiePMMLClusteringConversionUtils {
 
     private static final Map<Class<? extends Measure>, KiePMMLAggregateFunction> AGGREGATE_FN_MAP = new HashMap<>(9);
@@ -63,39 +65,15 @@ public class KiePMMLClusteringConversionUtils {
     }
 
     public static KiePMMLCompareFunction compareFunctionFrom(CompareFunction input) {
-        switch (input) {
-            case ABS_DIFF:
-                return KiePMMLCompareFunction.ABS_DIFF;
-            case GAUSS_SIM:
-                return KiePMMLCompareFunction.GAUSS_SIM;
-            case DELTA:
-                return KiePMMLCompareFunction.DELTA;
-            case EQUAL:
-                return KiePMMLCompareFunction.EQUAL;
-            case TABLE:
-                return KiePMMLCompareFunction.TABLE;
-        }
-        throw new IllegalStateException("Invalid compare function " + input);
+        return enumByName(KiePMMLCompareFunction.class, input.value());
     }
 
     public static KiePMMLComparisonMeasure.Kind comparisonMeasureKindFrom(ComparisonMeasure.Kind input) {
-        switch (input) {
-            case DISTANCE:
-                return KiePMMLComparisonMeasure.Kind.DISTANCE;
-            case SIMILARITY:
-                return KiePMMLComparisonMeasure.Kind.SIMILARITY;
-        }
-        throw new IllegalStateException("Invalid comparison measure kind " + input);
+        return enumByName(KiePMMLComparisonMeasure.Kind.class, input.value());
     }
 
     public static KiePMMLClusteringModel.ModelClass modelClassFrom(ClusteringModel.ModelClass input) {
-        switch (input) {
-            case CENTER_BASED:
-                return KiePMMLClusteringModel.ModelClass.CENTER_BASED;
-            case DISTRIBUTION_BASED:
-                return KiePMMLClusteringModel.ModelClass.DISTRIBUTION_BASED;
-        }
-        throw new IllegalStateException("Invalid model class " + input);
+        return enumByName(KiePMMLClusteringModel.ModelClass.class, input.value());
     }
 
     private KiePMMLClusteringConversionUtils() {

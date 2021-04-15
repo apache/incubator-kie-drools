@@ -21,13 +21,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public abstract class KiePMMLClusteringModel extends KiePMMLModel {
 
-    public enum ModelClass {
-        CENTER_BASED,
-        DISTRIBUTION_BASED
+    public enum ModelClass implements Named {
+        CENTER_BASED("centerBased"),
+        DISTRIBUTION_BASED("distributionBased");
+
+        private final String name;
+
+        ModelClass(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 
     protected ModelClass modelClass;
