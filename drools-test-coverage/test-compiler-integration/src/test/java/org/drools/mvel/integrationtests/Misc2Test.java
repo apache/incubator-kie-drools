@@ -4873,7 +4873,7 @@ public class Misc2Test {
 
                      "query unravel( String $g, String $c ) " +
                      "    ( " +
-                     "        ( Anon( $g, $c ; ) and $c := String( this.contains( \"b\" ) ) ) " +
+                     "        ( Anon( $g, $c ; ) and String( $c := this, this.contains( \"b\" ) ) ) " +
                      "        or " +
                      "        ( Anon( $g, $x ; ) and unravel( $x, $c ; ) ) " +
                      "    ) " +

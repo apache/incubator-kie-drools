@@ -55,6 +55,9 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         if (condition instanceof Pattern) {
             return ( Pattern ) condition;
         }
+        if (condition instanceof QueryCallPattern) {
+            return (( QueryCallPattern ) condition).getResultPattern();
+        }
 
         if (accumulateFunctions.length == 0) {
             return null;
@@ -80,9 +83,9 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
                 if (isSource) {
                     return patternImpl;
                 }
-
             }
         }
+
         return null;
     }
 
@@ -94,6 +97,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     @Override
     public boolean isCompositePatterns() {
         return condition instanceof CompositePatterns;
+    }
+
+    @Override
+    public boolean isQuerySource() {
+        return condition instanceof QueryCallPattern;
     }
 
     @Override
