@@ -362,6 +362,14 @@ public class DroolsMvelParserTest {
     }
 
     @Test
+    public void testInExpressionNewLine() {
+        String expr = "parent in (   \"Gustav\", // comment   \"Alice\")";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertTrue(expression instanceof PointFreeExpr);
+        assertEquals(expr, printConstraint(expression));
+    }
+
+    @Test
     /* This shouldn't be supported, an HalfBinaryExpr should be valid only after a && or a || */
     public void testUnsupportedImplicitParameter() {
         String expr = "== \"Mark\"";
