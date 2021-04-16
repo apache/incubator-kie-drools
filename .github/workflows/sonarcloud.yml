@@ -1,0 +1,39 @@
+# Runs the SonarCloud analysis of the optaplanner master branch after a PR is merged.
+name: OptaPlanner SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - master
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  sonarcloud-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven to measure code coverage
+        run: mvn -B --fail-at-end clean install -Prun-code-coverage
+      - name: Run SonarCloud analysis
+        env:
+          SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        run: mvn -B --fail-at-end validate -Psonarcloud-analysis -Dsonar.projectKey=org.optaplanner:optaplanner
