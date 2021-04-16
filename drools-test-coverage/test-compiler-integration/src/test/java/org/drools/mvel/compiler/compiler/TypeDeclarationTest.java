@@ -580,54 +580,6 @@ public class TypeDeclarationTest {
     }
 
     @Test
-    public void testTypeReDeclarationPojo() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "    age : Integer \n" +
-                      "end \n";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
-    }
-
-    @Test
-    public void testTypeReDeclarationPojoMoreFields() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "    age : Integer \n" +
-                      "    address : Objet \n" +
-                      "end \n";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
-    }
-
-    @Test
-    public void testTypeReDeclarationPojoLessFields() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "end \n";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
-    }
-
-    @Test
     public void testMultipleTypeReDeclaration() {
         // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
         // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model

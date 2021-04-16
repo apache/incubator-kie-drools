@@ -27,6 +27,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -88,5 +89,54 @@ public class TypeDeclarationUnsupportedModelTest {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
         assertTrue(errors.toString(), errors.isEmpty());
+    }
+
+
+    @Test
+    public void testTypeReDeclarationPojo() {
+        String str1 = "" +
+                "package org.drools \n" +
+                "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
+                "" +
+                "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
+                "    name : String \n" +
+                "    age : Integer \n" +
+                "end \n";
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
+    }
+
+    @Test
+    public void testTypeReDeclarationPojoMoreFields() {
+        String str1 = "" +
+                "package org.drools \n" +
+                "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
+                "" +
+                "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
+                "    name : String \n" +
+                "    age : Integer \n" +
+                "    address : Objet \n" +
+                "end \n";
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
+    }
+
+    @Test
+    public void testTypeReDeclarationPojoLessFields() {
+        String str1 = "" +
+                "package org.drools \n" +
+                "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
+                "" +
+                "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
+                "    name : String \n" +
+                "end \n";
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 }
