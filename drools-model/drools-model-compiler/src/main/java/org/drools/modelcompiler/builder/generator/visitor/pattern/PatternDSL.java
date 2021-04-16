@@ -132,6 +132,9 @@ public abstract class PatternDSL implements DSLNode {
             boolean isPositional = isPositional(constraint);
 
             ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression(context, patternType, constraint, isPositional);
+            if (constraintExpression == null) {
+                continue;
+            }
 
             DrlxParseResult drlxParseResult;
             try {

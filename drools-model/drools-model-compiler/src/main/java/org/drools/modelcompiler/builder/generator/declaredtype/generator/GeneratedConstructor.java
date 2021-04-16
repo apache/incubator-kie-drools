@@ -102,7 +102,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
 
         int nonStaticFields = 0;
         for (FieldDefinition fieldDefinition : typeDeclarationFields) {
-            if (fieldDefinition.isStatic()) {
+            if (fieldDefinition.isStatic() || fieldDefinition.isOverride()) {
                 continue;
             }
             nonStaticFields++;
