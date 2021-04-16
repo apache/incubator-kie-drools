@@ -58,8 +58,6 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         Boolean toReturn = null;
         for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
             Boolean evaluation = kiePMMLPredicate.evaluate(values);
-            System.out.println("KiePMMLCompoundPredicate " + kiePMMLPredicate + " evaluation -> " + evaluation );
-            System.out.println("KiePMMLCompoundPredicate " + booleanOperator + "  " + toReturn + " "  + evaluation );
             switch (booleanOperator) {
                 case OR:
                     toReturn = orOperator(toReturn, evaluation);
@@ -76,11 +74,8 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
                 default:
                     throw new KiePMMLException("Unknown BOOLEAN_OPERATOR " + booleanOperator);
             }
-            System.out.println("KiePMMLCompoundPredicate " + "toReturn  " + toReturn);
         }
-        boolean returned = toReturn != null && toReturn;
-        System.out.println("KiePMMLCompoundPredicate returning " + returned);
-        return returned;
+        return toReturn != null && toReturn;
     }
 
     @Override

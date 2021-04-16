@@ -349,8 +349,8 @@ public class KiePMMLPredicateFactoryTest {
         commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLCompoundPredicate.getId()), 4);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getKiePMMLCompoundPredicateUnsupportedSourcesMap() {
+    @Test
+    public void getKiePMMLCompoundPredicateWithSurrogateSourcesMap() {
         KiePMMLSimplePredicate kiePMMLSimplePredicateInt = KiePMMLSimplePredicate
                 .builder("SIMPLEPREDICATEINTNAME", Collections.emptyList(), OPERATOR.GREATER_OR_EQUAL)
                 .withValue(24)
@@ -568,8 +568,9 @@ public class KiePMMLPredicateFactoryTest {
                                   assignExpressionMap));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setCompoundPredicateUnsupportedConstructor() {
+    @Test
+    public void setCompoundPredicateConstructorSurrogate() {
+        init(KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
         String generatedClassName = "GENERATEDCLASSNAME";
         String predicateName = "PREDICATENAME";
         BOOLEAN_OPERATOR booleanOperator = BOOLEAN_OPERATOR.SURROGATE;

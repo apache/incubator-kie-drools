@@ -114,7 +114,10 @@ public class KiePMMLNodeFactory {
         setConstructorSuperNameInvocation(nodeClassName, constructorDeclaration, nodeName);
         String newPredicateInvocation = String.format("new %s()", fullPredicateClassName);
         CommonCodegenUtils.setConstructorDeclarationArgument(constructorDeclaration, "predicate", newPredicateInvocation);
-        String scoreParam = score instanceof String ? String.format("\"%s\"", score) : score.toString();
+        String scoreParam = null;
+        if (score != null) {
+            scoreParam = score instanceof String ? String.format("\"%s\"", score) : score.toString();
+        }
         CommonCodegenUtils.setConstructorDeclarationArgument(constructorDeclaration, "score", scoreParam);
         final List<ObjectCreationExpr> nodesObjectCreations = getNodesObjectCreations(nestedNodes);
         addListPopulation(nodesObjectCreations, constructorDeclaration.getBody(), "nodes");

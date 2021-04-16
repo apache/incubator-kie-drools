@@ -40,23 +40,14 @@ public class KiePMMLNode extends AbstractKiePMMLComponent {
     }
 
     public Object evaluate(final Map<String, Object> requestData) {
-        System.out.println("KiePMMLNode  " + getName() + " evaluate");
         if (!evaluatePredicate(requestData)) {
-            System.out.println("KiePMMLNode  " + "return null");
             return null;
         }
         if (nodes.isEmpty()) {
-            System.out.println("KiePMMLNode  " + "Empty node, return " + score);
             return score;
         }
         Optional<Object> nestedScore = getNestedScore(requestData);
-        System.out.println("KiePMMLNode  " + "nestedScore present ? " + nestedScore.isPresent());
-        if (nestedScore.isPresent()) {
-            System.out.println("KiePMMLNode  " + "nestedScore  " + nestedScore.get());
-        }
-        Object toReturn = nestedScore.orElse(score);
-        System.out.println("KiePMMLNode  " +  getName() + " return  " + toReturn);
-        return toReturn;
+        return nestedScore.orElse(score);
     }
 
     public List<KiePMMLNode> getNodes() {
@@ -75,10 +66,8 @@ public class KiePMMLNode extends AbstractKiePMMLComponent {
         Optional<Object> toReturn = Optional.empty();
         for (KiePMMLNode nestedNode : nodes) {
             final Object evaluation = nestedNode.evaluate(requestData);
-            System.out.println("Evaluation of " + nestedNode.getName() + " --> " + evaluation);
             toReturn = Optional.ofNullable(evaluation);
             if (toReturn.isPresent()) {
-                System.out.println("Break ");
                 break;
             }
         }

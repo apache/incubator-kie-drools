@@ -35,7 +35,7 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "SimpleClassificationTree.pmml";
     private static final String MODEL_NAME = "SimpleClassificationTreeModel";
-    private static final String TARGET_FIELD = "Predicted_result";
+    private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
     private double input1;

@@ -19,7 +19,7 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "irisTree.pmml";
     private static final String MODEL_NAME = "IrisTreeModel";
-    private static final String TARGET_FIELD = "Predicted_Species";
+    private static final String TARGET_FIELD = "Species";
     private static PMMLRuntime pmmlRuntime;
 
     private double sepalLength;

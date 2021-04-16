@@ -395,7 +395,11 @@ public class CommonCodegenUtils {
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(superStatement, parameterName)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION, parameterName, constructorDeclaration)));
-        parameterExpr.setName(value);
+        if (value != null) {
+            parameterExpr.setName(value);
+        } else {
+            superStatement.getArguments().replace(parameterExpr, new NullLiteralExpr());
+        }
     }
 
     /**
