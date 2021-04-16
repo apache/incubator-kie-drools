@@ -55,7 +55,7 @@ public class RuleContext {
 
     private List<Rule> subRules;
 
-    private int patternIndex = 0; // 0 is reserved for optional InitialImpl, so always start the first pattern at 1.
+    private int patternIndex = -1;
     private boolean needStreamMode = false;
 
     public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {

@@ -51,6 +51,7 @@ public class DslMethodNames {
     // patterns
     public static final String PATTERN_CALL = "D.pattern";
     public static final String WATCH_CALL = "watch";
+    public static final String PASSIVE_CALL = "passive";
     public static final String NOT_CALL = "D.not";
     public static final String EXISTS_CALL = "D.exists";
     public static final String FORALL_CALL = "D.forall";

@@ -35,6 +35,7 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PASSIVE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
@@ -63,6 +64,10 @@ class PatternDSLPattern extends PatternDSL {
                 findLastMethodInChain( currentExpr ).setScope( patternExpression );
                 patternExpression = currentExpr;
             }
+        }
+
+        if (pattern.isQuery()) {
+            patternExpression = new MethodCallExpr( patternExpression, PASSIVE_CALL );
         }
 
         context.addExpression( addWatchToPattern( patternExpression ) );

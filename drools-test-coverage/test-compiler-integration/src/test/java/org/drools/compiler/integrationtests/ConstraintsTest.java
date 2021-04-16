@@ -52,7 +52,7 @@ public class ConstraintsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -118,9 +118,9 @@ public class ConstraintsTest {
                 "    when\n" +
                 "        $m : Mailbox( \n" +
                 "                $type1 : FolderType.INBOX,\n" +
-                "                $type2 : " + Mailbox.class.getCanonicalName() + "$FolderType.INBOX,\n" +
+                "                $type2 : " + Mailbox.class.getCanonicalName() + ".FolderType.INBOX,\n" +
                 "                $work1 : getFolder(null),\n" +
-                "                $work2 : getFolder(" + Mailbox.class.getCanonicalName() + "$FolderType.INBOX),\n" +
+                "                $work2 : getFolder(" + Mailbox.class.getCanonicalName() + ".FolderType.INBOX),\n" +
                 "                $work3 : getFolder(FolderType.INBOX),\n" +
                 "                getFolder($type1) != null,\n" +
                 "                getFolder($type1).size() > 0,\n" +
@@ -128,7 +128,7 @@ public class ConstraintsTest {
                 "                $work6 : folders,\n" +
                 "                $work7 : folders.size,\n" +
                 "                //folders.containsKey(FolderType.INBOX),\n" +
-                "                folders.containsKey(" + Mailbox.class.getCanonicalName() + "$FolderType.INBOX),\n" +
+                "                folders.containsKey(" + Mailbox.class.getCanonicalName() + ".FolderType.INBOX),\n" +
                 "                folders.containsKey($type2),\n" +
                 "                !folders.isEmpty,\n" +
                 "                getFolder(FolderType.INBOX) != null,\n" +
