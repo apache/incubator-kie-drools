@@ -69,9 +69,9 @@ class PmmlScorecardCategoricalLimeExplainerTest {
         PredictionInput input = new PredictionInput(features);
 
         Random random = new Random();
-        random.setSeed(4);
+        random.setSeed(0);
         LimeConfig limeConfig = new LimeConfig()
-                .withSamples(300)
+                .withSamples(10)
                 .withPerturbationContext(new PerturbationContext(random, 1));
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {

@@ -62,67 +62,65 @@ class PmmlRegressionLimeExplainerTest {
     @Test
     void testPMMLRegression() throws Exception {
         Random random = new Random();
-        for (int seed = 0; seed < 5; seed++) {
-            random.setSeed(seed);
-            PerturbationContext perturbationContext = new PerturbationContext(random, 1);
-            LimeConfig limeConfig = new LimeConfig()
-                    .withSamples(1000)
-                    .withPerturbationContext(perturbationContext);
-            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            List<Feature> features = new ArrayList<>();
-            features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
-            features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
-            features.add(FeatureFactory.newNumericalFeature("petalLength", 5.1));
-            features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
-            PredictionInput input = new PredictionInput(features);
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        List<Feature> features = new ArrayList<>();
+        features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
+        features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
+        features.add(FeatureFactory.newNumericalFeature("petalLength", 5.1));
+        features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
+        PredictionInput input = new PredictionInput(features);
 
-            PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
-                List<PredictionOutput> outputs = new ArrayList<>();
-                for (PredictionInput input1 : inputs) {
-                    List<Feature> features1 = input1.getFeatures();
-                    LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
-                            features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
-                            features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
-                    PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
-                    String species = result.getResultVariables().get("Species").toString();
-                    double score = Double.parseDouble(result.getResultVariables().get("Probability_" + species).toString());
-                    PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), 1d)));
-                    outputs.add(predictionOutput);
-                }
-                return outputs;
-            });
-            List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input))
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            assertThat(predictionOutputs).isNotNull();
-            assertThat(predictionOutputs).isNotEmpty();
-            PredictionOutput output = predictionOutputs.get(0);
-            assertThat(output).isNotNull();
-            Prediction prediction = new Prediction(input, output);
-            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            for (Saliency saliency : saliencyMap.values()) {
-                assertThat(saliency).isNotNull();
-                double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
-                assertThat(v).isEqualTo(1d);
+        PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
+            List<PredictionOutput> outputs = new ArrayList<>();
+            for (PredictionInput input1 : inputs) {
+                List<Feature> features1 = input1.getFeatures();
+                LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
+                        features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
+                        features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
+                PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
+                String species = result.getResultVariables().get("Species").toString();
+                double score = Double.parseDouble(result.getResultVariables().get("Probability_" + species).toString());
+                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), 1d)));
+                outputs.add(predictionOutput);
             }
-            assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                    0.0, 0.0));
-
-            String decision = "species";
-            List<PredictionInput> inputs = new ArrayList<>();
-            for (int i = 0; i < 100; i++) {
-                List<Feature> fs = new ArrayList<>();
-                fs.add(FeatureFactory.newNumericalFeature("sepalLength", i + 1));
-                fs.add(FeatureFactory.newNumericalFeature("sepalWidth", i + 1));
-                fs.add(FeatureFactory.newNumericalFeature("petalLength", i + 1));
-                fs.add(FeatureFactory.newNumericalFeature("petalWidth", i + 1));
-                inputs.add(new PredictionInput(fs));
-            }
-            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-            int k = 2;
-            int chunkSize = 5;
-            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-            AssertionsForClassTypes.assertThat(f1).isBetween(0d, 1d);
+            return outputs;
+        });
+        List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertThat(predictionOutputs).isNotNull();
+        assertThat(predictionOutputs).isNotEmpty();
+        PredictionOutput output = predictionOutputs.get(0);
+        assertThat(output).isNotNull();
+        Prediction prediction = new Prediction(input, output);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertThat(saliency).isNotNull();
+            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
+            assertThat(v).isEqualTo(1d);
         }
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                0.0, 0.0));
+
+        String decision = "species";
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            List<Feature> fs = new ArrayList<>();
+            fs.add(FeatureFactory.newNumericalFeature("sepalLength", i + 1));
+            fs.add(FeatureFactory.newNumericalFeature("sepalWidth", i + 1));
+            fs.add(FeatureFactory.newNumericalFeature("petalLength", i + 1));
+            fs.add(FeatureFactory.newNumericalFeature("petalWidth", i + 1));
+            inputs.add(new PredictionInput(fs));
+        }
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 5;
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        AssertionsForClassTypes.assertThat(f1).isBetween(0d, 1d);
     }
 }

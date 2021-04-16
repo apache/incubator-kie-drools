@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class OpenNLPLimeExplainerTest {
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0 })
     void testOpenNLPLangDetect(int seed) throws Exception {
         Random random = new Random();
         random.setSeed(seed);

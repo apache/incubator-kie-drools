@@ -70,9 +70,9 @@ class PmmlRegressionCategoricalLimeExplainerTest {
         PredictionInput input = new PredictionInput(features);
 
         Random random = new Random();
-        random.setSeed(4);
+        random.setSeed(0);
         LimeConfig limeConfig = new LimeConfig()
-                .withSamples(500)
+                .withSamples(10)
                 .withAdaptiveVariance(true)
                 .withPerturbationContext(new PerturbationContext(random, 1));
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);

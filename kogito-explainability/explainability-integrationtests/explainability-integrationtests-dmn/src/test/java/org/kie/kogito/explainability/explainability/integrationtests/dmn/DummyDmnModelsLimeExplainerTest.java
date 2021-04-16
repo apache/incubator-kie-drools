@@ -74,38 +74,36 @@ class DummyDmnModelsLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            random.setSeed(i);
-            PerturbationContext perturbationContext = new PerturbationContext(random, 1);
-            LimeConfig limeConfig = new LimeConfig()
-                    .withSamples(10)
-                    .withPerturbationContext(perturbationContext);
-            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            for (Saliency saliency : saliencyMap.values()) {
-                assertThat(saliency).isNotNull();
-                List<FeatureImportance> topFeatures = saliency.getPositiveFeatures(2);
-                assertThat(topFeatures.isEmpty()).isFalse();
-                assertThat(topFeatures.get(0).getFeature().getName()).isEqualTo("booleanInput");
-            }
-            assertThatCode(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                    0.5, 0.5)).doesNotThrowAnyException();
-            String decision = "decision";
-            List<PredictionInput> inputs = new ArrayList<>();
-            for (int n = 0; n < 10; n++) {
-                inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
-            }
-            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-            int k = 2;
-            int chunkSize = 5;
-            double precision = ExplainabilityMetrics.getLocalSaliencyPrecision(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(precision).isBetween(0d, 1d);
-            double recall = ExplainabilityMetrics.getLocalSaliencyRecall(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(recall).isBetween(0d, 1d);
-            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(f1).isBetween(0d, 1d);
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertThat(saliency).isNotNull();
+            List<FeatureImportance> topFeatures = saliency.getPositiveFeatures(2);
+            assertThat(topFeatures.isEmpty()).isFalse();
+            assertThat(topFeatures.get(0).getFeature().getName()).isEqualTo("booleanInput");
         }
+        assertThatCode(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                0.5, 0.5)).doesNotThrowAnyException();
+        String decision = "decision";
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (int n = 0; n < 10; n++) {
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+        }
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 5;
+        double precision = ExplainabilityMetrics.getLocalSaliencyPrecision(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(precision).isBetween(0d, 1d);
+        double recall = ExplainabilityMetrics.getLocalSaliencyRecall(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(recall).isBetween(0d, 1d);
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(f1).isBetween(0d, 1d);
     }
 
     @Test
@@ -129,39 +127,37 @@ class DummyDmnModelsLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            random.setSeed(i);
-            PerturbationContext perturbationContext = new PerturbationContext(random, 1);
-            LimeConfig limeConfig = new LimeConfig()
-                    .withSamples(10)
-                    .withPerturbationContext(perturbationContext);
-            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            for (Saliency saliency : saliencyMap.values()) {
-                assertThat(saliency).isNotNull();
-                List<FeatureImportance> topFeatures = saliency.getPositiveFeatures(2);
-                assertThat(topFeatures.isEmpty()).isFalse();
-                assertThat(topFeatures.get(0).getFeature().getName()).isEqualTo("numberInput");
-            }
-            assertThatCode(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                    0.5, 0.5)).doesNotThrowAnyException();
-
-            String decision = "decision";
-            List<PredictionInput> inputs = new ArrayList<>();
-            for (int n = 0; n < 10; n++) {
-                inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
-            }
-            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-            int k = 2;
-            int chunkSize = 5;
-            double precision = ExplainabilityMetrics.getLocalSaliencyPrecision(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(precision).isBetween(0d, 1d);
-            double recall = ExplainabilityMetrics.getLocalSaliencyRecall(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(recall).isBetween(0d, 1d);
-            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(f1).isBetween(0d, 1d);
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertThat(saliency).isNotNull();
+            List<FeatureImportance> topFeatures = saliency.getPositiveFeatures(2);
+            assertThat(topFeatures.isEmpty()).isFalse();
+            assertThat(topFeatures.get(0).getFeature().getName()).isEqualTo("numberInput");
         }
+        assertThatCode(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                0.5, 0.5)).doesNotThrowAnyException();
+
+        String decision = "decision";
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (int n = 0; n < 10; n++) {
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+        }
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 5;
+        double precision = ExplainabilityMetrics.getLocalSaliencyPrecision(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(precision).isBetween(0d, 1d);
+        double recall = ExplainabilityMetrics.getLocalSaliencyRecall(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(recall).isBetween(0d, 1d);
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(f1).isBetween(0d, 1d);
     }
 
     @Test
@@ -204,35 +200,33 @@ class DummyDmnModelsLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            random.setSeed(i);
-            PerturbationContext perturbationContext = new PerturbationContext(random, 3);
-            LimeConfig limeConfig = new LimeConfig()
-                    .withSamples(100)
-                    .withPerturbationContext(perturbationContext);
-            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            for (Saliency saliency : saliencyMap.values()) {
-                assertThat(saliency).isNotNull();
-            }
-            assertThatCode(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                    0.5, 0.2)).doesNotThrowAnyException();
-
-            String decision = "myDecision";
-            List<PredictionInput> inputs = new ArrayList<>();
-            for (int n = 0; n < 10; n++) {
-                inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
-            }
-            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-            int k = 2;
-            int chunkSize = 5;
-            double precision = ExplainabilityMetrics.getLocalSaliencyPrecision(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(precision).isBetween(0d, 1d);
-            double recall = ExplainabilityMetrics.getLocalSaliencyRecall(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(recall).isBetween(0d, 1d);
-            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-            assertThat(f1).isBetween(0d, 1d);
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 3);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertThat(saliency).isNotNull();
         }
+        assertThatCode(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                0.5, 0.2)).doesNotThrowAnyException();
+
+        String decision = "myDecision";
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (int n = 0; n < 10; n++) {
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+        }
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 5;
+        double precision = ExplainabilityMetrics.getLocalSaliencyPrecision(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(precision).isBetween(0d, 1d);
+        double recall = ExplainabilityMetrics.getLocalSaliencyRecall(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(recall).isBetween(0d, 1d);
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        assertThat(f1).isBetween(0d, 1d);
     }
 }

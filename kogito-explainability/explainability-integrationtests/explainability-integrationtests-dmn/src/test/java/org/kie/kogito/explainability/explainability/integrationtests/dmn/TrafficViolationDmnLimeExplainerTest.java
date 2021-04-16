@@ -83,34 +83,32 @@ class TrafficViolationDmnLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            random.setSeed(i);
-            PerturbationContext perturbationContext = new PerturbationContext(random, 2);
-            LimeConfig limeConfig = new LimeConfig()
-                    .withSamples(300)
-                    .withEncodingParams(new EncodingParams(1, 1e-3))
-                    .withPerturbationContext(perturbationContext);
-            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-            for (Saliency saliency : saliencyMap.values()) {
-                assertNotNull(saliency);
-                List<String> strings = saliency.getTopFeatures(3).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-                assertTrue(strings.contains("Actual Speed") || strings.contains("Speed Limit"));
-            }
-            assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                    0.5, 0.5));
-
-            String decision = "Fine";
-            List<PredictionInput> inputs = new ArrayList<>();
-            for (int n = 0; n < 10; n++) {
-                inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
-            }
-            DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-            int k = 2;
-            int chunkSize = 2;
-            double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-            AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 2);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(100)
+                .withEncodingParams(new EncodingParams(1, 1e-3))
+                .withPerturbationContext(perturbationContext);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertNotNull(saliency);
+            List<String> strings = saliency.getTopFeatures(3).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
+            assertTrue(strings.contains("Actual Speed") || strings.contains("Speed Limit"));
         }
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                0.5, 0.5));
+
+        String decision = "Fine";
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (int n = 0; n < 10; n++) {
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+        }
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 5;
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
     }
 }
