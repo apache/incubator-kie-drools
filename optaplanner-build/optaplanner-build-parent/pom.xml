@@ -50,8 +50,8 @@
     <version.org.mockito>3.1.0</version.org.mockito>
     <version.org.postgresql>42.2.12</version.org.postgresql>
     <version.org.slf4j>1.7.26</version.org.slf4j>
-    <version.org.springframework>5.2.9.RELEASE</version.org.springframework>
-    <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
+    <version.org.springframework>5.3.6</version.org.springframework>
+    <version.org.springframework.boot>2.4.5</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
