@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
@@ -73,7 +75,10 @@ public class PMMLCompilerImpl implements PMMLCompiler {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
             Set<String> expectedClasses = commonPMMLModel.getModels()
                     .stream()
-                    .map(model -> packageName + "." + getSanitizedClassName(model.getModelName()))
+                    .map(model -> {
+                        String modelPackageName = getSanitizedPackageName(String.format("%s.%s", packageName, model.getModelName()));
+                        return modelPackageName + "." + getSanitizedClassName(model.getModelName());
+                    })
                     .collect(Collectors.toSet());
             List<KiePMMLModel> toReturn = getModelsWithSources(packageName, commonPMMLModel, hasClassloader);
             Set<String> generatedClasses = new HashSet<>();
@@ -89,6 +94,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 String missingClasses = String.join(", ", expectedClasses);
                 throw new KiePMMLException("Expected generated class " + missingClasses + " not found");
             }
+
+
             Map<String, String> factorySourceMap = getFactorySourceCode(factoryClassName, packageName, expectedClasses);
             KiePMMLFactoryModel kiePMMLFactoryModel = new KiePMMLFactoryModel(factoryClassName, packageName, factorySourceMap);
             toReturn.add(kiePMMLFactoryModel);
