@@ -52,7 +52,7 @@ public class ClassDefinition
     private boolean                      abstrakt       = false;
     private Map<String, Object>          metaData;
 
-    private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
+    protected LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
     private Map<String, AnnotationDefinition> annotations;
 
@@ -140,7 +140,6 @@ public class ClassDefinition
      * @param definedClass The class to set.
      */
     public void setDefinedClass(final Class< ? > definedClass) {
-
         this.definedClass = definedClass;
     }
 

@@ -32,6 +32,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
@@ -43,10 +44,12 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinitio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.text.MessageFormat.format;
+
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.text.MessageFormat.format;
+import static org.drools.core.util.ClassUtils.getGetter;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedClassDeclaration {
@@ -167,6 +170,19 @@ public class GeneratedClassDeclaration {
     private void processTypeField(FieldDefinition fieldDefinition) {
         String fieldName = fieldDefinition.getFieldName();
         Type returnType = parseType(fieldDefinition.getObjectType());
+
+        if (fieldDefinition.isOverride()) {
+            if (fieldDefinition.createAccessors()) {
+                String getterName = getGetter(fieldName);
+                MethodDeclaration getter = generatedClass.addMethod( getterName, Modifier.Keyword.PUBLIC );
+                getter.addAnnotation( "Override" );
+                getter.setType( fieldDefinition.getObjectType() );
+                BlockStmt block = new BlockStmt();
+                block.addStatement( "return (" + fieldDefinition.getObjectType() + ") super." + getterName + "();" );
+                getter.setBody( block );
+            }
+            return;
+        }
 
         Modifier.Keyword[] modifiers = modifiers(fieldDefinition);
 
