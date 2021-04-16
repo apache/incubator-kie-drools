@@ -138,6 +138,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     }
 
     @Override
+    public boolean isPassive() {
+        return pattern.isPassive();
+    }
+
+    @Override
     public Variable<?>[] getBoundVariables() {
         return boundVariables;
     }
