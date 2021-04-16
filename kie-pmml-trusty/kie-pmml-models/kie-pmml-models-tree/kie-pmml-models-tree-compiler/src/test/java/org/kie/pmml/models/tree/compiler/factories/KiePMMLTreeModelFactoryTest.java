@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.tree.model;
 
-import java.util.Collections;
+package org.kie.pmml.models.tree.compiler.factories;
 
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.models.tree.model.KiePMMLNode;
+import org.junit.Test;
 
+import static org.junit.Assert.*;
 
-public class KiePMMLNodeTemplate extends KiePMMLNode {
+public class KiePMMLTreeModelFactoryTest {
 
-    public KiePMMLNodeTemplate() {
-        super(name, Collections.emptyList(), predicate, score);
+    @Test
+    public void getKiePMMLTreeModel() {
     }
 
+    @Test
+    public void getKiePMMLTreeModelSourcesMap() {
+    }
+
+    @Test
+    public void setConstructor() {
+    }
 }

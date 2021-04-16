@@ -19,9 +19,11 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 
 public class KiePMMLTreeModel extends KiePMMLModel {
 
+    private static final long serialVersionUID = -5158590062736070465L;
     protected KiePMMLNode node;
 
     public KiePMMLTreeModel(String modelName) {
@@ -30,8 +32,7 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        // TODO
-        throw new UnsupportedOperationException();
+        return node.evaluate(requestData);
     }
 
     @Override
@@ -39,6 +40,5 @@ public class KiePMMLTreeModel extends KiePMMLModel {
         // TODO
         throw new UnsupportedOperationException();
     }
-
 
 }

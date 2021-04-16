@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.tree.model;
+package org.kie.pmml.models.tree.compiler.utils;
 
-import java.util.Collections;
+import org.dmg.pmml.tree.Node;
 
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.models.tree.model.KiePMMLNode;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
+/**
+ * Class meant to provide utility methods for <b>KiePMMLTree</b> model
+ */
+public class KiePMMLTreeModelUtils {
 
-public class KiePMMLNodeTemplate extends KiePMMLNode {
-
-    public KiePMMLNodeTemplate() {
-        super(name, Collections.emptyList(), predicate, score);
+    private KiePMMLTreeModelUtils() {
     }
 
+    public static String getNodeClassName(Node node) {
+        String rawName = "Node" + Integer.toHexString(node.hashCode());
+        return getSanitizedClassName(rawName);
+    }
 }

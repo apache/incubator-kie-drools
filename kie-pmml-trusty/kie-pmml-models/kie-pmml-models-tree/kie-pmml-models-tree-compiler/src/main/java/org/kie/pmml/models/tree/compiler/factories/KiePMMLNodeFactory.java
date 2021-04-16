@@ -15,11 +15,16 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -35,8 +40,11 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.getNodeClassName;
 
 public class KiePMMLNodeFactory {
 
@@ -53,7 +61,7 @@ public class KiePMMLNodeFactory {
                                              final String packageName,
                                              final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLTreeNode {} {}", packageName, node);
-        String className = getSanitizedClassName(node.getId().toString());
+        String className = getNodeClassName(node);
         Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(node, dataDictionary, packageName);
         String fullClassName = packageName + "." + className;
         try {
@@ -68,7 +76,7 @@ public class KiePMMLNodeFactory {
                                                                final DataDictionary dataDictionary,
                                                                final String packageName) {
         logger.trace("getKiePMMLNodeSourcesMap {} {}", node, packageName);
-        String className = getSanitizedClassName(node.getId().toString());
+        String className = getNodeClassName(node);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
                                                                                  KIE_PMML_NODE_TEMPLATE_JAVA,
                                                                                  KIE_PMML_NODE_TEMPLATE);
@@ -77,21 +85,54 @@ public class KiePMMLNodeFactory {
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final KiePMMLPredicate kiePMMLPredicate = KiePMMLPredicateFactory.getPredicate(node.getPredicate(), dataDictionary);
-        final Map<String, String> toReturn = KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName);
+        final Map<String, String> toReturn =
+                new HashMap<>(KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName));
+        String fullClassName = packageName + "." + className;
+        final List<String> nestedNodes = new ArrayList<>();
+        if (node.hasNodes()) {
+            for (Node child : node.getNodes()) {
+                String childPackage = getSanitizedPackageName(fullClassName);
+                toReturn.putAll(getKiePMMLNodeSourcesMap(child, dataDictionary, childPackage));
+                String childClassName = getNodeClassName(child);
+                String childFullClassName = String.format("%s.%s", childPackage, childClassName);
+                nestedNodes.add(childFullClassName);
+            }
+        }
         String predicateClassName = getSanitizedClassName(kiePMMLPredicate.getId());
         String fullPredicateClassName =  packageName + "." + predicateClassName;
-        setConstructor(className, node.getId().toString(), constructorDeclaration, fullPredicateClassName);
-        String fullClassName = packageName + "." + className;
+        setConstructor(className, node.getId().toString(), node.getScore(), constructorDeclaration, fullPredicateClassName, nestedNodes);
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
 
     static void setConstructor(final String nodeClassName,
-                                final String nodeName,
+                               final String nodeName,
+                               final Object score,
                                final ConstructorDeclaration constructorDeclaration,
-                               final String fullPredicateClassName) {
+                               final String fullPredicateClassName,
+                               final List<String> nestedNodes) {
         setConstructorSuperNameInvocation(nodeClassName, constructorDeclaration, nodeName);
         String newPredicateInvocation = String.format("new %s()", fullPredicateClassName);
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(constructorDeclaration, "predicate", newPredicateInvocation);
+        CommonCodegenUtils.setConstructorDeclarationArgument(constructorDeclaration, "predicate", newPredicateInvocation);
+        String scoreParam = score instanceof String ? String.format("\"%s\"", score) : score.toString();
+        CommonCodegenUtils.setConstructorDeclarationArgument(constructorDeclaration, "score", scoreParam);
+        final List<ObjectCreationExpr> nodesObjectCreations = getNodesObjectCreations(nestedNodes);
+        addListPopulation(nodesObjectCreations, constructorDeclaration.getBody(), "nodes");
+
+    }
+
+    /**
+     * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;String&gt;</code>
+     * @param nestedNodes
+     * @return
+     */
+    static List<ObjectCreationExpr> getNodesObjectCreations(final List<String> nestedNodes) {
+        return nestedNodes.stream()
+                .map(nestedNode -> {
+                    ObjectCreationExpr toReturn = new ObjectCreationExpr();
+                    toReturn.setType(nestedNode);
+                    return toReturn;
+                })
+                .collect(Collectors.toList());
     }
 }

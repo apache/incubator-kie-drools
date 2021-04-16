@@ -388,7 +388,7 @@ public class CommonCodegenUtils {
      *
      * @throws KiePMMLException if the given parameter is not found
      */
-    public static void setExplicitConstructorInvocationArgument(final ConstructorDeclaration constructorDeclaration, final String parameterName, final String value) {
+    public static void setConstructorDeclarationArgument(final ConstructorDeclaration constructorDeclaration, final String parameterName, final String value) {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
@@ -406,7 +406,7 @@ public class CommonCodegenUtils {
      *
      * @throws KiePMMLException if the given parameter is not found
      */
-    public static void setExplicitConstructorInvocationArgument(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName, final String value) {
+    public static void setExplicitConstructorInvocationStmtArgument(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName, final String value) {
         final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(constructorInvocationStmt, parameterName)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION, parameterName, constructorInvocationStmt)));
         parameterExpr.setName(value);

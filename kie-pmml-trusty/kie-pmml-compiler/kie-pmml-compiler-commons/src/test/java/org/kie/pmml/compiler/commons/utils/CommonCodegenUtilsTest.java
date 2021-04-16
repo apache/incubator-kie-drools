@@ -339,23 +339,23 @@ public class CommonCodegenUtilsTest {
     }
 
     @Test
-    public void setExplicitConstructorInvocationArgumentWithParameter() {
+    public void setExplicitConstructorInvocationStmtArgumentWithParameter() {
         final String parameterName = "PARAMETER_NAME";
         final String value = "VALUE";
         final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
         assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, value);
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, value);
         assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
         assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value).isPresent());
     }
 
     @Test(expected = KiePMMLException.class)
-    public void setExplicitConstructorInvocationArgumentNoParameter() {
+    public void setExplicitConstructorInvocationStmtArgumentNoParameter() {
         final String parameterName = "PARAMETER_NAME";
         final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
     }
 
     @Test

@@ -35,7 +35,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "BostonHousingTree.pmml";
     private static final String MODEL_NAME = "BostonHousingTreeModel";
-    private static final String TARGET_FIELD = "Predicted_medv";
+    private static final String TARGET_FIELD = "medv";
     private static PMMLRuntime pmmlRuntime;
 
     private double crim;
@@ -72,7 +72,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -80,6 +80,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
+                // crim,  zn, indus,chas,  nox,  rm,   age,  dis,   rad,tax, ptratio,b,    lstat,  expectedResult
                 {0.00632, 18, 2.31, "0", 0.538, 6.575, 65.2, 4.0900, 1, 296, 15.3, 396.90, 4.98, 27.4272727272727},
                 {0.02729, 0, 7.07, "0", 0.469, 7.185, 61.1, 4.9671, 2, 242, 17.8, 392.83, 4.03, 33.7384615384615},
                 {0.06905, 0, 2.18, "0", 0.458, 7.147, 54.2, 6.0622, 3, 222, 18.7, 396.90, 5.33, 33.7384615384615},
