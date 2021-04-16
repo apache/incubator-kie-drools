@@ -121,11 +121,11 @@ public class QuarkusDataIndexClientTest {
         SecurityIdentity identity = mock(SecurityIdentity.class);
         lenient().when(identity.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
         QuarkusDataIndexClient testClient = new QuarkusDataIndexClient(null, identity, null);
-        assertThat(testClient.getToken()).isEqualTo("Bearer " + token);
+        assertThat(testClient.getAuthHeader("")).isEqualTo("Bearer " + token);
     }
 
     @Test
     public void testGetTokenWithoutSecurityIdentity() {
-        assertThat(client.getToken()).isEmpty();
+        assertThat(client.getAuthHeader("")).isEmpty();
     }
 }

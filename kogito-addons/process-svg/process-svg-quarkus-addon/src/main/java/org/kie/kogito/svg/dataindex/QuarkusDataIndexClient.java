@@ -76,10 +76,10 @@ public class QuarkusDataIndexClient implements DataIndexClient {
     }
 
     @Override
-    public List<NodeInstance> getNodeInstancesFromProcessInstance(String processInstanceId) {
+    public List<NodeInstance> getNodeInstancesFromProcessInstance(String processInstanceId, String authHeader) {
         String query = getNodeInstancesQuery(processInstanceId);
         CompletableFuture<List<NodeInstance>> cf = new CompletableFuture<>();
-        client.post("/graphql").putHeader("Authorization", getToken()).sendJson(JsonObject.mapFrom(singletonMap("query", query)), result -> {
+        client.post("/graphql").putHeader("Authorization", getAuthHeader(authHeader)).sendJson(JsonObject.mapFrom(singletonMap("query", query)), result -> {
             if (result.succeeded()) {
                 cf.complete(getNodeInstancesFromResponse(result.result().bodyAsJsonObject()));
             } else {
@@ -108,10 +108,10 @@ public class QuarkusDataIndexClient implements DataIndexClient {
         }
     }
 
-    protected String getToken() {
+    protected String getAuthHeader(String authHeader) {
         if (identity != null && identity.getCredential(TokenCredential.class) != null) {
             return "Bearer " + identity.getCredential(TokenCredential.class).getToken();
         }
-        return "";
+        return authHeader;
     }
 }

@@ -12,5 +12,6 @@
   <modules>
     <module>process-svg-common</module>
     <module>process-svg-quarkus-addon</module>
+    <module>process-svg-springboot-addon</module>
   </modules>
 </project>

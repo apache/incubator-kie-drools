@@ -36,6 +36,9 @@ import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractProcessSvgService implements ProcessSvgService {
+    public static final String DEFAULT_COMPLETED_COLOR = "#C0C0C0";
+    public static final String DEFAULT_COMPLETED_BORDER_COLOR = "#030303";
+    public static final String DEFAULT_ACTIVE_BORDER_COLOR = "#FF0000";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractProcessSvgService.class);
     private static Path svgDir = Paths.get("META-INF", "processSVG");
@@ -111,10 +114,10 @@ public abstract class AbstractProcessSvgService implements ProcessSvgService {
     }
 
     @Override
-    public Optional<String> getProcessInstanceSvg(String processId, String processInstanceId) {
+    public Optional<String> getProcessInstanceSvg(String processId, String processInstanceId, String authHeader) {
         Optional<String> processSvg = getProcessSvg(processId);
         if (processSvg.isPresent()) {
-            List<NodeInstance> nodes = dataIndexClient.getNodeInstancesFromProcessInstance(processInstanceId);
+            List<NodeInstance> nodes = dataIndexClient.getNodeInstancesFromProcessInstance(processInstanceId, authHeader);
             List<String> completedNodes = nodes.stream().filter(NodeInstance::isCompleted).map(NodeInstance::getDefinitionId).collect(toList());
             List<String> activeNodes = nodes.stream().filter(n -> !n.isCompleted()).map(NodeInstance::getDefinitionId).collect(toList());
             return annotateExecutedPath(processSvg.get(), completedNodes, activeNodes);

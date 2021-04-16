@@ -19,23 +19,24 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.svg.service.QuarkusProcessSvgService;
+import org.kie.kogito.svg.service.SpringBootProcessSvgService;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class ProcessSvgResourceTest {
+class SpringBootProcessSvgResourceTest {
 
     private final static String PROCESS_INSTANCE_ID = "piId";
     private final static String PROCESS_ID = "travels";
+    private final static String AUTH_HEADER = "Bearer: token";
 
-    private ProcessSvgResource processSvgResourceTest;
-    private QuarkusProcessSvgService processSvgServiceMock;
+    private SpringBootProcessSvgResource processSvgResourceTest;
+    private SpringBootProcessSvgService processSvgServiceMock;
 
     @BeforeEach
     public void setup() {
-        processSvgResourceTest = new ProcessSvgResource();
-        processSvgServiceMock = mock(QuarkusProcessSvgService.class);
+        processSvgResourceTest = new SpringBootProcessSvgResource();
+        processSvgServiceMock = mock(SpringBootProcessSvgService.class);
         processSvgResourceTest.setProcessSvgService(processSvgServiceMock);
     }
 
@@ -47,8 +48,7 @@ class ProcessSvgResourceTest {
 
     @Test
     void getExecutionPathByProcessInstanceIdTest() throws IOException {
-        String authHeader = "Bearer: token";
-        processSvgResourceTest.getExecutionPathByProcessInstanceId(PROCESS_ID, PROCESS_INSTANCE_ID, authHeader);
-        verify(processSvgServiceMock).getProcessInstanceSvg(PROCESS_ID, PROCESS_INSTANCE_ID, authHeader);
+        processSvgResourceTest.getExecutionPathByProcessInstanceId(PROCESS_ID, PROCESS_INSTANCE_ID, AUTH_HEADER);
+        verify(processSvgServiceMock).getProcessInstanceSvg(PROCESS_ID, PROCESS_INSTANCE_ID, AUTH_HEADER);
     }
 }

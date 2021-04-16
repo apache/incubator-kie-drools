@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
-public class QuarkusProcessSvgServiceTest extends ProcessSvgServiceTest {
+public class SpringBootProcessSvgServiceTest extends ProcessSvgServiceTest {
 
-    private QuarkusProcessSvgService tested;
+    private SpringBootProcessSvgService tested;
     private DataIndexClient dataIndexClient;
 
     @BeforeEach
     public void setup() {
         dataIndexClient = mock(DataIndexClient.class);
 
-        tested = spy(new QuarkusProcessSvgService(dataIndexClient,
+        tested = spy(new SpringBootProcessSvgService(dataIndexClient,
                 Optional.empty(),
                 AbstractProcessSvgService.DEFAULT_COMPLETED_COLOR,
                 AbstractProcessSvgService.DEFAULT_COMPLETED_BORDER_COLOR,

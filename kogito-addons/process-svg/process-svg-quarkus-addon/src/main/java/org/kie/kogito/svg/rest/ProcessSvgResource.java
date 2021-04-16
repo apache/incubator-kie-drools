@@ -19,7 +19,9 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -50,8 +52,9 @@ public class ProcessSvgResource {
     @Path("processes/{processId}/instances/{processInstanceId}")
     @Produces("image/svg+xml")
     public Response getExecutionPathByProcessInstanceId(@PathParam("processId") String processId,
-            @PathParam("processInstanceId") String processInstanceId) {
-        Optional<String> processInstanceSvg = service.getProcessInstanceSvg(processId, processInstanceId);
+            @PathParam("processInstanceId") String processInstanceId,
+            @HeaderParam("Authorization") @DefaultValue("") String authHeader) {
+        Optional<String> processInstanceSvg = service.getProcessInstanceSvg(processId, processInstanceId, authHeader);
         if (processInstanceSvg.isPresent()) {
             return Response.ok(processInstanceSvg.get()).build();
         } else {
