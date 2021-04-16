@@ -49,7 +49,8 @@ public class ScenarioXMLPersistence {
     private ScenarioXMLPersistence() {
         xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
         xt.addPermission(new WildcardTypePermission( new String[] {
-                "org.drools.workbench.models.testscenarios.shared.*"
+                "org.drools.workbench.models.testscenarios.shared.*",
+                "org.drools.workbench.models.datamodel.imports.**"
         }));
 
         xt.alias("scenario", Scenario.class);
