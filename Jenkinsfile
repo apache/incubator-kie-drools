@@ -129,6 +129,8 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-apps', true, true)
+                        .withProperty('skip.ui.build')
+                        .withProperty('skip.ui.deps')
                         .run('clean install')
                 }
             }
