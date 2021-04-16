@@ -148,7 +148,8 @@ public class KiePMMLSegmentFactory {
             final DataDictionary dataDictionary,
             final Segment segment) {
         logger.debug(GET_SEGMENT, segment);
-        String kiePMMLModelClass = packageName + "." + getSanitizedClassName(segment.getModel().getModelName());
+        String kiePmmlModelPackage = getSanitizedPackageName(String.format("%s.%s", packageName, segment.getModel().getModelName()));
+        String kiePMMLModelClass = kiePmmlModelPackage + "." + getSanitizedClassName(segment.getModel().getModelName());
         final String className = getSanitizedClassName(segment.getId());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENT_TEMPLATE_JAVA, KIE_PMML_SEGMENT_TEMPLATE);
         ClassOrInterfaceDeclaration segmentTemplate = cloneCU.getClassByName(className)

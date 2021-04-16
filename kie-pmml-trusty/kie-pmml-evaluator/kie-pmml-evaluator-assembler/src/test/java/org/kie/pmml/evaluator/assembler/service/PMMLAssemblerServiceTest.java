@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +28,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class PMMLAssemblerServiceTest {
 
@@ -91,53 +90,53 @@ public class PMMLAssemblerServiceTest {
 
 
         @Override
-            public InputStream getInputStream() throws IOException {
-                return null;
-            }
+        public InputStream getInputStream() throws IOException {
+            return null;
+        }
 
-            @Override
-            public Reader getReader() throws IOException {
-                return null;
-            }
+        @Override
+        public Reader getReader() throws IOException {
+            return null;
+        }
 
-            @Override
-            public String getSourcePath() {
-                return sourcePath;
-            }
+        @Override
+        public String getSourcePath() {
+            return sourcePath;
+        }
 
-            @Override
-            public String getTargetPath() {
-                return null;
-            }
+        @Override
+        public String getTargetPath() {
+            return null;
+        }
 
-            @Override
-            public ResourceType getResourceType() {
-                return null;
-            }
+        @Override
+        public ResourceType getResourceType() {
+            return null;
+        }
 
-            @Override
-            public ResourceConfiguration getConfiguration() {
-                return null;
-            }
+        @Override
+        public ResourceConfiguration getConfiguration() {
+            return null;
+        }
 
-            @Override
-            public Resource setSourcePath(String path) {
-                return null;
-            }
+        @Override
+        public Resource setSourcePath(String path) {
+            return null;
+        }
 
-            @Override
-            public Resource setTargetPath(String path) {
-                return null;
-            }
+        @Override
+        public Resource setTargetPath(String path) {
+            return null;
+        }
 
-            @Override
-            public Resource setResourceType(ResourceType type) {
-                return null;
-            }
+        @Override
+        public Resource setResourceType(ResourceType type) {
+            return null;
+        }
 
-            @Override
-            public Resource setConfiguration(ResourceConfiguration conf) {
-                return null;
-            }
+        @Override
+        public Resource setConfiguration(ResourceConfiguration conf) {
+            return null;
+        }
     }
 }
