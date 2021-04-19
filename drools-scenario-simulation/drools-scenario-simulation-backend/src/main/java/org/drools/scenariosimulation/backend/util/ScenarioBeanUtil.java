@@ -279,7 +279,7 @@ public class ScenarioBeanUtil {
             return (Class<T>) primitiveMap.get(className);
         }
         try {
-            return (Class<T>) classLoader.loadClass(className);
+            return (Class<T>) Class.forName(className, false, classLoader);
         } catch (ClassNotFoundException | NullPointerException e) {
             throw new ScenarioException(new StringBuilder().append("Impossible to load class ").append(className).toString(), e);
         }

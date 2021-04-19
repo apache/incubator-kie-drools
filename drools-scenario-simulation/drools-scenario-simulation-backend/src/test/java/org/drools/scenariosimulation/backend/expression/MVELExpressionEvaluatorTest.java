@@ -169,15 +169,14 @@ public class MVELExpressionEvaluatorTest {
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
     }
 
-    @Ignore("https://issues.redhat.com/browse/DROOLS-4649")
     @Test
     public void evaluateLiteralExpression_Array() {
-        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("{\"Jim\", \"Michael\"}"), Object[].class.getCanonicalName(),
+        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("{\"Jim\", \"Michael\"}"), Object[].class.getName(),
                                                        Collections.emptyList()
         ))
                 .isEqualTo(new String[]{"Jim", "Michael"});
 
-        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("{ }"), Object[].class.getCanonicalName(),
+        assertThat(evaluator.evaluateLiteralExpression(mvelExpression("{ }"), Object[].class.getName(),
                                                        Collections.emptyList()
         ))
                 .isEqualTo(new String[]{});
