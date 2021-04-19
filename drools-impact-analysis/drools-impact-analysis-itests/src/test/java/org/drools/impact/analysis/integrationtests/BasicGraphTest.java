@@ -48,7 +48,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -90,7 +89,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -130,7 +128,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -157,7 +154,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -184,7 +180,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -210,7 +205,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -239,7 +233,6 @@ public class BasicGraphTest extends AbstractGraphTest {
                      "end\n";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
