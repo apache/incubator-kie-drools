@@ -196,19 +196,7 @@ public abstract class ColumnUtilitiesBase {
     }
 
     private String getType(final BRLActionVariableColumn col) {
-
-        //If the parameter is not bound to a Fact or FactField use the explicit type. This is (currently)
-        //used when a BRL fragment does not contain any Template Keys and a single BRLActionVariableColumn
-        //is created with type SuggestionCompletionEngine.TYPE_BOOLEAN i.e. Limited Entry
-        if (col.getFactType() == null && col.getFactField() == null) {
             return col.getFieldType();
-        }
-
-        //Otherwise lookup from SuggestionCompletionEngine
-        final String factType = col.getFactType();
-        final String fieldName = col.getFactField();
-        return getTypeFromDataOracle(factType,
-                                     fieldName);
     }
 
     protected abstract String getTypeFromDataOracle(final String factType,
