@@ -16,14 +16,21 @@
 
 package org.drools.impact.analysis.integrationtests;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.assertj.core.api.Assertions;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ImpactAnalysisHelper;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.TextReporter;
 import org.drools.impact.analysis.integrationtests.domain.Order;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
 import org.junit.Test;
+
+import static org.drools.impact.analysis.graph.TextReporter.INDENT;
 
 public class ImpactAnalysisTest extends AbstractGraphTest {
 
@@ -102,5 +109,25 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         generatePng(impactedSubGraph, "_impactedSubGraph");
 
         generatePng(graph, "_impacted");
+
+        System.out.println("--- toHierarchyText ---");
+        String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
+        System.out.println(hierarchyText);
+        List<String> lines = hierarchyText.lines().collect(Collectors.toList());
+        Assertions.assertThat(lines).containsExactlyInAnyOrder("R2[*]",
+                                                               INDENT + "R3[+]",
+                                                               INDENT + INDENT + "R6[+]",
+                                                               INDENT + INDENT + "R5[+]",
+                                                               INDENT + INDENT + INDENT + "(R3)");
+
+        System.out.println("--- toFlatText ---");
+        String flatText = TextReporter.toFlatText(impactedSubGraph);
+        System.out.println(flatText);
+        List<String> lines2 = flatText.lines().collect(Collectors.toList());
+        Assertions.assertThat(lines2).containsExactlyInAnyOrder("R2[*]",
+                                                                "R3[+]",
+                                                                "R6[+]",
+                                                                "R5[+]");
+
     }
 }
