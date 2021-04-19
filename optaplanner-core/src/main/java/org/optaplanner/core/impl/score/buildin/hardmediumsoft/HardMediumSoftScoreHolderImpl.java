@@ -67,26 +67,26 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
         super.configureConstraintWeight(rule, constraintWeight);
         IntMatchExecutor matchExecutor;
         if (constraintWeight.equals(HardMediumSoftScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, int weightMultiplier, Object... justifications) -> {
+            matchExecutor = (RuleContext kcontext, int weightMultiplier) -> {
             };
         } else if (constraintWeight.getMediumScore() == 0 && constraintWeight.getSoftScore() == 0) {
             matchExecutor =
-                    (RuleContext kcontext, int weightMultiplier, Object... justifications) -> addHardConstraintMatch(kcontext,
-                            constraintWeight.getHardScore() * weightMultiplier, justifications);
+                    (RuleContext kcontext, int weightMultiplier) -> addHardConstraintMatch(kcontext,
+                            constraintWeight.getHardScore() * weightMultiplier);
         } else if (constraintWeight.getHardScore() == 0 && constraintWeight.getSoftScore() == 0) {
             matchExecutor =
-                    (RuleContext kcontext, int weightMultiplier, Object... justifications) -> addMediumConstraintMatch(kcontext,
-                            constraintWeight.getMediumScore() * weightMultiplier, justifications);
+                    (RuleContext kcontext, int weightMultiplier) -> addMediumConstraintMatch(kcontext,
+                            constraintWeight.getMediumScore() * weightMultiplier);
         } else if (constraintWeight.getHardScore() == 0 && constraintWeight.getMediumScore() == 0) {
             matchExecutor =
-                    (RuleContext kcontext, int weightMultiplier, Object... justifications) -> addSoftConstraintMatch(kcontext,
-                            constraintWeight.getSoftScore() * weightMultiplier, justifications);
+                    (RuleContext kcontext, int weightMultiplier) -> addSoftConstraintMatch(kcontext,
+                            constraintWeight.getSoftScore() * weightMultiplier);
         } else {
             matchExecutor =
-                    (RuleContext kcontext, int weightMultiplier, Object... justifications) -> addMultiConstraintMatch(kcontext,
+                    (RuleContext kcontext, int weightMultiplier) -> addMultiConstraintMatch(kcontext,
                             constraintWeight.getHardScore() * weightMultiplier,
                             constraintWeight.getMediumScore() * weightMultiplier,
-                            constraintWeight.getSoftScore() * weightMultiplier, justifications);
+                            constraintWeight.getSoftScore() * weightMultiplier);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
@@ -131,12 +131,12 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, Object... justifications) {
-        impactScore(kcontext, 1, justifications);
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, 1);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
         Rule rule = kcontext.getRule();
         IntMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
@@ -144,11 +144,11 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier, justifications);
+        matchExecutor.accept(kcontext, weightMultiplier);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a long weightMultiplier (" + weightMultiplier + ").\n"
@@ -156,7 +156,7 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
@@ -182,44 +182,24 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
 
     @Override
     public void addHardConstraintMatch(RuleContext kcontext, int hardWeight) {
-        addHardConstraintMatch(kcontext, hardWeight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addHardConstraintMatch(RuleContext kcontext, int hardWeight, Object... justifications) {
         hardScore += hardWeight;
-        registerConstraintMatch(kcontext, () -> hardScore -= hardWeight, () -> HardMediumSoftScore.ofHard(hardWeight),
-                justifications);
+        registerConstraintMatch(kcontext, () -> hardScore -= hardWeight, () -> HardMediumSoftScore.ofHard(hardWeight));
     }
 
     @Override
     public void addMediumConstraintMatch(RuleContext kcontext, int mediumWeight) {
-        addMediumConstraintMatch(kcontext, mediumWeight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addMediumConstraintMatch(RuleContext kcontext, int mediumWeight, Object... justifications) {
         mediumScore += mediumWeight;
-        registerConstraintMatch(kcontext, () -> mediumScore -= mediumWeight, () -> HardMediumSoftScore.ofMedium(mediumWeight),
-                justifications);
+        registerConstraintMatch(kcontext, () -> mediumScore -= mediumWeight, () -> HardMediumSoftScore.ofMedium(mediumWeight));
     }
 
     @Override
     public void addSoftConstraintMatch(RuleContext kcontext, int softWeight) {
-        addSoftConstraintMatch(kcontext, softWeight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addSoftConstraintMatch(RuleContext kcontext, int softWeight, Object... justifications) {
         softScore += softWeight;
-        registerConstraintMatch(kcontext, () -> softScore -= softWeight, () -> HardMediumSoftScore.ofSoft(softWeight),
-                justifications);
+        registerConstraintMatch(kcontext, () -> softScore -= softWeight, () -> HardMediumSoftScore.ofSoft(softWeight));
     }
 
     @Override
     public void addMultiConstraintMatch(RuleContext kcontext, int hardWeight, int mediumWeight, int softWeight) {
-        addMultiConstraintMatch(kcontext, hardWeight, mediumWeight, softWeight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addMultiConstraintMatch(RuleContext kcontext, int hardWeight, int mediumWeight, int softWeight,
-            Object... justifications) {
         hardScore += hardWeight;
         mediumScore += mediumWeight;
         softScore += softWeight;
@@ -229,8 +209,7 @@ public final class HardMediumSoftScoreHolderImpl extends AbstractScoreHolder<Har
                     mediumScore -= mediumWeight;
                     softScore -= softWeight;
                 },
-                () -> HardMediumSoftScore.of(hardWeight, mediumWeight, softWeight),
-                justifications);
+                () -> HardMediumSoftScore.of(hardWeight, mediumWeight, softWeight));
     }
 
     @Override

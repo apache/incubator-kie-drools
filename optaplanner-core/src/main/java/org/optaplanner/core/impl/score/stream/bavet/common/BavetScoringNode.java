@@ -16,36 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-
 public interface BavetScoringNode extends BavetNode {
-
-    /**
-     * @return never null
-     */
-    String getConstraintPackage();
-
-    /**
-     * @return never null
-     */
-    String getConstraintName();
-
-    /**
-     * @return never null
-     */
-    String getConstraintId();
-
-    /**
-     * @return never null
-     */
-    Score<?> getConstraintWeight();
-
-    /**
-     * @param zeroScore never null
-     * @return never null
-     * @param <Score_> the {@link Score} type
-     */
-    <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore);
 
 }

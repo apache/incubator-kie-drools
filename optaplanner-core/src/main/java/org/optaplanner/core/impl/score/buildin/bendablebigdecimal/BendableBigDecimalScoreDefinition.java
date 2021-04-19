@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -103,8 +105,10 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    public BendableBigDecimalScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
-        return new BendableBigDecimalScoreInliner(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
+    public BendableBigDecimalScoreInliner buildScoreInliner(Map<Constraint, BendableBigDecimalScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        return new BendableBigDecimalScoreInliner(constraintToWeightMap, constraintMatchEnabled, hardLevelsSize,
+                softLevelsSize);
     }
 
     @Override

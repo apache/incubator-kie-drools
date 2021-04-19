@@ -75,7 +75,7 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
         super.configureConstraintWeight(rule, constraintWeight);
         IntMatchExecutor matchExecutor;
         if (constraintWeight.equals(BendableScore.zero(hardScores.length, softScores.length))) {
-            matchExecutor = (RuleContext kcontext, int matchWeight, Object... justifications) -> {
+            matchExecutor = (RuleContext kcontext, int matchWeight) -> {
             };
         } else {
             Integer singleLevel = null;
@@ -96,15 +96,15 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
                 int levelWeight = singleLevelWeight;
                 if (singleLevel < constraintWeight.getHardLevelsSize()) {
                     int level = singleLevel;
-                    matchExecutor = (RuleContext kcontext, int matchWeight, Object... justifications) -> addHardConstraintMatch(
-                            kcontext, level, levelWeight * matchWeight, justifications);
+                    matchExecutor = (RuleContext kcontext, int matchWeight) -> addHardConstraintMatch(
+                            kcontext, level, levelWeight * matchWeight);
                 } else {
                     int level = singleLevel - constraintWeight.getHardLevelsSize();
-                    matchExecutor = (RuleContext kcontext, int matchWeight, Object... justifications) -> addSoftConstraintMatch(
-                            kcontext, level, levelWeight * matchWeight, justifications);
+                    matchExecutor = (RuleContext kcontext, int matchWeight) -> addSoftConstraintMatch(
+                            kcontext, level, levelWeight * matchWeight);
                 }
             } else {
-                matchExecutor = (RuleContext kcontext, int matchWeight, Object... justifications) -> {
+                matchExecutor = (RuleContext kcontext, int matchWeight) -> {
                     int[] hardWeights = new int[hardScores.length];
                     int[] softWeights = new int[softScores.length];
                     for (int i = 0; i < hardWeights.length; i++) {
@@ -113,7 +113,7 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
                     for (int i = 0; i < softWeights.length; i++) {
                         softWeights[i] = constraintWeight.getSoftScore(i) * matchWeight;
                     }
-                    addMultiConstraintMatch(kcontext, hardWeights, softWeights, justifications);
+                    addMultiConstraintMatch(kcontext, hardWeights, softWeights);
                 };
             }
         }
@@ -174,12 +174,12 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, Object... justifications) {
-        impactScore(kcontext, 1, justifications);
+    public void impactScore(RuleContext kcontext) {
+        impactScore(kcontext, 1);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
         Rule rule = kcontext.getRule();
         IntMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
@@ -187,11 +187,11 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier, justifications);
+        matchExecutor.accept(kcontext, weightMultiplier);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a long weightMultiplier (" + weightMultiplier + ").\n"
@@ -199,7 +199,7 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
                 + "), the scoreHolder class (" + getClass()
                 + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
@@ -223,10 +223,6 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
 
     @Override
     public void addHardConstraintMatch(RuleContext kcontext, int hardLevel, int weight) {
-        addHardConstraintMatch(kcontext, hardLevel, weight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addHardConstraintMatch(RuleContext kcontext, int hardLevel, int weight, Object... justifications) {
         if (hardLevel >= hardScores.length) {
             throw new IllegalArgumentException("The hardLevel (" + hardLevel
                     + ") isn't lower than the hardScores length (" + hardScores.length
@@ -240,16 +236,11 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
                     int[] newSoftScores = new int[softScores.length];
                     newHardScores[hardLevel] = weight;
                     return BendableScore.of(newHardScores, newSoftScores);
-                },
-                justifications);
+                });
     }
 
     @Override
     public void addSoftConstraintMatch(RuleContext kcontext, int softLevel, int weight) {
-        addSoftConstraintMatch(kcontext, softLevel, weight, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addSoftConstraintMatch(RuleContext kcontext, int softLevel, int weight, Object... justifications) {
         if (softLevel >= softScores.length) {
             throw new IllegalArgumentException("The softLevel (" + softLevel
                     + ") isn't lower than the softScores length (" + softScores.length
@@ -263,16 +254,11 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
                     int[] newSoftScores = new int[softScores.length];
                     newSoftScores[softLevel] = weight;
                     return BendableScore.of(newHardScores, newSoftScores);
-                },
-                justifications);
+                });
     }
 
     @Override
     public void addMultiConstraintMatch(RuleContext kcontext, int[] hardWeights, int[] softWeights) {
-        addMultiConstraintMatch(kcontext, hardWeights, softWeights, EMPTY_OBJECT_ARRAY);
-    }
-
-    private void addMultiConstraintMatch(RuleContext kcontext, int[] hardWeights, int[] softWeights, Object... justifications) {
         if (hardWeights.length != hardScores.length) {
             throw new IllegalArgumentException("The hardWeights length (" + hardWeights.length
                     + ") is different than the hardScores length (" + hardScores.length
@@ -298,8 +284,7 @@ public final class BendableScoreHolderImpl extends AbstractScoreHolder<BendableS
                         softScores[i] -= softWeights[i];
                     }
                 },
-                () -> BendableScore.of(hardWeights, softWeights),
-                justifications);
+                () -> BendableScore.of(hardWeights, softWeights));
     }
 
     @Override

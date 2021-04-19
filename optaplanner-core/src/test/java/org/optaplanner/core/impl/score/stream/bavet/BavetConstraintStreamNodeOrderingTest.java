@@ -148,7 +148,7 @@ public class BavetConstraintStreamNodeOrderingTest {
 
     @Test
     void scoring() {
-        List<BavetScoringNode> scoringNodeCollection = new ArrayList<>(session.getScoringNodes());
+        List<BavetScoringNode> scoringNodeCollection = new ArrayList<>(session.getScoringNodeList());
         assertThat(scoringNodeCollection).hasSize(1);
         assertThat(scoringNodeCollection)
                 .first()

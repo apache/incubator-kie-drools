@@ -16,17 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.bavet;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
-public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
-        implements ConstraintSessionFactory<Solution_, Score_> {
+public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final List<BavetConstraint<Solution_>> constraintList;
@@ -41,18 +39,13 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
     // Node creation
     // ************************************************************************
 
-    @Override
     public BavetConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
             Solution_ workingSolution) {
         ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
         Score_ zeroScore = scoreDefinition.getZeroScore();
-        Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
-        for (BavetConstraint<Solution_> constraint : constraintList) {
-            Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
-            if (!constraintWeight.equals(zeroScore)) {
-                constraintToWeightMap.put(constraint, constraintWeight);
-            }
-        }
+        Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap =
+                InnerConstraintFactory.extractConstraintToWeightMap(constraintList,
+                        c -> (Score_) c.extractConstraintWeight(workingSolution), zeroScore);
         return new BavetConstraintSession<>(constraintMatchEnabled, scoreDefinition, constraintToWeightMap);
     }
 

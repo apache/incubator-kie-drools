@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.LongStream;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -103,8 +105,9 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
-    public BendableLongScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
-        return new BendableLongScoreInliner(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
+    public BendableLongScoreInliner buildScoreInliner(Map<Constraint, BendableLongScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        return new BendableLongScoreInliner(constraintToWeightMap, constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override

@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream;
+package org.optaplanner.core.impl.score.inliner;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import java.util.List;
+import java.util.function.Supplier;
 
-public interface ConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
-
-    /**
-     * This method is thread-safe.
-     *
-     * @param constraintMatchEnabled true if {@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
-     * @param workingSolution if null, uniform synthetic constraint weights will be applied
-     * @return never null
-     */
-    Object buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
-
+/**
+ * This interface allows to create justifications lazily
+ * if and only if constraint matches are enabled.
+ *
+ * Justifications creation is performance expensive and constraint matches are typically disabled.
+ * So justifications are created lazily, outside of the typical hot path.
+ */
+@FunctionalInterface
+public interface JustificationsSupplier extends Supplier<List<Object>> {
 }

@@ -20,10 +20,10 @@ import java.util.function.BiFunction;
 
 import org.drools.model.Global;
 import org.drools.model.Rule;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 @FunctionalInterface
 public interface RuleBuilder<Solution_>
-        extends BiFunction<DroolsConstraint<Solution_>, Global<? extends AbstractScoreHolder<?>>, Rule> {
+        extends BiFunction<DroolsConstraint<Solution_>, Global<WeightedScoreImpacter>, Rule> {
 }

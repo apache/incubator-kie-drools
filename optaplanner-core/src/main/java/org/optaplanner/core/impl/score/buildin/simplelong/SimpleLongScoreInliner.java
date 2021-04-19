@@ -16,36 +16,42 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
-import java.util.function.Consumer;
+import java.util.Map;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
+public final class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
 
-    protected long score;
+    private long score;
 
-    protected SimpleLongScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+    protected SimpleLongScoreInliner(Map<Constraint, SimpleLongScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        super(constraintToWeightMap, constraintMatchEnabled, SimpleLongScore.ZERO);
     }
 
     @Override
-    public LongWeightedScoreImpacter buildWeightedScoreImpacter(SimpleLongScore constraintWeight) {
-        if (constraintWeight.equals(SimpleLongScore.ZERO)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+        SimpleLongScore constraintWeight = getConstraintWeight(constraint);
         long simpleConstraintWeight = constraintWeight.getScore();
-        return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+        return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
             long impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
-            if (constraintMatchEnabled) {
-                matchScoreConsumer.accept(SimpleLongScore.of(impact));
+            UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
+            if (!constraintMatchEnabled) {
+                return undoScoreImpact;
             }
-            return () -> this.score -= impact;
-        };
+            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight, SimpleLongScore.of(impact),
+                    justificationsSupplier.get());
+            return () -> {
+                undoScoreImpact.run();
+                undoConstraintMatch.run();
+            };
+        });
     }
 
     @Override

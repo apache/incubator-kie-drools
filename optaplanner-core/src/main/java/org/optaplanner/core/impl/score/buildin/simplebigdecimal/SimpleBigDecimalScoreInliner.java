@@ -17,36 +17,42 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
+import java.util.Map;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
 
-public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
+public final class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalScore> {
 
-    protected BigDecimal score = BigDecimal.ZERO;
+    private BigDecimal score = BigDecimal.ZERO;
 
-    protected SimpleBigDecimalScoreInliner(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+    protected SimpleBigDecimalScoreInliner(Map<Constraint, SimpleBigDecimalScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        super(constraintToWeightMap, constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(SimpleBigDecimalScore constraintWeight) {
-        if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
-            throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
-                    + " this constraint should have been culled during node creation.");
-        }
+    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint) {
+        SimpleBigDecimalScore constraintWeight = getConstraintWeight(constraint);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
+        return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
             this.score = this.score.add(impact);
-            if (constraintMatchEnabled) {
-                matchScoreConsumer.accept(SimpleBigDecimalScore.of(impact));
+            UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
+            if (!constraintMatchEnabled) {
+                return undoScoreImpact;
             }
-            return () -> this.score = this.score.subtract(impact);
-        };
+            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+            return () -> {
+                undoScoreImpact.run();
+                undoConstraintMatch.run();
+            };
+        });
     }
 
     @Override

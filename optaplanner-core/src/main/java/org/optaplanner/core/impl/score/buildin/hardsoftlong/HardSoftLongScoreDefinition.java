@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -73,8 +75,9 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
     }
 
     @Override
-    public HardSoftLongScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
-        return new HardSoftLongScoreInliner(constraintMatchEnabled);
+    public HardSoftLongScoreInliner buildScoreInliner(Map<Constraint, HardSoftLongScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        return new HardSoftLongScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

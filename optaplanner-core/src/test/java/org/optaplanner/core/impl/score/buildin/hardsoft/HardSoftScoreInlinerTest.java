@@ -18,45 +18,108 @@ package org.optaplanner.core.impl.score.buildin.hardsoft;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.function.Consumer;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
 
-public class HardSoftScoreInlinerTest {
+public class HardSoftScoreInlinerTest
+        extends AbstractScoreInlinerTest<TestdataHardSoftScoreSolution, HardSoftScore> {
+
+    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void buildIntWeightedScoreImpacter() {
-        boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
-
-        HardSoftScoreInliner scoreInliner = new HardSoftScoreInliner(constraintMatchEnabled);
+    public void defaultScore() {
+        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
+                buildConstraint(HardSoftScore.ONE_HARD);
+        HardSoftScoreInliner scoreInliner =
+                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.ZERO);
-
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftScore.ofHard(-90));
-        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-90, 0));
-        scoreInliner.buildWeightedScoreImpacter(HardSoftScore.ofHard(-800)).impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-890, 0));
-        hardUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, 0));
-
-        IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftScore.ofSoft(-1));
-        UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -3));
-        softImpacter.impactScore(10, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -13));
-        softUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -10));
-
-        IntWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftScore.of(-1000, -3000));
-        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-1800, -3010));
-        allLevelsUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardSoftScore.of(-800, -10));
     }
 
+    @Test
+    public void impactHard() {
+        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
+                buildConstraint(HardSoftScore.ofHard(90));
+        HardSoftScoreInliner scoreInliner =
+                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(90, 0));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(270, 0));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(90, 0));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(0, 0));
+    }
+
+    @Test
+    public void impactSoft() {
+        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
+                buildConstraint(HardSoftScore.ofSoft(90));
+        HardSoftScoreInliner scoreInliner =
+                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(0, 90));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(0, 270));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(0, 90));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(0, 0));
+    }
+
+    @Test
+    public void impactAll() {
+        TestConstraint<TestdataHardSoftScoreSolution, HardSoftScore> constraint =
+                buildConstraint(HardSoftScore.of(10, 100));
+        HardSoftScoreInliner scoreInliner =
+                new HardSoftScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(100, 1_000));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(300, 3_000));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(100, 1_000));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(HardSoftScore.of(0, 0));
+    }
+
+    @Override
+    protected SolutionDescriptor<TestdataHardSoftScoreSolution> buildSolutionDescriptor() {
+        return TestdataHardSoftScoreSolution.buildSolutionDescriptor();
+    }
 }

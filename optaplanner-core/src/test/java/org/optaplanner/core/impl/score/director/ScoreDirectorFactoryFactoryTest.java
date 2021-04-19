@@ -123,12 +123,13 @@ class ScoreDirectorFactoryFactoryTest {
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withDroolsAlphaNetworkCompilationEnabled(true);
         ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
-        AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+        AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
                 factoryFactory.buildConstraintStreamScoreDirectorFactory(TestdataSolution.buildSolutionDescriptor());
-        assertThat(scoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
+        assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
+        DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+                (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
         DroolsConstraintSessionFactory<TestdataSolution, SimpleScore> constraintSessionFactory =
-                (DroolsConstraintSessionFactory<TestdataSolution, SimpleScore>) scoreDirectorFactory
-                        .getConstraintSessionFactory();
+                scoreDirectorFactory.getConstraintSessionFactory();
         assertThat(constraintSessionFactory.isDroolsAlphaNetworkCompilationEnabled()).isTrue();
     }
 
@@ -138,12 +139,13 @@ class ScoreDirectorFactoryFactoryTest {
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withDroolsAlphaNetworkCompilationEnabled(false);
         ScoreDirectorFactoryFactory<TestdataSolution, SimpleScore> factoryFactory = new ScoreDirectorFactoryFactory<>(config);
-        AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+        AbstractConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> uncastScoreDirectorFactory =
                 factoryFactory.buildConstraintStreamScoreDirectorFactory(TestdataSolution.buildSolutionDescriptor());
-        assertThat(scoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
+        assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
+        DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+                (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
         DroolsConstraintSessionFactory<TestdataSolution, SimpleScore> constraintSessionFactory =
-                (DroolsConstraintSessionFactory<TestdataSolution, SimpleScore>) scoreDirectorFactory
-                        .getConstraintSessionFactory();
+                scoreDirectorFactory.getConstraintSessionFactory();
         assertThat(constraintSessionFactory.isDroolsAlphaNetworkCompilationEnabled()).isFalse();
     }
 

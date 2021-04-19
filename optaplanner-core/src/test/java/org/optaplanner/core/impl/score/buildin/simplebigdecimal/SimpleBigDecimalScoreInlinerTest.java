@@ -19,42 +19,58 @@ package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
 
-public class SimpleBigDecimalScoreInlinerTest {
+public class SimpleBigDecimalScoreInlinerTest
+        extends AbstractScoreInlinerTest<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> {
+
+    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void buildWeightedScoreImpacter() {
-        boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
-
-        SimpleBigDecimalScoreInliner scoreInliner = new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
+    public void defaultScore() {
+        TestConstraint<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> constraint =
+                buildConstraint(SimpleBigDecimalScore.ONE);
+        SimpleBigDecimalScoreInliner scoreInliner =
+                new SimpleBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
         assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.ZERO);
-
-        BigDecimalWeightedScoreImpacter impacter1 = scoreInliner
-                .buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
-        UndoScoreImpacter undo1 = impacter1.impactScore(new BigDecimal("1.0"), scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
-        scoreInliner.buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("800.0")))
-                .impactScore(new BigDecimal("1.0"), scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("890.0")));
-        undo1.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("800.0")));
-
-        BigDecimalWeightedScoreImpacter impacter2 = scoreInliner
-                .buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("1.0")));
-        UndoScoreImpacter undo2 = impacter2.impactScore(new BigDecimal("3.0"), scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("803.0")));
-        impacter2.impactScore(new BigDecimal("10.0"), scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("813.0")));
-        undo2.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("810.0")));
     }
 
+    @Test
+    public void impact() {
+        TestConstraint<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> constraint =
+                buildConstraint(SimpleBigDecimalScore.of(BigDecimal.valueOf(10)));
+        SimpleBigDecimalScoreInliner scoreInliner =
+                new SimpleBigDecimalScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(100)));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20), EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(300)));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(100)));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.ZERO));
+    }
+
+    @Override
+    protected SolutionDescriptor<TestdataSimpleBigDecimalScoreSolution> buildSolutionDescriptor() {
+        return TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor();
+    }
 }

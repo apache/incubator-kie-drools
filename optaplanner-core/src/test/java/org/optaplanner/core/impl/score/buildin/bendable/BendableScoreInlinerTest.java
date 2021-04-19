@@ -18,52 +18,140 @@ package org.optaplanner.core.impl.score.buildin.bendable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.function.Consumer;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.buildin.AbstractScoreInlinerTest;
+import org.optaplanner.core.impl.score.inliner.JustificationsSupplier;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.inliner.WeightedScoreImpacter;
+import org.optaplanner.core.impl.testdata.domain.score.TestdataBendableScoreSolution;
 
-public class BendableScoreInlinerTest {
+public class BendableScoreInlinerTest
+        extends AbstractScoreInlinerTest<TestdataBendableScoreSolution, BendableScore> {
+
+    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
-    public void buildIntWeightedScoreImpacter() {
-        boolean constraintMatchEnabled = false;
-        Consumer<Score<?>> scoreConsumer = null;
+    public void defaultScore() {
+        TestConstraint<TestdataBendableScoreSolution, BendableScore> constraint =
+                buildConstraint(buildScore(1, 1, 1));
+        BendableScoreInliner scoreInliner =
+                new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(buildScore(0, 0, 0));
+    }
 
-        BendableScoreInliner scoreInliner = new BendableScoreInliner(constraintMatchEnabled, 1, 2);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.zero(1, 2));
+    @Test
+    public void impactHard() {
+        TestConstraint<TestdataBendableScoreSolution, BendableScore> constraint =
+                buildConstraint(buildScore(90, 0, 0));
+        BendableScoreInliner scoreInliner =
+                new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
 
-        IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -90));
-        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -90 }, new int[] { 0, 0 }));
-        scoreInliner.buildWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -800)).impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -890 }, new int[] { 0, 0 }));
-        hardUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }));
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(90, 0, 0));
 
-        IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter(BendableScore.ofSoft(1, 2, 0, -7));
-        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { -7, 0 }));
-        mediumUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }));
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(270, 0, 0));
 
-        IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(BendableScore.ofSoft(1, 2, 1, -1));
-        UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -3 }));
-        softImpacter.impactScore(10, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -13 }));
-        softUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }));
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(90, 0, 0));
 
-        IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
-                .buildWeightedScoreImpacter(BendableScore.of(new int[] { -1000 }, new int[] { -2000, -3000 }));
-        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -1800 }, new int[] { -2000, -3010 }));
-        allLevelsUndo.undoScoreImpact();
-        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }));
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 0));
+    }
+
+    @Test
+    public void impactSoft1() {
+        TestConstraint<TestdataBendableScoreSolution, BendableScore> constraint =
+                buildConstraint(buildScore(0, 90, 0));
+        BendableScoreInliner scoreInliner =
+                new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 90, 0));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 270, 0));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 90, 0));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 0));
+    }
+
+    @Test
+    public void impactSoft2() {
+        TestConstraint<TestdataBendableScoreSolution, BendableScore> constraint =
+                buildConstraint(buildScore(0, 0, 90));
+        BendableScoreInliner scoreInliner =
+                new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 90));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 270));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 90));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 0));
+    }
+
+    @Test
+    public void impactAll() {
+        TestConstraint<TestdataBendableScoreSolution, BendableScore> constraint =
+                buildConstraint(buildScore(10, 100, 1_000));
+        BendableScoreInliner scoreInliner =
+                new BendableScoreInliner(getConstaintToWeightMap(constraint), constraintMatchEnabled, 1, 2);
+
+        WeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(constraint);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(100, 1_000, 10_000));
+
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(300, 3_000, 30_000));
+
+        undo2.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(100, 1_000, 10_000));
+
+        undo1.run();
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(buildScore(0, 0, 0));
+    }
+
+    @Override
+    protected SolutionDescriptor<TestdataBendableScoreSolution> buildSolutionDescriptor() {
+        return TestdataBendableScoreSolution.buildSolutionDescriptor();
+    }
+
+    private BendableScore buildScore(int hard, int soft1, int soft2) {
+        return BendableScore.of(
+                new int[] { hard },
+                new int[] { soft1, soft2 });
     }
 
 }

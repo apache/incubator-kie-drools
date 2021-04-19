@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
-import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardMediumSoftScore> {
@@ -75,8 +76,9 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
     }
 
     @Override
-    public ScoreInliner<HardMediumSoftScore> buildScoreInliner(boolean constraintMatchEnabled) {
-        return new HardMediumSoftScoreInliner(constraintMatchEnabled);
+    public HardMediumSoftScoreInliner buildScoreInliner(Map<Constraint, HardMediumSoftScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        return new HardMediumSoftScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

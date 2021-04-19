@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -73,8 +75,9 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
     }
 
     @Override
-    public HardSoftBigDecimalScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
-        return new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
+    public HardSoftBigDecimalScoreInliner buildScoreInliner(Map<Constraint, HardSoftBigDecimalScore> constraintToWeightMap,
+            boolean constraintMatchEnabled) {
+        return new HardSoftBigDecimalScoreInliner(constraintToWeightMap, constraintMatchEnabled);
     }
 
     @Override

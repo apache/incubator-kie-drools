@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 
 package org.optaplanner.core.impl.score.definition;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -25,6 +28,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 /**
@@ -138,12 +142,14 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
     Score_ fromLevelNumbers(int initScore, Number[] levelNumbers);
 
     /**
-     * Used by {@link BavetConstraintFactory}
+     * Used by {@link BavetConstraintFactory} and {@link DroolsConstraintFactory}.
      *
+     * @param constraintToWeightMap never null, no zero-weight constraints
      * @param constraintMatchEnabled true if {@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
-    ScoreInliner<Score_> buildScoreInliner(boolean constraintMatchEnabled);
+    ScoreInliner<Score_> buildScoreInliner(Map<Constraint, Score_> constraintToWeightMap,
+            boolean constraintMatchEnabled);
 
     /**
      * Used by {@link DroolsScoreDirector}.

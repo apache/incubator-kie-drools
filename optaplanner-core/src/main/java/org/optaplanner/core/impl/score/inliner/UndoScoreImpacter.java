@@ -17,8 +17,6 @@
 package org.optaplanner.core.impl.score.inliner;
 
 @FunctionalInterface
-public interface UndoScoreImpacter {
-
-    void undoScoreImpact();
+public interface UndoScoreImpacter extends Runnable {
 
 }

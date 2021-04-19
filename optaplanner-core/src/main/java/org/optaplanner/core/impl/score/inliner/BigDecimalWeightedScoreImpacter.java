@@ -17,19 +17,29 @@
 package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
+import java.util.Objects;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
 
-@FunctionalInterface
-public interface BigDecimalWeightedScoreImpacter extends WeightedScoreImpacter {
+    private final BigDecimalImpactFunction impactFunction;
 
-    /**
-     * @param matchWeight never null
-     * @param scoreConsumer null if {@link InnerScoreDirector#isConstraintMatchEnabled()} is false
-     * @return never null
-     */
-    UndoScoreImpacter impactScore(BigDecimal matchWeight, Consumer<Score<?>> scoreConsumer);
+    public BigDecimalWeightedScoreImpacter(BigDecimalImpactFunction impactFunction) {
+        this.impactFunction = Objects.requireNonNull(impactFunction);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.impact(BigDecimal.valueOf(matchWeight), justificationsSupplier);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.impact(BigDecimal.valueOf(matchWeight), justificationsSupplier);
+    }
+
+    @Override
+    public UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        return impactFunction.impact(matchWeight, justificationsSupplier);
+    }
 
 }
