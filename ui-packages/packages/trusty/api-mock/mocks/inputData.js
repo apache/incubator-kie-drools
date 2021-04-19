@@ -3,13 +3,13 @@ const inputData = [
     name: 'Credit Score',
     typeRef: 'number',
     value: 738,
-    components: []
+    components: null
   },
   {
     name: 'Down Payment',
     typeRef: 'number',
     value: 70000,
-    components: []
+    components: null
   },
   {
     name: 'Property',
@@ -20,25 +20,25 @@ const inputData = [
         name: 'Purchase Price',
         typeRef: 'number',
         value: 34000,
-        components: []
+        components: null
       },
       {
         name: 'Monthly Tax Payment',
         typeRef: 'number',
         value: 0.2,
-        components: []
+        components: null
       },
       {
         name: 'Monthly Insurance Payment',
         typeRef: 'number',
         value: 0.15,
-        components: []
+        components: null
       },
       {
         name: 'Monthly HOA Payment',
         typeRef: 'number',
         value: 0.12,
-        components: []
+        components: null
       },
       {
         name: 'Address',
@@ -49,31 +49,31 @@ const inputData = [
             name: 'Street',
             typeRef: 'string',
             value: '272 10th St.',
-            components: []
+            components: null
           },
           {
             name: 'Unit',
             typeRef: 'string',
             value: 'A',
-            components: []
+            components: null
           },
           {
             name: 'City',
             typeRef: 'string',
             value: 'Malibu',
-            components: []
+            components: null
           },
           {
             name: 'State',
             typeRef: 'string',
             value: 'CA',
-            components: []
+            components: null
           },
           {
             name: 'ZIP',
             typeRef: 'string',
             value: '90903',
-            components: []
+            components: null
           }
         ]
       }
@@ -88,25 +88,25 @@ const inputData = [
         name: 'Full Name',
         typeRef: 'string',
         value: 'Jim Osterberg',
-        components: []
+        components: null
       },
       {
         name: 'Tax ID',
         typeRef: 'string',
         value: '11123322323',
-        components: []
+        components: null
       },
       {
         name: 'Employment Income',
         typeRef: 'number',
         value: 99000,
-        components: []
+        components: null
       },
       {
         name: 'Other Income',
         typeRef: 'number',
         value: 0,
-        components: []
+        components: null
       },
       {
         name: 'Assets',
@@ -118,19 +118,19 @@ const inputData = [
               name: 'Type',
               typeRef: 'string',
               value: 'C',
-              components: []
+              components: null
             },
             {
               name: 'Institution Account or Description',
               typeRef: 'string',
               value: 'Chase',
-              components: []
+              components: null
             },
             {
               name: 'Value',
               typeRef: 'number',
               value: 45000,
-              components: []
+              components: null
             }
           ],
           [
@@ -138,19 +138,19 @@ const inputData = [
               name: 'Type',
               typeRef: 'string',
               value: 'Other Non-Liquid',
-              components: []
+              components: null
             },
             {
               name: 'Institution Account or Description',
               typeRef: 'string',
               value: 'Vanguard',
-              components: []
+              components: null
             },
             {
               name: 'Value',
               typeRef: 'number',
               value: 33000,
-              components: []
+              components: null
             }
           ]
         ]
@@ -167,31 +167,31 @@ const inputData = [
           name: 'Type',
           value: 'Credit Card',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Payee',
           value: 'Chase',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Monthly Payment',
           value: 300,
           typeRef: 'number',
-          components: []
+          components: null
         },
         {
           name: 'Balance',
           value: 0,
           typeRef: 'number',
-          components: []
+          components: null
         },
         {
           name: 'To be paid off',
           value: 'Yes',
           typeRef: 'string',
-          components: []
+          components: null
         }
       ],
       [
@@ -199,31 +199,31 @@ const inputData = [
           name: 'Type',
           value: 'Lease',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Payee',
           value: 'BMW Finance',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Monthly Payment',
           value: 450,
           typeRef: 'number',
-          components: []
+          components: null
         },
         {
           name: 'Balance',
           value: 0,
           typeRef: 'number',
-          components: []
+          components: null
         },
         {
           name: 'To be paid off',
           value: 'No',
           typeRef: 'string',
-          components: []
+          components: null
         }
       ]
     ]
@@ -238,13 +238,13 @@ const inputData = [
           name: 'Lender Name',
           value: 'Gordon Cole',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Customer Rating',
           value: 4.2,
           typeRef: 'number',
-          components: []
+          components: null
         }
       ],
       [
@@ -252,13 +252,13 @@ const inputData = [
           name: 'Lender Name',
           value: 'Dale Cooper',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Customer Rating',
           value: 3.6,
           typeRef: 'number',
-          components: []
+          components: null
         }
       ],
       [
@@ -266,13 +266,13 @@ const inputData = [
           name: 'Lender Name',
           value: 'Chester Desmond',
           typeRef: 'string',
-          components: []
+          components: null
         },
         {
           name: 'Customer Rating',
           value: 4.6,
           typeRef: 'number',
-          components: []
+          components: null
         }
       ]
     ]

@@ -26,23 +26,25 @@ export interface ExecutionRouteParams {
 export interface ItemObject {
   name: string;
   typeRef: string;
-  value: string | number | boolean | Record<string, unknown> | null;
-  components: (ItemObject | ItemObject[])[];
+  value: string | number | boolean | Array<string | number | boolean> | null;
+  components: (ItemObject | ItemObject[])[] | null;
   impact?: boolean | number;
   score?: number;
 }
 
-export function isItemObjectArray(object: any): object is ItemObject[] {
+export function isItemObjectArray(object: unknown): object is ItemObject[] {
   return typeof object[0].name === 'string';
 }
 
-export function isItemObjectMultiArray(object: any): object is ItemObject[][] {
+export function isItemObjectMultiArray(
+  object: unknown
+): object is ItemObject[][] {
   return Array.isArray(object[0]);
 }
 
 export interface InputRow {
   inputLabel: string;
-  inputValue?: string | number | boolean | Record<string, unknown> | null;
+  inputValue?: ItemObject['value'];
   hasEffect?: boolean | number;
   score?: number;
   key: string;

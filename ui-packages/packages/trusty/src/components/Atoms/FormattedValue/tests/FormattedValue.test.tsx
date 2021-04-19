@@ -3,9 +3,9 @@ import FormattedValue from '../FormattedValue';
 import { mount, shallow } from 'enzyme';
 
 describe('Formatted Value', () => {
-  test('returns an empty string', () => {
+  test('returns "Null" for a null value', () => {
     const wrapper = shallow(<FormattedValue value={null} />);
-    expect(wrapper.find('.formatted-value').text()).toBe('');
+    expect(wrapper.find('.formatted-value').text()).toBe('Null');
   });
 
   test('returns a string as is', () => {

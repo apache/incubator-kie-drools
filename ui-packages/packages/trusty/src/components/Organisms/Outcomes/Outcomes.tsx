@@ -183,7 +183,7 @@ const renderOutcome = (
 ) => {
   const renderItems: JSX.Element[] = [];
 
-  if (outcomeData.value !== null) {
+  if (outcomeData.components === null) {
     return (
       <OutcomeProperty
         property={outcomeData}
@@ -223,7 +223,8 @@ const OutcomeProperty = (props: {
   const { property, hidePropertyName } = props;
   const basicTypes = ['string', 'number', 'boolean'];
   const bigOutcome =
-    hidePropertyName && basicTypes.includes(typeof property.value);
+    hidePropertyName &&
+    (basicTypes.includes(typeof property.value) || property.value === null);
 
   if (bigOutcome) {
     return (

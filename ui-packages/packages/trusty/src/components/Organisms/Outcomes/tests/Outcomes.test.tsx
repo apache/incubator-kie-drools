@@ -13,7 +13,7 @@ describe('Outcomes', () => {
     const wrapper = mount(<Outcomes {...outcomesProps} />);
 
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('OutcomeCard')).toHaveLength(2);
+    expect(wrapper.find('OutcomeCard')).toHaveLength(3);
     expect(
       wrapper
         .find('h4.outcome-cards__card__title')
@@ -38,6 +38,18 @@ describe('Outcomes', () => {
         .at(1)
         .text()
     ).toMatch('21.7031851958099');
+    expect(
+      wrapper
+        .find('h4.outcome-cards__card__title')
+        .at(2)
+        .text()
+    ).toMatch('Client Score');
+    expect(
+      wrapper
+        .find('.outcome__property__value--bigger')
+        .at(2)
+        .text()
+    ).toMatch('Null');
   });
 
   test('handles clicks on the explanation link', () => {
@@ -271,7 +283,7 @@ const outcomesProps = {
         name: 'Mortgage Approval',
         typeRef: 'boolean',
         value: true,
-        components: []
+        components: null
       },
       messages: [],
       hasErrors: false
@@ -284,7 +296,20 @@ const outcomesProps = {
         name: 'Risk Score',
         typeRef: 'number',
         value: 21.7031851958099,
-        components: []
+        components: null
+      },
+      messages: [],
+      hasErrors: false
+    },
+    {
+      outcomeId: '_d361c79e-8c06-4504-bdb2-d6b90b915166',
+      outcomeName: 'Client Score',
+      evaluationStatus: 'SUCCEEDED',
+      outcomeResult: {
+        name: 'Client Score',
+        typeRef: 'number',
+        value: null,
+        components: null
       },
       messages: [],
       hasErrors: false
@@ -312,43 +337,43 @@ const outcomesRecommendationProps = {
               name: 'Product',
               value: 'Lender B - ARM5/1-Standard',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Recommendation',
               value: 'Good',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Note Amount',
               value: '$273,775.90',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Interest Rate',
               value: '3.8',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Monthly Payment',
               value: '$1,267.90',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Cash to Close',
               value: '$1,267.90',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Required Credit Score',
               value: 720,
               typeRef: 'number',
-              components: []
+              components: null
             }
           ],
           [
@@ -356,43 +381,43 @@ const outcomesRecommendationProps = {
               name: 'Product',
               value: 'Lender C - Fixed30-Standard',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Recommendation',
               value: 'Best',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Note Amount',
               value: '$274,599.40',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Interest Rate',
               value: '3.88',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Monthly Payment',
               value: '$1,291.27',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Cash to Close',
               value: '$75,491.99',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Required Credit Score',
               value: 680,
               typeRef: 'number',
-              components: []
+              components: null
             }
           ]
         ]
@@ -425,19 +450,19 @@ const outcomeComposedProps = {
                 name: 'Loan Amount',
                 value: 540000,
                 typeRef: 'number',
-                components: []
+                components: null
               },
               {
                 name: 'Repayment Rate',
                 value: 900,
                 typeRef: 'number',
-                components: []
+                components: null
               },
               {
                 name: 'Loan Eligibility',
                 value: true,
                 typeRef: 'boolean',
-                components: []
+                components: null
               }
             ]
           },
@@ -450,13 +475,13 @@ const outcomeComposedProps = {
                 name: 'Loan amount',
                 value: 340000,
                 typeRef: 'number',
-                components: []
+                components: null
               },
               {
                 name: 'Repayment rate',
                 value: 2000,
                 typeRef: 'number',
-                components: []
+                components: null
               },
               {
                 name: 'Sub-Rating Type C',
@@ -467,13 +492,13 @@ const outcomeComposedProps = {
                     name: 'Loan amount',
                     value: 390000,
                     typeRef: 'number',
-                    components: []
+                    components: null
                   },
                   {
                     name: 'Repayment rate',
                     value: 5000,
                     typeRef: 'number',
-                    components: []
+                    components: null
                   }
                 ]
               }
@@ -519,9 +544,9 @@ const outcomeMultiplePropertiesProps = {
             name: 'Auth Code',
             typeRef: 'tAuthCode',
             value: 'Authorized',
-            components: []
+            components: null
           },
-          { name: 'Amount', typeRef: 'number', value: 10000, components: [] }
+          { name: 'Amount', typeRef: 'number', value: 10000, components: null }
         ]
       }
     }
@@ -542,7 +567,7 @@ const outcomeValuesArrayProps = {
         name: 'Merchant Blacklist',
         typeRef: 'string',
         value: ['ILLICITCORP', 'SLIMSHADY', 'TAINTEDTHINGS'],
-        components: []
+        components: null
       }
     }
   ] as Outcome[],
@@ -560,7 +585,7 @@ const outcomeDetailProps = {
         name: 'Mortgage Approval',
         typeRef: 'boolean',
         value: true,
-        components: []
+        components: null
       },
       messages: [],
       hasErrors: false

@@ -8,7 +8,7 @@ const twoSimpleOutcomes = [
     outcomeResult: {
       name: 'Mortgage Approval',
       typeRef: 'boolean',
-      value: true,
+      value: null,
       components: null
     },
     messages: [],

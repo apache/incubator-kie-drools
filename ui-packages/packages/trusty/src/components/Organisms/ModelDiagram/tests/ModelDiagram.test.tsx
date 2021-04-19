@@ -32,9 +32,10 @@ const modelDataDMN = {
   name: 'myMortgage',
   namespace: 'modelNameSpace',
   dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+  modelVersion: '',
   serviceIdentifier: {
     groupId: 'groupId',
-    artifactId: 'artifacrtId',
+    artifactId: 'artifactId',
     modelVersion: 'version'
   },
   model:
@@ -48,9 +49,10 @@ const modelDataUnknown = {
   name: 'unknown model',
   namespace: 'modelNameSpace',
   dmnVersion: '????',
+  modelVersion: '',
   serviceIdentifier: {
     groupId: 'groupId',
-    artifactId: 'artifacrtId',
+    artifactId: 'artifactId',
     modelVersion: 'version'
   },
   model: '<?xml version="1.0" ?> \n <metadata>\n </metadata>'

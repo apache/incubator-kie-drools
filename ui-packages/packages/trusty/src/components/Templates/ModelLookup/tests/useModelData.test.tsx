@@ -41,10 +41,12 @@ const modelData = {
     modelId: '1234567890',
     name: 'myMortgage',
     namespace: 'modelNameSpace',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    modelVersion: '',
     type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
     serviceIdentifier: {
       groupId: 'groupId',
-      artifactId: 'artifacrtId',
+      artifactId: 'artifactId',
       version: 'version'
     },
     model:

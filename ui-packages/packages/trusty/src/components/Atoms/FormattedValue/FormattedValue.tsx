@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 import './FormattedValue.scss';
 
 type FormattedListProps = {
-  valueList: any[];
+  valueList: unknown[];
 };
 
 const FormattedList = (props: FormattedListProps) => {
@@ -54,6 +54,8 @@ const FormattedValue = (props: FormattedValueProps) => {
     case 'object':
       if (Array.isArray(value)) {
         formattedValue = <FormattedList valueList={value} />;
+      } else if (value === null) {
+        formattedValue = <em>Null</em>;
       }
       break;
     default:

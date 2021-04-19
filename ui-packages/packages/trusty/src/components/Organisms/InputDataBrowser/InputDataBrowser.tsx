@@ -52,7 +52,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
         components: []
       };
       for (const item of inputData.data) {
-        if (item.value) {
+        if (item.components === null) {
           // collecting inputs with values at root level (not containing components)
           rootSection.components!.push(item);
         } else {
@@ -61,7 +61,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
         }
       }
       if (rootSection.components!.length) {
-        // if the root section as something inside it, than add the root section as first one
+        // if the root section is not empty, than add the root section as first one
         items.unshift(rootSection);
         categoryList.unshift('Root');
       }
@@ -248,7 +248,7 @@ const renderItem = (
     item: ItemObject,
     category?: string
   ): JSX.Element => {
-    if (item.value !== null) {
+    if (item.components === null) {
       return (
         <InputValue
           inputLabel={item.name}

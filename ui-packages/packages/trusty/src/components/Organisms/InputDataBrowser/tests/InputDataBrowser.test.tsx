@@ -15,12 +15,17 @@ describe('InputDataBrowser', () => {
     const inputData = {
       status: 'SUCCESS',
       data: [
-        { name: 'Asset Score', typeRef: 'number', value: 738, components: [] },
+        {
+          name: 'Asset Score',
+          typeRef: 'number',
+          value: 738,
+          components: null
+        },
         {
           name: 'Asset Amount',
           typeRef: 'number',
           value: 700,
-          components: []
+          components: null
         },
         {
           name: 'Property',
@@ -31,7 +36,7 @@ describe('InputDataBrowser', () => {
               name: 'Purchase Price',
               typeRef: 'number',
               value: 34000,
-              components: []
+              components: null
             }
           ]
         }
