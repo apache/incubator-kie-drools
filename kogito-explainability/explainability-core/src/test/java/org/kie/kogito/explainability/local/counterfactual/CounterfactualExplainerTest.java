@@ -65,7 +65,7 @@ class CounterfactualExplainerTest {
 
     final long predictionTimeOut = 10L;
     final TimeUnit predictionTimeUnit = TimeUnit.MINUTES;
-    final Long steps = 200_000L;
+    final Long steps = 30_000L;
 
     private static final Logger logger =
             LoggerFactory.getLogger(CounterfactualExplainerTest.class);
@@ -94,7 +94,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testNonEmptyInput(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -139,7 +139,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualMatch(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -186,7 +186,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualConstrainedMatchUnscaled(int seed)
             throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
@@ -238,7 +238,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualConstrainedMatchScaled(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -303,7 +303,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualBoolean(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -347,7 +347,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualCategorical(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -414,7 +414,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualMatchThreshold(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -475,7 +475,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testCounterfactualMatchNoThreshold(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
@@ -534,7 +534,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testNoCounterfactualPossible(int seed)
             throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
@@ -578,7 +578,7 @@ class CounterfactualExplainerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    @ValueSource(ints = { 0, 1, 2 })
     void testConsumers(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
