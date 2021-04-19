@@ -22,12 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.impact.analysis.graph.Node.Status;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ImpactAnalysisHelper {
-
-    private static Logger logger = LoggerFactory.getLogger(ImpactAnalysisHelper.class);
 
     private boolean positiveOnly = false;
 
@@ -37,6 +33,12 @@ public class ImpactAnalysisHelper {
         this.positiveOnly = positiveOnly;
     }
 
+    /**
+     * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
+     * @param graph
+     * @param changedNode
+     * @return sub graph which contains only changed node and impacted nodes
+     */
     public Graph filterImpactedNodes(Graph graph, Node changedNode) {
 
         Collection<Node> impactedNodes = new HashSet<Node>();
