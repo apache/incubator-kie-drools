@@ -25,7 +25,9 @@ import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.addon.TypeResolver;
+import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
@@ -34,7 +36,9 @@ public class FlattenScope {
 
     public static List<Node> flattenScope( TypeResolver typeResolver, Expression expressionWithScope ) {
         List<Node> res = new ArrayList<>();
-        if (expressionWithScope instanceof FieldAccessExpr) {
+        if (expressionWithScope instanceof FullyQualifiedInlineCastExpr) {
+            res.addAll( flattenScope( typeResolver, transformFullyQualifiedInlineCastExpr( typeResolver, (FullyQualifiedInlineCastExpr) expressionWithScope ) ) );
+        } else if (expressionWithScope instanceof FieldAccessExpr) {
             FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expressionWithScope;
             res.addAll(flattenScope( typeResolver, fieldAccessExpr.getScope() ));
             res.add(fieldAccessExpr.getName());
@@ -72,6 +76,43 @@ public class FlattenScope {
             res.add(expressionWithScope);
         }
         return res;
+    }
+
+    public static Expression transformFullyQualifiedInlineCastExpr( TypeResolver typeResolver, FullyQualifiedInlineCastExpr fqInlineCastExpr ) {
+        String name = fqInlineCastExpr.getName().toString();
+        String className = findClassName(name, typeResolver );
+        Expression scope = fqInlineCastExpr.getScope();
+        if (scope instanceof FullyQualifiedInlineCastExpr) {
+            scope = transformFullyQualifiedInlineCastExpr( typeResolver, (FullyQualifiedInlineCastExpr) scope );
+        }
+        Expression expr = new InlineCastExpr( new ClassOrInterfaceType(className), scope );
+        if (name.length() > className.length()) {
+            String[] remainings = name.substring( className.length() + 1 ).split( "\\." );
+            for (int i = 0; i < remainings.length - 1; i++) {
+                expr = new FieldAccessExpr( expr, remainings[i] );
+            }
+            if ( fqInlineCastExpr.hasArguments() ) {
+                expr = new MethodCallExpr( expr, remainings[remainings.length - 1], fqInlineCastExpr.getArguments() );
+            } else {
+                expr = new FieldAccessExpr( expr, remainings[remainings.length - 1] );
+            }
+        }
+        return expr;
+    }
+
+    private static String findClassName(String name, TypeResolver typeResolver) {
+        String className = "";
+        for (String simpleName : name.split( "\\." )) {
+            if (!className.isEmpty()) {
+                className += ".";
+            }
+            className += simpleName;
+            try {
+                typeResolver.resolveType( className );
+                return className;
+            } catch (ClassNotFoundException e) { }
+        }
+        throw new RuntimeException("Cannot find class name in " + name);
     }
 
     private static boolean isFullyQualifiedClassName( TypeResolver typeResolver, Expression scope ) {
