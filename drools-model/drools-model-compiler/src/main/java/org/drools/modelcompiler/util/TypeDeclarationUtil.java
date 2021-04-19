@@ -16,12 +16,16 @@
 
 package org.drools.modelcompiler.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.factmodel.AccessibleFact;
+import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
@@ -41,12 +45,12 @@ import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
 
 public class TypeDeclarationUtil {
 
-    public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType, PropertySpecificOption propertySpecificOption) {
+    public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType, PropertySpecificOption propertySpecificOption, TypeResolver typeResolver) {
         Class<?> typeClass = metaType.getType();
 
         TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass, propertySpecificOption );
         typeDeclaration.setTypeClassDef( AccessibleFact.class.isAssignableFrom( typeClass ) ?
-                new AccessibleClassDefinition( typeClass ) :
+                new AccessibleClassDefinition( typeClass, typeResolver ) :
                 new DynamicClassDefinition( typeClass ) );
 
         wireClassAnnotations( typeClass, typeDeclaration );
@@ -152,8 +156,6 @@ public class TypeDeclarationUtil {
 
     public static class ClassDefinitionForModel extends ClassDefinition {
 
-        private transient final Map<String, FieldDefinitionForModel> fields = new HashMap<>();
-
         public ClassDefinitionForModel() { }
 
         public ClassDefinitionForModel( Class<?> cls ) {
@@ -217,8 +219,40 @@ public class TypeDeclarationUtil {
     public static class AccessibleClassDefinition extends ClassDefinitionForModel {
         public AccessibleClassDefinition() { }
 
-        public AccessibleClassDefinition( Class<?> cls ) {
+        public AccessibleClassDefinition( Class<?> cls, TypeResolver typeResolver ) {
             super( cls );
+            processAnnotations( cls, typeResolver );
+        }
+
+        private void processAnnotations( Class<?> cls, TypeResolver typeResolver ) {
+            for (Annotation ann: cls.getAnnotations()) {
+                try {
+                    Map<String, Object> valueMap = new HashMap<>();
+                    Class<?> annotationClass = null;
+                    Object value = null;
+                    for (Method m : ann.getClass().getMethods()) {
+                        if (m.getParameterCount() == 0 && m.getReturnType() != Void.class && m.getDeclaringClass() != Object.class &&
+                                !m.getName().equals( "hashCode" ) && !m.getName().equals( "toString" )) {
+                            if (m.getName().equals( "annotationType" )) {
+                                annotationClass = (Class<?>) m.invoke( ann );
+                            } else {
+                                valueMap.put( m.getName(), m.invoke( ann ) );
+                                if (m.getName().equals( "value" )) {
+                                    value = m.invoke( ann );
+                                }
+                            }
+                        }
+                    }
+                    if (annotationClass != null) {
+                        addAnnotation( AnnotationDefinition.build( annotationClass, valueMap, typeResolver ) );
+                        if ( value != null && annotationClass.getCanonicalName().startsWith( "org.kie.api.definition.type" ) ) {
+                            addMetaData( annotationClass.getSimpleName().toLowerCase(), value.toString().toLowerCase() );
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException( e );
+                }
+            }
         }
 
         @Override

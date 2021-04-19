@@ -530,7 +530,7 @@ public final class ClassUtils {
         return candidate;
     }
 
-    private static String getGetter(String s) {
+    public static String getGetter(String s) {
         char[] c = s.toCharArray();
         char[] chars = new char[c.length + 3];
 
