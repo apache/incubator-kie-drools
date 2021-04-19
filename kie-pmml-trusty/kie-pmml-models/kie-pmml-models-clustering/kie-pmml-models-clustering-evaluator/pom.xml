@@ -25,15 +25,4 @@
     <!-- TEST -->
   </dependencies>
 
-  <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-clustering-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>

@@ -58,15 +58,4 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/kie-pmml-dependencies/pom.xml -->
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-clustering-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>

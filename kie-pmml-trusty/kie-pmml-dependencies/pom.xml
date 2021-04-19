@@ -115,6 +115,19 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-mining-evaluator</artifactId>
     </dependency>
+    <!-- Clustering -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-clustering-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-clustering-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
