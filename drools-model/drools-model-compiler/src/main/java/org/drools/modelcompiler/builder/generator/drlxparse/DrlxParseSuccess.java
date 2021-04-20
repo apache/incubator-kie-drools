@@ -24,7 +24,7 @@ import com.github.javaparser.ast.expr.Expression;
 
 public interface DrlxParseSuccess extends DrlxParseResult {
 
-    boolean isValidExpression();
+    boolean isPredicate();
 
     String getExprBinding();
 
