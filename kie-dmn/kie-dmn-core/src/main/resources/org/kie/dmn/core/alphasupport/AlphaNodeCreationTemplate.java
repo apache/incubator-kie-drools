@@ -11,7 +11,7 @@ public class AlphaNodeCreationTemplate {
     public AlphaNodeCreationTemplate(org.kie.dmn.core.compiler.alphanetbased.NetworkBuilderContext ctx) {
         alphaNetworkCreation = new AlphaNetworkCreation(ctx);
     }
-
+// ref: https://github.com/kiegroup/drools/blame/cde68c4b3aee560259387373bea27b607a811c72/kie-dmn/kie-dmn-core/src/main/java/org/kie/dmn/core/compiler/DMNEvaluatorCompiler.java#L710-L713
     boolean testRxCx(TableContext x) {
         return UnaryTestRXCX.getInstance().getUnaryTests()
                 .stream()
