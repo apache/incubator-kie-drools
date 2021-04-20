@@ -44,7 +44,7 @@
     <!-- ensure jobs-service module was built, but not added in the classpath -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-service</artifactId>
+      <artifactId>jobs-service-common</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>provided</scope>
