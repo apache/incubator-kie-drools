@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.testcontainers.quarkus;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 
@@ -26,8 +30,42 @@ import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL
  */
 public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoPostgreSqlContainer> {
 
+    public static final String QUARKUS_DATASOURCE_REACTIVE_URL = "quarkus.datasource.reactive.url";
+    public static final String QUARKUS_DATASOURCE_JDBC_URL = "quarkus.datasource.jdbc.url";
+    public static final String QUARKUS_DATASOURCE_USERNAME = "quarkus.datasource.username";
+    public static final String QUARKUS_DATASOURCE_PASSWORD = "quarkus.datasource.password";
+    public static final String QUARKUS_DATASOURCE_REACTIVE_URL_TEMPLATE = "postgresql://{0}:{1}/{2}";
+    public static final String QUARKUS_DATASOURCE_JDBC_URL_TEMPLATE = "jdbc:postgresql://{0}:{1}/{2}";
+
+    private static final KogitoPostgreSqlContainer container = new KogitoPostgreSqlContainer();
+
     public PostgreSqlQuarkusTestResource() {
-        super(new KogitoPostgreSqlContainer());
+        super(container);
+    }
+
+    @Override
+    public Map<String, String> start() {
+        Map<String, String> start = super.start();
+        if (start.isEmpty()) {
+            return start;
+        }
+
+        Map<String, String> properties = new HashMap<>(start);
+        properties.put(QUARKUS_DATASOURCE_REACTIVE_URL,
+                MessageFormat.format(QUARKUS_DATASOURCE_REACTIVE_URL_TEMPLATE,
+                        container.getHost(),
+                        String.valueOf(container.getMappedPort()),
+                        container.getDatabaseName()));
+        properties.put(QUARKUS_DATASOURCE_JDBC_URL,
+                MessageFormat.format(QUARKUS_DATASOURCE_JDBC_URL_TEMPLATE,
+                        container.getHost(),
+                        String.valueOf(container.getMappedPort()),
+                        container.getDatabaseName()));
+        properties.put(QUARKUS_DATASOURCE_USERNAME,
+                container.getUsername());
+        properties.put(QUARKUS_DATASOURCE_PASSWORD,
+                container.getPassword());
+        return properties;
     }
 
     @Override
