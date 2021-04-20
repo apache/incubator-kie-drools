@@ -19,19 +19,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory;
+import org.kie.pmml.compiler.commons.factories.KiePMMLSimplePredicateFactory;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
@@ -39,7 +45,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -84,9 +89,11 @@ public class KiePMMLNodeFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        final KiePMMLPredicate kiePMMLPredicate = KiePMMLPredicateFactory.getPredicate(node.getPredicate(), dataDictionary);
-        final Map<String, String> toReturn =
-                new HashMap<>(KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName));
+        final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
+        final BlockStmt predicateBody = KiePMMLPredicateFactory.getPredicateBody(node.getPredicate(), dataDictionary, compoundPredicateMethods, className, new AtomicInteger());
+        final Map<String, String> toReturn = new HashMap<>();
+        setEvaluateMethodBody(modelTemplate, predicateBody);
+        addCompoundPredicateMethods(modelTemplate, compoundPredicateMethods);
         String fullClassName = packageName + "." + className;
         final List<String> nestedNodes = new ArrayList<>();
         if (node.hasNodes()) {
@@ -98,9 +105,7 @@ public class KiePMMLNodeFactory {
                 nestedNodes.add(childFullClassName);
             }
         }
-        String predicateClassName = getSanitizedClassName(kiePMMLPredicate.getId());
-        String fullPredicateClassName =  packageName + "." + predicateClassName;
-        setConstructor(className, node.getId().toString(), node.getScore(), constructorDeclaration, fullPredicateClassName, nestedNodes);
+        setConstructor(className, node.getId().toString(), node.getScore(), constructorDeclaration, nestedNodes);
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
@@ -109,19 +114,31 @@ public class KiePMMLNodeFactory {
                                final String nodeName,
                                final Object score,
                                final ConstructorDeclaration constructorDeclaration,
-                               final String fullPredicateClassName,
                                final List<String> nestedNodes) {
         setConstructorSuperNameInvocation(nodeClassName, constructorDeclaration, nodeName);
-        String newPredicateInvocation = String.format("new %s()", fullPredicateClassName);
-        CommonCodegenUtils.setConstructorDeclarationArgument(constructorDeclaration, "predicate", newPredicateInvocation);
+        CommonCodegenUtils.setConstructorDeclarationReferenceArgument(constructorDeclaration, KIE_PMML_NODE_TEMPLATE, nodeClassName);
         String scoreParam = null;
         if (score != null) {
             scoreParam = score instanceof String ? String.format("\"%s\"", score) : score.toString();
         }
-        CommonCodegenUtils.setConstructorDeclarationArgument(constructorDeclaration, "score", scoreParam);
+        CommonCodegenUtils.setConstructorDeclarationParameterArgument(constructorDeclaration, "score", scoreParam);
         final List<ObjectCreationExpr> nodesObjectCreations = getNodesObjectCreations(nestedNodes);
         addListPopulation(nodesObjectCreations, constructorDeclaration.getBody(), "nodes");
 
+    }
+
+    static void setEvaluateMethodBody(final ClassOrInterfaceDeclaration modelTemplate, final BlockStmt simplePredicateBody) {
+        modelTemplate.getMethodsByName("evaluatePredicate").get(0)
+                .setBody(simplePredicateBody);
+    }
+
+    static void addCompoundPredicateMethods(final ClassOrInterfaceDeclaration modelTemplate, final List<MethodDeclaration> compoundPredicateMethods) {
+        compoundPredicateMethods.forEach(compoundMethodPredicate -> {
+            MethodDeclaration created = modelTemplate.addMethod(compoundMethodPredicate.getName().asString(), Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
+            created.setType(compoundMethodPredicate.getType());
+            created.setParameters(compoundMethodPredicate.getParameters());
+            created.setBody(compoundMethodPredicate.getBody().get());
+        });
     }
 
     /**

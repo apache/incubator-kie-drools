@@ -48,7 +48,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromSource;
@@ -102,18 +101,15 @@ public class KiePMMLNodeFactoryTest {
         final String nodeClassName = "NODECLASSNAME";
         final String nodeName = "NODENAME";
         final Object score = "score";
-        final String fullPredicateClassName = "FULLPREDICATECLASSNAME";
         final List<String> nestedNodes = IntStream.range(0, 3)
                 .mapToObj(i -> nodeClassName.toLowerCase() + ".NestedNode" + i)
                 .collect(Collectors.toList());
         String expected = "public KiePMMLNodeTemplate() {\n" +
-                "    super(name, Collections.emptyList(), predicate, score);\n" +
+                "    super(name, Collections.emptyList(), KiePMMLNodeTemplate::evaluatePredicate, score);\n" +
                 "}".replace("\n", System.lineSeparator());
         assertEquals(expected, constructorDeclaration.toString());
-        KiePMMLNodeFactory.setConstructor(nodeClassName, nodeName, score, constructorDeclaration,
-                                          fullPredicateClassName, nestedNodes);
+        KiePMMLNodeFactory.setConstructor(nodeClassName, nodeName, score, constructorDeclaration, nestedNodes);
         commonVerifyConstructorString(constructorDeclaration.toString(), nodeClassName, nodeName, score,
-                                      fullPredicateClassName,
                                       nestedNodes);
     }
 
@@ -129,7 +125,6 @@ public class KiePMMLNodeFactoryTest {
     private void commonVerifyNode(KiePMMLNode toVerify, Node original) {
         assertEquals(original.getId(), toVerify.getName());
         assertEquals(original.getScore(), toVerify.getScore());
-        commonVerifyPredicate(toVerify.getPredicate(), original.getPredicate());
         if (original.hasNodes()) {
             assertEquals(original.getNodes().size(), toVerify.getNodes().size());
             for (KiePMMLNode toVerifyNested : toVerify.getNodes()) {
@@ -148,7 +143,6 @@ public class KiePMMLNodeFactoryTest {
                                                final String nodeClassName,
                                                final String nodeName,
                                                final Object score,
-                                               final String fullPredicateClassName,
                                                final List<String> nestedNodes) {
         final StringBuilder builder = new StringBuilder();
         nestedNodes.forEach(nestedNode -> {
@@ -156,10 +150,10 @@ public class KiePMMLNodeFactoryTest {
         });
         String nodesExpected = builder.toString();
         String expected = String.format("public %1$s() {\n" +
-                                                "    super(\"%2$s\", Collections.emptyList(), new %3$s(), \"%4$s\");" +
+                                                "    super(\"%2$s\", Collections.emptyList(), %1$s::evaluatePredicate, \"%3$s\");" +
                                                 "\n" +
-                                                "%5$s" +
-                                                "}", nodeClassName, nodeName, fullPredicateClassName, score,
+                                                "%4$s" +
+                                                "}", nodeClassName, nodeName, score,
                                         nodesExpected).replace("\n", System.lineSeparator());
         assertEquals(expected, toVerify);
     }

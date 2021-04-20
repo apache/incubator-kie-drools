@@ -20,13 +20,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
@@ -89,6 +87,10 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     public List<KiePMMLPredicate> getKiePMMLPredicates() {
         return kiePMMLPredicates;
+    }
+
+    private static Boolean puppa(Map<String, Object> values) {
+        return null;
     }
 
     @Override
@@ -162,12 +164,6 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
             switch (booleanOperator) {
                 // logic here is
                 // first boolean may be null (initial evaluation) so we start taking the second boolean
-//                case OR:
-//                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean || aBoolean2 : aBoolean2;
-//                case AND:
-//                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean && aBoolean2 : aBoolean2;
-//                case XOR:
-//                    return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
                 case OR:
                     return KiePMMLCompoundPredicate::orOperator;
                 case AND:

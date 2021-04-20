@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -52,13 +51,13 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.IN_NOTIN;
 import org.kie.pmml.api.enums.OPERATOR;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
@@ -71,6 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
@@ -78,8 +78,12 @@ import static org.kie.pmml.commons.Constants.MISSING_EXPRESSION_IN_RETURN;
 import static org.kie.pmml.commons.Constants.MISSING_METHOD_IN_CLASS;
 import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLCompoundPredicateFactory.getCompoundPredicateBody;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLFalsePredicateFactory.getFalsePredicateBody;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLSimplePredicateFactory.getSimplePredicateBody;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateBody;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLTruePredicateFactory.getTruePredicateBody;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
@@ -106,11 +110,7 @@ public class KiePMMLPredicateFactory {
 
     public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) {
         logger.trace("getPredicates {}", predicates);
-        final List<KiePMMLPredicate> toReturn = new LinkedList<>();
-        for (Predicate predicate : predicates) {
-            toReturn.add(getPredicate(predicate, dataDictionary));
-        }
-        return toReturn;
+        return predicates.stream().map(predicate -> getPredicate(predicate, dataDictionary)).collect(Collectors.toList());
     }
 
     public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) {
@@ -168,6 +168,34 @@ public class KiePMMLPredicateFactory {
     public static KiePMMLFalsePredicate getKiePMMLFalsePredicate() {
         return KiePMMLFalsePredicate.builder(Collections.emptyList())
                 .build();
+    }
+
+    public static BlockStmt getPredicateBody(final Predicate predicate,
+                                             final DataDictionary dataDictionary,
+                                             final List<MethodDeclaration> compoundPredicateMethods,
+                                             final String nodeName,
+                                             final AtomicInteger counter) {
+        logger.trace("getPredicateBody {}", predicate);
+        if (predicate instanceof SimplePredicate) {
+            final DataType dataType = dataDictionary.getDataFields().stream()
+                    .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))
+                    .map(DataField::getDataType)
+                    .findFirst()
+                    .orElseThrow(() -> new KiePMMLException("Failed to find DataField for predicate " + ((SimplePredicate) predicate).getField().getValue()));
+            return getSimplePredicateBody((SimplePredicate) predicate, dataType);
+        } else if (predicate instanceof SimpleSetPredicate) {
+            return getSimpleSetPredicateBody((SimpleSetPredicate) predicate);
+        } else if (predicate instanceof CompoundPredicate) {
+            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, compoundPredicateMethods,
+                                            nodeName, counter);
+        } else if (predicate instanceof True) {
+            return getTruePredicateBody();
+        } else if (predicate instanceof False) {
+            return getFalsePredicateBody();
+        } else {
+            throw new KiePMMLException("Predicate of type " + predicate.getClass().getName() + " not managed, " +
+                                               "yet");
+        }
     }
 
     public static Map<String, String> getPredicateSourcesMap(final KiePMMLPredicate kiePMMLPredicate,
@@ -229,7 +257,6 @@ public class KiePMMLPredicateFactory {
         String className = getSanitizedClassName(kiePMMLCompoundPredicate.getId());
         final Map<String, String> toReturn = new HashMap<>();
         if (kiePMMLCompoundPredicate.getKiePMMLPredicates() != null) {
-
             kiePMMLCompoundPredicate.getKiePMMLPredicates().forEach(kiePMMLPredicate -> toReturn.putAll(getPredicateSourcesMap(kiePMMLPredicate, packageName)));
         }
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
@@ -239,11 +266,11 @@ public class KiePMMLPredicateFactory {
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR,
                                                                               predicateTemplate.getName())));
-        Set<String> predicatesClasses = new LinkedHashSet<>();
+        Set<String> predicatesClasses = new HashSet<>();
         if (kiePMMLCompoundPredicate.getKiePMMLPredicates() != null) {
-            for (KiePMMLPredicate kiePMMLPredicate : kiePMMLCompoundPredicate.getKiePMMLPredicates()) {
-                predicatesClasses.add(packageName + "." + getSanitizedClassName(kiePMMLPredicate.getId()));
-            }
+            predicatesClasses = kiePMMLCompoundPredicate.getKiePMMLPredicates().stream()
+                    .map(predicate -> packageName + "." + getSanitizedClassName(predicate.getId()))
+                    .collect(Collectors.toSet());
         }
         if (!toReturn.keySet().containsAll(predicatesClasses)) {
             String missingClasses = String.join(", ", predicatesClasses);
@@ -302,7 +329,7 @@ public class KiePMMLPredicateFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
-                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "operator",
                                                                         operator.getClass().getCanonicalName() + "." + operator.name());
         Expression expression = value instanceof String ? new StringLiteralExpr((String) value) :
@@ -320,7 +347,7 @@ public class KiePMMLPredicateFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
-                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "arrayType",
                                                                         arrayType.getClass().getCanonicalName() + "." + arrayType.name());
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "inNotIn",
@@ -359,7 +386,7 @@ public class KiePMMLPredicateFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
-                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "booleanOperator",
                                                                         booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name());
         AssignExpr assignExpr = CommonCodegenUtils
@@ -369,7 +396,7 @@ public class KiePMMLPredicateFactory {
         CompilationUnit operatorFunctionCU = getFromFileName(KIE_PMML_OPERATOR_FUNCTION_TEMPLATE).clone();
         ClassOrInterfaceDeclaration operatorFunctionClass =
                 operatorFunctionCU.getClassByName(KIE_PMML_OPERATOR_FUNCTION)
-                        .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND));
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND));
         String methodName = "getInnerBinaryOperator" + booleanOperator.name();
         final MethodDeclaration methodDeclaration = CommonCodegenUtils.getMethodDeclaration(operatorFunctionClass,
                                                                                             methodName)
@@ -438,7 +465,7 @@ public class KiePMMLPredicateFactory {
         return toReturn;
     }
 
-    private static Object getActualValue(Object rawValue, DataType dataType) {
+    public static Object getActualValue(Object rawValue, DataType dataType) {
         DATA_TYPE dataTypePmml = DATA_TYPE.byName(dataType.value());
         return dataTypePmml.getActualValue(rawValue);
     }

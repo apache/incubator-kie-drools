@@ -15,32 +15,33 @@
  */
 package org.kie.pmml.models.tree.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
 public class KiePMMLNode extends AbstractKiePMMLComponent {
 
     protected List<KiePMMLNode> nodes = new LinkedList<>();
-    protected KiePMMLPredicate predicate;
     protected Object score;
+    protected Function<Map<String, Object>, Boolean> predicateFunction;
 
-
-    protected KiePMMLNode(String name, List<KiePMMLExtension> extensions, KiePMMLPredicate predicate, Object score) {
+    protected KiePMMLNode(final String name,
+                          final List<KiePMMLExtension> extensions,
+                          final Function<Map<String, Object>, Boolean> predicateFunction,
+                          final Object score) {
         super(name, extensions);
-        this.predicate = predicate;
+        this.predicateFunction = predicateFunction;
         this.score = score;
     }
 
     public Object evaluate(final Map<String, Object> requestData) {
-        if (!evaluatePredicate(requestData)) {
+        if (!predicateFunction.apply(requestData)) {
             return null;
         }
         if (nodes.isEmpty()) {
@@ -52,10 +53,6 @@ public class KiePMMLNode extends AbstractKiePMMLComponent {
 
     public List<KiePMMLNode> getNodes() {
         return Collections.unmodifiableList(nodes);
-    }
-
-    public KiePMMLPredicate getPredicate() {
-        return predicate;
     }
 
     public Object getScore() {
@@ -72,9 +69,5 @@ public class KiePMMLNode extends AbstractKiePMMLComponent {
             }
         }
         return toReturn;
-    }
-
-    protected boolean evaluatePredicate(final Map<String, Object> requestData) {
-        return predicate.evaluate(requestData);
     }
 }

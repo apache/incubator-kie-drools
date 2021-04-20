@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.tree.model;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+package org.kie.pmml.compiler.commons.factories;
 
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.models.tree.model.KiePMMLNode;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+public class KiePMMLFalsePredicateFactoryTest {
 
-public class KiePMMLNodeTemplate extends KiePMMLNode {
-
-    public KiePMMLNodeTemplate() {
-        super(name, Collections.emptyList(), KiePMMLNodeTemplate::evaluatePredicate, score);
+    @Test
+    public void getTruePredicateBody() {
+        final BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateBody();
+        assertNotNull(retrieved);
+        String expected = "{\n" +
+                "    return false;\n" +
+                "}";
+        assertEquals(expected, retrieved.toString());
     }
-
-    private static boolean evaluatePredicate(Map<String, Object> stringObjectMap) {
-         // Populated by code-gen
-    }
-
-
 }
