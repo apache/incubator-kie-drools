@@ -54,6 +54,12 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
           ),
           path.resolve(
+            '../../node_modules/@kogito-apps/jobs-management/dist/envelope/components/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/management-console-shared/dist/src/components/styles.css'
+          ),
+          path.resolve(
             '../../node_modules/react-calendar/dist/Calendar.css'
           ),
           path.resolve(

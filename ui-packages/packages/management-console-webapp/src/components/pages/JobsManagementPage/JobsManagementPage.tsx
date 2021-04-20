@@ -15,11 +15,14 @@
  */
 
 import React, { useEffect } from 'react';
-import { Card, Grid, GridItem, PageSection } from '@patternfly/react-core';
+import { Card, PageSection } from '@patternfly/react-core';
 import {
   OUIAProps,
   ouiaPageTypeAndObjectId
 } from '@kogito-apps/components-common';
+import { PageSectionHeader } from '@kogito-apps/consoles-common';
+import JobsManagementContainer from '../../containers/JobsManagementContainer/JobsManagementContainer';
+import '../../styles.css';
 
 const JobsManagementPage: React.FC<OUIAProps> = () => {
   useEffect(() => {
@@ -28,13 +31,15 @@ const JobsManagementPage: React.FC<OUIAProps> = () => {
 
   return (
     <React.Fragment>
-      {'header goes here'}
+      <PageSectionHeader
+        titleText="Jobs Management"
+        breadcrumbText={['Home', 'Jobs']}
+        breadcrumbPath={['/']}
+      />
       <PageSection>
-        <Grid hasGutter md={1}>
-          <GridItem span={12}>
-            <Card>{'Jobs Management goes here!'}</Card>
-          </GridItem>
-        </Grid>
+        <Card className="kogito-management-console__card-size">
+          <JobsManagementContainer />
+        </Card>
       </PageSection>
     </React.Fragment>
   );

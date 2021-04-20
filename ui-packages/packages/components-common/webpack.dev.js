@@ -55,6 +55,15 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
+          ),
+          path.resolve(
+            '../../node_modules/react-calendar/dist/Calendar.css'
+          ),
+          path.resolve(
+            '../../node_modules/react-clock/dist/Clock.css'
+          ),
+          path.resolve(
+            '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
           )
         ],
         use: ['style-loader', 'css-loader']

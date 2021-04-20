@@ -22,8 +22,21 @@ import { JobsManagementPage } from '../../../pages';
 
 jest.mock('../../../pages/JobsManagementPage/JobsManagementPage');
 
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('@kogito-apps/consoles-common', () => ({
+  ...jest.requireActual('@kogito-apps/consoles-common'),
+  NoData: () => {
+    return <MockedComponent />;
+  },
+  PageNotFound: () => {
+    return <MockedComponent />;
+  }
+}));
 describe('ManagementConsoleRoutes tests', () => {
-  it('Default route test', () => {
+  it('Test Jobs management route', () => {
     const wrapper = getWrapper(
       <MemoryRouter keyLength={0} initialEntries={['/']}>
         <ManagementConsoleRoutes />
@@ -38,5 +51,35 @@ describe('ManagementConsoleRoutes tests', () => {
 
     const jobsManagementPage = wrapper.find(JobsManagementPage);
     expect(jobsManagementPage.exists()).toBeTruthy();
+  });
+
+  it('Test NoData route', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter keyLength={0} initialEntries={['/NoData']}>
+        <ManagementConsoleRoutes />
+      </MemoryRouter>,
+      'ManagementConsoleRoutes'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+    const noDataComponent = wrapper.find('NoData');
+    expect(noDataComponent.exists()).toBeTruthy();
+  });
+
+  it('Test PageNotFound route', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter keyLength={0} initialEntries={['*']}>
+        <ManagementConsoleRoutes />
+      </MemoryRouter>,
+      'ManagementConsoleRoutes'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+    const pageNotFound = wrapper.find('PageNotFound');
+    expect(pageNotFound.exists()).toBeTruthy();
   });
 });

@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedJobsManagement tests Snapshot 1`] = `
+<ForwardRef
+  driver={
+    Object {
+      "applyFilter": [MockFunction],
+      "bulkCancel": [MockFunction],
+      "cancelJob": [MockFunction],
+      "initialLoad": [MockFunction],
+      "query": [MockFunction],
+      "rescheduleJob": [MockFunction],
+      "sortBy": [MockFunction],
+    }
+  }
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;

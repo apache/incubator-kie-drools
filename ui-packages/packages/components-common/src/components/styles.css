@@ -19,7 +19,7 @@
     text-align: center;
 }
 
-.pf-c-spinner.pf-m-md.kogito-components-common__load-more-spinner {
+.pf-c-spinner .pf-m-md .kogito-components-common__load-more-spinner {
     overflow:hidden;
     margin-left: 5px;
 }

@@ -19,6 +19,7 @@ import { getWrapper } from '@kogito-apps/components-common';
 import ManagementConsole from '../ManagementConsole';
 import ManagementConsoleRoutes from '../../ManagementConsoleRoutes/ManagementConsoleRoutes';
 import { ApolloClient } from 'apollo-client';
+import { act } from 'react-dom/test-utils';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -48,7 +49,27 @@ describe('ManagementConsole tests', () => {
       </ManagementConsole>,
       'ManagementConsole'
     );
-
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('test brandClick prop on PageLayout', async () => {
+    // @ts-ignore
+    const client = new ApolloClientMock();
+    const props = {
+      apolloClient: client,
+      userContext: { getCurrentUser: jest.fn() }
+    };
+    const wrapper = getWrapper(
+      <ManagementConsole {...props}>
+        <ManagementConsoleRoutes />
+      </ManagementConsole>,
+      'ManagementConsole'
+    );
+    await act(async () => {
+      wrapper
+        .find('PageLayout')
+        .props()
+        ['BrandClick']();
+    });
   });
 });
