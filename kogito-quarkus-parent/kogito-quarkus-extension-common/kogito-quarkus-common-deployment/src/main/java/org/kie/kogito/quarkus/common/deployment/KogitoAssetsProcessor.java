@@ -20,8 +20,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -92,18 +94,17 @@ public class KogitoAssetsProcessor {
         dumpFilesToDisk(context.getAppPaths(), generatedFiles);
 
         // build Java source code and register the generated beans
-        Optional<IndexView> optionalIndex = compileAndIndexJavaSources(
+        Optional<KogitoGeneratedClassesBuildItem> optionalIndex = compileAndIndexJavaSources(
                 context,
                 generatedFiles,
                 generatedBeans,
                 liveReload.isLiveReload());
 
-        registerDataEventsForReflection(optionalIndex, context, reflectiveClass);
+        registerDataEventsForReflection(optionalIndex.map(KogitoGeneratedClassesBuildItem::getIndexedClasses), context, reflectiveClass);
 
         registerResources(generatedFiles, resource, genResBI);
 
         return optionalIndex
-                .map(KogitoGeneratedClassesBuildItem::new)
                 .map(Collections::singletonList)
                 .orElse(Collections.emptyList());
     }
@@ -114,7 +115,7 @@ public class KogitoAssetsProcessor {
                 .generate();
     }
 
-    private Optional<IndexView> compileAndIndexJavaSources(
+    private Optional<KogitoGeneratedClassesBuildItem> compileAndIndexJavaSources(
             KogitoBuildContext context,
             Collection<GeneratedFile> generatedFiles,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
@@ -255,7 +256,7 @@ public class KogitoAssetsProcessor {
                         new ReflectiveClassBuildItem(true, true, c.name().toString())));
     }
 
-    private IndexView indexBuildItems(KogitoBuildContext context, Collection<GeneratedBeanBuildItem> buildItems) {
+    private KogitoGeneratedClassesBuildItem indexBuildItems(KogitoBuildContext context, Collection<GeneratedBeanBuildItem> buildItems) {
         Indexer kogitoIndexer = new Indexer();
         Set<DotName> kogitoIndex = new HashSet<>();
 
@@ -269,6 +270,8 @@ public class KogitoAssetsProcessor {
                     generatedBeanBuildItem.getData());
         }
 
-        return kogitoIndexer.complete();
+        Map<String, byte[]> generatedClasses = buildItems.stream().collect(Collectors.toMap(GeneratedBeanBuildItem::getName, GeneratedBeanBuildItem::getData));
+
+        return new KogitoGeneratedClassesBuildItem(kogitoIndexer.complete(), generatedClasses);
     }
 }

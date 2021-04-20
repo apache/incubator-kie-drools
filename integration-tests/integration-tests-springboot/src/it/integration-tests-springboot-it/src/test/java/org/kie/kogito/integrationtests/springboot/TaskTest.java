@@ -15,18 +15,24 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-
+import java.util.stream.Stream;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.acme.travels.Traveller;
 import org.acme.travels.Address;
+import org.jbpm.util.JsonSchemaUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.process.workitem.AttachmentInfo;
@@ -39,6 +45,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -60,7 +67,21 @@ public class TaskTest extends BaseRestTest {
                 .get("/approvals/firstLineApproval/schema")
             .then()
                 .statusCode(200)
-                .body(matchesJsonSchemaInClasspath("approvals_firstLineApproval.json"));
+                .body(matchesJsonSchemaInClasspath("testJsonSchema/test_approvals_firstLineApproval.json"));
+    }
+
+    @Test
+    void testJsonSchemaFiles() {
+        long expectedJsonSchemas = 8;
+        Path jsonDir = Paths.get("target", "classes").resolve(JsonSchemaUtil.getJsonDir());
+        try (Stream<Path> paths = Files.walk(jsonDir)) {
+            long generatedJsonSchemas = paths
+                    .filter(p -> p.toString().endsWith("json"))
+                    .count();
+            assertThat(generatedJsonSchemas).isEqualTo(expectedJsonSchemas);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Test

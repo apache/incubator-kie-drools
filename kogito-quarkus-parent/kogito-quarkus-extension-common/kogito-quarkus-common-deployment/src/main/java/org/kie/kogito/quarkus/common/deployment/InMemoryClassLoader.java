@@ -15,22 +15,23 @@
  */
 package org.kie.kogito.quarkus.common.deployment;
 
-import org.drools.compiler.compiler.io.memory.MemoryFile;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.compiler.io.memory.MemoryFolder;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MemoryClassLoader extends ClassLoader {
+public class InMemoryClassLoader extends ClassLoader {
+    private Map<String, byte[]> classes = new HashMap<>();
 
-    private MemoryFileSystem fs;
-
-    public MemoryClassLoader(MemoryFileSystem fs, ClassLoader parent) {
+    public InMemoryClassLoader(ClassLoader parent, Map<String, byte[]> classes) {
         super(parent);
-        this.fs = fs;
+        this.classes.putAll(classes);
     }
 
     @Override
-    public Class<?> findClass(String name) throws ClassNotFoundException {
-        byte[] ba = fs.getFileContents(new MemoryFile(fs, name.replace('.', '/').concat(".class"), new MemoryFolder(fs, "")));
-        return ba != null ? defineClass(name, ba, 0, ba.length) : super.findClass(name);
+    protected Class<?> findClass(final String name) throws ClassNotFoundException {
+        byte[] byteClass = classes.remove(name);
+        if (byteClass != null) {
+            return defineClass(name, byteClass, 0, byteClass.length);
+        }
+        return super.findClass(name);
     }
 }

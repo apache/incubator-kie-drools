@@ -15,16 +15,23 @@
  */
 package org.kie.kogito.integrationtests.quarkus;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.ws.rs.core.UriBuilder;
 
 import org.acme.travels.Traveller;
+import org.jbpm.util.JsonSchemaUtil;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.task.management.service.TaskInfo;
@@ -55,7 +62,7 @@ class TaskTest {
         // Quarkus returns URI with "quarkus://" scheme when running via CLI and this is not compatible with
         // matchesJsonSchemaInClasspath, while matchesJsonSchema directly accepts InputStream
         InputStream jsonSchema = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "META-INF/jsonSchema/approvals_firstLineApproval.json");
+                "testJsonSchema/test_approvals_firstLineApproval.json");
         assertThat(jsonSchema).isNotNull();
 
         given()
@@ -65,6 +72,20 @@ class TaskTest {
                 .then()
                 .statusCode(200)
                 .body(matchesJsonSchema(jsonSchema));
+    }
+
+    @Test
+    void testJsonSchemaFiles() {
+        long expectedJsonSchemas = 8;
+        Path jsonDir = Paths.get("target", "classes").resolve(JsonSchemaUtil.getJsonDir());
+        try (Stream<Path> paths = Files.walk(jsonDir)) {
+            long generatedJsonSchemas = paths
+                    .filter(p -> p.toString().endsWith("json"))
+                    .count();
+            assertThat(generatedJsonSchemas).isEqualTo(expectedJsonSchemas);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Test

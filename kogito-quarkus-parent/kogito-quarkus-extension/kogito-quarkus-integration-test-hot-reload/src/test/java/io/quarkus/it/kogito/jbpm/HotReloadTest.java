@@ -29,6 +29,8 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HotReloadTest {
 
@@ -179,6 +181,51 @@ public class HotReloadTest {
 
         assertEquals(2, result.size());
         assertEquals("HELLO", result.get("mytext"));
+    }
+
+    @Test
+    public void testJsonSchema() {
+
+        String jsonSchema = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/" + PROCESS_NAME + "/Task/schema")
+                .then()
+                .statusCode(200)
+                .extract().body().asString();
+
+        assertNotNull(jsonSchema);
+        assertFalse(jsonSchema.isEmpty());
+
+        // rename Task name (<![CDATA[Task]]>)
+        test.modifyResourceFile(RESOURCE_FILE, s -> s.replaceAll("\\[Task]", "[Task1]"));
+
+        // old endpoint should not work anymore
+        given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/" + PROCESS_NAME + "/Task/schema")
+                .then()
+                .statusCode(404);
+
+        String newJsonSchema = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/" + PROCESS_NAME + "/Task1/schema")
+                .then()
+                .statusCode(200)
+                .extract().body().asString();
+
+        assertNotNull(newJsonSchema);
+        assertFalse(newJsonSchema.isEmpty());
+
+        assertEquals(jsonSchema, newJsonSchema);
     }
 
 }
