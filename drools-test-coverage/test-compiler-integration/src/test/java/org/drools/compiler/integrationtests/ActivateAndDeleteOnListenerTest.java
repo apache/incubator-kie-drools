@@ -255,7 +255,7 @@ public class ActivateAndDeleteOnListenerTest {
     }
 
     @Test
-    public void testOneLazyAndOneImmediateSubPath() {
+    public void testOneLazyAndOneImmediateSubPathFromLia() {
         final String drl =
                 "package org.simple \n" +
                 "rule xxx \n" +
@@ -274,15 +274,21 @@ public class ActivateAndDeleteOnListenerTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
-        final KieSession ksession = kbase.newKieSession(conf, null);
-        try {
-            final List<String> list = new ArrayList<>();
 
-            final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
-                public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
-                    list.add(event.getMatch().getRule().getName());
-                }
-            };
+        final List<String> list = new ArrayList<>();
+
+        final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
+            public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
+                list.add(event.getMatch().getRule().getName());
+            }
+        };
+
+        KieSession ksession = null;
+
+        // scenario 1
+        ksession = kbase.newKieSession(conf, null);
+        try {
+            list.clear();
             ksession.addEventListener(agendaEventListener);
 
             ksession.insert("test");
@@ -291,6 +297,206 @@ public class ActivateAndDeleteOnListenerTest {
             ksession.insert(1);
             assertEquals(1, list.size());
             assertEquals("yyy", list.get(0));
+
+            list.clear();
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+            assertEquals("xxx", list.get(0));
+        } finally {
+            ksession.dispose();
+        }
+
+        // scenario 2
+        ksession = kbase.newKieSession(conf, null);
+        try {
+            list.clear();
+            ksession.addEventListener(agendaEventListener);
+
+            ksession.insert("test");
+            assertEquals(0, list.size());
+
+            ksession.insert(Long.valueOf(1));
+            assertEquals(1, list.size());
+            assertEquals("yyy", list.get(0));
+
+            list.clear();
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+            assertEquals("xxx", list.get(0));
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testOneLazyAndOneImmediateSubPathAfterLia() {
+        final String drl =
+              "package org.simple \n" +
+              "global java.util.List list; \n" +
+              "rule xxx \n" +
+              "when \n" +
+              "  Integer(this == 0)\n" +
+              "  $s : String()\n" +
+              "  exists( ( Integer(this == 3) and eval(list.add(\"e1\"))) or (Long(this == 1) and eval(list.add(\"e2\"))) )\n" +
+              "then \n" +
+              "end  \n" +
+              "rule yyy \n" +
+              "when \n" +
+              "  Integer(this == 0)\n" +
+              "  $s : String()\n" +
+              "  exists( ( Integer(this == 3) and eval(list.add(\"e1\"))) or (Long(this == 1) and eval(list.add(\"e2\"))) )\n" +
+              "then \n" +
+              "end  \n" +
+              "rule zzz \n" +
+              "when \n" +
+              "  Integer(this == 0)\n" +
+              "  $s : String()\n" +
+              "  eval(1==1)\n" +
+              "then \n" +
+              "end  \n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
+        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
+
+        final List<String> list = new ArrayList<>();
+        final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
+            public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
+                list.add(event.getMatch().getRule().getName());
+            }
+        };
+
+        KieSession ksession = null;
+
+        // scenario 1 - Only insert the Integer side of 'or'
+        ksession = kbase.newKieSession(conf, null);
+        try {
+            list.clear();
+            ksession.setGlobal("list", list);
+            ksession.addEventListener(agendaEventListener);
+
+            ksession.insert("test");
+            assertEquals(0, list.size());
+
+            ksession.insert(0);
+            ksession.insert(3);
+            assertEquals("[e1, yyy]", list.toString());
+
+            list.clear();
+            ksession.fireAllRules();
+            assertEquals("[xxx, zzz]", list.toString());
+        } finally {
+            ksession.dispose();
+        }
+
+        // Scenario 2 - Only insert the Long side of 'or'
+        ksession = kbase.newKieSession(conf, null);
+        try {
+            list.clear();
+            ksession.setGlobal("list", list);
+            ksession.addEventListener(agendaEventListener);
+
+            ksession.insert("test");
+            assertEquals(0, list.size());
+
+            ksession.insert(0);
+            ksession.insert(Long.valueOf(1));
+            assertEquals("[e2, yyy]", list.toString());
+
+            list.clear();
+            ksession.fireAllRules();
+            assertEquals("[xxx, zzz]", list.toString());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testOrPropagatesThroughSubnetwork() {
+        final String drl =
+              "package org.simple \n" +
+              "global java.util.List list; \n" +
+              "rule yyy \n" +
+              "when \n" +
+              "  Integer(this==1)\n" +
+              "  String()\n" +
+              "  exists( ( Integer(this == 3) and eval(list.add(\"e1\"))) or (Long(this == 4) and eval(list.add(\"e2\"))) )\n" +
+              "then \n" +
+              "end  \n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
+        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
+
+        final List<String> list = new ArrayList<>();
+
+        final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
+            public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
+                list.add("add:" + event.getMatch().getRule().getName());
+            }
+
+            public void matchCancelled(final org.kie.api.event.rule.MatchCancelledEvent event) {
+                list.add("rem:" + event.getMatch().getRule().getName());
+            }
+        };
+
+        KieSession ksession = null;
+
+        // scenario 1 - Add Integer, then Long (with no change), then delete Integer and check not holds. Then delete Long
+        ksession = kbase.newKieSession(conf, null);
+        try {
+            ksession.addEventListener(agendaEventListener);
+
+            list.clear();
+            ksession.setGlobal("list", list);
+            ksession.insert("test");
+            ksession.insert(1);
+            assertEquals(0, list.size());
+
+            FactHandle fhInt3 = ksession.insert(3);
+            assertEquals("[e1, add:yyy]", list.toString());
+
+            // No change as the int 1 blocks a token propagating from the not node needed for the long join
+            list.clear();
+            FactHandle fhLong4 = ksession.insert(Long.valueOf(4));
+            assertEquals(0, list.size());
+
+            ksession.delete(fhInt3);
+            assertEquals("[e2]", list.toString());
+
+            list.clear();
+            ksession.delete(fhLong4);
+            assertEquals("[rem:yyy]", list.toString());
+        } finally {
+            ksession.dispose();
+        }
+
+        // Scenario 2 - Add Long, then Integer (with no change), then delete Long and check not holds. Then delete Integer
+        ksession = kbase.newKieSession(conf, null);
+        try {
+            ksession.addEventListener(agendaEventListener);
+
+            list.clear();
+            ksession.setGlobal("list", list);
+            ksession.insert("test");
+            ksession.insert(1);
+            assertEquals(0, list.size());
+
+            FactHandle fhLong4 = ksession.insert(Long.valueOf(4));
+            assertEquals("[e2, add:yyy]", list.toString());
+
+            // Unlike scenario  1, e1 eval is not blocked so it will still eval, but the outer not still holds so no over all change.
+            list.clear();
+            FactHandle fhInt3 = ksession.insert(3);
+            assertEquals("[e1]", list.toString());
+
+            list.clear();
+            ksession.delete(fhLong4);
+            assertEquals(0, list.size());
+
+            list.clear();
+            ksession.delete(fhInt3);
+            assertEquals("[rem:yyy]", list.toString());
         } finally {
             ksession.dispose();
         }

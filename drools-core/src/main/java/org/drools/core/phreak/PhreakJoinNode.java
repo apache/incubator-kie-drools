@@ -456,6 +456,7 @@ public class PhreakJoinNode {
             switch ( childLeftTuple.getStagedType() ) {
                 // handle clash with already staged entries
                 case LeftTuple.INSERT:
+                    // Was insert before, should continue as insert
                     stagedLeftTuples.removeInsert( childLeftTuple );
                     trgLeftTuples.addInsert( childLeftTuple );
                     break;
@@ -464,6 +465,7 @@ public class PhreakJoinNode {
                     trgLeftTuples.addUpdate( childLeftTuple );
                     break;
                 default:
+                    // no clash, so just add
                     trgLeftTuples.addUpdate( childLeftTuple );
             }
         }

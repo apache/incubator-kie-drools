@@ -942,11 +942,11 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static boolean useLeftMemory(LeftTupleSource tupleSource, Tuple leftTuple) {
+    public static boolean useLeftMemory(LeftTupleSource tupleSource, Tuple tuple) {
         boolean useLeftMemory = true;
         if (!tupleSource.isLeftTupleMemoryEnabled()) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = leftTuple.getRootTuple().getFactHandle().getObject();
+            Object object = tuple.getRootTuple().getFactHandle().getObject();
             if (!(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen()) {
                 useLeftMemory = false;
             }

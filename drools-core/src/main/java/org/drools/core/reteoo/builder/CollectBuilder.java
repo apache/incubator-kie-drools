@@ -107,7 +107,6 @@ public class CollectBuilder
                                                                                                             binder, // source binder
                                                                                                             resultBinder,
                                                                                                             accumulate,
-                                                                                                            existSubNetwort,
                                                                                                             context );
         context.setTupleSource( utils.attachNode( context, accNode ) );
 
