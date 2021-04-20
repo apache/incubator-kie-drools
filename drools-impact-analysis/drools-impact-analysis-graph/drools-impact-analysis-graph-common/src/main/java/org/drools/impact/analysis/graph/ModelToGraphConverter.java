@@ -155,7 +155,9 @@ public class ModelToGraphConverter {
                             combinedLinkType = ReactivityType.POSITIVE;
                             break;
                         } else if (linkType == ReactivityType.NEGATIVE) {
-                            combinedLinkType = ReactivityType.NEGATIVE; // TODO: consider whether NEGATIVE or UNKNOWN should be stronger (meaningful for users)
+                            combinedLinkType = ReactivityType.NEGATIVE; // NEGATIVE is stronger than UNKNOWN (but may be configurable)
+                        } else if (combinedLinkType == ReactivityType.NEGATIVE && linkType == ReactivityType.UNKNOWN) {
+                            // Don't overwrite with UNKNOWN
                         } else {
                             combinedLinkType = linkType; // UNKNOWN
                         }
@@ -237,7 +239,7 @@ public class ModelToGraphConverter {
         return ReactivityType.UNKNOWN;
     }
 
-    private static String fqdn(String pckageName, String ruleName) {
-        return pckageName + "." + ruleName;
+    private static String fqdn(String packageName, String ruleName) {
+        return packageName + "." + ruleName;
     }
 }

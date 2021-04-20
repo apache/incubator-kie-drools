@@ -34,12 +34,16 @@ import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static guru.nidi.graphviz.model.Factory.to;
 
 public class GraphImageGenerator {
+
+    private static final Logger logger = LoggerFactory.getLogger(GraphImageGenerator.class);
 
     private static final String DEFAULT_OUTPUT_DIR = "target" + File.separator + "graph-output";
 
@@ -62,9 +66,9 @@ public class GraphImageGenerator {
         this.height = height;
     }
 
-    public void configureGraphvizCmdLineEngine() {
+    public void configureGraphvizCmdLineEngine(int timeoutSeconds) {
         GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine();
-        engine.timeout(10, TimeUnit.MINUTES);
+        engine.timeout(timeoutSeconds, TimeUnit.SECONDS);
         Graphviz.useEngine(engine);
     }
 
@@ -135,7 +139,7 @@ public class GraphImageGenerator {
         try {
             String filePath = outputDir + File.separator + graphName + ".dot";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
-            System.out.println("--- Graph dot format is generated to " + filePath);
+            logger.info("--- Graph dot format is generated to " + filePath);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -147,7 +151,7 @@ public class GraphImageGenerator {
         try {
             String filePath = outputDir + File.separator + graphName + ".png";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
-            System.out.println("--- Graph image is generated to " + filePath);
+            logger.info("--- Graph image is generated to " + filePath);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -159,7 +163,7 @@ public class GraphImageGenerator {
         try {
             String filePath = outputDir + File.separator + graphName + ".svg";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
-            System.out.println("--- Graph image is generated to " + filePath);
+            logger.info("--- Graph image is generated to " + filePath);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

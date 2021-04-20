@@ -25,12 +25,15 @@ import org.drools.impact.analysis.graph.ImpactAnalysisHelper;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.TextReporter;
+import org.drools.impact.analysis.graph.Node.Status;
 import org.drools.impact.analysis.integrationtests.domain.Order;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
 import org.junit.Test;
 
 import static org.drools.impact.analysis.graph.TextReporter.INDENT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ImpactAnalysisTest extends AbstractGraphTest {
 
@@ -93,7 +96,6 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
                      "end";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -109,6 +111,15 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         generatePng(impactedSubGraph, "_impactedSubGraph");
 
         generatePng(graph, "_impacted");
+
+        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R1"));
+        assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg.R2").getStatus());
+        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R3").getStatus());
+        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R4"));
+        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R5").getStatus());
+        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R6").getStatus());
+
+        // TextReporter test
 
         System.out.println("--- toHierarchyText ---");
         String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
@@ -128,6 +139,5 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
                                                                 "R3[+]",
                                                                 "R6[+]",
                                                                 "R5[+]");
-
     }
 }

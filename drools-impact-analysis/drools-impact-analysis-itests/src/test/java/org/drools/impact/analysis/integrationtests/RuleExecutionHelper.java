@@ -41,6 +41,17 @@ public class RuleExecutionHelper {
         return getKieContainer(model, stringRules).newKieSession();
     }
 
+    protected static KieSession getKieSession(KieFileSystem kfs) {
+        KieServices ks = KieServices.get();
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
+        List<Message> messages = kieBuilder.getResults().getMessages();
+        if (!messages.isEmpty()) {
+            fail(messages.toString());
+        }
+        KieContainer kieContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+        return kieContainer.newKieSession();
+    }
+
     protected static KieContainer getKieContainer(KieModuleModel model, String... stringRules) {
         return getKieContainer(model, toKieFiles(stringRules));
     }
@@ -49,7 +60,7 @@ public class RuleExecutionHelper {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "kjar-test-" + UUID.randomUUID(), "1.0");
 
-        KieBuilder kieBuilder = createKieBuilder(ks, model, releaseId, stringRules);
+        createKieBuilder(ks, model, releaseId, stringRules);
         return ks.newKieContainer(releaseId);
     }
 
