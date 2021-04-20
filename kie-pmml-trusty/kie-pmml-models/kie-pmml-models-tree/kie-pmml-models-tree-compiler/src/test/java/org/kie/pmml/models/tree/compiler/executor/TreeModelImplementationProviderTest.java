@@ -34,6 +34,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TreeModelImplementationProviderTest {
 
@@ -78,9 +79,13 @@ public class TreeModelImplementationProviderTest {
         assertNotNull(sourcesMap);
         assertFalse(sourcesMap.isEmpty());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        final Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
-        for (Class<?> clazz : compiled.values()) {
-            assertTrue(clazz instanceof Serializable);
+        try {
+            final Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
+            for (Class<?> clazz : compiled.values()) {
+                assertTrue(clazz instanceof Serializable);
+            }
+        } catch (Throwable t) {
+            fail(t.getMessage());
         }
     }
 

@@ -17,6 +17,7 @@ package  org.kie.pmml.models.tree.model;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
@@ -24,7 +25,8 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 public class KiePMMLTreeModel extends KiePMMLModel {
 
     private static final long serialVersionUID = -5158590062736070465L;
-    protected KiePMMLNode node;
+
+    protected Function<Map<String, Object>, Object> nodeFunction;
 
     public KiePMMLTreeModel(String modelName) {
         super(modelName, Collections.emptyList());
@@ -32,7 +34,7 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        return node.evaluate(requestData);
+        return nodeFunction.apply(requestData);
     }
 
     @Override

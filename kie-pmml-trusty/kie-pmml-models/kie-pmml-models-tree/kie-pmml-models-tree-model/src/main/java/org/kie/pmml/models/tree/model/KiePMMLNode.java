@@ -15,8 +15,6 @@
  */
 package org.kie.pmml.models.tree.model;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,42 +25,17 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 public class KiePMMLNode extends AbstractKiePMMLComponent {
 
-    protected List<KiePMMLNode> nodes = new LinkedList<>();
-    protected Object score;
-    protected Function<Map<String, Object>, Boolean> predicateFunction;
+    private static final long serialVersionUID = -3166618610223066816L;
 
     protected KiePMMLNode(final String name,
-                          final List<KiePMMLExtension> extensions,
-                          final Function<Map<String, Object>, Boolean> predicateFunction,
-                          final Object score) {
+                          final List<KiePMMLExtension> extensions) {
         super(name, extensions);
-        this.predicateFunction = predicateFunction;
-        this.score = score;
     }
 
-    public Object evaluate(final Map<String, Object> requestData) {
-        if (!predicateFunction.apply(requestData)) {
-            return null;
-        }
-        if (nodes.isEmpty()) {
-            return score;
-        }
-        Optional<Object> nestedScore = getNestedScore(requestData);
-        return nestedScore.orElse(score);
-    }
-
-    public List<KiePMMLNode> getNodes() {
-        return Collections.unmodifiableList(nodes);
-    }
-
-    public Object getScore() {
-        return score;
-    }
-
-    protected Optional<Object> getNestedScore(final Map<String, Object> requestData) {
+    protected static Optional<Object> getNestedScore(final List<Function<Map<String, Object>, Object>> nodeFunctions, final Map<String, Object> requestData) {
         Optional<Object> toReturn = Optional.empty();
-        for (KiePMMLNode nestedNode : nodes) {
-            final Object evaluation = nestedNode.evaluate(requestData);
+        for (Function<Map<String, Object>, Object> function : nodeFunctions) {
+            final Object evaluation = function.apply(requestData);
             toReturn = Optional.ofNullable(evaluation);
             if (toReturn.isPresent()) {
                 break;

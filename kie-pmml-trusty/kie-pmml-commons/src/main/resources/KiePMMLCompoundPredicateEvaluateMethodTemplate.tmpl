@@ -26,7 +26,7 @@ public class KiePMMLCompoundPredicateEvaluateMethodTemplate {
 
     public boolean evaluate(Map<String, Object> stringObjectMap) {
            Boolean toReturn = null;
-           final List<Function<Map<String, Object>, Boolean>> functions = new ArrayList();
+           final List<Function<Map<String, Object>, Boolean>> functions = new LinkedList();
            for (Function<Map<String, Object>, Boolean> function : functions) {
                        Boolean evaluation = function.apply(stringObjectMap);
                        toReturn = null; // generated

@@ -105,12 +105,11 @@ public class KiePMMLNodeFactoryTest {
                 .mapToObj(i -> nodeClassName.toLowerCase() + ".NestedNode" + i)
                 .collect(Collectors.toList());
         String expected = "public KiePMMLNodeTemplate() {\n" +
-                "    super(name, Collections.emptyList(), KiePMMLNodeTemplate::evaluatePredicate, score);\n" +
+                "    super(name, Collections.emptyList());\n" +
                 "}".replace("\n", System.lineSeparator());
         assertEquals(expected, constructorDeclaration.toString());
-        KiePMMLNodeFactory.setConstructor(nodeClassName, nodeName, score, constructorDeclaration, nestedNodes);
-        commonVerifyConstructorString(constructorDeclaration.toString(), nodeClassName, nodeName, score,
-                                      nestedNodes);
+        KiePMMLNodeFactory.setConstructor(nodeClassName, nodeName, constructorDeclaration);
+        commonVerifyConstructorString(constructorDeclaration.toString(), nodeClassName, nodeName);
     }
 
     @Test
@@ -124,37 +123,28 @@ public class KiePMMLNodeFactoryTest {
 
     private void commonVerifyNode(KiePMMLNode toVerify, Node original) {
         assertEquals(original.getId(), toVerify.getName());
-        assertEquals(original.getScore(), toVerify.getScore());
-        if (original.hasNodes()) {
-            assertEquals(original.getNodes().size(), toVerify.getNodes().size());
-            for (KiePMMLNode toVerifyNested : toVerify.getNodes()) {
-                Optional<Node> originalNested = original.getNodes().stream()
-                        .filter(nestedNode -> nestedNode.getId().equals(toVerifyNested.getName()))
-                        .findFirst();
-                assertTrue(originalNested.isPresent());
-                commonVerifyNode(toVerifyNested, originalNested.get());
-            }
-        } else {
-            assertTrue(toVerify.getNodes().isEmpty());
-        }
+//        assertEquals(original.getScore(), toVerify.getScore());
+//        if (original.hasNodes()) {
+//            assertEquals(original.getNodes().size(), toVerify.getNodes().size());
+//            for (KiePMMLNode toVerifyNested : toVerify.getNodes()) {
+//                Optional<Node> originalNested = original.getNodes().stream()
+//                        .filter(nestedNode -> nestedNode.getId().equals(toVerifyNested.getName()))
+//                        .findFirst();
+//                assertTrue(originalNested.isPresent());
+//                commonVerifyNode(toVerifyNested, originalNested.get());
+//            }
+//        } else {
+//            assertTrue(toVerify.getNodes().isEmpty());
+//        }
     }
 
     private void commonVerifyConstructorString(final String toVerify,
                                                final String nodeClassName,
-                                               final String nodeName,
-                                               final Object score,
-                                               final List<String> nestedNodes) {
-        final StringBuilder builder = new StringBuilder();
-        nestedNodes.forEach(nestedNode -> {
-            builder.append("    nodes.add(new ").append(nestedNode).append("());\n");
-        });
-        String nodesExpected = builder.toString();
+                                               final String nodeName) {
         String expected = String.format("public %1$s() {\n" +
-                                                "    super(\"%2$s\", Collections.emptyList(), %1$s::evaluatePredicate, \"%3$s\");" +
+                                                "    super(\"%2$s\", Collections.emptyList());" +
                                                 "\n" +
-                                                "%4$s" +
-                                                "}", nodeClassName, nodeName, score,
-                                        nodesExpected).replace("\n", System.lineSeparator());
+                                                "}", nodeClassName, nodeName).replace("\n", System.lineSeparator());
         assertEquals(expected, toVerify);
     }
 

@@ -18,6 +18,7 @@ package org.kie.pmml.models.tree.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -29,7 +30,21 @@ import org.kie.pmml.models.tree.model.KiePMMLNode;
 public class KiePMMLNodeTemplate extends KiePMMLNode {
 
     public KiePMMLNodeTemplate() {
-        super(name, Collections.emptyList(), KiePMMLNodeTemplate::evaluatePredicate, score);
+        super(name, Collections.emptyList());
+    }
+
+    public static Object evaluateNode(final Map<String, Object> requestData) {
+            final List<Function<Map<String, Object>, Object>> nodeFunctions = null;
+            final Object score = null;
+            final Function<Map<String, Object>, Boolean> predicateFunction = KiePMMLNodeTemplate::evaluatePredicate;
+            if (!predicateFunction.apply(requestData)) {
+                return null;
+            }
+            if (nodeFunctions.isEmpty()) {
+                return score;
+            }
+            Optional<Object> nestedScore = KiePMMLNode.getNestedScore(nodeFunctions, requestData);
+            return nestedScore.orElse(score);
     }
 
     private static boolean evaluatePredicate(Map<String, Object> stringObjectMap) {

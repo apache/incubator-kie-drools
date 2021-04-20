@@ -21,6 +21,7 @@ import java.util.Map;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -109,10 +110,11 @@ public class KiePMMLTreeModelFactory {
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(PMML_MODEL.TREE_MODEL.getClass().getName() + "." + PMML_MODEL.TREE_MODEL.name()));
-        ClassOrInterfaceType nodeClassOrInterfaceType = parseClassOrInterfaceType(fullNodeClassName);
-        ObjectCreationExpr nodeObjectCreationExpr = new ObjectCreationExpr();
-        nodeObjectCreationExpr.setType(nodeClassOrInterfaceType);
-        CommonCodegenUtils.setAssignExpressionValue(body, "node", nodeObjectCreationExpr);
+        // set predicate function
+        MethodReferenceExpr nodeReference = new MethodReferenceExpr();
+        nodeReference.setScope(new NameExpr(fullNodeClassName));
+        nodeReference.setIdentifier("evaluateNode");
+        CommonCodegenUtils.setAssignExpressionValue(body, "nodeFunction", nodeReference);
     }
 
 

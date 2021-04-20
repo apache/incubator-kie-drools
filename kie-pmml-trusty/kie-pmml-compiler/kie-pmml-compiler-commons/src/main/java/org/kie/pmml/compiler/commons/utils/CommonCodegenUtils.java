@@ -29,6 +29,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -62,7 +63,9 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
+import static org.kie.pmml.commons.Constants.MISSING_METHOD_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
+import static org.kie.pmml.commons.Constants.MISSING_STATIC_INITIALIZER;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
@@ -457,6 +460,33 @@ public class CommonCodegenUtils {
     }
 
     /**
+     * Return an <code>BlockStmt</code>  from the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     *
+     * @throws KiePMMLException if none is found
+     */
+    public static BlockStmt getInitializerBlockStmt(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+        return getInitializerDeclaration(classOrInterfaceDeclaration).getBody();
+    }
+
+    /**
+     * Return an <code>InitializerDeclaration</code>  from the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     *
+     * @throws KiePMMLException if none is found
+     */
+    public static InitializerDeclaration getInitializerDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+        return classOrInterfaceDeclaration.getMembers()
+                .stream()
+                .filter(InitializerDeclaration.class::isInstance)
+                .map(InitializerDeclaration.class::cast)
+                .findFirst()
+                .orElseThrow(() ->  new KiePMMLException(String.format(MISSING_STATIC_INITIALIZER, classOrInterfaceDeclaration)));
+    }
+
+    /**
      * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
      * @param constructorInvocationStmt
      * @param parameterName
@@ -486,6 +516,22 @@ public class CommonCodegenUtils {
                 .map(MethodReferenceExpr.class::cast)
                 .findFirst();
     }
+
+    /**
+     * Return an <code>BlockStmt</code> for the method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     * @param methodName
+     *
+     * @throws KiePMMLException if none is found
+     */
+    public static BlockStmt getMethodDeclarationBlockStmt(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
+        return getMethodDeclaration(classOrInterfaceDeclaration, methodName)
+                .map(MethodDeclaration::getBody)
+                .map(Optional::get)
+                .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_METHOD_TEMPLATE, methodName, classOrInterfaceDeclaration)));
+    }
+
 
     /**
      * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from
