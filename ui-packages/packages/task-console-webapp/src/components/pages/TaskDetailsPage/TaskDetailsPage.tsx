@@ -23,11 +23,20 @@ import {
   Button,
   Card,
   CardBody,
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerPanelBody,
+  DrawerPanelContent,
   Flex,
   FlexItem,
   Grid,
   GridItem,
-  PageSection
+  PageSection,
+  Title
 } from '@patternfly/react-core';
 import {
   OUIAProps,
@@ -48,6 +57,7 @@ import FormNotification, {
   Notification
 } from './components/FormNotification/FormNotification';
 import '../../styles.css';
+import { EmbeddedTaskDetails } from '@kogito-apps/task-details';
 
 interface Props {
   taskId: string;
@@ -65,6 +75,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
   const [userTask, setUserTask] = useState<UserTaskInstance>();
   const [notification, setNotification] = useState<Notification>();
   const [error, setError] = useState();
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState<boolean>(false);
 
   useEffect(() => {
     return ouiaPageTypeAndObjectId('task-details-page', taskId);
@@ -196,6 +207,35 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
     );
   }
 
+  const onViewDetailsClick = () => {
+    setIsDetailsExpanded(!isDetailsExpanded);
+  };
+
+  const onDetailsCloseClick = () => {
+    setIsDetailsExpanded(false);
+  };
+
+  const panelContent = (
+    <DrawerPanelContent className={'kogito-task-console__full-size'}>
+      <DrawerHead>
+        <span tabIndex={isDetailsExpanded ? 0 : -1}>
+          <Title headingLevel="h3" size="xl">
+            Details
+          </Title>
+        </span>
+        <DrawerActions>
+          <DrawerCloseButton onClick={onDetailsCloseClick} />
+        </DrawerActions>
+      </DrawerHead>
+      <DrawerPanelBody>
+        <EmbeddedTaskDetails
+          targetOrigin={window.location.origin}
+          userTask={userTask}
+        />
+      </DrawerPanelBody>
+    </DrawerPanelContent>
+  );
+
   return (
     <React.Fragment>
       <PageSection
@@ -226,6 +266,15 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
               extra={<TaskState task={userTask} variant={'label'} />}
             />
           </FlexItem>
+          <FlexItem>
+            <Button
+              variant="secondary"
+              id="view-details"
+              onClick={onViewDetailsClick}
+            >
+              View details
+            </Button>
+          </FlexItem>
         </Flex>
         {notification && (
           <div className="kogito-task-console__task-details-page">
@@ -240,19 +289,32 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({
           ouiaSafe
         )}
       >
-        <Grid hasGutter md={1} className={'kogito-task-console__full-size'}>
-          <GridItem span={12} className={'kogito-task-console__full-size'}>
-            <Card className={'kogito-task-console__full-size'}>
-              <CardBody className="pf-u-h-100">
-                <TaskFormContainer
-                  userTask={userTask}
-                  onSubmitSuccess={onSubmitSuccess}
-                  onSubmitError={onSubmitError}
-                />
-              </CardBody>
-            </Card>
-          </GridItem>
-        </Grid>
+        <Drawer isExpanded={isDetailsExpanded}>
+          <DrawerContent panelContent={panelContent}>
+            <DrawerContentBody>
+              <Grid
+                hasGutter
+                md={1}
+                className={'kogito-task-console__full-size'}
+              >
+                <GridItem
+                  span={12}
+                  className={'kogito-task-console__full-size'}
+                >
+                  <Card className={'kogito-task-console__full-size'}>
+                    <CardBody className="pf-u-h-100">
+                      <TaskFormContainer
+                        userTask={userTask}
+                        onSubmitSuccess={onSubmitSuccess}
+                        onSubmitError={onSubmitError}
+                      />
+                    </CardBody>
+                  </Card>
+                </GridItem>
+              </Grid>
+            </DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
       </PageSection>
     </React.Fragment>
   );

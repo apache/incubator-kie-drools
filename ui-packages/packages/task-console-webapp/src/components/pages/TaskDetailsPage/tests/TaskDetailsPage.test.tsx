@@ -31,6 +31,12 @@ import TaskDetailsPage from '../TaskDetailsPage';
 import TaskFormContainer from '../components/TaskFormContainer/TaskFormContainer';
 import FormNotification from '../components/FormNotification/FormNotification';
 
+import {
+  Button,
+  DrawerCloseButton,
+  DrawerPanelContent
+} from '@patternfly/react-core';
+
 const userTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
   description: null,
@@ -95,6 +101,9 @@ jest.mock('@patternfly/react-core', () => ({
   },
   BreadcrumbItem: () => {
     return <MockedComponent />;
+  },
+  Button: () => {
+    return <MockedComponent />;
   }
 }));
 
@@ -111,6 +120,13 @@ jest.mock('@kogito-apps/components-common', () => ({
 jest.mock('@kogito-apps/consoles-common', () => ({
   ...jest.requireActual('@kogito-apps/consoles-common'),
   PageTitle: () => {
+    return <MockedComponent />;
+  }
+}));
+
+jest.mock('@kogito-apps/task-details', () => ({
+  ...jest.requireActual('@kogito-apps/task-details'),
+  EmbeddedTaskDetails: () => {
     return <MockedComponent />;
   }
 }));
@@ -315,5 +331,44 @@ describe('TaskDetailsPage tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     expect(wrapper.find(FormNotification).exists()).toBeFalsy();
+  });
+
+  it('Task details Drawer', async () => {
+    getUserTaskByIdMock.mockReturnValue(userTask);
+
+    let wrapper = await getTaskDetailsPageWrapper();
+
+    // open details drawer
+    await act(async () => {
+      const button = wrapper
+        .find(Button)
+        .findWhere(node => node.props().id === 'view-details');
+
+      button.props().onClick();
+    });
+    wrapper = wrapper.update();
+
+    const detailsPanel = wrapper.find(DrawerPanelContent);
+
+    expect(detailsPanel.exists()).toBeTruthy();
+
+    expect(
+      detailsPanel.find('EmbeddedTaskDetails').props().userTask
+    ).toStrictEqual(userTask);
+
+    // close details drawer
+    await act(async () => {
+      detailsPanel
+        .find(DrawerCloseButton)
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    expect(
+      wrapper
+        .find(DrawerPanelContent)
+        .find('EmbeddedTaskDetails')
+        .exists()
+    ).toBeFalsy();
   });
 });
