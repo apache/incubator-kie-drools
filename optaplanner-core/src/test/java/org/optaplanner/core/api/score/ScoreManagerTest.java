@@ -24,12 +24,11 @@ import java.util.Collections;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.testdata.domain.TestdataConstraintProvider;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -65,10 +64,20 @@ class ScoreManagerTest {
     }
 
     @Test
-    public void indictmentsPresentOnFreshExplanation() {
+    public void indictmentsPresentOnFreshExplanationDrools() {
+        indictmentsPresentOnFreshExplanations(ConstraintStreamImplType.DROOLS);
+    }
+
+    @Test
+    public void indictmentsPresentOnFreshExplanationBavet() {
+        indictmentsPresentOnFreshExplanations(ConstraintStreamImplType.BAVET);
+    }
+
+    private void indictmentsPresentOnFreshExplanations(ConstraintStreamImplType constraintStreamImplType) {
         // Create the environment.
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setConstraintProviderClass(TestdataConstraintProvider.class);
+        scoreDirectorFactoryConfig.setConstraintStreamImplType(constraintStreamImplType);
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setSolutionClass(TestdataSolution.class);
         solverConfig.setEntityClassList(Collections.singletonList(TestdataEntity.class));
@@ -92,17 +101,4 @@ class ScoreManagerTest {
         });
     }
 
-    public static final class TestdataConstraintProvider implements ConstraintProvider {
-
-        @Override
-        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-            return new Constraint[] { alwaysPenalizingConstraint(constraintFactory) };
-        }
-
-        private Constraint alwaysPenalizingConstraint(ConstraintFactory constraintFactory) {
-            return constraintFactory.from(TestdataEntity.class)
-                    .penalize("Always penalize", SimpleScore.ONE);
-        }
-
-    }
 }
