@@ -364,6 +364,11 @@
         <version>${version.org.springframework}</version>
       </dependency>
       <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure</artifactId>
         <version>${version.org.springframework.boot}</version>
