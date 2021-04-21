@@ -8,7 +8,6 @@ import {
   ChartGroup,
   ChartLabel,
   ChartLegend,
-  ChartBarProps,
   ChartProps
 } from '@patternfly/react-charts';
 import { Split, SplitItem } from '@patternfly/react-core';
@@ -25,8 +24,12 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
   const chartPadding = { top: 60, bottom: 30 };
 
   const scores = useMemo(() => {
-    const positives = featuresScore.filter(feature => feature.featureScore > 0);
-    const negatives = featuresScore.filter(feature => feature.featureScore < 0);
+    const positives = featuresScore
+      .filter(feature => feature.featureScore > 0)
+      .sort((a, b) => b.featureScore - a.featureScore);
+    const negatives = featuresScore
+      .filter(feature => feature.featureScore < 0)
+      .sort((a, b) => a.featureScore - b.featureScore);
     const maxNumberOfValues = Math.max(positives.length, negatives.length);
     const barWidth = (height - 90) / maxNumberOfValues / 2;
     return { positives, negatives, maxNumberOfValues, barWidth };
@@ -48,7 +51,6 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
               width={width}
               height={height}
               scores={scores.positives}
-              sortOrder="descending"
               yDomain={[0, maxValue]}
               barWidth={scores.barWidth}
               maxValue={maxValue}
@@ -63,7 +65,6 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
               width={width}
               height={height}
               scores={scores.negatives}
-              sortOrder="ascending"
               yDomain={[-maxValue, 0]}
               barWidth={scores.barWidth}
               maxValue={maxValue}
@@ -85,7 +86,6 @@ type ScoresBarChartProps = {
   width: number;
   height: number;
   scores: FeatureScores[];
-  sortOrder: ChartBarProps['sortOrder'];
   yDomain: [number, number];
   barWidth: number;
   maxValue: number;
@@ -100,7 +100,6 @@ const ScoresBarChart = (props: ScoresBarChartProps) => {
     width,
     height,
     scores,
-    sortOrder,
     yDomain,
     barWidth,
     maxValue,
@@ -150,8 +149,6 @@ const ScoresBarChart = (props: ScoresBarChartProps) => {
         x="featureName"
         y="featureScore"
         alignment="middle"
-        sortKey="featureScore"
-        sortOrder={sortOrder}
         barWidth={barWidth}
         style={{
           data: {

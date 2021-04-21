@@ -51,11 +51,10 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
   const [outcomeId, setOutcomeId] = useState<string | null>(null);
   const outcomeDetail = useOutcomeDetail(executionId, outcomeId);
   const saliencies = useSaliencies(executionId);
-  const {
-    featuresScores,
-    topFeaturesScores,
-    topFeaturesScoresBySign
-  } = useFeaturesScores(saliencies, outcomeId);
+  const { featuresScores, topFeaturesScoresBySign } = useFeaturesScores(
+    saliencies,
+    outcomeId
+  );
   const [displayChart, setDisplayChart] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const history = useHistory();
@@ -276,8 +275,8 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                         {saliencies.status === RemoteDataStatus.SUCCESS && (
                           <FeaturesScoreTable
                             featuresScore={
-                              topFeaturesScores.length > 0
-                                ? topFeaturesScores
+                              topFeaturesScoresBySign.length > 0
+                                ? topFeaturesScoresBySign
                                 : featuresScores
                             }
                           />
