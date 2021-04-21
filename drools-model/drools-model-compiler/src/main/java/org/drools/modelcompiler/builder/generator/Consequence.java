@@ -148,19 +148,24 @@ public class Consequence {
         }
 
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
-        if (isBreaking) {
-            onCall = new MethodCallExpr(onCall, BREAKING_CALL);
-        }
 
+        MethodCallExpr executeCall;
         switch (context.getRuleDialect()) {
             case JAVA:
-                rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS );
-                return executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+                rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
+                executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+                break;
             case MVEL:
-                return createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
+                executeCall = createExecuteCallMvel(consequenceString, ruleVariablesBlock, usedDeclarationInRHS, onCall);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
         }
 
-        throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
+        if (isBreaking) {
+            executeCall = new MethodCallExpr(executeCall, BREAKING_CALL);
+        }
+        return executeCall;
     }
 
     private void replaceKcontext(BlockStmt ruleConsequence) {
@@ -188,8 +193,8 @@ public class Consequence {
         }
     }
 
-    private MethodCallExpr createExecuteCallMvel(RuleDescr ruleDescr, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
-        String mvelBlock = addCurlyBracesToBlock(ruleDescr.getConsequence().toString());
+    private MethodCallExpr createExecuteCallMvel(String consequenceString, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
+        String mvelBlock = addCurlyBracesToBlock(consequenceString);
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
         for(DeclarationSpec d : context.getAllDeclarations()) {
