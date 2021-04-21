@@ -45,7 +45,7 @@ public class QuarkusExplainableResourceIT {
 
     @Singleton
     public static ConfigBean configBeanProducer() {
-        return new StaticConfigBean("http://localhost:8081", true);
+        return new StaticConfigBean("http://localhost:8081", true, null);
     }
 
     @Test

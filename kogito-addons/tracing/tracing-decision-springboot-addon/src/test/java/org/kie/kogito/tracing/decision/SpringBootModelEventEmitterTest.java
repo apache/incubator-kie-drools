@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
@@ -70,7 +70,7 @@ public class SpringBootModelEventEmitterTest {
 
     private DecisionModelResource makeModel() {
         final DecisionModelResource model = mock(DecisionModelResource.class);
-        when(model.getGav()).thenReturn(new GAV("groupId", "artifactId", "version"));
+        when(model.getGav()).thenReturn(new KogitoGAV("groupId", "artifactId", "version"));
         when(model.getModelName()).thenReturn("name");
         when(model.getNamespace()).thenReturn("namespace");
         when(model.getModelMetadata()).thenReturn(

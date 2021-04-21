@@ -117,7 +117,7 @@ public class ProcessesAssetsProcessor {
         IndexView aggregatedIndex = generateAggregatedIndex(combinedIndexBuildItem.getIndex(), generatedKogitoClasses);
 
         // configure the application generator
-        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), aggregatedIndex);
+        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), aggregatedIndex, curateOutcomeBuildItem.getEffectiveModel().getAppArtifact());
 
         Collection<GeneratedFile> generatedFiles = generatePersistenceInfo(
                 context,

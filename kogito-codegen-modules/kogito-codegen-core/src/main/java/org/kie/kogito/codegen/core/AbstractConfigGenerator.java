@@ -26,10 +26,12 @@ import static org.kie.kogito.codegen.core.ApplicationConfigGenerator.TEMPLATE_CO
 
 public abstract class AbstractConfigGenerator implements ConfigGenerator {
 
-    private final TemplatedGenerator templatedGenerator;
-    private final String configClassName;
+    protected final TemplatedGenerator templatedGenerator;
+    protected final KogitoBuildContext context;
+    protected final String configClassName;
 
     public AbstractConfigGenerator(KogitoBuildContext context, String targetTypeName) {
+        this.context = context;
         configClassName = targetTypeName;
         this.templatedGenerator = TemplatedGenerator.builder()
                 .withTemplateBasePath(TEMPLATE_CONFIG_FOLDER)
@@ -43,9 +45,12 @@ public abstract class AbstractConfigGenerator implements ConfigGenerator {
 
     @Override
     public GeneratedFile generate() {
-        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow();
         return new GeneratedFile(APPLICATION_CONFIG_TYPE,
                 templatedGenerator.generatedFilePath(),
-                compilationUnit.toString());
+                toCompilationUnit().toString());
+    }
+
+    protected CompilationUnit toCompilationUnit() {
+        return templatedGenerator.compilationUnitOrThrow();
     }
 }

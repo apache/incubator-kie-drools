@@ -139,7 +139,7 @@ public class SpringBootDecisionTracingTest {
         final Application mockedApplication = mock(Application.class);
         when(mockedApplication.get(any())).thenReturn(mockedDecisionModels);
 
-        final ConfigBean configBean = new StaticConfigBean(TEST_SERVICE_URL, true);
+        final ConfigBean configBean = new StaticConfigBean(TEST_SERVICE_URL, true, null);
 
         final KafkaTemplate<String, String> mockedTemplate = mock(KafkaTemplate.class);
         final SpringBootTraceEventEmitter eventEmitter = new SpringBootTraceEventEmitter(mockedTemplate, TEST_KAFKA_TOPIC);

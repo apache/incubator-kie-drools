@@ -28,5 +28,6 @@ public class ConfigBean extends org.kie.kogito.conf.StaticConfigBean {
     protected void init() {
         setServiceUrl(kogitoService.orElse(""));
         setCloudEvents(useCloudEvents);
+        setGav($gav$);
     }
 }

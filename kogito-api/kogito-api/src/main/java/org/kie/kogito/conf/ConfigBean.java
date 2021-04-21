@@ -18,10 +18,13 @@ package org.kie.kogito.conf;
 import java.util.Optional;
 
 import org.kie.kogito.KogitoConfig;
+import org.kie.kogito.KogitoGAV;
 
 public interface ConfigBean extends KogitoConfig {
 
     Optional<Boolean> useCloudEvents();
 
     String getServiceUrl();
+
+    Optional<KogitoGAV> getGav();
 }

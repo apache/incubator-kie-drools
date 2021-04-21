@@ -29,9 +29,11 @@ import java.util.stream.Collectors;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
 import org.kie.memorycompiler.resources.ResourceReader;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.model.AppArtifact;
 import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
@@ -71,11 +74,27 @@ public class KogitoQuarkusResourceUtils {
                     System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/"),
                     "target/generated-sources/kogito/");
 
-    public static KogitoBuildContext kogitoBuildContext(Iterable<Path> paths, IndexView index) {
+    public static KogitoBuildContext kogitoBuildContext(Iterable<Path> paths, IndexView index, AppArtifact appArtifact) {
         // scan and parse paths
         AppPaths appPaths = AppPaths.fromQuarkus(paths);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return KogitoQuarkusContextProvider.context(appPaths, classLoader, className -> classAvailabilityResolver(classLoader, index, className));
+        KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
+                .withApplicationProperties(appPaths.getResourceFiles())
+                .withClassLoader(classLoader)
+                .withClassAvailabilityResolver(className -> classAvailabilityResolver(classLoader, index, className))
+                .withAppPaths(appPaths)
+                .withGAV(new KogitoGAV(appArtifact.getGroupId(), appArtifact.getArtifactId(), appArtifact.getVersion()))
+                .build();
+
+        if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_REST)) {
+            LOGGER.info("Disabling REST generation because class '" + QuarkusKogitoBuildContext.QUARKUS_REST + "' is not available");
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+        }
+        if (!context.hasClassAvailable(QuarkusKogitoBuildContext.QUARKUS_DI)) {
+            LOGGER.info("Disabling dependency injection generation because class '" + QuarkusKogitoBuildContext.QUARKUS_DI + "' is not available");
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_DI, "false");
+        }
+        return context;
     }
 
     /**

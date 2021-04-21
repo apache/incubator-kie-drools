@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.tracing.decision.event.model;
 
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModelMetadata;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModelEvent {
 
-    private final GAV gav;
+    private final KogitoGAV gav;
 
     private final String name;
 
@@ -34,42 +35,8 @@ public class ModelEvent {
 
     private final String definition;
 
-    public static class GAV {
-
-        private String groupId;
-        private String artifactId;
-        private String version;
-
-        @JsonCreator
-        public GAV(final @JsonProperty("groupId") String groupId,
-                final @JsonProperty("artifactId") String artifactId,
-                final @JsonProperty("version") String version) {
-            this.groupId = groupId;
-            this.artifactId = artifactId;
-            this.version = version;
-        }
-
-        public static GAV from(final org.kie.api.management.GAV gav) {
-            return new GAV(gav.getGroupId(),
-                    gav.getArtifactId(),
-                    gav.getVersion());
-        }
-
-        public String getGroupId() {
-            return groupId;
-        }
-
-        public String getArtifactId() {
-            return artifactId;
-        }
-
-        public String getVersion() {
-            return version;
-        }
-    }
-
     @JsonCreator
-    public ModelEvent(final @JsonProperty("gav") GAV gav,
+    public ModelEvent(final @JsonProperty("gav") KogitoGAV gav,
             final @JsonProperty("name") String name,
             final @JsonProperty("namespace") String namespace,
             final @JsonProperty("decisionModelMetadata") DecisionModelMetadata decisionModelMetadata,
@@ -81,7 +48,7 @@ public class ModelEvent {
         this.definition = definition;
     }
 
-    public GAV getGav() {
+    public KogitoGAV getGav() {
         return gav;
     }
 

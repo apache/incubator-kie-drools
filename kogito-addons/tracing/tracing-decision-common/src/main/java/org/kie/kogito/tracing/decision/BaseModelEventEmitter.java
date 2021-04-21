@@ -34,7 +34,7 @@ public abstract class BaseModelEventEmitter implements EventEmitter {
                     .flatMap(uri -> CloudEventUtils.build("id",
                             uri,
                             new ModelEvent(
-                                    ModelEvent.GAV.from(resource.getGav()),
+                                    resource.getGav(),
                                     resource.getModelName(),
                                     resource.getNamespace(),
                                     resource.getModelMetadata(),

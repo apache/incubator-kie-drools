@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
@@ -88,6 +89,15 @@ class AbstractKogitoBuildContextTest {
         assertThatThrownBy(() -> builder.withAppPaths(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("appPaths");
+    }
+
+    @Test
+    public void withGAV() {
+        assertThat(builder.build().getGAV()).isEmpty();
+        assertThatThrownBy(() -> builder.withGAV(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("gav");
+        assertThat(builder.withGAV(KogitoGAV.EMPTY_GAV).build().getGAV()).hasValue(KogitoGAV.EMPTY_GAV);
     }
 
     static class MockKogitoBuildContext extends AbstractKogitoBuildContext {

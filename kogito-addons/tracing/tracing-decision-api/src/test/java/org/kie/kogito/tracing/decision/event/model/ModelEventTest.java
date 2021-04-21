@@ -16,7 +16,7 @@
 package org.kie.kogito.tracing.decision.event.model;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModelMetadata;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,9 +25,9 @@ public class ModelEventTest {
 
     @Test
     public void testGetters() {
-        final GAV gav = new GAV("groupID", "artifactId", "version");
+        final KogitoGAV gav = new KogitoGAV("groupID", "artifactId", "version");
         final ModelEvent e = new ModelEvent(
-                ModelEvent.GAV.from(gav),
+                gav,
                 "name",
                 "namespace",
                 new DecisionModelMetadata(

@@ -19,7 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
 
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefaultDecisionModelResourceTest {
 
-    private static final GAV GAV = new GAV("groupID", "artifactId", "version");
+    private static final KogitoGAV GAV = new KogitoGAV("groupID", "artifactId", "version");
 
     private static final String CONTENT = "content";
 

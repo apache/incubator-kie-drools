@@ -19,7 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
 import org.slf4j.Logger;
@@ -29,13 +29,13 @@ public class DefaultDecisionModelResource implements DecisionModelResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultDecisionModelResource.class);
 
-    private final GAV gav;
+    private final KogitoGAV gav;
     private final String namespace;
     private final String modelName;
     private final DecisionModelMetadata type;
     private final InputStreamReader resourceReader;
 
-    public DefaultDecisionModelResource(GAV gav,
+    public DefaultDecisionModelResource(KogitoGAV gav,
             String namespace,
             String modelName,
             DecisionModelMetadata type,
@@ -48,7 +48,7 @@ public class DefaultDecisionModelResource implements DecisionModelResource {
     }
 
     @Override
-    public GAV getGav() {
+    public KogitoGAV getGav() {
         return gav;
     }
 

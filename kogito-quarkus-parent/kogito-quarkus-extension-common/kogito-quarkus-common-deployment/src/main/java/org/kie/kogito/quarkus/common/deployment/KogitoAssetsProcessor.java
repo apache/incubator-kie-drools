@@ -80,7 +80,7 @@ public class KogitoAssetsProcessor {
             BuildProducer<GeneratedResourceBuildItem> genResBI) throws IOException {
 
         // configure the application generator
-        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex());
+        KogitoBuildContext context = kogitoBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex(), curateOutcomeBuildItem.getEffectiveModel().getAppArtifact());
 
         Collection<GeneratedFile> generatedFiles = generateFiles(context);
 

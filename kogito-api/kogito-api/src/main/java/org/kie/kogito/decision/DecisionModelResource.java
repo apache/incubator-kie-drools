@@ -17,11 +17,11 @@ package org.kie.kogito.decision;
 
 import java.util.function.Supplier;
 
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 
 public interface DecisionModelResource extends Supplier<String> {
 
-    GAV getGav();
+    KogitoGAV getGav();
 
     String getNamespace();
 

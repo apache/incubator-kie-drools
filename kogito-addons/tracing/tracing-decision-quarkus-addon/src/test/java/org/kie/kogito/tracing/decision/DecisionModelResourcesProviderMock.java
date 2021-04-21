@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
@@ -39,7 +39,7 @@ public class DecisionModelResourcesProviderMock implements DecisionModelResource
     @Override
     public List<DecisionModelResource> get() {
         DecisionModelResource resource = new DefaultDecisionModelResource(
-                new GAV("test", "test", "test"),
+                new KogitoGAV("test", "test", "test"),
                 TEST_MODEL_NAMESPACE,
                 TEST_MODEL_NAME,
                 new DecisionModelMetadata(

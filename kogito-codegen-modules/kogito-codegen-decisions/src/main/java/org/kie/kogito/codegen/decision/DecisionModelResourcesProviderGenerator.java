@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.kie.api.management.GAV;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
@@ -102,12 +102,17 @@ public class DecisionModelResourcesProviderGenerator {
         final VariableDeclarator resourcePathsVariable =
                 getResourcesMethod.findFirst(VariableDeclarator.class).orElseThrow(() -> new RuntimeException("Can't find a variable declaration in the \"get()\" method."));
 
+        if (!context.getGAV().isPresent()) {
+            LOGGER.error("Impossible to obtain project group-artifact-id, using empty value");
+        }
+        KogitoGAV gav = context.getGAV().orElse(KogitoGAV.EMPTY_GAV);
+
         for (DMNResource resource : resources) {
             final MethodCallExpr add = new MethodCallExpr(resourcePathsVariable.getNameAsExpression(), "add");
             final MethodCallExpr getResAsStream = getReadResourceMethod(applicationClass, resource.getCollectedResource());
             final MethodCallExpr isr = new MethodCallExpr("readResource").addArgument(getResAsStream);
             add.addArgument(newObject(DefaultDecisionModelResource.class,
-                    mockGAV(),
+                    newGAV(gav),
                     new StringLiteralExpr(resource.getDmnModel().getNamespace()),
                     new StringLiteralExpr(resource.getDmnModel().getName()),
                     makeDecisionModelMetadata(resource),
@@ -116,12 +121,11 @@ public class DecisionModelResourcesProviderGenerator {
         }
     }
 
-    private ObjectCreationExpr mockGAV() {
-        //TODO See https://issues.redhat.com/browse/FAI-239
-        return newObject(GAV.class,
-                new StringLiteralExpr("dummy"),
-                new StringLiteralExpr("dummy"),
-                new StringLiteralExpr("0.0"));
+    private ObjectCreationExpr newGAV(KogitoGAV gav) {
+        return newObject(KogitoGAV.class,
+                new StringLiteralExpr(gav.getGroupId()),
+                new StringLiteralExpr(gav.getArtifactId()),
+                new StringLiteralExpr(gav.getVersion()));
     }
 
     private ObjectCreationExpr makeDecisionModelMetadata(DMNResource resource) {

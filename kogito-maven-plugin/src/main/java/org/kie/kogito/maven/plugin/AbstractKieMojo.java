@@ -29,6 +29,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -100,6 +101,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
                 .withAddonsConfig(AddonsConfigDiscovery.discover(this::hasClassOnClasspath))
                 .withClassLoader(classLoader)
                 .withAppPaths(appPaths)
+                .withGAV(new KogitoGAV(project.getGroupId(), project.getArtifactId(), project.getVersion()))
                 .build();
 
         additionalProperties(context);
