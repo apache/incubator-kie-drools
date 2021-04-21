@@ -16,57 +16,27 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>drools</artifactId>
-        <groupId>org.drools</groupId>
-        <version>7.54.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>7.54.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>drools-impact-analysis</artifactId>
-    <packaging>pom</packaging>
+  <artifactId>drools-impact-analysis</artifactId>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>drools-impact-analysis-model</module>
-        <module>drools-impact-analysis-parser</module>
-        <module>drools-impact-analysis-graph</module>
-        <module>drools-impact-analysis-itests</module>
-    </modules>
+  <name>drools-impact-analysis</name>
+  <description>A tool to analyze relationships between rules and also impacts of changing a rule. Visualizes the graph using Dot language format</description>
+  <url>http://drools.org</url>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>guru.nidi</groupId>
-                <artifactId>graphviz-java</artifactId>
-                <version>0.18.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-impact-analysis-model</artifactId>
-                <version>7.54.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-impact-analysis-parser</artifactId>
-                <version>7.54.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-impact-analysis-graph-common</artifactId>
-                <version>7.54.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
-                <version>7.54.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-impact-analysis-itests</artifactId>
-                <version>7.54.0-SNAPSHOT</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <modules>
+    <module>drools-impact-analysis-model</module>
+    <module>drools-impact-analysis-parser</module>
+    <module>drools-impact-analysis-graph</module>
+    <module>drools-impact-analysis-itests</module>
+  </modules>
+
 </project>

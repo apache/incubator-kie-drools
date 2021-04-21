@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.impact.analysis.integrationtests.domain;
+package org.drools.impact.analysis.example.domain;
 
 public class Order {
 
