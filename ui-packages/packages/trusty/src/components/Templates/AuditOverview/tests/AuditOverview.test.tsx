@@ -3,6 +3,7 @@ import { mount, shallow } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
 import AuditOverview from '../AuditOverview';
 import useExecutions from '../useExecutions';
+import { RemoteDataStatus } from '../../../../types';
 
 jest.mock('../useExecutions');
 
@@ -10,7 +11,7 @@ describe('Audit overview', () => {
   test('renders correctly a list of executions', () => {
     const mockLoadExecutions = jest.fn();
     const executions = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: {
         total: 1,
         limit: 10,
@@ -42,7 +43,7 @@ describe('Audit overview', () => {
   test('loads a list of executions from the last month by default', () => {
     const mockLoadExecutions = jest.fn();
     const executions = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: {
         total: 1,
         limit: 10,

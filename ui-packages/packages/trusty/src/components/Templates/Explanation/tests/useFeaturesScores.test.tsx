@@ -1,6 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import useFeaturesScores from '../useFeaturesScores';
-import { RemoteData, Saliencies } from '../../../../types';
+import {
+  RemoteData,
+  RemoteDataStatus,
+  Saliencies,
+  SaliencyStatus
+} from '../../../../types';
 import { orderBy } from 'lodash';
 
 describe('useFeaturesScores', () => {
@@ -13,7 +18,7 @@ describe('useFeaturesScores', () => {
       );
     });
     let sortedFeatures;
-    if (saliencies.status === 'SUCCESS') {
+    if (saliencies.status === RemoteDataStatus.SUCCESS) {
       sortedFeatures = orderBy(
         saliencies.data.saliencies[0].featureImportance,
         item => Math.abs(item.featureScore),
@@ -26,9 +31,9 @@ describe('useFeaturesScores', () => {
 });
 
 const saliencies = {
-  status: 'SUCCESS',
+  status: RemoteDataStatus.SUCCESS,
   data: {
-    status: 'SUCCEEDED',
+    status: SaliencyStatus.SUCCEEDED,
     saliencies: [
       {
         outcomeId: 'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000',

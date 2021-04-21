@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { RemoteData, Execution } from '../../../types';
+import { RemoteData, Execution, RemoteDataStatus } from '../../../types';
 import { AxiosRequestConfig } from 'axios';
 import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
 
 const useExecutionInfo = (executionId: string) => {
   const [execution, setExecution] = useState<RemoteData<Error, Execution>>({
-    status: 'NOT_ASKED'
+    status: RemoteDataStatus.NOT_ASKED
   });
 
   useEffect(() => {
@@ -14,15 +14,18 @@ const useExecutionInfo = (executionId: string) => {
       url: `${EXECUTIONS_PATH}/decisions/${executionId}`,
       method: 'get'
     };
-    setExecution({ status: 'LOADING' });
+    setExecution({ status: RemoteDataStatus.LOADING });
     httpClient(config)
       .then(response => {
         if (isMounted) {
-          setExecution({ status: 'SUCCESS', data: response.data });
+          setExecution({
+            status: RemoteDataStatus.SUCCESS,
+            data: response.data
+          });
         }
       })
       .catch(error => {
-        setExecution({ status: 'FAILURE', error });
+        setExecution({ status: RemoteDataStatus.FAILURE, error });
       });
     return () => {
       isMounted = false;

@@ -1,11 +1,14 @@
 import React from 'react';
 import InputDataBrowser from '../InputDataBrowser';
-import { shallow, mount } from 'enzyme';
-import { ItemObject, RemoteData } from '../../../../types';
+import { mount, shallow } from 'enzyme';
+import { ItemObject, RemoteData, RemoteDataStatus } from '../../../../types';
 
 describe('InputDataBrowser', () => {
   test('renders a loading animation while fetching data', () => {
-    const inputData = { status: 'LOADING' } as RemoteData<Error, ItemObject[]>;
+    const inputData = { status: RemoteDataStatus.LOADING } as RemoteData<
+      Error,
+      ItemObject[]
+    >;
     const wrapper = shallow(<InputDataBrowser inputData={inputData} />);
 
     expect(wrapper).toMatchSnapshot();
@@ -13,7 +16,7 @@ describe('InputDataBrowser', () => {
 
   test('renders a list of inputs', () => {
     const inputData = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: [
         {
           name: 'Asset Score',

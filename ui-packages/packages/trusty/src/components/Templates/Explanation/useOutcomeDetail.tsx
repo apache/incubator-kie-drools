@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { RemoteData, ItemObject } from '../../../types';
+import { ItemObject, RemoteData, RemoteDataStatus } from '../../../types';
 import { AxiosRequestConfig } from 'axios';
 import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
 
@@ -7,7 +7,7 @@ const useOutcomeDetail = (executionId: string, outcomeId: string | null) => {
   const [outcomeDetail, setOutcomeDetail] = useState<
     RemoteData<Error, ItemObject[]>
   >({
-    status: 'NOT_ASKED'
+    status: RemoteDataStatus.NOT_ASKED
   });
 
   useEffect(() => {
@@ -17,18 +17,18 @@ const useOutcomeDetail = (executionId: string, outcomeId: string | null) => {
         url: `${EXECUTIONS_PATH}/decisions/${executionId}/outcomes/${outcomeId}`,
         method: 'get'
       };
-      setOutcomeDetail({ status: 'LOADING' });
+      setOutcomeDetail({ status: RemoteDataStatus.LOADING });
       httpClient(config)
         .then(response => {
           if (isMounted) {
             setOutcomeDetail({
-              status: 'SUCCESS',
+              status: RemoteDataStatus.SUCCESS,
               data: response.data.outcomeInputs
             });
           }
         })
         .catch(error => {
-          setOutcomeDetail({ status: 'FAILURE', error });
+          setOutcomeDetail({ status: RemoteDataStatus.FAILURE, error });
         });
     }
     return () => {

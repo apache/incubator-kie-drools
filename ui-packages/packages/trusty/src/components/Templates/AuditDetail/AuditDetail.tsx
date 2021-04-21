@@ -17,7 +17,7 @@ import {
   useParams,
   useRouteMatch
 } from 'react-router-dom';
-import { ExecutionRouteParams } from '../../../types';
+import { ExecutionRouteParams, RemoteDataStatus } from '../../../types';
 import SkeletonFlexStripes from '../../Molecules/SkeletonFlexStripes/SkeletonFlexStripes';
 import useExecutionInfo from './useExecutionInfo';
 import ExecutionHeader from '../../Organisms/ExecutionHeader/ExecutionHeader';
@@ -42,7 +42,7 @@ const AuditDetail = () => {
   >([]);
 
   useEffect(() => {
-    if (outcomes.status === 'SUCCESS') {
+    if (outcomes.status === RemoteDataStatus.SUCCESS) {
       const newNav = [];
       if (outcomes.data.length === 1) {
         newNav.push({
@@ -106,17 +106,23 @@ const AuditDetail = () => {
           <ModelLookup />
         </Route>
         <Route exact path={`${path}/`}>
-          {outcomes.status === 'SUCCESS' && outcomes.data.length === 1 && (
-            <Redirect
-              exact
-              from={path}
-              to={`${location.pathname}/single-outcome?outcomeId=${outcomes.data[0].outcomeId}`}
-            />
-          )}
-          {outcomes.status === 'SUCCESS' && outcomes.data.length > 1 && (
-            <Redirect exact from={path} to={`${location.pathname}/outcomes`} />
-          )}
-          {outcomes.status === 'LOADING' && (
+          {outcomes.status === RemoteDataStatus.SUCCESS &&
+            outcomes.data.length === 1 && (
+              <Redirect
+                exact
+                from={path}
+                to={`${location.pathname}/single-outcome?outcomeId=${outcomes.data[0].outcomeId}`}
+              />
+            )}
+          {outcomes.status === RemoteDataStatus.SUCCESS &&
+            outcomes.data.length > 1 && (
+              <Redirect
+                exact
+                from={path}
+                to={`${location.pathname}/outcomes`}
+              />
+            )}
+          {outcomes.status === RemoteDataStatus.LOADING && (
             <PageSection>
               <Stack hasGutter>
                 <StackItem>

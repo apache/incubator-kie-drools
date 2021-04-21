@@ -31,7 +31,13 @@ import ExplanationError from '../../Molecules/ExplanationError/ExplanationError'
 import EvaluationStatus from '../../Atoms/EvaluationStatus/EvaluationStatus';
 import SkeletonDoubleBarChart from '../../Molecules/SkeletonDoubleBarChart/SkeletonDoubleBarChart';
 import FeaturesScoreChartBySign from '../../Organisms/FeaturesScoreChartBySign/FeaturesScoreChartBySign';
-import { ExecutionRouteParams, Outcome, RemoteData } from '../../../types';
+import {
+  ExecutionRouteParams,
+  Outcome,
+  RemoteData,
+  RemoteDataStatus,
+  SaliencyStatus
+} from '../../../types';
 import './Explanation.scss';
 
 type ExplanationProps = {
@@ -77,7 +83,7 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
     }
   }, [featuresScores]);
   useEffect(() => {
-    if (outcomes.status === 'SUCCESS') {
+    if (outcomes.status === RemoteDataStatus.SUCCESS) {
       setOutcomesList(outcomes.data);
     }
   }, [outcomes]);
@@ -178,8 +184,8 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
               </Title>
             </StackItem>
             <StackItem>
-              {(saliencies.status === 'LOADING' ||
-                (saliencies.status === 'SUCCESS' &&
+              {(saliencies.status === RemoteDataStatus.LOADING ||
+                (saliencies.status === RemoteDataStatus.SUCCESS &&
                   featuresScores.length > 0)) && (
                 <Grid hasGutter>
                   <GridItem span={8}>
@@ -196,13 +202,13 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                         )}
                       </CardHeader>
                       <CardBody>
-                        {saliencies.status === 'LOADING' && (
+                        {saliencies.status === RemoteDataStatus.LOADING && (
                           <SkeletonDoubleBarChart
                             valuesCount={5}
                             height={400}
                           />
                         )}
-                        {saliencies.status === 'SUCCESS' && (
+                        {saliencies.status === RemoteDataStatus.SUCCESS && (
                           <>
                             {topFeaturesScoresBySign.length === 0 && (
                               <div className="explanation-view__chart">
@@ -264,10 +270,10 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                         </Title>
                       </CardHeader>
                       <CardBody>
-                        {saliencies.status === 'LOADING' && (
+                        {saliencies.status === RemoteDataStatus.LOADING && (
                           <SkeletonGrid rowsCount={4} colsDefinition={2} />
                         )}
-                        {saliencies.status === 'SUCCESS' && (
+                        {saliencies.status === RemoteDataStatus.SUCCESS && (
                           <FeaturesScoreTable
                             featuresScore={
                               topFeaturesScores.length > 0
@@ -281,11 +287,11 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                   </GridItem>
                 </Grid>
               )}
-              {saliencies.status === 'SUCCESS' && (
+              {saliencies.status === RemoteDataStatus.SUCCESS && (
                 <>
-                  {saliencies.data.status === 'SUCCEEDED' &&
+                  {saliencies.data.status === SaliencyStatus.SUCCEEDED &&
                     featuresScores.length === 0 && <ExplanationUnavailable />}
-                  {saliencies.data.status === 'FAILED' && (
+                  {saliencies.data.status === SaliencyStatus.FAILED && (
                     <ExplanationError
                       statusDetail={saliencies.data.statusDetail}
                     />

@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import InputData from '../InputData';
 import useInputData from '../useInputData';
 import { MemoryRouter } from 'react-router';
-import { ItemObject } from '../../../../types';
+import { ItemObject, RemoteDataStatus } from '../../../../types';
 
 jest.mock('../useInputData');
 jest.mock('react-router-dom', () => ({
@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => ({
 describe('InputData', () => {
   test('renders inputs of an execution', () => {
     const inputData = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: {
         inputs: [
           {

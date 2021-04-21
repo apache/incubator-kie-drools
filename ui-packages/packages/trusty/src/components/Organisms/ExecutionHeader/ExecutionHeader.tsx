@@ -3,7 +3,7 @@ import { Flex, FlexItem, Title, Tooltip } from '@patternfly/react-core';
 import SkeletonStripe from '../../Atoms/SkeletonStripe/SkeletonStripe';
 import ExecutionStatus from '../../Atoms/ExecutionStatus/ExecutionStatus';
 import FormattedDate from '../../Atoms/FormattedDate/FormattedDate';
-import { RemoteData, Execution } from '../../../types';
+import { RemoteData, Execution, RemoteDataStatus } from '../../../types';
 import './ExecutionHeader.scss';
 
 type ExecutionHeaderProps = {
@@ -17,7 +17,7 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
     <section className="execution-header">
       <Flex>
         <FlexItem>
-          {execution.status === 'LOADING' && (
+          {execution.status === RemoteDataStatus.LOADING && (
             <SkeletonStripe
               isInline={true}
               customStyle={{
@@ -28,7 +28,7 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
               }}
             />
           )}
-          {execution.status === 'SUCCESS' && (
+          {execution.status === RemoteDataStatus.SUCCESS && (
             <Title size="3xl" headingLevel="h2">
               <span className="execution-header__uuid">
                 ID# {execution.data.executionId}
@@ -37,7 +37,7 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
           )}
         </FlexItem>
         <FlexItem className="execution-header__property">
-          {execution.status === 'SUCCESS' && (
+          {execution.status === RemoteDataStatus.SUCCESS && (
             <Tooltip
               entryDelay={23}
               exitDelay={23}

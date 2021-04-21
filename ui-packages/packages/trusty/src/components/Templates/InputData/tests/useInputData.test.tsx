@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
 import useInputData from '../useInputData';
 import * as api from '../../../../utils/api/httpClient';
-import { ItemObject } from '../../../../types';
+import { ItemObject, RemoteDataStatus } from '../../../../types';
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -40,14 +40,17 @@ describe('useInputData', () => {
       return useInputData('b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000');
     });
 
-    expect(result.current).toStrictEqual({ status: 'LOADING' });
+    expect(result.current).toStrictEqual({ status: RemoteDataStatus.LOADING });
 
     await act(async () => {
       await flushPromises();
     });
 
     expect(result.current).toStrictEqual(
-      Object.assign({ status: 'SUCCESS' }, { data: inputData.data.inputs })
+      Object.assign(
+        { status: RemoteDataStatus.SUCCESS },
+        { data: inputData.data.inputs }
+      )
     );
     expect(apiMock).toHaveBeenCalledTimes(1);
   });

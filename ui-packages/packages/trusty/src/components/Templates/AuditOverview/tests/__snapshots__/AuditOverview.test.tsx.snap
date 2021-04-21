@@ -52,7 +52,7 @@ exports[`Audit overview renders correctly a list of executions 1`] = `
             "offset": 0,
             "total": 1,
           },
-          "status": "SUCCESS",
+          "status": 3,
         }
       }
     />

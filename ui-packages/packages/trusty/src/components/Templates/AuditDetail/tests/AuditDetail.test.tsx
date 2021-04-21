@@ -3,7 +3,12 @@ import { mount } from 'enzyme';
 import AuditDetail from '../AuditDetail';
 import useExecutionInfo from '../useExecutionInfo';
 import useDecisionOutcomes from '../useDecisionOutcomes';
-import { Execution, Outcome, RemoteData } from '../../../../types';
+import {
+  Execution,
+  Outcome,
+  RemoteData,
+  RemoteDataStatus
+} from '../../../../types';
 import { MemoryRouter } from 'react-router';
 
 jest.mock('../useExecutionInfo');
@@ -22,10 +27,10 @@ jest.mock('react-router-dom', () => ({
 describe('AuditDetail', () => {
   test('renders loading animation while fetching data', () => {
     const execution = {
-      status: 'LOADING'
+      status: RemoteDataStatus.LOADING
     } as RemoteData<Error, Execution>;
     const outcomes = {
-      status: 'LOADING'
+      status: RemoteDataStatus.LOADING
     } as RemoteData<Error, Outcome[]>;
 
     (useExecutionInfo as jest.Mock).mockReturnValue(execution);
@@ -75,7 +80,7 @@ describe('AuditDetail', () => {
 
   test('renders correctly an execution', () => {
     const execution = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: {
         executionId: 'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000',
         executionDate: '2020-08-12T12:54:53.933Z',
@@ -86,7 +91,7 @@ describe('AuditDetail', () => {
       }
     } as RemoteData<Error, Execution>;
     const outcomes = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: [
         {
           outcomeId: '_12268B68-94A1-4960-B4C8-0B6071AFDE58',

@@ -8,11 +8,16 @@ import {
   EmptyStateIcon,
   Title
 } from '@patternfly/react-core';
-import { SearchIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import ExecutionStatus from '../../Atoms/ExecutionStatus/ExecutionStatus';
 import FormattedDate from '../../Atoms/FormattedDate/FormattedDate';
 import skeletonRows from '../../../utils/skeletonRows/skeletonRows';
-import { Execution, Executions, RemoteData } from '../../../types';
+import {
+  Execution,
+  Executions,
+  RemoteData,
+  RemoteDataStatus
+} from '../../../types';
 
 type ExecutionTableProps = {
   data: RemoteData<Error, Executions>;
@@ -41,18 +46,18 @@ const prepareRows = (
 ) => {
   let rows;
   switch (data.status) {
-    case 'NOT_ASKED':
-    case 'LOADING':
+    case RemoteDataStatus.NOT_ASKED:
+    case RemoteDataStatus.LOADING:
       rows = skeletonRows(columnsNumber, 10, 'executionKey');
       break;
-    case 'SUCCESS':
+    case RemoteDataStatus.SUCCESS:
       if (data.data.headers.length > 0) {
         rows = prepareExecutionsRows(data.data.headers);
       } else {
         rows = noExecutions(columnsNumber);
       }
       break;
-    case 'FAILURE':
+    case RemoteDataStatus.FAILURE:
       rows = loadingError(columnsNumber);
       break;
   }

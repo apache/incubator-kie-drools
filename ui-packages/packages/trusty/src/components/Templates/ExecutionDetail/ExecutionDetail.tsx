@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { PageSection, Stack, StackItem, Title } from '@patternfly/react-core';
 import Outcomes from '../../Organisms/Outcomes/Outcomes';
 import SkeletonCards from '../../Molecules/SkeletonCards/SkeletonCards';
-import { RemoteData, Outcome } from '../../../types';
+import { Outcome, RemoteData, RemoteDataStatus } from '../../../types';
 import './ExecutionDetail.scss';
 
 type ExecutionDetailProps = {
@@ -33,8 +33,10 @@ const ExecutionDetail = (props: ExecutionDetailProps) => {
             </Title>
           </StackItem>
           <StackItem>
-            {outcomes.status === 'LOADING' && <SkeletonCards quantity={2} />}
-            {outcomes.status === 'SUCCESS' && (
+            {outcomes.status === RemoteDataStatus.LOADING && (
+              <SkeletonCards quantity={2} />
+            )}
+            {outcomes.status === RemoteDataStatus.SUCCESS && (
               <Outcomes
                 outcomes={outcomes.data}
                 onExplanationClick={goToExplanation}

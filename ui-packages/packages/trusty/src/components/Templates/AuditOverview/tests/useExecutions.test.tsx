@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import useExecutions from '../useExecutions';
 import * as api from '../../../../utils/api/httpClient';
 import { act } from 'react-test-renderer';
+import { RemoteDataStatus } from '../../../../types';
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'callOnceHandler');
@@ -75,14 +76,16 @@ describe('useExecutions', () => {
         offset: 0
       });
     });
-    expect(result.current.executions).toStrictEqual({ status: 'LOADING' });
+    expect(result.current.executions).toStrictEqual({
+      status: RemoteDataStatus.LOADING
+    });
 
     await act(async () => {
       await flushPromises();
     });
 
     expect(result.current.executions).toStrictEqual(
-      Object.assign({ status: 'SUCCESS' }, executionsResponse)
+      Object.assign({ status: RemoteDataStatus.SUCCESS }, executionsResponse)
     );
     expect(apiMock).toHaveBeenCalledTimes(1);
 
@@ -90,14 +93,16 @@ describe('useExecutions', () => {
       result.current.loadExecutions();
     });
 
-    expect(result.current.executions).toStrictEqual({ status: 'LOADING' });
+    expect(result.current.executions).toStrictEqual({
+      status: RemoteDataStatus.LOADING
+    });
 
     await act(async () => {
       await flushPromises();
     });
 
     expect(result.current.executions).toStrictEqual(
-      Object.assign({ status: 'SUCCESS' }, executionsResponse)
+      Object.assign({ status: RemoteDataStatus.SUCCESS }, executionsResponse)
     );
     expect(apiMock).toHaveBeenCalledTimes(1);
   });
@@ -113,14 +118,16 @@ describe('useExecutions', () => {
         offset: 0
       });
     });
-    expect(result.current.executions).toStrictEqual({ status: 'LOADING' });
+    expect(result.current.executions).toStrictEqual({
+      status: RemoteDataStatus.LOADING
+    });
 
     await act(async () => {
       await flushPromises();
     });
 
     expect(result.current.executions).toStrictEqual(
-      Object.assign({ error: 'error', status: 'FAILURE' })
+      Object.assign({ error: 'error', status: RemoteDataStatus.FAILURE })
     );
     expect(apiMock).toHaveBeenCalledTimes(1);
   });

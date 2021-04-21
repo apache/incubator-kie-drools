@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, PageSection } from '@patternfly/react-core';
 import useModelData from './useModelData';
 import { useParams } from 'react-router-dom';
-import { ExecutionRouteParams } from '../../../types';
+import { ExecutionRouteParams, RemoteDataStatus } from '../../../types';
 import ModelDiagram from '../../Organisms/ModelDiagram/ModelDiagram';
 
 const ModelLookup = () => {
@@ -17,7 +17,7 @@ const ModelLookup = () => {
         <Divider />
       </PageSection>
       <PageSection variant={'light'}>
-        {modelData.status === 'SUCCESS' && (
+        {modelData.status === RemoteDataStatus.SUCCESS && (
           <ModelDiagram model={modelData.data} />
         )}
       </PageSection>

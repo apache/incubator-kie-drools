@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import useOutcomeDetail from '../useOutcomeDetail';
 import { act } from 'react-test-renderer';
 import * as api from '../../../../utils/api/httpClient';
+import { RemoteDataStatus } from '../../../../types';
 
 const flushPromises = () => new Promise(setImmediate);
 const apiMock = jest.spyOn(api, 'httpClient');
@@ -53,14 +54,14 @@ describe('useOutcomeDetail', () => {
       );
     });
 
-    expect(result.current).toStrictEqual({ status: 'LOADING' });
+    expect(result.current).toStrictEqual({ status: RemoteDataStatus.LOADING });
 
     await act(async () => {
       await flushPromises();
     });
 
     expect(result.current).toStrictEqual({
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: details.data.outcomeInputs
     });
   });

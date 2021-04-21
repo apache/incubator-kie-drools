@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  EXECUTIONS_PATH,
-  callOnceHandler
+  callOnceHandler,
+  EXECUTIONS_PATH
 } from '../../../utils/api/httpClient';
-import { RemoteData, Executions } from '../../../types';
+import { Executions, RemoteData, RemoteDataStatus } from '../../../types';
 import axios, { AxiosRequestConfig } from 'axios';
 
 type useExecutionsParameters = {
@@ -17,14 +17,14 @@ type useExecutionsParameters = {
 const useExecutions = (parameters: useExecutionsParameters) => {
   const { searchString, from, to, limit, offset } = parameters;
   const [executions, setExecutions] = useState<RemoteData<Error, Executions>>({
-    status: 'NOT_ASKED'
+    status: RemoteDataStatus.NOT_ASKED
   });
 
   const getExecutions = useMemo(() => callOnceHandler(), []);
 
   const loadExecutions = useCallback(() => {
     let isMounted = true;
-    setExecutions({ status: 'LOADING' });
+    setExecutions({ status: RemoteDataStatus.LOADING });
 
     const config: AxiosRequestConfig = {
       url: EXECUTIONS_PATH,
@@ -35,12 +35,15 @@ const useExecutions = (parameters: useExecutionsParameters) => {
     getExecutions(config)
       .then(response => {
         if (isMounted) {
-          setExecutions({ status: 'SUCCESS', data: response.data });
+          setExecutions({
+            status: RemoteDataStatus.SUCCESS,
+            data: response.data
+          });
         }
       })
       .catch(error => {
         if (!axios.isCancel(error)) {
-          setExecutions({ status: 'FAILURE', error });
+          setExecutions({ status: RemoteDataStatus.FAILURE, error });
         }
       });
     return () => {

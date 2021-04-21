@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { RemoteData, Saliencies } from '../../../types';
+import { RemoteData, RemoteDataStatus, Saliencies } from '../../../types';
 import { AxiosRequestConfig } from 'axios';
 import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
 
 const useSaliencies = (executionId: string) => {
   const [saliencies, setSaliencies] = useState<RemoteData<Error, Saliencies>>({
-    status: 'NOT_ASKED'
+    status: RemoteDataStatus.NOT_ASKED
   });
 
   useEffect(() => {
@@ -15,15 +15,18 @@ const useSaliencies = (executionId: string) => {
       method: 'get'
     };
 
-    setSaliencies({ status: 'LOADING' });
+    setSaliencies({ status: RemoteDataStatus.LOADING });
     httpClient(config)
       .then(response => {
         if (isMounted) {
-          setSaliencies({ status: 'SUCCESS', data: response.data });
+          setSaliencies({
+            status: RemoteDataStatus.SUCCESS,
+            data: response.data
+          });
         }
       })
       .catch(error => {
-        setSaliencies({ status: 'FAILURE', error });
+        setSaliencies({ status: RemoteDataStatus.FAILURE, error });
       });
     return () => {
       isMounted = false;

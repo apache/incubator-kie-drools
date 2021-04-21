@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { RemoteData, ItemObject } from '../../../types';
+import { ItemObject, RemoteData, RemoteDataStatus } from '../../../types';
 import { AxiosRequestConfig } from 'axios';
 import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
 
 const useInputData = (executionId: string) => {
   const [inputData, setInputData] = useState<RemoteData<Error, ItemObject[]>>({
-    status: 'NOT_ASKED'
+    status: RemoteDataStatus.NOT_ASKED
   });
 
   useEffect(() => {
@@ -14,15 +14,18 @@ const useInputData = (executionId: string) => {
       url: `${EXECUTIONS_PATH}/decisions/${executionId}/structuredInputs`,
       method: 'get'
     };
-    setInputData({ status: 'LOADING' });
+    setInputData({ status: RemoteDataStatus.LOADING });
     httpClient(config)
       .then(response => {
         if (isMounted) {
-          setInputData({ status: 'SUCCESS', data: response.data.inputs });
+          setInputData({
+            status: RemoteDataStatus.SUCCESS,
+            data: response.data.inputs
+          });
         }
       })
       .catch(error => {
-        setInputData({ status: 'FAILURE', error });
+        setInputData({ status: RemoteDataStatus.FAILURE, error });
       });
     return () => {
       isMounted = false;

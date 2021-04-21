@@ -1,12 +1,12 @@
 import React from 'react';
 import ExecutionHeader from '../ExecutionHeader';
 import { shallow } from 'enzyme';
-import { Execution, RemoteData } from '../../../../types';
+import { Execution, RemoteData, RemoteDataStatus } from '../../../../types';
 
 describe('ExecutionHeader', () => {
   test('renders a loading animation while fetching data', () => {
     const execution = {
-      status: 'LOADING'
+      status: RemoteDataStatus.LOADING
     } as RemoteData<Error, Execution>;
 
     const wrapper = shallow(<ExecutionHeader execution={execution} />);
@@ -17,7 +17,7 @@ describe('ExecutionHeader', () => {
 
   test('renders the execution info', () => {
     const execution = {
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: {
         executionId: 'b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000',
         executionDate: '2020-08-12T12:54:53.933Z',

@@ -21,10 +21,11 @@ import SkeletonFlexStripes from '../../Molecules/SkeletonFlexStripes/SkeletonFle
 import { OutlinedMehIcon } from '@patternfly/react-icons';
 import {
   InputRow,
-  ItemObject,
   isItemObjectArray,
   isItemObjectMultiArray,
-  RemoteData
+  ItemObject,
+  RemoteData,
+  RemoteDataStatus
 } from '../../../types';
 import './InputDataBrowser.scss';
 
@@ -42,7 +43,10 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
   };
 
   useEffect(() => {
-    if (inputData.status === 'SUCCESS' && inputData.data.length > 0) {
+    if (
+      inputData.status === RemoteDataStatus.SUCCESS &&
+      inputData.data.length > 0
+    ) {
       const items: ItemObject[] = [];
       const categoryList = [];
       const rootSection: ItemObject = {
@@ -74,7 +78,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
 
   return (
     <div className="input-browser">
-      {inputData.status === 'LOADING' && (
+      {inputData.status === RemoteDataStatus.LOADING && (
         <>
           <div className="input-browser__section-list">
             <SkeletonFlexStripes
@@ -86,68 +90,70 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
           <SkeletonDataList rowsCount={4} colsCount={6} hasHeader={true} />
         </>
       )}
-      {inputData.status === 'SUCCESS' && inputData.data.length > 0 && (
-        <>
-          <div className="input-browser__section-list">
-            <Split>
-              <SplitItem>
-                <span className="input-browser__section-list__label">
-                  Browse Sections
-                </span>
-              </SplitItem>
-              <SplitItem>
-                {categories.map((item, index) => (
-                  <Button
-                    type={'button'}
-                    variant={index === viewSection ? 'primary' : 'control'}
-                    isActive={index === viewSection}
-                    key={`section-${index}`}
-                    onClick={() => handleSectionSwitch(index)}
-                  >
-                    {item}
-                  </Button>
-                ))}
-              </SplitItem>
-            </Split>
-          </div>
-          <DataList
-            aria-label="Input Data"
-            className="input-browser__data-list"
-          >
-            <DataListItem
-              aria-labelledby="header"
-              key="header"
-              className="input-browser__header"
+      {inputData.status === RemoteDataStatus.SUCCESS &&
+        inputData.data.length > 0 && (
+          <>
+            <div className="input-browser__section-list">
+              <Split>
+                <SplitItem>
+                  <span className="input-browser__section-list__label">
+                    Browse Sections
+                  </span>
+                </SplitItem>
+                <SplitItem>
+                  {categories.map((item, index) => (
+                    <Button
+                      type={'button'}
+                      variant={index === viewSection ? 'primary' : 'control'}
+                      isActive={index === viewSection}
+                      key={`section-${index}`}
+                      onClick={() => handleSectionSwitch(index)}
+                    >
+                      {item}
+                    </Button>
+                  ))}
+                </SplitItem>
+              </Split>
+            </div>
+            <DataList
+              aria-label="Input Data"
+              className="input-browser__data-list"
             >
-              <DataListItemRow>
-                <DataListItemCells
-                  dataListCells={[
-                    <DataListCell width={3} key="Input Data">
-                      <span>Input Data</span>
-                    </DataListCell>,
-                    <DataListCell width={3} key="Value">
-                      <span>Value</span>
-                    </DataListCell>,
-                    <DataListCell width={3} key="Distribution">
-                      <></>
-                    </DataListCell>
-                  ]}
-                />
-              </DataListItemRow>
-            </DataListItem>
-            {inputs && renderItem(inputs[viewSection])}
-          </DataList>
-        </>
-      )}
-      {inputData.status === 'SUCCESS' && inputData.data.length === 0 && (
-        <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={OutlinedMehIcon} />
-          <Title headingLevel="h5" size="lg">
-            No input data
-          </Title>
-          <EmptyStateBody>No inputs available to display.</EmptyStateBody>
-        </EmptyState>
-      )}
+              <DataListItem
+                aria-labelledby="header"
+                key="header"
+                className="input-browser__header"
+              >
+                <DataListItemRow>
+                  <DataListItemCells
+                    dataListCells={[
+                      <DataListCell width={3} key="Input Data">
+                        <span>Input Data</span>
+                      </DataListCell>,
+                      <DataListCell width={3} key="Value">
+                        <span>Value</span>
+                      </DataListCell>,
+                      <DataListCell width={3} key="Distribution">
+                        <></>
+                      </DataListCell>
+                    ]}
+                  />
+                </DataListItemRow>
+              </DataListItem>
+              {inputs && renderItem(inputs[viewSection])}
+            </DataList>
+          </>
+        )}
+      {inputData.status === RemoteDataStatus.SUCCESS &&
+        inputData.data.length === 0 && (
+          <EmptyState variant={EmptyStateVariant.full}>
+            <EmptyStateIcon icon={OutlinedMehIcon} />
+            <Title headingLevel="h5" size="lg">
+              No input data
+            </Title>
+            <EmptyStateBody>No inputs available to display.</EmptyStateBody>
+          </EmptyState>
+        )}
     </div>
   );
 };

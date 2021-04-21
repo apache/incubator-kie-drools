@@ -1,7 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import useSaliencies from '../useSaliencies';
 import * as api from '../../../../utils/api/httpClient';
-import { Saliencies } from '../../../../types';
+import {
+  RemoteDataStatus,
+  Saliencies,
+  SaliencyStatus
+} from '../../../../types';
 import { act } from 'react-test-renderer';
 
 const flushPromises = () => new Promise(setImmediate);
@@ -15,7 +19,7 @@ describe('useSaliencies', () => {
   test('retrieves explanation info of an execution', async () => {
     const saliencies = {
       data: {
-        status: 'SUCCEEDED',
+        status: SaliencyStatus.SUCCEEDED,
         saliencies: [
           {
             outcomeId: '12345',
@@ -42,14 +46,14 @@ describe('useSaliencies', () => {
       return useSaliencies('b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000');
     });
 
-    expect(result.current).toStrictEqual({ status: 'LOADING' });
+    expect(result.current).toStrictEqual({ status: RemoteDataStatus.LOADING });
 
     await act(async () => {
       await flushPromises();
     });
 
     expect(result.current).toStrictEqual({
-      status: 'SUCCESS',
+      status: RemoteDataStatus.SUCCESS,
       data: saliencies.data
     });
     expect(apiMock).toHaveBeenCalledTimes(1);
