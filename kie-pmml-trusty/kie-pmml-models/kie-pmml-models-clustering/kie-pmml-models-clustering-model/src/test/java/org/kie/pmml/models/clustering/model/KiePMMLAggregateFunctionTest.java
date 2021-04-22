@@ -41,6 +41,21 @@ public class KiePMMLAggregateFunctionTest {
 
     private static final Offset<Double> DOUBLE_OFFSET = Offset.offset(0.000000001);
 
+    private static final List<KiePMMLClusteringField> TEST_FIELDS = new ArrayList<>(2);
+    private static final KiePMMLCompareFunction TEST_COMPARE_FN = KiePMMLCompareFunction.ABS_DIFF;
+    private static final Double[] TEST_INPUTS = new Double[2];
+    private static final double[] TEST_SEEDS = new double[2];
+    private static final double TEST_ADJUST = 1.0;
+
+    static {
+        TEST_FIELDS.add(new KiePMMLClusteringField("test1", 1.0, true, null, null));
+        TEST_FIELDS.add(new KiePMMLClusteringField("test2", 1.0, true, null, null));
+        TEST_INPUTS[0] = 5.0;
+        TEST_INPUTS[1] = 3.0;
+        TEST_SEEDS[0] = 1.0;
+        TEST_SEEDS[1] = 6.0;
+    }
+
     @Test
     public void testNames() {
         assertThat(enumByName(KiePMMLAggregateFunction.class, "euclidean")).isEqualTo(EUCLIDEAN);
@@ -56,40 +71,34 @@ public class KiePMMLAggregateFunctionTest {
 
     @Test
     public void testApply() {
-        List<KiePMMLClusteringField> testFields = new ArrayList<>(2);
-        testFields.add(new KiePMMLClusteringField("test1", 1.0, true, null, null));
-        testFields.add(new KiePMMLClusteringField("test2", 1.0, true, null, null));
+        assertThat(EUCLIDEAN.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isEqualTo(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST), DOUBLE_OFFSET);
+        assertThat(SQUARED_EUCLIDEAN.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isEqualTo(squaredEuclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST), DOUBLE_OFFSET);
+        assertThatThrownBy(() -> CHEBYCHEV.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> CITY_BLOCK.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> MINKOWSKI.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> SIMPLE_MATCHING.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> JACCARD.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> TANIMOTO.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> BINARY_SIMILARITY.apply(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST))
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
 
-        KiePMMLCompareFunction testCompFn = KiePMMLCompareFunction.ABS_DIFF;
+    @Test
+    public void testEuclidean() {
+        assertThat(euclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST)).isEqualTo(5.0, DOUBLE_OFFSET);
+    }
 
-        Double[] testInputs = new Double[2];
-        testInputs[0] = 5.0;
-        testInputs[1] = 3.0;
-
-        double[] testSeeds = new double[2];
-        testSeeds[0] = 1.0;
-        testSeeds[1] = 6.0;
-
-        double testAdjust = 1.0;
-
-        assertThat(EUCLIDEAN.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isEqualTo(euclidean(testFields, testCompFn, testInputs, testSeeds, testAdjust), DOUBLE_OFFSET);
-        assertThat(SQUARED_EUCLIDEAN.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isEqualTo(squaredEuclidean(testFields, testCompFn, testInputs, testSeeds, testAdjust), DOUBLE_OFFSET);
-        assertThatThrownBy(() -> CHEBYCHEV.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> CITY_BLOCK.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> MINKOWSKI.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> SIMPLE_MATCHING.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> JACCARD.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> TANIMOTO.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> BINARY_SIMILARITY.apply(testFields, testCompFn, testInputs, testSeeds, testAdjust))
-                .isInstanceOf(UnsupportedOperationException.class);
+    @Test
+    public void testSquaredEuclidean() {
+        assertThat(squaredEuclidean(TEST_FIELDS, TEST_COMPARE_FN, TEST_INPUTS, TEST_SEEDS, TEST_ADJUST)).isEqualTo(25.0, DOUBLE_OFFSET);
     }
 
 }
