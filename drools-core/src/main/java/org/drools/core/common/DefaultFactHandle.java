@@ -230,6 +230,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public int getIdentityHashCode() {
+        if (this.identityHashCode == 0 && this.object != null) {
+            this.identityHashCode = determineIdentityHashCode( object );
+        }
         return this.identityHashCode;
     }
 
@@ -338,7 +341,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             }
             this.traitType = newType;
         } else {
-            this.identityHashCode = determineIdentityHashCode( object );
+            this.identityHashCode = 0;
         }
     }
 
