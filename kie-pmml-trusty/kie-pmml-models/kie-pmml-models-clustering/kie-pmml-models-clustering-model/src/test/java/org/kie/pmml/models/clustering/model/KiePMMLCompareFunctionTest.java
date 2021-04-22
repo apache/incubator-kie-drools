@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kie.pmml.api.utils.EnumUtils.enumByName;
 import static org.kie.pmml.models.clustering.model.KiePMMLCompareFunction.ABS_DIFF;
 import static org.kie.pmml.models.clustering.model.KiePMMLCompareFunction.DELTA;
 import static org.kie.pmml.models.clustering.model.KiePMMLCompareFunction.EQUAL;
@@ -40,6 +41,15 @@ public class KiePMMLCompareFunctionTest {
     private static final double TEST_SIMILARITY_SCALE = 1.0;
     private static final KiePMMLClusteringField TEST_FIELD =
             new KiePMMLClusteringField("test", 1.0, true, ABS_DIFF, TEST_SIMILARITY_SCALE);
+
+    @Test
+    public void testNames() {
+        assertThat(enumByName(KiePMMLCompareFunction.class, "absDiff")).isEqualTo(ABS_DIFF);
+        assertThat(enumByName(KiePMMLCompareFunction.class, "gaussSim")).isEqualTo(GAUSS_SIM);
+        assertThat(enumByName(KiePMMLCompareFunction.class, "delta")).isEqualTo(DELTA);
+        assertThat(enumByName(KiePMMLCompareFunction.class, "equal")).isEqualTo(EQUAL);
+        assertThat(enumByName(KiePMMLCompareFunction.class, "table")).isEqualTo(TABLE);
+    }
 
     @Test
     public void testApply() {
