@@ -420,8 +420,7 @@ public class ObjectTypeNode extends ObjectSource
      * Rete needs to know that this ObjectTypeNode has been added
      */
     @Override
-    public void doAttach(BuildContext context) {
-        super.doAttach(context);
+    public void attach( BuildContext context) {
         this.source.addObjectSink(this);
 
         Class<?> nodeTypeClass = objectType.getClassType();

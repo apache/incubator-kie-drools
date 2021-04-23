@@ -67,7 +67,7 @@ public class MockLeftTupleSink extends LeftTupleSource
         return true;
     }
 
-    public void doAttach(BuildContext buildContext) {
+    public void attach( BuildContext buildContext) {
     }
 
     /**

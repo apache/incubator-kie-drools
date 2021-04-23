@@ -151,8 +151,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.objectSource;
     }
 
-    public void doAttach( BuildContext context ) {
-        super.doAttach(context);
+    public void attach( BuildContext context ) {
         this.objectSource.addObjectSink( this );
     }
 

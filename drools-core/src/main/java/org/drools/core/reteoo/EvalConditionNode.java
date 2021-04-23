@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,8 +91,7 @@ public class EvalConditionNode extends LeftTupleSource
         out.writeObject( componentsMap );
     }
 
-    public void doAttach( BuildContext context ) {
-        super.doAttach(context);
+    public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
     }
 

@@ -112,8 +112,7 @@ public class AlphaNode extends ObjectSource
         return NodeTypeEnums.AlphaNode;
     }
 
-    public void doAttach(BuildContext context) {
-        super.doAttach(context);
+    public void attach( BuildContext context) {
         this.source.addObjectSink(this);
     }
 

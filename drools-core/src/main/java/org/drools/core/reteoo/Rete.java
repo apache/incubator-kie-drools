@@ -164,7 +164,7 @@ public class Rete extends ObjectSource
         kBase.registeRremovedEntryNodeCache(node);
     }
 
-    public void doAttach( BuildContext context ) {
+    public void attach( BuildContext context ) {
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 

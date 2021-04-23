@@ -124,17 +124,7 @@ public abstract class BaseNode
         this.streamMode = streamMode;
     }
 
-    /**
-     * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
-     */
-    public void attach(BuildContext context) {
-        doAttach(context);
-    }
-
-    public void doAttach(BuildContext context) {
-
-    }
-
+    public abstract void attach( BuildContext context);
 
     /**
      * A method that is called for all nodes whose network below them

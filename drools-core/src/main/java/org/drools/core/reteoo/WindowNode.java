@@ -136,7 +136,7 @@ public class WindowNode extends ObjectSource
         return behavior.getBehaviors();
     }
 
-    public void doAttach(BuildContext context) {
+    public void attach( BuildContext context) {
         this.source.addObjectSink(this);
     }
 

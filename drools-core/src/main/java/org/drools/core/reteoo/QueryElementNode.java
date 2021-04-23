@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -765,8 +764,7 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     @Override
-    public void doAttach(BuildContext context ) {
-        super.doAttach(context);
+    public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
     }
 

@@ -425,8 +425,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return leftInput.getObjectTypeNode();
     }
 
-    public void doAttach( BuildContext context ) {
-        super.doAttach(context);
+    public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
     }
 

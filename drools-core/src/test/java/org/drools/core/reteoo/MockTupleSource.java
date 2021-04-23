@@ -49,7 +49,7 @@ public class MockTupleSource extends LeftTupleSource {
         return true;
     }
 
-    public void doAttach( BuildContext context ) {
+    public void attach( BuildContext context ) {
     }
 
     @Override

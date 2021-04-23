@@ -26,7 +26,6 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -95,7 +94,7 @@ public class MockObjectSource extends ObjectSource {
         }
     }
 
-    public void doAttach(BuildContext context) {
+    public void attach( BuildContext context) {
     }
 
    

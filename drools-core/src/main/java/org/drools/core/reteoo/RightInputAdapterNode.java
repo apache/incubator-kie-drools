@@ -171,7 +171,7 @@ public class RightInputAdapterNode extends ObjectSource
         return peer;
     }     
 
-    public void doAttach( BuildContext context ) {
+    public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
     }
 

@@ -260,8 +260,4 @@ public class RuleBuildContext extends PackageBuildContext {
     public void setXpathOffsetadjustment(int xpathOffsetadjustment) {
         this.xpathOffsetadjustment = xpathOffsetadjustment;
     }
-
-    public int getXpathOffsetadjustment() {
-        return xpathOffsetadjustment;
-    }
 }

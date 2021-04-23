@@ -178,11 +178,6 @@ public class AccumulateNode extends BetaNode {
         return handle;
     }
 
-    @Override
-    public void doAttach( BuildContext context ) {
-        super.doAttach( context );
-    }
-
     protected int calculateHashCode() {
         return 0;
     }

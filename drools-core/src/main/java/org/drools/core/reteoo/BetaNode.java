@@ -517,8 +517,7 @@ public abstract class BetaNode extends LeftTupleSource
         return objectTypeNode;
     }
 
-    public void doAttach(BuildContext context) {
-        super.doAttach(context);
+    public void attach( BuildContext context) {
         setUnificationJoin();
 
         this.rightInput.addObjectSink(this);

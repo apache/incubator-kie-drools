@@ -179,8 +179,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return sb.toString();
     }
 
-    public void doAttach( BuildContext context ) {
-        super.doAttach(context);
+    public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink(this, context);
         addAssociation( context, context.getRule() );
     }
