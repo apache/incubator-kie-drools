@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.drools.mvel.MVELSafeHelper;
+import org.kie.kogito.internal.RuntimeEnvironment;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.ErrorDetail;
 import org.mvel2.MVEL;
@@ -29,19 +30,18 @@ import org.mvel2.compiler.ExpressionCompiler;
 
 public class MVELProcessHelper {
 
-    private static final boolean IS_JDK = System.getProperty("org.graalvm.nativeimage.imagecode") == null;
     private static final Supplier<MVELEvaluator> EVALUATOR_SUPPLIER =
-            IS_JDK ? MVELSafeHelper::getEvaluator : () -> {
+            RuntimeEnvironment.isJdk() ? MVELSafeHelper::getEvaluator : () -> {
                 throw new UnsupportedOperationException("MVEL evaluation is not supported in native image");
             };
 
     private static final Function<String, Serializable> EXPR_COMPILER =
-            IS_JDK ? MVEL::compileExpression : expr -> {
+            RuntimeEnvironment.isJdk() ? MVEL::compileExpression : expr -> {
                 throw new UnsupportedOperationException("MVEL compilation is not supported in native image");
             };
 
     private static final Function<String, List<ErrorDetail>> EXPR_COMPILER_DETAILED =
-            IS_JDK ? MVELProcessHelper::expressionCompiler : expr -> {
+            RuntimeEnvironment.isJdk() ? MVELProcessHelper::expressionCompiler : expr -> {
                 throw new UnsupportedOperationException("MVEL compilation is not supported in native image");
             };
 

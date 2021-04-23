@@ -19,6 +19,7 @@ import org.drools.core.ClockType;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.EnvironmentImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionsPool;
@@ -26,6 +27,8 @@ import org.kie.kogito.rules.RuleEventListenerConfig;
 import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
 public class $Name$ extends AbstractRuleUnit<$ModelName$> {
+
+    private static final InternalKnowledgeBase kb = createKnowledgeBase();
 
     public $Name$(org.kie.kogito.Application app) {
         super($ModelName$.class.getCanonicalName(), app);
@@ -36,13 +39,6 @@ public class $Name$ extends AbstractRuleUnit<$ModelName$> {
     }
 
     private KieSession createLegacySession() {
-        RuleBaseConfiguration ruleBaseConfig = new RuleBaseConfiguration();
-        ruleBaseConfig.setEventProcessingMode($EventProcessingMode$);
-        ruleBaseConfig.setSessionPoolSize($SessionPoolSize$);
-        org.drools.core.impl.InternalKnowledgeBase kb =
-                org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel(
-                        new $RuleModelName$(), ruleBaseConfig);
-
         SessionConfigurationImpl sessionConfig = new SessionConfigurationImpl();
         sessionConfig.setClockType($ClockType$);
 
@@ -58,5 +54,14 @@ public class $Name$ extends AbstractRuleUnit<$ModelName$> {
             ruleEventListenerConfig.ruleRuntimeListeners().forEach(ks::addEventListener);
         }
         return ks;
+    }
+
+    private static InternalKnowledgeBase createKnowledgeBase() {
+        RuleBaseConfiguration ruleBaseConfig = new RuleBaseConfiguration();
+        ruleBaseConfig.setEventProcessingMode($EventProcessingMode$);
+        ruleBaseConfig.setSessionPoolSize($SessionPoolSize$);
+        InternalKnowledgeBase kb =
+                org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel(new $RuleModelName$(), ruleBaseConfig);
+        return kb;
     }
 }

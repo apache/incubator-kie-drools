@@ -17,11 +17,9 @@ package $Package$;
 
 public class DecisionModelResourcesProvider implements org.kie.kogito.decision.DecisionModelResourcesProvider {
 
-    private final static boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
-
     // See https://issues.redhat.com/browse/KOGITO-3330
     private static java.io.InputStreamReader readResource(java.io.InputStream stream) {
-        if (!IS_NATIVE_IMAGE) {
+        if (org.kie.kogito.internal.RuntimeEnvironment.isJdk()) {
             return new java.io.InputStreamReader(stream);
         }
 
