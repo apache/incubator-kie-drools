@@ -112,37 +112,26 @@
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*Native*IT.java</exclude>
-                    </excludes>
-                    <systemPropertyVariables>
-                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-                        <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-                        <container.image.kafka>${container.image.kafka}</container.image.kafka>
-                    </systemPropertyVariables>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>infinispan-default</id>
+                        <id>default</id>
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
                             <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
-                                <exclude>**/*Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
+                                <exclude>**/KeycloakInfinispan*IT.java</exclude> <!-- Separate execution for this one -->
                             </excludes>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>infinispan-testWithKeycloak</id>
+                        <id>testWithKeycloak</id>
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/InfinispanKeycloak*IT.java</include>
+                                <include>**/KeycloakInfinispan*IT.java</include>
                             </includes>
                             <systemPropertyVariables>
                                 <quarkus.test.profile>keycloak</quarkus.test.profile>
@@ -152,53 +141,8 @@
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>native</id>
-            <activation>
-                <property>
-                    <name>native</name>
-                </property>
-            </activation>
-            <properties>
-                <quarkus.package.type>native</quarkus.package.type>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration combine.self="override">
-                                    <includes>
-                                        <include>**/*Native*IT.java</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>**/*Keycloak*IT.java</exclude>
-                                    </excludes>
-                                    <systemProperties>
-                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                                    </systemProperties>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

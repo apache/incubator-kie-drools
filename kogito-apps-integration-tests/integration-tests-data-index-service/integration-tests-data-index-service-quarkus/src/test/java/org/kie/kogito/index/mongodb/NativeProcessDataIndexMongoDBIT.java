@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.index.mongodb;
 
-package org.kie.kogito.jobs.service.resource;
+import org.junit.jupiter.api.Disabled;
 
-import org.junit.jupiter.api.TestInstance;
-import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
+import io.quarkus.test.junit.NativeImageTest;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
-@QuarkusTestResource(KeycloakQuarkusTestResource.class)
-@QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PostgreSqlKeycloakJobServiceIT extends BaseKeycloakJobServiceIT {
+@NativeImageTest
+@Disabled("see https://issues.redhat.com/browse/KOGITO-4983")
+public class NativeProcessDataIndexMongoDBIT extends ProcessDataIndexMongoDBIT {
 
 }

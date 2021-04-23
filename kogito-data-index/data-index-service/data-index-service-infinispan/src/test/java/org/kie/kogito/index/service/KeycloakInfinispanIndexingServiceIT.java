@@ -16,8 +16,8 @@
 
 package org.kie.kogito.index.service;
 
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.ResourceArg;
@@ -27,7 +27,7 @@ import static org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource.
 
 @QuarkusTest
 @QuarkusTestResource(value = KeycloakQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_OIDC_TENANTS, value = "web-app-tenant") })
-@QuarkusTestResource(MongoDBQuarkusTestResource.class)
-class MongoKeycloakIntegrationIndexingServiceIT extends AbstractKeycloakIntegrationIndexingServiceIT {
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
+class KeycloakInfinispanIndexingServiceIT extends AbstractKeycloakIntegrationIndexingServiceIT {
 
 }

@@ -84,39 +84,26 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/Native*IT.java</exclude>
-          </excludes>
-          <systemProperties>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-            <container.image.kafka>${container.image.kafka}</container.image.kafka>
-          </systemProperties>
-        </configuration>
         <executions>
           <execution>
-            <id>mongo-default</id>
+            <id>default</id>
             <goals>
               <goal>integration-test</goal>
             </goals>
             <configuration>
-              <includes>
-                <include>**/Mongo*IT.java</include>
-              </includes>
               <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
                 <exclude>**/*Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
               </excludes>
             </configuration>
           </execution>
           <execution>
-            <id>mongo-testWithKeycloak</id>
+            <id>testWithKeycloak</id>
             <goals>
               <goal>integration-test</goal>
             </goals>
             <configuration>
               <includes>
-                <include>**/MongoKeycloak*IT.java</include>
+                <include>**/KeycloakMongo*IT.java</include>
               </includes>
               <systemProperties>
                 <quarkus.test.profile>keycloak-test</quarkus.test.profile>
@@ -133,14 +120,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-          </systemPropertyVariables>
-        </configuration>
       </plugin>
     </plugins>
   </build>

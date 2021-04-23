@@ -29,7 +29,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-public class StaticContentTest {
+public class StaticContentIT {
 
     @TestHTTPResource
     URL url;

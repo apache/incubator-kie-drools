@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.mgmt;
+package org.kie.kogito.it.trusty;
+
+import org.kie.kogito.testcontainers.QuarkusKogitoServiceContainer;
 
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeStaticContentTestIT extends StaticContentIT {
+public class NativeQuarkusTrustyExplainabilityEnd2EndIT extends AbstractTrustyExplainabilityEnd2EndIT {
 
-    // Execute the same tests but in native mode.
+    public NativeQuarkusTrustyExplainabilityEnd2EndIT() {
+        super(QuarkusKogitoServiceContainer::new);
+    }
 }

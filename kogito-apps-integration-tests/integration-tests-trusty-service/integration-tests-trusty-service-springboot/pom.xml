@@ -87,6 +87,7 @@
         <artifactId>jib-maven-plugin</artifactId>
         <version>${version.jib-maven-plugin}</version>
         <configuration>
+          <skip>${skip.springboot}</skip>
           <to>
             <image>${container.image.kogito-service}</image>
           </to>
@@ -99,6 +100,13 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skip>${skip.springboot}</skip>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.service;
+package org.kie.kogito.jobs.service.resource;
 
+import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusTest;
 
-import static org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource.KOGITO_OIDC_TENANTS;
-
 @QuarkusTest
-@QuarkusTestResource(value = KeycloakQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_OIDC_TENANTS, value = "web-app-tenant") })
+@QuarkusTestResource(KeycloakQuarkusTestResource.class)
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
-class InfinispanKeycloakIntegrationIndexingServiceIT extends AbstractKeycloakIntegrationIndexingServiceIT {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class KeycloakInfinispanJobServiceIT extends BaseKeycloakJobServiceIT {
 
 }

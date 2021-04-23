@@ -22,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
-public class VertxRouterTest {
+public class VertxRouterIT {
 
     @Test
     public void testHandlePath() {

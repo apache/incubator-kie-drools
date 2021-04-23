@@ -90,40 +90,26 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/Native*IT.java</exclude>
-          </excludes>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-            <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-            <container.image.kafka>${container.image.kafka}</container.image.kafka>
-          </systemPropertyVariables>
-        </configuration>
         <executions>
           <execution>
-            <id>infinispan-default</id>
+            <id>default</id>
             <goals>
               <goal>integration-test</goal>
             </goals>
             <configuration>
-              <includes>
-                <include>**/Infinispan*IT.java</include>
-              </includes>
               <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
                 <exclude>**/*Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
               </excludes>
             </configuration>
           </execution>
           <execution>
-            <id>infinispan-testWithKeycloak</id>
+            <id>testWithKeycloak</id>
             <goals>
               <goal>integration-test</goal>
             </goals>
             <configuration>
               <includes>
-                <include>**/InfinispanKeycloak*IT.java</include>
+                <include>**/KeycloakInfinispan*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <quarkus.test.profile>keycloak-test</quarkus.test.profile>
@@ -140,14 +126,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-          </systemPropertyVariables>
-        </configuration>
       </plugin>
     </plugins>
   </build>

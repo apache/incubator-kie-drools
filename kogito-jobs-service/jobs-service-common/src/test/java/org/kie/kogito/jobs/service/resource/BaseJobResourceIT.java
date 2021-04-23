@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
@@ -45,13 +46,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class BaseJobResourceIT {
 
-    public static final String CALLBACK_ENDPOINT = "http://localhost:8081/callback";
+    private static final String CALLBACK_ENDPOINT = "http://localhost:%d/callback";
     public static final String PROCESS_ID = "processId";
     public static final String PROCESS_INSTANCE_ID = "processInstanceId";
     public static final String ROOT_PROCESS_ID = "rootProcessId";
     public static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
     public static final String NODE_INSTANCE_ID = "nodeInstanceId";
     public static final int PRIORITY = 1;
+
+    @ConfigProperty(name = "quarkus.http.test-port")
+    private int port;
+
     @Inject
     ObjectMapper objectMapper;
 
@@ -69,6 +74,10 @@ public abstract class BaseJobResourceIT {
                 .extract()
                 .as(ScheduledJob.class);
         assertEquals(job, response);
+    }
+
+    private String getCallbackEndpoint() {
+        return String.format(CALLBACK_ENDPOINT, port);
     }
 
     private ValidatableResponse create(String body) {
@@ -95,7 +104,7 @@ public abstract class BaseJobResourceIT {
                 .expirationTime(expirationTime)
                 .repeatInterval(repeatInterval)
                 .repeatLimit(repeatLimit)
-                .callbackEndpoint(CALLBACK_ENDPOINT)
+                .callbackEndpoint(getCallbackEndpoint())
                 .processId(PROCESS_ID)
                 .processInstanceId(PROCESS_INSTANCE_ID)
                 .rootProcessId(ROOT_PROCESS_ID)
@@ -256,7 +265,7 @@ public abstract class BaseJobResourceIT {
         assertThat(scheduledJob.getRootProcessId()).isEqualTo(ROOT_PROCESS_ID);
         assertThat(scheduledJob.getRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
         assertThat(scheduledJob.getNodeInstanceId()).isEqualTo(NODE_INSTANCE_ID);
-        assertThat(scheduledJob.getCallbackEndpoint()).isEqualTo(CALLBACK_ENDPOINT);
+        assertThat(scheduledJob.getCallbackEndpoint()).isEqualTo(getCallbackEndpoint());
         assertThat(scheduledJob.getStatus()).isEqualTo(JobStatus.SCHEDULED);
         if (wasScheduled) {
             assertThat(scheduledJob.getScheduledId()).isNotBlank();
@@ -283,7 +292,7 @@ public abstract class BaseJobResourceIT {
                         .builder()
                         .id(UUID.randomUUID().toString())
                         .expirationTime(DateUtil.now().minusMinutes(10))
-                        .callbackEndpoint("http://localhost:8081/callback")
+                        .callbackEndpoint(getCallbackEndpoint())
                         .priority(1)
                         .build();
         return create(jobToJson(job));

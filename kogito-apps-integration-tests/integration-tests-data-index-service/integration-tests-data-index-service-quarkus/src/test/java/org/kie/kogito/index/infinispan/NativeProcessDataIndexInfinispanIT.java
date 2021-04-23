@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.mgmt;
+package org.kie.kogito.index.infinispan;
+
+import org.junit.jupiter.api.Disabled;
 
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeStaticContentTestIT extends StaticContentIT {
+@Disabled("see https://issues.redhat.com/browse/KOGITO-4983")
+public class NativeProcessDataIndexInfinispanIT extends ProcessDataIndexInfinispanIT {
 
-    // Execute the same tests but in native mode.
 }

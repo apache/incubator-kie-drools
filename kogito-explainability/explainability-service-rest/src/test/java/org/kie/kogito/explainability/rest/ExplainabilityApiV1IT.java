@@ -32,7 +32,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-class ExplainabilityApiV1Test {
+class ExplainabilityApiV1IT {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String executionId = "test";
