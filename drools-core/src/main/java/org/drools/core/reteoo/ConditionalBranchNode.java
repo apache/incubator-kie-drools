@@ -51,7 +51,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
                                  BuildContext context) {
         super(id, context);
         setLeftTupleSource( tupleSource );
-        replaceDeclarations(branchEvaluator);
         this.setObjectCount(leftInput.getObjectCount()); // 'conditional branch' does not node increase the object count
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.branchEvaluator = branchEvaluator;
@@ -59,12 +58,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         initMasks(context, tupleSource);
 
         hashcode = calculateHashCode();
-    }
-
-    private void replaceDeclarations(ConditionalBranchEvaluator branchEvaluator) {
-        if (branchEvaluator.getElseBranchEvaluator() != null){
-            replaceDeclarations(branchEvaluator.getElseBranchEvaluator());
-        }
     }
 
     @Override

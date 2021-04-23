@@ -66,7 +66,6 @@ public class EvalConditionNode extends LeftTupleSource
                              final BuildContext context) {
         super(id, context);
         this.condition = eval;
-        //replaceDeclarations(this, eval.getRequiredDeclarations());
         setLeftTupleSource(tupleSource);
         this.setObjectCount(leftInput.getObjectCount()); // 'eval' nodes do not increase the count
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
