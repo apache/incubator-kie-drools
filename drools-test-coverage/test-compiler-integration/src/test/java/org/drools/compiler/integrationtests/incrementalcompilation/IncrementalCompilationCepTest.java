@@ -18,6 +18,8 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,9 +29,17 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.testcoverage.common.model.ChildEventA;
+import org.drools.testcoverage.common.model.ChildEventB;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.MyFact;
+import org.drools.testcoverage.common.model.ParentEvent;
+import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -936,5 +946,163 @@ public class IncrementalCompilationCepTest {
         public String toString() {
             return "MyEvent: " + id;
         }
+    }
+
+    @Test
+    public void testObjectTypeNodeExpirationOffset() {
+        // DROOLS-6296
+        final String drl1 = "package org.drools.test;\n" +
+                            "import " + ParentEvent.class.getCanonicalName() + "\n" +
+                            "import " + ChildEventA.class.getCanonicalName() + "\n" +
+                            "import " + ChildEventB.class.getCanonicalName() + "\n" +
+                            "\n" +
+                            "declare ChildEventA\n" +
+                            "   @role( event )\n" +
+                            "   @timestamp( eventTimestamp )\n" +
+                            "   @expires(3d)\n" +
+                            "end;\n" +
+                            "declare ChildEventB\n" +
+                            "   @role( event )\n" +
+                            "   @timestamp( eventTimestamp )\n" +
+                            "   @expires(30d)\n" +
+                            "end;" +
+                            "\n" +
+                            "rule \"detect ChildEventA\"\n" +
+                            "when $e: ChildEventA()\n" +
+                            "then\n" +
+                            "    System.out.println(\"detect ChildEventA\");\n" +
+                            "end\n" +
+                            "\n" +
+                            "rule \"detect ParentEvent\"\n" +
+                            "when $e: ParentEvent()\n" +
+                            "then\n" +
+                            "   System.out.println(\"detect ParentEvent\");\n" +
+                            "end\n" +
+                            "rule \"detect ChildEventB\"\n" +
+                            "when $e: ChildEventB()\n" +
+                            "then\n" +
+                            "   System.out.println(\"detect ChildEventB\");\n" +
+                            "end";
+
+        // just adding a new fact
+        final String drl2 = "package org.drools.test;\n" +
+                            "import " + ParentEvent.class.getCanonicalName() + "\n" +
+                            "import " + ChildEventA.class.getCanonicalName() + "\n" +
+                            "import " + ChildEventB.class.getCanonicalName() + "\n" +
+                            "import " + Person.class.getCanonicalName() + "\n" +
+                            "\n" +
+                            "declare ChildEventA\n" +
+                            "   @role( event )\n" +
+                            "   @timestamp( eventTimestamp )\n" +
+                            "   @expires(3d)\n" +
+                            "end;\n" +
+                            "declare ChildEventB\n" +
+                            "   @role( event )\n" +
+                            "   @timestamp( eventTimestamp )\n" +
+                            "   @expires(30d)\n" +
+                            "end;" +
+                            "\n" +
+                            "rule \"detect ChildEventA\"\n" +
+                            "when $e: ChildEventA()\n" +
+                            "then\n" +
+                            "    System.out.println(\"detect ChildEventA\");\n" +
+                            "end\n" +
+                            "\n" +
+                            "rule \"detect ParentEvent\"\n" +
+                            "when $e: ParentEvent()\n" +
+                            "then\n" +
+                            "   System.out.println(\"detect ParentEvent\");\n" +
+                            "end\n" +
+                            "rule \"detect ChildEventB\"\n" +
+                            "when $e: ChildEventB()\n" +
+                            "then\n" +
+                            "   System.out.println(\"detect ChildEventB\");\n" +
+                            "end\n" +
+                            "rule \"detect a Person\"\n" +
+                            "when $p: Person()\n" +
+                            "then\n" +
+                            "  System.out.println(\"detect a Person\");\n" +
+                            "end";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
+                                     new HashMap<>(), drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        NamedEntryPoint entryPoint = (NamedEntryPoint) kieSession.getEntryPoints().stream().findFirst().get();
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = entryPoint.getEntryPointNode().getObjectTypeNodes();
+
+        //ParentEvent
+        ObjectTypeNode parentEventOTN = objectTypeNodes.get(new ClassObjectType(ParentEvent.class));
+        assertEquals(-1L, parentEventOTN.getExpirationOffset());
+
+        //ChildEventA
+        ObjectTypeNode childEventAOTN = objectTypeNodes.get(new ClassObjectType(ChildEventA.class));
+        assertEquals(Duration.of(3, ChronoUnit.DAYS).toMillis() + 1, childEventAOTN.getExpirationOffset());
+
+        //ChildEventB
+        ObjectTypeNode childEventBOTN = objectTypeNodes.get(new ClassObjectType(ChildEventB.class));
+        assertEquals(Duration.of(30, ChronoUnit.DAYS).toMillis() + 1, childEventBOTN.getExpirationOffset());
+
+        //pseudo clock initialization
+        long now = System.currentTimeMillis();
+        SessionPseudoClock sessionClock = kieSession.getSessionClock();
+        sessionClock.advanceTime(now, TimeUnit.MILLISECONDS);
+
+        ChildEventA childEventA = new ChildEventA(new Date(now), "A");
+        kieSession.insert(childEventA);
+        kieSession.fireAllRules();
+
+        //ChildEventA expires
+        sessionClock.advanceTime(Duration.of(4, ChronoUnit.DAYS).toMillis(), TimeUnit.MILLISECONDS);
+        kieSession.fireAllRules();
+
+        //ChildEventA is no longer in WM
+        assertEquals(0, kieSession.getFactCount());
+
+        kieSession.dispose();
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
+                                     new HashMap<>(), drl2);
+        kc.updateToVersion(releaseId2);
+
+        final KieSession kieSession2 = kc.newKieSession();
+
+        NamedEntryPoint entryPoint2 = (NamedEntryPoint) kieSession2.getEntryPoints().stream().findFirst().get();
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes2 = entryPoint2.getEntryPointNode().getObjectTypeNodes();
+
+        //ParentEvent
+        ObjectTypeNode parentEventOTN2 = objectTypeNodes2.get(new ClassObjectType(ParentEvent.class));
+        assertEquals(-1L, parentEventOTN2.getExpirationOffset());
+
+        //ChildEventA
+        ObjectTypeNode childEventAOTN2 = objectTypeNodes2.get(new ClassObjectType(ChildEventA.class));
+        assertEquals(Duration.of(3, ChronoUnit.DAYS).toMillis() + 1, childEventAOTN2.getExpirationOffset());
+
+        //ChildEventB
+        ObjectTypeNode childEventBOTN2 = objectTypeNodes2.get(new ClassObjectType(ChildEventB.class));
+        assertEquals(Duration.of(30, ChronoUnit.DAYS).toMillis() + 1, childEventBOTN2.getExpirationOffset());
+
+        now = System.currentTimeMillis();
+
+        SessionPseudoClock sessionClock2 = kieSession2.getSessionClock();
+        sessionClock2.advanceTime(now, TimeUnit.MILLISECONDS);
+
+        ChildEventA childEventA2 = new ChildEventA(new Date(now), "A");
+        kieSession2.insert(childEventA2);
+        kieSession2.fireAllRules();
+
+        //ChildEventA expires
+        sessionClock2.advanceTime(Duration.of(4, ChronoUnit.DAYS).toMillis(), TimeUnit.MILLISECONDS);
+
+        kieSession2.fireAllRules();
+        assertEquals(0, kieSession2.getFactCount());
+
+        kieSession2.dispose();
     }
 }
