@@ -79,6 +79,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.MULTIPLY;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.PLUS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.REMAINDER;
 import static java.util.Arrays.asList;
 import static org.drools.core.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
@@ -414,11 +415,11 @@ public class ConstraintParser {
 
         Expression combo;
 
-        boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE).contains(operator);
+        boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER).contains(operator);
 
         if (equalityExpr) {
             combo = getEqualityExpression( left, right, operator ).expression;
-        } else if(arithmeticExpr && (left.isBigDecimal() && right.isBigDecimal())) {
+        } else if(arithmeticExpr && (left.isBigDecimal())) {
             MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
             mvelCompilerContext.setRootTypePrefix(THIS_PLACEHOLDER);
