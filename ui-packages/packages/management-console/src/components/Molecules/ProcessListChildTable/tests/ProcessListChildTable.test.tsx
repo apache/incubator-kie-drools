@@ -9,7 +9,7 @@ import { act } from 'react-dom/test-utils';
 jest.mock('../../../Atoms/ErrorPopover/ErrorPopover');
 jest.mock('../../DisablePopup/DisablePopup');
 jest.mock('../../../Atoms/ProcessListActionsKebab/ProcessListActionsKebab');
-
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('Process List Child Table tests', () => {
   const childData = {
     id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',

@@ -1080,7 +1080,7 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                             <time
                               dateTime={"2019-10-22T03:40:44.089Z"}
                             >
-                              a year ago
+                              8 months ago
                             </time>
                           </t>
                         </td>
@@ -1144,7 +1144,7 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                               <time
                                 dateTime={"2019-10-22T03:40:44.089Z"}
                               >
-                                a year ago
+                                8 months ago
                               </time>
                             </t>
                           </span>
@@ -1721,7 +1721,7 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                             <time
                               dateTime={"2019-10-22T03:40:44.089Z"}
                             >
-                              a year ago
+                              8 months ago
                             </time>
                           </t>
                         </td>
@@ -1785,7 +1785,7 @@ exports[`ProcessListPage tests snapshot test for disabled process and non "error
                               <time
                                 dateTime={"2019-10-22T03:40:44.089Z"}
                               >
-                                a year ago
+                                8 months ago
                               </time>
                             </t>
                           </span>
@@ -3111,7 +3111,7 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                             <time
                               dateTime={"2019-10-22T03:40:44.089Z"}
                             >
-                              a year ago
+                              8 months ago
                             </time>
                           </t>
                         </td>
@@ -3175,7 +3175,7 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                               <time
                                 dateTime={"2019-10-22T03:40:44.089Z"}
                               >
-                                a year ago
+                                8 months ago
                               </time>
                             </t>
                           </span>
@@ -3756,7 +3756,7 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                             <time
                               dateTime={"2019-10-22T03:40:44.089Z"}
                             >
-                              a year ago
+                              8 months ago
                             </time>
                           </t>
                         </td>
@@ -3820,7 +3820,7 @@ exports[`ProcessListPage tests snapshot test for process list - without expanded
                               <time
                                 dateTime={"2019-10-22T03:40:44.089Z"}
                               >
-                                a year ago
+                                8 months ago
                               </time>
                             </t>
                           </span>

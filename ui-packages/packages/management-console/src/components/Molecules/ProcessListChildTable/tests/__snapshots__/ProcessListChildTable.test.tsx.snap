@@ -6132,7 +6132,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                                 <time
                                                   dateTime={"2019-10-22T03:40:44.089Z"}
                                                 >
-                                                  a year ago
+                                                  8 months ago
                                                 </time>
                                               </t>
                                             </td>
@@ -6218,7 +6218,7 @@ exports[`Process List Child Table tests snapshot of children in table 1`] = `
                                                   <time
                                                     dateTime={"2019-10-22T03:40:44.089Z"}
                                                   >
-                                                    a year ago
+                                                    8 months ago
                                                   </time>
                                                 </t>
                                               </span>
