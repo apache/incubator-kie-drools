@@ -173,7 +173,7 @@ public class KiePMMLPredicateFactory {
     public static BlockStmt getPredicateBody(final Predicate predicate,
                                              final DataDictionary dataDictionary,
                                              final List<MethodDeclaration> compoundPredicateMethods,
-                                             final String nodeName,
+                                             final String nodeClassName,
                                              final AtomicInteger counter) {
         logger.trace("getPredicateBody {}", predicate);
         if (predicate instanceof SimplePredicate) {
@@ -187,7 +187,7 @@ public class KiePMMLPredicateFactory {
             return getSimpleSetPredicateBody((SimpleSetPredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
             return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, compoundPredicateMethods,
-                                            nodeName, counter);
+                                            nodeClassName, counter);
         } else if (predicate instanceof True) {
             return getTruePredicateBody();
         } else if (predicate instanceof False) {

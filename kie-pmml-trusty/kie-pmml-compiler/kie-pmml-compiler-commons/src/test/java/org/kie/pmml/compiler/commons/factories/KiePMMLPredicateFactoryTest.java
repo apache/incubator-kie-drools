@@ -76,6 +76,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_TEMPLATE;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA;
@@ -619,7 +620,7 @@ public class KiePMMLPredicateFactoryTest {
                                        int expectedSize) {
         assertNotNull(toVerify);
         assertEquals(expectedSize, toVerify.size());
-        String expectedKey = String.format("%s.%s", packageName, predicateName);
+        String expectedKey = String.format(PACKAGE_CLASS_TEMPLATE, packageName, predicateName);
         assertTrue(toVerify.containsKey(expectedKey));
         commonValidateCompilation(toVerify);
     }

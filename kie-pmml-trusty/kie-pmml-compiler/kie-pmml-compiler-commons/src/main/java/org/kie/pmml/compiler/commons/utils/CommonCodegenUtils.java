@@ -61,11 +61,13 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_METHOD_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_STATIC_INITIALIZER;
+import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
@@ -529,7 +531,7 @@ public class CommonCodegenUtils {
         return getMethodDeclaration(classOrInterfaceDeclaration, methodName)
                 .map(MethodDeclaration::getBody)
                 .map(Optional::get)
-                .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_METHOD_TEMPLATE, methodName, classOrInterfaceDeclaration)));
+                .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodName)));
     }
 
 
@@ -543,8 +545,8 @@ public class CommonCodegenUtils {
      * has been found
      */
     public static Optional<MethodDeclaration> getMethodDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
-        final List<MethodDeclaration> assignExprs = classOrInterfaceDeclaration.getMethodsByName(methodName);
-        return assignExprs.isEmpty() ? Optional.empty() : Optional.of(assignExprs.get(0));
+        final List<MethodDeclaration> methodDeclarations = classOrInterfaceDeclaration.getMethodsByName(methodName);
+        return methodDeclarations.isEmpty() ? Optional.empty() : Optional.of(methodDeclarations.get(0));
     }
 
     /**
@@ -581,6 +583,21 @@ public class CommonCodegenUtils {
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableDeclaratorName,
                                                                       body)));
         variableDeclarator.setInitializer(value);
+    }
+
+    /**
+     * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b>
+     * from the given <code>MethodDeclaration</code>
+     * @param methodDeclaration
+     * @param variableName
+     * @return <code>Optional&lt;VariableDeclarator&gt;</code> with the first found <code>VariableDeclarator</code>,
+     * or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<VariableDeclarator> getVariableDeclarator(final MethodDeclaration methodDeclaration, final String variableName) {
+        final BlockStmt body =  methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        return getVariableDeclarator(body, variableName);
     }
 
     /**
@@ -650,7 +667,6 @@ public class CommonCodegenUtils {
         final StringLiteralExpr toReplaceExpr = new StringLiteralExpr(toReplace);
         final StringLiteralExpr replacementExpr = new StringLiteralExpr(replacement);
         container.walk(node -> {
-//            if (node instanceof StringLiteralExpr && toReplace.equals(((StringLiteralExpr)node).asString()) {
             if (node.equals(toReplaceExpr)) {
                 node.getParentNode()
                         .ifPresent(parentNode -> parentNode.replace(node, replacementExpr));
@@ -681,6 +697,61 @@ public class CommonCodegenUtils {
                             .ifPresent(parentNode -> parentNode.replace(replacementTupla.toReplace, replacementTupla.replacement));
                 }
         });
+    }
+
+    /**
+     * Add a <code>MethodDeclaration</code>s to the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     * @param toAdd
+     */
+    public static void addMethodDeclarationsToClass(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration,
+                                                   final List<MethodDeclaration> toAdd) {
+        toAdd.forEach(methodDeclaration -> addMethodDeclarationToClass(classOrInterfaceDeclaration, methodDeclaration));
+    }
+
+    /**
+     * Add a <code>MethodDeclaration</code> to the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     * @param toAdd
+     */
+    public static void addMethodDeclarationToClass(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration,
+            final MethodDeclaration toAdd) {
+        classOrInterfaceDeclaration.addMethod(toAdd.getName().asString())
+                .setModifiers(toAdd.getModifiers())
+                .setType(toAdd.getType())
+                .setParameters(toAdd.getParameters())
+                .setBody(toAdd.getBody().get());
+    }
+
+    /**
+     * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
+     * @return
+     */
+    public static Expression getVariableInitializer(final MethodDeclaration methodDeclaration, final String variableName) {
+        return getOptionalVariableInitializer(methodDeclaration, variableName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, variableName, methodDeclaration)));
+    }
+
+    /**
+     * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
+     * @return
+     */
+    public static Optional<Expression> getOptionalVariableInitializer(final MethodDeclaration methodDeclaration, final String variableName) {
+        final BlockStmt blockStmt = methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        return getVariableInitializer(blockStmt, variableName);
+    }
+
+    /**
+     * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
+     * @return
+     */
+    public static Optional<Expression> getVariableInitializer(final BlockStmt blockStmt, final String variableName) {
+        final VariableDeclarator variableDeclarator = getVariableDeclarator(blockStmt, variableName)
+                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableName, blockStmt)));
+         return variableDeclarator.getInitializer();
     }
 
     /**

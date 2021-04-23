@@ -17,6 +17,7 @@ package org.kie.pmml.models.tree.compiler.utils;
 
 import org.dmg.pmml.tree.Node;
 
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**
@@ -27,7 +28,12 @@ public class KiePMMLTreeModelUtils {
     private KiePMMLTreeModelUtils() {
     }
 
-    public static String getNodeClassName(Node node) {
+    public static String getNodeFullClassName(final String packageName, final Node node) {
+        String nodeClassName = getNodeClassName(node);
+        return String.format(PACKAGE_CLASS_TEMPLATE, packageName, nodeClassName);
+    }
+
+    public static String getNodeClassName(final Node node) {
         String rawName = "Node" + Integer.toHexString(node.hashCode());
         return getSanitizedClassName(rawName);
     }
