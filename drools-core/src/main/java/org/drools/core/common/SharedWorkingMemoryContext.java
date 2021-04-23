@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.base.MapGlobalResolver;
@@ -50,7 +50,7 @@ public class SharedWorkingMemoryContext {
 
         this.workingMemoryEventSupport = new RuleRuntimeEventSupport();
         this.agendaEventSupport = new AgendaEventSupport();
-        this.__ruleBaseEventListeners = new LinkedList();
+        this.__ruleBaseEventListeners = new ArrayList();
     }
 
     public WorkItemManager getWorkItemManager() {

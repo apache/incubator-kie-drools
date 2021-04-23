@@ -16,9 +16,8 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -80,9 +79,8 @@ public class PatternBuilder
                             utils,
                             pattern );
         // mus be added after
-        context.getObjectType().add( pattern );
+        context.addPattern( pattern );
         context.popRuleComponent();
-
     }
 
     private void attachPattern(final BuildContext context,
@@ -254,8 +252,7 @@ public class PatternBuilder
     }
 
     private boolean isNegative(final BuildContext context) {
-        for ( ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
-            RuleConditionElement rce = it.previous();
+        for ( RuleConditionElement rce : context.getBuildstack() ) {
             if ( rce instanceof GroupElement && ((GroupElement) rce).isNot() ) {
                 return true;
             }
@@ -398,7 +395,7 @@ public class PatternBuilder
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class< ? > thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            for ( final Pattern previousPattern : context.getObjectType() ) {
+            for ( final Pattern previousPattern : context.getPatterns() ) {
                 final Class< ? > previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );
@@ -418,8 +415,8 @@ public class PatternBuilder
     }
 
     private static class Constraints {
-        private final List<AlphaNodeFieldConstraint> alphaConstraints = new LinkedList<AlphaNodeFieldConstraint>();
-        private final List<BetaNodeFieldConstraint> betaConstraints = new LinkedList<BetaNodeFieldConstraint>();
-        private final List<XpathConstraint> xpathConstraints = new LinkedList<XpathConstraint>();
+        private final List<AlphaNodeFieldConstraint> alphaConstraints = new ArrayList<>();
+        private final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+        private final List<XpathConstraint> xpathConstraints = new ArrayList<>();
     }
 }
