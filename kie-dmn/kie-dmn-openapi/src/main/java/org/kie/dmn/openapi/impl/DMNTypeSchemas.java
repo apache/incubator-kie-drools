@@ -147,10 +147,8 @@ public class DMNTypeSchemas {
             if (isIOSetForInputScope(ct) && ct.getFields().size() > 0) {
                 schema.required(new ArrayList<>(ct.getFields().keySet()));
             }
-        } else if (ct.isCollection()) {
-            schema = refOrBuiltinSchema(ct.getBaseType());
         } else {
-            throw new IllegalStateException();
+            schema = refOrBuiltinSchema(ct.getBaseType());
         }
         schema = nestAsItemIfCollection(schema, ct);
         schema.addExtension(X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(ct));
