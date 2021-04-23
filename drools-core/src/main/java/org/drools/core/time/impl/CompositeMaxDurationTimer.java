@@ -16,6 +16,14 @@
 
 package org.drools.core.time.impl;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
@@ -23,14 +31,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * While a rule might have multiple DurationTimers, due to LHS CEP rules, there can only ever
@@ -57,7 +57,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
 
     public void addDurationTimer( final DurationTimer durationTimer ) {
         if ( this.durations == null ) {
-            this.durations = new LinkedList<DurationTimer>();
+            this.durations = new ArrayList<DurationTimer>();
         }
         this.durations.add( durationTimer );
     }

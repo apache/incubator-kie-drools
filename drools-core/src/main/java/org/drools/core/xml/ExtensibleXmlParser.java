@@ -23,19 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.text.MessageFormat;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -91,7 +91,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     // private Map repo;
 
     /** Stack of configurations. */
-    private LinkedList          configurationStack;
+    private Deque configurationStack;
 
     /** Current configuration text. */
     private StringBuilder       characters;
@@ -100,7 +100,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     private boolean             lastWasEndElement;
 
-    private LinkedList          parents;
+    private Deque               parents;
 
     private Object              peer;
 
@@ -137,8 +137,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
      */
     public ExtensibleXmlParser() {
         // init
-        this.configurationStack = new LinkedList();
-        this.parents = new LinkedList();
+        this.configurationStack = new ArrayDeque();
+        this.parents = new ArrayDeque();
 
         initEntityResolver();
     }
@@ -607,11 +607,11 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     public Object getParent(int index) {
-        ListIterator it = this.parents.listIterator( this.parents.size() );
+        Iterator it = this.parents.descendingIterator( );
         int x = 0;
         Object parent = null;
         while ( x++ <= index ) {
-            parent = it.previous();
+            parent = it.next();
         }
         return parent;
     }
@@ -619,22 +619,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
     public Object removeParent() {
         Object parent = this.parents.removeLast();
         return parent;
-    }
-
-    public LinkedList getParents() {
-        return this.parents;
-    }
-
-    public Object getParent(final Class parent) {
-        final ListIterator it = this.parents.listIterator( this.parents.size() );
-        Object node = null;
-        while ( it.hasPrevious() ) {
-            node = it.previous();
-            if ( parent.isInstance( node ) ) {
-                break;
-            }
-        }
-        return node;
     }
 
     public Object getPeer() {

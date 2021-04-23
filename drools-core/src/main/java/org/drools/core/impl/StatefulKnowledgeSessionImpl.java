@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -361,7 +360,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.globalResolver = new MapGlobalResolver();
         }
 
-        this.kieBaseEventListeners = new LinkedList<KieBaseEventListener>();
+        this.kieBaseEventListeners = new ArrayList<KieBaseEventListener>();
         this.lock = new ReentrantLock();
 
         this.timerService = createTimerService();

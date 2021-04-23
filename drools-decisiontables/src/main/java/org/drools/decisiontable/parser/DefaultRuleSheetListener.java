@@ -19,7 +19,7 @@ package org.drools.decisiontable.parser;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -108,8 +108,8 @@ implements RuleSheetListener {
 
     //accumulated output
     private Map<Integer, ActionType>       _actions;
-    private final HashMap<Integer, String> _cellComments          = new HashMap<Integer, String>();
-    private final List<Rule>               _ruleList              = new LinkedList<Rule>();
+    private final HashMap<Integer, String> _cellComments          = new HashMap<>();
+    private final List<Rule>               _ruleList              = new ArrayList<>();
 
     //need to keep an ordered list of this to make conditions appear in the right order
     private Collection<SourceBuilder>     sourceBuilders;

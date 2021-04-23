@@ -16,8 +16,8 @@
 
 package org.drools.core.common;
 
+import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -267,7 +267,7 @@ public interface InternalAgenda
 
     InternalAgendaGroup getNextFocus();
 
-    LinkedList<AgendaGroup> getStackList();
+    Deque<AgendaGroup> getStackList();
 
     AgendaGroup getFocus();
 
