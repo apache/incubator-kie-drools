@@ -254,6 +254,7 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true, b
                 .withSnapshotsDisabledInSettings()
                 // add timestamp to Maven logs
                 .withOptions(['-Dorg.slf4j.simpleLogger.showDateTime=true', '-Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS'])
+                .withProperty('java.net.preferIPv4Stack', true)
                 .inDirectory(directory)
     if (addQuarkusVersion && getQuarkusBranch()) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
