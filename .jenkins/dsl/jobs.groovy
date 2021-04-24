@@ -80,18 +80,21 @@ if (!isMainBranch()) {
 void setupPrJob(String jobFolder) {
     def jobParams = getDefaultJobParams()
     jobParams.job.folder = jobFolder
+    jobParams.env = [ TIMEOUT_VALUE : 240 ]
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupQuarkusLTSPrJob(String jobFolder) {
     def jobParams = getDefaultJobParams()
     jobParams.job.folder = jobFolder
+    jobParams.env = [ TIMEOUT_VALUE : 240 ]
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
 void setupNativePrJob(String jobFolder) {
     def jobParams = getDefaultJobParams()
     jobParams.job.folder = jobFolder
+    jobParams.env = [ TIMEOUT_VALUE : 600 ]
     KogitoJobTemplate.createNativePRJob(this, jobParams)
 }
 

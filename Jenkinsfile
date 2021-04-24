@@ -15,7 +15,7 @@ pipeline {
         jdk 'kie-jdk11'
     }
     options {
-        timeout(time: 600, unit: 'MINUTES')
+        timeout(time: env.TIMEOUT_VALUE, unit: 'MINUTES')
     }
     environment {
         SONARCLOUD_TOKEN = credentials('SONARCLOUD_TOKEN')
