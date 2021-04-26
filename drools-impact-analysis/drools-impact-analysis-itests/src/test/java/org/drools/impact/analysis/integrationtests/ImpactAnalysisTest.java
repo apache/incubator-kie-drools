@@ -16,16 +16,16 @@
 
 package org.drools.impact.analysis.integrationtests;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ImpactAnalysisHelper;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.Node;
-import org.drools.impact.analysis.graph.TextReporter;
 import org.drools.impact.analysis.graph.Node.Status;
+import org.drools.impact.analysis.graph.TextReporter;
 import org.drools.impact.analysis.integrationtests.domain.Order;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
@@ -100,7 +100,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        generatePng(graph);
+        generatePng(graph, "_all");
 
         // Assuming that "modify" action in R2 is changed 
         Node changedNode = graph.getNodeMap().get("mypkg.R2"); // modify action in R2
@@ -124,7 +124,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         System.out.println("--- toHierarchyText ---");
         String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
         System.out.println(hierarchyText);
-        List<String> lines = hierarchyText.lines().collect(Collectors.toList());
+        List<String> lines = Arrays.asList(hierarchyText.split(System.lineSeparator()));
         Assertions.assertThat(lines).containsExactlyInAnyOrder("R2[*]",
                                                                INDENT + "R3[+]",
                                                                INDENT + INDENT + "R6[+]",
@@ -134,7 +134,7 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         System.out.println("--- toFlatText ---");
         String flatText = TextReporter.toFlatText(impactedSubGraph);
         System.out.println(flatText);
-        List<String> lines2 = flatText.lines().collect(Collectors.toList());
+        List<String> lines2 = Arrays.asList(flatText.split(System.lineSeparator()));
         Assertions.assertThat(lines2).containsExactlyInAnyOrder("R2[*]",
                                                                 "R3[+]",
                                                                 "R6[+]",

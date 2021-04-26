@@ -55,9 +55,18 @@ public class AbstractGraphTest {
         generatePng(graph, "");
     }
 
+    protected void generateSvg(Graph graph) {
+        generateSvg(graph, "");
+    }
+
     protected void generatePng(Graph graph, String suffix) {
         GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
         generator.generatePng(graph);
+    }
+
+    protected void generateSvg(Graph graph, String suffix) {
+        GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
+        generator.generateSvg(graph);
     }
 
     protected void assertNodeLink(Graph graph, String sourceFqdn, String targetFqdn, ReactivityType type) {

@@ -11,17 +11,19 @@
 
   <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
 
+  <properties>
+    <java.module.name>org.drools.impact.analysis.graph.graphviz</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-graph-common</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-parser</artifactId>
     </dependency>
-
     <dependency>
       <groupId>guru.nidi</groupId>
       <artifactId>graphviz-java</artifactId>

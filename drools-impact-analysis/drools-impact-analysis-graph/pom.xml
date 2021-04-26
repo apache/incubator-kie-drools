@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>drools-impact-analysis</artifactId>
-        <groupId>org.drools</groupId>
-        <version>7.54.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>drools-impact-analysis</artifactId>
+    <groupId>org.drools</groupId>
+    <version>7.54.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>drools-impact-analysis-graph</artifactId>
-    <packaging>pom</packaging>
+  <artifactId>drools-impact-analysis-graph</artifactId>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>drools-impact-analysis-graph-common</module>
-        <module>drools-impact-analysis-graph-graphviz</module>
-    </modules>
+  <modules>
+    <module>drools-impact-analysis-graph-common</module>
+    <module>drools-impact-analysis-graph-graphviz</module>
+  </modules>
 
 </project>

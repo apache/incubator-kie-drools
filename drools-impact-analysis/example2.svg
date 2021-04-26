@@ -1,0 +1,181 @@
+<svg width="720px" height="341px"
+ viewBox="0.00 0.00 720.05 341.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0) translate(4 337)">
+<title>example&#45;impacted&#45;whole&#45;graph</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-337 716.0496,-337 716.0496,4 -4,4"/>
+<!-- PriceCheck_11 -->
+<g id="node1" class="node">
+<title>PriceCheck_11</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="358.6246" cy="-180" rx="81.4863" ry="18"/>
+<text text-anchor="middle" x="358.6246" y="-176.3" font-family="Times,serif" font-size="14.00" fill="#000000">PriceCheck_11</text>
+</g>
+<!-- Inventory shortage -->
+<g id="node2" class="node">
+<title>Inventory shortage</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="611.9585" cy="-126" rx="100.1823" ry="18"/>
+<text text-anchor="middle" x="611.9585" y="-122.3" font-family="Times,serif" font-size="14.00" fill="#000000">Inventory shortage</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;Inventory shortage -->
+<g id="edge3" class="edge">
+<title>PriceCheck_11&#45;&gt;Inventory shortage</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M417.3812,-167.4756C453.0722,-159.8678 498.976,-150.083 537.2337,-141.9281"/>
+<polygon fill="#000000" stroke="#000000" points="538.2435,-145.2916 547.2941,-139.7837 536.7841,-138.4454 538.2435,-145.2916"/>
+</g>
+<!-- StatusCheck_11 -->
+<g id="node3" class="node">
+<title>StatusCheck_11</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="611.9585" cy="-180" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="611.9585" y="-176.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_11</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_11 -->
+<g id="edge5" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_11</title>
+<path fill="none" stroke="#000000" d="M434.9766,-173.7475C461.7059,-173.1909 492.0044,-173.1013 519.882,-173.4789"/>
+<polygon fill="#000000" stroke="#000000" points="519.9781,-176.9807 530.0321,-173.6391 520.0886,-169.9816 519.9781,-176.9807"/>
+</g>
+<!-- StatusCheck_12 -->
+<g id="node4" class="node">
+<title>StatusCheck_12</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="611.9585" cy="-72" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="611.9585" y="-68.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_12</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_12 -->
+<g id="edge2" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_12</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M409.5086,-165.8966C419.8114,-162.2692 430.386,-157.9624 439.8674,-153 475.3069,-134.4516 475.9104,-116.5243 511.8674,-99 520.786,-94.6533 530.5047,-90.9267 540.2653,-87.7546"/>
+<polygon fill="#000000" stroke="#000000" points="541.478,-91.0437 550.0119,-84.7649 539.4252,-84.3514 541.478,-91.0437"/>
+</g>
+<!-- StatusCheck_13 -->
+<g id="node6" class="node">
+<title>StatusCheck_13</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="611.9585" cy="-18" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="611.9585" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_13</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_13 -->
+<g id="edge4" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_13</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M414.8354,-166.7866C423.7229,-163.2002 432.4233,-158.6804 439.8674,-153 485.7287,-118.0038 465.0211,-78.6664 511.8674,-45 518.6955,-40.0929 526.3649,-36.0777 534.3411,-32.7922"/>
+<polygon fill="#000000" stroke="#000000" points="535.666,-36.0336 543.8134,-29.2607 533.2207,-29.4746 535.666,-36.0336"/>
+</g>
+<!-- StatusCheck_11&#45;&gt;PriceCheck_11 -->
+<g id="edge9" class="edge">
+<title>StatusCheck_11&#45;&gt;PriceCheck_11</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M530.0321,-186.3609C502.9587,-186.851 472.7564,-186.8781 445.3369,-186.4422"/>
+<polygon fill="#000000" stroke="#000000" points="445.0391,-182.9363 434.9766,-186.2525 444.9108,-189.9351 445.0391,-182.9363"/>
+</g>
+<!-- Wrong price -->
+<g id="node5" class="node">
+<title>Wrong price</title>
+<ellipse fill="none" stroke="#000000" cx="102.6909" cy="-315" rx="68.4888" ry="18"/>
+<text text-anchor="middle" x="102.6909" y="-311.3" font-family="Times,serif" font-size="14.00" fill="#000000">Wrong price</text>
+</g>
+<!-- CustomerCheck_12 -->
+<g id="node7" class="node">
+<title>CustomerCheck_12</title>
+<ellipse fill="none" stroke="#000000" cx="102.6909" cy="-261" rx="102.8821" ry="18"/>
+<text text-anchor="middle" x="102.6909" y="-257.3" font-family="Times,serif" font-size="14.00" fill="#000000">CustomerCheck_12</text>
+</g>
+<!-- CustomerCheck_12&#45;&gt;PriceCheck_11 -->
+<g id="edge1" class="edge">
+<title>CustomerCheck_12&#45;&gt;PriceCheck_11</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M162.1146,-246.2578C176.3519,-242.4829 191.4604,-238.2751 205.3818,-234 239.7836,-223.4355 277.9555,-209.9895 307.5961,-199.1578"/>
+<polygon fill="#000000" stroke="#000000" points="309.123,-202.3256 317.3032,-195.5926 306.7096,-195.7548 309.123,-202.3256"/>
+</g>
+<!-- CustomerCheck_11 -->
+<g id="node8" class="node">
+<title>CustomerCheck_11</title>
+<ellipse fill="none" stroke="#000000" cx="102.6909" cy="-207" rx="102.8821" ry="18"/>
+<text text-anchor="middle" x="102.6909" y="-203.3" font-family="Times,serif" font-size="14.00" fill="#000000">CustomerCheck_11</text>
+</g>
+<!-- CustomerCheck_11&#45;&gt;PriceCheck_11 -->
+<g id="edge6" class="edge">
+<title>CustomerCheck_11&#45;&gt;PriceCheck_11</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M190.7687,-197.7081C218.0785,-194.8271 248.0814,-191.6619 275.0742,-188.8142"/>
+<polygon fill="#000000" stroke="#000000" points="275.6826,-192.2696 285.2601,-187.7397 274.9481,-185.3082 275.6826,-192.2696"/>
+</g>
+<!-- CustomerCheck_14 -->
+<g id="node9" class="node">
+<title>CustomerCheck_14</title>
+<ellipse fill="none" stroke="#000000" cx="102.6909" cy="-153" rx="102.8821" ry="18"/>
+<text text-anchor="middle" x="102.6909" y="-149.3" font-family="Times,serif" font-size="14.00" fill="#000000">CustomerCheck_14</text>
+</g>
+<!-- CustomerCheck_14&#45;&gt;PriceCheck_11 -->
+<g id="edge7" class="edge">
+<title>CustomerCheck_14&#45;&gt;PriceCheck_11</title>
+<path fill="none" stroke="#000000" d="M190.7687,-162.2919C218.0785,-165.1729 248.0814,-168.3381 275.0742,-171.1858"/>
+<polygon fill="#000000" stroke="#000000" points="274.9481,-174.6918 285.2601,-172.2603 275.6826,-167.7304 274.9481,-174.6918"/>
+</g>
+<!-- CustomerCheck_13 -->
+<g id="node10" class="node">
+<title>CustomerCheck_13</title>
+<ellipse fill="none" stroke="#000000" cx="102.6909" cy="-99" rx="102.8821" ry="18"/>
+<text text-anchor="middle" x="102.6909" y="-95.3" font-family="Times,serif" font-size="14.00" fill="#000000">CustomerCheck_13</text>
+</g>
+<!-- CustomerCheck_13&#45;&gt;PriceCheck_11 -->
+<g id="edge8" class="edge">
+<title>CustomerCheck_13&#45;&gt;PriceCheck_11</title>
+<path fill="none" stroke="#000000" d="M162.7178,-113.6869C176.7937,-117.433 191.6795,-121.6419 205.3818,-126 237.9502,-136.3586 245.16,-141.6088 277.3818,-153 285.6288,-155.9155 294.3776,-158.9175 302.9617,-161.812"/>
+<polygon fill="#000000" stroke="#000000" points="301.9539,-165.1656 312.5478,-165.0241 304.178,-158.5283 301.9539,-165.1656"/>
+</g>
+<!-- PriceCheck_13 -->
+<g id="node11" class="node">
+<title>PriceCheck_13</title>
+<ellipse fill="none" stroke="#000000" cx="358.6246" cy="-126" rx="81.4863" ry="18"/>
+<text text-anchor="middle" x="358.6246" y="-122.3" font-family="Times,serif" font-size="14.00" fill="#000000">PriceCheck_13</text>
+</g>
+<!-- PriceCheck_13&#45;&gt;Inventory shortage -->
+<g id="edge10" class="edge">
+<title>PriceCheck_13&#45;&gt;Inventory shortage</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M440.1755,-126C459.6911,-126 480.8502,-126 501.4315,-126"/>
+<polygon fill="#000000" stroke="#000000" points="501.4789,-129.5001 511.4789,-126 501.4788,-122.5001 501.4789,-129.5001"/>
+</g>
+<!-- PriceCheck_13&#45;&gt;StatusCheck_11 -->
+<g id="edge12" class="edge">
+<title>PriceCheck_13&#45;&gt;StatusCheck_11</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M417.3812,-138.5244C454.2798,-146.3896 502.094,-156.5816 541.09,-164.8939"/>
+<polygon fill="#000000" stroke="#000000" points="540.809,-168.4125 551.319,-167.0742 542.2684,-161.5663 540.809,-168.4125"/>
+</g>
+<!-- PriceCheck_13&#45;&gt;StatusCheck_12 -->
+<g id="edge13" class="edge">
+<title>PriceCheck_13&#45;&gt;StatusCheck_12</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M417.3812,-113.4756C454.2798,-105.6104 502.094,-95.4184 541.09,-87.1061"/>
+<polygon fill="#000000" stroke="#000000" points="542.2684,-90.4337 551.319,-84.9258 540.809,-83.5875 542.2684,-90.4337"/>
+</g>
+<!-- PriceCheck_13&#45;&gt;StatusCheck_13 -->
+<g id="edge11" class="edge">
+<title>PriceCheck_13&#45;&gt;StatusCheck_13</title>
+<path fill="none" stroke="#000000" d="M409.5086,-111.8966C419.8114,-108.2692 430.386,-103.9624 439.8674,-99 475.3069,-80.4516 475.9104,-62.5243 511.8674,-45 520.786,-40.6533 530.5047,-36.9267 540.2653,-33.7546"/>
+<polygon fill="#000000" stroke="#000000" points="541.478,-37.0437 550.0119,-30.7649 539.4252,-30.3514 541.478,-37.0437"/>
+</g>
+<!-- PriceCheck_12 -->
+<g id="node12" class="node">
+<title>PriceCheck_12</title>
+<ellipse fill="none" stroke="#000000" cx="358.6246" cy="-72" rx="81.4863" ry="18"/>
+<text text-anchor="middle" x="358.6246" y="-68.3" font-family="Times,serif" font-size="14.00" fill="#000000">PriceCheck_12</text>
+</g>
+<!-- PriceCheck_12&#45;&gt;Inventory shortage -->
+<g id="edge14" class="edge">
+<title>PriceCheck_12&#45;&gt;Inventory shortage</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M417.3812,-84.5244C453.0722,-92.1322 498.976,-101.917 537.2337,-110.0719"/>
+<polygon fill="#000000" stroke="#000000" points="536.7841,-113.5546 547.2941,-112.2163 538.2435,-106.7084 536.7841,-113.5546"/>
+</g>
+<!-- PriceCheck_12&#45;&gt;StatusCheck_11 -->
+<g id="edge17" class="edge">
+<title>PriceCheck_12&#45;&gt;StatusCheck_11</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M409.5086,-86.1034C419.8114,-89.7308 430.386,-94.0376 439.8674,-99 475.3069,-117.5484 475.9104,-135.4757 511.8674,-153 520.786,-157.3467 530.5047,-161.0733 540.2653,-164.2454"/>
+<polygon fill="#000000" stroke="#000000" points="539.4252,-167.6486 550.0119,-167.2351 541.478,-160.9563 539.4252,-167.6486"/>
+</g>
+<!-- PriceCheck_12&#45;&gt;StatusCheck_12 -->
+<g id="edge16" class="edge">
+<title>PriceCheck_12&#45;&gt;StatusCheck_12</title>
+<path fill="none" stroke="#000000" d="M440.1755,-72C463.8213,-72 489.88,-72 514.4002,-72"/>
+<polygon fill="#000000" stroke="#000000" points="514.4373,-75.5001 524.4372,-72 514.4372,-68.5001 514.4373,-75.5001"/>
+</g>
+<!-- PriceCheck_12&#45;&gt;StatusCheck_13 -->
+<g id="edge15" class="edge">
+<title>PriceCheck_12&#45;&gt;StatusCheck_13</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M417.3812,-59.4756C454.2798,-51.6104 502.094,-41.4184 541.09,-33.1061"/>
+<polygon fill="#000000" stroke="#000000" points="542.2684,-36.4337 551.319,-30.9258 540.809,-29.5875 542.2684,-36.4337"/>
+</g>
+</g>
+</svg>

@@ -30,6 +30,8 @@ import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizCmdLineEngine;
+import guru.nidi.graphviz.engine.GraphvizJdkEngine;
+import guru.nidi.graphviz.engine.GraphvizV8Engine;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
@@ -51,6 +53,7 @@ public class GraphImageGenerator {
     private int width = 0; // when 0, auto-sized
     private int height = 0; // when 0, auto-sized
     private int totalMemory = 1000000000; // 1GB by default
+    private int cmdLineEngineTimeout = 600; // 10 minutes by default
     private String outputDir = DEFAULT_OUTPUT_DIR;
 
     private Rank.RankDir rankDir = Rank.RankDir.LEFT_TO_RIGHT; // LEFT_TO_RIGHT gives a better view when you have a large number of nodes
@@ -58,18 +61,25 @@ public class GraphImageGenerator {
 
     public GraphImageGenerator(String graphName) {
         this.graphName = graphName;
+        initEngines();
     }
 
-    public GraphImageGenerator(String graphName, int width, int height) {
+    public GraphImageGenerator(String graphName, int width, int height, int cmdLineEngineTimeout) {
         this.graphName = graphName;
         this.width = width;
         this.height = height;
+        this.cmdLineEngineTimeout = cmdLineEngineTimeout;
+        initEngines();
     }
 
-    public void configureGraphvizCmdLineEngine(int timeoutSeconds) {
-        GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine();
-        engine.timeout(timeoutSeconds, TimeUnit.SECONDS);
-        Graphviz.useEngine(engine);
+    /**
+     * This initEngines should work generally but if needed, you can override
+     */
+    protected void initEngines() {
+        // GraphvizCmdLineEngine is faster if available (e.g. /usr/bin/dot). If unavailable, falls back to the next engine
+        GraphvizCmdLineEngine cmdLineEngine = new GraphvizCmdLineEngine();
+        cmdLineEngine.timeout(cmdLineEngineTimeout, TimeUnit.SECONDS);
+        Graphviz.useEngine(cmdLineEngine, new GraphvizV8Engine(), new GraphvizJdkEngine());
     }
 
     public String getOutputDir() {
@@ -78,6 +88,22 @@ public class GraphImageGenerator {
 
     public void setOutputDir(String outputDir) {
         this.outputDir = outputDir;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public Rank.RankDir getRankDir() {
@@ -151,7 +177,7 @@ public class GraphImageGenerator {
         try {
             String filePath = outputDir + File.separator + graphName + ".png";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
-            logger.info("--- Graph image is generated to " + filePath);
+            logger.info("--- Graph png image is generated to " + filePath);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -163,7 +189,7 @@ public class GraphImageGenerator {
         try {
             String filePath = outputDir + File.separator + graphName + ".svg";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
-            logger.info("--- Graph image is generated to " + filePath);
+            logger.info("--- Graph svg image is generated to " + filePath);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -1,0 +1,22 @@
+package org.drools.impact.analysis.example;
+
+import org.drools.impact.analysis.example.domain.Order;
+import org.drools.impact.analysis.example.domain.Product;
+
+global java.util.List resultList;
+
+rule "Inventory shortage"
+when
+    $o : Order(status == "Ordered")
+    $p : Product( itemName == $o.itemName, quantity < 10 )
+then
+    System.out.println("Shortage : itemName = " + $p.getItemName());
+end
+
+rule "Wrong price"
+when
+    $o : Order()
+    $p : Product( itemName == $o.itemName, itemPrice != $o.itemPrice )
+then
+    System.out.println("Wrong Price Warning : order.id = " + $o.getId());
+end

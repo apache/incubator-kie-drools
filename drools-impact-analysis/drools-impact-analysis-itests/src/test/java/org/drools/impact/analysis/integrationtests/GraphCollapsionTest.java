@@ -145,16 +145,10 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
     @Test
     public void testSpreadsheet() throws IOException {
-
-        System.setProperty("drools.dump.dir", "/home/tkobayas/tmp");
-
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.drools.impact.analysis.integrationtests", "spreadsheet-test", "1.0.0");
         KieFileSystem kfs = createKieFileSystemWithClassPathResourceNames(releaseId, getClass(),
                                                                           "collapsion01.xls", "collapsion02.xls", "collapsion03.xls");
-
-        //        Order order = new Order(1, "Guitar", 6000, 65, 5);
-        //        runRule(kfs, order);
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ImpactAnalysisProject.class);
         ImpactAnalysisKieModule analysisKieModule = (ImpactAnalysisKieModule) kieBuilder.getKieModule();
