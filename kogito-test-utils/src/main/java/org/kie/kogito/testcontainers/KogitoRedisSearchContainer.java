@@ -35,6 +35,7 @@ public class KogitoRedisSearchContainer extends GenericContainer<KogitoRedisSear
     public KogitoRedisSearchContainer() {
         addExposedPort(PORT);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
+        withLogConsumer(f -> System.out.println(f.getUtf8String()));
         waitingFor(Wait.forLogMessage(".*Ready to accept connections.*\\s", 1).withStartupTimeout(Duration.ofMinutes(5)));
         setDockerImageName(System.getProperty(REDIS_PROPERTY));
     }

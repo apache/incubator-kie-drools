@@ -49,6 +49,7 @@ public class KogitoKeycloakContainer extends GenericContainer<KogitoKeycloakCont
         withEnv("KEYCLOAK_PASSWORD", PASSWORD);
         withEnv("KEYCLOAK_IMPORT", REALM_FILE);
         withClasspathResourceMapping("testcontainers/keycloak/kogito-realm.json", REALM_FILE, BindMode.READ_ONLY);
+        withLogConsumer(f -> System.out.println(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         waitingFor(Wait.forHttp("/auth").withStartupTimeout(Duration.ofMinutes(5)));
         setDockerImageName(System.getProperty(KEYCLOAK_PROPERTY));

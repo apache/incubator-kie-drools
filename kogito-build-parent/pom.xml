@@ -195,7 +195,7 @@
     <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
     <version.org.springframework>5.2.9.RELEASE</version.org.springframework>
     <version.org.springdoc>1.5.2</version.org.springdoc>
-    <version.org.testcontainers>1.15.1</version.org.testcontainers>
+    <version.org.testcontainers>1.15.3</version.org.testcontainers>
     <version.org.xmlunit>2.2.1</version.org.xmlunit>
     <version.io.netty>4.1.52.Final</version.io.netty>
     <version.io.projectreactor>3.3.10.RELEASE</version.io.projectreactor>
@@ -1088,6 +1088,7 @@
             <excludes>
               <exclude>${tests.surefire.include}</exclude>
             </excludes>
+            <argLine>-Xms1024m -Xmx4g</argLine>
             <systemPropertyVariables>
               <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
               <maven.settings>${session.request.userSettingsFile.path}</maven.settings>

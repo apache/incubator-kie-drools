@@ -40,6 +40,7 @@ public class KogitoInfinispanContainer extends GenericContainer<KogitoInfinispan
 
     public KogitoInfinispanContainer() {
         addExposedPort(PORT);
+        withLogConsumer(f -> System.out.println(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         waitingFor(Wait.forHttp("/").withStartupTimeout(Duration.ofMinutes(5)));
         setDockerImageName(System.getProperty(INFINISPAN_PROPERTY));
