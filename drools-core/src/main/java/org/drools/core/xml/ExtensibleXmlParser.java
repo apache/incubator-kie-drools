@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -616,9 +617,25 @@ public class ExtensibleXmlParser extends DefaultHandler {
         return parent;
     }
 
+    public Object getParent(final Class parent) {
+        final Iterator it = this.parents.descendingIterator();
+        Object node = null;
+        while ( it.hasNext() ) {
+            node = it.next();
+            if ( parent.isInstance( node ) ) {
+                break;
+            }
+        }
+        return node;
+    }
+
     public Object removeParent() {
         Object parent = this.parents.removeLast();
         return parent;
+    }
+
+    public Collection getParents() {
+        return parents;
     }
 
     public Object getPeer() {
