@@ -16,19 +16,24 @@
 
 import React from 'react';
 import { OUIAProps } from '@kogito-apps/components-common';
-import { EmbeddedJobsManagement } from '@kogito-apps/jobs-management';
-import { JobsManagementGatewayApi } from '../../../channel/JobsManagement';
-import { useJobsManagementGatewayApi } from '../../../channel/JobsManagement/JobsManagementContext';
+import { EmbeddedProcessDetails } from '@kogito-apps/process-details';
+import { ProcessDetailsGatewayApi } from '../../../channel/ProcessDetails';
+import { useProcessDetailsGatewayApi } from '../../../channel/ProcessDetails/ProcessDetailsContext';
 
-const JobsManagementContainer: React.FC<OUIAProps> = () => {
-  const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();
+interface ProcessDetailsContainerProps {
+  processId: string;
+}
+
+const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
+  OUIAProps> = ({ processId }) => {
+  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
   return (
-    <EmbeddedJobsManagement
-      //@ts-ignore
+    <EmbeddedProcessDetails
       driver={gatewayApi}
       targetOrigin={window.location.origin}
+      processId={processId}
     />
   );
 };
 
-export default JobsManagementContainer;
+export default ProcessDetailsContainer;

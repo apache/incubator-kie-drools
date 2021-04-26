@@ -1,31 +1,21 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
-
-const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || '9000';
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = merge(common, {
-  mode: 'development',
+  mode: 'production',
   devtool: 'source-map',
-  devServer: {
-    contentBase: './dist',
-    host: HOST,
-    port: PORT,
-    compress: true,
-    inline: true,
-    historyApiFallback: true,
-    hot: true,
-    overlay: true,
-    open: true,
-    proxy: {
-      '/svg': {
-          target: 'http://localhost:4000',
-          secure: false,
-          changeOrigin: true
-      },
-    }
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin({})]
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'envelope/components/styles.css',
+      chunkFilename: '[name].bundle.css'
+    })
+  ],
   module: {
     rules: [
       {
@@ -48,16 +38,7 @@ module.exports = merge(common, {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/consoles-common/dist/src/components/styles.css'
-          ),
-          path.resolve(
             '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/jobs-management/dist/envelope/components/styles.css'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-details/dist/envelope/components/styles.css'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/management-console-shared/dist/src/components/styles.css'
@@ -72,16 +53,13 @@ module.exports = merge(common, {
             '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
           )
         ],
-        use: ['style-loader', 'css-loader']
+        use: [{
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            publicPath: '../../',
+          }
+        }, 'css-loader']
       }
-    ]
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx'],
-    modules: [
-      path.resolve('../../node_modules'),
-      path.resolve('./node_modules'),
-      path.resolve('./src')
     ]
   }
 });

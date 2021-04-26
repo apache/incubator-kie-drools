@@ -15,20 +15,9 @@
  */
 
 import React from 'react';
-import { OUIAProps } from '@kogito-apps/components-common';
-import { EmbeddedJobsManagement } from '@kogito-apps/jobs-management';
-import { JobsManagementGatewayApi } from '../../../channel/JobsManagement';
-import { useJobsManagementGatewayApi } from '../../../channel/JobsManagement/JobsManagementContext';
 
-const JobsManagementContainer: React.FC<OUIAProps> = () => {
-  const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();
-  return (
-    <EmbeddedJobsManagement
-      //@ts-ignore
-      driver={gatewayApi}
-      targetOrigin={window.location.origin}
-    />
-  );
+const MockedProcessDetails = (): React.ReactElement => {
+  return <></>;
 };
 
-export default JobsManagementContainer;
+export default MockedProcessDetails;

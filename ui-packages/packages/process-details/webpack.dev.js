@@ -17,14 +17,7 @@ module.exports = merge(common, {
     historyApiFallback: true,
     hot: true,
     overlay: true,
-    open: true,
-    proxy: {
-      '/svg': {
-          target: 'http://localhost:4000',
-          secure: false,
-          changeOrigin: true
-      },
-    }
+    open: true
   },
   module: {
     rules: [
@@ -48,16 +41,7 @@ module.exports = merge(common, {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/consoles-common/dist/src/components/styles.css'
-          ),
-          path.resolve(
             '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/jobs-management/dist/envelope/components/styles.css'
-          ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/process-details/dist/envelope/components/styles.css'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/management-console-shared/dist/src/components/styles.css'
@@ -76,12 +60,7 @@ module.exports = merge(common, {
       }
     ]
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx'],
-    modules: [
-      path.resolve('../../node_modules'),
-      path.resolve('./node_modules'),
-      path.resolve('./src')
-    ]
+  output: {
+    filename: 'envelope/components/styles.css'
   }
 });

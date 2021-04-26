@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessDetailsEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": Object {
+        "jobList__sortBy": [MockFunction],
+      },
+      "requests": Object {
+        "processDetails__initialLoad": [MockFunction],
+        "processDetails__processDetailsQuery": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedProcessDetails
+    driver={
+      ProcessDetailsEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": Object {
+            "jobList__sortBy": [MockFunction],
+          },
+          "requests": Object {
+            "processDetails__initialLoad": [MockFunction],
+            "processDetails__processDetailsQuery": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    id="a1e139d5-4e77-48c9-84ae-34578e904e5a"
+    isEnvelopeConnectedToChannel={true}
+  />
+</ForwardRef>
+`;
