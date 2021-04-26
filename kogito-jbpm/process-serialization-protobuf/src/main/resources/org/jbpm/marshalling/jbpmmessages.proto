@@ -240,6 +240,8 @@ message HumanTaskWorkItem {
     optional int32 state = 4;
 
     repeated Variable variable = 5;
+    repeated Variable result = 25;
+    
 
     optional string deployment_id = 6;
     optional string node_instance_id = 7;

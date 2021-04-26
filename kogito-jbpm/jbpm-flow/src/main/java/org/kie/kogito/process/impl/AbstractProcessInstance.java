@@ -403,6 +403,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
         return new BaseWorkItem(workItemInstance.getStringId(),
                 workItemInstance.getWorkItem().getStringId(),
+                Long.toString(workItemInstance.getNode().getId()),
                 (String) workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()),
                 workItemInstance.getWorkItem().getState(),
                 workItemInstance.getWorkItem().getPhaseId(),
@@ -418,6 +419,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
                 .map(ni -> new BaseWorkItem(ni.getStringId(),
                         ((WorkItemNodeInstance) ni).getWorkItemId(),
+                        Long.toString(((WorkItemNodeInstance) ni).getNode().getId()),
                         (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
                         ((WorkItemNodeInstance) ni).getWorkItem().getState(),
                         ((WorkItemNodeInstance) ni).getWorkItem().getPhaseId(),

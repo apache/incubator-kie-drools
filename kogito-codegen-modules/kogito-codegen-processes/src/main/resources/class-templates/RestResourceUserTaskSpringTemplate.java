@@ -345,7 +345,7 @@ public class $Type$Resource {
     }
 
     @GetMapping(value = "/{id}/$taskName$/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$TaskInput$> getTask(@PathVariable("id") String id,
+    public ResponseEntity<$TaskModel$> getTask(@PathVariable("id") String id,
                                                @PathVariable("taskId") String taskId,
                                                @RequestParam(value = "user", required = false) final String user,
                                                @RequestParam(value = "group",
@@ -353,7 +353,7 @@ public class $Type$Resource {
         return process
                 .instances()
                 .findById(id)
-                .map(pi -> $TaskInput$.from(pi.workItem(taskId, Policies.of(user, groups))))
+                .map(pi -> $TaskModel$.from(pi.workItem(taskId, Policies.of(user, groups))))
                 .map(m -> ResponseEntity.ok(m))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

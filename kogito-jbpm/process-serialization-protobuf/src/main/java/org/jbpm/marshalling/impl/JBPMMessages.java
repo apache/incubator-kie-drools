@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jbpm.marshalling.impl;
 
 public final class JBPMMessages {
@@ -37859,6 +37860,34 @@ public final class JBPMMessages {
                 int index);
 
         /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
+                getResultList();
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        org.jbpm.marshalling.impl.JBPMMessages.Variable getResult(int index);
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        int getResultCount();
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
+                getResultOrBuilderList();
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getResultOrBuilder(
+                int index);
+
+        /**
          * <code>optional string deployment_id = 6;</code>
          * 
          * @return Whether the deploymentId field is set.
@@ -38334,6 +38363,7 @@ public final class JBPMMessages {
             processInstancesId_ = "";
             name_ = "";
             variable_ = java.util.Collections.emptyList();
+            result_ = java.util.Collections.emptyList();
             deploymentId_ = "";
             nodeInstanceId_ = "";
             phaseId_ = "";
@@ -38481,45 +38511,45 @@ public final class JBPMMessages {
                         }
                         case 138: {
                             com.google.protobuf.ByteString bs = input.readBytes();
-                            if (!((mutable_bitField0_ & 0x00010000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x00020000) != 0)) {
                                 potUsers_ = new com.google.protobuf.LazyStringArrayList();
-                                mutable_bitField0_ |= 0x00010000;
+                                mutable_bitField0_ |= 0x00020000;
                             }
                             potUsers_.add(bs);
                             break;
                         }
                         case 146: {
                             com.google.protobuf.ByteString bs = input.readBytes();
-                            if (!((mutable_bitField0_ & 0x00020000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x00040000) != 0)) {
                                 potGroups_ = new com.google.protobuf.LazyStringArrayList();
-                                mutable_bitField0_ |= 0x00020000;
+                                mutable_bitField0_ |= 0x00040000;
                             }
                             potGroups_.add(bs);
                             break;
                         }
                         case 154: {
                             com.google.protobuf.ByteString bs = input.readBytes();
-                            if (!((mutable_bitField0_ & 0x00040000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x00080000) != 0)) {
                                 excludedUsers_ = new com.google.protobuf.LazyStringArrayList();
-                                mutable_bitField0_ |= 0x00040000;
+                                mutable_bitField0_ |= 0x00080000;
                             }
                             excludedUsers_.add(bs);
                             break;
                         }
                         case 162: {
                             com.google.protobuf.ByteString bs = input.readBytes();
-                            if (!((mutable_bitField0_ & 0x00080000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x00100000) != 0)) {
                                 adminUsers_ = new com.google.protobuf.LazyStringArrayList();
-                                mutable_bitField0_ |= 0x00080000;
+                                mutable_bitField0_ |= 0x00100000;
                             }
                             adminUsers_.add(bs);
                             break;
                         }
                         case 170: {
                             com.google.protobuf.ByteString bs = input.readBytes();
-                            if (!((mutable_bitField0_ & 0x00100000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x00200000) != 0)) {
                                 adminGroups_ = new com.google.protobuf.LazyStringArrayList();
-                                mutable_bitField0_ |= 0x00100000;
+                                mutable_bitField0_ |= 0x00200000;
                             }
                             adminGroups_.add(bs);
                             break;
@@ -38531,21 +38561,30 @@ public final class JBPMMessages {
                             break;
                         }
                         case 186: {
-                            if (!((mutable_bitField0_ & 0x00400000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x00800000) != 0)) {
                                 comments_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Comment>();
-                                mutable_bitField0_ |= 0x00400000;
+                                mutable_bitField0_ |= 0x00800000;
                             }
                             comments_.add(
                                     input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.Comment.PARSER, extensionRegistry));
                             break;
                         }
                         case 194: {
-                            if (!((mutable_bitField0_ & 0x00800000) != 0)) {
+                            if (!((mutable_bitField0_ & 0x01000000) != 0)) {
                                 attachments_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Attachment>();
-                                mutable_bitField0_ |= 0x00800000;
+                                mutable_bitField0_ |= 0x01000000;
                             }
                             attachments_.add(
                                     input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.Attachment.PARSER, extensionRegistry));
+                            break;
+                        }
+                        case 202: {
+                            if (!((mutable_bitField0_ & 0x00000020) != 0)) {
+                                result_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Variable>();
+                                mutable_bitField0_ |= 0x00000020;
+                            }
+                            result_.add(
+                                    input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.Variable.PARSER, extensionRegistry));
                             break;
                         }
                         default: {
@@ -38566,26 +38605,29 @@ public final class JBPMMessages {
                 if (((mutable_bitField0_ & 0x00000010) != 0)) {
                     variable_ = java.util.Collections.unmodifiableList(variable_);
                 }
-                if (((mutable_bitField0_ & 0x00010000) != 0)) {
+                if (((mutable_bitField0_ & 0x00020000) != 0)) {
                     potUsers_ = potUsers_.getUnmodifiableView();
                 }
-                if (((mutable_bitField0_ & 0x00020000) != 0)) {
+                if (((mutable_bitField0_ & 0x00040000) != 0)) {
                     potGroups_ = potGroups_.getUnmodifiableView();
                 }
-                if (((mutable_bitField0_ & 0x00040000) != 0)) {
+                if (((mutable_bitField0_ & 0x00080000) != 0)) {
                     excludedUsers_ = excludedUsers_.getUnmodifiableView();
                 }
-                if (((mutable_bitField0_ & 0x00080000) != 0)) {
+                if (((mutable_bitField0_ & 0x00100000) != 0)) {
                     adminUsers_ = adminUsers_.getUnmodifiableView();
                 }
-                if (((mutable_bitField0_ & 0x00100000) != 0)) {
+                if (((mutable_bitField0_ & 0x00200000) != 0)) {
                     adminGroups_ = adminGroups_.getUnmodifiableView();
                 }
-                if (((mutable_bitField0_ & 0x00400000) != 0)) {
+                if (((mutable_bitField0_ & 0x00800000) != 0)) {
                     comments_ = java.util.Collections.unmodifiableList(comments_);
                 }
-                if (((mutable_bitField0_ & 0x00800000) != 0)) {
+                if (((mutable_bitField0_ & 0x01000000) != 0)) {
                     attachments_ = java.util.Collections.unmodifiableList(attachments_);
+                }
+                if (((mutable_bitField0_ & 0x00000020) != 0)) {
+                    result_ = java.util.Collections.unmodifiableList(result_);
                 }
                 this.unknownFields = unknownFields.build();
                 makeExtensionsImmutable();
@@ -38834,6 +38876,51 @@ public final class JBPMMessages {
         public org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
                 int index) {
             return variable_.get(index);
+        }
+
+        public static final int RESULT_FIELD_NUMBER = 25;
+        private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> result_;
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        @java.lang.Override
+        public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> getResultList() {
+            return result_;
+        }
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        @java.lang.Override
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
+                getResultOrBuilderList() {
+            return result_;
+        }
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        @java.lang.Override
+        public int getResultCount() {
+            return result_.size();
+        }
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        @java.lang.Override
+        public org.jbpm.marshalling.impl.JBPMMessages.Variable getResult(int index) {
+            return result_.get(index);
+        }
+
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+         */
+        @java.lang.Override
+        public org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getResultOrBuilder(
+                int index) {
+            return result_.get(index);
         }
 
         public static final int DEPLOYMENT_ID_FIELD_NUMBER = 6;
@@ -39805,6 +39892,9 @@ public final class JBPMMessages {
             for (int i = 0; i < attachments_.size(); i++) {
                 output.writeMessage(24, attachments_.get(i));
             }
+            for (int i = 0; i < result_.size(); i++) {
+                output.writeMessage(25, result_.get(i));
+            }
             unknownFields.writeTo(output);
         }
 
@@ -39919,6 +40009,10 @@ public final class JBPMMessages {
                 size += com.google.protobuf.CodedOutputStream
                         .computeMessageSize(24, attachments_.get(i));
             }
+            for (int i = 0; i < result_.size(); i++) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeMessageSize(25, result_.get(i));
+            }
             size += unknownFields.getSerializedSize();
             memoizedSize = size;
             return size;
@@ -39963,6 +40057,9 @@ public final class JBPMMessages {
             }
             if (!getVariableList()
                     .equals(other.getVariableList()))
+                return false;
+            if (!getResultList()
+                    .equals(other.getResultList()))
                 return false;
             if (hasDeploymentId() != other.hasDeploymentId())
                 return false;
@@ -40097,6 +40194,10 @@ public final class JBPMMessages {
             if (getVariableCount() > 0) {
                 hash = (37 * hash) + VARIABLE_FIELD_NUMBER;
                 hash = (53 * hash) + getVariableList().hashCode();
+            }
+            if (getResultCount() > 0) {
+                hash = (37 * hash) + RESULT_FIELD_NUMBER;
+                hash = (53 * hash) + getResultList().hashCode();
             }
             if (hasDeploymentId()) {
                 hash = (37 * hash) + DEPLOYMENT_ID_FIELD_NUMBER;
@@ -40324,6 +40425,7 @@ public final class JBPMMessages {
             private void maybeForceBuilderInitialization() {
                 if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
                     getVariableFieldBuilder();
+                    getResultFieldBuilder();
                     getCommentsFieldBuilder();
                     getAttachmentsFieldBuilder();
                 }
@@ -40346,49 +40448,55 @@ public final class JBPMMessages {
                 } else {
                     variableBuilder_.clear();
                 }
+                if (resultBuilder_ == null) {
+                    result_ = java.util.Collections.emptyList();
+                    bitField0_ = (bitField0_ & ~0x00000020);
+                } else {
+                    resultBuilder_.clear();
+                }
                 deploymentId_ = "";
-                bitField0_ = (bitField0_ & ~0x00000020);
-                nodeInstanceId_ = "";
                 bitField0_ = (bitField0_ & ~0x00000040);
-                nodeId_ = 0L;
+                nodeInstanceId_ = "";
                 bitField0_ = (bitField0_ & ~0x00000080);
-                phaseId_ = "";
+                nodeId_ = 0L;
                 bitField0_ = (bitField0_ & ~0x00000100);
-                phaseStatus_ = "";
+                phaseId_ = "";
                 bitField0_ = (bitField0_ & ~0x00000200);
-                startDate_ = 0L;
+                phaseStatus_ = "";
                 bitField0_ = (bitField0_ & ~0x00000400);
-                completeDate_ = 0L;
+                startDate_ = 0L;
                 bitField0_ = (bitField0_ & ~0x00000800);
-                taskName_ = "";
+                completeDate_ = 0L;
                 bitField0_ = (bitField0_ & ~0x00001000);
-                taskDescription_ = "";
+                taskName_ = "";
                 bitField0_ = (bitField0_ & ~0x00002000);
-                taskPriority_ = "";
+                taskDescription_ = "";
                 bitField0_ = (bitField0_ & ~0x00004000);
-                actualOwner_ = "";
+                taskPriority_ = "";
                 bitField0_ = (bitField0_ & ~0x00008000);
-                potUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                actualOwner_ = "";
                 bitField0_ = (bitField0_ & ~0x00010000);
-                potGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                potUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
                 bitField0_ = (bitField0_ & ~0x00020000);
-                excludedUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                potGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
                 bitField0_ = (bitField0_ & ~0x00040000);
-                adminUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                excludedUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
                 bitField0_ = (bitField0_ & ~0x00080000);
-                adminGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+                adminUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
                 bitField0_ = (bitField0_ & ~0x00100000);
-                taskReferenceName_ = "";
+                adminGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
                 bitField0_ = (bitField0_ & ~0x00200000);
+                taskReferenceName_ = "";
+                bitField0_ = (bitField0_ & ~0x00400000);
                 if (commentsBuilder_ == null) {
                     comments_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00400000);
+                    bitField0_ = (bitField0_ & ~0x00800000);
                 } else {
                     commentsBuilder_.clear();
                 }
                 if (attachmentsBuilder_ == null) {
                     attachments_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00800000);
+                    bitField0_ = (bitField0_ & ~0x01000000);
                 } else {
                     attachmentsBuilder_.clear();
                 }
@@ -40445,92 +40553,101 @@ public final class JBPMMessages {
                 } else {
                     result.variable_ = variableBuilder_.build();
                 }
-                if (((from_bitField0_ & 0x00000020) != 0)) {
+                if (resultBuilder_ == null) {
+                    if (((bitField0_ & 0x00000020) != 0)) {
+                        result_ = java.util.Collections.unmodifiableList(result_);
+                        bitField0_ = (bitField0_ & ~0x00000020);
+                    }
+                    result.result_ = result_;
+                } else {
+                    result.result_ = resultBuilder_.build();
+                }
+                if (((from_bitField0_ & 0x00000040) != 0)) {
                     to_bitField0_ |= 0x00000010;
                 }
                 result.deploymentId_ = deploymentId_;
-                if (((from_bitField0_ & 0x00000040) != 0)) {
+                if (((from_bitField0_ & 0x00000080) != 0)) {
                     to_bitField0_ |= 0x00000020;
                 }
                 result.nodeInstanceId_ = nodeInstanceId_;
-                if (((from_bitField0_ & 0x00000080) != 0)) {
+                if (((from_bitField0_ & 0x00000100) != 0)) {
                     result.nodeId_ = nodeId_;
                     to_bitField0_ |= 0x00000040;
                 }
-                if (((from_bitField0_ & 0x00000100) != 0)) {
+                if (((from_bitField0_ & 0x00000200) != 0)) {
                     to_bitField0_ |= 0x00000080;
                 }
                 result.phaseId_ = phaseId_;
-                if (((from_bitField0_ & 0x00000200) != 0)) {
+                if (((from_bitField0_ & 0x00000400) != 0)) {
                     to_bitField0_ |= 0x00000100;
                 }
                 result.phaseStatus_ = phaseStatus_;
-                if (((from_bitField0_ & 0x00000400) != 0)) {
+                if (((from_bitField0_ & 0x00000800) != 0)) {
                     result.startDate_ = startDate_;
                     to_bitField0_ |= 0x00000200;
                 }
-                if (((from_bitField0_ & 0x00000800) != 0)) {
+                if (((from_bitField0_ & 0x00001000) != 0)) {
                     result.completeDate_ = completeDate_;
                     to_bitField0_ |= 0x00000400;
                 }
-                if (((from_bitField0_ & 0x00001000) != 0)) {
+                if (((from_bitField0_ & 0x00002000) != 0)) {
                     to_bitField0_ |= 0x00000800;
                 }
                 result.taskName_ = taskName_;
-                if (((from_bitField0_ & 0x00002000) != 0)) {
+                if (((from_bitField0_ & 0x00004000) != 0)) {
                     to_bitField0_ |= 0x00001000;
                 }
                 result.taskDescription_ = taskDescription_;
-                if (((from_bitField0_ & 0x00004000) != 0)) {
+                if (((from_bitField0_ & 0x00008000) != 0)) {
                     to_bitField0_ |= 0x00002000;
                 }
                 result.taskPriority_ = taskPriority_;
-                if (((from_bitField0_ & 0x00008000) != 0)) {
+                if (((from_bitField0_ & 0x00010000) != 0)) {
                     to_bitField0_ |= 0x00004000;
                 }
                 result.actualOwner_ = actualOwner_;
-                if (((bitField0_ & 0x00010000) != 0)) {
-                    potUsers_ = potUsers_.getUnmodifiableView();
-                    bitField0_ = (bitField0_ & ~0x00010000);
-                }
-                result.potUsers_ = potUsers_;
                 if (((bitField0_ & 0x00020000) != 0)) {
-                    potGroups_ = potGroups_.getUnmodifiableView();
+                    potUsers_ = potUsers_.getUnmodifiableView();
                     bitField0_ = (bitField0_ & ~0x00020000);
                 }
-                result.potGroups_ = potGroups_;
+                result.potUsers_ = potUsers_;
                 if (((bitField0_ & 0x00040000) != 0)) {
-                    excludedUsers_ = excludedUsers_.getUnmodifiableView();
+                    potGroups_ = potGroups_.getUnmodifiableView();
                     bitField0_ = (bitField0_ & ~0x00040000);
                 }
-                result.excludedUsers_ = excludedUsers_;
+                result.potGroups_ = potGroups_;
                 if (((bitField0_ & 0x00080000) != 0)) {
-                    adminUsers_ = adminUsers_.getUnmodifiableView();
+                    excludedUsers_ = excludedUsers_.getUnmodifiableView();
                     bitField0_ = (bitField0_ & ~0x00080000);
                 }
-                result.adminUsers_ = adminUsers_;
+                result.excludedUsers_ = excludedUsers_;
                 if (((bitField0_ & 0x00100000) != 0)) {
-                    adminGroups_ = adminGroups_.getUnmodifiableView();
+                    adminUsers_ = adminUsers_.getUnmodifiableView();
                     bitField0_ = (bitField0_ & ~0x00100000);
                 }
+                result.adminUsers_ = adminUsers_;
+                if (((bitField0_ & 0x00200000) != 0)) {
+                    adminGroups_ = adminGroups_.getUnmodifiableView();
+                    bitField0_ = (bitField0_ & ~0x00200000);
+                }
                 result.adminGroups_ = adminGroups_;
-                if (((from_bitField0_ & 0x00200000) != 0)) {
+                if (((from_bitField0_ & 0x00400000) != 0)) {
                     to_bitField0_ |= 0x00008000;
                 }
                 result.taskReferenceName_ = taskReferenceName_;
                 if (commentsBuilder_ == null) {
-                    if (((bitField0_ & 0x00400000) != 0)) {
+                    if (((bitField0_ & 0x00800000) != 0)) {
                         comments_ = java.util.Collections.unmodifiableList(comments_);
-                        bitField0_ = (bitField0_ & ~0x00400000);
+                        bitField0_ = (bitField0_ & ~0x00800000);
                     }
                     result.comments_ = comments_;
                 } else {
                     result.comments_ = commentsBuilder_.build();
                 }
                 if (attachmentsBuilder_ == null) {
-                    if (((bitField0_ & 0x00800000) != 0)) {
+                    if (((bitField0_ & 0x01000000) != 0)) {
                         attachments_ = java.util.Collections.unmodifiableList(attachments_);
-                        bitField0_ = (bitField0_ & ~0x00800000);
+                        bitField0_ = (bitField0_ & ~0x01000000);
                     }
                     result.attachments_ = attachments_;
                 } else {
@@ -40635,13 +40752,38 @@ public final class JBPMMessages {
                         }
                     }
                 }
+                if (resultBuilder_ == null) {
+                    if (!other.result_.isEmpty()) {
+                        if (result_.isEmpty()) {
+                            result_ = other.result_;
+                            bitField0_ = (bitField0_ & ~0x00000020);
+                        } else {
+                            ensureResultIsMutable();
+                            result_.addAll(other.result_);
+                        }
+                        onChanged();
+                    }
+                } else {
+                    if (!other.result_.isEmpty()) {
+                        if (resultBuilder_.isEmpty()) {
+                            resultBuilder_.dispose();
+                            resultBuilder_ = null;
+                            result_ = other.result_;
+                            bitField0_ = (bitField0_ & ~0x00000020);
+                            resultBuilder_ =
+                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getResultFieldBuilder() : null;
+                        } else {
+                            resultBuilder_.addAllMessages(other.result_);
+                        }
+                    }
+                }
                 if (other.hasDeploymentId()) {
-                    bitField0_ |= 0x00000020;
+                    bitField0_ |= 0x00000040;
                     deploymentId_ = other.deploymentId_;
                     onChanged();
                 }
                 if (other.hasNodeInstanceId()) {
-                    bitField0_ |= 0x00000040;
+                    bitField0_ |= 0x00000080;
                     nodeInstanceId_ = other.nodeInstanceId_;
                     onChanged();
                 }
@@ -40649,12 +40791,12 @@ public final class JBPMMessages {
                     setNodeId(other.getNodeId());
                 }
                 if (other.hasPhaseId()) {
-                    bitField0_ |= 0x00000100;
+                    bitField0_ |= 0x00000200;
                     phaseId_ = other.phaseId_;
                     onChanged();
                 }
                 if (other.hasPhaseStatus()) {
-                    bitField0_ |= 0x00000200;
+                    bitField0_ |= 0x00000400;
                     phaseStatus_ = other.phaseStatus_;
                     onChanged();
                 }
@@ -40665,29 +40807,29 @@ public final class JBPMMessages {
                     setCompleteDate(other.getCompleteDate());
                 }
                 if (other.hasTaskName()) {
-                    bitField0_ |= 0x00001000;
+                    bitField0_ |= 0x00002000;
                     taskName_ = other.taskName_;
                     onChanged();
                 }
                 if (other.hasTaskDescription()) {
-                    bitField0_ |= 0x00002000;
+                    bitField0_ |= 0x00004000;
                     taskDescription_ = other.taskDescription_;
                     onChanged();
                 }
                 if (other.hasTaskPriority()) {
-                    bitField0_ |= 0x00004000;
+                    bitField0_ |= 0x00008000;
                     taskPriority_ = other.taskPriority_;
                     onChanged();
                 }
                 if (other.hasActualOwner()) {
-                    bitField0_ |= 0x00008000;
+                    bitField0_ |= 0x00010000;
                     actualOwner_ = other.actualOwner_;
                     onChanged();
                 }
                 if (!other.potUsers_.isEmpty()) {
                     if (potUsers_.isEmpty()) {
                         potUsers_ = other.potUsers_;
-                        bitField0_ = (bitField0_ & ~0x00010000);
+                        bitField0_ = (bitField0_ & ~0x00020000);
                     } else {
                         ensurePotUsersIsMutable();
                         potUsers_.addAll(other.potUsers_);
@@ -40697,7 +40839,7 @@ public final class JBPMMessages {
                 if (!other.potGroups_.isEmpty()) {
                     if (potGroups_.isEmpty()) {
                         potGroups_ = other.potGroups_;
-                        bitField0_ = (bitField0_ & ~0x00020000);
+                        bitField0_ = (bitField0_ & ~0x00040000);
                     } else {
                         ensurePotGroupsIsMutable();
                         potGroups_.addAll(other.potGroups_);
@@ -40707,7 +40849,7 @@ public final class JBPMMessages {
                 if (!other.excludedUsers_.isEmpty()) {
                     if (excludedUsers_.isEmpty()) {
                         excludedUsers_ = other.excludedUsers_;
-                        bitField0_ = (bitField0_ & ~0x00040000);
+                        bitField0_ = (bitField0_ & ~0x00080000);
                     } else {
                         ensureExcludedUsersIsMutable();
                         excludedUsers_.addAll(other.excludedUsers_);
@@ -40717,7 +40859,7 @@ public final class JBPMMessages {
                 if (!other.adminUsers_.isEmpty()) {
                     if (adminUsers_.isEmpty()) {
                         adminUsers_ = other.adminUsers_;
-                        bitField0_ = (bitField0_ & ~0x00080000);
+                        bitField0_ = (bitField0_ & ~0x00100000);
                     } else {
                         ensureAdminUsersIsMutable();
                         adminUsers_.addAll(other.adminUsers_);
@@ -40727,7 +40869,7 @@ public final class JBPMMessages {
                 if (!other.adminGroups_.isEmpty()) {
                     if (adminGroups_.isEmpty()) {
                         adminGroups_ = other.adminGroups_;
-                        bitField0_ = (bitField0_ & ~0x00100000);
+                        bitField0_ = (bitField0_ & ~0x00200000);
                     } else {
                         ensureAdminGroupsIsMutable();
                         adminGroups_.addAll(other.adminGroups_);
@@ -40735,7 +40877,7 @@ public final class JBPMMessages {
                     onChanged();
                 }
                 if (other.hasTaskReferenceName()) {
-                    bitField0_ |= 0x00200000;
+                    bitField0_ |= 0x00400000;
                     taskReferenceName_ = other.taskReferenceName_;
                     onChanged();
                 }
@@ -40743,7 +40885,7 @@ public final class JBPMMessages {
                     if (!other.comments_.isEmpty()) {
                         if (comments_.isEmpty()) {
                             comments_ = other.comments_;
-                            bitField0_ = (bitField0_ & ~0x00400000);
+                            bitField0_ = (bitField0_ & ~0x00800000);
                         } else {
                             ensureCommentsIsMutable();
                             comments_.addAll(other.comments_);
@@ -40756,7 +40898,7 @@ public final class JBPMMessages {
                             commentsBuilder_.dispose();
                             commentsBuilder_ = null;
                             comments_ = other.comments_;
-                            bitField0_ = (bitField0_ & ~0x00400000);
+                            bitField0_ = (bitField0_ & ~0x00800000);
                             commentsBuilder_ =
                                     com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getCommentsFieldBuilder() : null;
                         } else {
@@ -40768,7 +40910,7 @@ public final class JBPMMessages {
                     if (!other.attachments_.isEmpty()) {
                         if (attachments_.isEmpty()) {
                             attachments_ = other.attachments_;
-                            bitField0_ = (bitField0_ & ~0x00800000);
+                            bitField0_ = (bitField0_ & ~0x01000000);
                         } else {
                             ensureAttachmentsIsMutable();
                             attachments_.addAll(other.attachments_);
@@ -40781,7 +40923,7 @@ public final class JBPMMessages {
                             attachmentsBuilder_.dispose();
                             attachmentsBuilder_ = null;
                             attachments_ = other.attachments_;
-                            bitField0_ = (bitField0_ & ~0x00800000);
+                            bitField0_ = (bitField0_ & ~0x01000000);
                             attachmentsBuilder_ =
                                     com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getAttachmentsFieldBuilder() : null;
                         } else {
@@ -41427,6 +41569,269 @@ public final class JBPMMessages {
                 return variableBuilder_;
             }
 
+            private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> result_ =
+                    java.util.Collections.emptyList();
+
+            private void ensureResultIsMutable() {
+                if (!((bitField0_ & 0x00000020) != 0)) {
+                    result_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Variable>(result_);
+                    bitField0_ |= 0x00000020;
+                }
+            }
+
+            private com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> resultBuilder_;
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            @Override
+            public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> getResultList() {
+                if (resultBuilder_ == null) {
+                    return java.util.Collections.unmodifiableList(result_);
+                } else {
+                    return resultBuilder_.getMessageList();
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            @Override
+            public int getResultCount() {
+                if (resultBuilder_ == null) {
+                    return result_.size();
+                } else {
+                    return resultBuilder_.getCount();
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            @Override
+            public org.jbpm.marshalling.impl.JBPMMessages.Variable getResult(int index) {
+                if (resultBuilder_ == null) {
+                    return result_.get(index);
+                } else {
+                    return resultBuilder_.getMessage(index);
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder setResult(
+                    int index, org.jbpm.marshalling.impl.JBPMMessages.Variable value) {
+                if (resultBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    ensureResultIsMutable();
+                    result_.set(index, value);
+                    onChanged();
+                } else {
+                    resultBuilder_.setMessage(index, value);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder setResult(
+                    int index, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder builderForValue) {
+                if (resultBuilder_ == null) {
+                    ensureResultIsMutable();
+                    result_.set(index, builderForValue.build());
+                    onChanged();
+                } else {
+                    resultBuilder_.setMessage(index, builderForValue.build());
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder addResult(org.jbpm.marshalling.impl.JBPMMessages.Variable value) {
+                if (resultBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    ensureResultIsMutable();
+                    result_.add(value);
+                    onChanged();
+                } else {
+                    resultBuilder_.addMessage(value);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder addResult(
+                    int index, org.jbpm.marshalling.impl.JBPMMessages.Variable value) {
+                if (resultBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    ensureResultIsMutable();
+                    result_.add(index, value);
+                    onChanged();
+                } else {
+                    resultBuilder_.addMessage(index, value);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder addResult(
+                    org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder builderForValue) {
+                if (resultBuilder_ == null) {
+                    ensureResultIsMutable();
+                    result_.add(builderForValue.build());
+                    onChanged();
+                } else {
+                    resultBuilder_.addMessage(builderForValue.build());
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder addResult(
+                    int index, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder builderForValue) {
+                if (resultBuilder_ == null) {
+                    ensureResultIsMutable();
+                    result_.add(index, builderForValue.build());
+                    onChanged();
+                } else {
+                    resultBuilder_.addMessage(index, builderForValue.build());
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder addAllResult(
+                    java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
+                if (resultBuilder_ == null) {
+                    ensureResultIsMutable();
+                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                            values, result_);
+                    onChanged();
+                } else {
+                    resultBuilder_.addAllMessages(values);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder clearResult() {
+                if (resultBuilder_ == null) {
+                    result_ = java.util.Collections.emptyList();
+                    bitField0_ = (bitField0_ & ~0x00000020);
+                    onChanged();
+                } else {
+                    resultBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public Builder removeResult(int index) {
+                if (resultBuilder_ == null) {
+                    ensureResultIsMutable();
+                    result_.remove(index);
+                    onChanged();
+                } else {
+                    resultBuilder_.remove(index);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder getResultBuilder(
+                    int index) {
+                return getResultFieldBuilder().getBuilder(index);
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            @Override
+            public org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getResultOrBuilder(
+                    int index) {
+                if (resultBuilder_ == null) {
+                    return result_.get(index);
+                } else {
+                    return resultBuilder_.getMessageOrBuilder(index);
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            @Override
+            public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
+                    getResultOrBuilderList() {
+                if (resultBuilder_ != null) {
+                    return resultBuilder_.getMessageOrBuilderList();
+                } else {
+                    return java.util.Collections.unmodifiableList(result_);
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addResultBuilder() {
+                return getResultFieldBuilder().addBuilder(
+                        org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addResultBuilder(
+                    int index) {
+                return getResultFieldBuilder().addBuilder(
+                        index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+            }
+
+            /**
+             * <code>repeated .org.jbpm.marshalling.Variable result = 25;</code>
+             */
+            public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
+                    getResultBuilderList() {
+                return getResultFieldBuilder().getBuilderList();
+            }
+
+            private com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
+                    getResultFieldBuilder() {
+                if (resultBuilder_ == null) {
+                    resultBuilder_ =
+                            new com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>(
+                                    result_,
+                                    ((bitField0_ & 0x00000020) != 0),
+                                    getParentForChildren(),
+                                    isClean());
+                    result_ = null;
+                }
+                return resultBuilder_;
+            }
+
             private java.lang.Object deploymentId_ = "";
 
             /**
@@ -41436,7 +41841,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasDeploymentId() {
-                return ((bitField0_ & 0x00000020) != 0);
+                return ((bitField0_ & 0x00000040) != 0);
             }
 
             /**
@@ -41491,7 +41896,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000020;
+                bitField0_ |= 0x00000040;
                 deploymentId_ = value;
                 onChanged();
                 return this;
@@ -41503,7 +41908,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearDeploymentId() {
-                bitField0_ = (bitField0_ & ~0x00000020);
+                bitField0_ = (bitField0_ & ~0x00000040);
                 deploymentId_ = getDefaultInstance().getDeploymentId();
                 onChanged();
                 return this;
@@ -41520,7 +41925,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000020;
+                bitField0_ |= 0x00000040;
                 deploymentId_ = value;
                 onChanged();
                 return this;
@@ -41535,7 +41940,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasNodeInstanceId() {
-                return ((bitField0_ & 0x00000040) != 0);
+                return ((bitField0_ & 0x00000080) != 0);
             }
 
             /**
@@ -41590,7 +41995,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000040;
+                bitField0_ |= 0x00000080;
                 nodeInstanceId_ = value;
                 onChanged();
                 return this;
@@ -41602,7 +42007,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearNodeInstanceId() {
-                bitField0_ = (bitField0_ & ~0x00000040);
+                bitField0_ = (bitField0_ & ~0x00000080);
                 nodeInstanceId_ = getDefaultInstance().getNodeInstanceId();
                 onChanged();
                 return this;
@@ -41619,7 +42024,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000040;
+                bitField0_ |= 0x00000080;
                 nodeInstanceId_ = value;
                 onChanged();
                 return this;
@@ -41634,7 +42039,7 @@ public final class JBPMMessages {
              */
             @java.lang.Override
             public boolean hasNodeId() {
-                return ((bitField0_ & 0x00000080) != 0);
+                return ((bitField0_ & 0x00000100) != 0);
             }
 
             /**
@@ -41654,7 +42059,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder setNodeId(long value) {
-                bitField0_ |= 0x00000080;
+                bitField0_ |= 0x00000100;
                 nodeId_ = value;
                 onChanged();
                 return this;
@@ -41666,7 +42071,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearNodeId() {
-                bitField0_ = (bitField0_ & ~0x00000080);
+                bitField0_ = (bitField0_ & ~0x00000100);
                 nodeId_ = 0L;
                 onChanged();
                 return this;
@@ -41681,7 +42086,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasPhaseId() {
-                return ((bitField0_ & 0x00000100) != 0);
+                return ((bitField0_ & 0x00000200) != 0);
             }
 
             /**
@@ -41736,7 +42141,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000100;
+                bitField0_ |= 0x00000200;
                 phaseId_ = value;
                 onChanged();
                 return this;
@@ -41748,7 +42153,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearPhaseId() {
-                bitField0_ = (bitField0_ & ~0x00000100);
+                bitField0_ = (bitField0_ & ~0x00000200);
                 phaseId_ = getDefaultInstance().getPhaseId();
                 onChanged();
                 return this;
@@ -41765,7 +42170,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000100;
+                bitField0_ |= 0x00000200;
                 phaseId_ = value;
                 onChanged();
                 return this;
@@ -41780,7 +42185,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasPhaseStatus() {
-                return ((bitField0_ & 0x00000200) != 0);
+                return ((bitField0_ & 0x00000400) != 0);
             }
 
             /**
@@ -41835,7 +42240,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000200;
+                bitField0_ |= 0x00000400;
                 phaseStatus_ = value;
                 onChanged();
                 return this;
@@ -41847,7 +42252,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearPhaseStatus() {
-                bitField0_ = (bitField0_ & ~0x00000200);
+                bitField0_ = (bitField0_ & ~0x00000400);
                 phaseStatus_ = getDefaultInstance().getPhaseStatus();
                 onChanged();
                 return this;
@@ -41864,7 +42269,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00000200;
+                bitField0_ |= 0x00000400;
                 phaseStatus_ = value;
                 onChanged();
                 return this;
@@ -41879,7 +42284,7 @@ public final class JBPMMessages {
              */
             @java.lang.Override
             public boolean hasStartDate() {
-                return ((bitField0_ & 0x00000400) != 0);
+                return ((bitField0_ & 0x00000800) != 0);
             }
 
             /**
@@ -41899,7 +42304,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder setStartDate(long value) {
-                bitField0_ |= 0x00000400;
+                bitField0_ |= 0x00000800;
                 startDate_ = value;
                 onChanged();
                 return this;
@@ -41911,7 +42316,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearStartDate() {
-                bitField0_ = (bitField0_ & ~0x00000400);
+                bitField0_ = (bitField0_ & ~0x00000800);
                 startDate_ = 0L;
                 onChanged();
                 return this;
@@ -41926,7 +42331,7 @@ public final class JBPMMessages {
              */
             @java.lang.Override
             public boolean hasCompleteDate() {
-                return ((bitField0_ & 0x00000800) != 0);
+                return ((bitField0_ & 0x00001000) != 0);
             }
 
             /**
@@ -41946,7 +42351,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder setCompleteDate(long value) {
-                bitField0_ |= 0x00000800;
+                bitField0_ |= 0x00001000;
                 completeDate_ = value;
                 onChanged();
                 return this;
@@ -41958,7 +42363,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearCompleteDate() {
-                bitField0_ = (bitField0_ & ~0x00000800);
+                bitField0_ = (bitField0_ & ~0x00001000);
                 completeDate_ = 0L;
                 onChanged();
                 return this;
@@ -41973,7 +42378,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasTaskName() {
-                return ((bitField0_ & 0x00001000) != 0);
+                return ((bitField0_ & 0x00002000) != 0);
             }
 
             /**
@@ -42028,7 +42433,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00001000;
+                bitField0_ |= 0x00002000;
                 taskName_ = value;
                 onChanged();
                 return this;
@@ -42040,7 +42445,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearTaskName() {
-                bitField0_ = (bitField0_ & ~0x00001000);
+                bitField0_ = (bitField0_ & ~0x00002000);
                 taskName_ = getDefaultInstance().getTaskName();
                 onChanged();
                 return this;
@@ -42057,7 +42462,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00001000;
+                bitField0_ |= 0x00002000;
                 taskName_ = value;
                 onChanged();
                 return this;
@@ -42072,7 +42477,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasTaskDescription() {
-                return ((bitField0_ & 0x00002000) != 0);
+                return ((bitField0_ & 0x00004000) != 0);
             }
 
             /**
@@ -42127,7 +42532,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00002000;
+                bitField0_ |= 0x00004000;
                 taskDescription_ = value;
                 onChanged();
                 return this;
@@ -42139,7 +42544,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearTaskDescription() {
-                bitField0_ = (bitField0_ & ~0x00002000);
+                bitField0_ = (bitField0_ & ~0x00004000);
                 taskDescription_ = getDefaultInstance().getTaskDescription();
                 onChanged();
                 return this;
@@ -42156,7 +42561,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00002000;
+                bitField0_ |= 0x00004000;
                 taskDescription_ = value;
                 onChanged();
                 return this;
@@ -42171,7 +42576,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasTaskPriority() {
-                return ((bitField0_ & 0x00004000) != 0);
+                return ((bitField0_ & 0x00008000) != 0);
             }
 
             /**
@@ -42226,7 +42631,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00004000;
+                bitField0_ |= 0x00008000;
                 taskPriority_ = value;
                 onChanged();
                 return this;
@@ -42238,7 +42643,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearTaskPriority() {
-                bitField0_ = (bitField0_ & ~0x00004000);
+                bitField0_ = (bitField0_ & ~0x00008000);
                 taskPriority_ = getDefaultInstance().getTaskPriority();
                 onChanged();
                 return this;
@@ -42255,7 +42660,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00004000;
+                bitField0_ |= 0x00008000;
                 taskPriority_ = value;
                 onChanged();
                 return this;
@@ -42270,7 +42675,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasActualOwner() {
-                return ((bitField0_ & 0x00008000) != 0);
+                return ((bitField0_ & 0x00010000) != 0);
             }
 
             /**
@@ -42325,7 +42730,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00008000;
+                bitField0_ |= 0x00010000;
                 actualOwner_ = value;
                 onChanged();
                 return this;
@@ -42337,7 +42742,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearActualOwner() {
-                bitField0_ = (bitField0_ & ~0x00008000);
+                bitField0_ = (bitField0_ & ~0x00010000);
                 actualOwner_ = getDefaultInstance().getActualOwner();
                 onChanged();
                 return this;
@@ -42354,7 +42759,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00008000;
+                bitField0_ |= 0x00010000;
                 actualOwner_ = value;
                 onChanged();
                 return this;
@@ -42363,9 +42768,9 @@ public final class JBPMMessages {
             private com.google.protobuf.LazyStringList potUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
 
             private void ensurePotUsersIsMutable() {
-                if (!((bitField0_ & 0x00010000) != 0)) {
+                if (!((bitField0_ & 0x00020000) != 0)) {
                     potUsers_ = new com.google.protobuf.LazyStringArrayList(potUsers_);
-                    bitField0_ |= 0x00010000;
+                    bitField0_ |= 0x00020000;
                 }
             }
 
@@ -42470,7 +42875,7 @@ public final class JBPMMessages {
              */
             public Builder clearPotUsers() {
                 potUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-                bitField0_ = (bitField0_ & ~0x00010000);
+                bitField0_ = (bitField0_ & ~0x00020000);
                 onChanged();
                 return this;
             }
@@ -42495,9 +42900,9 @@ public final class JBPMMessages {
             private com.google.protobuf.LazyStringList potGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
 
             private void ensurePotGroupsIsMutable() {
-                if (!((bitField0_ & 0x00020000) != 0)) {
+                if (!((bitField0_ & 0x00040000) != 0)) {
                     potGroups_ = new com.google.protobuf.LazyStringArrayList(potGroups_);
-                    bitField0_ |= 0x00020000;
+                    bitField0_ |= 0x00040000;
                 }
             }
 
@@ -42602,7 +43007,7 @@ public final class JBPMMessages {
              */
             public Builder clearPotGroups() {
                 potGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-                bitField0_ = (bitField0_ & ~0x00020000);
+                bitField0_ = (bitField0_ & ~0x00040000);
                 onChanged();
                 return this;
             }
@@ -42627,9 +43032,9 @@ public final class JBPMMessages {
             private com.google.protobuf.LazyStringList excludedUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
 
             private void ensureExcludedUsersIsMutable() {
-                if (!((bitField0_ & 0x00040000) != 0)) {
+                if (!((bitField0_ & 0x00080000) != 0)) {
                     excludedUsers_ = new com.google.protobuf.LazyStringArrayList(excludedUsers_);
-                    bitField0_ |= 0x00040000;
+                    bitField0_ |= 0x00080000;
                 }
             }
 
@@ -42734,7 +43139,7 @@ public final class JBPMMessages {
              */
             public Builder clearExcludedUsers() {
                 excludedUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-                bitField0_ = (bitField0_ & ~0x00040000);
+                bitField0_ = (bitField0_ & ~0x00080000);
                 onChanged();
                 return this;
             }
@@ -42759,9 +43164,9 @@ public final class JBPMMessages {
             private com.google.protobuf.LazyStringList adminUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
 
             private void ensureAdminUsersIsMutable() {
-                if (!((bitField0_ & 0x00080000) != 0)) {
+                if (!((bitField0_ & 0x00100000) != 0)) {
                     adminUsers_ = new com.google.protobuf.LazyStringArrayList(adminUsers_);
-                    bitField0_ |= 0x00080000;
+                    bitField0_ |= 0x00100000;
                 }
             }
 
@@ -42866,7 +43271,7 @@ public final class JBPMMessages {
              */
             public Builder clearAdminUsers() {
                 adminUsers_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-                bitField0_ = (bitField0_ & ~0x00080000);
+                bitField0_ = (bitField0_ & ~0x00100000);
                 onChanged();
                 return this;
             }
@@ -42891,9 +43296,9 @@ public final class JBPMMessages {
             private com.google.protobuf.LazyStringList adminGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
 
             private void ensureAdminGroupsIsMutable() {
-                if (!((bitField0_ & 0x00100000) != 0)) {
+                if (!((bitField0_ & 0x00200000) != 0)) {
                     adminGroups_ = new com.google.protobuf.LazyStringArrayList(adminGroups_);
-                    bitField0_ |= 0x00100000;
+                    bitField0_ |= 0x00200000;
                 }
             }
 
@@ -42998,7 +43403,7 @@ public final class JBPMMessages {
              */
             public Builder clearAdminGroups() {
                 adminGroups_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-                bitField0_ = (bitField0_ & ~0x00100000);
+                bitField0_ = (bitField0_ & ~0x00200000);
                 onChanged();
                 return this;
             }
@@ -43029,7 +43434,7 @@ public final class JBPMMessages {
              */
             @Override
             public boolean hasTaskReferenceName() {
-                return ((bitField0_ & 0x00200000) != 0);
+                return ((bitField0_ & 0x00400000) != 0);
             }
 
             /**
@@ -43084,7 +43489,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00200000;
+                bitField0_ |= 0x00400000;
                 taskReferenceName_ = value;
                 onChanged();
                 return this;
@@ -43096,7 +43501,7 @@ public final class JBPMMessages {
              * @return This builder for chaining.
              */
             public Builder clearTaskReferenceName() {
-                bitField0_ = (bitField0_ & ~0x00200000);
+                bitField0_ = (bitField0_ & ~0x00400000);
                 taskReferenceName_ = getDefaultInstance().getTaskReferenceName();
                 onChanged();
                 return this;
@@ -43113,7 +43518,7 @@ public final class JBPMMessages {
                 if (value == null) {
                     throw new NullPointerException();
                 }
-                bitField0_ |= 0x00200000;
+                bitField0_ |= 0x00400000;
                 taskReferenceName_ = value;
                 onChanged();
                 return this;
@@ -43123,9 +43528,9 @@ public final class JBPMMessages {
                     java.util.Collections.emptyList();
 
             private void ensureCommentsIsMutable() {
-                if (!((bitField0_ & 0x00400000) != 0)) {
+                if (!((bitField0_ & 0x00800000) != 0)) {
                     comments_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Comment>(comments_);
-                    bitField0_ |= 0x00400000;
+                    bitField0_ |= 0x00800000;
                 }
             }
 
@@ -43287,7 +43692,7 @@ public final class JBPMMessages {
             public Builder clearComments() {
                 if (commentsBuilder_ == null) {
                     comments_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00400000);
+                    bitField0_ = (bitField0_ & ~0x00800000);
                     onChanged();
                 } else {
                     commentsBuilder_.clear();
@@ -43374,7 +43779,7 @@ public final class JBPMMessages {
                     commentsBuilder_ =
                             new com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.marshalling.impl.JBPMMessages.Comment, org.jbpm.marshalling.impl.JBPMMessages.Comment.Builder, org.jbpm.marshalling.impl.JBPMMessages.CommentOrBuilder>(
                                     comments_,
-                                    ((bitField0_ & 0x00400000) != 0),
+                                    ((bitField0_ & 0x00800000) != 0),
                                     getParentForChildren(),
                                     isClean());
                     comments_ = null;
@@ -43386,9 +43791,9 @@ public final class JBPMMessages {
                     java.util.Collections.emptyList();
 
             private void ensureAttachmentsIsMutable() {
-                if (!((bitField0_ & 0x00800000) != 0)) {
+                if (!((bitField0_ & 0x01000000) != 0)) {
                     attachments_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Attachment>(attachments_);
-                    bitField0_ |= 0x00800000;
+                    bitField0_ |= 0x01000000;
                 }
             }
 
@@ -43550,7 +43955,7 @@ public final class JBPMMessages {
             public Builder clearAttachments() {
                 if (attachmentsBuilder_ == null) {
                     attachments_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00800000);
+                    bitField0_ = (bitField0_ & ~0x01000000);
                     onChanged();
                 } else {
                     attachmentsBuilder_.clear();
@@ -43637,7 +44042,7 @@ public final class JBPMMessages {
                     attachmentsBuilder_ =
                             new com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.marshalling.impl.JBPMMessages.Attachment, org.jbpm.marshalling.impl.JBPMMessages.Attachment.Builder, org.jbpm.marshalling.impl.JBPMMessages.AttachmentOrBuilder>(
                                     attachments_,
-                                    ((bitField0_ & 0x00800000) != 0),
+                                    ((bitField0_ & 0x01000000) != 0),
                                     getParentForChildren(),
                                     isClean());
                     attachments_ = null;
@@ -48348,48 +48753,49 @@ public final class JBPMMessages {
                         "\030\002 \001(\t\022\021\n\tupdatedAt\030\003 \001(\003\022\021\n\tupdatedBy\030\004" +
                         " \001(\t\"]\n\nAttachment\022\n\n\002id\030\001 \001(\t\022\017\n\007conten" +
                         "t\030\002 \001(\t\022\021\n\tupdatedAt\030\003 \001(\003\022\021\n\tupdatedBy\030" +
-                        "\004 \001(\t\022\014\n\004name\030\005 \001(\t\"\352\004\n\021HumanTaskWorkIte" +
+                        "\004 \001(\t\022\014\n\004name\030\005 \001(\t\"\232\005\n\021HumanTaskWorkIte" +
                         "m\022\n\n\002id\030\001 \001(\t\022\034\n\024process_instances_id\030\002 " +
                         "\001(\t\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010vari" +
                         "able\030\005 \003(\0132\036.org.jbpm.marshalling.Variab" +
-                        "le\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020node_instan" +
-                        "ce_id\030\007 \001(\t\022\017\n\007node_id\030\010 \001(\003\022\020\n\010phase_id" +
-                        "\030\t \001(\t\022\024\n\014phase_status\030\n \001(\t\022\022\n\nstart_da" +
-                        "te\030\013 \001(\003\022\025\n\rcomplete_date\030\014 \001(\003\022\021\n\ttask_" +
-                        "name\030\r \001(\t\022\030\n\020task_description\030\016 \001(\t\022\025\n\r" +
-                        "task_priority\030\017 \001(\t\022\024\n\014actual_owner\030\020 \001(" +
-                        "\t\022\021\n\tpot_users\030\021 \003(\t\022\022\n\npot_groups\030\022 \003(\t" +
-                        "\022\026\n\016excluded_users\030\023 \003(\t\022\023\n\013admin_users\030" +
-                        "\024 \003(\t\022\024\n\014admin_groups\030\025 \003(\t\022\033\n\023task_refe" +
-                        "rence_name\030\026 \001(\t\022/\n\010comments\030\027 \003(\0132\035.org" +
-                        ".jbpm.marshalling.Comment\0225\n\013attachments" +
-                        "\030\030 \003(\0132 .org.jbpm.marshalling.Attachment" +
-                        "\"\356\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320.org.j" +
-                        "bpm.marshalling.ProcessTimer.TimerInstan" +
-                        "ce\022;\n\007trigger\030\002 \001(\0132*.org.drools.seriali" +
-                        "zation.protobuf.Trigger\032\337\001\n\rTimerInstanc" +
-                        "e\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\t\022\r\n\005delay" +
-                        "\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_instan" +
-                        "ce_id\030\005 \001(\t\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016l" +
-                        "ast_triggered\030\007 \001(\003\022\034\n\024DEPRECATED_sessio" +
-                        "nId\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\022\023\n\013repeatLi" +
-                        "mit\030\n \001(\005\"+\n\016IterationLevel\022\n\n\002id\030\001 \001(\t\022" +
-                        "\r\n\005level\030\002 \001(\005\"E\n\021VariableContainer\0220\n\010v" +
-                        "ariable\030\001 \003(\0132\036.org.jbpm.marshalling.Var" +
-                        "iable:o\n\020process_instance\022..org.drools.s" +
-                        "erialization.protobuf.ProcessData\030\n \003(\0132" +
-                        "%.org.jbpm.marshalling.ProcessInstance:a" +
-                        "\n\twork_item\022..org.drools.serialization.p" +
-                        "rotobuf.ProcessData\030\013 \003(\0132\036.org.jbpm.mar" +
-                        "shalling.WorkItem:@\n\010timer_id\022..org.droo" +
-                        "ls.serialization.protobuf.ProcessData\030\r " +
-                        "\001(\003:i\n\rprocess_timer\022..org.drools.serial" +
-                        "ization.protobuf.ProcessData\030\014 \003(\0132\".org" +
-                        ".jbpm.marshalling.ProcessTimer:g\n\nproc_t" +
-                        "imer\022/.org.drools.serialization.protobuf" +
-                        ".Timers.Timer\030d \001(\0132\".org.jbpm.marshalli" +
-                        "ng.ProcessTimerB)\n\031org.jbpm.marshalling." +
-                        "implB\014JBPMMessages"
+                        "le\022.\n\006result\030\031 \003(\0132\036.org.jbpm.marshallin" +
+                        "g.Variable\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020nod" +
+                        "e_instance_id\030\007 \001(\t\022\017\n\007node_id\030\010 \001(\003\022\020\n\010" +
+                        "phase_id\030\t \001(\t\022\024\n\014phase_status\030\n \001(\t\022\022\n\n" +
+                        "start_date\030\013 \001(\003\022\025\n\rcomplete_date\030\014 \001(\003\022" +
+                        "\021\n\ttask_name\030\r \001(\t\022\030\n\020task_description\030\016" +
+                        " \001(\t\022\025\n\rtask_priority\030\017 \001(\t\022\024\n\014actual_ow" +
+                        "ner\030\020 \001(\t\022\021\n\tpot_users\030\021 \003(\t\022\022\n\npot_grou" +
+                        "ps\030\022 \003(\t\022\026\n\016excluded_users\030\023 \003(\t\022\023\n\013admi" +
+                        "n_users\030\024 \003(\t\022\024\n\014admin_groups\030\025 \003(\t\022\033\n\023t" +
+                        "ask_reference_name\030\026 \001(\t\022/\n\010comments\030\027 \003" +
+                        "(\0132\035.org.jbpm.marshalling.Comment\0225\n\013att" +
+                        "achments\030\030 \003(\0132 .org.jbpm.marshalling.At" +
+                        "tachment\"\356\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\013" +
+                        "20.org.jbpm.marshalling.ProcessTimer.Tim" +
+                        "erInstance\022;\n\007trigger\030\002 \001(\0132*.org.drools" +
+                        ".serialization.protobuf.Trigger\032\337\001\n\rTime" +
+                        "rInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\t\022" +
+                        "\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023proces" +
+                        "s_instance_id\030\005 \001(\t\022\026\n\016activated_time\030\006 " +
+                        "\001(\003\022\026\n\016last_triggered\030\007 \001(\003\022\034\n\024DEPRECATE" +
+                        "D_sessionId\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\022\023\n\013" +
+                        "repeatLimit\030\n \001(\005\"+\n\016IterationLevel\022\n\n\002i" +
+                        "d\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021VariableContai" +
+                        "ner\0220\n\010variable\030\001 \003(\0132\036.org.jbpm.marshal" +
+                        "ling.Variable:o\n\020process_instance\022..org." +
+                        "drools.serialization.protobuf.ProcessDat" +
+                        "a\030\n \003(\0132%.org.jbpm.marshalling.ProcessIn" +
+                        "stance:a\n\twork_item\022..org.drools.seriali" +
+                        "zation.protobuf.ProcessData\030\013 \003(\0132\036.org." +
+                        "jbpm.marshalling.WorkItem:@\n\010timer_id\022.." +
+                        "org.drools.serialization.protobuf.Proces" +
+                        "sData\030\r \001(\003:i\n\rprocess_timer\022..org.drool" +
+                        "s.serialization.protobuf.ProcessData\030\014 \003" +
+                        "(\0132\".org.jbpm.marshalling.ProcessTimer:g" +
+                        "\n\nproc_timer\022/.org.drools.serialization." +
+                        "protobuf.Timers.Timer\030d \001(\0132\".org.jbpm.m" +
+                        "arshalling.ProcessTimerB)\n\031org.jbpm.mars" +
+                        "halling.implB\014JBPMMessages"
         };
         descriptor = com.google.protobuf.Descriptors.FileDescriptor
                 .internalBuildGeneratedFileFrom(descriptorData,
@@ -48556,9 +48962,9 @@ public final class JBPMMessages {
                 getDescriptor().getMessageTypes().get(5);
         internal_static_org_jbpm_marshalling_HumanTaskWorkItem_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_marshalling_HumanTaskWorkItem_descriptor,
-                new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", "NodeInstanceId", "NodeId", "PhaseId", "PhaseStatus", "StartDate", "CompleteDate",
-                        "TaskName", "TaskDescription", "TaskPriority", "ActualOwner", "PotUsers", "PotGroups", "ExcludedUsers", "AdminUsers", "AdminGroups", "TaskReferenceName", "Comments",
-                        "Attachments", });
+                new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "Result", "DeploymentId", "NodeInstanceId", "NodeId", "PhaseId", "PhaseStatus", "StartDate",
+                        "CompleteDate", "TaskName", "TaskDescription", "TaskPriority", "ActualOwner", "PotUsers", "PotGroups", "ExcludedUsers", "AdminUsers", "AdminGroups", "TaskReferenceName",
+                        "Comments", "Attachments", });
         internal_static_org_jbpm_marshalling_ProcessTimer_descriptor =
                 getDescriptor().getMessageTypes().get(6);
         internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(

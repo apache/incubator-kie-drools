@@ -7,6 +7,8 @@
     <artifactId>jbpm</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
+  
+ 
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>process-serialization-protobuf</artifactId>
@@ -39,6 +41,12 @@
     </dependency>
   </dependencies>
   <profiles>
+    <profile>
+    <id>sonarcloud-analysis</id>
+      <properties>
+        <sonar.exclusions>org.jbpm.marshalling.impl.JBPMMessages</sonar.exclusions>
+      </properties>
+    </profile>
     <profile>
     <id>proto</id>
     <build>

@@ -23,6 +23,7 @@ public class BaseWorkItem implements WorkItem {
 
     private final String id;
     private final String nodeInstanceId;
+    private final String nodeId;
     private final String name;
 
     private final int state;
@@ -32,19 +33,11 @@ public class BaseWorkItem implements WorkItem {
     private Map<String, Object> parameters;
     private Map<String, Object> results;
 
-    public BaseWorkItem(String nodeInstanceId, String id, String name, int state, String phase, String phaseStatus, Map<String, Object> results) {
+    @SuppressWarnings("squid:S107")
+    public BaseWorkItem(String nodeInstanceId, String id, String nodeId, String name, int state, String phase, String phaseStatus, Map<String, Object> parameters, Map<String, Object> results) {
         this.id = id;
         this.nodeInstanceId = nodeInstanceId;
-        this.name = name;
-        this.state = state;
-        this.phase = phase;
-        this.phaseStatus = phaseStatus;
-        this.results = results;
-    }
-
-    public BaseWorkItem(String nodeInstanceId, String id, String name, int state, String phase, String phaseStatus, Map<String, Object> parameters, Map<String, Object> results) {
-        this.id = id;
-        this.nodeInstanceId = nodeInstanceId;
+        this.nodeId = nodeId;
         this.name = name;
         this.state = state;
         this.phase = phase;
@@ -56,6 +49,11 @@ public class BaseWorkItem implements WorkItem {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getNodeId() {
+        return nodeId;
     }
 
     @Override

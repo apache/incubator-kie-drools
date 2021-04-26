@@ -359,6 +359,8 @@ public class ProcessCodegen extends AbstractGenerator {
                 storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput());
 
                 storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput());
+
+                storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(ut.getTaskModelClassName()), ut.generateModel());
             }
         }
 
@@ -366,6 +368,7 @@ public class ProcessCodegen extends AbstractGenerator {
             for (ProcessResourceGenerator resourceGenerator : rgs) {
                 storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
                         resourceGenerator.generate());
+                storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(resourceGenerator.getTaskModelFactoryClassName()), resourceGenerator.getTaskModelFactory());
             }
         }
 

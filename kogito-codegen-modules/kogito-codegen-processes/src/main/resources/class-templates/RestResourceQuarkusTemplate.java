@@ -54,6 +54,7 @@ import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.Policies;
+import org.kie.kogito.process.workitem.TaskModel;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.auth.IdentityProvider;
@@ -106,7 +107,7 @@ public class $Type$Resource {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
                       .map(pi -> pi.variables().toOutput())
-                      .orElseThrow(() -> new NotFoundException());
+                      .orElseThrow(NotFoundException::new);
     }
 
     @DELETE
@@ -122,7 +123,7 @@ public class $Type$Resource {
                                                                        pi.abort();
                                                                        return pi.checkError().variables().toOutput();
                                                                    }))
-                                                              .orElseThrow(() -> new NotFoundException());
+                                                              .orElseThrow(NotFoundException::new);
     }
 
     @PUT
@@ -136,19 +137,23 @@ public class $Type$Resource {
                                                                    .instances()
                                                                    .findById(id)
                                                                    .map(pi -> pi.updateVariables(resource).toOutput()))
-                                                              .orElseThrow(() -> new NotFoundException());
+                                                              .orElseThrow(NotFoundException::new);
     }
 
     @GET
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<WorkItem> getTasks_$name$(@PathParam("id") String id,
+    public List<TaskModel> getTasks_$name$(@PathParam("id") String id,
                                                @QueryParam("user") final String user,
                                                @QueryParam("group") final List<String> groups) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(pi -> pi.workItems(Policies.of(user, groups)))
-                      .orElseThrow(() -> new NotFoundException());
+                      .map(pi -> pi
+                              .workItems(Policies.of(user, groups))
+                              .stream()
+                              .map($TaskModelFactory$::from)
+                              .collect(Collectors.toList()))
+                      .orElseThrow(NotFoundException::new);
     }
 
 }

@@ -280,6 +280,18 @@ public class TaskTest extends BaseRestTest {
                 .statusCode(200)
                 .extract()
                 .as(Map.class));
+        
+        assertEquals(true , given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .pathParam("taskId", taskId)
+                .get("/approvals/{processId}/firstLineApproval/{taskId}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("results.approved"));
     }
 
     @Test

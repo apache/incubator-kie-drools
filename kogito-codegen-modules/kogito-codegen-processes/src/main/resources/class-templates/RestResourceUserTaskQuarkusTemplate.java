@@ -55,7 +55,7 @@ public class $Type$Resource {
                     }
                     return Response.status(Response.Status.NOT_FOUND).build();
                 });
-        }).orElseThrow(() -> new NotFoundException());
+        }).orElseThrow(NotFoundException::new);
     }
 
     @POST
@@ -81,7 +81,7 @@ public class $Type$Resource {
                                 HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
                         return pi.variables().toOutput();
                     }))
-                    .orElseThrow(() -> new NotFoundException());
+                    .orElseThrow(NotFoundException::new);
     }
     
     
@@ -103,7 +103,7 @@ public class $Type$Resource {
                                         taskId,
                                         wi -> HumanTaskHelper.updateContent(wi, model),
                                         Policies.of(user,groups)))))
-                .orElseThrow(() -> new NotFoundException());
+                .orElseThrow(NotFoundException::new);
     }
     
     
@@ -130,7 +130,7 @@ public class $Type$Resource {
                                             HumanTaskTransition.withModel(phase, model, Policies.of(user, groups)));
                                     return pi.variables().toOutput();
                                 }))
-                                .orElseThrow(() -> new NotFoundException());
+                                .orElseThrow(NotFoundException::new);
     }
     
     
@@ -138,14 +138,14 @@ public class $Type$Resource {
     @GET
     @Path("/{id}/$taskName$/{taskId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $TaskInput$ getTask(@PathParam("id") String id,
+    public $TaskModel$ getTask(@PathParam("id") String id,
                                @PathParam("taskId") String taskId,
                                @QueryParam("user") final String user,
                                @QueryParam("group") final List<String> groups) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(pi -> $TaskInput$.from(pi.workItem(taskId, Policies.of(user, groups))))
-                      .orElseThrow(() -> new NotFoundException());
+                      .map(pi -> $TaskModel$.from(pi.workItem(taskId, Policies.of(user, groups))))
+                      .orElseThrow(NotFoundException::new);
     }
 
     @GET
@@ -190,7 +190,7 @@ public class $Type$Resource {
                                                                                                      Policies.of(user, groups)));
                                                                        return pi.variables().toOutput();
                                                                    }))
-                                                                   .orElseThrow(() -> new NotFoundException());
+                                                                   .orElseThrow(NotFoundException::new);
     }
     
     @POST
@@ -218,7 +218,7 @@ public class $Type$Resource {
                                             .toString())
                                             .build()).entity(comment).build();
                                 })
-                                .orElseThrow(() -> new NotFoundException()));
+                                .orElseThrow(NotFoundException::new));
     }
 
     @PUT
@@ -241,7 +241,7 @@ public class $Type$Resource {
                                         taskId,
                                         wi -> HumanTaskHelper.updateComment(wi, commentId, comment, user),
                                         Policies.of(user, groups)))
-                                .orElseThrow(() -> new NotFoundException()));
+                                .orElseThrow(NotFoundException::new));
     }
 
     @DELETE
@@ -264,7 +264,7 @@ public class $Type$Resource {
                                             Policies.of(user, groups));
                                     return (removed ? Response.ok() : Response.status(Status.NOT_FOUND)).build();
                                 })
-                                .orElseThrow(() -> new NotFoundException()));
+                                .orElseThrow(NotFoundException::new));
     }
 
     @POST
@@ -292,7 +292,7 @@ public class $Type$Resource {
                                             .toString())
                                             .build()).entity(attachment).build();
                                 })
-                                .orElseThrow(() -> new NotFoundException()));
+                                .orElseThrow(NotFoundException::new));
     }
 
     @PUT
@@ -315,7 +315,7 @@ public class $Type$Resource {
                                         taskId,
                                         wi -> HumanTaskHelper.updateAttachment(wi, attachmentId, attachment, user),
                                         Policies.of(user, groups)))
-                                .orElseThrow(() -> new NotFoundException()));
+                                .orElseThrow(NotFoundException::new));
     }
 
     @DELETE
@@ -338,7 +338,7 @@ public class $Type$Resource {
                                             Policies.of(user, groups));
                                     return (removed ? Response.ok() : Response.status(Status.NOT_FOUND)).build();
                                 })
-                                .orElseThrow(() -> new NotFoundException()));
+                                .orElseThrow(NotFoundException::new));
     }
 
     @GET
@@ -350,7 +350,7 @@ public class $Type$Resource {
                                     @QueryParam("user") final String user,
                                     @QueryParam("group") final List<String> groups) {
         Attachment attachment = HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(
-                () -> new NotFoundException()), taskId, Policies.of(user, groups))
+                NotFoundException::new), taskId, Policies.of(user, groups))
                 .getAttachments().get(attachmentId);
         if (attachment == null) {
             throw new NotFoundException("Attachment " + attachmentId + " not found");
@@ -365,7 +365,7 @@ public class $Type$Resource {
                                                  @PathParam("taskId") final String taskId,
                                                  @QueryParam("user") final String user,
                                                  @QueryParam("group") final List<String> groups) {
-        return HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(() -> new NotFoundException()),
+        return HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(NotFoundException::new),
                 taskId, Policies.of(user, groups))
                 .getAttachments().values();
     }
@@ -379,7 +379,7 @@ public class $Type$Resource {
                               @QueryParam("user") final String user,
                               @QueryParam("group") final List<String> groups) {
         Comment comment = HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(
-                () -> new NotFoundException()), taskId, Policies.of(user, groups))
+                NotFoundException::new), taskId, Policies.of(user, groups))
                 .getComments().get(commentId);
         if (comment == null) {
             throw new NotFoundException("Comment " + commentId + " not found");
@@ -394,7 +394,7 @@ public class $Type$Resource {
                                            @PathParam("taskId") final String taskId,
                                            @QueryParam("user") final String user,
                                            @QueryParam("group") final List<String> groups) {
-        return HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(() -> new NotFoundException()),
+        return HumanTaskHelper.findTask(process.instances().findById(id).orElseThrow(NotFoundException::new),
                 taskId, Policies.of(user, groups))
                 .getComments().values();
     }

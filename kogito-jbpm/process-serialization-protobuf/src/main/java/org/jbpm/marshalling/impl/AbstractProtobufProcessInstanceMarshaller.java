@@ -692,6 +692,11 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _workItem.addVariable(ProtobufProcessMarshaller.marshallVariable(context, entry.getKey(), entry.getValue()));
         }
 
+        if (workItem.getResults() != null) {
+            for (Map.Entry<String, Object> entry : workItem.getResults().entrySet()) {
+                _workItem.addResult(ProtobufProcessMarshaller.marshallVariable(context, entry.getKey(), entry.getValue()));
+            }
+        }
         return _workItem.build();
     }
 
@@ -769,6 +774,15 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 Object value = ProtobufProcessMarshaller.unmarshallVariableValue(context, _variable);
                 workItem.setParameter(_variable.getName(),
                         value);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        for (JBPMMessages.Variable _result : _workItem.getResultList()) {
+            try {
+                Object value = ProtobufProcessMarshaller.unmarshallVariableValue(context, _result);
+                workItem.setResult(_result.getName(), value);
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }

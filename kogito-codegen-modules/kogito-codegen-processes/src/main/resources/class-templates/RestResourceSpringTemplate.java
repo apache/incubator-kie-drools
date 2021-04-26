@@ -35,6 +35,7 @@ import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.Policies;
+import org.kie.kogito.process.workitem.TaskModel;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
@@ -134,13 +135,18 @@ public class $Type$Resource {
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<WorkItem>> getTasks_$name$(@PathVariable("id") String id,
+    public ResponseEntity<List<TaskModel>> getTasks_$name$(@PathVariable("id") String id,
                                                           @RequestParam(value = "user", required = false) final String user,
                                                           @RequestParam(value = "group", required = false) final List<String> groups) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi.workItems(Policies.of(user, groups)))
+                .map(pi -> pi
+                        .workItems(Policies.of(user, groups))
+                        .stream()
+                        .map($TaskModelFactory$::from)
+                        .collect(Collectors.toList()))
                 .map(m -> ResponseEntity.ok(m))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+                
     }
 }

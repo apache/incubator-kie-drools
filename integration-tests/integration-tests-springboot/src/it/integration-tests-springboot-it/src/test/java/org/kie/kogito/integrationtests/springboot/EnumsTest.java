@@ -17,6 +17,7 @@
 package org.kie.kogito.integrationtests.springboot;
 
 import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import org.acme.examples.model.MovieGenre;
 import org.acme.examples.model.Rating;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.workitem.TaskModel;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -66,7 +67,7 @@ class EnumsTest extends BaseRestTest {
             .extract()
                 .path("id");
 
-        WorkItem task = given()
+        TaskModel task = given()
             .when()
                 .get("/cinema/{pid}/tasks", pid)
             .then()

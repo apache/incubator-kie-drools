@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.process;
+package org.kie.kogito.process.workitem;
 
-import java.util.Map;
-
-public interface WorkItem {
+/**
+ * Process view of a work item.<br>
+ * It includes only parameters and results as defined in process plus getters to get the active phase.<br>
+ * 
+ * @param <P> Input generated class
+ * @param <R> Output generated class
+ */
+public interface TaskModel<P, R> {
 
     String getId();
-
-    default String getNodeId() {
-        throw new UnsupportedOperationException();
-    }
-
-    String getNodeInstanceId();
 
     String getName();
 
@@ -35,7 +34,7 @@ public interface WorkItem {
 
     String getPhaseStatus();
 
-    Map<String, Object> getParameters();
+    P getParameters();
 
-    Map<String, Object> getResults();
+    R getResults();
 }
