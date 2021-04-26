@@ -21,6 +21,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
+import org.drools.core.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
@@ -53,6 +55,7 @@ import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
@@ -293,6 +296,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(ObjectCreationExpr n, Context arg) {
         return new ObjectCreationExpressionT(n, resolveType(n.getType()));
+    }
+
+    @Override
+    public TypedExpression visit(NullLiteralExpr n, Context arg) {
+        return new UnalteredTypedExpression(n, NullType.class);
     }
 
     @Override
