@@ -29,6 +29,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
+import org.drools.core.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
@@ -43,7 +44,6 @@ import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
-import org.drools.mvelcompiler.ast.NullLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
@@ -300,7 +300,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(NullLiteralExpr n, Context arg) {
-        return new NullLiteralExpressionT(n);
+        return new UnalteredTypedExpression(n, NullType.class);
     }
 
     @Override
