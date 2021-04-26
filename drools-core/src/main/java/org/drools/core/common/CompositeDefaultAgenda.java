@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -558,7 +559,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public java.util.LinkedList<AgendaGroup> getStackList() {
+    public Deque<AgendaGroup> getStackList() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getStackList -> TODO" );
     }
 

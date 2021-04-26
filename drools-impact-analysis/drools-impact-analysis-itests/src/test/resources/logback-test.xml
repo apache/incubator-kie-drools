@@ -10,6 +10,7 @@
   <logger name="org.kie" level="warn"/>
   <logger name="org.drools" level="warn"/>
 <!--   <logger name="org.drools.impact.analysis.parser" level="debug"/> -->
+  <logger name="org.drools.impact.analysis" level="info"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

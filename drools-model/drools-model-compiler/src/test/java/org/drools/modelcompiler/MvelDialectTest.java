@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.builder.Message;
@@ -975,5 +976,52 @@ public class MvelDialectTest extends BaseModelTest {
         int fired = ksession.fireAllRules();
 
         assertEquals(1, fired);
+    }
+
+    @Test
+    public void testSetNullInModify() {
+        // RHDM-1713
+        String str =
+                "dialect \"mvel\"\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) { name = null }\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p : Person( name == null )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 47 );
+        ksession.insert( me );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testSetSubclassInModify() {
+        // RHDM-1713
+        String str =
+                "dialect \"mvel\"\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + InternationalAddress.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) { address = new InternationalAddress(\"home\") }\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p : Person( address != null )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 47 );
+        ksession.insert( me );
+        assertEquals( 2, ksession.fireAllRules() );
     }
 }

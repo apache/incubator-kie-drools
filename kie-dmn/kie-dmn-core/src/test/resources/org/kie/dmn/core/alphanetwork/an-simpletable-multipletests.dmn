@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c"
+                      namespace="https://github.com/kiegroup/kie-dmn"
+                      name="an-simpletable-multipletests"
+                      >
+   <semantic:decision id="an-simpletable-multipletests" name="an-simpletable-multipletests">
+      <semantic:variable name="Approval Status" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_Age"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_RiskCategory"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_isAffordable"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable hitPolicy="ANY"
+                              preferredOrientation="Rule-as-Row"
+                              outputLabel="Approval Status">
+         <semantic:input id="_iAge" label="Age">
+            <semantic:inputExpression typeRef="number">
+               <semantic:text>Age</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:input id="_iRiskCategory" label="RiskCategory">
+            <semantic:inputExpression typeRef="string">
+               <semantic:text>RiskCategory</semantic:text>
+            </semantic:inputExpression>
+            <semantic:inputValues>
+               <semantic:text>"High", "Low", "Medium"</semantic:text>
+            </semantic:inputValues>
+         </semantic:input>
+         <semantic:input id="_iIsAffordable" label="isAffordable">
+            <semantic:inputExpression typeRef="boolean">
+               <semantic:text>isAffordable</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output id="_oApprovalStatus" name="Approval Status" typeRef="string">
+            <semantic:outputValues>
+               <semantic:text>"Approved", "Declined"</semantic:text>
+            </semantic:outputValues>
+         </semantic:output>
+         <semantic:rule id="_7f03803d-2636-40ab-8346-7fd7f38ab695">
+            <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-0">
+               <semantic:text>&gt;=18</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-1">
+               <semantic:text>"Medium","Low"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-2">
+               <semantic:text>true</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-3">
+               <semantic:text>"Approved"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+         <semantic:rule id="_7f03803d-2636-40ab-8346-7fd7f38ab691">
+            <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-0">
+               <semantic:text>&gt;=18</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-1">
+               <semantic:text>"Medium","Low"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-2">
+               <semantic:text>true</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-3">
+               <semantic:text>"Approved"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
+   <semantic:inputData id="_Age" name="Age">
+      <semantic:variable name="Age" typeRef="number"/>
+   </semantic:inputData>
+   <semantic:inputData id="_RiskCategory" name="RiskCategory">
+      <semantic:variable name="RiskCategory" typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData id="_isAffordable" name="isAffordable">
+      <semantic:variable name="isAffordable" typeRef="boolean"/>
+   </semantic:inputData>
+</semantic:definitions>

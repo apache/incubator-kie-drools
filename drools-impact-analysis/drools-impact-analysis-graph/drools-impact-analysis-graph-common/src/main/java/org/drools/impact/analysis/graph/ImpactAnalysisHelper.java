@@ -36,6 +36,20 @@ public class ImpactAnalysisHelper {
     /**
      * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
      * @param graph
+     * @param name of changedNode (= rule name)
+     * @return sub graph which contains only changed node and impacted nodes
+     */
+    public Graph filterImpactedNodes(Graph graph, String changedNodeName) {
+        Node changedNode = graph.getNodeMap().get(changedNodeName);
+        if (changedNode == null) {
+            throw new RuntimeException("Cannot find a node : name = " + changedNodeName);
+        }
+        return filterImpactedNodes(graph, changedNode);
+    }
+
+    /**
+     * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
+     * @param graph
      * @param changedNode
      * @return sub graph which contains only changed node and impacted nodes
      */

@@ -18,7 +18,7 @@ package org.drools.compiler.lang.descr;
 
 
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccessorDescr extends DeclarativeInvokerDescr {
@@ -26,7 +26,7 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
     private static final long serialVersionUID = 510l;
 
     private String            variableName;
-    private LinkedList        invokers;
+    private List              invokers;
 
     public AccessorDescr() {
         this( null );
@@ -35,7 +35,7 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
     public AccessorDescr(final String rootVariableName) {
         super();
         this.variableName = rootVariableName;
-        this.invokers = new LinkedList();
+        this.invokers = new ArrayList();
     }
 
     public DeclarativeInvokerDescr[] getInvokersAsArray() {
@@ -51,7 +51,7 @@ public class AccessorDescr extends DeclarativeInvokerDescr {
     }
 
     public void addFirstInvoker(final DeclarativeInvokerDescr accessor) {
-        this.invokers.addFirst( accessor );
+        this.invokers.add( 0, accessor );
     }
 
     public String getVariableName() {
