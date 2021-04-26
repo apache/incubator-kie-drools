@@ -27,9 +27,9 @@ public class SingleIrisKMeansTest extends AbstractPMMLTest {
     private final double sepalWidth;
     private final double petalLength;
     private final double petalWidth;
-    private final String irisClass;
+    private final int irisClass;
 
-    public SingleIrisKMeansTest(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass) {
+    public SingleIrisKMeansTest(double sepalLength, double sepalWidth, double petalLength, double petalWidth, int irisClass) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
@@ -45,12 +45,12 @@ public class SingleIrisKMeansTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {4.4, 3.0, 1.3, 0.2, "3"},
-                {5.0, 3.3, 1.4, 0.2, "3"},
-                {7.0, 3.2, 4.7, 1.4, "2"},
-                {5.7, 2.8, 4.1, 1.3, "4"},
-                {6.3, 3.3, 6.0, 2.5, "1"},
-                {6.7, 3.0, 5.2, 2.3, "1"}
+                {4.4, 3.0, 1.3, 0.2, 3},
+                {5.0, 3.3, 1.4, 0.2, 3},
+                {7.0, 3.2, 4.7, 1.4, 2},
+                {5.7, 2.8, 4.1, 1.3, 4},
+                {6.3, 3.3, 6.0, 2.5, 1},
+                {6.7, 3.0, 5.2, 2.3, 1}
         });
     }
 
