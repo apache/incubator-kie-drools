@@ -108,8 +108,6 @@ public class KiePMMLNodeFactory {
                                                                final DataDictionary dataDictionary,
                                                                final String packageName) {
         logger.trace("getKiePMMLNodeSourcesMap {} {}", nodeNamesDTO, packageName);
-
-//        final NodeNamesDTO nodeNamesDTO = new NodeNamesDTO(node, null);
         final JavaParserDTO javaParserDTO = new JavaParserDTO(nodeNamesDTO, packageName);
         final Map<String, String> toReturn = new HashMap<>();
         populateJavaParserDTOAndSourcesMap(javaParserDTO, toReturn, nodeNamesDTO, dataDictionary, true);
