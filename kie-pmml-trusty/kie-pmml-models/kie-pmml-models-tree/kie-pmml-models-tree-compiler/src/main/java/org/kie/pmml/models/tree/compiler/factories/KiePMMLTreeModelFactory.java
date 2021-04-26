@@ -89,9 +89,9 @@ public class KiePMMLTreeModelFactory {
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_TREE_MODEL_TEMPLATE_JAVA, KIE_PMML_TREE_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        String nodeClassName = getNodeClassName(model.getNode());
-        String fullNodeClassName =  packageName + "." + nodeClassName;
-        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(model.getNode(),  dataDictionary, packageName);
+        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(model.getNode(), getNodeClassName(),  null);
+        String fullNodeClassName =  packageName + "." + nodeNamesDTO.nodeClassName;
+        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,  dataDictionary, packageName);
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model, dataDictionary, constructorDeclaration, targetFieldName, fullNodeClassName);

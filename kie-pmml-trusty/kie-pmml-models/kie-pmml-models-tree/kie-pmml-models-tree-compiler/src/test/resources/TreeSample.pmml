@@ -31,10 +31,10 @@
       <Node score="32" id="A_A">
         <SimplePredicate field="outlook" operator="equal" value="sunny"/>
         <Node score="will play" id="A_A_A">
-<!--          <CompoundPredicate booleanOperator="and">-->
-<!--            <SimplePredicate field="temperature" operator="lessThan" value="90"/>-->
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="temperature" operator="lessThan" value="90"/>
             <SimplePredicate field="temperature" operator="greaterThan" value="50"/>
-<!--          </CompoundPredicate>-->
+          </CompoundPredicate>
           <Node score="will play"  id="A_A_A_A">
             <SimplePredicate field="humidity" operator="lessThan" value="80"/>
           </Node>
@@ -67,10 +67,10 @@
           </CompoundPredicate>
         </Node>
         <Node score="no play" id="A_B_B">
-<!--          <CompoundPredicate booleanOperator="and">-->
+          <CompoundPredicate booleanOperator="and">
             <SimplePredicate field="outlook" operator="equal" value="rain"/>
-<!--            <SimplePredicate field="humidity" operator="lessThan" value="70"/>-->
-<!--          </CompoundPredicate>-->
+            <SimplePredicate field="humidity" operator="lessThan" value="70"/>
+          </CompoundPredicate>
         </Node>
       </Node>
     </Node>

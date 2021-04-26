@@ -54,6 +54,7 @@ public class KiePMMLCompoundPredicateFactory {
             "KiePMMLCompoundPredicateEvaluateMethodTemplate.tmpl";
     static final String KIE_PMML_COMPOUND_PREDICATE_EVALUATE_METHOD_TEMPLATE = "KiePMMLCompoundPredicateEvaluateMethodTemplate";
 
+    public static final String EVALUATE_NESTED_PREDICATE = "evaluateNestedPredicate";
     public static final String NESTED_PREDICATE_FUNCTIONS = "functions";
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicateFactory.class.getName());
@@ -65,15 +66,16 @@ public class KiePMMLCompoundPredicateFactory {
     public static BlockStmt getCompoundPredicateBody(final CompoundPredicate predicate,
                                                      final DataDictionary dataDictionary,
                                                      final List<MethodDeclaration> toPopulate,
+                                                     final String rootNodeClassName,
                                                      final String nodeClassName,
                                                      final AtomicInteger counter) {
         final List<String> methodNames = new ArrayList<>();
         for (Predicate nestedPredicate : predicate.getPredicates()) {
-            final BlockStmt nestedPredicateBody = KiePMMLPredicateFactory.getPredicateBody(nestedPredicate, dataDictionary, toPopulate, nodeClassName, counter);
+            final BlockStmt nestedPredicateBody = KiePMMLPredicateFactory.getPredicateBody(nestedPredicate, dataDictionary, toPopulate, rootNodeClassName, nodeClassName, counter);
             final MethodDeclaration toAdd = new MethodDeclaration();
             toAdd.setModifiers(Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
             toAdd.setType("boolean");
-            String nestedMethodName = "evaluateNestedPredicate" +  nodeClassName + counter.addAndGet(1);
+            String nestedMethodName = EVALUATE_NESTED_PREDICATE +  nodeClassName + counter.addAndGet(1);
             toAdd.setName(new SimpleName(nestedMethodName));
             methodNames.add(nestedMethodName);
             Parameter parameter = new Parameter();
@@ -97,7 +99,7 @@ public class KiePMMLCompoundPredicateFactory {
         final NodeList<Expression> functionsExpressions = new NodeList<>();
         for (String nestedMethodName : methodNames) {
             MethodReferenceExpr toAdd = new MethodReferenceExpr();
-            toAdd.setScope(new NameExpr(nodeClassName));
+            toAdd.setScope(new NameExpr(rootNodeClassName));
             toAdd.setIdentifier(nestedMethodName);
             functionsExpressions.add(toAdd);
         }
