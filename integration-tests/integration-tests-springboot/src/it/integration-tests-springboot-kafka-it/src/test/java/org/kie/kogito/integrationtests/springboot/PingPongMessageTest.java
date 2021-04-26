@@ -73,7 +73,7 @@ public class PingPongMessageTest extends BaseRestTest {
 
         validateSubProcess();
 
-        await().atMost(Duration.ofSeconds(5))
+        await().atMost(Duration.ofSeconds(10))
                 .untilAsserted(() -> given()
                         .contentType(ContentType.JSON)
                         .when()
@@ -96,13 +96,13 @@ public class PingPongMessageTest extends BaseRestTest {
                 .then()
                 .statusCode(404);
 
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(10, TimeUnit.SECONDS);
 
     }
 
 
     private void validateSubProcess(){
-        await().atMost(Duration.ofSeconds(5))
+        await().atMost(Duration.ofSeconds(10))
                 .untilAsserted(() -> given()
                         .contentType(ContentType.JSON)
                         .when()
