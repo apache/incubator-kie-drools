@@ -10421,6 +10421,136 @@
           "classSimpleName": "ScoreDirectorFactoryConfig",
           "elementKind": "class",
           "justification": "Constraint streams performance tweak."
+        },
+        {
+          "code": "java.generics.formalTypeParameterAdded",
+          "old": "interface org.optaplanner.core.api.domain.variable.VariableListener<Entity_ extends java.lang.Object>",
+          "new": "interface org.optaplanner.core.api.domain.variable.VariableListener<Solution_ extends java.lang.Object, Entity_ extends java.lang.Object>",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "VariableListener",
+          "elementKind": "interface",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.util.Collection<org.optaplanner.core.api.score.constraint.ConstraintMatchTotal> org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score>::getConstraintMatchTotals()",
+          "new": "method java.util.Collection<org.optaplanner.core.api.score.constraint.ConstraintMatchTotal<Score_>> org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::getConstraintMatchTotals()",
+          "oldType": "java.util.Collection<org.optaplanner.core.api.score.constraint.ConstraintMatchTotal>",
+          "newType": "java.util.Collection<org.optaplanner.core.api.score.constraint.ConstraintMatchTotal<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "ConstraintMatchAwareIncrementalScoreCalculator",
+          "methodName": "getConstraintMatchTotals",
+          "elementKind": "method",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.util.Map<java.lang.Object, org.optaplanner.core.api.score.constraint.Indictment> org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score>::getIndictmentMap()",
+          "new": "method java.util.Map<java.lang.Object, org.optaplanner.core.api.score.constraint.Indictment<Score_>> org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::getIndictmentMap()",
+          "oldType": "java.util.Map<java.lang.Object, org.optaplanner.core.api.score.constraint.Indictment>",
+          "newType": "java.util.Map<java.lang.Object, org.optaplanner.core.api.score.constraint.Indictment<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "ConstraintMatchAwareIncrementalScoreCalculator",
+          "methodName": "getIndictmentMap",
+          "elementKind": "method",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "interface org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "new": "interface org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "interface": "org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "ConstraintMatchAwareIncrementalScoreCalculator",
+          "elementKind": "interface",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "interface org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "new": "interface org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "ConstraintMatchAwareIncrementalScoreCalculator",
+          "elementKind": "interface",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.class.superTypeTypeParametersChanged",
+          "old": "interface org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "new": "interface org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldSuperType": "org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "newSuperType": "org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "ConstraintMatchAwareIncrementalScoreCalculator",
+          "elementKind": "interface",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method Score_ org.optaplanner.core.api.score.calculator.EasyScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score>::calculateScore(Solution_)",
+          "new": "method Score_ org.optaplanner.core.api.score.calculator.EasyScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::calculateScore(Solution_)",
+          "oldType": "Score_ extends org.optaplanner.core.api.score.Score",
+          "newType": "Score_ extends org.optaplanner.core.api.score.Score<Score_>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "EasyScoreCalculator",
+          "methodName": "calculateScore",
+          "elementKind": "method",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "interface org.optaplanner.core.api.score.calculator.EasyScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "new": "interface org.optaplanner.core.api.score.calculator.EasyScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "EasyScoreCalculator",
+          "elementKind": "interface",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method Score_ org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score>::calculateScore()",
+          "new": "method Score_ org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::calculateScore()",
+          "oldType": "Score_ extends org.optaplanner.core.api.score.Score",
+          "newType": "Score_ extends org.optaplanner.core.api.score.Score<Score_>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "IncrementalScoreCalculator",
+          "methodName": "calculateScore",
+          "elementKind": "method",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "interface org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score>",
+          "new": "interface org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator<Solution_ extends java.lang.Object, Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score.calculator",
+          "classSimpleName": "IncrementalScoreCalculator",
+          "elementKind": "interface",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainer(org.kie.api.runtime.KieContainer, org.optaplanner.core.config.solver.SolverConfig)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "createFromKieContainer",
+          "elementKind": "method",
+          "justification": "Score, ScoreHolder and ScoreDefinition were refactored."
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<S> org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::buildScoreInliner(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "new": "method org.optaplanner.core.impl.score.inliner.ScoreInliner<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreInliner(java.util.Map<org.optaplanner.core.api.score.stream.Constraint, Score_>, boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "buildScoreInliner",
+          "elementKind": "method",
+          "justification": "ScoreInliner was refactored."
         }
       ]
     }
