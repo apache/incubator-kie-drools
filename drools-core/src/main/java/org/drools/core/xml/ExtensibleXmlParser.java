@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.text.MessageFormat;
-import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -92,7 +92,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     // private Map repo;
 
     /** Stack of configurations. */
-    private Deque configurationStack;
+    private LinkedList          configurationStack;
 
     /** Current configuration text. */
     private StringBuilder       characters;
@@ -101,7 +101,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     private boolean             lastWasEndElement;
 
-    private Deque               parents;
+    private LinkedList          parents;
 
     private Object              peer;
 
@@ -138,8 +138,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
      */
     public ExtensibleXmlParser() {
         // init
-        this.configurationStack = new ArrayDeque();
-        this.parents = new ArrayDeque();
+        this.configurationStack = new LinkedList();
+        this.parents = new LinkedList();
 
         initEntityResolver();
     }
@@ -174,7 +174,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            The reader containing the rule-set.
      *
      * @return The rule-set.
-     * @throws ParserConfigurationException 
+     * @throws ParserConfigurationException
      */
     public Object read(final Reader reader) throws SAXException,
                                            IOException {
@@ -188,10 +188,10 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            The input-stream containing the rule-set.
      *
      * @return The rule-set.
-     * @throws ParserConfigurationException 
+     * @throws ParserConfigurationException
      */
     public Object read(final InputStream inputStream) throws SAXException,
-                                                     IOException {
+            IOException {
         return read( new InputSource( inputStream ) );
     }
 
@@ -202,7 +202,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            The rule-set input-source.
      *
      * @return The rule-set.
-     * @throws ParserConfigurationException 
+     * @throws ParserConfigurationException
      */
     public Object read(final InputSource in) throws SAXException,
                                             IOException {
@@ -250,7 +250,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
             } catch ( FactoryConfigurationError e) {
                 // obscure JDK1.5 bug where FactoryFinder in the JRE returns a null ClassLoader, so fall back to hard coded xerces.
                 // https://stg.network.org/bugzilla/show_bug.cgi?id=47169
-                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4633368                
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4633368
                 try {
                     factory = (SAXParserFactory) Class.forName( "org.apache.xerces.jaxp.SAXParserFactoryImpl" ).newInstance();
                 } catch ( Exception e1 ) {
@@ -261,7 +261,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                 throw new RuntimeException( "Unable to create new DOM Document",
                                             e );
             }
-            
+
             factory.setNamespaceAware( true );
             // XXE protection start
             try {
@@ -287,7 +287,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
                 try {
                     localParser.setProperty( ExtensibleXmlParser.JAXP_SCHEMA_LANGUAGE,
-                                             ExtensibleXmlParser.W3C_XML_SCHEMA );
+                            ExtensibleXmlParser.W3C_XML_SCHEMA );
                 } catch ( final SAXNotRecognizedException e ) {
                     boolean hideWarnings = Boolean.getBoolean( "drools.schema.hidewarnings" );
                     if ( !hideWarnings ) {
@@ -387,14 +387,14 @@ public class ExtensibleXmlParser extends DefaultHandler {
         this.attrs = attrs;
 
         if ( direction == 1 ) {
-            // going down again, so clear 
+            // going down again, so clear
             this.peer = null;
         } else {
             direction = 1;
         }
 
         final Handler handler = getHandler( uri,
-                                            localName );
+                localName );
 
         if ( handler == null ) {
             startElementBuilder( localName,
@@ -410,7 +410,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                                      localName,
                                      attrs,
                                      this );
-        
+
         this.parents.add( node );
     }
 
@@ -457,7 +457,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         final Set validParents = handler.getValidParents();
         final Set validPeers = handler.getValidPeers();
         boolean allowNesting = handler.allowNesting();
-        
+
         if ( validParents == null || validPeers == null ) {
             return;
         }
@@ -467,7 +467,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         // dont process if elements are the same
         // instead check for allowed nesting
         final Class nodeClass = getHandler( uri,
-                                            localName ).generateNodeFor();
+                localName ).generateNodeFor();
         if ( nodeClass != null && !nodeClass.isInstance( getParent() ) ) {
             Object allowedParent;
             final Iterator it = validParents.iterator();
@@ -481,7 +481,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
             }
             if ( !validParent ) {
                 throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + getParent() + "]",
-                                             getLocator() );
+                        getLocator() );
             }
         }
 
@@ -501,7 +501,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         }
         if ( !validPeer ) {
             throw new SAXParseException( "<" + localName + "> is after an invalid element: " + Handler.class.getName(),
-                                         getLocator() );
+                    getLocator() );
         }
 
         if ( nodeClass != null && !allowNesting ) {
@@ -542,7 +542,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         for ( int i = 0; i < numAttrs; ++i ) {
             element.setAttribute( attrs.getLocalName( i ),
-                                  attrs.getValue( i ) );
+                    attrs.getValue( i ) );
         }
 
         if ( this.configurationStack.isEmpty() ) {
@@ -608,25 +608,13 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     public Object getParent(int index) {
-        Iterator it = this.parents.descendingIterator( );
+        ListIterator it = this.parents.listIterator( this.parents.size() );
         int x = 0;
         Object parent = null;
         while ( x++ <= index ) {
-            parent = it.next();
+            parent = it.previous();
         }
         return parent;
-    }
-
-    public Object getParent(final Class parent) {
-        final Iterator it = this.parents.descendingIterator();
-        Object node = null;
-        while ( it.hasNext() ) {
-            node = it.next();
-            if ( parent.isInstance( node ) ) {
-                break;
-            }
-        }
-        return node;
     }
 
     public Object removeParent() {
@@ -635,7 +623,19 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     public Collection getParents() {
-        return parents;
+        return this.parents;
+    }
+
+    public Object getParent(final Class parent) {
+        final ListIterator it = this.parents.listIterator( this.parents.size() );
+        Object node = null;
+        while ( it.hasPrevious() ) {
+            node = it.previous();
+            if ( parent.isInstance( node ) ) {
+                break;
+            }
+        }
+        return node;
     }
 
     public Object getPeer() {
@@ -695,7 +695,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     private InputSource resolveSchema(final String publicId,
                                       final String systemId) throws SAXException,
-                                                            IOException {
+            IOException {
         // Schema files must end with xsd
         if ( !systemId.toLowerCase().endsWith( "xsd" ) ) {
             return null;
