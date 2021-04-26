@@ -96,15 +96,6 @@ final class IndirectPatternVariable<A, PatternVar_>
     private final List<ViewItem<?>> prerequisiteExpressions;
     private final List<ViewItem<?>> dependentExpressions;
 
-    IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
-            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
-        this.primaryVariable = patternCreator.primaryVariable;
-        this.patternSupplier = () -> patternMutator.apply(patternCreator.patternSupplier.get());
-        this.mappingFunction = patternCreator.mappingFunction;
-        this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
-        this.dependentExpressions = patternCreator.dependentExpressions;
-    }
-
     <OldA> IndirectPatternVariable(IndirectPatternVariable<OldA, PatternVar_> patternCreator, Variable<A> boundVariable,
             Function<OldA, A> mappingFunction) {
         this.primaryVariable = boundVariable;
@@ -123,7 +114,17 @@ final class IndirectPatternVariable<A, PatternVar_>
         this.dependentExpressions = patternCreator.getDependentExpressions();
     }
 
-    IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator, ViewItem<?> dependentExpression) {
+    private IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
+            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
+        this.primaryVariable = patternCreator.primaryVariable;
+        this.patternSupplier = () -> patternMutator.apply(patternCreator.patternSupplier.get());
+        this.mappingFunction = patternCreator.mappingFunction;
+        this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
+        this.dependentExpressions = patternCreator.dependentExpressions;
+    }
+
+    private IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
+            ViewItem<?> dependentExpression) {
         this.primaryVariable = patternCreator.primaryVariable;
         this.patternSupplier = patternCreator.patternSupplier;
         this.mappingFunction = patternCreator.mappingFunction;
@@ -274,15 +275,6 @@ final class IndirectPatternVariable<A, PatternVar_>
                 p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
                         (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> bindingFunction.apply(extract(a), leftJoinVarA,
                                 leftJoinVarB, leftJoinVarC)));
-    }
-
-    @Override
-    public <NewA> IndirectPatternVariable<NewA, PatternVar_> map(Variable<NewA> boundVariable,
-            Function<A, NewA> mappingFunction) {
-        // Previous pattern variable - $a: Something($previous: previousMappingFunction($a))
-        // New pattern variable - $a: Something($previous: ..., $new: mappingFunction($previous))
-        IndirectPatternVariable<A, PatternVar_> intermediate = this.bind(boundVariable, mappingFunction);
-        return new IndirectPatternVariable<>(intermediate, boundVariable, mappingFunction);
     }
 
     @Override

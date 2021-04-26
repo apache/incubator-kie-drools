@@ -79,7 +79,7 @@ final class DetachedPatternVariable<A, PatternVar_>
 
     private final Variable<A> primaryVariable;
 
-    public DetachedPatternVariable(Variable<A> variable) {
+    DetachedPatternVariable(Variable<A> variable) {
         this.primaryVariable = Objects.requireNonNull(variable);
     }
 
@@ -172,12 +172,6 @@ final class DetachedPatternVariable<A, PatternVar_>
             Variable<BoundVar_> boundVariable, Variable<LeftJoinVarA_> leftJoinVariableA,
             Variable<LeftJoinVarB_> leftJoinVariableB, Variable<LeftJoinVarC_> leftJoinVariableC,
             QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction) {
-        throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
-    }
-
-    @Override
-    public <NewA> DetachedPatternVariable<NewA, PatternVar_> map(Variable<NewA> boundVariable,
-            Function<A, NewA> mappingFunction) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 

@@ -127,8 +127,6 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
             Variable<LeftJoinVarC_> leftJoinVariableC,
             QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction);
 
-    <NewA> PatternVariable<NewA, PatternVar_, ?> map(Variable<NewA> boundVariable, Function<A, NewA> mappingFunction);
-
     Child_ addDependentExpression(ViewItem<?> expression);
 
     List<ViewItem<?>> build();

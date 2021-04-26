@@ -36,52 +36,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 
 /**
  * Used when building a consequence to a rule.
- *
- * For rules where variables are directly used in a consequence,
- * the extra patterns (see {@link PatternVariable}) are unnecessary overhead.
- * In these cases, the left hand side will bring a simplified instance of this class.
- * In all other cases, the rule context will reference the extra pattern variables.
- *
- * <p>
- * Consider the following simple rule, in DRL-like pseudocode:
- *
- * <pre>
- * {@code
- *  rule "Simple rule"
- *  when
- *      accumulate(
- *          Something(),
- *          $count: count()
- *      )
- *  then
- *      // Do something with $count
- *  end
- * }
- * </pre>
- *
- * In this case, the consequence can use the variable "count" directly. However, consider the following rule, where
- * we also want to filter on the "count" variable:
- *
- * <pre>
- * {@code
- *  rule "Simple rule"
- *  when
- *      accumulate(
- *          Something(),
- *          $count: count()
- *      )
- *      $newA: Integer(this == $count, this > 0)
- *  then
- *      // Do something with $newA after we know it is greater than 0.
- *  end
- * }
- * </pre>
- *
- * In this case, the extra pattern variable "newA" is required,
- * because we want to have a pattern on which to apply the filter.
- * The same goes for joining etc.
- * Whenever the variable is not passed directly into a consequence,
- * the use of this class needs to be replaced by the use of {@link PatternVariable}.
  */
 abstract class AbstractRuleContext {
 

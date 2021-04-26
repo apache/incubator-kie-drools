@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.and;
 
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ abstract class AbstractLeftHandSide {
      */
     protected static <A, B> DirectPatternVariable<BiTuple<A, B>> decompose(Variable<BiTuple<A, B>> primaryVariable,
             ViewItem<?> prerequisitePattern, Variable<A> boundVarA, Variable<B> boundVarB) {
-        return new DirectPatternVariable<>(primaryVariable, singletonList(prerequisitePattern))
+        return new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
                 .bind(boundVarA, tuple -> tuple.a)
                 .bind(boundVarB, tuple -> tuple.b);
     }
@@ -111,7 +110,7 @@ abstract class AbstractLeftHandSide {
     protected static <A, B, C> DirectPatternVariable<TriTuple<A, B, C>> decompose(
             Variable<TriTuple<A, B, C>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC) {
-        return new DirectPatternVariable<>(primaryVariable, singletonList(prerequisitePattern))
+        return new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
                 .bind(boundVarA, tuple -> tuple.a)
                 .bind(boundVarB, tuple -> tuple.b)
                 .bind(boundVarC, tuple -> tuple.c);
@@ -135,7 +134,7 @@ abstract class AbstractLeftHandSide {
     protected static <A, B, C, D> DirectPatternVariable<QuadTuple<A, B, C, D>> decompose(
             Variable<QuadTuple<A, B, C, D>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC, Variable<D> boundVarD) {
-        return new DirectPatternVariable<>(primaryVariable, singletonList(prerequisitePattern))
+        return new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
                 .bind(boundVarA, tuple -> tuple.a)
                 .bind(boundVarB, tuple -> tuple.b)
                 .bind(boundVarC, tuple -> tuple.c)

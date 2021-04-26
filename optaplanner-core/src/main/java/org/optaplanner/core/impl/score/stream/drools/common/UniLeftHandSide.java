@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import static java.util.Collections.singletonList;
-import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.betaIndexedBy;
@@ -101,38 +100,31 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     private final UniRuleContext<A> ruleContext;
 
     public UniLeftHandSide(Class<A> aClass, DroolsVariableFactory variableFactory) {
+        this(new DirectPatternVariable<>((Variable<A>) variableFactory.createVariable(aClass, "var")),
+                variableFactory);
+    }
+
+    protected UniLeftHandSide(Variable<A> variable, List<ViewItem<?>> viewItems, DroolsVariableFactory variableFactory) {
+        this(new DirectPatternVariable<>(variable, viewItems), variableFactory);
+    }
+
+    protected UniLeftHandSide(PatternVariable<A, ?, ?> patternVariable, DroolsVariableFactory variableFactory) {
         super(variableFactory);
-        this.patternVariable = new DirectPatternVariable<>((Variable<A>) variableFactory.createVariable(aClass, "var"));
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
-        this.ruleContext = buildDefaultRuleContext();
+        this.patternVariable = Objects.requireNonNull(patternVariable);
+        this.ruleContext = buildRuleContext();
     }
 
-    protected UniLeftHandSide(AbstractLeftHandSide leftHandSide, PatternVariable<A, ?, ?> patternVariable) {
-        super(leftHandSide.variableFactory);
-        this.patternVariable = patternVariable;
-        // This LHS will use the same variable access both for direct consequence and for subsequent operations.
-        this.ruleContext = buildDefaultRuleContext();
-    }
-
-    protected UniLeftHandSide(UniRuleContext<A> ruleContext, PatternVariable<A, ?, ?> patternVariable,
-            DroolsVariableFactory variableFactory) {
-        super(variableFactory);
-        this.patternVariable = patternVariable;
-        // This LHS allows for quicker access to variables, if consequence directly follows.
-        this.ruleContext = Objects.requireNonNull(ruleContext);
-    }
-
-    private UniRuleContext<A> buildDefaultRuleContext() {
+    private UniRuleContext<A> buildRuleContext() {
         return new UniRuleContext<>(patternVariable.getPrimaryVariable(),
                 patternVariable.build().toArray(new ViewItem<?>[0]));
     }
 
-    protected PatternVariable<A, ?, ?> getPatternVariableA() {
+    public PatternVariable<A, ?, ?> getPatternVariableA() {
         return patternVariable;
     }
 
     public UniLeftHandSide<A> andFilter(Predicate<A> predicate) {
-        return new UniLeftHandSide<>(this, patternVariable.filter(predicate));
+        return new UniLeftHandSide<>(patternVariable.filter(predicate), variableFactory);
     }
 
     private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner,
@@ -165,7 +157,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
-        return new UniLeftHandSide<>(this, patternVariable.addDependentExpression(existenceExpression));
+        return new UniLeftHandSide<>(patternVariable.addDependentExpression(existenceExpression), variableFactory);
     }
 
     private <B> UniLeftHandSide<A> existsOrNot(Class<B> bClass, BiJoiner<A, B>[] joiners, boolean shouldExist) {
@@ -219,23 +211,17 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     public <NewA> UniLeftHandSide<NewA> andGroupBy(UniConstraintCollector<A, ?, NewA> collector) {
         Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
         ViewItem<?> outerAccumulatePattern = buildAccumulate(createAccumulateFunction(collector, accumulateOutput));
-        UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(accumulateOutput, outerAccumulatePattern);
-        return new UniLeftHandSide<>(simpleRuleContext,
-                new DirectPatternVariable<>(accumulateOutput, singletonList(outerAccumulatePattern)), variableFactory);
+        return new UniLeftHandSide<>(accumulateOutput, singletonList(outerAccumulatePattern), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(UniConstraintCollector<A, ?, NewA> collectorA,
             UniConstraintCollector<A, ?, NewB> collectorB) {
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(
-                createAccumulateFunction(collectorA, accumulateOutputA),
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB));
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(accumulateOutputA, accumulateOutputB,
-                outerAccumulatePattern);
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DirectPatternVariable<>(accumulateOutputB, singletonList(outerAccumulatePattern)),
-                variableFactory);
+        return new BiLeftHandSide<>(accumulateOutputA,
+                new DirectPatternVariable<>(accumulateOutputB, outerAccumulatePattern), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(
@@ -244,16 +230,11 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(
-                createAccumulateFunction(collectorA, accumulateOutputA),
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(accumulateOutputA, accumulateOutputB,
-                accumulateOutputC, outerAccumulatePattern);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DetachedPatternVariable<>(accumulateOutputB),
-                new DirectPatternVariable<>(accumulateOutputC, singletonList(outerAccumulatePattern)),
-                variableFactory);
+        return new TriLeftHandSide<>(accumulateOutputA, accumulateOutputB,
+                new DirectPatternVariable<>(accumulateOutputC, outerAccumulatePattern), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
@@ -263,16 +244,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("collectedD");
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(
-                createAccumulateFunction(collectorA, accumulateOutputA),
+        ViewItem<?> outerAccumulatePattern = buildAccumulate(createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateOutputD));
-        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext = new QuadRuleContext<>(accumulateOutputA,
-                accumulateOutputB, accumulateOutputC, accumulateOutputD, outerAccumulatePattern);
-        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(accumulateOutputA),
-                new DetachedPatternVariable<>(accumulateOutputB), new DetachedPatternVariable<>(accumulateOutputC),
-                new DirectPatternVariable<>(accumulateOutputD, singletonList(outerAccumulatePattern)), variableFactory);
+        return new QuadLeftHandSide<>(accumulateOutputA, accumulateOutputB, accumulateOutputC,
+                new DirectPatternVariable<>(accumulateOutputD, outerAccumulatePattern), variableFactory);
     }
 
     /**
@@ -286,16 +263,16 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
      */
     private <Out> AccumulateFunction createAccumulateFunction(UniConstraintCollector<A, ?, Out> collector,
             Variable<Out> out) {
-        return accFunction(() -> new UniAccumulateFunction<>(collector), patternVariable.getPrimaryVariable())
+        Variable<A> variable = patternVariable.getPrimaryVariable();
+        return new AccumulateFunction(null, () -> new UniAccumulator<>(variable, collector))
+                .with(variable)
                 .as(out);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(Function<A, NewA> keyMapping) {
         Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMapping::apply);
-        UniRuleContext<NewA> simpleRuleContext = new UniRuleContext<>(groupKey, groupByPattern);
-        return new UniLeftHandSide<>(simpleRuleContext,
-                new DirectPatternVariable<>(groupKey, singletonList(groupByPattern)), variableFactory);
+        return new UniLeftHandSide<>(groupKey, singletonList(groupByPattern), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function<A, NewA> keyMappingA,
@@ -304,9 +281,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutput));
-        BiRuleContext<NewA, NewB> simpleRuleContext = new BiRuleContext<>(groupKey, accumulateOutput, groupByPattern);
-        return new BiLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DirectPatternVariable<>(accumulateOutput, singletonList(groupByPattern)), variableFactory);
+        return new BiLeftHandSide<>(groupKey, new DirectPatternVariable<>(accumulateOutput, groupByPattern),
+                variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
@@ -317,11 +293,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
-        TriRuleContext<NewA, NewB, NewC> simpleRuleContext = new TriRuleContext<>(groupKey, accumulateOutputB,
-                accumulateOutputC, groupByPattern);
-        return new TriLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DetachedPatternVariable<>(accumulateOutputB),
-                new DirectPatternVariable<>(accumulateOutputC, singletonList(groupByPattern)), variableFactory);
+        return new TriLeftHandSide<>(groupKey, accumulateOutputB,
+                new DirectPatternVariable<>(accumulateOutputC, groupByPattern), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -335,11 +308,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateOutputD));
-        QuadRuleContext<NewA, NewB, NewC, NewD> simpleRuleContext = new QuadRuleContext<>(groupKey, accumulateOutputB,
-                accumulateOutputC, accumulateOutputD, groupByPattern);
-        return new QuadLeftHandSide<>(simpleRuleContext, new DetachedPatternVariable<>(groupKey),
-                new DetachedPatternVariable<>(accumulateOutputB), new DetachedPatternVariable<>(accumulateOutputC),
-                new DirectPatternVariable<>(accumulateOutputD, singletonList(groupByPattern)), variableFactory);
+        return new QuadLeftHandSide<>(groupKey, accumulateOutputB, accumulateOutputC,
+                new DirectPatternVariable<>(accumulateOutputD, groupByPattern), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function<A, NewA> keyMappingA,
@@ -353,8 +323,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
         PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newB, tuple -> tuple.b);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new BiLeftHandSide<>(new DetachedPatternVariable<>(newA), bPatternVar, variableFactory);
+        return new BiLeftHandSide<>(newA, bPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
@@ -368,10 +337,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DirectPatternVariable<>(accumulateOutput, prerequisites), variableFactory);
+        return new TriLeftHandSide<>(newA, newB, new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build()),
+                variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -388,12 +355,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(accumulateOutputC),
-                new DirectPatternVariable<>(accumulateOutputD, prerequisites),
-                variableFactory);
+        return new QuadLeftHandSide<>(newA, newB, accumulateOutputC,
+                new DirectPatternVariable<>(accumulateOutputD, tuplePatternVar.build()), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
@@ -409,9 +372,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 decompose(groupKey, groupByPattern, newA, newB, newC);
         PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newC, tuple -> tuple.c);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new TriLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB), cPatternVar,
-                variableFactory);
+        return new TriLeftHandSide<>(newA, newB, cPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -428,11 +389,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewC> newC = variableFactory.createVariable("newC");
         DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC);
-        List<ViewItem<?>> prerequisites = tuplePatternVar.build();
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(newC), new DirectPatternVariable<>(accumulateOutputD, prerequisites),
-                variableFactory);
+        return new QuadLeftHandSide<>(newA, newB, newC,
+                new DirectPatternVariable<>(accumulateOutputD, tuplePatternVar.build()), variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -450,14 +408,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 decompose(groupKey, groupByPattern, newA, newB, newC, newD);
         PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
                 new IndirectPatternVariable<>(tuplePatternVar, newD, tuple -> tuple.d);
-        // No simple context; due to the need to decompose the group key, the pattern variables are required.
-        return new QuadLeftHandSide<>(new DetachedPatternVariable<>(newA), new DetachedPatternVariable<>(newB),
-                new DetachedPatternVariable<>(newC), dPatternVar, variableFactory);
+        return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andMap(Function<A, NewA> mapping) {
         Variable<NewA> newA = variableFactory.createVariable("mapped");
-        PatternVariable<A, ?, ?> mappedVariable = getPatternVariableA()
+        PatternVariable<A, ?, ?> mappedVariable = patternVariable
                 .bind(newA, mapping);
         IndirectPatternVariable<NewA, ?> newPatternVariableA;
         if (mappedVariable instanceof DirectPatternVariable) {
@@ -468,7 +424,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             throw new IllegalStateException(
                     "Impossible state: Pattern variable is neither direct nor indirect: " + patternVariable);
         }
-        return new UniLeftHandSide<>(this, newPatternVariableA);
+        return new UniLeftHandSide<>(newPatternVariableA, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {
