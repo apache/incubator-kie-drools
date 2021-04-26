@@ -28,7 +28,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@kogito-apps/components-common": "^1.0.0"
+    "@kogito-apps/components-common": "^1.0.0",
+    "@kogito-apps/task-console-shared": "^1.0.0"
   },
   "devDependencies": {
     "babel-loader": "8.1.0",

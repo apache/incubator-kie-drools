@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserTaskInstance } from '../../types';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskInboxChannelApiImpl } from '../TaskInboxChannelApiImpl';
 import {
   QueryFilter,

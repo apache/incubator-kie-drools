@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  QueryFilter,
-  SortBy,
-  TaskInboxState,
-  UserTaskInstance
-} from '@kogito-apps/task-inbox';
+import { QueryFilter, SortBy, TaskInboxState } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskInboxQueries } from './TaskInboxQueries';
 import { User } from '@kogito-apps/consoles-common';
 

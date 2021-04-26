@@ -24,7 +24,7 @@ import {
   KogitoSpinner,
   OUIAProps
 } from '@kogito-apps/components-common';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormDriver } from '../../../api';
 import { TaskFormSchema } from '../../../types';
 import EmptyTaskForm from '../EmptyTaskForm/EmptyTaskForm';

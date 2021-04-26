@@ -20,7 +20,7 @@ import {
   RequestPropertyNames
 } from '@kogito-tooling/envelope-bus/dist/api';
 import { TaskInboxChannelApi, TaskInboxEnvelopeApi } from '../../../api';
-import { UserTaskInstance } from '../../../types';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
 import { TaskInboxEnvelopeViewApi } from '../../TaskInboxEnvelopeView';
 

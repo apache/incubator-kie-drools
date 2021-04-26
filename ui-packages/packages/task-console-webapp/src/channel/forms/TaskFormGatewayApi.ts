@@ -16,7 +16,7 @@
 
 import axios from 'axios';
 import { User } from '@kogito-apps/consoles-common';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormSchema } from '@kogito-apps/task-form';
 
 export interface TaskFormGatewayApi {

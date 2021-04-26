@@ -28,13 +28,13 @@ import {
   KogitoSpinner,
   ServerErrors
 } from '@kogito-apps/components-common';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   QueryFilter,
   SortBy,
   TaskInboxDriver,
   TaskInboxState
 } from '../../../api';
-import { UserTaskInstance } from '../../../types';
 import TaskInboxToolbar from '../TaskInboxToolbar/TaskInboxToolbar';
 import {
   getDateColumn,

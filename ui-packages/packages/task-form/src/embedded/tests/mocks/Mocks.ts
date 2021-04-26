@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormDriver } from '../../../api';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
 
 export const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

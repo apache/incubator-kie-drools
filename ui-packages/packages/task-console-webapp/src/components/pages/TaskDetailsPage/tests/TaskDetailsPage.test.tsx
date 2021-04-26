@@ -24,7 +24,7 @@ import {
   getWrapperAsync,
   ServerErrors
 } from '@kogito-apps/components-common';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../../channel/inbox';
 import * as TaskInboxContext from '../../../../channel/inbox/TaskInboxContext';
 import TaskDetailsPage from '../TaskDetailsPage';

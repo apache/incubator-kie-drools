@@ -55,6 +55,9 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/task-console-shared/dist/envelope/styles.css'
           )
         ],
         use: [{

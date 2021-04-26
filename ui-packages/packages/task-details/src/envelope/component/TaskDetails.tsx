@@ -19,16 +19,11 @@ import { isEmpty } from 'lodash';
 import Moment from 'react-moment';
 import { Form, FormGroup, Text, TextVariants } from '@patternfly/react-core';
 import {
-  BanIcon,
-  CheckCircleIcon,
-  OnRunningIcon
-} from '@patternfly/react-icons';
-import {
   componentOuiaProps,
   KogitoSpinner,
   OUIAProps
 } from '@kogito-apps/components-common';
-import { UserTaskInstance } from '../../api';
+import { TaskState, UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 interface TaskDetailsProps {
   userTask: UserTaskInstance;
@@ -65,21 +60,6 @@ const TaskDetails: React.FC<TaskDetailsProps & OUIAProps> = ({
     return priority || '-';
   };
 
-  function resolveTaskStateIcon(task: UserTaskInstance): JSX.Element {
-    if (task.state === 'Aborted') {
-      return <BanIcon className="pf-u-mr-sm" />;
-    } else if (task.completed) {
-      return (
-        <CheckCircleIcon
-          className="pf-u-mr-sm"
-          color="var(--pf-global--success-color--100)"
-        />
-      );
-    } else {
-      return <OnRunningIcon className="pf-u-mr-sm" />;
-    }
-  }
-
   return (
     <Form {...componentOuiaProps(ouiaId, 'task-details-component', ouiaSafe)}>
       <FormGroup label="Name" fieldId="name">
@@ -94,7 +74,7 @@ const TaskDetails: React.FC<TaskDetailsProps & OUIAProps> = ({
         <Text component={TextVariants.p}>{userTask.id}</Text>
       </FormGroup>
       <FormGroup label="State" fieldId="state">
-        {resolveTaskStateIcon(userTask)} <span>{userTask.state}</span>
+        <TaskState task={userTask} />
       </FormGroup>
       <FormGroup label="Priority" fieldId="priority">
         <Text component={TextVariants.p}>

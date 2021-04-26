@@ -48,8 +48,7 @@ import {
   KogitoEmptyStateType
 } from '@kogito-apps/components-common';
 import { PageTitle } from '@kogito-apps/consoles-common';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
-import TaskState from '@kogito-apps/task-inbox/dist/envelope/components/TaskState/TaskState';
+import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../channel/inbox';
 import { useTaskInboxGatewayApi } from '../../../channel/inbox/TaskInboxContext';
 import TaskFormContainer from './components/TaskFormContainer/TaskFormContainer';

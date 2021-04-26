@@ -21,7 +21,7 @@ import {
   EmptyState,
   EmptyStateSecondaryActions
 } from '@patternfly/react-core';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import EmptyTaskForm from '../EmptyTaskForm';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import { getWrapper } from '@kogito-apps/components-common';

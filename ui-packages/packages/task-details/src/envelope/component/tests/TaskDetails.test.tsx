@@ -16,23 +16,23 @@
 import React, { ReactElement } from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { KogitoSpinner } from '@kogito-apps/components-common';
+import { TaskState, UserTaskInstance } from '@kogito-apps/task-console-shared';
 import TaskDetails from '../TaskDetails';
-import { UserTaskInstance } from '../../../api';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@patternfly/react-core', () => ({
-  ...jest.requireActual('@patternfly/react-core'),
-  Tooltip: () => {
+jest.mock('@kogito-apps/components-common', () => ({
+  ...jest.requireActual('@kogito-apps/components-common'),
+  KogitoSpinner: () => {
     return <MockedComponent />;
   }
 }));
 
-jest.mock('@kogito-apps/components-common', () => ({
-  ...jest.requireActual('@kogito-apps/components-common'),
-  KogitoSpinner: () => {
+jest.mock('@kogito-apps/task-console-shared', () => ({
+  ...jest.requireActual('@kogito-apps/task-console-shared'),
+  TaskState: () => {
     return <MockedComponent />;
   }
 }));
@@ -104,6 +104,7 @@ describe('TaskDetails testing', () => {
     expect(getFormGroup(wrapper, 'description').exists()).toBeFalsy();
     expect(getFormGroup(wrapper, 'id').exists()).toBeTruthy();
     expect(getFormGroup(wrapper, 'state').exists()).toBeTruthy();
+    expect(wrapper.find(TaskState).exists()).toBeTruthy();
     const owner: ReactWrapper = getFormGroup(wrapper, 'owner');
     expect(owner.exists()).toBeTruthy();
     expect(owner.html()).toContain('-');

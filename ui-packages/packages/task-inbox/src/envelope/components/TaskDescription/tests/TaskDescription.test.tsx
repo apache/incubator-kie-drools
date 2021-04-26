@@ -18,7 +18,7 @@ import React from 'react';
 import TaskDescription from '../TaskDescription';
 import { getWrapper } from '@kogito-apps/components-common';
 import { act } from 'react-test-renderer';
-import { UserTaskInstance } from '../../../../types';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 const userTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

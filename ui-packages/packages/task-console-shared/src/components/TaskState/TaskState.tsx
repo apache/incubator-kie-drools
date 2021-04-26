@@ -23,7 +23,7 @@ import {
   OnRunningIcon
 } from '@patternfly/react-icons';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
-import { UserTaskInstance } from '../../../types';
+import { UserTaskInstance } from '../../types';
 
 interface Props {
   task: UserTaskInstance;

@@ -17,7 +17,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
 import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
-import { UserTaskInstance } from '@kogito-apps/task-inbox/dist/types';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   TaskFormApi,
   TaskFormChannelApi,

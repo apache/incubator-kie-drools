@@ -1,7 +1,7 @@
 {
-  "name": "@kogito-apps/task-details",
+  "name": "@kogito-apps/task-console-shared",
   "version": "1.0.0",
-  "description": "Task Details component.",
+  "description": "This library provides a set of types and components to be used in task-related modules",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,15 +21,11 @@
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
-    "update-snapshot": "jest --updateSnapshot",
     "test:coverage": "yarn test --coverage",
+    "update-snapshot": "jest --updateSnapshot",
     "lint": "eslint './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist"
-  },
-  "dependencies": {
-    "@kogito-apps/components-common": "^1.0.0",
-    "@kogito-apps/task-console-shared": "^1.0.0"
   },
   "devDependencies": {
     "babel-loader": "8.1.0",
@@ -48,6 +44,7 @@
     ],
     "coveragePathIgnorePatterns": [
       "./src/static",
+      "./src/graphql",
       "dist/"
     ],
     "snapshotSerializers": [
@@ -69,5 +66,8 @@
       "yarn run format",
       "yarn run lint"
     ]
+  },
+  "dependencies": {
+    "@kogito-apps/components-common": "^1.0.0"
   }
 }

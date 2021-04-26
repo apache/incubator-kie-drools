@@ -26,6 +26,7 @@
       ${path.to.packages}/management-console-shared/coverage/src,
       ${path.to.packages}/jobs-management/src,
       ${path.to.packages}/management-console-webapp/src,
+      ${path.to.packages}/task-console-shared/src
       ${path.to.packages}/task-inbox/src,
       ${path.to.packages}/task-form/src,
       ${path.to.packages}/task-details/src,
@@ -43,6 +44,7 @@
       ${path.to.packages}/management-console-shared/coverage/lcov.info,
       ${path.to.packages}/jobs-management/coverage/lcov.info,
       ${path.to.packages}/management-console-webapp/coverage/lcov.info,
+      ${path.to.packages}/task-console-shared/coverage/lcov.info,
       ${path.to.packages}/task-inbox/coverage/lcov.info,
       ${path.to.packages}/task-form/coverage/lcov.info,
       ${path.to.packages}/task-details/coverage/lcov.info,

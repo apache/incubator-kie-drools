@@ -17,7 +17,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { EmbeddedTaskDetails } from '../EmbeddedTaskDetails';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

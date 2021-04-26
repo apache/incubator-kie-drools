@@ -24,7 +24,7 @@ import _ from 'lodash';
 import TaskState from '../TaskState';
 import { Label } from '@patternfly/react-core';
 import { getWrapper } from '@kogito-apps/components-common';
-import { UserTaskInstance } from '../../../../types';
+import { UserTaskInstance } from '../../../types';
 
 const userTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

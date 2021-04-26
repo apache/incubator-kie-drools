@@ -20,9 +20,9 @@ import {
   RequestPropertyNames
 } from '@kogito-tooling/envelope-bus/dist/api';
 import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormChannelApi, TaskFormEnvelopeApi } from '../../../api';
 import { TaskFormEnvelopeViewApi } from '../../TaskFormEnvelopeView';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
 
 export const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

@@ -18,7 +18,7 @@ import { TaskDetailsChannelApi, TaskDetailsEnvelopeApi } from '../../../api';
 import { TaskDetailsEnvelopeViewApi } from '../../TaskDetailsEnvelopeView';
 import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelope';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 export const userTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

@@ -15,12 +15,8 @@
  */
 
 import { TaskInboxQueries } from '../TaskInboxQueries';
-import {
-  QueryFilter,
-  SortBy,
-  TaskInboxState,
-  UserTaskInstance
-} from '@kogito-apps/task-inbox/src';
+import { QueryFilter, SortBy, TaskInboxState } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   OnOpenTaskListener,
   TaskInboxGatewayApi,

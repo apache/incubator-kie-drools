@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   QueryFilter,
   SortBy,
@@ -21,7 +22,6 @@ import {
   TaskInboxDriver,
   TaskInboxState
 } from '../api';
-import { UserTaskInstance } from '../types';
 
 /**
  * Implementation of the TaskInboxChannelApi delegating to a TaskInboxDriver

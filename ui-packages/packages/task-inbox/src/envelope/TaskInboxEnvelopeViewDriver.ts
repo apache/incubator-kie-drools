@@ -15,6 +15,7 @@
  */
 
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   QueryFilter,
   SortBy,
@@ -22,7 +23,6 @@ import {
   TaskInboxDriver,
   TaskInboxState
 } from '../api';
-import { UserTaskInstance } from '../types';
 
 /**
  * Implementation of TaskInboxDriver that delegates calls to the channel Api

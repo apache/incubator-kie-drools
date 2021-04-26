@@ -15,8 +15,8 @@
  */
 
 import _ from 'lodash';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormSchema } from '../../../types';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
 
 export interface TaskDataAssignments {
   inputs: string[];

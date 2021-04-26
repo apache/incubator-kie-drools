@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   TaskDetailsApi,
   TaskDetailsChannelApi,
-  TaskDetailsEnvelopeApi,
-  UserTaskInstance
+  TaskDetailsEnvelopeApi
 } from '../api';
 import { ContainerType } from '@kogito-tooling/envelope/dist/api';
 import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
 import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
 import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { init } from '../envelope';
 
 export type Props = {

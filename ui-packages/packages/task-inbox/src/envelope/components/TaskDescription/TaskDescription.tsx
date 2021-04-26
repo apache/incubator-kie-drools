@@ -21,7 +21,7 @@ import {
   OUIAProps,
   ItemDescriptor
 } from '@kogito-apps/components-common';
-import { UserTaskInstance } from '../../../types';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 interface IOwnProps {
   task: UserTaskInstance;

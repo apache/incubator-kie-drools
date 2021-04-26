@@ -16,9 +16,9 @@
 
 import React, { useImperativeHandle, useState } from 'react';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormChannelApi } from '../api';
 import '@patternfly/patternfly/patternfly.css';
-import { UserTaskInstance } from '@kogito-apps/task-inbox/dist/types';
 import TaskForm from './components/TaskForm/TaskForm';
 import { TaskFormEnvelopeViewDriver } from './TaskFormEnvelopeViewDriver';
 
@@ -42,9 +42,9 @@ export const TaskFormEnvelopeView = React.forwardRef<
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: (userTask: UserTaskInstance) => {
+      initialize: (task: UserTaskInstance) => {
         setEnvelopeConnectedToChannel(true);
-        setUserTask(userTask);
+        setUserTask(task);
       }
     }),
     []

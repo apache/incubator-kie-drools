@@ -18,7 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import _ from 'lodash';
 import { AutoForm } from 'uniforms-patternfly';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 import FormRenderer from '../FormRenderer';
 import { FormAction } from '../../utils';

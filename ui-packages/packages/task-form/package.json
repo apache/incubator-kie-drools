@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@kogito-apps/components-common": "^1.0.0",
-    "@kogito-apps/task-inbox": "^1.0.0",
+    "@kogito-apps/task-console-shared": "^1.0.0",
     "@types/json-schema": "^7.0.7",
     "ajv": "6.12.2",
     "uniforms": "3.0.0",

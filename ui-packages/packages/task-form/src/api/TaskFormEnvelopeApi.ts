@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserTaskInstance } from '@kogito-apps/task-inbox/dist/types';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 export interface TaskFormEnvelopeApi {
   taskForm__init(

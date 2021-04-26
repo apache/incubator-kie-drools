@@ -19,7 +19,7 @@ import { getWrapper } from '@kogito-apps/components-common';
 import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../../../channel/forms';
 import * as TaskFormContext from '../../../../../../channel/forms/TaskFormContext';
-import { UserTaskInstance } from '@kogito-apps/task-inbox';
+import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',

@@ -28,7 +28,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: 'src/components/styles.css',
       chunkFilename: '[name].bundle.css'
     })
   ],
@@ -57,16 +57,21 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/consoles-common/dist/src/components/styles.css'
+            '../../node_modules/react-calendar/dist/Calendar.css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/task-console-shared/dist/envelope/styles.css'
+            '../../node_modules/react-clock/dist/Clock.css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/task-form/dist/envelope/styles.css'
+            '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
           )
         ],
-        loaders: ['style-loader', 'css-loader']
+        use: [{
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            publicPath: '../../',
+          }
+        }, 'css-loader']
       }
     ]
   }
