@@ -1180,6 +1180,32 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalOperationsInConstraint() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    Person( $moneyDoubled : (money + money) )\n" +
+                "then\n" +
+                "    results.add($moneyDoubled);\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        ArrayList<BigDecimal> results = new ArrayList<>();
+        ksession1.setGlobal("results", results);
+
+        Person p1 = new Person();
+        p1.setMoney( new BigDecimal(1 ));
+        ksession1.insert( p1 );
+        assertEquals( 1, ksession1.fireAllRules() );
+
+        assertThat(results).containsExactly(BigDecimal.valueOf(2));
+
+    }
+
+    @Test
     public void testSingleQuoteString() {
         String str =
                 "rule R1 when\n" +
