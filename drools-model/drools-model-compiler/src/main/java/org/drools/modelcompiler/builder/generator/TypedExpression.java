@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -195,5 +196,9 @@ public class TypedExpression {
 
     public Expression uncastExpression() {
         return DrlxParseUtil.uncastExpr(expression);
+    }
+
+    public boolean isBigDecimal() {
+        return type != null && toRawClass(type).isAssignableFrom( BigDecimal.class );
     }
 }

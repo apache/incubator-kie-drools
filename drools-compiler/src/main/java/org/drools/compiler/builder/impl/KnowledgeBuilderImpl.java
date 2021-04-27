@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1300,7 +1299,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-        List<RuleDescr> roots = new LinkedList<>();
+        List<RuleDescr> roots = new ArrayList<>();
         Map<String, List<RuleDescr>> children = new HashMap<>();
         LinkedHashMap<String, RuleDescr> sorted = new LinkedHashMap<>();
         List<RuleDescr> queries = new ArrayList<>();
@@ -1412,7 +1411,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private void manageUnresolvedExtension(RuleDescr ruleDescr,
                                            Collection<RuleDescr> candidates) {
-        List<String> candidateRules = new LinkedList<>();
+        List<String> candidateRules = new ArrayList<>();
         for (RuleDescr r : candidates) {
             if (StringUtils.stringSimilarity(ruleDescr.getParentName(), r.getName(), StringUtils.SIMILARITY_STRATS.DICE) >= 0.75) {
                 candidateRules.add(r.getName());

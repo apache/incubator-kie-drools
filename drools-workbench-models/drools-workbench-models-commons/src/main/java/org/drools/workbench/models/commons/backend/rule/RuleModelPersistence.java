@@ -30,6 +30,17 @@ public interface RuleModelPersistence {
                         final List<String> globals,
                         final PackageDataModelOracle dmo);
 
+    /**
+     *
+     * @param splitEvals When true, each unresolved DRL will be split to a separate FreeFromLine element.
+     *                   When false, the DRL will be placed into FreeFormLine as a blob.
+     * @return
+     */
+    RuleModel unmarshal(final String str,
+                        final List<String> globals,
+                        final PackageDataModelOracle dmo,
+                        final boolean splitEvals);
+
     RuleModel unmarshal(final String str,
                         final List<String> globals,
                         final PackageDataModelOracle dmo,

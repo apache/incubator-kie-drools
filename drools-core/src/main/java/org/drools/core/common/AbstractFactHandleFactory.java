@@ -16,10 +16,9 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -169,7 +168,7 @@ public abstract class AbstractFactHandleFactory
         }
 
         public void doRecycle(Collection<Long> usedIds) {
-            this.usedIds = usedIds.stream().sorted().collect( toCollection( LinkedList::new ) );
+            this.usedIds = usedIds.stream().sorted().collect( toCollection( ArrayDeque::new ) );
             this.usedIds.add( id.get()+1 );
             this.recycledId = 1;
         }

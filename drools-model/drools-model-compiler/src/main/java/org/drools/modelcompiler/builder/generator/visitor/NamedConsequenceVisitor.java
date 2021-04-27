@@ -17,8 +17,8 @@
 
 package org.drools.modelcompiler.builder.generator.visitor;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -31,6 +31,7 @@ import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.Consequence;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
@@ -62,8 +63,11 @@ public class NamedConsequenceVisitor {
     }
 
     public void visit(ConditionalBranchDescr desc) {
-        PatternDescr patternRelated = Objects.requireNonNull((PatternDescr) getReferringPatternDescr(desc, context.getParentDescr()),
-                                                             "Related pattern cannot be found!");
+        PatternDescr patternRelated = getReferringPatternDescr(desc, context.getParentDescr());
+        if (patternRelated == null) {
+            context.addCompilationError(new InvalidExpressionErrorResult("Related pattern cannot be found for " + desc));
+            return;
+        }
         Class<?> patternRelatedClass = getClassFromContext(context.getTypeResolver(), patternRelated.getObjectType());
         MethodCallExpr whenBlock = whenThenDSL(desc, patternRelated, patternRelatedClass, WHEN_CALL, null);
         recurseAmongElseBranch(patternRelatedClass, patternRelated, whenBlock, desc.getElseBranch());
@@ -110,11 +114,13 @@ public class NamedConsequenceVisitor {
 
                 when.addArgument(context.getVarExpr(identifier));
                 parseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, identifier, condition);
-                parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseSuccess.getExpr())));
-
+                Collection<String> usedDeclarations = ((SingleDrlxParseSuccess)parseResult).getUsedDeclarations();
+                if (usedDeclarations.isEmpty()) { // _this
+                    parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseSuccess.getExpr())));
+                } else {
+                    parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(usedDeclarations, parseSuccess.getExpr(), true, Optional.empty())));
+                }
             }
-
-
         }
 
         MethodCallExpr then = new MethodCallExpr(when, THEN_CALL);
@@ -131,7 +137,7 @@ public class NamedConsequenceVisitor {
         when.addArgument(context.getVarExpr(identifierDeclaration));
     }
 
-    private BaseDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
+    private PatternDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
         BaseDescr patternRelated = null;
         for (BaseDescr b : parent.getDescrs()) {
             if (b.equals(desc)) {
@@ -139,11 +145,15 @@ public class NamedConsequenceVisitor {
             }
             patternRelated = b;
         }
-        return patternRelated;
+        return patternRelated instanceof PatternDescr ? (PatternDescr) patternRelated : null;
     }
 
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
         String namedConsequenceString = context.getNamedConsequences().get(namedConsequence.getName());
+        if (namedConsequenceString == null) {
+            context.addCompilationError(new InvalidExpressionErrorResult("Unknown consequence name: " + namedConsequence.getName()));
+            return null;
+        }
         BlockStmt ruleVariablesBlock = new BlockStmt();
         createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
         return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );

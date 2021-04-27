@@ -19,9 +19,11 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -40,6 +42,7 @@ import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.DuplicatedDeclarationError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 
@@ -75,9 +78,15 @@ public class POJOGenerator {
 
     public void findPOJOorGenerate() {
         TypeResolver typeResolver = pkg.getTypeResolver();
+        Set<String> generatedPojos = new HashSet<>();
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
+            if (!generatedPojos.add(typeDescr.getFullTypeName())) {
+                builder.addBuilderResult( new DuplicatedDeclarationError(typeDescr.getFullTypeName()) );
+                continue;
+            }
             try {
                 Class<?> type = typeResolver.resolveType(typeDescr.getFullTypeName());
+                checkRedeclarationCompatibility(type, typeDescr);
                 processTypeMetadata(type, typeDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
                 createPOJO(typeDescr);
@@ -130,6 +139,12 @@ public class POJOGenerator {
 
     private void addTypeMetadata(String typeName) {
         packageModel.addTypeMetaDataExpressions(registerTypeMetaData(pkg.getName() + "." + typeName));
+    }
+
+    private void checkRedeclarationCompatibility(Class<?> type, TypeDeclarationDescr typeDescr) {
+        if (!typeDescr.getFields().isEmpty() && type.getDeclaredFields().length != typeDescr.getFields().size()) {
+            builder.addBuilderResult( new InvalidExpressionErrorResult("Wrong redeclaration of type " + typeDescr.getFullTypeName()) );
+        }
     }
 
     private void processTypeMetadata(Class<?> type, Collection<AnnotationDescr> annotations) {

@@ -20,11 +20,12 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -105,7 +106,7 @@ public class DefaultAgenda
 
     private Map<String, InternalActivationGroup>                 activationGroups;
 
-    private LinkedList<AgendaGroup>                              focusStack;
+    private Deque<AgendaGroup>                                   focusStack;
 
     private InternalAgendaGroup                                  mainAgendaGroup;
 
@@ -156,7 +157,7 @@ public class DefaultAgenda
                   ExecutionStateMachine executionStateMachine) {
         this.agendaGroups = new HashMap<>();
         this.activationGroups = new HashMap<>();
-        this.focusStack = new LinkedList<>();
+        this.focusStack = new ArrayDeque<>();
         this.agendaGroupFactory = kBase.getConfiguration().getAgendaGroupFactory();
         this.executionStateMachine = executionStateMachine;
 
@@ -190,7 +191,7 @@ public class DefaultAgenda
         setWorkingMemory( (InternalWorkingMemory) in.readObject() );
         agendaGroups = (Map) in.readObject();
         activationGroups = (Map) in.readObject();
-        focusStack = (LinkedList) in.readObject();
+        focusStack = (Deque) in.readObject();
         mainAgendaGroup = (InternalAgendaGroup) in.readObject();
         agendaGroupFactory = (AgendaGroupFactory) in.readObject();
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
@@ -588,7 +589,7 @@ public class DefaultAgenda
     }
 
     @Override
-    public LinkedList<AgendaGroup> getStackList() {
+    public Deque<AgendaGroup> getStackList() {
         return this.focusStack;
     }
 

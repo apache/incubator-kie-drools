@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler.context;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,10 @@ public class MvelCompilerContext {
     private final Map<String, Declaration> declarations = new HashMap<>();
     private final TypeResolver typeResolver;
     private final String scopeSuffix;
+
+    // Used in ConstraintParser
+    private Optional<Type> rootPattern = Optional.empty();
+    private String rootTypePrefix;
 
     public MvelCompilerContext(TypeResolver typeResolver) {
         this(typeResolver, null);
@@ -51,5 +56,21 @@ public class MvelCompilerContext {
         } catch (ClassNotFoundException e) {
             throw new MvelCompilerException(e);
         }
+    }
+
+    public void setRootPattern(Type rootPattern) {
+        this.rootPattern = Optional.of(rootPattern);
+    }
+
+    public Optional<Type> getRootPattern() {
+        return rootPattern;
+    }
+
+    public String getRootTypePrefix() {
+        return rootTypePrefix;
+    }
+
+    public void setRootTypePrefix(String rootTypePrefix) {
+        this.rootTypePrefix = rootTypePrefix;
     }
 }

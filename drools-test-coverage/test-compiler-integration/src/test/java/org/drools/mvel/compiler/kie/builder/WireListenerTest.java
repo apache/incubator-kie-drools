@@ -55,8 +55,7 @@ public class WireListenerTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testWireListener. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     private static final List<ObjectInsertedEvent> insertEvents = new ArrayList<ObjectInsertedEvent>();

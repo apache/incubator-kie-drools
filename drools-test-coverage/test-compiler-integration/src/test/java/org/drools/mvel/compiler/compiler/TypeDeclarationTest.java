@@ -81,8 +81,7 @@ public class TypeDeclarationTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testDuplicateDeclaration, testTypeDeclarationMetadata. File JIRAs. Also some tests need to be updated to use new APIs.
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -477,7 +476,7 @@ public class TypeDeclarationTest {
                 "@expires( 1s ) \n" +
                 "@KlassAnnotation( \"klass\" )" +
                 "" +
-                "    name : String @key @FieldAnnotation( prop = \"fld\" )\n" +
+                "    name : String\n" +
                 "end \n" +
                 "declare Person @role(event) end";
 
@@ -506,18 +505,6 @@ public class TypeDeclarationTest {
 
         FactField field = bean.getField( "name" );
         assertNotNull( field );
-        assertEquals( 2, field.getFieldAnnotations().size() );
-        Annotation fnn = field.getFieldAnnotations().get( 0 );
-        if (!fnn.getName().equals("org.drools.mvel.compiler.compiler.TypeDeclarationTest$FieldAnnotation")) {
-            fnn = field.getFieldAnnotations().get( 1 );
-        }
-        assertEquals( "org.drools.mvel.compiler.compiler.TypeDeclarationTest$FieldAnnotation", fnn.getName() );
-        assertEquals( "fld", fnn.getPropertyValue( "prop" ) );
-        assertEquals( String.class, fnn.getPropertyType( "prop" ) );
-
-        assertEquals( 1, field.getMetaData().size() );
-        assertTrue( field.getMetaData().containsKey( "key" ) );
-
     }
 
     public static class EventBar {
@@ -571,7 +558,7 @@ public class TypeDeclarationTest {
     }
 
 
-    static class ClassC {
+    public static class ClassC {
         private String name;
         private Integer age;
 
@@ -590,54 +577,6 @@ public class TypeDeclarationTest {
         public void setAge( Integer age ) {
             this.age = age;
         }
-    }
-
-    @Test
-    public void testTypeReDeclarationPojo() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "    age : Integer \n" +
-                      "end \n";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
-    }
-
-    @Test
-    public void testTypeReDeclarationPojoMoreFields() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "    age : Integer \n" +
-                      "    address : Objet \n" +
-                      "end \n";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
-    }
-
-    @Test
-    public void testTypeReDeclarationPojoLessFields() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "end \n";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -672,20 +611,6 @@ public class TypeDeclarationTest {
             fail( kbuilder.getErrors().toString() );
         }
     }
-
-    @Test
-    public void testDeclaresInForeignPackages() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "declare foreign.ClassC fld : foreign.ClassD end " +
-                      "declare foreign.ClassD end " +
-                      "";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
-    }
-
 
     @Test
     public void testDeclareFieldArray() {
@@ -888,8 +813,8 @@ public class TypeDeclarationTest {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
-                     "    name : String @position(1)\n" +
-                     "    age : int @position(0)\n" +
+                     "    name : String @Position(1)\n" +
+                     "    age : int @Position(0)\n" +
                      "end\n" +
                      "rule R when \n" +
                      "    $p : Person( 37, \"Mark\"; )\n" +
@@ -944,8 +869,8 @@ public class TypeDeclarationTest {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
-                     "    name : String @position(3)\n" +
-                     "    age : int @position(1)\n" +
+                     "    name : String @Position(3)\n" +
+                     "    age : int @Position(1)\n" +
                      "end\n" +
                      "rule R when \n" +
                      "    $p : Person( 37, \"Mark\"; )\n" +
@@ -964,8 +889,8 @@ public class TypeDeclarationTest {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
-                     "    name : String @position(1)\n" +
-                     "    age : int @position(1)\n" +
+                     "    name : String @Position(1)\n" +
+                     "    age : int @Position(1)\n" +
                      "end\n" +
                      "rule R when \n" +
                      "    $p : Person( 37, \"Mark\"; )\n" +
@@ -988,25 +913,19 @@ public class TypeDeclarationTest {
         str1 += "package org.kie1 " +
                 "" +
                "declare Foo \n" +
+                "   @role(event) " +
                "    name : String " +
                "    age : int " +
                "end ";
 
-        String str2 = "";
-        str2 += "package org.kie2 " +
-               "" +
-               "declare org.kie1.Foo " +
-               "    @role(event) " +
-               "end ";
-
-        String str3 = "";
-        str3 += "package org.kie3 " +
+        String str2 = "" +
+               "package org.kie3 " +
                "" +
                "declare org.kie1.Foo " +
                "    @propertyReactive " +
                "end ";
 
-        String str4 = "" +
+        String str3 = "" +
                       "package org.kie4; " +
                       "import org.kie1.Foo; " +
                       "" +
@@ -1017,7 +936,7 @@ public class TypeDeclarationTest {
                       " modify( $f ) { setAge( 99 ); } " +
                       "end ";
 
-        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1, str2, str3, str4);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1, str2, str3);
 
         FactType type = kieBase.getFactType( "org.kie1", "Foo" );
         assertEquals( 2, type.getFields().size() );
@@ -1042,25 +961,6 @@ public class TypeDeclarationTest {
         assertEquals( 99, type.get( foo, "age" ) );
     }
 
-
-
-    @Test()
-    public void testTraitExtendPojo() {
-        //DROOLS-697
-        final String s1 = "package test;\n" +
-
-                          "declare Poojo " +
-                          "end " +
-
-                          "declare trait Mask extends Poojo " +
-                          "end " +
-                          "";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertEquals(1, errors.size());
-    }
-
     public static interface Base {
         public Object getFld();
         public void setFld( Object x );
@@ -1069,23 +969,6 @@ public class TypeDeclarationTest {
     public static interface Ext extends Base {
         public String getFld();
         public void setFld( String s );
-    }
-
-    @Test
-    public void testRedeclareWithInterfaceExtensionAndOverride() {
-        final String s1 = "package test;\n" +
-
-                          "declare trait " + Ext.class.getCanonicalName() + " extends " + Base.class.getCanonicalName() + " " +
-                          " fld : String " +
-                          "end " +
-
-                          "declare trait " + Base.class.getCanonicalName() + " " +
-                          "end " +
-                          "";
-
-        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
-        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test

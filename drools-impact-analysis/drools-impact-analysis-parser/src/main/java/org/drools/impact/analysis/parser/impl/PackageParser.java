@@ -25,8 +25,12 @@ import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.parser.internal.ImpactModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PackageParser {
+
+    Logger logger = LoggerFactory.getLogger(PackageParser.class);
 
     private final ImpactModelBuilderImpl kbuilder;
     private final PackageModel packageModel;
@@ -53,11 +57,11 @@ public class PackageParser {
         context.setDialectFromAttributes( packageDescr.getAttributes() );
         Rule rule = new Rule( packageDescr.getName(), ruleDescr.getName(), ruleDescr.getResource().getSourcePath() );
 
+        logger.debug("Parsing : " + rule.getName());
+
         new LhsParser( packageModel, pkgRegistry ).parse( ruleDescr, context, rule );
         new RhsParser( pkgRegistry ).parse( ruleDescr, context, rule );
 
         return rule;
     }
-
-
 }
