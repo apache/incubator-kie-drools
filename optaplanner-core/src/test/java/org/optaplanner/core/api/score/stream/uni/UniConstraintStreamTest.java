@@ -1384,7 +1384,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
     }
 
     // ************************************************************************
-    // Map/distinct
+    // Map/flatten/distinct
     // ************************************************************************
 
     @Override
@@ -1504,6 +1504,137 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest implem
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.from(TestdataLavishEntity.class)
                     .map(TestdataLavishEntity::getEntityGroup) // Two entities, two groups => no duplicates.
+                    .distinct()
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(group1),
+                assertMatch(group2));
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatch(group2));
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastWithDuplicates() {
+        assumeDrools();
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .flattenLast(entity -> Arrays.asList(group1, group1, group2))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(group1),
+                assertMatch(group1),
+                assertMatch(group2),
+                assertMatch(group1),
+                assertMatch(group1),
+                assertMatch(group2));
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatch(group1),
+                assertMatch(group1),
+                assertMatch(group2));
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastWithoutDuplicates() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .flattenLast(entity -> Collections.singletonList(entity.getEntityGroup()))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(group1),
+                assertMatch(group2));
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatch(group2));
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastAndDistinctWithDuplicates() {
+        assumeDrools();
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .flattenLast(entity -> Arrays.asList(group1, group1, group2))
+                    .distinct()
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(group1),
+                assertMatch(group2));
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatch(group1),
+                assertMatch(group2));
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastAndDistinctWithoutDuplicates() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .flattenLast(entity -> Collections.singletonList(entity.getEntityGroup()))
                     .distinct()
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });

@@ -10551,6 +10551,42 @@
           "methodName": "buildScoreInliner",
           "elementKind": "method",
           "justification": "ScoreInliner was refactored."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, ResultB_> org.optaplanner.core.api.score.stream.bi.BiConstraintStream<A, B>::flattenLast(java.util.function.Function<B, java.lang.Iterable<ResultB_>>)",
+          "package": "org.optaplanner.core.api.score.stream.bi",
+          "classSimpleName": "BiConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams get flattening support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, ResultD_> org.optaplanner.core.api.score.stream.quad.QuadConstraintStream<A, B, C, D>::flattenLast(java.util.function.Function<D, java.lang.Iterable<ResultD_>>)",
+          "package": "org.optaplanner.core.api.score.stream.quad",
+          "classSimpleName": "QuadConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams get flattening support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, ResultC_> org.optaplanner.core.api.score.stream.tri.TriConstraintStream<A, B, C>::flattenLast(java.util.function.Function<C, java.lang.Iterable<ResultC_>>)",
+          "package": "org.optaplanner.core.api.score.stream.tri",
+          "classSimpleName": "TriConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams get flattening support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<ResultA_> org.optaplanner.core.api.score.stream.uni.UniConstraintStream<A>::flattenLast(java.util.function.Function<A, java.lang.Iterable<ResultA_>>)",
+          "package": "org.optaplanner.core.api.score.stream.uni",
+          "classSimpleName": "UniConstraintStream",
+          "methodName": "flattenLast",
+          "elementKind": "method",
+          "justification": "Constraint Streams get flattening support."
         }
       ]
     }

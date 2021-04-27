@@ -277,6 +277,14 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return stream;
     }
 
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> flattenLast(Function<A, Iterable<ResultA_>> mapping) {
+        DroolsFlatteningUniConstraintStream<Solution_, ResultA_> stream =
+                new DroolsFlatteningUniConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
+        addChildStream(stream);
+        return stream;
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

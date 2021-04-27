@@ -99,7 +99,7 @@ public interface ConstraintStreamFunctionalTest {
     void groupBy_4Mapping0Collector();
 
     // ************************************************************************
-    // Map/distinct
+    // Map/flatten/distinct
     // ************************************************************************
 
     void distinct();
@@ -111,6 +111,14 @@ public interface ConstraintStreamFunctionalTest {
     void mapAndDistinctWithDuplicates();
 
     void mapAndDistinctWithoutDuplicates();
+
+    void flattenLastWithDuplicates();
+
+    void flattenLastWithoutDuplicates();
+
+    void flattenLastAndDistinctWithDuplicates();
+
+    void flattenLastAndDistinctWithoutDuplicates();
 
     // ************************************************************************
     // Penalize/reward

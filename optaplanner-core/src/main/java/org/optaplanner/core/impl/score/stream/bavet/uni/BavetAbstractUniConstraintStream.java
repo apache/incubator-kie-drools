@@ -148,14 +148,14 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
             UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
             UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -164,7 +164,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             groupBy(UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -174,12 +174,12 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -187,7 +187,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(Function<A, GroupKey_> groupKeyMapping,
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -196,13 +196,13 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             groupBy(Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -222,7 +222,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -231,14 +231,14 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <GroupKeyA_, GroupKeyB_, GroupKeyC_> TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
             Function<A, GroupKeyC_> groupKeyCMapping) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -246,14 +246,14 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
                     Function<A, GroupKeyB_> groupKeyBMapping, Function<A, GroupKeyC_> groupKeyCMapping,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>
             groupBy(Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
                     Function<A, GroupKeyC_> groupKeyCMapping, Function<A, GroupKeyD_> groupKeyDMapping) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************
@@ -262,7 +262,12 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public <ResultA_> UniConstraintStream<ResultA_> map(Function<A, ResultA_> mapping) {
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <ResultA_> UniConstraintStream<ResultA_> flattenLast(Function<A, Iterable<ResultA_>> mapping) {
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************

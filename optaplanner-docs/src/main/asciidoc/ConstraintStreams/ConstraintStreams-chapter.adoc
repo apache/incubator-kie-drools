@@ -676,6 +676,37 @@ There is a performance cost to `distinct()`.
 For optimal performance, don't use constraint stream operations that produce duplicate tuples, to avoid the need to call `distinct()`.
 ====
 
+
+[[constraintStreamsFlattening]]
+=== Flattening
+
+Flattening enables you to transform any Java `Iterable` (such as `List` or `Set`)
+into a set of tuples, which will be sent downstream.
+(Similar to Java Stream's `flatMap(...)`.)
+This is done by applying a mapping function to the final element in the source tuple.
+
+[source,java,options="nowrap"]
+----
+    private Constraint requiredJobRoles(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(Person.class)                 // UniConstraintStream<Person>
+                .join(Job.class,
+                    equal(Function.identity(), Job::getAssignee))   // BiConstraintStream<Person, Job>
+                .flattenLast(Job::getRequiredRoles)                 // BiConstraintStream<Person, Role>
+                .filter((person, requiredRole) -> ...)
+                ...
+    }
+----
+
+[NOTE]
+====
+In the example above, the mapping function produces duplicate tuples
+if `Job.getRequiredRoles()` contains duplicate values.
+Assuming that the function returns `[USER, USER, ADMIN]`,
+the tuple `(SomePerson, USER)` will be sent downstream twice.
+See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
+====
+
+
 [[constraintStreamsTesting]]
 == Testing a constraint stream
 

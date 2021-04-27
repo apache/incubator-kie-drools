@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
@@ -266,6 +267,14 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public <ResultA_> UniConstraintStream<ResultA_> map(BiFunction<A, B, ResultA_> mapping) {
         DroolsMappingUniConstraintStream<Solution_, ResultA_> stream =
                 new DroolsMappingUniConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <ResultB_> BiConstraintStream<A, ResultB_> flattenLast(Function<B, Iterable<ResultB_>> mapping) {
+        DroolsFlatteningBiConstraintStream<Solution_, A, ResultB_> stream =
+                new DroolsFlatteningBiConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
         addChildStream(stream);
         return stream;
     }

@@ -102,7 +102,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
     private <E> QuadLeftHandSide<A, B, C, D> applyJoiners(Class<E> otherFactType,
             AbstractPentaJoiner<A, B, C, D, E> joiner, PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
-        Variable<E> toExist = (Variable<E>) variableFactory.createVariable(otherFactType, "toExist");
+        Variable<E> toExist = variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
@@ -291,8 +291,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
             QuadFunction<A, B, C, D, NewB> keyMappingB) {
-        Variable<BiTuple<NewA, NewB>> groupKey =
-                (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
+        Variable<BiTuple<NewA, NewB>> groupKey = variableFactory.createVariable(BiTuple.class, "groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, createCompositeBiGroupKey(keyMappingA, keyMappingB));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
@@ -320,8 +319,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
             QuadFunction<A, B, C, D, NewB> keyMappingB, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC) {
-        Variable<BiTuple<NewA, NewB>> groupKey =
-                (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
+        Variable<BiTuple<NewA, NewB>> groupKey = variableFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> accumulateOutput = variableFactory.createVariable("output");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeBiGroupKey(keyMappingA, keyMappingB),
@@ -337,8 +335,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
             QuadFunction<A, B, C, D, NewA> keyMappingA, QuadFunction<A, B, C, D, NewB> keyMappingB,
             QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
-        Variable<BiTuple<NewA, NewB>> groupKey =
-                (Variable<BiTuple<NewA, NewB>>) variableFactory.createVariable(BiTuple.class, "groupKey");
+        Variable<BiTuple<NewA, NewB>> groupKey = variableFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
@@ -374,8 +371,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
             QuadFunction<A, B, C, D, NewB> keyMappingB, QuadFunction<A, B, C, D, NewC> keyMappingC) {
-        Variable<TriTuple<NewA, NewB, NewC>> groupKey =
-                (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
+        Variable<TriTuple<NewA, NewB, NewC>> groupKey = variableFactory.createVariable(TriTuple.class, "groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC));
         Variable<NewA> newA = variableFactory.createVariable("newA");
@@ -391,8 +387,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
             QuadFunction<A, B, C, D, NewA> keyMappingA, QuadFunction<A, B, C, D, NewB> keyMappingB,
             QuadFunction<A, B, C, D, NewC> keyMappingC, QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
-        Variable<TriTuple<NewA, NewB, NewC>> groupKey =
-                (Variable<TriTuple<NewA, NewB, NewC>>) variableFactory.createVariable(TriTuple.class, "groupKey");
+        Variable<TriTuple<NewA, NewB, NewC>> groupKey = variableFactory.createVariable(TriTuple.class, "groupKey");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC),
@@ -429,8 +424,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
             QuadFunction<A, B, C, D, NewA> keyMappingA, QuadFunction<A, B, C, D, NewB> keyMappingB,
             QuadFunction<A, B, C, D, NewC> keyMappingC, QuadFunction<A, B, C, D, NewD> keyMappingD) {
-        Variable<QuadTuple<NewA, NewB, NewC, NewD>> groupKey =
-                (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) variableFactory.createVariable(QuadTuple.class, "groupKey");
+        Variable<QuadTuple<NewA, NewB, NewC, NewD>> groupKey = variableFactory.createVariable(QuadTuple.class, "groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeQuadGroupKey(keyMappingA, keyMappingB, keyMappingC, keyMappingD));
         Variable<NewA> newA = variableFactory.createVariable("newA");
@@ -452,6 +446,16 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 patternVariableD);
         DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites);
         return new UniLeftHandSide<>(newPatternVariableA, variableFactory);
+    }
+
+    public <NewD> QuadLeftHandSide<A, B, C, NewD> andFlattenLast(Function<D, Iterable<NewD>> mapping) {
+        Variable<D> source = patternVariableD.getPrimaryVariable();
+        Variable<NewD> newD = variableFactory.createFlattenedVariable("flattened", source, mapping);
+        List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC,
+                patternVariableD);
+        PatternVariable<NewD, ?, ?> newPatternVariableD = new DirectPatternVariable<>(newD, allPrerequisites);
+        return new QuadLeftHandSide<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), newPatternVariableD, variableFactory);
     }
 
     public <Solution_> RuleBuilder<Solution_> andTerminate() {

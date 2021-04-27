@@ -775,6 +775,15 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     <ResultA_> UniConstraintStream<ResultA_> map(TriFunction<A, B, C, ResultA_> mapping);
 
     /**
+     * As defined by {@link BiConstraintStream#flattenLast(Function)}.
+     *
+     * @param <ResultC_> the type of the last fact in the resulting tuples
+     * @param mapping never null, function to convert the last fact in the original tuple into {@link Iterable}
+     * @return never null
+     */
+    <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Iterable<ResultC_>> mapping);
+
+    /**
      * Removes duplicate tuples from the stream, according to the tuple's facts {@link Object#equals(Object)equals}/hashcode
      * methods, such that only distinct tuples remain.
      * (No two tuples will {@link Object#equals(Object) equal}.)

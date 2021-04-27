@@ -32,7 +32,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final DroolsVariableFactory variableFactory = new DroolsVariableFactoryImpl();
+    private final DroolsVariableFactory variableFactory = new DroolsVariableFactory();
     private final boolean droolsAlphaNetworkCompilationEnabled;
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor,

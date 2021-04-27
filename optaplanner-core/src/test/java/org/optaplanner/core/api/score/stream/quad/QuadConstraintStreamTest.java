@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.api.score.stream.quad;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,7 +31,6 @@ import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -979,7 +980,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
     }
 
     // ************************************************************************
-    // Map/distinct
+    // Map/flatten/distinct
     // ************************************************************************
 
     @Override
@@ -1144,6 +1145,159 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assertScore(scoreDirector);
     }
 
+    @Override
+    @TestTemplate
+    public void flattenLastWithDuplicates() {
+        assumeDrools();
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, filtering((a, b, c) -> a != c && b != c))
+                    .join(TestdataLavishEntity.class, filtering((a, b, c, d) -> a != d && b != d))
+                    .flattenLast((d) -> asList(group1, group1, group2))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity1, entity2, entity3, group1),
+                assertMatch(entity1, entity2, entity3, group1),
+                assertMatch(entity1, entity2, entity3, group2),
+                assertMatch(entity1, entity3, entity2, group1),
+                assertMatch(entity1, entity3, entity2, group1),
+                assertMatch(entity1, entity3, entity2, group2),
+                assertMatch(entity2, entity3, entity1, group1),
+                assertMatch(entity2, entity3, entity1, group1),
+                assertMatch(entity2, entity3, entity1, group2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastWithoutDuplicates() {
+        assumeDrools();
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, filtering((a, b, c) -> a != c && b != c))
+                    .join(TestdataLavishEntity.class, filtering((a, b, c, d) -> a != d && b != d))
+                    .flattenLast((d) -> asList(group1, group2))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity1, entity2, entity3, group1),
+                assertMatch(entity1, entity2, entity3, group2),
+                assertMatch(entity1, entity3, entity2, group1),
+                assertMatch(entity1, entity3, entity2, group2),
+                assertMatch(entity2, entity3, entity1, group1),
+                assertMatch(entity2, entity3, entity1, group2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastAndDistinctWithDuplicates() {
+        assumeDrools();
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, filtering((a, b, c) -> a != c && b != c))
+                    .join(TestdataLavishEntity.class, filtering((a, b, c, d) -> a != d && b != d))
+                    .flattenLast((d) -> asList(group1, group1, group2))
+                    .distinct()
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity1, entity2, entity3, group1),
+                assertMatch(entity1, entity2, entity3, group2),
+                assertMatch(entity1, entity3, entity2, group1),
+                assertMatch(entity1, entity3, entity2, group2),
+                assertMatch(entity2, entity3, entity1, group1),
+                assertMatch(entity2, entity3, entity1, group2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
+    @Override
+    @TestTemplate
+    public void flattenLastAndDistinctWithoutDuplicates() {
+        assumeDrools();
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, filtering((a, b, c) -> a != c && b != c))
+                    .join(TestdataLavishEntity.class, filtering((a, b, c, d) -> a != d && b != d))
+                    .flattenLast((d) -> asList(group1, group2))
+                    .distinct()
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(entity1, entity2, entity3, group1),
+                assertMatch(entity1, entity2, entity3, group2),
+                assertMatch(entity1, entity3, entity2, group1),
+                assertMatch(entity1, entity3, entity2, group2),
+                assertMatch(entity2, entity3, entity1, group1),
+                assertMatch(entity2, entity3, entity1, group2));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************
@@ -1154,10 +1308,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(Arrays.asList(v1));
+        solution.setValueList(singletonList(v1));
         TestdataEntity e1 = new TestdataEntity("e1", v1);
         TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(Arrays.asList(e1, e2));
+        solution.setEntityList(asList(e1, e2));
 
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 TestdataSolution.buildSolutionDescriptor(),
@@ -1182,10 +1336,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(Arrays.asList(v1));
+        solution.setValueList(asList(v1));
         TestdataEntity e1 = new TestdataEntity("e1", v1);
         TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(Arrays.asList(e1, e2));
+        solution.setEntityList(asList(e1, e2));
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
@@ -1211,10 +1365,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(Arrays.asList(v1));
+        solution.setValueList(asList(v1));
         TestdataEntity e1 = new TestdataEntity("e1", v1);
         TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(Arrays.asList(e1, e2));
+        solution.setEntityList(asList(e1, e2));
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
                 buildScoreDirector(
@@ -1259,10 +1413,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(Arrays.asList(v1));
+        solution.setValueList(asList(v1));
         TestdataEntity e1 = new TestdataEntity("e1", v1);
         TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(Arrays.asList(e1, e2));
+        solution.setEntityList(asList(e1, e2));
 
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 TestdataSolution.buildSolutionDescriptor(),
@@ -1287,10 +1441,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(Arrays.asList(v1));
+        solution.setValueList(asList(v1));
         TestdataEntity e1 = new TestdataEntity("e1", v1);
         TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(Arrays.asList(e1, e2));
+        solution.setEntityList(asList(e1, e2));
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
@@ -1316,10 +1470,10 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest imple
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(Arrays.asList(v1));
+        solution.setValueList(asList(v1));
         TestdataEntity e1 = new TestdataEntity("e1", v1);
         TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(Arrays.asList(e1, e2));
+        solution.setEntityList(asList(e1, e2));
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
                 buildScoreDirector(
