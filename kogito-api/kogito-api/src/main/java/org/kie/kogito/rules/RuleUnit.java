@@ -15,14 +15,12 @@
  */
 package org.kie.kogito.rules;
 
-import java.util.UUID;
-
 public interface RuleUnit<T extends RuleUnitData> {
 
     String id();
 
     default RuleUnitInstance<T> createInstance(T data) {
-        return createInstance(data, UUID.randomUUID().toString());
+        return createInstance(data, null);
     }
 
     RuleUnitInstance<T> createInstance(T data, String name);

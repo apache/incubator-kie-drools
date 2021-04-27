@@ -36,6 +36,9 @@ public abstract class AbstractRuleUnits implements RuleUnits {
 
     @Override
     public void register(String name, RuleUnitInstance<?> unitInstance) {
+        if (name == null) {
+            throw new IllegalArgumentException("Cannot register a RuleUnitInstance with a null name");
+        }
         unitRegistry.put(name, unitInstance);
     }
 
