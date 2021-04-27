@@ -14,20 +14,33 @@
   <description>Various Add-Ons to the runtimes modules (administration, monitoring, etc)</description>
 
   <modules>
-    <module>mail</module>
-    <module>task-notification</module>
-    <module>persistence</module>
-    <module>cloudevents</module>
-    <module>events</module>
-    <module>jobs</module>
-    <module>predictions</module>
-    <module>process-management</module>
-    <module>kogito-rest-exception-handler</module>
-    <module>task-management</module>
-    <module>process-svg</module>
-    <module>tracing</module>
-    <module>monitoring</module>
-    <module>explainability-addon</module>
+      <module>cloudevents</module>
+      <module>events</module>
+      <module>monitoring</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+          <property>
+              <name>!productized</name>
+          </property>
+      </activation>
+      <modules>
+        <module>mail</module>
+        <module>task-notification</module>
+        <module>persistence</module>
+        <module>cloudevents</module>
+        <module>jobs</module>
+        <module>predictions</module>
+        <module>process-management</module>
+        <module>kogito-rest-exception-handler</module>
+        <module>task-management</module>
+        <module>process-svg</module>
+        <module>tracing</module>
+        <module>explainability-addon</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

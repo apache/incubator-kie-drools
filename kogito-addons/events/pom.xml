@@ -10,11 +10,24 @@
   <name>Kogito :: Add-Ons :: Events</name>
 
   <description>Kogito Events</description>
-
+ 
   <modules>
     <module>kogito-event-driven-decisions</module>
-    <module>kogito-events-reactive-messaging-addon</module>
-    <module>kogito-events-spring-boot-addon</module>
   </modules>
+  
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-events-reactive-messaging-addon</module>
+        <module>kogito-events-spring-boot-addon</module>
+      </modules>
+    </profile>
 
+  </profiles>
 </project>
