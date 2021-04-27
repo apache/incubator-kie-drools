@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessListEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`ProcessListEnvelopeView tests Snapshot 2`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": [MockFunction],
+      "requests": Object {
+        "processList__applyFilter": [MockFunction],
+        "processList__applySorting": [MockFunction],
+        "processList__getChildProcessesQuery": [MockFunction],
+        "processList__initialLoad": [MockFunction],
+        "processList__query": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedProcessListPage
+    driver={
+      ProcessListEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": [MockFunction],
+          "requests": Object {
+            "processList__applyFilter": [MockFunction],
+            "processList__applySorting": [MockFunction],
+            "processList__getChildProcessesQuery": [MockFunction],
+            "processList__initialLoad": [MockFunction],
+            "processList__query": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    isEnvelopeConnectedToChannel={true}
+  />
+</ForwardRef>
+`;

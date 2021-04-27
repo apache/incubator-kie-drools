@@ -25,6 +25,8 @@
       ${path.to.packages}/consoles-common/src,
       ${path.to.packages}/management-console-shared/coverage/src,
       ${path.to.packages}/jobs-management/src,
+      ${path.to.packages}/process-list/src,
+      ${path.to.packages}/process-details/src,
       ${path.to.packages}/management-console-webapp/src,
       ${path.to.packages}/task-console-shared/src
       ${path.to.packages}/task-inbox/src,
@@ -43,6 +45,8 @@
       ${path.to.packages}/consoles-common/coverage/lcov.info,
       ${path.to.packages}/management-console-shared/coverage/lcov.info,
       ${path.to.packages}/jobs-management/coverage/lcov.info,
+      ${path.to.packages}/process-list/coverage/lcov.info,
+      ${path.to.packages}/process-details/coverage/lcov.info,
       ${path.to.packages}/management-console-webapp/coverage/lcov.info,
       ${path.to.packages}/task-console-shared/coverage/lcov.info,
       ${path.to.packages}/task-inbox/coverage/lcov.info,
@@ -77,6 +81,12 @@
             </fileset>
             <fileset>
               <directory>packages/consoles-common/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/process-list/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/process-details/node_modules</directory>
             </fileset>
             <fileset>
               <directory>packages/management-console-webapp/node_modules</directory>

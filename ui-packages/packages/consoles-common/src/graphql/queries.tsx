@@ -21,10 +21,12 @@ const GET_PROCESS_INSTANCES = gql`
     $where: ProcessInstanceArgument
     $offset: Int
     $limit: Int
+    $orderBy: ProcessInstanceOrderBy
   ) {
     ProcessInstances(
       where: $where
       pagination: { offset: $offset, limit: $limit }
+      orderBy: $orderBy
     ) {
       id
       processId

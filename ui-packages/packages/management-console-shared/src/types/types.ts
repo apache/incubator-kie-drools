@@ -22,7 +22,7 @@ export enum JobStatus {
   Canceled = 'CANCELED'
 }
 
-export type Job = {
+export interface Job {
   id: string;
   processId: string;
   processInstanceId: string;
@@ -40,7 +40,7 @@ export type Job = {
   executionCounter?: number;
   endpoint?: string;
   nodeInstanceId?: string;
-};
+}
 
 export interface BulkCancel {
   successJobs: Job[];

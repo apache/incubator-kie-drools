@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 // GraphQL - Apollo
 const { GraphQLScalarType } = require('graphql');
 const uuidv1 = require('uuid/v1');
-
+const _ = require('lodash');
 // Config
 const config = require('./config');
 
@@ -69,7 +69,7 @@ app.post('/management/processes/:processId/instances/:processInstanceId/nodes/:n
   controller.callNodeTrigger
 );
 app.get('/management/processes/:processId/nodes', controller.getTriggerableNodes)
-app.delete('/jobs/:jobId',controller.callJobCancel);
+app.delete('/jobs/:jobId', controller.callJobCancel);
 app.get('/svg/processes/:processId/instances/:id', controller.dispatchSVG);
 
 function timeout(ms) {
@@ -90,7 +90,7 @@ function paginatedResult(arr, offset, limit) {
 const resolvers = {
   Query: {
     ProcessInstances: async (parent, args) => {
-      const result = data.ProcessInstanceData.filter(datum => {
+      let result = data.ProcessInstanceData.filter(datum => {
         console.log('args', args['where']);
         if (args['where'].id && args['where'].id.equal) {
           return datum.id == args['where'].id.equal;
@@ -141,10 +141,17 @@ const resolvers = {
           return false;
         }
       });
-
+      if (args['orderBy']) {
+        console.log('orderBy args: ', args['orderBy'])
+        result = _.orderBy(
+          result,
+          _.keys(args['orderBy']).map(key => key),
+          _.values(args['orderBy']).map(value => value.toLowerCase())
+        );
+      }
       await timeout(2000);
       if (args['pagination']) {
-        return paginatedResult(
+        result = paginatedResult(
           result,
           args['pagination'].offset,
           args['pagination'].limit
@@ -154,7 +161,7 @@ const resolvers = {
       return result;
     },
     Jobs: async (parent, args) => {
-      if (Object.keys(args).length> 0) {
+      if (Object.keys(args).length > 0) {
         const result = data.JobsData.filter(jobData => {
           console.log('Job data args->', args['where'].processInstanceId)
           if (args['where'].processInstanceId && args['where'].processInstanceId.equal) {
@@ -163,13 +170,13 @@ const resolvers = {
             return args['where'].status.in.includes(jobData.status)
           }
         });
-        console.log('orderby',args['orderBy'])
+        console.log('orderby', args['orderBy'])
         await timeout(2000);
         if (args['orderBy'] && Object.values(args['orderBy'])[0] === 'ASC') {
           const orderArg = Object.keys(args['orderBy'])[0]
-          result.sort((a,b) => {
+          result.sort((a, b) => {
             if (orderArg === 'lastUpdate' || orderArg === 'expirationTime') {
-              return new Date(a[orderArg]) - new Date(b[orderArg])  
+              return new Date(a[orderArg]) - new Date(b[orderArg])
             } else if (orderArg === 'status') {
               return a[orderArg].localeCompare(b[orderArg])
             } else {
@@ -178,9 +185,9 @@ const resolvers = {
           })
         } else if (args['orderBy'] && Object.values(args['orderBy'])[0] === 'DESC') {
           const orderArg = Object.keys(args['orderBy'])[0]
-          result.sort((a,b) => {
+          result.sort((a, b) => {
             if (orderArg === 'lastUpdate' || orderArg === 'expirationTime') {
-              return new Date(b[orderArg]) - new Date(a[orderArg])  
+              return new Date(b[orderArg]) - new Date(a[orderArg])
             } else if (orderArg === 'status') {
               return b[orderArg].localeCompare(a[orderArg])
             } else {
@@ -195,9 +202,9 @@ const resolvers = {
             args['pagination'].limit
           );
         }
-        
+
         return result;
-      }      
+      }
     }
   },
 

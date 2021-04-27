@@ -18,8 +18,8 @@ import React from 'react';
 import { getWrapper } from '@kogito-apps/components-common';
 import ManagementConsoleRoutes from '../ManagementConsoleRoutes';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { JobsManagementPage } from '../../../pages';
 
+jest.mock('../../../pages/ProcessListPage/ProcessListPage');
 jest.mock('../../../pages/JobsManagementPage/JobsManagementPage');
 
 const MockedComponent = (): React.ReactElement => {
@@ -49,8 +49,68 @@ describe('ManagementConsoleRoutes tests', () => {
     const route = wrapper.find(Route);
     expect(route.exists()).toBeTruthy();
 
-    const jobsManagementPage = wrapper.find(JobsManagementPage);
-    expect(jobsManagementPage.exists()).toBeTruthy();
+    const MockedProcessListPage = wrapper.find('MockedProcessListPage');
+    expect(MockedProcessListPage.exists()).toBeTruthy();
+  });
+  it('process list test', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter keyLength={0} initialEntries={['/ProcessInstances']}>
+        <ManagementConsoleRoutes />
+      </MemoryRouter>,
+      'ManagementConsoleRoutes'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+
+    const MockedProcessListPage = wrapper.find('MockedProcessListPage');
+    expect(MockedProcessListPage.exists()).toBeTruthy();
+  });
+  it('jobs management page test', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter keyLength={0} initialEntries={['/JobsManagement']}>
+        <ManagementConsoleRoutes />
+      </MemoryRouter>,
+      'ManagementConsoleRoutes'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+
+    const MockedJobsManagementPage = wrapper.find('MockedJobsManagementPage');
+    expect(MockedJobsManagementPage.exists()).toBeTruthy();
+  });
+
+  it('no data page test', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter keyLength={0} initialEntries={['/NoData']}>
+        <ManagementConsoleRoutes />
+      </MemoryRouter>,
+      'ManagementConsoleRoutes'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+    const noDataComponent = wrapper.find('NoData');
+    expect(noDataComponent.exists()).toBeTruthy();
+  });
+
+  it('page not found page test', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter keyLength={0} initialEntries={['*']}>
+        <ManagementConsoleRoutes />
+      </MemoryRouter>,
+      'ManagementConsoleRoutes'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+    const pageNotFound = wrapper.find('PageNotFound');
+    expect(pageNotFound.exists()).toBeTruthy();
   });
 
   it('Test NoData route', () => {

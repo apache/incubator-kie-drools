@@ -20,7 +20,25 @@ import ManagementConsoleNav from '../ManagementConsoleNav';
 import { MemoryRouter } from 'react-router-dom';
 
 describe('ManagementConsoleNav tests', () => {
-  it('Snapshot testing with default props', () => {
+  it('Snapshot testing with process list props', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter>
+        <ManagementConsoleNav pathname={'/ProcessInstances'} />
+      </MemoryRouter>,
+      'ManagementConsoleNav'
+    );
+
+    expect(wrapper).toMatchSnapshot();
+
+    const managementConsoleNav = wrapper.findWhere(
+      nested => nested.key() === 'process-instances-nav'
+    );
+
+    expect(managementConsoleNav.exists()).toBeTruthy();
+    expect(managementConsoleNav.props().isActive).toBeTruthy();
+  });
+
+  it('Snapshot testing with jobs management props', () => {
     const wrapper = getWrapper(
       <MemoryRouter>
         <ManagementConsoleNav pathname={'/JobsManagement'} />

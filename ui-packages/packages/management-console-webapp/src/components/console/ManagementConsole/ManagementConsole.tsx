@@ -28,6 +28,7 @@ import ManagementConsoleNav from '../ManagementConsoleNav/ManagementConsoleNav';
 import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
 import JobsManagementContextProvider from '../../../channel/JobsManagement/JobsManagementContextProvider';
 import ProcessDetailsContextProvider from '../../../channel/ProcessDetails/ProcessDetailsContextProvider';
+import ProcessListContextProvider from '../../../channel/ProcessList/ProcessListContextProvider';
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -59,15 +60,17 @@ const ManagementConsole: React.FC<IOwnProps> = ({
   return (
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
-        <ProcessDetailsContextProvider apolloClient={apolloClient}>
-          <JobsManagementContextProvider apolloClient={apolloClient}>
-            <BrowserRouter>
-              <Switch>
-                <Route path="/" render={renderPage} />
-              </Switch>
-            </BrowserRouter>
-          </JobsManagementContextProvider>
-        </ProcessDetailsContextProvider>
+        <ProcessListContextProvider apolloClient={apolloClient}>
+          <ProcessDetailsContextProvider apolloClient={apolloClient}>
+            <JobsManagementContextProvider apolloClient={apolloClient}>
+              <BrowserRouter>
+                <Switch>
+                  <Route path="/" render={renderPage} />
+                </Switch>
+              </BrowserRouter>
+            </JobsManagementContextProvider>
+          </ProcessDetailsContextProvider>
+        </ProcessListContextProvider>
       </KogitoAppContextProvider>
     </ApolloProvider>
   );

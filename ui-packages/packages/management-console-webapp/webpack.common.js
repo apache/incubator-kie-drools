@@ -1,3 +1,4 @@
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
@@ -70,6 +71,9 @@ module.exports = {
           path.resolve(
             '../../node_modules/@kogito-apps/management-console-shared/dist/src/static'
           ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-list/dist/static'
+          )
         ],
         use: {
           loader: 'file-loader',
@@ -138,6 +142,9 @@ module.exports = {
           path.resolve(
             '../../node_modules/@kogito-apps/management-console-shared/dist/src/static'
           ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/process-list/dist/static'
+          )
         ],
         use: [
           {

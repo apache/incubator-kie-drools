@@ -680,6 +680,7 @@ export namespace GraphQL {
     where?: Maybe<ProcessInstanceArgument>;
     offset?: Maybe<Scalars['Int']>;
     limit?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<ProcessInstanceOrderBy>;
   }>;
 
   export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
@@ -1181,10 +1182,12 @@ export namespace GraphQL {
       $where: ProcessInstanceArgument
       $offset: Int
       $limit: Int
+      $orderBy: ProcessInstanceOrderBy
     ) {
       ProcessInstances(
         where: $where
         pagination: { offset: $offset, limit: $limit }
+        orderBy: $orderBy
       ) {
         id
         processId
@@ -1221,6 +1224,7 @@ export namespace GraphQL {
    *      where: // value for 'where'
    *      offset: // value for 'offset'
    *      limit: // value for 'limit'
+   *      orderBy: // value for 'orderBy'
    *   },
    * });
    */

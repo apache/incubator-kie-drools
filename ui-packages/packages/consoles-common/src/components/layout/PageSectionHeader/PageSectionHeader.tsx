@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -28,7 +27,6 @@ interface PageSectionHeaderProps {
   breadcrumbText: string[];
   breadcrumbPath: string[];
 }
-
 const PageSectionHeader: React.FC<PageSectionHeaderProps> = ({
   titleText,
   breadcrumbText,
@@ -55,8 +53,8 @@ const PageSectionHeader: React.FC<PageSectionHeaderProps> = ({
   };
   return (
     <PageSection variant="light">
-      <PageTitle title={titleText} />
       <Breadcrumb>{renderBreadcrumb()}</Breadcrumb>
+      <PageTitle title={titleText} />
     </PageSection>
   );
 };

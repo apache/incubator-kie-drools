@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedProcessList tests Snapshot 1`] = `
+<ForwardRef
+  driver={
+    Object {
+      "applyFilter": [MockFunction],
+      "applySorting": [MockFunction],
+      "getChildProcessesQuery": [MockFunction],
+      "initialLoad": [MockFunction],
+      "query": [MockFunction],
+    }
+  }
+  envelopePath="path"
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;
