@@ -46,63 +46,77 @@ import org.kie.internal.builder.conf.EvaluatorOption;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class CustomOperatorTest {
+public class CustomOperatorOnlyDrlTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public CustomOperatorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public CustomOperatorOnlyDrlTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        // TODO EM DROOLS-6302
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test
-    public void testCustomOperatorUsingCollections() {
+    public void testCustomOperatorCombiningConstraints() {
+        // JBRULES-3517
         final String drl =
-                "import " + Address.class.getCanonicalName() + ";\n" +
-                        "import " + Person.class.getCanonicalName() + ";\n" +
-                        "rule R when\n" +
-                        "    $alice : Person(name == \"Alice\")\n" +
-                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                "declare GN\n" +
+                        "   gNo : Double\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare t547147\n" +
+                        "   c547148 : String\n" +
+                        "   c547149 : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare Tra48\n" +
+                        "   gNo : Double\n" +
+                        "   postCode : String\n" +
+                        "   name : String\n" +
+                        "   cnt : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"r548695.1\"\n" +
+                        "no-loop true\n" +
+                        "dialect \"mvel\"\n" +
+                        "when\n" +
+                        "   gnId : GN()\n" +
+                        "   la : t547147( )\n" +
+                        "   v1717 : Tra48( gnId.gNo == gNo, name F_str[startsWith] la.c547148 || postCode F_str[contains] la.c547149 )\n" +
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf", SupersetOfEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
         try {
-            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
-            final KieSession ksession = kbase.newKieSession();
-            try {
-                final Person alice = new Person("Alice", 30);
-                alice.addAddress(new Address("Large Street", "BigTown", "12345"));
-                final Person bob = new Person("Bob", 30);
-                bob.addAddress(new Address("Large Street", "BigTown", "12345"));
-                bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
-
-                ksession.insert(alice);
-                ksession.insert(bob);
-
-                assertEquals(1, ksession.fireAllRules());
-            } finally {
-                ksession.dispose();
-            }
+            KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
         }
     }
 
-    public static class SupersetOfEvaluatorDefinition implements EvaluatorDefinition {
+    public static class F_StrEvaluatorDefinition implements EvaluatorDefinition {
 
-        public static final Operator SUPERSET_OF = Operator.addOperatorToRegistry("supersetOf", false);
-        public static final Operator NOT_SUPERSET_OF = Operator.addOperatorToRegistry("supersetOf", true);
-        private static final String[] SUPPORTED_IDS = {SUPERSET_OF.getOperatorString()};
+        public static final Operator STR_COMPARE = Operator.addOperatorToRegistry("F_str", false);
+        public static final Operator NOT_STR_COMPARE = Operator.addOperatorToRegistry("F_str", true);
+        private static final String[] SUPPORTED_IDS = {STR_COMPARE.getOperatorString()};
+
+        public enum Operations {
+
+            startsWith,
+            endsWith,
+            length,
+            contains,
+            bidicontains;
+        }
 
         private Evaluator[] evaluator;
 
         public String[] getEvaluatorIds() {
-            return SupersetOfEvaluatorDefinition.SUPPORTED_IDS;
+            return F_StrEvaluatorDefinition.SUPPORTED_IDS;
         }
 
         public boolean isNegatable() {
@@ -110,7 +124,9 @@ public class CustomOperatorTest {
         }
 
         public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText, final Target leftTarget, final Target rightTarget) {
-            return new SupersetOfEvaluator(type, isNegated);
+            final F_StrEvaluator evaluatorLocal = new F_StrEvaluator(type, isNegated);
+            evaluatorLocal.setParameterText(parameterText);
+            return evaluatorLocal;
         }
 
         public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText) {
@@ -142,66 +158,56 @@ public class CustomOperatorTest {
         }
     }
 
-    public static class SupersetOfEvaluator extends BaseEvaluator {
+    public static class F_StrEvaluator extends BaseEvaluator {
 
-        public SupersetOfEvaluator(final ValueType type, final boolean isNegated) {
-            super(type, isNegated ? SupersetOfEvaluatorDefinition.NOT_SUPERSET_OF : SupersetOfEvaluatorDefinition.SUPERSET_OF);
+        private F_StrEvaluatorDefinition.Operations parameter;
+
+        public void setParameterText(final String parameterText) {
+            this.parameter = F_StrEvaluatorDefinition.Operations.valueOf(parameterText);
+        }
+
+        public F_StrEvaluatorDefinition.Operations getParameter() {
+            return parameter;
+        }
+
+        public F_StrEvaluator(final ValueType type, final boolean isNegated) {
+            super(type, isNegated ? F_StrEvaluatorDefinition.NOT_STR_COMPARE : F_StrEvaluatorDefinition.STR_COMPARE);
         }
 
         public boolean evaluate(final InternalWorkingMemory workingMemory, final InternalReadAccessor extractor, final InternalFactHandle factHandle, final FieldValue value) {
             final Object objectValue = extractor.getValue(workingMemory, factHandle);
-            return evaluateAll((Collection) value.getValue(), (Collection) objectValue);
+            final String objectValueString = (String) objectValue;
+            return evaluateAll((String) value.getValue(), objectValueString);
         }
 
         public boolean evaluate(final InternalWorkingMemory iwm, final InternalReadAccessor ira, final InternalFactHandle left, final InternalReadAccessor ira1, final InternalFactHandle right) {
-            return evaluateAll((Collection) left.getObject(), (Collection) right.getObject());
+            return evaluateAll((String) left.getObject(), (String) right.getObject());
         }
 
         public boolean evaluateCachedLeft(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle right) {
-            final Object valRight = context.extractor.getValue(workingMemory, right.getObject());
-            return evaluateAll((Collection) ((ObjectVariableContextEntry) context).left, (Collection) valRight);
+            final Object valRight = context.extractor.getValue(workingMemory, right);
+            return evaluateAll((String) ((ObjectVariableContextEntry) context).left, (String) valRight);
         }
 
         public boolean evaluateCachedRight(final InternalWorkingMemory workingMemory, final VariableContextEntry context, final InternalFactHandle left) {
             final Object varLeft = context.declaration.getExtractor().getValue(workingMemory, left);
-            return evaluateAll((Collection) varLeft, (Collection) ((ObjectVariableContextEntry) context).right);
+            return evaluateAll((String) varLeft, (String) ((ObjectVariableContextEntry) context).right);
         }
 
-        public boolean evaluateAll(final Collection leftCollection, final Collection rightCollection) {
-            return rightCollection.containsAll(leftCollection);
-        }
-    }
+        public boolean evaluateAll(final String leftString, final String rightString) {
+            boolean result = ((leftString != null) && (rightString != null));
 
-    @Test
-    public void testCustomOperatorOnKieModule() {
-        final String drl = "import " + Address.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R when\n" +
-                "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
-                "then\n" +
-                "end\n";
-
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf", SupersetOfEvaluatorDefinition.class.getName());
-        try {
-            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
-            final KieSession ksession = kbase.newKieSession();
-            try {
-                final Person alice = new Person("Alice", 30);
-                alice.addAddress(new Address("Large Street", "BigTown", "12345"));
-                final Person bob = new Person("Bob", 30);
-                bob.addAddress(new Address("Large Street", "BigTown", "12345"));
-                bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
-
-                ksession.insert(alice);
-                ksession.insert(bob);
-
-                assertEquals(1, ksession.fireAllRules());
-            } finally {
-                ksession.dispose();
+            if (result) {
+                switch (parameter) {
+                    case startsWith:
+                        result = this.getOperator().isNegated() ^ (leftString.startsWith(rightString));
+                        return result;
+                    case endsWith:
+                        result = this.getOperator().isNegated() ^ (leftString.endsWith(rightString));
+                        return result;
+                }
             }
-        } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf");
+            return result;
         }
     }
 }
