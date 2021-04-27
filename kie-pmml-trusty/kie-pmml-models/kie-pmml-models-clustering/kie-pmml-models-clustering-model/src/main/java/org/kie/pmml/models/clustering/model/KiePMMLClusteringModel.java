@@ -68,15 +68,8 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
                     .apply(clusteringFields, comparisonMeasure.getCompareFunction(), inputs, clusters.get(i).getValuesArray(), adjustmentFactor);
         }
 
-        int minIndex = 0;
-        double min = aggregates[minIndex];
-        for (int i = 1; i < aggregates.length; i++) {
-            if (aggregates[i] < min) {
-                minIndex = i;
-                min = aggregates[i];
-            }
-        }
-        return minIndex + 1;
+        final int minIndex = findMinIndex(aggregates);
+        return clusters.get(minIndex).getId().orElseGet(() -> Integer.toString(minIndex + 1));
     }
 
     private double computeAdjustmentFactor(Map<String, Object> requestData) {
@@ -92,6 +85,18 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         }
 
         return numerator / denumerator;
+    }
+
+    private int findMinIndex(double[] values) {
+        int minIndex = 0;
+        double min = values[minIndex];
+        for (int i = 1; i < values.length; i++) {
+            if (values[i] < min) {
+                minIndex = i;
+                min = values[i];
+            }
+        }
+        return minIndex;
     }
 
     private double missingValueWeightFor(int fieldNumber) {
