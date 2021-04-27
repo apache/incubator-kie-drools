@@ -16,6 +16,15 @@
 
 package org.drools.core.management;
 
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.StandardMBean;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.builder.model.KieSessionModel;
@@ -24,15 +33,6 @@ import org.kie.api.management.KieManagementAgentMBean;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import javax.management.StandardMBean;
-import java.lang.management.ManagementFactory;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The main management agent for Drools. The purpose of this 
@@ -197,7 +197,7 @@ public class DroolsManagementAgent
                                    name );
                 List<ObjectName> mbl = mbeans.get( owner );
                 if ( mbl == null ) {
-                    mbl = new LinkedList<ObjectName>();
+                    mbl = new ArrayList<ObjectName>();
                     mbeans.put( owner,
                                 mbl );
                     if (mbean instanceof StandardMBean) {

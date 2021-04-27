@@ -21,6 +21,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MethodUtils;
+import org.drools.core.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
@@ -43,6 +45,7 @@ import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
+import org.drools.mvelcompiler.ast.RootTypeThisExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -53,6 +56,7 @@ import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
@@ -115,6 +119,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     private TypedExpression simpleNameAsFirstNode(SimpleName n) {
         return asDeclaration(n)
                 .map(Optional::of)
+                .orElseGet(() -> asPropertyAccessorOfRootPattern(n))
+                .map(Optional::of)
                 .orElseGet(() -> asEnum(n))
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
@@ -158,6 +164,14 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
 
         return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
+    }
+
+
+    private Optional<TypedExpression> asPropertyAccessorOfRootPattern(SimpleName n) {
+        Optional<Type> scopeType = mvelCompilerContext.getRootPattern();
+        Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
+
+        return map2(scopeType.map(t -> new RootTypeThisExpr(t, mvelCompilerContext.getRootTypePrefix())), optAccessor, FieldToAccessorTExpr::new);
     }
 
     @Override
@@ -293,6 +307,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(ObjectCreationExpr n, Context arg) {
         return new ObjectCreationExpressionT(n, resolveType(n.getType()));
+    }
+
+    @Override
+    public TypedExpression visit(NullLiteralExpr n, Context arg) {
+        return new UnalteredTypedExpression(n, NullType.class);
     }
 
     @Override

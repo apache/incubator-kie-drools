@@ -304,6 +304,46 @@ public class DOMParserUtilTest {
     }
 
     @Test
+    public void createNodeAndAppend() throws Exception {
+        String newNodeName0 = "NEW_NODE_NAME_0";
+        String newNodeValue0 = "NEW_NODE_VALUE_=";
+        Document document = DOMParserUtil.getDocument(XML);
+        Map<Node, List<Node>> testNodesMap = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, TEST_NODE);
+        assertEquals(1, testNodesMap.size());
+        Node mainNode = testNodesMap.keySet().iterator().next();
+        int startingChildNodes = mainNode.getChildNodes().getLength();
+        Node retrieved = DOMParserUtil.createNodeAndAppend(mainNode, newNodeName0, newNodeValue0);
+        assertNotNull(retrieved);
+        assertEquals(newNodeName0, retrieved.getNodeName());
+        assertEquals(newNodeValue0, retrieved.getTextContent());
+        assertEquals(retrieved, mainNode.getChildNodes().item(mainNode.getChildNodes().getLength() - 1));
+        assertEquals(startingChildNodes + 1, mainNode.getChildNodes().getLength());
+        String newNodeName1 = "NEW_NODE_NAME_1";
+        String newNodeValue1 = "NEW_NODE_VALUE_1";
+        retrieved = DOMParserUtil.createNodeAndAppend(mainNode, newNodeName1, newNodeValue1);
+        assertNotNull(retrieved);
+        assertEquals(newNodeName1, retrieved.getNodeName());
+        assertEquals(newNodeValue1, retrieved.getTextContent());
+        assertEquals(retrieved, mainNode.getChildNodes().item(mainNode.getChildNodes().getLength() - 1));
+        assertEquals(startingChildNodes + 2, mainNode.getChildNodes().getLength());
+        String newNodeName2 = "NEW_NODE_NAME_2";
+        String newNodeValue2 = "NEW_NODE_VALUE_2";
+        retrieved = DOMParserUtil.createNodeAndAppend(mainNode, newNodeName2, newNodeValue2);
+        assertNotNull(retrieved);
+        assertEquals(newNodeName2, retrieved.getNodeName());
+        assertEquals(newNodeValue2, retrieved.getTextContent());
+        assertEquals(retrieved, mainNode.getChildNodes().item(mainNode.getChildNodes().getLength() - 1));
+        assertEquals(startingChildNodes + 3, mainNode.getChildNodes().getLength());
+
+        assertEquals(newNodeName0, mainNode.getChildNodes().item(startingChildNodes).getNodeName());
+        assertEquals(newNodeValue0, mainNode.getChildNodes().item(startingChildNodes).getTextContent());
+        assertEquals(newNodeName1, mainNode.getChildNodes().item(startingChildNodes + 1).getNodeName());
+        assertEquals(newNodeValue1, mainNode.getChildNodes().item(startingChildNodes + 1).getTextContent());
+        assertEquals(newNodeName2, mainNode.getChildNodes().item(startingChildNodes + 2).getNodeName());
+        assertEquals(newNodeValue2, mainNode.getChildNodes().item(startingChildNodes + 2).getTextContent());
+    }
+
+    @Test
     public void getChildrenNodesFromDocument() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, TEST_NODE);

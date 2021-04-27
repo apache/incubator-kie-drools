@@ -29,6 +29,13 @@ build:
     clone:
       - kogito-apps
 
+  - project: kiegroup/optaplanner
+    build-command:
+      current: |
+        mvn -f optaplanner/pom.xml clean install -Dversion.org.kie7=${{ env.DROOLS_VERSION }} -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+    clone:
+      - optaplanner
+
   - project: kiegroup/kogito-examples
     build-command:
       current: |

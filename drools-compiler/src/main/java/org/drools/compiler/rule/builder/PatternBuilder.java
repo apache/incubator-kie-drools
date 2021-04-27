@@ -620,14 +620,14 @@ public class PatternBuilder
             ClassDefinition clsDef = tDecl.getTypeClassDef();
             if (clsDef == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
+                                        "Unable to find @Positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
                 return;
             }
 
             FieldDefinition field = clsDef.getField(descr.getPosition());
             if (field == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
+                                        "Unable to find @Positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
                 return;
             }
 
