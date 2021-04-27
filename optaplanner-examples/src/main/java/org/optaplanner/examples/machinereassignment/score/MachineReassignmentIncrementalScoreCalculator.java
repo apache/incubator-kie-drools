@@ -531,8 +531,9 @@ public class MachineReassignmentIncrementalScoreCalculator
         }
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
             for (MrService toDependencyService : processAssignment.getService().getToDependencyServiceList()) {
-                int toDependencyNeighborhoodProcessCount = serviceScorePartMap.get(toDependencyService).neighborhoodBag
-                        .get(processAssignment.getNeighborhood());
+                MrServiceScorePart serviceScorePart = serviceScorePartMap.get(toDependencyService);
+                int toDependencyNeighborhoodProcessCount =
+                        serviceScorePart.neighborhoodBag.getOrDefault(processAssignment.getNeighborhood(), 0);
                 if (toDependencyNeighborhoodProcessCount == 0) {
                     serviceDependencyMatchTotal.addConstraintMatch(
                             Arrays.asList(processAssignment, toDependencyService),
