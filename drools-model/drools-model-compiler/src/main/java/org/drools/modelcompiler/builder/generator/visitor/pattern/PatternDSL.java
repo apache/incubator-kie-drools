@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
@@ -205,10 +206,29 @@ public abstract class PatternDSL implements DSLNode {
     }
 
     void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {
-        DrlxParseResult drlxParseResult1 = patternConstraintParseResult.getDrlxParseResult();
+        DrlxParseResult drlxParseResult = patternConstraintParseResult.getDrlxParseResult();
         String expression = patternConstraintParseResult.getExpression();
 
-        drlxParseResult1.accept(
+        DrlxParseResult withBindingCheck = drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<DrlxParseResult>() {
+            @Override
+            public DrlxParseResult onSuccess(DrlxParseSuccess drlxParseResult) {
+
+                String exprBinding = drlxParseResult.getExprBinding();
+                if (exprBinding == null && !drlxParseResult.isPredicate()) {
+                    return new DrlxParseFail(new DescrBuildError(context.getRuleDescr(), context.getRuleDescr(), "",
+                                                                 String.format("Predicate '%s' must be a Boolean expression", drlxParseResult.getOriginalDrlConstraint())));
+                } else {
+                    return drlxParseResult;
+                }
+            }
+
+            @Override
+            public DrlxParseResult onFail(DrlxParseFail failure) {
+                return failure;
+            }
+        });
+
+        withBindingCheck.accept(
                 new ParseResultVoidVisitor() {
                     @Override
                     public void onSuccess( DrlxParseSuccess drlxParseResult ) {

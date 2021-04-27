@@ -92,7 +92,7 @@ public abstract class AbstractExpressionBuilder {
     public abstract void processExpression(SingleDrlxParseSuccess drlxParseResult);
 
     public void processExpression(MultipleDrlxParseSuccess drlxParseResult) {
-        if ( drlxParseResult.isValidExpression() ) {
+        if ( drlxParseResult.isPredicate() ) {
             Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }

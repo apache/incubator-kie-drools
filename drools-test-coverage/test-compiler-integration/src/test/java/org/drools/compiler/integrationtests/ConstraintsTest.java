@@ -39,6 +39,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -449,7 +450,11 @@ public class ConstraintsTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
+        Assertions.assertThat(messages).hasSize(1);
+        Assertions.assertThat(messages.iterator().next().getText())
+                .contains("Predicate 'name + name' must be a Boolean expression")
+                .isNotEmpty();
     }
 
     @Test

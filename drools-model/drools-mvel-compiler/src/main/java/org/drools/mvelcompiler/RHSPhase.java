@@ -45,6 +45,7 @@ import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
+import org.drools.mvelcompiler.ast.RootTypeThisExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -118,6 +119,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     private TypedExpression simpleNameAsFirstNode(SimpleName n) {
         return asDeclaration(n)
                 .map(Optional::of)
+                .orElseGet(() -> asPropertyAccessorOfRootPattern(n))
+                .map(Optional::of)
                 .orElseGet(() -> asEnum(n))
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
@@ -161,6 +164,14 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
 
         return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
+    }
+
+
+    private Optional<TypedExpression> asPropertyAccessorOfRootPattern(SimpleName n) {
+        Optional<Type> scopeType = mvelCompilerContext.getRootPattern();
+        Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
+
+        return map2(scopeType.map(t -> new RootTypeThisExpr(t, mvelCompilerContext.getRootTypePrefix())), optAccessor, FieldToAccessorTExpr::new);
     }
 
     @Override
