@@ -96,8 +96,8 @@ public class ChangeMoveSelectorFactory<Solution_>
         return buildUnfoldedMoveSelectorConfig(variableDescriptorList);
     }
 
-    protected MoveSelectorConfig<?>
-            buildUnfoldedMoveSelectorConfig(List<GenuineVariableDescriptor<Solution_>> variableDescriptorList) {
+    protected MoveSelectorConfig<?> buildUnfoldedMoveSelectorConfig(
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptorList) {
         List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<>(variableDescriptorList.size());
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
