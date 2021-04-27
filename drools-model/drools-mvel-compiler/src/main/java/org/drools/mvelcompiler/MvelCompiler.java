@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -30,13 +29,6 @@ public class MvelCompiler {
 
     public MvelCompiler(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
-    }
-
-    public CompiledExpressionResult compileExpression(String mvelExpressionString) {
-        Expression parsedExpression = MvelParser.parseExpression(mvelExpressionString);
-        Node compiled = compileExpression(parsedExpression);
-
-        return new CompiledExpressionResult((Expression) compiled);
     }
 
     public CompiledBlockResult compileStatement(String mvelBlock) {
@@ -104,11 +96,5 @@ public class MvelCompiler {
         TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(n)).orElse(lhs);
 
         return postProcessedLHS.toJavaExpression();
-    }
-
-    // Avoid processing the LHS as it's not present while compiling an expression
-    private Node compileExpression(Node n) {
-        TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(n);
-        return rhs.toJavaExpression();
     }
 }
