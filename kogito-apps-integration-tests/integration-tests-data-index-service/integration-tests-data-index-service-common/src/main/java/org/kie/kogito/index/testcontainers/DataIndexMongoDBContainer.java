@@ -16,17 +16,16 @@
 
 package org.kie.kogito.index.testcontainers;
 
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * This container wraps Data Index Service container
  */
 public class DataIndexMongoDBContainer extends AbstractDataIndexContainer {
 
     public static final String NAME = "data-index-service-mongodb";
-    public static final String IMAGE = "container.image." + NAME;
+
+    public DataIndexMongoDBContainer() {
+        super(NAME);
+    }
 
     public void setMongoDBURL(String mongoURL) {
         addEnv("QUARKUS_MONGODB_CONNECTION_STRING", mongoURL);
@@ -37,9 +36,4 @@ public class DataIndexMongoDBContainer extends AbstractDataIndexContainer {
         return NAME;
     }
 
-    @Override
-    protected String getImageName() {
-        return Optional.ofNullable(System.getProperty(IMAGE)).filter(StringUtils::isNotBlank)
-                .orElseThrow(() -> new IllegalArgumentException(IMAGE + " property should be set in pom.xml"));
-    }
 }

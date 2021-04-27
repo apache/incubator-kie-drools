@@ -15,14 +15,10 @@
  */
 package org.kie.kogito.testcontainers;
 
-import org.testcontainers.containers.GenericContainer;
-
-import static org.kie.kogito.testcontainers.TestContainersUtils.getImageName;
-
-public class KogitoServiceContainer extends GenericContainer<KogitoServiceContainer> {
+public class KogitoServiceContainer extends KogitoGenericContainer<KogitoServiceContainer> {
 
     public KogitoServiceContainer(String kogitoServiceUrl) {
-        super(getImageName("kogito-service"));
+        super("kogito-service");
         addEnv("KOGITO_SERVICE_URL", kogitoServiceUrl);
         addExposedPort(8080);
     }

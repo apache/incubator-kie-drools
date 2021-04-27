@@ -19,27 +19,23 @@ package org.kie.kogito.index.testcontainers;
 import java.io.File;
 
 import org.kie.kogito.resources.TestResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.kogito.testcontainers.KogitoGenericContainer;
 import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 /**
  * This container wraps Data Index Service container
  */
-public abstract class AbstractDataIndexContainer extends GenericContainer<AbstractDataIndexContainer> implements TestResource {
+public abstract class AbstractDataIndexContainer extends KogitoGenericContainer<AbstractDataIndexContainer>
+        implements TestResource {
 
     public static final int PORT = 8180;
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDataIndexContainer.class);
 
-    public AbstractDataIndexContainer() {
+    public AbstractDataIndexContainer(String containerName) {
+        super(containerName);
         addExposedPort(PORT);
-        withLogConsumer(new Slf4jLogConsumer(LOGGER));
         waitingFor(Wait.forListeningPort());
         addEnv("KOGITO_PROTOBUF_FOLDER", "/home/kogito/data/protobufs/");
-        setDockerImageName(getImageName());
     }
 
     public void setKafkaURL(String kafkaURL) {
@@ -57,5 +53,4 @@ public abstract class AbstractDataIndexContainer extends GenericContainer<Abstra
         return getMappedPort(PORT);
     }
 
-    protected abstract String getImageName();
 }

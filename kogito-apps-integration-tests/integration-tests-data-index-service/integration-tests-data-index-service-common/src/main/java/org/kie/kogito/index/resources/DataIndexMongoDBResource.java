@@ -26,7 +26,6 @@ import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 public class DataIndexMongoDBResource implements TestResource {
 
@@ -53,7 +52,6 @@ public class DataIndexMongoDBResource implements TestResource {
         properties.put("quarkus.mongodb.connection-string", mongodb.getReplicaSetUrl());
         kafka.withNetwork(network);
         kafka.withNetworkAliases("kafka");
-        kafka.waitingFor(Wait.forListeningPort());
         kafka.start();
         String kafkaURL = kafka.getBootstrapServers();
         properties.put("kafka.bootstrap.servers", kafkaURL);

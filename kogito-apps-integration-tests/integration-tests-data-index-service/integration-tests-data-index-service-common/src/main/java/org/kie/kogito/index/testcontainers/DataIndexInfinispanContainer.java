@@ -16,17 +16,16 @@
 
 package org.kie.kogito.index.testcontainers;
 
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * This container wraps Data Index Service container
  */
 public class DataIndexInfinispanContainer extends AbstractDataIndexContainer {
 
     public static final String NAME = "data-index-service-infinispan";
-    public static final String IMAGE = "container.image." + NAME;
+
+    public DataIndexInfinispanContainer() {
+        super(NAME);
+    }
 
     public void setInfinispanURL(String infinispanURL) {
         addEnv("QUARKUS_INFINISPAN_CLIENT_SERVER_LIST", infinispanURL);
@@ -40,9 +39,4 @@ public class DataIndexInfinispanContainer extends AbstractDataIndexContainer {
         return NAME;
     }
 
-    @Override
-    protected String getImageName() {
-        return Optional.ofNullable(System.getProperty(IMAGE)).filter(StringUtils::isNotBlank)
-                .orElseThrow(() -> new IllegalArgumentException(IMAGE + " property should be set in pom.xml"));
-    }
 }

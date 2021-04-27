@@ -15,19 +15,15 @@
  */
 package org.kie.kogito.testcontainers;
 
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-import static org.kie.kogito.testcontainers.TestContainersUtils.getImageName;
-
-public class ExplainabilityServiceMessagingContainer extends GenericContainer<ExplainabilityServiceMessagingContainer> {
+public class ExplainabilityServiceMessagingContainer extends KogitoGenericContainer<ExplainabilityServiceMessagingContainer> {
 
     public ExplainabilityServiceMessagingContainer(String kafkaBootstrapServers, int numberOfSamples) {
-        super(getImageName("explainability-service-messaging"));
+        super("explainability-service-messaging");
         addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaBootstrapServers);
         addEnv("TRUSTY_EXPLAINABILITY_NUMBEROFSAMPLES", String.valueOf(numberOfSamples));
         addExposedPort(8080);
-        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 1))
-                .withStartupTimeout(Constants.DEFAULT_TIMEOUT);
+        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 1));
     }
 }

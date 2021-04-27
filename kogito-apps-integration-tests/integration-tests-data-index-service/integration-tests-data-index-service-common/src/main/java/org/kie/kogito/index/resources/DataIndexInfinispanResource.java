@@ -26,7 +26,6 @@ import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 public class DataIndexInfinispanResource implements TestResource {
 
@@ -49,13 +48,11 @@ public class DataIndexInfinispanResource implements TestResource {
         Network network = Network.newNetwork();
         infinispan.withNetwork(network);
         infinispan.withNetworkAliases("infinispan");
-        infinispan.waitingFor(Wait.forListeningPort());
         infinispan.start();
         String infinispanURL = "localhost:" + this.infinispan.getMappedPort();
         properties.put("quarkus.infinispan-client.server-list", infinispanURL);
         kafka.withNetwork(network);
         kafka.withNetworkAliases("kafka");
-        kafka.waitingFor(Wait.forListeningPort());
         kafka.start();
         String kafkaURL = kafka.getBootstrapServers();
         properties.put("kafka.bootstrap.servers", kafkaURL);

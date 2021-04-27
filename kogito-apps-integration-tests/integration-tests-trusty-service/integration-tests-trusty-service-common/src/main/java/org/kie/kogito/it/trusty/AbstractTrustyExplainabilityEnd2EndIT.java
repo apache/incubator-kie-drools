@@ -21,8 +21,8 @@ import java.util.function.BiFunction;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.testcontainers.ExplainabilityServiceMessagingContainer;
-import org.kie.kogito.testcontainers.InfinispanContainer;
 import org.kie.kogito.testcontainers.InfinispanTrustyServiceContainer;
+import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.KogitoServiceContainer;
@@ -96,7 +96,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
         try (
                 final Network network = Network.newNetwork();
 
-                final InfinispanContainer infinispan = new InfinispanContainer()
+                final KogitoInfinispanContainer infinispan = new KogitoInfinispanContainer()
                         .withNetwork(network)
                         .withNetworkAliases(INFINISPAN_ALIAS);
 
