@@ -19,19 +19,30 @@ package org.kie.internal.runtime.manager.deploy;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.MergeMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeploymentDescriptorManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DeploymentDescriptorManager.class);
+    private static Set<String> locations = Collections.synchronizedSet(new LinkedHashSet<>());
+    
+    private String defaultPU;
 
-    private String defaultPU = "org.jbpm.persistence.jpa";
+    public static void addDescriptorLocation(String location) {
+        locations.add(location);
+    }
 
     public DeploymentDescriptorManager() {
-
+        this("org.jbpm.persistence.jpa");
     }
 
     public DeploymentDescriptorManager(String defaultPU) {
@@ -39,47 +50,41 @@ public class DeploymentDescriptorManager {
     }
 
     public DeploymentDescriptor getDefaultDescriptor() {
-        DeploymentDescriptor defaultDesc = null;
-        URL defaultDescriptorLocation = getDefaultdescriptorlocation();
+        List<DeploymentDescriptor> descriptors = new ArrayList<>();
+        String defaultDescriptorLocation = System.getProperty("org.kie.deployment.desc.location");
+        descriptors.add(defaultDescriptorLocation != null ? loadDescriptor(defaultDescriptorLocation)
+                : new DeploymentDescriptorImpl(defaultPU));
+        locations.forEach(url -> descriptors.add(loadDescriptor(url)));
+        return DeploymentDescriptorMerger.merge(descriptors, MergeMode.MERGE_COLLECTIONS);
+    }
 
-        if (defaultDescriptorLocation != null) {
-            try {
-                logger.debug("Reading default descriptor from " + defaultDescriptorLocation);
-                defaultDesc = DeploymentDescriptorIO.fromXml(defaultDescriptorLocation.openStream());
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to read default deployment descriptor from " + defaultDescriptorLocation, e);
+    private DeploymentDescriptor loadDescriptor(String location) {
+        try {
+            logger.debug("Reading default descriptor from {}", location);
+            return DeploymentDescriptorIO.fromXml(getLocationURL(location).openStream());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to read default deployment descriptor from " + location, e);
+        }
+    }
+
+    private URL getLocationURL(String location) {
+        URL locationUrl = null;
+        if (location.startsWith("classpath:")) {
+            String stripedLocation = location.replaceFirst("classpath:", "");
+            locationUrl = this.getClass().getResource(stripedLocation);
+            if (locationUrl == null) {
+                locationUrl = Thread.currentThread().getContextClassLoader().getResource(stripedLocation);
             }
         } else {
-            logger.debug("No descriptor found returning default instance");
-            defaultDesc = new DeploymentDescriptorImpl(defaultPU);
-        }
-
-        return defaultDesc;
-    }
-
-    protected URL getDefaultdescriptorlocation() {
-        String defaultDescriptorLocation = System.getProperty("org.kie.deployment.desc.location");
-        URL locationUrl = null;
-        if (defaultDescriptorLocation != null) {
-            if (defaultDescriptorLocation.startsWith("classpath:")) {
-                String stripedLocation = defaultDescriptorLocation.replaceFirst("classpath:", "");
-                locationUrl = this.getClass().getResource(stripedLocation);
+            try {
+                locationUrl = new URL(location);
+            } catch (MalformedURLException e) {
+                locationUrl = this.getClass().getResource(location);
                 if (locationUrl == null) {
-                    locationUrl = Thread.currentThread().getContextClassLoader().getResource(stripedLocation);
-                }
-            } else {
-                try {
-                    locationUrl = new URL(defaultDescriptorLocation);
-                } catch (MalformedURLException e) {
-                    locationUrl = this.getClass().getResource(defaultDescriptorLocation);
-                    if (locationUrl == null) {
-                        locationUrl = Thread.currentThread().getContextClassLoader().getResource(defaultDescriptorLocation);
-                    }
+                    locationUrl = Thread.currentThread().getContextClassLoader().getResource(location);
                 }
             }
         }
-
         return locationUrl;
     }
-
 }
