@@ -15,8 +15,8 @@ pipeline {
         jdk 'kie-jdk11'
     }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '')
-        timeout(time: 360, unit: 'MINUTES')
+        timestamps()
+        timeout(time: env.TIMEOUT_VALUE, unit: 'MINUTES')
     }
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
@@ -160,8 +160,7 @@ void checkoutOptaplannerRepo() {
 MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true, boolean canNative = false) {
     mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
-                // add timestamp to Maven logs
-                .withOptions(['-Dorg.slf4j.simpleLogger.showDateTime=true', '-Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS'])
+                .withProperty('java.net.preferIPv4Stack', true)
                 .inDirectory(directory)
     if (addQuarkusVersion && getQuarkusBranch()) {
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
