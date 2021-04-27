@@ -1231,6 +1231,38 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(23, results.iterator().next().getValue());
     }
 
+    @Test
+    public void testBigDecimalOperationsInAccumulateConstraint() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    $moneySummed : BigDecimal () from accumulate( " +
+                "       Person( money != null, $bd: (money + money)), " +
+                "       sum($bd))\n" +
+                "then\n" +
+                "    results.add($moneySummed);\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        ArrayList<BigDecimal> results = new ArrayList<>();
+        ksession1.setGlobal("results", results);
+
+        Person p1 = new Person();
+        p1.setMoney( new BigDecimal(1 ));
+        ksession1.insert( p1 );
+        Person p2 = new Person();
+        p2.setMoney( new BigDecimal(3 ));
+        ksession1.insert(p2);
+        assertEquals( 1, ksession1.fireAllRules() );
+
+        Assertions.assertThat(results).containsExactly(BigDecimal.valueOf(8));
+
+    }
+
+
 
     // do also the test with two functions
     @Test

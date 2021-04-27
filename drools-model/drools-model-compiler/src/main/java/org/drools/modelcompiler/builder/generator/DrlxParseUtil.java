@@ -95,6 +95,7 @@ import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.drools.mvelcompiler.ConstraintCompiler;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
@@ -848,6 +849,22 @@ public class DrlxParseUtil {
         }
 
         return new MvelCompiler(mvelCompilerContext);
+    }
+
+
+    public static ConstraintCompiler createConstraintCompiler(RuleContext context, Collection<DeclarationSpec> declarations) {
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
+
+        for (DeclarationSpec ds : declarations) {
+            mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());
+        }
+
+        return new ConstraintCompiler(mvelCompilerContext);
+    }
+
+
+    public static boolean isBooleanBoxedUnboxed(java.lang.reflect.Type exprType) {
+        return exprType == Boolean.class || exprType == boolean.class;
     }
 
     private DrlxParseUtil() {
