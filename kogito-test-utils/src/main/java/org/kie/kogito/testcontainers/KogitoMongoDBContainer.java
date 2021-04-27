@@ -35,6 +35,7 @@ public class KogitoMongoDBContainer extends MongoDBContainer implements TestReso
         withLogConsumer(f -> System.out.println(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         addFixedExposedPort(MONGODB_INTERNAL_PORT, MONGODB_INTERNAL_PORT);
+        withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
     }
 
     @Override

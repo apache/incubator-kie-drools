@@ -36,6 +36,7 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer implements Te
     public KogitoPostgreSqlContainer() {
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
+        withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
     }
 
     private Consumer<OutputFrame> getLogger() {

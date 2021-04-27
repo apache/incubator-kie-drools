@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.testcontainers.Constants.CONTAINER_NAME_PREFIX;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -33,7 +34,7 @@ public class KeycloakContainerTest {
 
     @BeforeEach
     public void setup() {
-        System.setProperty(KogitoKeycloakContainer.KEYCLOAK_PROPERTY, IMAGE);
+        System.setProperty(CONTAINER_NAME_PREFIX + KogitoKeycloakContainer.NAME, IMAGE);
         container = spy(new KogitoKeycloakContainer());
         doNothing().when(container).start();
         doNothing().when(container).setDockerImageName(IMAGE);

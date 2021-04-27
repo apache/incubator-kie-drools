@@ -18,18 +18,13 @@ package org.kie.kogito.testcontainers;
 import java.time.Duration;
 
 import org.kie.kogito.resources.TestResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 /**
  * This container wraps Keycloak container
- *
  */
-public class KogitoKeycloakContainer extends GenericContainer<KogitoKeycloakContainer> implements TestResource {
+public class KogitoKeycloakContainer extends KogitoGenericContainer<KogitoKeycloakContainer> implements TestResource {
 
     public static final String NAME = "keycloak";
     public static final String USER = "admin";
@@ -37,22 +32,18 @@ public class KogitoKeycloakContainer extends GenericContainer<KogitoKeycloakCont
     public static final String REALM = "kogito";
     public static final String CLIENT_ID = "kogito-app";
     public static final String CLIENT_SECRET = "secret";
-    public static final String KEYCLOAK_PROPERTY = "container.image." + NAME;
     public static final int PORT = 8080;
 
     private static final String REALM_FILE = "/tmp/realm.json";
-    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoKeycloakContainer.class);
 
     public KogitoKeycloakContainer() {
+        super(NAME);
         addExposedPort(PORT);
         withEnv("KEYCLOAK_USER", USER);
         withEnv("KEYCLOAK_PASSWORD", PASSWORD);
         withEnv("KEYCLOAK_IMPORT", REALM_FILE);
         withClasspathResourceMapping("testcontainers/keycloak/kogito-realm.json", REALM_FILE, BindMode.READ_ONLY);
-        withLogConsumer(f -> System.out.println(f.getUtf8String()));
-        withLogConsumer(new Slf4jLogConsumer(LOGGER));
         waitingFor(Wait.forHttp("/auth").withStartupTimeout(Duration.ofMinutes(5)));
-        setDockerImageName(System.getProperty(KEYCLOAK_PROPERTY));
     }
 
     @Override
@@ -64,5 +55,4 @@ public class KogitoKeycloakContainer extends GenericContainer<KogitoKeycloakCont
     public String getResourceName() {
         return NAME;
     }
-
 }

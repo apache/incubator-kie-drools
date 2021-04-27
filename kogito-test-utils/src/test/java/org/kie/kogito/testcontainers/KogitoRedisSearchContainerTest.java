@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.testcontainers.Constants.CONTAINER_NAME_PREFIX;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -33,7 +34,7 @@ public class KogitoRedisSearchContainerTest {
 
     @BeforeEach
     public void setup() {
-        System.setProperty(KogitoRedisSearchContainer.REDIS_PROPERTY, IMAGE);
+        System.setProperty(CONTAINER_NAME_PREFIX + KogitoRedisSearchContainer.NAME, IMAGE);
         container = spy(new KogitoRedisSearchContainer());
         doNothing().when(container).start();
         doNothing().when(container).setDockerImageName(IMAGE);

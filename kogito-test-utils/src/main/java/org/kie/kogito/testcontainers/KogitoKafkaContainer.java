@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.testcontainers;
 
-import java.time.Duration;
-
 import org.kie.kogito.resources.TestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +37,8 @@ public class KogitoKafkaContainer extends KafkaContainer implements TestResource
         super(DockerImageName.parse(System.getProperty(KAFKA_PROPERTY)));
         withLogConsumer(f -> System.out.println(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        waitingFor(Wait.forLogMessage(".*Startup complete.*", 2).withStartupTimeout(Duration.ofMinutes(5)));
+        waitingFor(Wait.forLogMessage(".*Startup complete.*", 2));
+        withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
     }
 
     @Override
