@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.integrationtests;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -22,6 +26,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.CloudEventExtensionConstants;
@@ -37,7 +42,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Testing our use cases on a controlled environment instead of using generated code.
  */
 @QuarkusTest
-class CloudEventListenerResourceTest {
+class QuarkusCloudEventResourceTest {
+
+    @ConfigProperty(name = "quarkus.http.test-port")
+    public int port;
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -54,7 +62,53 @@ class CloudEventListenerResourceTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
                 .post("/")
                 .then()
-                .statusCode(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+
+    // We are not using RestAssured to send a plain HTTP request mocking an arbitrary client sending a request without the properly headers.
+    @Test
+    void verifyHttpRequestNoMediaType() throws IOException {
+        final URL url = new URL("http://localhost:" + port);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setRequestProperty("ce-type", "myevent");
+            con.setRequestProperty("ce-source", "/from/unit/test");
+            con.setRequestProperty("ce-specversion", "1.0");
+            con.setRequestProperty("ce-id", UUID.randomUUID().toString());
+            con.setRequestProperty("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345");
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+            try (DataOutputStream out = new DataOutputStream(con.getOutputStream())) {
+                out.writeBytes("{ \"message\": \"Hola Mundo!\" }");
+                out.flush();
+            }
+            assertThat(con.getResponseCode()).isEqualTo(200);
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    @Test
+    void verifyHttpRequestNoMediaTypeCrazyContent() throws IOException {
+        final URL url = new URL("http://localhost:" + port);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setRequestProperty("ce-type", "myevent");
+            con.setRequestProperty("ce-source", "/from/unit/test");
+            con.setRequestProperty("ce-specversion", "1.0");
+            con.setRequestProperty("ce-id", UUID.randomUUID().toString());
+            con.setRequestProperty("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345");
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+            try (DataOutputStream out = new DataOutputStream(con.getOutputStream())) {
+                // the server will try to parse this as a JSON string...
+                out.writeBytes("I'm just trying to hack this nonsense");
+                out.flush();
+            }
+            assertThat(con.getResponseCode()).isEqualTo(400);
+        } finally {
+            con.disconnect();
+        }
     }
 
     @Test
@@ -71,8 +125,8 @@ class CloudEventListenerResourceTest {
                 .post("/")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .body(Matchers.equalTo("{ \"message\": \"Hola Mundo!\" }"))
-                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345");
+                .body("data.message", Matchers.equalTo("Hola Mundo!"))
+                .body(CloudEventExtensionConstants.PROCESS_REFERENCE_ID, Matchers.equalTo("12345"));
     }
 
     @Test
@@ -91,9 +145,9 @@ class CloudEventListenerResourceTest {
                 .post("/")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .body(Matchers.equalTo("{ \"message\": \"Hola Mundo!\" }"))
-                .header("ce-source", source)
-                .extract().as(Message.class);
+                .body("data.message", Matchers.equalTo("Hola Mundo!"))
+                .body("source", Matchers.equalTo(source))
+                .extract().body().jsonPath().getObject("data", Message.class);
         assertThat(msg.getMessage()).isEqualTo("Hola Mundo!");
     }
 
@@ -107,8 +161,8 @@ class CloudEventListenerResourceTest {
                 .post("/")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .header("ce-source", source)
-                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345!");
+                .body("source", Matchers.equalTo("/from/unit/test"))
+                .body(CloudEventExtensionConstants.PROCESS_REFERENCE_ID, Matchers.equalTo("12345!"));
     }
 
     @Test
@@ -121,8 +175,7 @@ class CloudEventListenerResourceTest {
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .body(Matchers.isA(String.class))
-                .header("ce-source", source)
-                .extract().body().as(Message.class);
+                .extract().body().jsonPath().getObject("data", Message.class);
 
         assertThat(msg).isNotNull();
         assertThat(msg.getMessage()).isEqualTo("Hi World!");

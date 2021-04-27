@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.app;
+package org.kie.kogito.addon.cloudevents.quarkus.http;
 
-import javax.ws.rs.Path;
+import io.cloudevents.CloudEvent;
 
-import org.kie.kogito.addon.cloudevents.quarkus.http.AbstractQuarkusCloudEventResource;
+public class CloudEventInvalidDataException extends Exception {
 
-@Path("/")
-public class CloudEventListenerResource extends AbstractQuarkusCloudEventResource {
+    private static final String MESSAGE_FORMAT = "CloudEvent '%s' data is not a valid JSON.";
+    private final CloudEvent event;
+
+    public CloudEventInvalidDataException(final CloudEvent event, final Throwable cause) {
+        super(String.format(MESSAGE_FORMAT, event.getType()), cause);
+        this.event = event;
+    }
+
+    public CloudEvent getEvent() {
+        return event;
+    }
 
 }

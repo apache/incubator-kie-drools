@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,22 @@
  */
 package org.kie.kogito.integrationtests;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.kie.kogito.addon.cloudevents.quarkus.http.AbstractQuarkusCloudEventResource;
 import org.kie.kogito.addon.cloudevents.quarkus.http.Responses;
-import org.kie.kogito.cloudevents.Printer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.cloudevents.CloudEvent;
-import io.cloudevents.jackson.JsonFormat;
 
 @Path("/")
-public class CloudEventListenerResource {
+public class QuarkusCloudEventResource extends AbstractQuarkusCloudEventResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CloudEventListenerResource.class);
-
-    @POST
-    @Consumes({ MediaType.APPLICATION_JSON, JsonFormat.CONTENT_TYPE })
-    @Produces(MediaType.APPLICATION_JSON)
+    @Override
     public Response cloudEventListener(CloudEvent event) {
         try {
-            LOGGER.info("CloudEvent processed: {}", Printer.beautify(event));
-            return Response.ok(event).build();
+            return Response.ok(this.serialize(event)).build();
         } catch (Exception ex) {
-            LOGGER.error("Fail to process CloudEvent: ", ex);
             return Responses.errorProcessingCloudEvent(ex);
         }
     }
