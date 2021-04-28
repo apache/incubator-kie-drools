@@ -1076,7 +1076,7 @@ public class PatternBuilder
         }
 
         if ("contains".equals( relDescr.getOperator() ) && !isTypeCompatibleWithContainsOperator( extractor.getExtractToClass() )) {
-            registerDescrBuildError(context, relDescr, "Cannot use contains on class " + extractor.getExtractToClass() + " in expression '" + expr + "'");
+            registerDescrBuildError(context, relDescr, "Cannot use contains on " + extractor.getExtractToClass() + " in expression '" + expr + "'");
             return null;
         }
 
