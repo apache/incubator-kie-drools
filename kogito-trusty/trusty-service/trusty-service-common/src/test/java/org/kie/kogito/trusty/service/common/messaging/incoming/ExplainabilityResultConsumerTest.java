@@ -154,12 +154,12 @@ class ExplainabilityResultConsumerTest {
         FeatureImportanceDto expected0 = TEST_SALIENCY_DTO.getFeatureImportance().get(0);
         FeatureImportanceModel actual0 = featureImportanceModels.get(0);
         assertEquals(expected0.getFeatureName(), actual0.getFeatureName());
-        assertEquals(expected0.getScore(), actual0.getScore());
+        assertEquals(expected0.getScore(), actual0.getFeatureScore());
 
         FeatureImportanceDto expected1 = TEST_SALIENCY_DTO.getFeatureImportance().get(1);
         FeatureImportanceModel actual1 = featureImportanceModels.get(1);
         assertEquals(expected1.getFeatureName(), actual1.getFeatureName());
-        assertEquals(expected1.getScore(), actual1.getScore());
+        assertEquals(expected1.getScore(), actual1.getFeatureScore());
     }
 
     @Test
@@ -182,7 +182,7 @@ class ExplainabilityResultConsumerTest {
         FeatureImportanceModel featureImportanceModel = ExplainabilityResultConsumer.featureImportanceFrom(TEST_FEATURE_IMPORTANCE_DTO_1);
         assertNotNull(featureImportanceModel);
         assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getFeatureName(), featureImportanceModel.getFeatureName());
-        assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getScore(), featureImportanceModel.getScore());
+        assertEquals(TEST_FEATURE_IMPORTANCE_DTO_1.getScore(), featureImportanceModel.getFeatureScore());
     }
 
     @Test
@@ -199,7 +199,7 @@ class ExplainabilityResultConsumerTest {
         assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().get(0).getFeatureName(),
                 saliencyModel.getFeatureImportance().get(0).getFeatureName());
         assertEquals(TEST_SALIENCY_DTO.getFeatureImportance().get(0).getScore(),
-                saliencyModel.getFeatureImportance().get(0).getScore(), 0.1);
+                saliencyModel.getFeatureImportance().get(0).getFeatureScore(), 0.1);
     }
 
     @Test

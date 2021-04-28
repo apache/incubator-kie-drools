@@ -119,7 +119,7 @@ message FeatureImportanceModel {
     optional string featureName = 1;
 
     /* @Field(store = Store.YES) */
-    optional double score = 2;
+    optional double featureScore = 2;
 }
 
 /* @Indexed */

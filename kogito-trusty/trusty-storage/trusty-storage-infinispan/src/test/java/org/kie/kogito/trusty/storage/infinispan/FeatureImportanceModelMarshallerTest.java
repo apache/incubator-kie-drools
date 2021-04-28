@@ -32,7 +32,7 @@ public class FeatureImportanceModelMarshallerTest extends MarshallerTestTemplate
 
     private static final List<AbstractTestField<FeatureImportanceModel, ?>> TEST_FIELD_LIST = List.of(
             new StringTestField<>(FEATURE_NAME_FIELD, "test", FeatureImportanceModel::getFeatureName, FeatureImportanceModel::setFeatureName),
-            new DoubleTestField<>(SCORE_FIELD, 0.2, FeatureImportanceModel::getScore, FeatureImportanceModel::setScore));
+            new DoubleTestField<>(SCORE_FIELD, 0.2, FeatureImportanceModel::getFeatureScore, FeatureImportanceModel::setFeatureScore));
 
     public FeatureImportanceModelMarshallerTest() {
         super(FeatureImportanceModel.class);

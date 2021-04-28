@@ -22,20 +22,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FeatureImportanceModel {
 
     public static final String FEATURE_NAME_FIELD = "featureName";
-    public static final String SCORE_FIELD = "score";
+    public static final String SCORE_FIELD = "featureScore";
 
     @JsonProperty(FEATURE_NAME_FIELD)
     private String featureName;
 
     @JsonProperty(SCORE_FIELD)
-    private Double score;
+    private Double featureScore;
 
     public FeatureImportanceModel() {
     }
 
-    public FeatureImportanceModel(String featureName, Double score) {
+    public FeatureImportanceModel(String featureName, Double featureScore) {
         this.featureName = featureName;
-        this.score = score;
+        this.featureScore = featureScore;
     }
 
     public String getFeatureName() {
@@ -46,11 +46,11 @@ public class FeatureImportanceModel {
         this.featureName = featureName;
     }
 
-    public Double getScore() {
-        return score;
+    public Double getFeatureScore() {
+        return featureScore;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    public void setFeatureScore(Double score) {
+        this.featureScore = score;
     }
 }

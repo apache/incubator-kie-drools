@@ -37,6 +37,6 @@ public class FeatureImportanceModelMarshaller extends AbstractModelMarshaller<Fe
     @Override
     public void writeTo(ProtoStreamWriter writer, FeatureImportanceModel input) throws IOException {
         writer.writeString(FeatureImportanceModel.FEATURE_NAME_FIELD, input.getFeatureName());
-        writer.writeDouble(FeatureImportanceModel.SCORE_FIELD, input.getScore());
+        writer.writeDouble(FeatureImportanceModel.SCORE_FIELD, input.getFeatureScore());
     }
 }

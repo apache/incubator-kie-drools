@@ -112,18 +112,18 @@ class ExplainabilityApiV1IT {
         assertNotNull(sortedSaliencies.get(0).getFeatureImportance());
         assertSame(2, sortedSaliencies.get(0).getFeatureImportance().size());
         assertEquals("Feature1", sortedSaliencies.get(0).getFeatureImportance().get(0).getFeatureName());
-        assertEquals(0.49384, sortedSaliencies.get(0).getFeatureImportance().get(0).getScore());
+        assertEquals(0.49384, sortedSaliencies.get(0).getFeatureImportance().get(0).getFeatureScore());
         assertEquals("Feature2", sortedSaliencies.get(0).getFeatureImportance().get(1).getFeatureName());
-        assertEquals(-0.1084, sortedSaliencies.get(0).getFeatureImportance().get(1).getScore());
+        assertEquals(-0.1084, sortedSaliencies.get(0).getFeatureImportance().get(1).getFeatureScore());
 
         assertNotNull(sortedSaliencies.get(1));
         assertEquals("Output2", sortedSaliencies.get(1).getOutcomeName());
         assertNotNull(sortedSaliencies.get(1).getFeatureImportance());
         assertSame(2, sortedSaliencies.get(1).getFeatureImportance().size());
         assertEquals("Feature1", sortedSaliencies.get(1).getFeatureImportance().get(0).getFeatureName());
-        assertEquals(0.0, sortedSaliencies.get(1).getFeatureImportance().get(0).getScore());
+        assertEquals(0.0, sortedSaliencies.get(1).getFeatureImportance().get(0).getFeatureScore());
         assertEquals("Feature2", sortedSaliencies.get(1).getFeatureImportance().get(1).getFeatureName());
-        assertEquals(0.70293, sortedSaliencies.get(1).getFeatureImportance().get(1).getScore());
+        assertEquals(0.70293, sortedSaliencies.get(1).getFeatureImportance().get(1).getFeatureScore());
     }
 
     @Test
