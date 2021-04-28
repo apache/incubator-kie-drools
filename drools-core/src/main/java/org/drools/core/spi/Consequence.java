@@ -21,7 +21,6 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.rule.Declaration;
 import org.kie.internal.security.KiePolicyHelper;
 
 /**
@@ -48,10 +47,6 @@ public interface Consequence
     void evaluate(KnowledgeHelper knowledgeHelper,
                   WorkingMemory workingMemory) throws Exception;
 
-    default void initDeclarations(Declaration[] requiredDeclarations) {
-        // default is to do nothing, as this is only needed (so far) by Lambda Consequence.
-    }
-
     static boolean isCompiledInvoker(final Consequence consequence) {
         return (consequence instanceof CompiledInvoker)
                 || (consequence instanceof SafeConsequence && ((SafeConsequence) consequence).wrapsCompiledInvoker());
@@ -75,11 +70,6 @@ public interface Consequence
                 delegate.evaluate(knowledgeHelper, workingMemory);
                 return null;
             }, KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public void initDeclarations(Declaration[] requiredDeclarations) {
-            delegate.initDeclarations(requiredDeclarations);
         }
 
         public boolean wrapsCompiledInvoker() {

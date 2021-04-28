@@ -54,26 +54,25 @@ public class LambdaConsequence implements Consequence {
     }
 
     @Override
-    public void initDeclarations(Declaration[] requiredDeclarations) {
-        this.requiredDeclarations = enabledTupleOptimization ? requiredDeclarations : null;
-    }
-
-    @Override
     public String getName() {
         return RuleImpl.DEFAULT_CONSEQUENCE_NAME;
     }
 
     @Override
     public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
-        Object[] facts;
         if ( this.requiredDeclarations == null ) {
             Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
-            facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
-        } else {
-            // declarations is not null when first level rule is AND so it is possible to calculate them upfront
-            facts = fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory );
+            if (enabledTupleOptimization) {
+                this.requiredDeclarations = declarations;
+            } else {
+                Object[] facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
+                consequence.getBlock().execute( facts );
+                return;
+            }
         }
-        consequence.getBlock().execute( facts );
+
+        // declarations is not null when first level rule is AND so it is possible to calculate them upfront
+        consequence.getBlock().execute( fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory ) );
     }
 
     public static Object[] declarationsToFacts( WorkingMemory workingMemory, Tuple tuple, Declaration[] declarations, Variable[] vars ) {
