@@ -82,8 +82,7 @@
     <jacoco.agent.argLine/>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
-    <revapi.oldKieVersion>${version.org.kie7}</revapi.oldKieVersion>
-    <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
+    <revapi.oldOptaplannerVersion>8.5.0.Final</revapi.oldOptaplannerVersion>
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
 
@@ -640,10 +639,10 @@
           <configuration>
             <checkDependencies>false</checkDependencies>
             <oldArtifacts>
-              <artifact>${project.groupId}:${project.artifactId}:${revapi.oldKieVersion}</artifact>
+              <artifact>${project.groupId}:${project.artifactId}:${revapi.oldOptaplannerVersion}</artifact>
             </oldArtifacts>
             <newArtifacts>
-              <artifact>${project.groupId}:${project.artifactId}:${revapi.newKieVersion}</artifact>
+              <artifact>${project.groupId}:${project.artifactId}:${project.version}</artifact>
             </newArtifacts>
             <!-- By default revapi will check the oldArtifact against the currently executed build -->
             <analysisConfigurationFiles>
