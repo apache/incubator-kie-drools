@@ -32,7 +32,6 @@ import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 
@@ -92,14 +91,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.subrule = subrule;
         this.consequenceName = context.getConsequenceName();
         initDeclarations();
-
-        Consequence consequence = consequenceName == null || consequenceName.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ?
-                rule.getConsequence() :
-                rule.getNamedConsequence(consequenceName);
-        if ( consequence != null) {
-            // This can only be null certain mock unit tests
-            consequence.initDeclarations(requiredDeclarations);
-        }
 
         this.subruleIndex = subruleIndex;
 
