@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -961,6 +960,10 @@ public final class ConstraintCollectors {
         return resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer);
     }
 
+    /**
+     * @deprecated in favor of {@link #toList()}, {@link #toSet()} or {@link #toSortedSet()}
+     */
+    @Deprecated(/* forRemoval = true */)
     public static <A, Result extends Collection<A>> UniConstraintCollector<A, ?, Result> toCollection(
             IntFunction<Result> collectionFunction) {
         return toCollection(Function.identity(), collectionFunction);
@@ -990,7 +993,7 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, SortedSet<A>> toSortedSet() {
-        return toCollection(Function.identity(), i -> new TreeSet<>());
+        return toSortedSet(a -> a);
     }
 
     /**
@@ -1005,6 +1008,10 @@ public final class ConstraintCollectors {
         return toList(Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(Function)}, {@link #toSet(Function)} or {@link #toSortedSet(Function)}
+     */
+    @Deprecated(/* forRemoval = true */)
     public static <A, Mapped, Result extends Collection<Mapped>> UniConstraintCollector<A, ?, Result> toCollection(
             Function<A, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultUniConstraintCollector<>(
@@ -1038,7 +1045,14 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, LinkedHashSet::new);
+        return new DefaultUniConstraintCollector<>(
+                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (resultContainer, a) -> {
+                    Mapped mapped = groupValueMapping.apply(a);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                HashMap::keySet);
     }
 
     /**
@@ -1052,7 +1066,14 @@ public final class ConstraintCollectors {
      */
     public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, SortedSet<Mapped>> toSortedSet(
             Function<A, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, i -> new TreeSet<>());
+        return new DefaultUniConstraintCollector<A, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+                TreeMap::new,
+                (resultContainer, a) -> {
+                    Mapped mapped = groupValueMapping.apply(a);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                TreeMap::navigableKeySet);
     }
 
     /**
@@ -1066,9 +1087,21 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, List<Mapped>> toList(Function<A, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, ArrayList::new);
+        return new DefaultUniConstraintCollector<>(
+                ArrayList::new,
+                (resultContainer, a) -> {
+                    Mapped mapped = groupValueMapping.apply(a);
+                    resultContainer.add(mapped);
+                    return () -> resultContainer.remove(mapped);
+                },
+                Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(BiFunction)}, {@link #toSet(BiFunction)}
+     *             or {@link #toSortedSet(BiFunction)}
+     */
+    @Deprecated(/* forRemoval = true */)
     public static <A, B, Mapped, Result extends Collection<Mapped>> BiConstraintCollector<A, B, ?, Result> toCollection(
             BiFunction<A, B, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultBiConstraintCollector<>(
@@ -1092,7 +1125,14 @@ public final class ConstraintCollectors {
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, LinkedHashSet::new);
+        return new DefaultBiConstraintCollector<>(
+                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (resultContainer, a, b) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                HashMap::keySet);
     }
 
     /**
@@ -1106,13 +1146,18 @@ public final class ConstraintCollectors {
      */
     public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, SortedSet<Mapped>> toSortedSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, i -> new TreeSet<>());
+        return new DefaultBiConstraintCollector<A, B, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+                TreeMap::new,
+                (resultContainer, a, b) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                TreeMap::navigableKeySet);
     }
 
     /**
-     * Creates constraint collector that returns {@link List} of the given element type.
-     * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toSortedSet(BiFunction)}.
+     * As defined by {@link #toList(Function)}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
@@ -1122,9 +1167,21 @@ public final class ConstraintCollectors {
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, List<Mapped>> toList(
             BiFunction<A, B, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, ArrayList::new);
+        return new DefaultBiConstraintCollector<>(
+                ArrayList::new,
+                (resultContainer, a, b) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b);
+                    resultContainer.add(mapped);
+                    return () -> resultContainer.remove(mapped);
+                },
+                Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(TriFunction)}, {@link #toSet(TriFunction)}
+     *             or {@link #toSortedSet(TriFunction)}
+     */
+    @Deprecated(/* forRemoval = true */)
     public static <A, B, C, Mapped, Result extends Collection<Mapped>> TriConstraintCollector<A, B, C, ?, Result> toCollection(
             TriFunction<A, B, C, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultTriConstraintCollector<>(
@@ -1149,7 +1206,14 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, LinkedHashSet::new);
+        return new DefaultTriConstraintCollector<>(
+                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (resultContainer, a, b, c) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                HashMap::keySet);
     }
 
     /**
@@ -1164,13 +1228,18 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
             toSortedSet(TriFunction<A, B, C, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, i -> new TreeSet<>());
+        return new DefaultTriConstraintCollector<A, B, C, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+                TreeMap::new,
+                (resultContainer, a, b, c) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                TreeMap::navigableKeySet);
     }
 
     /**
-     * Creates constraint collector that returns {@link List} of the given element type.
-     * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toSortedSet(TriFunction)}.
+     * As defined by {@link #toList(Function)}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
@@ -1181,9 +1250,21 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, List<Mapped>> toList(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, ArrayList::new);
+        return new DefaultTriConstraintCollector<>(
+                ArrayList::new,
+                (resultContainer, a, b, c) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
+                    resultContainer.add(mapped);
+                    return () -> resultContainer.remove(mapped);
+                },
+                Function.identity());
     }
 
+    /**
+     * @deprecated in favor of {@link #toList(QuadFunction)}, {@link #toSet(QuadFunction)}
+     *             or {@link #toSortedSet(QuadFunction)}
+     */
+    @Deprecated(/* forRemoval = true */)
     public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result>
             toCollection(QuadFunction<A, B, C, D, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultQuadConstraintCollector<>(
@@ -1209,7 +1290,14 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, LinkedHashSet::new);
+        return new DefaultQuadConstraintCollector<>(
+                (Supplier<HashMap<Mapped, Long>>) HashMap::new,
+                (resultContainer, a, b, c, d) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                HashMap::keySet);
     }
 
     /**
@@ -1225,13 +1313,18 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>>
             toSortedSet(QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, i -> new TreeSet<>());
+        return new DefaultQuadConstraintCollector<A, B, C, D, TreeMap<Mapped, Long>, SortedSet<Mapped>>(
+                TreeMap::new,
+                (resultContainer, a, b, c, d) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+                },
+                TreeMap::navigableKeySet);
     }
 
     /**
-     * Creates constraint collector that returns {@link List} of the given element type.
-     * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toSortedSet(QuadFunction)}.
+     * As defined by {@link #toList(Function)}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
@@ -1243,7 +1336,14 @@ public final class ConstraintCollectors {
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, List<Mapped>> toList(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
-        return toCollection(groupValueMapping, ArrayList::new);
+        return new DefaultQuadConstraintCollector<>(
+                ArrayList::new,
+                (resultContainer, a, b, c, d) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
+                    resultContainer.add(mapped);
+                    return () -> resultContainer.remove(mapped);
+                },
+                Function.identity());
     }
 
     // ************************************************************************
@@ -1406,6 +1506,8 @@ public final class ConstraintCollectors {
      * <p>
      * Makes no guarantees on iteration order for map entries.
      * For stable iteration order, use {@link #toSortedMap(Function, Function, BinaryOperator)}.
+     * <p>
+     * This constraint collector is slow and causes considerable garbage collector pressure.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1442,6 +1544,8 @@ public final class ConstraintCollectors {
      * <p>
      * Makes no guarantees on iteration order for the value sets, use
      * {@link #toSortedMap(Function, Function, IntFunction)} for that.
+     * <p>
+     * This constraint collector is slow and causes considerable garbage collector pressure.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
