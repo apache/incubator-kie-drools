@@ -55,7 +55,7 @@ public final class TestUtils {
     }
 
     public static int getPortFromConfig() {
-        return ConfigProvider.getConfig().getOptionalValue("quarkus.https.test-port", Integer.class).orElse(8081);
+        return ConfigProvider.getConfig().getOptionalValue("quarkus.http.test-port", Integer.class).orElse(8081);
     }
 
     public static String getDealsProtoBufferFile() throws Exception {

@@ -55,7 +55,6 @@ import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import io.quarkus.arc.Arc;
 import io.vertx.mutiny.core.eventbus.EventBus;
-import io.vertx.mutiny.core.eventbus.Message;
 import io.vertx.mutiny.core.eventbus.MessageConsumer;
 import io.vertx.mutiny.core.eventbus.MessageProducer;
 
@@ -259,11 +258,11 @@ public class GraphQLSchemaManager {
     }
 
     private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(String address, Supplier<Storage> cache) {
-        return env -> createPublisher(address, producer -> cache.get().addObjectCreatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
+        return env -> createPublisher(address, producer -> cache.get().addObjectCreatedListener(ut -> producer.writeAndForget(getObjectMapper().convertValue(ut, ObjectNode.class))));
     }
 
     private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(String address, Supplier<Storage> cache) {
-        return env -> createPublisher(address, producer -> cache.get().addObjectUpdatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
+        return env -> createPublisher(address, producer -> cache.get().addObjectUpdatedListener(ut -> producer.writeAndForget(getObjectMapper().convertValue(ut, ObjectNode.class))));
     }
 
     private Publisher<ObjectNode> createPublisher(String address, Consumer<MessageProducer<ObjectNode>> consumer) {
@@ -271,7 +270,7 @@ public class GraphQLSchemaManager {
 
         LOGGER.debug("Creating new message consumer for EventBus address: {}", address);
         MessageConsumer<ObjectNode> messageConsumer = eventBus.consumer(address);
-        Publisher<ObjectNode> publisher = messageConsumer.toMulti().map(Message::body);
+        Publisher<ObjectNode> publisher = messageConsumer.bodyStream().toMulti();
 
         producers.computeIfAbsent(address, key -> {
             LOGGER.debug("Creating new message publisher for EventBus address: {}", address);
@@ -284,11 +283,11 @@ public class GraphQLSchemaManager {
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelUpdatedDataFetcher(String processId) {
-        return env -> createPublisher(processId + "Updated", producer -> cacheService.getDomainModelCache(processId).addObjectUpdatedListener(producer::write));
+        return env -> createPublisher(processId + "Updated", producer -> cacheService.getDomainModelCache(processId).addObjectUpdatedListener(producer::writeAndForget));
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelAddedDataFetcher(String processId) {
-        return env -> createPublisher(processId + "Added", producer -> cacheService.getDomainModelCache(processId).addObjectCreatedListener(producer::write));
+        return env -> createPublisher(processId + "Added", producer -> cacheService.getDomainModelCache(processId).addObjectCreatedListener(producer::writeAndForget));
     }
 
     protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {
