@@ -21,7 +21,6 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -29,9 +28,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowedParentEntity {
 
     public static EntityDescriptor<TestdataExtendedShadowedSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataExtendedShadowedSolution> solutionDescriptor =
-                TestdataExtendedShadowedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedShadowedChildEntity.class);
+        return TestdataExtendedShadowedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataExtendedShadowedChildEntity.class);
     }
 
     private String secondShadow;

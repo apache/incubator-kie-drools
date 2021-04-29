@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataFieldAnnotatedSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataFieldAnnotatedSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedSolution.class,
                 TestdataFieldAnnotatedEntity.class);
     }

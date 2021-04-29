@@ -19,22 +19,19 @@ package org.optaplanner.core.impl.testdata.domain.extended.thirdparty;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataExtendedThirdPartyEntity extends TestdataThirdPartyEntityPojo {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataExtendedThirdPartySolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataThirdPartyEntityPojo.class);
+    public static EntityDescriptor<TestdataExtendedThirdPartySolution> buildEntityDescriptor() {
+        return TestdataExtendedThirdPartySolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataThirdPartyEntityPojo.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataExtendedThirdPartySolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataThirdPartyEntityPojo.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+    public static GenuineVariableDescriptor<TestdataExtendedThirdPartySolution> buildVariableDescriptorForValue() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private Object extraObject;

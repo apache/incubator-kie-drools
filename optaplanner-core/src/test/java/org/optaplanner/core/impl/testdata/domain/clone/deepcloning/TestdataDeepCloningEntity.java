@@ -25,7 +25,6 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -35,17 +34,12 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataDeepCloningEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataDeepCloningSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataDeepCloningSolution> solutionDescriptor =
-                TestdataDeepCloningSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
+        return TestdataDeepCloningSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataDeepCloningSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataDeepCloningSolution> solutionDescriptor =
-                TestdataDeepCloningSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataDeepCloningSolution> entityDescriptor =
-                solutionDescriptor.findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataValue value;

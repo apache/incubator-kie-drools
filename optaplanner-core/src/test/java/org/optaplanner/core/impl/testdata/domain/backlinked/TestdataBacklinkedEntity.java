@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.testdata.domain.backlinked;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -28,17 +27,12 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataBacklinkedEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataBacklinkedSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataBacklinkedSolution> solutionDescriptor =
-                TestdataBacklinkedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataBacklinkedEntity.class);
+        return TestdataBacklinkedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataBacklinkedEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataBacklinkedSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataBacklinkedSolution> solutionDescriptor =
-                TestdataBacklinkedSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataBacklinkedSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataBacklinkedEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataBacklinkedSolution solution;

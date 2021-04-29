@@ -19,16 +19,15 @@ package org.optaplanner.core.impl.testdata.domain.collection;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataSetBasedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataSetBasedEntity.class);
+    public static EntityDescriptor<TestdataSetBasedSolution> buildEntityDescriptor() {
+        return TestdataSetBasedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataSetBasedEntity.class);
     }
 
     private TestdataValue value;

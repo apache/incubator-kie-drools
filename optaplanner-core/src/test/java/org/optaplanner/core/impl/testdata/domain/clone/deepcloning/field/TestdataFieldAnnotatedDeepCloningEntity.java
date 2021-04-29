@@ -25,7 +25,6 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -35,17 +34,12 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataFieldAnnotatedDeepCloningSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataFieldAnnotatedDeepCloningSolution> solutionDescriptor =
-                TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
+        return TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataFieldAnnotatedDeepCloningSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataFieldAnnotatedDeepCloningSolution> solutionDescriptor =
-                TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataFieldAnnotatedDeepCloningSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")

@@ -20,7 +20,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
@@ -28,15 +27,13 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 @PlanningEntity(pinningFilter = TestdataChainedEntityPinningFilter.class)
 public class TestdataPinnedChainedEntity extends TestdataObject implements TestdataChainedObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataPinnedChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataPinnedChainedEntity.class);
+    public static EntityDescriptor<TestdataPinnedChainedSolution> buildEntityDescriptor() {
+        return TestdataPinnedChainedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataPinnedChainedEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForChainedObject() {
-        SolutionDescriptor solutionDescriptor = TestdataPinnedChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataPinnedChainedEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+    public static GenuineVariableDescriptor<TestdataPinnedChainedSolution> buildVariableDescriptorForChainedObject() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("chainedObject");
     }
 
     private TestdataChainedObject chainedObject;

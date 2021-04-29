@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataFieldAnnotatedDeepCloningSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class,
                 TestdataFieldAnnotatedDeepCloningEntity.class);
     }

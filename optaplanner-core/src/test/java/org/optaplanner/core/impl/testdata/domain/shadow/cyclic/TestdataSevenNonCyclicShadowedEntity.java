@@ -21,7 +21,6 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -30,16 +29,13 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataSevenNonCyclicShadowedEntity.class);
+    public static EntityDescriptor<TestdataSevenNonCyclicShadowedSolution> buildEntityDescriptor() {
+        return TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataSevenNonCyclicShadowedEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataSevenNonCyclicShadowedEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+    public static GenuineVariableDescriptor<TestdataSevenNonCyclicShadowedSolution> buildVariableDescriptorForValue() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataValue value;

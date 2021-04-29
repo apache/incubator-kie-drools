@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataVisibilityModifierSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataVisibilityModifierSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataVisibilityModifierSolution.class, TestdataEntity.class);
     }
 

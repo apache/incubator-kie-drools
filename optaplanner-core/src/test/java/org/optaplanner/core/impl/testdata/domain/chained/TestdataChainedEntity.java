@@ -20,7 +20,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -29,22 +28,16 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {
 
     public static EntityDescriptor<TestdataChainedSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
+        return TestdataChainedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataChainedEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataChainedSolution> buildVariableDescriptorForChainedObject() {
-        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataChainedEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("chainedObject");
     }
 
     public static GenuineVariableDescriptor<TestdataChainedSolution> buildVariableDescriptorForUnchainedValue() {
-        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataChainedEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("unchainedValue");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("unchainedValue");
     }
 
     private TestdataChainedObject chainedObject;

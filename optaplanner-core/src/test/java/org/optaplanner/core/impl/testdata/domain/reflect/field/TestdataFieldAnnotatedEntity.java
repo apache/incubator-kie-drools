@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.testdata.domain.reflect.field;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -27,15 +26,13 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataFieldAnnotatedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedEntity.class);
+    public static EntityDescriptor<TestdataFieldAnnotatedSolution> buildEntityDescriptor() {
+        return TestdataFieldAnnotatedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataFieldAnnotatedEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+    public static GenuineVariableDescriptor<TestdataFieldAnnotatedSolution> buildVariableDescriptorForValue() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")

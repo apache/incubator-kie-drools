@@ -19,22 +19,19 @@ package org.optaplanner.core.impl.testdata.domain.shadow.inverserelation;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataInverseRelationEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataInverseRelationSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationEntity.class);
+    public static EntityDescriptor<TestdataInverseRelationSolution> buildEntityDescriptor() {
+        return TestdataInverseRelationSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataInverseRelationEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataInverseRelationSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+    public static GenuineVariableDescriptor<TestdataInverseRelationSolution> buildVariableDescriptorForValue() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataInverseRelationValue value;

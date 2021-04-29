@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.testdata.domain.multivar;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -28,29 +27,20 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataMultiVarEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataMultiVarSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
+        return TestdataMultiVarSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataMultiVarSolution> buildVariableDescriptorForPrimaryValue() {
-        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataMultiVarSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("primaryValue");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("primaryValue");
     }
 
     public static GenuineVariableDescriptor<TestdataMultiVarSolution> buildVariableDescriptorForSecondaryValue() {
-        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataMultiVarSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("secondaryValue");
     }
 
     public static GenuineVariableDescriptor<TestdataMultiVarSolution> buildVariableDescriptorForTertiaryNullableValue() {
-        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataMultiVarSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("tertiaryNullableValue");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("tertiaryNullableValue");
     }
 
     private TestdataValue primaryValue;

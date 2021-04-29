@@ -26,22 +26,19 @@ import java.time.Year;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataValueRangeEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataValueRangeSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataValueRangeEntity.class);
+    public static EntityDescriptor<TestdataValueRangeSolution> buildEntityDescriptor() {
+        return TestdataValueRangeSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataValueRangeEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataValueRangeSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataValueRangeEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+    public static GenuineVariableDescriptor<TestdataValueRangeSolution> buildVariableDescriptorForValue() {
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private Integer integerValue;

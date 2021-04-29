@@ -23,16 +23,15 @@ import java.util.Set;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataEntityCollectionPropertySolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityCollectionPropertyEntity.class);
+    public static EntityDescriptor<TestdataEntityCollectionPropertySolution> buildEntityDescriptor() {
+        return TestdataEntityCollectionPropertySolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataEntityCollectionPropertyEntity.class);
     }
 
     private List<TestdataEntityCollectionPropertyEntity> entityList;

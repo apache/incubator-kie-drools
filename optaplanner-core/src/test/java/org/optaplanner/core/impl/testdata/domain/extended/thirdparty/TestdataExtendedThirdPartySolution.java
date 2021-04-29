@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySolutionPojo {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataExtendedThirdPartySolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedThirdPartySolution.class,
                 TestdataExtendedThirdPartyEntity.class);
     }

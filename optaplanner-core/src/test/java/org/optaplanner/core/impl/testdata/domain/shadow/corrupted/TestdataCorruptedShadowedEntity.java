@@ -22,7 +22,6 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -31,9 +30,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataCorruptedShadowedEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataCorruptedShadowedSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataCorruptedShadowedSolution> solutionDescriptor =
-                TestdataCorruptedShadowedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataCorruptedShadowedEntity.class);
+        return TestdataCorruptedShadowedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataCorruptedShadowedEntity.class);
     }
 
     private TestdataValue value;

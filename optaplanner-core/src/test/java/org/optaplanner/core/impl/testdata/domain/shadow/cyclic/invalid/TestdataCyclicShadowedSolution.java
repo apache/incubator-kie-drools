@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataCyclicShadowedSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataCyclicShadowedSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataCyclicShadowedSolution.class,
                 TestdataCyclicShadowedEntity.class);
     }

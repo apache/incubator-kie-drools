@@ -22,7 +22,6 @@ import java.math.BigInteger;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
@@ -30,15 +29,12 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 public class TestdataLavishEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataLavishSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataLavishSolution> solutionDescriptor = TestdataLavishSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataLavishEntity.class);
+        return TestdataLavishSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataLavishEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataLavishSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataLavishSolution> solutionDescriptor = TestdataLavishSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataLavishSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataLavishEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataLavishEntityGroup entityGroup;

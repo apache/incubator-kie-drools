@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 @PlanningSolution
 public class TestdataInverseRelationSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataInverseRelationSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataInverseRelationSolution.class,
                 TestdataInverseRelationEntity.class, TestdataInverseRelationValue.class);
     }

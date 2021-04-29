@@ -19,18 +19,11 @@ package org.optaplanner.core.impl.testdata.domain.pinned.extended;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 
 @PlanningEntity(pinningFilter = TestdataExtendedPinningFilter.class)
 public class TestdataExtendedPinnedEntity extends TestdataPinnedEntity {
-
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataExtendedPinnedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedPinnedEntity.class);
-    }
 
     private TestdataValue subValue;
     private boolean closed;

@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 @PlanningSolution
 public class TestdataExtendedPinnedSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataExtendedPinnedSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedPinnedSolution.class,
                 TestdataPinnedEntity.class, TestdataExtendedPinnedEntity.class);
     }

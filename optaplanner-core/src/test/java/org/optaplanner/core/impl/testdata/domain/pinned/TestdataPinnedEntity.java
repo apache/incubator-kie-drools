@@ -20,16 +20,15 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity(pinningFilter = TestdataPinningFilter.class)
 public class TestdataPinnedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataPinnedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataPinnedEntity.class);
+    public static EntityDescriptor<TestdataPinnedSolution> buildEntityDescriptor() {
+        return TestdataPinnedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataPinnedEntity.class);
     }
 
     private TestdataValue value;

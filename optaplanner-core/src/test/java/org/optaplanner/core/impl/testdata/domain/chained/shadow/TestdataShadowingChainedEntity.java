@@ -21,15 +21,14 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataShadowingChainedEntity extends TestdataObject implements TestdataShadowingChainedObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataShadowingChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
+    public static EntityDescriptor<TestdataShadowingChainedSolution> buildEntityDescriptor() {
+        return TestdataShadowingChainedSolution.buildSolutionDescriptor()
+                .findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
     }
 
     private TestdataShadowingChainedObject chainedObject;
