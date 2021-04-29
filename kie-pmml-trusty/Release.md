@@ -1,6 +1,20 @@
 RELEASES
 ========
 
+Clustering model
+================
+
+rel 7.54.0
+----------
+Implemented partial functionality
+
+Currently known limitation:
+
+1. _distributionBased_ models not implemented
+2. _table_ compare function not implemented
+3. Only _euclidean_ and _squaredEuclidean_ aggregation functions are implemented
+4. Target field type must be _string_
+
 Mining model
 ===============
 
@@ -63,17 +77,3 @@ Currently known limitation:
 
 1. _TransformationDictionary_/_LocalTransformation_ not managed
 2. _Expression_ not managed
-
-Clustering model implementation status
-======================================
-
-rel 7.54.0
-----------
-Implemented partial functionality
-
-Currently known limitation:
-
-1. _distributionBased_ models not implemented
-2. _table_ compare function not implemented
-3. Only _euclidean_ and _squaredEuclidean_ aggregation functions are implemented
-4. Target field type must be _string_
