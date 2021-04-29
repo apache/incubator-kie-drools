@@ -236,6 +236,28 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
+    public void testInlineCastForAFieldWithFQN() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address#org.drools.modelcompiler.domain.InternationalAddress.state.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        InternationalAddress a = new InternationalAddress("address", "Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
     public void testInlineCastForAFieldAndMixMethodCall() {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "import " + InternationalAddress.class.getCanonicalName() + ";" +
