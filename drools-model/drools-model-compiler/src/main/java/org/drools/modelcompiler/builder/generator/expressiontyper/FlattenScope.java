@@ -17,7 +17,9 @@
 
 package org.drools.modelcompiler.builder.generator.expressiontyper;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,12 +29,13 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.addon.TypeResolver;
 import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
 
 public class FlattenScope {
 
@@ -81,40 +84,45 @@ public class FlattenScope {
     }
 
     public static Expression transformFullyQualifiedInlineCastExpr( TypeResolver typeResolver, FullyQualifiedInlineCastExpr fqInlineCastExpr ) {
-        String className = findClassName(fqInlineCastExpr.getName(), typeResolver );
+        final Deque<String> expressionNamesWithoutType = new ArrayDeque<>();
+        String className = findClassName(fqInlineCastExpr.getName(), typeResolver, expressionNamesWithoutType);
         Expression scope = fqInlineCastExpr.getScope();
         if (scope instanceof FullyQualifiedInlineCastExpr) {
             scope = transformFullyQualifiedInlineCastExpr( typeResolver, (FullyQualifiedInlineCastExpr) scope );
         }
-        Expression expr = new InlineCastExpr( new ClassOrInterfaceType(className), scope );
 
-        String name = fqInlineCastExpr.getName().asString();
-        if (name.length() > className.length()) {
-            String[] remainings = name.substring( className.length() + 1 ).split( "\\." );
-            for (int i = 0; i < remainings.length - 1; i++) {
-                expr = new FieldAccessExpr( expr, remainings[i] );
+        Expression expr = new InlineCastExpr( parseType(className), scope );
+        // last element is the one with the actual arguments and need a special case
+        if(!expressionNamesWithoutType.isEmpty()) {
+            String lastElement = expressionNamesWithoutType.removeLast();
+
+            // the others will be considered FieldAccessExpr
+            for(String s : expressionNamesWithoutType) {
+                expr = new FieldAccessExpr(expr, s);
             }
             if ( fqInlineCastExpr.hasArguments() ) {
-                expr = new MethodCallExpr( expr, remainings[remainings.length - 1], fqInlineCastExpr.getArguments() );
+                expr = new MethodCallExpr( expr, lastElement, fqInlineCastExpr.getArguments() );
             } else {
-                expr = new FieldAccessExpr( expr, remainings[remainings.length - 1] );
+                expr = new FieldAccessExpr( expr, lastElement );
             }
         }
+
         return expr;
     }
 
-    private static String findClassName(Name name, TypeResolver typeResolver) {
-        return findClassNameRec(Optional.of(name), typeResolver).orElseThrow( () -> new RuntimeException("Cannot find class name in " + name.asString()));
+    private static String findClassName(Name name, TypeResolver typeResolver, Deque<String> remainings) {
+        return findClassNameRec(Optional.of(name), typeResolver, remainings).orElseThrow( () -> new RuntimeException("Cannot find class name in " + name.asString()));
     }
 
-    private static Optional<String> findClassNameRec(Optional<Name> optQualifier, TypeResolver typeResolver) {
+    private static Optional<String> findClassNameRec(Optional<Name> optQualifier, TypeResolver typeResolver, Deque<String> remainings) {
         return optQualifier.flatMap( qualifier -> {
             try {
-                String clasName = qualifier.asString();
-                typeResolver.resolveType(clasName);
-                return Optional.of(clasName);
+                String possibleClassName = qualifier.asString();
+                typeResolver.resolveType(possibleClassName);
+                return Optional.of(possibleClassName);
             } catch (ClassNotFoundException e) {
-                return findClassNameRec(qualifier.getQualifier(), typeResolver);
+                remainings.push(qualifier.getIdentifier());
+                return findClassNameRec(qualifier.getQualifier(), typeResolver, remainings);
             }
         } );
     }
