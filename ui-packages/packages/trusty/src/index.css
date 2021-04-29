@@ -13,9 +13,5 @@ code {
 }
 
 #root {
-  display: block;
-  min-height: 100vh;
-}
-#root > .pf-c-page {
-  min-height: 100vh;
+  height: 100vh;
 }

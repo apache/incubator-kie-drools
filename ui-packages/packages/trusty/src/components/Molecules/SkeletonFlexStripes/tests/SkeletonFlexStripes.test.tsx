@@ -13,6 +13,7 @@ describe('SkeletonFlexStripes', () => {
     );
 
     expect(wrapper).toMatchSnapshot();
+    expect(wrapper.prop('className')).toMatch('skeleton__flex-stripes');
     expect(wrapper.find('SkeletonStripe')).toHaveLength(3);
     expect(
       wrapper
@@ -36,6 +37,8 @@ describe('SkeletonFlexStripes', () => {
     );
 
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.prop('className')).toMatch('skeleton--padded');
+    expect(wrapper.prop('className')).toMatch(
+      'skeleton__flex-stripes skeleton__flex-stripes--padded'
+    );
   });
 });

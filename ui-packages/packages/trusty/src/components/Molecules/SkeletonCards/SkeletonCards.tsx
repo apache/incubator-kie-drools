@@ -17,11 +17,11 @@ const SkeletonCards = (props: SkeletonCardProps) => {
         <div className="skeleton-cards__card">
           <SkeletonStripe
             key={uuid()}
-            customStyle={{ width: 250, height: 25, marginBottom: '20px' }}
+            customStyle={{ width: '90%', height: 25, marginBottom: '20px' }}
           />
           <SkeletonStripe
             key={uuid()}
-            customStyle={{ width: 180, height: 20 }}
+            customStyle={{ width: '60%', height: 20 }}
           />
         </div>
       </GalleryItem>

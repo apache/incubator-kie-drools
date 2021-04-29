@@ -8,10 +8,10 @@ describe('Execution status', () => {
     const icon = wrapper.find('CheckCircleIcon');
 
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('span').text()).toMatch('Completed');
+    expect(wrapper.find('.execution-status span').text()).toMatch('Completed');
     expect(icon).toHaveLength(1);
     expect(
-      icon.hasClass('execution-status-badge execution-status-badge--success')
+      icon.hasClass('execution-status__badge execution-status__badge--success')
     ).toBeTruthy();
   });
 
@@ -20,10 +20,10 @@ describe('Execution status', () => {
     const icon = wrapper.find('ErrorCircleOIcon');
 
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('span').text()).toMatch('Error');
+    expect(wrapper.find('.execution-status span').text()).toMatch('Error');
     expect(icon).toHaveLength(1);
     expect(
-      icon.hasClass('execution-status-badge execution-status-badge--error')
+      icon.hasClass('execution-status__badge execution-status__badge--error')
     ).toBeTruthy();
   });
 });

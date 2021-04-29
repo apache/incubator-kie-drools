@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { PageSection } from '@patternfly/react-core';
+import { PageSection, Stack, StackItem, Title } from '@patternfly/react-core';
 import InputDataBrowser from '../../Organisms/InputDataBrowser/InputDataBrowser';
 import useInputData from './useInputData';
 import { ExecutionRouteParams } from '../../../types';
@@ -11,7 +11,16 @@ const InputData = () => {
 
   return (
     <PageSection>
-      <InputDataBrowser inputData={inputData} />
+      <Stack hasGutter>
+        <StackItem>
+          <Title headingLevel="h3" size="2xl">
+            Input Data
+          </Title>
+        </StackItem>
+        <StackItem>
+          <InputDataBrowser inputData={inputData} />
+        </StackItem>
+      </Stack>
     </PageSection>
   );
 };

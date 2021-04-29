@@ -187,8 +187,8 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                 (saliencies.status === RemoteDataStatus.SUCCESS &&
                   featuresScores.length > 0)) && (
                 <Grid hasGutter>
-                  <GridItem span={8}>
-                    <Card>
+                  <GridItem xl2={8} xl={12}>
+                    <Card className="explanation-view__chart-card">
                       <CardHeader>
                         {topFeaturesScoresBySign.length ? (
                           <Title headingLevel="h4" size="xl">
@@ -261,7 +261,7 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                       </CardBody>
                     </Card>
                   </GridItem>
-                  <GridItem span={4}>
+                  <GridItem xl2={4} xl={12}>
                     <Card className="explanation-view__score-table">
                       <CardHeader>
                         <Title headingLevel={'h4'} size={'lg'}>

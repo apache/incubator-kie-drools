@@ -3,7 +3,8 @@
     text-transform: uppercase;
   }
   &__property {
-    padding: 0 8px;
+    padding: 0 var(--pf-global--spacer--sm);
+    margin-top: var(--pf-global--spacer--sm);
     .pf-c-title {
       font-weight: 400;
     }

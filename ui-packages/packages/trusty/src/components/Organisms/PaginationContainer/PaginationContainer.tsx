@@ -8,6 +8,7 @@ type PaginationContainerProps = {
   paginationId: string;
   onSetPage: (page: number) => void;
   onSetPageSize: (size: number) => void;
+  position: PaginationVariant;
 };
 
 const PaginationContainer = (props: PaginationContainerProps) => {
@@ -17,7 +18,8 @@ const PaginationContainer = (props: PaginationContainerProps) => {
     pageSize,
     paginationId,
     onSetPage,
-    onSetPageSize
+    onSetPageSize,
+    position
   } = props;
 
   const updatePage = (event: never, pageNumber: number) => {
@@ -26,6 +28,7 @@ const PaginationContainer = (props: PaginationContainerProps) => {
   const updatePageSize = (event: never, pageNumber: number) => {
     onSetPageSize(pageNumber);
   };
+
   return (
     <Pagination
       itemCount={total}
@@ -34,7 +37,7 @@ const PaginationContainer = (props: PaginationContainerProps) => {
       onSetPage={updatePage}
       widgetId={paginationId}
       onPerPageSelect={updatePageSize}
-      variant={PaginationVariant.top}
+      variant={position}
     />
   );
 };

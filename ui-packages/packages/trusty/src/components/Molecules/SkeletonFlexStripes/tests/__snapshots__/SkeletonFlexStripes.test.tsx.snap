@@ -2,9 +2,10 @@
 
 exports[`SkeletonFlexStripes renders a list of three stripes 1`] = `
 <Flex
-  className="skeleton skeleton--padded"
+  className="skeleton__flex-stripes skeleton__flex-stripes--padded"
 >
   <FlexItem
+    className="skeleton__flex-stripes__item"
     key="skeleton-0"
   >
     <SkeletonStripe
@@ -17,6 +18,7 @@ exports[`SkeletonFlexStripes renders a list of three stripes 1`] = `
     />
   </FlexItem>
   <FlexItem
+    className="skeleton__flex-stripes__item"
     key="skeleton-1"
   >
     <SkeletonStripe
@@ -29,6 +31,7 @@ exports[`SkeletonFlexStripes renders a list of three stripes 1`] = `
     />
   </FlexItem>
   <FlexItem
+    className="skeleton__flex-stripes__item"
     key="skeleton-2"
   >
     <SkeletonStripe
@@ -45,9 +48,10 @@ exports[`SkeletonFlexStripes renders a list of three stripes 1`] = `
 
 exports[`SkeletonFlexStripes renders a padded list of stripes 1`] = `
 <Flex
-  className="skeleton skeleton--padded"
+  className="skeleton__flex-stripes skeleton__flex-stripes--padded"
 >
   <FlexItem
+    className="skeleton__flex-stripes__item"
     key="skeleton-0"
   >
     <SkeletonStripe
@@ -60,6 +64,7 @@ exports[`SkeletonFlexStripes renders a padded list of stripes 1`] = `
     />
   </FlexItem>
   <FlexItem
+    className="skeleton__flex-stripes__item"
     key="skeleton-1"
   >
     <SkeletonStripe

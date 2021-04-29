@@ -7,9 +7,16 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
   InputGroup,
-  TextInput
+  TextInput,
+  Divider,
+  PaginationVariant,
+  ToolbarToggleGroup
 } from '@patternfly/react-core';
-import { SearchIcon, SyncIcon } from '@patternfly/react-icons';
+import {
+  OutlinedCalendarIcon,
+  SearchIcon,
+  SyncIcon
+} from '@patternfly/react-icons';
 import PaginationContainer from '../PaginationContainer/PaginationContainer';
 import DatePicker from '../../Molecules/DatePicker/DatePicker';
 
@@ -58,95 +65,113 @@ export const AuditToolbarTop = (props: toolbarBaseProps & topToolbarProps) => {
   };
 
   return (
-    <Toolbar id="audit-overview-top-toolbar">
-      <ToolbarContent>
-        <ToolbarItem variant="label">Search</ToolbarItem>
-        <ToolbarItem>
-          <InputGroup>
-            <TextInput
-              name="audit-search-input"
-              ref={searchField}
-              id="audit-search-input"
-              type="search"
-              aria-label="search executions"
-              onKeyDown={onSearchEnter}
-              placeholder="Search by ID"
-            />
-            <Button
-              id="audit-search"
-              variant={ButtonVariant.control}
-              aria-label="search button for search input"
-              onClick={onSearchSubmit}
-            >
-              <SearchIcon />
-            </Button>
-          </InputGroup>
-        </ToolbarItem>
-        <ToolbarItem variant="label">From</ToolbarItem>
-        <ToolbarItem>
-          <DatePicker
-            fromDate={fromDate}
-            maxDate={toDate}
-            value={fromDate}
-            label="Starting date"
-            id="audit-from-date"
-            onDateUpdate={setFromDate}
-          />
-        </ToolbarItem>
-        <ToolbarItem variant="label">To</ToolbarItem>
-        <ToolbarItem>
-          <DatePicker
-            value={toDate}
-            minDate={fromDate}
-            onDateUpdate={setToDate}
-            id="audit-to-date"
-            label="Ending date"
-          />
-        </ToolbarItem>
-        <ToolbarItem>
-          <ToolbarItem>
-            <Button
-              id="executions-refresh"
-              variant="plain"
-              title="Refresh"
-              aria-label="Refresh"
-              onClick={() => onRefresh()}
-            >
-              <SyncIcon />
-            </Button>
+    <>
+      <Toolbar
+        id="audit-overview-top-toolbar"
+        inset={{
+          default: 'insetMd',
+          sm: 'insetMd',
+          md: 'insetMd',
+          xl: 'insetXl'
+        }}
+      >
+        <ToolbarContent>
+          <ToolbarItem
+            spacer={{ default: 'spacerLg', md: 'spacerMd', lg: 'spacerLg' }}
+          >
+            <InputGroup>
+              <TextInput
+                name="audit-search-input"
+                ref={searchField}
+                id="audit-search-input"
+                type="search"
+                aria-label="search executions"
+                onKeyDown={onSearchEnter}
+                placeholder="Search by ID"
+              />
+              <Button
+                id="audit-search"
+                variant={ButtonVariant.control}
+                aria-label="search button for search input"
+                onClick={onSearchSubmit}
+              >
+                <SearchIcon />
+              </Button>
+            </InputGroup>
           </ToolbarItem>
-        </ToolbarItem>
-        <ToolbarItem variant={ToolbarItemVariant.pagination}>
-          <PaginationContainer
-            total={total}
-            page={page}
-            pageSize={pageSize}
-            onSetPage={setPage}
-            onSetPageSize={setPageSize}
-            paginationId="audit-overview-top-pagination"
-          />
-        </ToolbarItem>
-      </ToolbarContent>
-    </Toolbar>
+          <ToolbarToggleGroup
+            toggleIcon={<OutlinedCalendarIcon />}
+            breakpoint={'lg'}
+          >
+            <ToolbarItem variant="label">From</ToolbarItem>
+            <ToolbarItem>
+              <DatePicker
+                fromDate={fromDate}
+                maxDate={toDate}
+                value={fromDate}
+                label="Starting date"
+                id="audit-from-date"
+                onDateUpdate={setFromDate}
+              />
+            </ToolbarItem>
+            <ToolbarItem variant="label">To</ToolbarItem>
+            <ToolbarItem>
+              <DatePicker
+                value={toDate}
+                minDate={fromDate}
+                onDateUpdate={setToDate}
+                id="audit-to-date"
+                label="Ending date"
+              />
+            </ToolbarItem>
+          </ToolbarToggleGroup>
+
+          <ToolbarItem>
+            <ToolbarItem>
+              <Button
+                id="executions-refresh"
+                variant="plain"
+                title="Refresh"
+                aria-label="Refresh"
+                onClick={() => onRefresh()}
+              >
+                <SyncIcon />
+              </Button>
+            </ToolbarItem>
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+      <Divider />
+      <Toolbar>
+        <ToolbarContent>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            <PaginationContainer
+              total={total}
+              page={page}
+              pageSize={pageSize}
+              onSetPage={setPage}
+              onSetPageSize={setPageSize}
+              paginationId="audit-overview-top-pagination"
+              position={PaginationVariant.top}
+            />
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+    </>
   );
 };
 
 export const AuditToolbarBottom = (props: toolbarBaseProps) => {
   const { total, pageSize, page, setPage, setPageSize } = props;
   return (
-    <Toolbar id="audit-overview-bottom-toolbar">
-      <ToolbarContent>
-        <ToolbarItem variant="pagination">
-          <PaginationContainer
-            total={total}
-            page={page}
-            pageSize={pageSize}
-            onSetPage={setPage}
-            onSetPageSize={setPageSize}
-            paginationId="audit-overview-bottom-pagination"
-          />
-        </ToolbarItem>
-      </ToolbarContent>
-    </Toolbar>
+    <PaginationContainer
+      total={total}
+      page={page}
+      pageSize={pageSize}
+      onSetPage={setPage}
+      onSetPageSize={setPageSize}
+      paginationId="audit-overview-bottom-pagination"
+      position={PaginationVariant.bottom}
+    />
   );
 };

@@ -9,11 +9,13 @@ type ExecutionStatusProps = {
 const ExecutionStatus = (props: ExecutionStatusProps) => {
   const { result } = props;
   return (
-    <>
+    <span className="execution-status">
       {result === 'success' && (
         <>
           <CheckCircleIcon
-            className={'execution-status-badge execution-status-badge--success'}
+            className={
+              'execution-status__badge execution-status__badge--success'
+            }
           />
           <span>Completed</span>
         </>
@@ -21,12 +23,12 @@ const ExecutionStatus = (props: ExecutionStatusProps) => {
       {result === 'failure' && (
         <>
           <ErrorCircleOIcon
-            className={'execution-status-badge execution-status-badge--error'}
+            className={'execution-status__badge execution-status__badge--error'}
           />
           <span>Error</span>
         </>
       )}
-    </>
+    </span>
   );
 };
 

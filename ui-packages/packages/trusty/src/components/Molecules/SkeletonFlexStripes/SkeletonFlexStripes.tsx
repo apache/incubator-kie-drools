@@ -17,10 +17,15 @@ const SkeletonFlexStripes = (props: SkeletonFlexStripesProps) => {
     width: stripesWidth,
     height: stripesHeight
   };
-  const className = isPadded ? 'skeleton skeleton--padded' : 'skeleton';
+  const className = `skeleton__flex-stripes ${
+    isPadded ? 'skeleton__flex-stripes--padded' : ''
+  }`;
   for (let i = 0; i < stripesNumber; i++) {
     stripes.push(
-      <FlexItem key={`skeleton-${i}`}>
+      <FlexItem
+        key={`skeleton-${i}`}
+        className={'skeleton__flex-stripes__item'}
+      >
         <SkeletonStripe customStyle={stripeStyle} />
       </FlexItem>
     );

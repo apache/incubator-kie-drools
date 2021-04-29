@@ -5,6 +5,8 @@ import {
   DataListItem,
   DataListItemCells,
   DataListItemRow,
+  Grid,
+  GridItem,
   Title
 } from '@patternfly/react-core';
 import { FeatureScores } from '../../../types';
@@ -26,12 +28,18 @@ const FeaturesScoreTable = (props: FeatureScoreTableProps) => {
 
   return (
     <section className="feature-score-table">
-      {positiveScores && (
-        <ScoreTable name="Positive Weight" featuresScore={positiveScores} />
-      )}
-      {negativeScores && (
-        <ScoreTable name="Negative Weight" featuresScore={negativeScores} />
-      )}
+      <Grid hasGutter={true}>
+        <GridItem xl2={12} xl={6} span={6}>
+          {positiveScores && (
+            <ScoreTable name="Positive Weight" featuresScore={positiveScores} />
+          )}
+        </GridItem>
+        <GridItem xl2={12} xl={6} span={6}>
+          {negativeScores && (
+            <ScoreTable name="Negative Weight" featuresScore={negativeScores} />
+          )}
+        </GridItem>
+      </Grid>
     </section>
   );
 };

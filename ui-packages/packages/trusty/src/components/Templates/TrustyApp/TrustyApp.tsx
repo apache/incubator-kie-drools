@@ -79,7 +79,7 @@ const TrustyApp = () => {
           <Avatar src={imgAvatar} alt="Avatar image" />
         </PageHeaderTools>
       }
-      showNavToggle
+      showNavToggle={isMobileView}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggleDesktop}
       isNavOpen={isMobileView ? isNavOpenMobile : isNavOpenDesktop}
     />
