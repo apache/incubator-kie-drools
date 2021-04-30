@@ -22,9 +22,12 @@ import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -167,6 +170,21 @@ public class DataUtils {
      * @return a perturbed copy of the input features
      */
     public static List<Feature> perturbFeatures(List<Feature> originalFeatures, PerturbationContext perturbationContext) {
+        return perturbFeatures(originalFeatures, perturbationContext, Collections.emptyMap());
+    }
+
+    /**
+     * Perform perturbations on a fixed number of features in the given input.
+     * A map of feature distributions to draw (all, none or some of them) is given.
+     * Which feature will be perturbed is non deterministic.
+     *
+     * @param originalFeatures the input features that need to be perturbed
+     * @param perturbationContext the perturbation context
+     * @param featureDistributionsMap the map of feature distributions
+     * @return a perturbed copy of the input features
+     */
+    public static List<Feature> perturbFeatures(List<Feature> originalFeatures, PerturbationContext perturbationContext,
+            Map<String, FeatureDistribution> featureDistributionsMap) {
         List<Feature> newFeatures = new ArrayList<>(originalFeatures);
         if (!newFeatures.isEmpty()) {
             // perturb at most in the range [|features|/2), noOfPerturbations]
@@ -185,8 +203,14 @@ public class DataUtils {
                         .distinct().limit(perturbationSize).toArray();
                 for (int index : indexesToBePerturbed) {
                     Feature feature = newFeatures.get(index);
+                    Value newValue;
+                    if (featureDistributionsMap.containsKey(feature.getName())) {
+                        newValue = featureDistributionsMap.get(feature.getName()).sample();
+                    } else {
+                        newValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+                    }
                     Feature perturbedFeature =
-                            FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
+                            FeatureFactory.copyOf(feature, newValue);
                     newFeatures.set(index, perturbedFeature);
                 }
             }
@@ -523,5 +547,52 @@ public class DataUtils {
             }
         }
         return new PredictionInputsDataDistribution(inputs);
+    }
+
+    /**
+     * Generate feature distributions from an existing (evantually small) {@link DataDistribution} for each {@link Feature}.
+     * Each feature intervals (min, max) and density information (mean, stdDev) are generated using bootstrap, then
+     * data points are sampled from a normal distribution (see {@link #generateData(double, double, int, Random)}).
+     *
+     * @param dataDistribution data distribution to take feature values from
+     * @param perturbationContext perturbation context
+     * @param featureDistributionSize desired size of generated feature distributions
+     * @param draws number of times sampling from feature values is performed
+     * @param sampleSize size of each sample draw
+     * @return a map feature name -> generated feature distribution
+     */
+    public static Map<String, FeatureDistribution> boostrapFeatureDistributions(DataDistribution dataDistribution,
+            PerturbationContext perturbationContext, int featureDistributionSize, int draws, int sampleSize) {
+        Map<String, FeatureDistribution> featureDistributions = new HashMap<>();
+        for (FeatureDistribution featureDistribution : dataDistribution.asFeatureDistributions()) {
+            Feature feature = featureDistribution.getFeature();
+            if (Type.NUMBER.equals(feature.getType())) {
+                List<Value> values = featureDistribution.getAllSamples();
+                double[] means = new double[draws];
+                double[] stdDevs = new double[draws];
+                double[] mins = new double[draws];
+                double[] maxs = new double[draws];
+                for (int i = 0; i < draws; i++) {
+                    List<Value> sampledValues = DataUtils.sampleWithReplacement(values, sampleSize, perturbationContext.getRandom());
+                    double mean = DataUtils.getMean(sampledValues.stream().mapToDouble(Value::asNumber).toArray());
+                    double stdDev = Math.pow(DataUtils.getStdDev(sampledValues.stream().mapToDouble(Value::asNumber).toArray(), mean), 2);
+                    double min = sampledValues.stream().mapToDouble(Value::asNumber).min().orElse(Double.MIN_VALUE);
+                    double max = sampledValues.stream().mapToDouble(Value::asNumber).max().orElse(Double.MAX_VALUE);
+                    means[i] = mean;
+                    stdDevs[i] = stdDev;
+                    mins[i] = min;
+                    maxs[i] = max;
+                }
+                double finalMean = DataUtils.getMean(means);
+                double finalStdDev = Math.sqrt(DataUtils.getMean(stdDevs));
+                double finalMin = DataUtils.getMean(mins);
+                double finalMax = DataUtils.getMean(maxs);
+                double[] doubles = DataUtils.generateData(finalMean, finalStdDev, featureDistributionSize, perturbationContext.getRandom());
+                double[] boundedData = Arrays.stream(doubles).map(d -> Math.min(Math.max(d, finalMin), finalMax)).toArray();
+                NumericFeatureDistribution numericFeatureDistribution = new NumericFeatureDistribution(feature, boundedData);
+                featureDistributions.put(feature.getName(), numericFeatureDistribution);
+            }
+        }
+        return featureDistributions;
     }
 }

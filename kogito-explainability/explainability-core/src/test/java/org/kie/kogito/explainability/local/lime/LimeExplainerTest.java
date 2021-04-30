@@ -29,14 +29,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.LocalExplanationException;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureImportance;
+import org.kie.kogito.explainability.model.GenericFeatureDistribution;
+import org.kie.kogito.explainability.model.IndependentFeaturesDataDistribution;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.Value;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -170,6 +176,46 @@ class LimeExplainerTest {
         for (FeatureImportance featureImportance : perFeatureImportance) {
             assertThat(featureImportance.getScore()).isBetween(-1d, 1d);
         }
+    }
 
+    @Test
+    void testWithDataDistribution() throws InterruptedException, ExecutionException, TimeoutException {
+        Random random = new Random();
+        random.setSeed(4);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        List<FeatureDistribution> featureDistributions = new ArrayList<>();
+
+        int nf = 4;
+        List<Feature> features = new ArrayList<>();
+        for (int i = 0; i < nf; i++) {
+            Feature mockedNumericFeature = TestUtils.getMockedNumericFeature(i);
+            features.add(mockedNumericFeature);
+            List<Value> values = new ArrayList<>();
+            for (int r = 0; r < 4; r++) {
+                values.add(Type.NUMBER.randomValue(perturbationContext));
+            }
+            featureDistributions.add(new GenericFeatureDistribution(mockedNumericFeature, values));
+        }
+
+        DataDistribution dataDistribution = new IndependentFeaturesDataDistribution(featureDistributions);
+        LimeConfig limeConfig = new LimeConfig()
+                .withDataDistribution(dataDistribution)
+                .withPerturbationContext(perturbationContext)
+                .withSamples(10);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        PredictionInput input = new PredictionInput(features);
+        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionOutput output = model.predictAsync(List.of(input))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                .get(0);
+        Prediction prediction = new Prediction(input, output);
+
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertThat(saliencyMap).isNotNull();
+
+        String decisionName = "sum-but0";
+        Saliency saliency = saliencyMap.get(decisionName);
+        assertThat(saliency).isNotNull();
     }
 }

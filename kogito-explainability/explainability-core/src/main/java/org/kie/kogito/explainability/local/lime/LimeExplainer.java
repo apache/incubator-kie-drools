@@ -27,6 +27,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PerturbationContext;
@@ -307,10 +308,17 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         List<PredictionInput> perturbedInputs = new ArrayList<>();
         // as per LIME paper, the dataset size should be at least |features|^2
         double perturbedDataSize = Math.max(limeConfig.getNoOfSamples(), Math.pow(2, features.size()));
+
+        // generate feature distributions, if possible
+        Map<String, FeatureDistribution> featureDistributionsMap = DataUtils.boostrapFeatureDistributions(
+                limeConfig.getDataDistribution(), perturbationContext, 2 * (int) perturbedDataSize,
+                1, limeConfig.getNoOfSamples());
+
         for (int i = 0; i < perturbedDataSize; i++) {
-            List<Feature> newFeatures = DataUtils.perturbFeatures(features, perturbationContext);
+            List<Feature> newFeatures = DataUtils.perturbFeatures(features, perturbationContext, featureDistributionsMap);
             perturbedInputs.add(new PredictionInput(newFeatures));
         }
         return perturbedInputs;
     }
+
 }

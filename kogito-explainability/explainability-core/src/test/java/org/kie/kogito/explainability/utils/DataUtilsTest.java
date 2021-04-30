@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,8 @@ import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.GenericFeatureDistribution;
+import org.kie.kogito.explainability.model.IndependentFeaturesDataDistribution;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PartialDependenceGraph;
 import org.kie.kogito.explainability.model.PerturbationContext;
@@ -341,6 +344,27 @@ class DataUtilsTest {
         assertThat(largerSamples).isNotNull();
         assertThat(largerSampleSize).isEqualTo(largerSamples.size());
         assertThat(values).contains(largerSamples.get(random.nextInt(largerSampleSize - 1)));
+    }
+
+    @Test
+    void testBootstrap() {
+        List<Value> values = new ArrayList<>();
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        for (int i = 0; i < 4; i++) {
+            values.add(Type.NUMBER.randomValue(perturbationContext));
+        }
+        Feature mockedNumericFeature = TestUtils.getMockedNumericFeature();
+        DataDistribution dataDistribution = new IndependentFeaturesDataDistribution(List.of(
+                new GenericFeatureDistribution(mockedNumericFeature, values)));
+        Map<String, FeatureDistribution> featureDistributionMap = DataUtils.boostrapFeatureDistributions(dataDistribution,
+                perturbationContext, 10, 1, 500);
+        assertThat(featureDistributionMap).isNotNull();
+        assertThat(featureDistributionMap).isNotEmpty();
+        FeatureDistribution actual = featureDistributionMap.get(mockedNumericFeature.getName());
+        assertThat(actual).isNotNull();
+        List<Value> allSamples = actual.getAllSamples();
+        assertThat(allSamples).isNotNull();
+        assertThat(allSamples).hasSize(10);
     }
 
     @Test

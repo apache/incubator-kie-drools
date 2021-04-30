@@ -16,9 +16,12 @@
 package org.kie.kogito.explainability.local.lime;
 
 import java.security.SecureRandom;
+import java.util.Collections;
 
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.EncodingParams;
 import org.kie.kogito.explainability.model.PerturbationContext;
+import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 
 /**
  * Lime explainer configuration parameters.
@@ -29,6 +32,7 @@ public class LimeConfig {
     private static final double DEFAULT_SEPARABLE_DATASET_RATIO = 0.99;
     public static final int DEFAULT_NO_OF_RETRIES = 3;
     private static final boolean DEFAULT_ADAPT_DATASET_VARIANCE = false;
+    private static final DataDistribution EMPTY_DATA_DISTRIBUTION = new PredictionInputsDataDistribution(Collections.emptyList());
     private static final boolean DEFAULT_PENALIZE_BALANCE_SPARSE = false;
     private static final boolean DEFAULT_PROXIMITY_FILTER = true;
     private static final double DEFAULT_PROXIMITY_THRESHOLD = 0.8;
@@ -59,6 +63,13 @@ public class LimeConfig {
      * Whether the explainer should adapt the variance in the generated (perturbed) data when it's not separable.
      */
     private boolean adaptDatasetVariance = DEFAULT_ADAPT_DATASET_VARIANCE;
+
+    private DataDistribution dataDistribution = EMPTY_DATA_DISTRIBUTION;
+
+    public LimeConfig withDataDistribution(DataDistribution dataDistribution) {
+        this.dataDistribution = dataDistribution;
+        return this;
+    }
 
     /**
      * Whether to penalize weights whose sparse features encoding is balanced with respect to target output
@@ -204,5 +215,9 @@ public class LimeConfig {
 
     public boolean isNormalizeWeights() {
         return normalizeWeights;
+    }
+
+    public DataDistribution getDataDistribution() {
+        return dataDistribution;
     }
 }
