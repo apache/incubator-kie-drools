@@ -23,6 +23,8 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 
 public class KiePMMLClusteringModelWithSources extends KiePMMLClusteringModel implements HasSourcesMap {
 
+    private static final long serialVersionUID = 193846378174637261L;
+
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 

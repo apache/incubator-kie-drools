@@ -154,8 +154,9 @@ public class KiePMMLClusteringModelFactory {
 
         if (cluster.getArray() != null && cluster.getArray().getType() == Array.Type.REAL) {
             String arrayStringValue = (String) cluster.getArray().getValue();
+            String[] arrayStringChunks = arrayStringValue.split(" ");
             try {
-                Arrays.stream(arrayStringValue.split(" "))
+                Arrays.stream(arrayStringChunks)
                         .map(Double::parseDouble)
                         .map(DoubleLiteralExpr::new)
                         .forEach(arguments::add);

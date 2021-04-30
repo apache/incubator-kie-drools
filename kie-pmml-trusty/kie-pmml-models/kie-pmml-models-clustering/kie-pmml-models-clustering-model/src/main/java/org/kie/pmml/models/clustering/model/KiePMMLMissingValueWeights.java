@@ -15,17 +15,15 @@
  */
 package org.kie.pmml.models.clustering.model;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class KiePMMLMissingValueWeights {
 
     private final List<Double> values;
 
     public KiePMMLMissingValueWeights(Double... values) {
-        this.values = Collections.unmodifiableList(Stream.of(values).collect(Collectors.toList()));
+        this.values = Arrays.asList(values);
     }
 
     public List<Double> getValues() {

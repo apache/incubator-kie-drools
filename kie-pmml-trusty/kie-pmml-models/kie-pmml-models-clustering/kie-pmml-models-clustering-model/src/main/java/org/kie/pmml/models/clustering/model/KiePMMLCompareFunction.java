@@ -16,8 +16,6 @@
 
 package org.kie.pmml.models.clustering.model;
 
-import java.math.BigDecimal;
-
 import org.kie.pmml.api.enums.Named;
 
 public enum KiePMMLCompareFunction implements Named {
@@ -71,7 +69,7 @@ public enum KiePMMLCompareFunction implements Named {
     }
 
     private static boolean doubleEquals(double x, double y) {
-        return BigDecimal.valueOf(x).compareTo(BigDecimal.valueOf(y)) == 0;
+        return Double.compare(x, y) == 0;
     }
 
     private static final double NEGATIVE_LN_2 = -1.0 * Math.log(2.0);
