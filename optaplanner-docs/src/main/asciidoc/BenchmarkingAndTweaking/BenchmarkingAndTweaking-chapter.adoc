@@ -232,7 +232,7 @@ if it contains malicious data, it can be exploited.
 The `XStreamSolutionFileIO` disables the `XStream` security framework, so it just works out of the box.
 
 If you expose benchmarking in production, use `XStreamSolutionFileIO.getXStream()`
-to enable the security framework and explicitly whitelist all marshalled classes.
+to enable the security framework and explicitly allow all marshalled classes.
 ====
 
 Add XStream annotations (such as ``@XStreamAlias``) on your domain classes to use a less verbose XML format.

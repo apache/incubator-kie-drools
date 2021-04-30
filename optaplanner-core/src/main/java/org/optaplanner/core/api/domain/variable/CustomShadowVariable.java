@@ -51,7 +51,7 @@ public @interface CustomShadowVariable {
     }
 
     /**
-     * The source variables (masters) that trigger a change to this shadow variable (slave).
+     * The source variables (leaders) that trigger a change to this shadow variable (follower).
      *
      * @return never null (unless {@link #variableListenerRef()} is not null), at least 1
      */

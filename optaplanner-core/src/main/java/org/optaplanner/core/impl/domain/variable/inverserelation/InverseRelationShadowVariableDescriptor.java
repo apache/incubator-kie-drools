@@ -61,25 +61,25 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         InverseRelationShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(InverseRelationShadowVariable.class);
         Class<?> variablePropertyType = getVariablePropertyType();
-        Class<?> masterClass;
+        Class<?> sourceClass;
         if (Collection.class.isAssignableFrom(variablePropertyType)) {
             Type genericType = variableMemberAccessor.getGenericType();
-            masterClass = ConfigUtils.extractCollectionGenericTypeParameter(
+            sourceClass = ConfigUtils.extractCollectionGenericTypeParameter(
                     "entityClass", entityDescriptor.getEntityClass(),
                     variablePropertyType, genericType,
                     InverseRelationShadowVariable.class, variableMemberAccessor.getName());
             singleton = false;
         } else {
-            masterClass = variablePropertyType;
+            sourceClass = variablePropertyType;
             singleton = true;
         }
         EntityDescriptor<Solution_> sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
-                .findEntityDescriptor(masterClass);
+                .findEntityDescriptor(sourceClass);
         if (sourceEntityDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
-                    + ") with a masterClass (" + masterClass
+                    + ") with a sourceClass (" + sourceClass
                     + ") which is not a valid planning entity.");
         }
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
