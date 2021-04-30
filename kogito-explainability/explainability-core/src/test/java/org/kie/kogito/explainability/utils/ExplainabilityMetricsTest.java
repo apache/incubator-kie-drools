@@ -38,6 +38,7 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 
 import static java.util.Collections.emptyList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -101,7 +102,7 @@ class ExplainabilityMetricsTest {
         features.add(FeatureFactory.newFulltextFeature("f-0", "brown fox", s -> Arrays.asList(s.split(" "))));
         features.add(FeatureFactory.newTextFeature("f-1", "money"));
         PredictionInput input = new PredictionInput(features);
-        Prediction prediction = new Prediction(
+        Prediction prediction = new SimplePrediction(
                 input,
                 model.predictAsync(List.of(input))
                         .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
@@ -129,7 +130,7 @@ class ExplainabilityMetricsTest {
         features.add(FeatureFactory.newNumericalFeature("f-2", 2));
         features.add(FeatureFactory.newNumericalFeature("f-3", 3));
         PredictionInput input = new PredictionInput(features);
-        Prediction prediction = new Prediction(
+        Prediction prediction = new SimplePrediction(
                 input,
                 model.predictAsync(List.of(input))
                         .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
@@ -148,7 +149,7 @@ class ExplainabilityMetricsTest {
     void testBrokenPredict() {
         Config.INSTANCE.setAsyncTimeout(1);
         Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
-        Prediction emptyPrediction = new Prediction(new PredictionInput(emptyList()), new PredictionOutput(emptyList()));
+        Prediction emptyPrediction = new SimplePrediction(new PredictionInput(emptyList()), new PredictionOutput(emptyList()));
         PredictionProvider brokenProvider = inputs -> supplyAsync(
                 () -> {
                     await().atLeast(1, TimeUnit.SECONDS).until(() -> false);

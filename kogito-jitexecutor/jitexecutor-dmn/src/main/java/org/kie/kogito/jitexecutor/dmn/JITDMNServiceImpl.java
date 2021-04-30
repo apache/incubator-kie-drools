@@ -39,6 +39,7 @@ import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
@@ -83,7 +84,7 @@ public class JITDMNServiceImpl implements JITDMNService {
 
         DMNResult dmnResult = dmnEvaluator.evaluate(context);
 
-        Prediction prediction = new Prediction(LocalDMNPredictionProvider.toPredictionInput(context),
+        Prediction prediction = new SimplePrediction(LocalDMNPredictionProvider.toPredictionInput(context),
                 LocalDMNPredictionProvider.toPredictionOutput(dmnResult));
 
         LimeConfig limeConfig = new LimeConfig()

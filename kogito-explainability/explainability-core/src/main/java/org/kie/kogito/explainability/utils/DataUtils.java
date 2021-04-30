@@ -48,6 +48,7 @@ import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 import org.kie.kogito.explainability.model.PredictionOutput;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
@@ -447,7 +448,7 @@ public class DataUtils {
      */
     public static List<Prediction> getPredictions(List<PredictionInput> inputs, List<PredictionOutput> os) {
         return IntStream.range(0, os.size())
-                .mapToObj(i -> new Prediction(inputs.get(i), os.get(i))).collect(Collectors.toList());
+                .mapToObj(i -> new SimplePrediction(inputs.get(i), os.get(i))).collect(Collectors.toList());
     }
 
     /**

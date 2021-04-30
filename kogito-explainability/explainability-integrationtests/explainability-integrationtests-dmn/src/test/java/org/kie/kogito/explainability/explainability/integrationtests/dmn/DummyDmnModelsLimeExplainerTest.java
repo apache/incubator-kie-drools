@@ -44,6 +44,7 @@ import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
@@ -72,7 +73,7 @@ class DummyDmnModelsLimeExplainerTest {
         PredictionInput predictionInput = new PredictionInput(features);
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
+        Prediction prediction = new SimplePrediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
@@ -125,7 +126,7 @@ class DummyDmnModelsLimeExplainerTest {
         PredictionInput predictionInput = new PredictionInput(features);
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
+        Prediction prediction = new SimplePrediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
@@ -198,7 +199,7 @@ class DummyDmnModelsLimeExplainerTest {
         PredictionInput predictionInput = new PredictionInput(features);
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
+        Prediction prediction = new SimplePrediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 3);

@@ -16,6 +16,7 @@
 package org.kie.kogito.explainability.local.counterfactual;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.model.Output;
@@ -42,16 +43,23 @@ public class CounterfactualSolution {
 
     private BendableBigDecimalScore score;
 
+    private UUID solutionId;
+    private UUID executionId;
+
     protected CounterfactualSolution() {
     }
 
     public CounterfactualSolution(
             List<CounterfactualEntity> entities,
             PredictionProvider model,
-            List<Output> goal) {
+            List<Output> goal,
+            UUID solutionId,
+            UUID executionId) {
         this.entities = entities;
         this.model = model;
         this.goal = goal;
+        this.solutionId = solutionId;
+        this.executionId = executionId;
     }
 
     @PlanningScore(bendableHardLevelsSize = 3, bendableSoftLevelsSize = 1)
@@ -73,5 +81,21 @@ public class CounterfactualSolution {
 
     public List<CounterfactualEntity> getEntities() {
         return entities;
+    }
+
+    public void setSolutionId(UUID solutionId) {
+        this.solutionId = solutionId;
+    }
+
+    public UUID getSolutionId() {
+        return solutionId;
+    }
+
+    public UUID getExecutionId() {
+        return executionId;
+    }
+
+    public void setExecutionId(UUID executionId) {
+        this.executionId = executionId;
     }
 }

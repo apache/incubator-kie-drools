@@ -30,12 +30,14 @@ import java.util.stream.IntStream;
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntityFactory;
+import org.kie.kogito.explainability.model.CounterfactualPrediction;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.DataDomain;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Prediction;
+import org.kie.kogito.explainability.model.PredictionFeatureDomain;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
@@ -56,20 +58,19 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
 
     private static final Logger logger =
             LoggerFactory.getLogger(CounterfactualExplainer.class);
-    private final List<Output> goal;
-    private final DataDomain dataDomain;
-    private final List<Boolean> constraints;
     private final SolverConfig solverConfig;
     private final Executor executor;
-    private final DataDistribution dataDistribution;
-    private final Consumer<CounterfactualSolution> intermediateResultsConsumer;
-    private final Consumer<CounterfactualSolution> finalResultsConsumer;
 
     public static final Consumer<CounterfactualSolution> defaultIntermediateConsumer =
             counterfactual -> logger.debug("Intermediate counterfactual: {}", counterfactual.getEntities());
 
-    public static final Consumer<CounterfactualSolution> defaultFinalConsumer =
-            counterfactual -> logger.debug("Final counterfactual: {}", counterfactual.getEntities());
+    public static final Consumer<CounterfactualSolution> assignSolutionId =
+            counterfactual -> counterfactual.setSolutionId(UUID.randomUUID());
+
+    public CounterfactualExplainer() {
+        this.solverConfig = CounterfactualConfigurationFactory.builder().build();
+        this.executor = ForkJoinPool.commonPool();
+    }
 
     /**
      * Create a new {@link CounterfactualExplainer} using OptaPlanner as the underlying engine.
@@ -80,71 +81,63 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
      * minimum prediction score for a counterfactual to be considered.
      * A customizable OptaPlanner solver configuration can be passed using a {@link SolverConfig}.
      * A {@link Consumer<CounterfactualSolution>} should be provided for the intermediate and final search results.
-     * Note that the final counterfactual is always returned by the prediction method itself, which means that the
-     * consumer for the final counterfactual can be used to other purposes.
      *
-     * @param dataDistribution Characteristics of the data distribution as {@link DataDistribution}, if available
-     * @param dataDomain A {@link DataDomain} which specifies the search space domain
-     * @param contraints A list specifying by index which features are constrained
-     * @param goal A collection of {@link Output} representing the desired outcome
      * @param solverConfig An OptaPlanner {@link SolverConfig} configuration
-     * @param intermediateConsumer A {@link Consumer<CounterfactualSolution>} for the search intermediate result
-     * @param finalConsumer A {@link Consumer<CounterfactualSolution>} for the final intermediate result
      */
-    protected CounterfactualExplainer(DataDistribution dataDistribution,
-            DataDomain dataDomain,
-            List<Boolean> contraints,
-            List<Output> goal,
-            SolverConfig solverConfig,
-            Consumer<CounterfactualSolution> intermediateConsumer,
-            Consumer<CounterfactualSolution> finalConsumer,
+    protected CounterfactualExplainer(SolverConfig solverConfig,
             Executor executor) {
-        this.dataDistribution = dataDistribution;
-        this.dataDomain = dataDomain;
-        this.constraints = contraints;
-        this.goal = goal;
         this.solverConfig = solverConfig;
         this.executor = executor;
-        this.intermediateResultsConsumer = intermediateConsumer;
-        this.finalResultsConsumer = finalConsumer;
     }
 
-    public static Builder builder(List<Output> goal, List<Boolean> constraints, DataDomain dataDomain) {
-        return new Builder(goal, constraints, dataDomain);
+    public static Builder builder() {
+        return new Builder();
     }
 
-    private List<CounterfactualEntity> createEntities(PredictionInput predictionInput) {
+    private static List<CounterfactualEntity> createEntities(PredictionInput predictionInput,
+            PredictionFeatureDomain featureDomain, List<Boolean> constraints, DataDistribution dataDistribution) {
+        final List<FeatureDomain> domains = featureDomain.getFeatureDomains();
         return IntStream.range(0, predictionInput.getFeatures().size())
                 .mapToObj(featureIndex -> {
                     final Feature feature = predictionInput.getFeatures().get(featureIndex);
                     final Boolean isConstrained = constraints.get(featureIndex);
-                    final FeatureDomain featureDomain = dataDomain.getFeatureDomains().get(featureIndex);
+                    final FeatureDomain domain = domains.get(featureIndex);
                     final FeatureDistribution featureDistribution = Optional
                             .ofNullable(dataDistribution)
                             .map(dd -> dd.asFeatureDistributions().get(featureIndex))
                             .orElse(null);
                     return CounterfactualEntityFactory
-                            .from(feature, isConstrained, featureDomain, featureDistribution);
+                            .from(feature, isConstrained, domain, featureDistribution);
                 }).collect(Collectors.toList());
     }
 
     @Override
     public CompletableFuture<CounterfactualResult> explainAsync(Prediction prediction, PredictionProvider model) {
+        CounterfactualPrediction cfPrediction = (CounterfactualPrediction) prediction;
+        final PredictionFeatureDomain featureDomain = cfPrediction.getDomain();
+        final List<Boolean> constraints = cfPrediction.getConstraints();
+        final UUID executionId = cfPrediction.getExecutionId();
+        final List<CounterfactualEntity> entities =
+                CounterfactualExplainer.createEntities(prediction.getInput(), featureDomain, constraints,
+                        cfPrediction.getDataDistribution());
 
-        final List<CounterfactualEntity> entities = createEntities(prediction.getInput());
+        final List<Output> goal = prediction.getOutput().getOutputs();
 
-        final UUID problemId = UUID.randomUUID();
-
-        Function<UUID, CounterfactualSolution> initial = uuid -> new CounterfactualSolution(entities, model, goal);
+        Function<UUID, CounterfactualSolution> initial =
+                uuid -> new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), executionId);
 
         final CompletableFuture<CounterfactualSolution> cfSolution = CompletableFuture.supplyAsync(() -> {
             try (SolverManager<CounterfactualSolution, UUID> solverManager =
                     SolverManager.create(solverConfig, new SolverManagerConfig())) {
 
+                final Consumer<CounterfactualSolution> intermediateResultsConsumer =
+                        cfPrediction.getIntermediateConsumer() == null ? defaultIntermediateConsumer
+                                : cfPrediction.getIntermediateConsumer();
+
                 SolverJob<CounterfactualSolution, UUID> solverJob =
-                        solverManager.solveAndListen(problemId, initial, intermediateResultsConsumer, finalResultsConsumer,
+                        solverManager.solveAndListen(executionId, initial,
+                                assignSolutionId.andThen(intermediateResultsConsumer),
                                 null);
-                CounterfactualSolution solution;
                 try {
                     // Wait until the solving ends
                     return solverJob.getFinalBestSolution();
@@ -163,31 +156,17 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                         s.getEntities().stream().map(CounterfactualEntity::asFeature).collect(Collectors.toList())))));
         return CompletableFuture.allOf(cfOutputs, cfSolution).thenApply(v -> {
             CounterfactualSolution solution = cfSolution.join();
-            return new CounterfactualResult(solution.getEntities(), cfOutputs.join(), solution.getScore().isFeasible());
+            return new CounterfactualResult(solution.getEntities(), cfOutputs.join(), solution.getScore().isFeasible(),
+                    solution.getSolutionId(), solution.getExecutionId());
         });
 
     }
 
     public static class Builder {
-
-        private final DataDomain dataDomain;
-        private final List<Boolean> constraints;
-        private final List<Output> goal;
-        private DataDistribution dataDistribution = null;
         private Executor executor = ForkJoinPool.commonPool();
         private SolverConfig solverConfig = null;
-        private Consumer<CounterfactualSolution> intermediateConsumer = null;
-        private Consumer<CounterfactualSolution> finalConsumer = null;
 
-        private Builder(List<Output> goal, List<Boolean> constraints, DataDomain dataDomain) {
-            this.goal = goal;
-            this.constraints = constraints;
-            this.dataDomain = dataDomain;
-        }
-
-        public Builder withDataDistribution(DataDistribution dataDistribution) {
-            this.dataDistribution = dataDistribution;
-            return this;
+        private Builder() {
         }
 
         public Builder withExecutor(Executor executor) {
@@ -200,35 +179,13 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             return this;
         }
 
-        public Builder withIntermediateConsumer(Consumer<CounterfactualSolution> consumer) {
-            this.intermediateConsumer = consumer;
-            return this;
-        }
-
-        public Builder withFinalConsumer(Consumer<CounterfactualSolution> consumer) {
-            this.finalConsumer = consumer;
-            return this;
-        }
-
         public CounterfactualExplainer build() {
             // Create a default solver configuration if none provided
             if (this.solverConfig == null) {
                 this.solverConfig = CounterfactualConfigurationFactory.builder().build();
             }
-            if (this.intermediateConsumer == null) {
-                this.intermediateConsumer = defaultIntermediateConsumer;
-            }
-
-            if (this.finalConsumer == null) {
-                this.finalConsumer = defaultFinalConsumer;
-            }
-            return new CounterfactualExplainer(dataDistribution,
-                    dataDomain,
-                    constraints,
-                    goal,
+            return new CounterfactualExplainer(
                     solverConfig,
-                    intermediateConsumer,
-                    finalConsumer,
                     executor);
         }
     }

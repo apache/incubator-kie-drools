@@ -41,6 +41,7 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
@@ -66,7 +67,7 @@ class LimeExplainerTest {
         PredictionOutput output = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
                 .get(0);
-        Prediction prediction = new Prediction(input, output);
+        Prediction prediction = new SimplePrediction(input, output);
 
         assertThrows(LocalExplanationException.class, () -> limeExplainer.explainAsync(prediction, model));
     }
@@ -89,7 +90,7 @@ class LimeExplainerTest {
         PredictionOutput output = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
                 .get(0);
-        Prediction prediction = new Prediction(input, output);
+        Prediction prediction = new SimplePrediction(input, output);
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         assertNotNull(saliencyMap);
@@ -117,7 +118,7 @@ class LimeExplainerTest {
             PredictionOutput output = model.predictAsync(List.of(input))
                     .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
                     .get(0);
-            Prediction prediction = new Prediction(input, output);
+            Prediction prediction = new SimplePrediction(input, output);
 
             Map<String, Saliency> saliencyMapNoPenalty = limeExplainerNoPenalty.explainAsync(prediction, model)
                     .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -164,7 +165,7 @@ class LimeExplainerTest {
         PredictionOutput output = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
                 .get(0);
-        Prediction prediction = new Prediction(input, output);
+        Prediction prediction = new SimplePrediction(input, output);
 
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -208,7 +209,7 @@ class LimeExplainerTest {
         PredictionOutput output = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
                 .get(0);
-        Prediction prediction = new Prediction(input, output);
+        Prediction prediction = new SimplePrediction(input, output);
 
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());

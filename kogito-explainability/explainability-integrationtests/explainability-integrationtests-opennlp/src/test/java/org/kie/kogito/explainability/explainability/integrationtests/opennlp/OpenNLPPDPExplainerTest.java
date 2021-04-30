@@ -30,6 +30,7 @@ import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
@@ -75,7 +76,7 @@ class OpenNLPPDPExplainerTest {
             features.add(FeatureFactory.newFulltextFeature("text", text));
             PredictionInput predictionInput = new PredictionInput(features);
             PredictionOutput predictionOutput = model.predictAsync(List.of(predictionInput)).get().get(0);
-            predictions.add(new Prediction(predictionInput, predictionOutput));
+            predictions.add(new SimplePrediction(predictionInput, predictionOutput));
         }
         List<PartialDependenceGraph> pdps = partialDependencePlotExplainer.explainFromPredictions(model, predictions);
         assertThat(pdps).isNotEmpty();

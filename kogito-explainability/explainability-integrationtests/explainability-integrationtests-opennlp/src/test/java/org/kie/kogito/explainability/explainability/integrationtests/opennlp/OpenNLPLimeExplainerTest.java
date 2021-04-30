@@ -41,6 +41,7 @@ import org.kie.kogito.explainability.model.PredictionInputsDataDistribution;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
@@ -105,7 +106,7 @@ class OpenNLPLimeExplainerTest {
         assertEquals("ita", output.getOutputs().get(0).getValue().asString());
         assertEquals(0.03, output.getOutputs().get(0).getScore(), 1e-2);
 
-        Prediction prediction = new Prediction(input, output);
+        Prediction prediction = new SimplePrediction(input, output);
 
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());

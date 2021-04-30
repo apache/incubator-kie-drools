@@ -34,6 +34,7 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class ExplanationServiceImpl implements ExplanationService {
     private static Prediction getPrediction(Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
         PredictionInput input = getPredictionInput(inputs);
         PredictionOutput output = getPredictionOutput(outputs);
-        return new Prediction(input, output);
+        return new SimplePrediction(input, output);
     }
 
     private static PredictionInput getPredictionInput(Map<String, TypedValue> inputs) {

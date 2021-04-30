@@ -40,6 +40,7 @@ import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.utils.DataUtils;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -62,7 +63,7 @@ class LoanEligibilityDmnPDPExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new Prediction(inputs.get(i), predictionOutputs.get(i)));
+            predictions.add(new SimplePrediction(inputs.get(i), predictionOutputs.get(i)));
         }
 
         PartialDependencePlotExplainer partialDependencePlotExplainer = new PartialDependencePlotExplainer();

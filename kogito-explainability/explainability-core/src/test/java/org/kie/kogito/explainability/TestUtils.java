@@ -100,7 +100,8 @@ public class TestUtils {
                     }
                 }
                 PredictionOutput predictionOutput = new PredictionOutput(
-                        List.of(new Output("sum-even-but" + skipFeatureIndex, Type.BOOLEAN, new Value(((int) result) % 2 == 0), 1d)));
+                        List.of(new Output("sum-even-but" + skipFeatureIndex, Type.BOOLEAN, new Value(((int) result) % 2 == 0),
+                                1d)));
                 predictionOutputs.add(predictionOutput);
             }
             return predictionOutputs;
