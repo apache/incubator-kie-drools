@@ -739,6 +739,13 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     public int hashCode() {
         if (isAlphaHashable()) {
             return 29 * getLeftInExpression(IndexUtil.ConstraintType.EQUAL).hashCode() + 31 * fieldValue.hashCode();
+        } else if (isAlphaRangeIndexable()) {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getLeftInExpression(constraintType).hashCode();
+            result = prime * result + constraintType.hashCode();
+            result = prime * result + fieldValue.hashCode();
+            return result;
         }
         return expression.hashCode();
     }
@@ -749,6 +756,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     private boolean isAlphaHashable() {
         return fieldValue != null && constraintType == IndexUtil.ConstraintType.EQUAL && getType() == ConstraintType.ALPHA;
+    }
+
+    private boolean isAlphaRangeIndexable() {
+        return fieldValue != null && (constraintType.isAscending() || constraintType.isDescending()) && getType() == ConstraintType.ALPHA;
     }
 
     public boolean equals(final Object object) {
@@ -762,6 +773,13 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         if (isAlphaHashable()) {
             if (!other.isAlphaHashable() ||
                     !getLeftInExpression(IndexUtil.ConstraintType.EQUAL).equals(other.getLeftInExpression(IndexUtil.ConstraintType.EQUAL)) ||
+                    !fieldValue.equals(other.fieldValue)) {
+                return false;
+            }
+        } else if (isAlphaRangeIndexable()) {
+            if (!other.isAlphaRangeIndexable() ||
+                    !constraintType.equals(other.constraintType) ||
+                    !getLeftInExpression(constraintType).equals(other.getLeftInExpression(other.constraintType)) ||
                     !fieldValue.equals(other.fieldValue)) {
                 return false;
             }
