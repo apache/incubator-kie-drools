@@ -19,6 +19,11 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
+    <!-- ensure Quarkus' openapi takes precedence over the v7 dependency -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
     <dependency><!-- Leverage easily the best POM from: -->
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId>

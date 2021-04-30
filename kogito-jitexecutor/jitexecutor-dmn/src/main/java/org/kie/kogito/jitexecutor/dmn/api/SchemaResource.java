@@ -31,6 +31,7 @@ import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
+import org.eclipse.microprofile.openapi.spi.OASFactoryResolver;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -48,7 +49,11 @@ import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 public class SchemaResource {
 
     // trick for resolver/implementation for NI
-    static final OpenAPI x = OASFactory.createObject(OpenAPI.class);
+    static final OpenAPI x;
+    static {
+        OASFactoryResolver.instance();
+        x = OASFactory.createObject(OpenAPI.class);
+    }
 
     private static DMNModel modelFromXML(String modelXML) {
         Resource modelResource = ResourceFactory.newReaderResource(new StringReader(modelXML), "UTF-8");

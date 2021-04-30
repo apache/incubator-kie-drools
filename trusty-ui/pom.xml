@@ -158,7 +158,7 @@
                 <include>**/Keycloak*IT.java</include>
               </includes>
               <systemPropertyVariables>
-                <quarkus.test.profile>keycloak</quarkus.test.profile>
+                <quarkus.test.profile>keycloak-test</quarkus.test.profile>
                 <enable.resource.keycloak>true</enable.resource.keycloak>
                 <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
                 <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>

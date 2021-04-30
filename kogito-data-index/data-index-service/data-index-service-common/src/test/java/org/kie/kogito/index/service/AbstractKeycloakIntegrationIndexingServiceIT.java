@@ -78,11 +78,11 @@ abstract class AbstractKeycloakIntegrationIndexingServiceIT {
     }
 
     private void assertIsLoginPage(Response response) {
-        assertThat(response.andReturn().body().asString()).contains("<title>Log in to kogito</title>");
+        assertThat(response.andReturn().body().asString()).contains("<title>Sign in to kogito</title>");
     }
 
     private void assertIsNotLoginPage(Response response) {
-        assertThat(response.andReturn().body().asString()).doesNotContain("<title>Log in to kogito</title>");
+        assertThat(response.andReturn().body().asString()).doesNotContain("<title>Sign in to kogito</title>");
     }
 
     private String getAccessToken(String userName) {
