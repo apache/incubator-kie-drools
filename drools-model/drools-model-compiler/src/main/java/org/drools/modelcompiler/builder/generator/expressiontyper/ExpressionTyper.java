@@ -75,6 +75,7 @@ import org.drools.modelcompiler.builder.generator.operatorspec.NativeOperatorSpe
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
@@ -109,6 +110,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.transformDrlNameExprToNameExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
+import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
 import static org.drools.modelcompiler.util.ClassUtil.getTypeArgument;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.MvelParser.parseType;
@@ -122,7 +124,6 @@ public class ExpressionTyper {
     private String bindingId;
     private boolean isPositional;
     private final ExpressionTyperContext context;
-    private final List<Expression> prefixExpressions;
 
     private static final Logger logger          = LoggerFactory.getLogger(ExpressionTyper.class);
 
@@ -142,7 +143,6 @@ public class ExpressionTyper {
         this.bindingId = bindingId;
         this.isPositional = isPositional;
         this.context = context;
-        this.prefixExpressions = context.getPrefixExpresssions();
     }
 
     public TypedExpressionResult toTypedExpression(Expression drlxExpr) {
@@ -162,6 +162,10 @@ public class ExpressionTyper {
     private Optional<TypedExpression> toTypedExpressionRec(Expression drlxExpr) {
 
         Class<?> typeCursor = patternType;
+
+        if (drlxExpr instanceof FullyQualifiedInlineCastExpr ) {
+            return toTypedExpressionRec( transformFullyQualifiedInlineCastExpr( ruleContext.getTypeResolver(), (FullyQualifiedInlineCastExpr) drlxExpr ) );
+        }
 
         if (drlxExpr instanceof EnclosedExpr) {
             Expression inner = ((EnclosedExpr) drlxExpr).getInner();
@@ -291,6 +295,8 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof ClassExpr ) {
             return of(new TypedExpression(drlxExpr, Class.class));
+        } else if (drlxExpr instanceof InlineCastExpr ) {
+            return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if(drlxExpr.isAssignExpr()) {
             AssignExpr assignExpr = drlxExpr.asAssignExpr();
 
@@ -421,9 +427,13 @@ public class ExpressionTyper {
             originalTypeCursor = originalTypeCursorFromInlineCast(inlineCast);
             firstNode = inlineCast.getExpression();
 
-            if(inlineCast.getExpression().isThisExpr()) {
+            if (inlineCast.getExpression().isThisExpr()) {
                 context.setInlineCastExpression(
-                        Optional.of(new InstanceOfExpr(new NameExpr(THIS_PLACEHOLDER), (ReferenceType) inlineCast.getType())));
+                        Optional.of(new InstanceOfExpr(new NameExpr(THIS_PLACEHOLDER), (ReferenceType) inlineCast.getType())) );
+            } else {
+                context.setInlineCastExpression(
+                    toTypedExpression(inlineCast.getExpression()).getTypedExpression().map( TypedExpression::getExpression )
+                            .map( expr ->  new InstanceOfExpr(expr, (ReferenceType) inlineCast.getType())) );
             }
         } else {
             originalTypeCursor = patternType;
@@ -486,6 +496,7 @@ public class ExpressionTyper {
                 }
                 final Class<?> castClass = getClassFromType(ruleContext.getTypeResolver(), inlineCastExprPart.getType());
                 previous = addCastToExpression(castClass, toMethodCallExpr.getExpression(), false);
+                typeCursor = castClass;
 
             } else if (part instanceof ArrayAccessExpr) {
                 final ArrayAccessExpr inlineCastExprPart = (ArrayAccessExpr) part;
@@ -683,7 +694,7 @@ public class ExpressionTyper {
     }
 
     private void addNullSafeExpression( Expression scope ) {
-        toTypedExpressionRec(scope).ifPresent(te -> prefixExpressions.add(0, new BinaryExpr(te.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS)));
+        toTypedExpressionRec(scope).ifPresent(te -> context.addPrefixExpression(0, new BinaryExpr(te.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS)));
     }
 
     private TypedExpressionCursor binaryExpr( BinaryExpr binaryExpr ) {
@@ -1050,7 +1061,7 @@ public class ExpressionTyper {
 
     private Expression addCastToExpression( Type castType, Expression previous, boolean isInLineCast ) {
         if (isInLineCast) {
-            prefixExpressions.add( new InstanceOfExpr( previous, ( ReferenceType ) castType ) );
+            context.addPrefixExpression( new InstanceOfExpr( previous, ( ReferenceType ) castType ) );
         }
         previous = new EnclosedExpr(new CastExpr(castType, previous));
         return previous;

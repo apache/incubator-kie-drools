@@ -60,6 +60,14 @@ public class ExpressionTyperContext {
         return prefixExpresssions;
     }
 
+    public void addPrefixExpression(int index, Expression prefixExpresssion) {
+        prefixExpresssions.add(index, prefixExpresssion);
+    }
+
+    public void addPrefixExpression(Expression prefixExpresssion) {
+        prefixExpresssions.add(prefixExpresssion);
+    }
+
     public void setRegisterPropertyReactivity( boolean registerPropertyReactivity ) {
         this.registerPropertyReactivity = registerPropertyReactivity;
     }
