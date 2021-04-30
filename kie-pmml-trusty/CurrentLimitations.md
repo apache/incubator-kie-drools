@@ -103,4 +103,5 @@ Clustering model
 1. _distributionBased_ models not implemented
 2. _table_ compare function not implemented
 3. Only _euclidean_ and _squaredEuclidean_ aggregation functions are implemented
-4. Target field type must be _string_
+4. Input field type must be numerical (_integer_ / _double_)
+5. Target field type must be _string_
