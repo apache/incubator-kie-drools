@@ -400,10 +400,12 @@ public abstract class AbstractHashTable
     public static class IndexTupleList extends TupleList {
         private HashEntry hashEntry;
         private Index index;
+        private int hashCode;
 
         public IndexTupleList( Index index, HashEntry hashEntry ) {
             this.index = index;
             this.hashEntry = hashEntry;
+            this.hashCode = hashEntry.hashCode();
         }
 
         @Override
@@ -412,12 +414,12 @@ public abstract class AbstractHashTable
                 return false;
             }
             final IndexTupleList other = (IndexTupleList) object;
-            return this.hashEntry.hashCode() == other.hashEntry.hashCode() && this.index == other.index;
+            return this.hashCode == other.hashCode && this.index == other.index;
         }
 
         @Override
         public int hashCode() {
-            return this.hashEntry.hashCode();
+            return this.hashCode;
         }
 
         @Override
@@ -425,6 +427,7 @@ public abstract class AbstractHashTable
             super.copyStateInto( other );
             ( (IndexTupleList) other ).hashEntry = hashEntry;
             ( (IndexTupleList) other ).index = index;
+            ( (IndexTupleList) other ).hashCode = hashCode;
         }
 
         public HashEntry getHashEntry() {
