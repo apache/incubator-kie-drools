@@ -1976,6 +1976,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	NodeList<Expression> args = emptyList();
 	boolean hasArgs = false;
 	SimpleName name;
+	Name fqname;
 	Type type;
 	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
 }
@@ -1995,7 +1996,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 			if (hasArgs) {
 	  			ret = new MethodCallExpr(range(scope, token()), scope, typeArgs.list, name, args);
 			} else {
-	  			ret =  new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
+	  			ret = new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
 			}
 	  	}
 	)
@@ -2005,9 +2006,15 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	|
 	  "#"
 	  (
-	    name = SimpleName() { ret = new InlineCastExpr(range(scope, token()),
-	                                                   new ClassOrInterfaceType(range(scope, token()), null, name, null, annotations),
-	                                                   scope); }
+	    fqname = Name()
+	  	[ args = Arguments() {hasArgs=true;} ]
+	  	{
+			if (hasArgs) {
+	  			ret = new FullyQualifiedInlineCastExpr(range(scope, token()), scope, fqname, args);
+			} else {
+	  			ret = new FullyQualifiedInlineCastExpr(range(scope, token()), scope, fqname);
+			}
+	  	}
 	  |
 	    "(" type = Type(emptyList()) ")" { ret = new InlineCastExpr(range(scope, token()), type, scope); }
 	  )

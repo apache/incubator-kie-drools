@@ -117,14 +117,15 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
-import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
+import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.mvel.parser.ast.expr.OOPathChunk;
@@ -157,6 +158,8 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
     default R visit(RuleConsequence n, A arg) { return defaultMethod(n, arg); }
 
     default R visit(InlineCastExpr n, A arg) { return defaultMethod(n, arg); }
+
+    default R visit( FullyQualifiedInlineCastExpr n, A arg) { return defaultMethod(n, arg); }
 
     default R visit(NullSafeFieldAccessExpr n, A arg) { return defaultMethod(n, arg); }
 
