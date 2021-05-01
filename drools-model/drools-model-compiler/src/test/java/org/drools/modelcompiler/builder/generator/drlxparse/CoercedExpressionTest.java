@@ -36,7 +36,7 @@ public class CoercedExpressionTest {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".doubleValue()", double.class);
         final TypedExpression right = expr("0", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertEquals(expr("0d", double.class), coerce.getCoercedRight());
+        assertEquals(expr("0.0", double.class), coerce.getCoercedRight());
     }
 
     @Test
