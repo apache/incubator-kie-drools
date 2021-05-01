@@ -287,6 +287,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
         }
+        if (vtype.isDecimalNumber() && field.getValue() != null) {
+            expr = expr.replace( rightValue, field.getValue().toString() );
+        }
         // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
         return normalizeEmptyKeyword( expr, operator );
     }

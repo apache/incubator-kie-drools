@@ -253,7 +253,13 @@ public class CoercedExpression {
             return new LongLiteralExpr(isLongLiteral(value) ? expr.getValue() : expr.getValue() + "l");
         }
         if (type == double.class || type == Double.class) {
-            return new DoubleLiteralExpr(expr.getValue().endsWith("d") ? expr.getValue() : expr.getValue() + "d");
+            String doubleExpr = expr.getValue();
+            try {
+                doubleExpr = Double.valueOf( doubleExpr ).toString();
+            } catch (NumberFormatException nfe) {
+                // safe to ignore
+            }
+            return new DoubleLiteralExpr(doubleExpr);
         }
         throw new CoercedExpressionException(new InvalidExpressionErrorResult("Unknown literal: " + expr));
     }
