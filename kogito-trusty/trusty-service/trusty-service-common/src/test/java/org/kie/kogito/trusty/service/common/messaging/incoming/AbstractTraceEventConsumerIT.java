@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -59,6 +60,7 @@ public abstract class AbstractTraceEventConsumerIT {
     }
 
     @Test
+    @Disabled("https://issues.redhat.com/browse/KOGITO-4318")
     void testCorrectCloudEvent() throws JsonProcessingException, JSONException {
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(TrustyServiceTestUtils.CORRECT_CLOUDEVENT_ID)),
                 KafkaConstants.KOGITO_TRACING_TOPIC);
@@ -73,6 +75,7 @@ public abstract class AbstractTraceEventConsumerIT {
     }
 
     @Test
+    @Disabled("https://issues.redhat.com/browse/KOGITO-4318")
     void testCloudEventWithErrors() throws JsonProcessingException, JSONException {
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildTraceEventWithErrors()),
                 KafkaConstants.KOGITO_TRACING_TOPIC);
