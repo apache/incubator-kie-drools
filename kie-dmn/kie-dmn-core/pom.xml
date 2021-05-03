@@ -230,9 +230,9 @@
       <artifactId>yasson</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.openapi</groupId>
-      <artifactId>microprofile-openapi-api</artifactId>
+    <dependency> <!-- rely on SmallRye OpenAPI to define the Eclipse MP OAS API to be using for the tests -->
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
