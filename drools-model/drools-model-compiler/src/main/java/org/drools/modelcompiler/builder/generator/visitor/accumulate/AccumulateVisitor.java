@@ -73,7 +73,13 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.*;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
 import static org.drools.modelcompiler.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambda;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
