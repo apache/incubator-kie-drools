@@ -17,8 +17,6 @@ package org.kie.pmml.models.tree.compiler.utils;
 
 import java.util.UUID;
 
-import org.dmg.pmml.tree.Node;
-
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
@@ -30,12 +28,12 @@ public class KiePMMLTreeModelUtils {
     private KiePMMLTreeModelUtils() {
     }
 
-    public static String getNodeFullClassName(final String packageName) {
-        String nodeClassName = getNodeClassName();
+    public static String createNodeFullClassName(final String packageName) {
+        String nodeClassName = createNodeClassName();
         return String.format(PACKAGE_CLASS_TEMPLATE, packageName, nodeClassName);
     }
 
-    public static String getNodeClassName() {
+    public static String createNodeClassName() {
         String rawName = "Node" + UUID.randomUUID();
         return getSanitizedClassName(rawName);
     }

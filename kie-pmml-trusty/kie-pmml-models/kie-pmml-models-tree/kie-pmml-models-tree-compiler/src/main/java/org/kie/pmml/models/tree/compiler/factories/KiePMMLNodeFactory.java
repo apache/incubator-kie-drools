@@ -40,7 +40,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -68,7 +67,7 @@ import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
-import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.getNodeClassName;
+import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
 public class KiePMMLNodeFactory {
 
@@ -93,7 +92,7 @@ public class KiePMMLNodeFactory {
                                              final String packageName,
                                              final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLTreeNode {} {}", packageName, node);
-        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, getNodeClassName(), null);
+        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null);
         final Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary, packageName);
         String fullClassName = packageName + "." + nodeNamesDTO.nodeClassName;
         try {
@@ -533,7 +532,7 @@ public class KiePMMLNodeFactory {
             if (node.hasNodes()) {
                 childrenNodes = new LinkedHashMap<>();
                 for (Node nestedNode : node.getNodes()) {
-                    childrenNodes.put(nestedNode, KiePMMLTreeModelUtils.getNodeClassName());
+                    childrenNodes.put(nestedNode, KiePMMLTreeModelUtils.createNodeClassName());
                 }
             } else {
                 childrenNodes = Collections.emptyMap();

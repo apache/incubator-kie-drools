@@ -39,7 +39,7 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        // TODO
+        // TODO fix with common management of outputfields ticket DROOLS-6218
         throw new UnsupportedOperationException();
     }
 
