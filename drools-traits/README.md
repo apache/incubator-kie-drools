@@ -101,7 +101,7 @@ IsA EvaluatorDefinition
 The isA operator used in traits was removed from the default evaluators and moved to the traits module
 https://github.com/kiegroup/drools/pull/2887/files#diff-add6d202fbcf44eade6dcbb67a273815
 
-When needed, it has to be defined explictly such as in 
+When needed, it has to be defined explicitly such as in 
 https://github.com/kiegroup/drools/pull/2887/files#diff-a5a9d687ff07d8c0de153da39d6ba177R36
 
 Static helper Methods

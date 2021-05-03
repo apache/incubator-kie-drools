@@ -25,12 +25,20 @@ public enum ContainsOperator implements Operator.SingleValue<Object, Object> {
     INSTANCE;
 
     @Override
+    public boolean isCompatibleWithType(Class<?> type) {
+        return Collection.class.isAssignableFrom( type ) || type.isArray() || type == String.class;
+    }
+
+    @Override
     public boolean eval( Object container, Object value ) {
         if ( container instanceof Collection ) {
             return (( Collection ) container).contains( value );
         }
         if ( container != null && container.getClass().isArray() && evalArray( container, value ) ) {
             return true;
+        }
+        if ( container instanceof String && value instanceof String ) {
+            return (( String ) container).contains( ( String ) value );
         }
         return false;
     }

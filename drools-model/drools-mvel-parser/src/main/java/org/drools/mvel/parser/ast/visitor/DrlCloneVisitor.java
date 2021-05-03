@@ -22,6 +22,7 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
@@ -87,6 +88,11 @@ public class DrlCloneVisitor extends CloneVisitor implements DrlGenericVisitor<V
 
     @Override
     public Visitable visit(InlineCastExpr n, Object arg) {
+        return null;
+    }
+
+    @Override
+    public Visitable visit(FullyQualifiedInlineCastExpr n, Object arg) {
         return null;
     }
 
