@@ -47,6 +47,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.spi.Activation;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -3917,5 +3918,75 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(112, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateOnSet() {
+        String str =
+                "import java.util.*;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
+                "rule R when\n" +
+                "    Set($size: size) from accumulate( $p: Person(); collectSet($p) )" +
+                "then\n" +
+                "  holder.set($size); \n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        AtomicReference<Integer> holder = new AtomicReference<>(0);
+        ksession.setGlobal("holder", holder);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+        assertEquals(3, (int)holder.get());
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+    }
+
+    @Test
+    public void testNestedAccumulates() {
+        // DROOLS-6202
+        String str =
+                "import java.util.*;\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Activation.class.getCanonicalName() + ";\n" +
+                        "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
+                        "rule R when\n" +
+                        "  accumulate( $set: Set() from accumulate( $p: Person(); collectSet($p) ); $max: max($set.size()) )\n" +
+                        "then\n" +
+                        "  Activation activation = (Activation) drools.getMatch(); \n" +
+                        "  activation.getObjectsDeep(); \n" +
+                        "  holder.set($max); \n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        AtomicReference<Integer> holder = new AtomicReference<>(0);
+        ksession.setGlobal("holder", holder);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+        assertEquals(3, (int)holder.get());
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+        assertEquals(4, (int)holder.get());
     }
 }
