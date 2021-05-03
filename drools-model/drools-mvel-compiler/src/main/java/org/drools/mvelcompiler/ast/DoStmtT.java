@@ -20,35 +20,30 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.DoStmt;
+import com.github.javaparser.ast.stmt.Statement;
 
-public class ObjectCreationExpressionT implements TypedExpression {
+public class DoStmtT implements TypedExpression {
 
-    private final Class<?> type;
+    private final TypedExpression condition;
+    private final TypedExpression body;
 
-    ObjectCreationExpr originalExpression;
-
-    public ObjectCreationExpressionT(ObjectCreationExpr originalExpression, Class<?> type) {
-        this.originalExpression = originalExpression;
-        this.type = type;
+    public DoStmtT(TypedExpression condition, TypedExpression body) {
+        this.condition = condition;
+        this.body = body;
     }
 
     @Override
     public Optional<Type> getType() {
-        return Optional.of(type);
+        return Optional.empty();
     }
 
     @Override
     public Node toJavaExpression() {
-        return originalExpression;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ObjectCreationExpressionT{");
-        sb.append("originalExpression=").append(originalExpression);
-        sb.append("type=").append(type);
-        sb.append('}');
-        return sb.toString();
+        DoStmt stmt = new DoStmt();
+        stmt.setCondition((Expression) condition.toJavaExpression());
+        stmt.setBody((Statement) body.toJavaExpression());
+        return stmt;
     }
 }

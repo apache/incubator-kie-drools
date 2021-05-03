@@ -17,28 +17,24 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.stmt.SwitchEntry;
+import com.github.javaparser.ast.stmt.SwitchStmt;
 
-import static org.drools.mvelcompiler.util.CoercionUtils.PUT_CALL;
-import static org.drools.mvelcompiler.util.CoercionUtils.coerceMapValueToString;
+public class SwitchStmtT implements TypedExpression {
 
-public class MapPutExprT implements TypedExpression {
+    private final TypedExpression selector;
+    private final List<TypedExpression> entries;
 
-    private final TypedExpression name;
-    private final Expression key;
-    private final TypedExpression value;
-    private final Optional<Type> type;
-
-    public MapPutExprT(TypedExpression name, Expression key, TypedExpression value, Optional<Type> type) {
-        this.name = name;
-        this.key = key;
-        this.value = value;
-        this.type = type;
+    public SwitchStmtT(TypedExpression selector, List<TypedExpression> entries) {
+        this.selector = selector;
+        this.entries = entries;
     }
 
     @Override
@@ -48,11 +44,13 @@ public class MapPutExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        final Expression originalValue = (Expression) this.value.toJavaExpression();
-        final Expression coercedValue = coerceMapValueToString(type, originalValue);
+        SwitchStmt stmt = new SwitchStmt();
+        stmt.setSelector((Expression) selector.toJavaExpression());
 
-        return new MethodCallExpr((Expression) name.toJavaExpression(),
-                                  PUT_CALL,
-                                  NodeList.nodeList(key, coercedValue));
+        stmt.setEntries(NodeList.nodeList(entries.stream().map(TypedExpression::toJavaExpression)
+                                                 .map(SwitchEntry.class::cast)
+                                                 .collect(Collectors.toList())));
+
+        return stmt;
     }
 }
