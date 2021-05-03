@@ -1,0 +1,62 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+    <Header/>
+    <DataDictionary numberOfFields="4">
+        <DataField name="workToDo" optype="categorical" dataType="string">
+            <Value value="YES" />
+            <Value value="NO" />
+            <Value value="MAYBE" />
+        </DataField>
+        <DataField name="weather" optype="categorical" dataType="string">
+            <Value value="sunny" />
+            <Value value="overcast" />
+            <Value value="rainy" />
+        </DataField>
+        <DataField name="friendsAvailable" optype="continuous" dataType="boolean" />
+        <DataField name="activity" optype="categorical" dataType="string">
+            <Value value="stay in" />
+            <Value value="go to beach" />
+            <Value value="go to movie" />
+            <Value value="running" />
+            <Value value="yesOrNo" />
+        </DataField>
+    </DataDictionary>
+    <TreeModel modelName="PlanActivityTreeModel" functionName="classification">
+        <MiningSchema>
+            <MiningField name="activity" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="workToDo" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="weather" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="friendsAvailable" usageType="active" invalidValueTreatment="returnInvalid"/>
+        </MiningSchema>
+        <Output>
+          <!--
+          In JPMML, the result is represented by String object. It is possible to find result by "activity" field.
+          Object is not able to cast to String.
+          !-->
+          <OutputField name="Predicted_activity" optype="categorical" dataType="string" feature="predictedValue"/>
+        </Output>
+        <Node id="wtd" score="yesOrNo">
+            <True />
+            <Node id="activity1" score="stay in">
+                <SimplePredicate field="workToDo" operator="equal" value="YES" />
+            </Node>
+            <Node id="outlook" score="yesOrNo">
+                <SimplePredicate field="workToDo" operator="equal" value="NO" />
+                <Node id="activity2" score="go to beach">
+                    <SimplePredicate field="weather" operator="equal" value="sunny" />
+                </Node>
+                <Node id="activity3" score="go running">
+                    <SimplePredicate field="weather" operator="equal" value="overcast" />
+                </Node>
+                <Node id="fab" score="yesOrNo">
+                    <SimplePredicate field="weather" operator="equal" value="rainy" />
+                    <Node id="activity4" score="stay in">
+                        <SimplePredicate field="friendsAvailable" operator="equal" value="true" />
+                    </Node>
+                    <Node id="activity5" score="go to movie">
+                        <SimplePredicate field="friendsAvailable" operator="equal" value="false" />
+                    </Node>
+                </Node>
+            </Node>
+        </Node>
+    </TreeModel>
+</PMML>
