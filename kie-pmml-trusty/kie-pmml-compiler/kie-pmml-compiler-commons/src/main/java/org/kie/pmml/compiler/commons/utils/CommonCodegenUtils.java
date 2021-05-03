@@ -58,6 +58,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
+import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
@@ -179,6 +180,12 @@ public class CommonCodegenUtils {
             NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(s), methodReferenceExpr);
             body.addStatement(new MethodCallExpr(new NameExpr(mapName), "put", expressions));
         });
+    }
+
+    public static void setReturnInitializer(final BlockStmt body, final Expression initializer) {
+        final ReturnStmt returnStmt = body.findFirst(ReturnStmt.class)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_RETURN_IN_METHOD, body)));
+        returnStmt.setExpression(initializer);
     }
 
     /**

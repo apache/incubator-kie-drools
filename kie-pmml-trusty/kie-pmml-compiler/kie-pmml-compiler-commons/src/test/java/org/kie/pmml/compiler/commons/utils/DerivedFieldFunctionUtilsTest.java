@@ -54,7 +54,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.DEFAULT_PARAMETERTYPE_MAP;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.DOUBLE_CLASS;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.OBJECT_CLASS;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.STRING_CLASS;
@@ -162,14 +162,14 @@ public class DerivedFieldFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getAggregatedMethodDeclaration() {
-        DerivedFieldFunctionUtils.getAggregatedMethodDeclaration(new Aggregate(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getAggregatedMethodDeclaration(new Aggregate(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     @Test
     public void getApplyMethodDeclaration() {
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getApplyMethodDeclaration(applySupplier.get(),
                                                                                           OBJECT_CLASS, 3,
-                                                                                          DEFAULT_PARAMETERTYPE_MAP);
+                                                                                          KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         String expected = "java.lang.Object Apply3(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue>" +
                 " param1) {\n" +
                 "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
@@ -192,7 +192,7 @@ public class DerivedFieldFunctionUtilsTest {
         int methodArity = new Random().nextInt(20);
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, DOUBLE_CLASS,
                                                                                              methodArity,
-                                                                                             DEFAULT_PARAMETERTYPE_MAP);
+                                                                                             KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         String expectedVariable = String.format("%s constantVariable = %s;", Double.class.getName(),
                                                 constant.getValue());
         commonValidateConstant(retrieved, constant, methodArity, Double.class.getName(), expectedVariable);
@@ -202,13 +202,13 @@ public class DerivedFieldFunctionUtilsTest {
         constant.setValue("EXPECTED");
         methodArity = new Random().nextInt(20);
         expectedVariable = String.format("%s constantVariable = \"%s\";", String.class.getName(), constant.getValue());
-        retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, STRING_CLASS, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+        retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, STRING_CLASS, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         commonValidateConstant(retrieved, constant, methodArity, String.class.getName(), expectedVariable);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getDiscretizeMethodDeclaration() {
-        DerivedFieldFunctionUtils.getDiscretizeMethodDeclaration(new Discretize(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getDiscretizeMethodDeclaration(new Discretize(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     @Test
@@ -217,7 +217,7 @@ public class DerivedFieldFunctionUtilsTest {
         FieldRef fieldRef = fieldRefSupplier.get();
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getFieldRefMethodDeclaration(fieldRef, STRING_CLASS,
                                                                                              methodArity,
-                                                                                             DEFAULT_PARAMETERTYPE_MAP);
+                                                                                             KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         String expectedVariable = String.format("%1$s fieldRefVariable = (%1$s) kiePMMLNameValue.map(%2$s::getValue)" +
                                                         ".orElse(%3$s);",
                                                 String.class.getName(),
@@ -226,7 +226,7 @@ public class DerivedFieldFunctionUtilsTest {
         commonValidateFieldRef(retrieved, fieldRef, methodArity, expectedVariable, String.class.getName());
         //
         fieldRef.setMapMissingTo("MAP_MISSING_TO");
-        retrieved = DerivedFieldFunctionUtils.getFieldRefMethodDeclaration(fieldRef, STRING_CLASS, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+        retrieved = DerivedFieldFunctionUtils.getFieldRefMethodDeclaration(fieldRef, STRING_CLASS, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         expectedVariable = String.format("%1$s fieldRefVariable = (%1$s) kiePMMLNameValue.map(%2$s::getValue).orElse" +
                                                  "(\"%3$s\");",
                                          String.class.getName(),
@@ -237,27 +237,27 @@ public class DerivedFieldFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getLagMethodDeclaration() {
-        DerivedFieldFunctionUtils.getLagMethodDeclaration(new Lag(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getLagMethodDeclaration(new Lag(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getMapValuesMethodDeclaration() {
-        DerivedFieldFunctionUtils.getMapValuesMethodDeclaration(new MapValues(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getMapValuesMethodDeclaration(new MapValues(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getNormContinuousMethodDeclaration() {
-        DerivedFieldFunctionUtils.getNormContinuousMethodDeclaration(new NormContinuous(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getNormContinuousMethodDeclaration(new NormContinuous(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getNormDiscreteMethodDeclaration() {
-        DerivedFieldFunctionUtils.getNormDiscreteMethodDeclaration(new NormDiscrete(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getNormDiscreteMethodDeclaration(new NormDiscrete(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getTextIndexMethodDeclaration() {
-        DerivedFieldFunctionUtils.getTextIndexMethodDeclaration(new TextIndex(), OBJECT_CLASS, 3, DEFAULT_PARAMETERTYPE_MAP);
+        DerivedFieldFunctionUtils.getTextIndexMethodDeclaration(new TextIndex(), OBJECT_CLASS, 3, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
     }
 
     private void commonValidateConstant(MethodDeclaration retrieved, Constant constant, int methodArity,
