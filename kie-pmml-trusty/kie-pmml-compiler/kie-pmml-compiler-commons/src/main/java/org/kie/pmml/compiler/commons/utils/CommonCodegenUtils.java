@@ -188,6 +188,10 @@ public class CommonCodegenUtils {
         returnStmt.setExpression(initializer);
     }
 
+    public static void addReturnStatement(final BlockStmt body, final Expression initializer) {
+        body.addStatement(new ReturnStmt(initializer));
+    }
+
     /**
      * For every entry in the given list, add
      * <pre>

@@ -234,6 +234,7 @@ public class ExpressionFunctionUtils {
      *      Optional<.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) -> Objects.equals("FIELD_NAME", lmbdParam.getName())).findFirst();
      *      Object variableVARIABLE_NAMEFieldRef2 = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(null);
      *      Object VARIABLE_NAME = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);
+     *      return VARIABLE_NAME;
      *    }
      * </pre>
      * @param methodName
@@ -253,8 +254,7 @@ public class ExpressionFunctionUtils {
         toReturn.setType(returnedType);
         toReturn.setName(methodName);
         toReturn.setBody(body);
-        CommonCodegenUtils.setReturnInitializer(body, new NameExpr(variableName));
-
+        CommonCodegenUtils.addReturnStatement(body, new NameExpr(variableName));
         return toReturn;
     }
 
@@ -286,7 +286,7 @@ public class ExpressionFunctionUtils {
         String variableName = "constantVariable";
         final BlockStmt body = getConstantExpressionBlockStmt(variableName, constant, returnedType,
                                                               parameterNameTypeMap);
-        return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
+        return getExpressionMethodDeclaration(methodName, variableName, body, returnedType);
     }
 
     /**
@@ -332,7 +332,7 @@ public class ExpressionFunctionUtils {
             body = getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef, returnedType,
                                                                     parameterNameTypeMap);
         }
-        return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
+        return getExpressionMethodDeclaration(methodName, variableName, body, returnedType);
     }
 
     /**
@@ -663,66 +663,66 @@ public class ExpressionFunctionUtils {
         return toReturn;
     }
 
-    /**
-     * Returns
-     * <pre>
-     *      Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) ->
-     *          Objects.equals(<i>(FieldRef_name)</i>, lmbdParam.getName())).findFirst();
-     *      Object (<i>variableName</i>) = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
-     * </pre>
-     * @param variableName
-     * @param fieldRef
-     * @param returnedType
-     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
-     * @return
-     */
-    static BlockStmt getStringObjectValueExpressionFromCommonDataBlockStmt(final String variableName,
-                                                                           final FieldRef fieldRef,
-                                                                           final ClassOrInterfaceType returnedType,
-                                                                           final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
-        final BlockStmt toReturn = new BlockStmt();
-        String fieldNameToRef = fieldRef.getField().getValue();
-        toReturn.addStatement(getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM,
-                                                                    fieldNameToRef,
-                                                                    true));
-
-        //KiePMMLNameValue::getValue
-        MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-        methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
-        methodReferenceExpr.setIdentifier("getValue");
-
-        // kiePMMLNameValue.map
-        MethodCallExpr expressionScope = new MethodCallExpr("map");
-        expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
-        expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        MethodCallExpr expression = new MethodCallExpr("orElse");
-        expression.setScope(expressionScope);
-        com.github.javaparser.ast.expr.Expression orElseExpression = fieldRef.getMapMissingTo() != null ?
-                new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
-        expression.setArguments(NodeList.nodeList(orElseExpression));
-
-        // (String) kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        CastExpr initializer = new CastExpr();
-        initializer.setType(returnedType);
-        initializer.setExpression(expression);
-
-        // String variableName = (String) kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef
-        // .getMapMissingTo() )
-        VariableDeclarator variableDeclarator = new VariableDeclarator();
-        variableDeclarator.setType(returnedType);
-        variableDeclarator.setName(variableName);
-        variableDeclarator.setInitializer(initializer);
-
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
-        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
-        toReturn.addStatement(variableDeclarationExpr);
-
-        return toReturn;
-    }
+//    /**
+//     * Returns
+//     * <pre>
+//     *      Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) ->
+//     *          Objects.equals(<i>(FieldRef_name)</i>, lmbdParam.getName())).findFirst();
+//     *      Object (<i>variableName</i>) = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
+//     * </pre>
+//     * @param variableName
+//     * @param fieldRef
+//     * @param returnedType
+//     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
+//     * @return
+//     */
+//    static BlockStmt getStringObjectValueExpressionFromCommonDataBlockStmt(final String variableName,
+//                                                                           final FieldRef fieldRef,
+//                                                                           final ClassOrInterfaceType returnedType,
+//                                                                           final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
+//        final BlockStmt toReturn = new BlockStmt();
+//        String fieldNameToRef = fieldRef.getField().getValue();
+//        toReturn.addStatement(getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM,
+//                                                                    fieldNameToRef,
+//                                                                    true));
+//
+//        //KiePMMLNameValue::getValue
+//        MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
+//        methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
+//        methodReferenceExpr.setIdentifier("getValue");
+//
+//        // kiePMMLNameValue.map
+//        MethodCallExpr expressionScope = new MethodCallExpr("map");
+//        expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
+//
+//        // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
+//        expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
+//
+//        // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
+//        MethodCallExpr expression = new MethodCallExpr("orElse");
+//        expression.setScope(expressionScope);
+//        com.github.javaparser.ast.expr.Expression orElseExpression = fieldRef.getMapMissingTo() != null ?
+//                new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
+//        expression.setArguments(NodeList.nodeList(orElseExpression));
+//
+//        // (String) kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
+//        CastExpr initializer = new CastExpr();
+//        initializer.setType(returnedType);
+//        initializer.setExpression(expression);
+//
+//        // String variableName = (String) kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef
+//        // .getMapMissingTo() )
+//        VariableDeclarator variableDeclarator = new VariableDeclarator();
+//        variableDeclarator.setType(returnedType);
+//        variableDeclarator.setName(variableName);
+//        variableDeclarator.setInitializer(initializer);
+//
+//        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
+//        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
+//        toReturn.addStatement(variableDeclarationExpr);
+//
+//        return toReturn;
+//    }
 
     /**
      * Returns
@@ -740,7 +740,12 @@ public class ExpressionFunctionUtils {
                                                                       final ClassOrInterfaceType returnedType,
                                                                       final LinkedHashMap<String,
                                                                               ClassOrInterfaceType> parameterNameTypeMap) {
-        final BlockStmt toReturn = new BlockStmt();
+        final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE.getMethodsByName("fieldRefExpressionMethod").get(0);
+        final BlockStmt toReturn = methodDeclaration
+                .getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)))
+                .clone();
+
         String fieldNameToRef = fieldRef.getField().getValue();
 
         // field_ref
@@ -869,19 +874,17 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param body
      * @param returnedType
-     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getExpressionMethodDeclaration(final String methodName,
                                                             final String variableName,
                                                             final BlockStmt body,
-                                                            final ClassOrInterfaceType returnedType,
-                                                            final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                            final ClassOrInterfaceType returnedType) {
         final MethodDeclaration toReturn = EXPRESSION_TEMPLATE.getMethodsByName("expressionMethod").get(0).clone();
         toReturn.setType(returnedType);
         toReturn.setName(methodName);
         toReturn.setBody(body);
-        CommonCodegenUtils.setReturnInitializer(body, new NameExpr(variableName));
+        CommonCodegenUtils.addReturnStatement(body, new NameExpr(variableName));
         return toReturn;
     }
 
