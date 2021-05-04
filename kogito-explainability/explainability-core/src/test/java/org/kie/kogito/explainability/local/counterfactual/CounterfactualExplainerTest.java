@@ -660,7 +660,7 @@ class CounterfactualExplainerTest {
         PredictionProvider model = TestUtils.getSumThresholdModel(center, epsilon);
 
         final TerminationConfig terminationConfig =
-                new TerminationConfig().withBestScoreFeasible(true).withScoreCalculationCountLimit(100_000L);
+                new TerminationConfig().withBestScoreFeasible(true).withScoreCalculationCountLimit(10_000L);
         final SolverConfig solverConfig = CounterfactualConfigurationFactory
                 .builder().withTerminationConfig(terminationConfig).build();
 
