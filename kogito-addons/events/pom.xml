@@ -28,6 +28,5 @@
         <module>kogito-events-spring-boot-addon</module>
       </modules>
     </profile>
-
   </profiles>
 </project>

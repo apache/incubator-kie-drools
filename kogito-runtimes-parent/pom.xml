@@ -117,13 +117,14 @@
   </pluginRepositories>
 
   <modules>
+    <module>kogito-ide-config</module>
     <module>kogito-build-parent</module>
     <module>kogito-bom</module>
-    <module>kogito-codegen-modules</module>
     <module>kogito-test-utils</module>
     <module>api</module>
     <module>drools</module>
     <module>jbpm</module>
+    <module>kogito-codegen-modules</module>
     <module>kogito-springboot</module>
     <module>kogito-maven-plugin</module>
     <module>kogito-quarkus-parent</module>
@@ -142,7 +143,6 @@
         </property>
       </activation>
       <modules>
-        <module>kogito-ide-config</module>
         <module>kogito-cloud-services</module>
         <module>integration-tests</module>
       </modules>
