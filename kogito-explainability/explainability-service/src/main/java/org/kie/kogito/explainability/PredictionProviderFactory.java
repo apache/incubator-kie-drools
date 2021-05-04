@@ -17,9 +17,9 @@
 package org.kie.kogito.explainability;
 
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 public interface PredictionProviderFactory {
 
-    PredictionProvider createPredictionProvider(ExplainabilityRequest request);
+    PredictionProvider createPredictionProvider(BaseExplainabilityRequest request);
 }

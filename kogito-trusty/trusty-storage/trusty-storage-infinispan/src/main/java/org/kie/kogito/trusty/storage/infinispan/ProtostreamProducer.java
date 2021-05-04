@@ -91,7 +91,7 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller counterfactualMarshaller() {
-        return new CounterfactualMarshaller(mapper);
+        return new CounterfactualExplainabilityRequestMarshaller(mapper);
     }
 
     @Produces
@@ -116,7 +116,7 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller counterfactualResultMarshaller() {
-        return new CounterfactualResultMarshaller(mapper);
+        return new CounterfactualExplainabilityResultMarshaller(mapper);
     }
 
 }

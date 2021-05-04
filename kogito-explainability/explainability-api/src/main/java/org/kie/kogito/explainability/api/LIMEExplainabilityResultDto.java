@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LIMEExplainabilityResultDto extends BaseExplainabilityResultDto {
 
-    public static final String EXPLAINABILITY_TYPE_NAME = "LIME";
+    public static final String EXPLAINABILITY_TYPE_NAME = "lime";
 
     @JsonProperty("saliency")
     private Map<String, SaliencyDto> saliencies;

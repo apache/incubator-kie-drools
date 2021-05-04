@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.explainability;
+package org.kie.kogito.explainability.handlers;
 
 import java.security.SecureRandom;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.PerturbationContext;
-import org.kie.kogito.explainability.model.Saliency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +46,7 @@ public class LimeExplainerProducer {
     }
 
     @Produces
-    public LocalExplainer<Map<String, Saliency>> produce() {
+    public LimeExplainer produce() {
         LOG.debug("LimeExplainer created (numberOfSamples={}, numberOfPerturbations={})", numberOfSamples, numberOfPerturbations);
         LimeConfig limeConfig = new LimeConfig()
                 .withSamples(numberOfSamples)

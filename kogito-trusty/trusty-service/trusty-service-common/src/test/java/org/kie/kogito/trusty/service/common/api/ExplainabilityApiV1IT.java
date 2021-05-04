@@ -31,7 +31,7 @@ import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
@@ -87,8 +87,8 @@ class ExplainabilityApiV1IT {
                                 new FeatureImportanceModel("Feature2", 0.70293)))));
     }
 
-    private static CounterfactualRequest buildValidCounterfactual() {
-        return new CounterfactualRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID);
+    private static CounterfactualExplainabilityRequest buildValidCounterfactual() {
+        return new CounterfactualExplainabilityRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID);
     }
 
     @Test
@@ -315,17 +315,17 @@ class ExplainabilityApiV1IT {
     }
 
     private void mockServiceWithExplainabilityResult() {
-        when(executionService.getExplainabilityResultById(eq(TEST_EXECUTION_ID)))
+        when(executionService.getExplainabilityResultById(eq(TEST_EXECUTION_ID), any()))
                 .thenReturn(buildValidExplainabilityResult());
     }
 
     private void mockServiceWithNullExplainabilityResult() {
-        when(executionService.getExplainabilityResultById(anyString()))
+        when(executionService.getExplainabilityResultById(anyString(), any()))
                 .thenReturn(null);
     }
 
     private void mockServiceWithoutExplainabilityResult() {
-        when(executionService.getExplainabilityResultById(anyString()))
+        when(executionService.getExplainabilityResultById(anyString(), any()))
                 .thenThrow(new IllegalArgumentException("Explainability result does not exist."));
     }
 

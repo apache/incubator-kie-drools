@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +70,7 @@ public class ExplainabilityApiV1Test {
 
     @Test
     public void testRequestCounterfactualsWhenExecutionDoesExist() {
-        when(trustyService.requestCounterfactuals(anyString(), any(), any())).thenReturn(new CounterfactualRequest(EXECUTION_ID, COUNTERFACTUAL_ID));
+        when(trustyService.requestCounterfactuals(anyString(), any(), any())).thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID));
 
         org.kie.kogito.trusty.service.common.requests.CounterfactualRequest request =
                 new org.kie.kogito.trusty.service.common.requests.CounterfactualRequest(Collections.emptyList(), Collections.emptyList());
@@ -98,7 +98,7 @@ public class ExplainabilityApiV1Test {
     @Test
     @SuppressWarnings({ "unchecked" })
     public void testGetAllCounterfactualsWhenExecutionDoesExist() {
-        when(trustyService.getCounterfactualRequests(anyString())).thenReturn(List.of(new CounterfactualRequest(EXECUTION_ID, COUNTERFACTUAL_ID)));
+        when(trustyService.getCounterfactualRequests(anyString())).thenReturn(List.of(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID)));
 
         Response response = explainabilityEndpoint.getAllCounterfactuals(EXECUTION_ID);
         assertNotNull(response);
@@ -125,7 +125,7 @@ public class ExplainabilityApiV1Test {
 
     @Test
     public void testGetCounterfactualWhenExecutionDoesExist() {
-        when(trustyService.getCounterfactualRequest(anyString(), anyString())).thenReturn(new CounterfactualRequest(EXECUTION_ID, COUNTERFACTUAL_ID));
+        when(trustyService.getCounterfactualRequest(anyString(), anyString())).thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID));
 
         Response response = explainabilityEndpoint.getCounterfactual(EXECUTION_ID, COUNTERFACTUAL_ID);
         assertNotNull(response);

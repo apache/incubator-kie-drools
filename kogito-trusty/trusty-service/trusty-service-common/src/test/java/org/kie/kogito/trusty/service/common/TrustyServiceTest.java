@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import javax.enterprise.inject.Instance;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,13 +36,16 @@ import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServiceHandler;
+import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandler;
+import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
+import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
 import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.common.mocks.StorageImplMock;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
@@ -81,16 +87,27 @@ public class TrustyServiceTest {
     private ExplainabilityRequestProducer explainabilityRequestProducerMock;
     private TrustyStorageService trustyStorageServiceMock;
     private TrustyServiceImpl trustyService;
+    private LIMEExplainerServiceHandler limeExplainerServiceHandler;
+    private CounterfactualExplainerServiceHandler counterfactualExplainerServiceHandler;
+    private Instance<ExplainerServiceHandler<?, ?>> explanationHandlers;
+    private ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry;
 
     private static JsonNode toJsonNode(String jsonString) throws JsonProcessingException {
         return MAPPER.reader().readTree(jsonString);
     }
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     void setup() {
         explainabilityRequestProducerMock = mock(ExplainabilityRequestProducer.class);
         trustyStorageServiceMock = mock(TrustyStorageService.class);
-        trustyService = new TrustyServiceImpl(false, explainabilityRequestProducerMock, trustyStorageServiceMock);
+        limeExplainerServiceHandler = new LIMEExplainerServiceHandler(trustyStorageServiceMock);
+        counterfactualExplainerServiceHandler = new CounterfactualExplainerServiceHandler(trustyStorageServiceMock);
+        explanationHandlers = mock(Instance.class);
+        when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
+        explainerServiceHandlerRegistry = new ExplainerServiceHandlerRegistry(explanationHandlers);
+
+        trustyService = new TrustyServiceImpl(false, explainabilityRequestProducerMock, trustyStorageServiceMock, explainerServiceHandlerRegistry);
     }
 
     @Test
@@ -314,10 +331,10 @@ public class TrustyServiceTest {
     @SuppressWarnings("unchecked")
     void givenAnExplainabilityResultWhenStoreModelIsCalledThenNoExceptionsAreThrown() {
         LIMEExplainabilityResult result = new LIMEExplainabilityResult(TEST_EXECUTION_ID, ExplainabilityStatus.SUCCEEDED, null, Collections.emptyList());
-        Storage<String, BaseExplainabilityResult> storageMock = mock(Storage.class);
+        Storage<String, LIMEExplainabilityResult> storageMock = mock(Storage.class);
 
-        when(storageMock.put(eq(TEST_EXECUTION_ID), any(BaseExplainabilityResult.class))).thenReturn(result);
-        when(trustyStorageServiceMock.getExplainabilityResultStorage()).thenReturn(storageMock);
+        when(storageMock.put(eq(TEST_EXECUTION_ID), any(LIMEExplainabilityResult.class))).thenReturn(result);
+        when(trustyStorageServiceMock.getLIMEResultStorage()).thenReturn(storageMock);
 
         Assertions.assertDoesNotThrow(() -> trustyService.storeExplainabilityResult(TEST_EXECUTION_ID, result));
     }
@@ -326,11 +343,11 @@ public class TrustyServiceTest {
     @SuppressWarnings("unchecked")
     void givenAnExplainabilityResultWhenStoreModelIsCalledMoreThanOnceForSameModelThenExceptionIsThrown() {
         LIMEExplainabilityResult result = new LIMEExplainabilityResult(TEST_EXECUTION_ID, ExplainabilityStatus.SUCCEEDED, null, Collections.emptyList());
-        Storage<String, BaseExplainabilityResult> storageMock = mock(Storage.class);
+        Storage<String, LIMEExplainabilityResult> storageMock = mock(Storage.class);
 
         when(storageMock.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(true);
-        when(storageMock.put(eq(TEST_EXECUTION_ID), any(BaseExplainabilityResult.class))).thenReturn(result);
-        when(trustyStorageServiceMock.getExplainabilityResultStorage()).thenReturn(storageMock);
+        when(storageMock.put(eq(TEST_EXECUTION_ID), any(LIMEExplainabilityResult.class))).thenReturn(result);
+        when(trustyStorageServiceMock.getLIMEResultStorage()).thenReturn(storageMock);
 
         assertThrows(IllegalArgumentException.class, () -> trustyService.storeExplainabilityResult(TEST_EXECUTION_ID, result));
     }
@@ -338,24 +355,26 @@ public class TrustyServiceTest {
     @Test
     void givenAnExplainabilityResultWhenAnExplainabilityResultIsStoredAndRetrievedByIdThenTheOriginalObjectIsReturned() {
         LIMEExplainabilityResult result = new LIMEExplainabilityResult(TEST_EXECUTION_ID, ExplainabilityStatus.SUCCEEDED, null, Collections.emptyList());
-        Storage<String, BaseExplainabilityResult> storageMock = new StorageImplMock<>(String.class);
+        Storage<String, LIMEExplainabilityResult> storageMock = new StorageImplMock<>(String.class);
 
-        when(trustyStorageServiceMock.getExplainabilityResultStorage()).thenReturn(storageMock);
+        when(trustyStorageServiceMock.getLIMEResultStorage()).thenReturn(storageMock);
 
         trustyService.storeExplainabilityResult(TEST_EXECUTION_ID, result);
 
-        assertEquals(result, trustyService.getExplainabilityResultById(TEST_EXECUTION_ID));
+        //The mocked stream needs to be recreated for subsequent invocations
+        when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
+        assertEquals(result, trustyService.getExplainabilityResultById(TEST_EXECUTION_ID, LIMEExplainabilityResult.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void givenAnExplainabilityResultNotStoredWhenRetrievedByIdThenExceptionIsThrown() {
-        Storage<String, BaseExplainabilityResult> storageMock = mock(Storage.class);
+        Storage<String, LIMEExplainabilityResult> storageMock = mock(Storage.class);
 
         when(storageMock.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(false);
-        when(trustyStorageServiceMock.getExplainabilityResultStorage()).thenReturn(storageMock);
+        when(trustyStorageServiceMock.getLIMEResultStorage()).thenReturn(storageMock);
 
-        assertThrows(IllegalArgumentException.class, () -> trustyService.getExplainabilityResultById(TEST_EXECUTION_ID));
+        assertThrows(IllegalArgumentException.class, () -> trustyService.getExplainabilityResultById(TEST_EXECUTION_ID, LIMEExplainabilityResult.class));
     }
 
     @Test
@@ -373,8 +392,8 @@ public class TrustyServiceTest {
     @SuppressWarnings("unchecked")
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenRequestIsStored() {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
-        Storage<String, CounterfactualRequest> counterfactualStorage = mock(Storage.class);
-        ArgumentCaptor<CounterfactualRequest> counterfactualArgumentCaptor = ArgumentCaptor.forClass(CounterfactualRequest.class);
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
+        ArgumentCaptor<CounterfactualExplainabilityRequest> counterfactualArgumentCaptor = ArgumentCaptor.forClass(CounterfactualExplainabilityRequest.class);
 
         when(decisionStorage.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(true);
         when(trustyStorageServiceMock.getDecisionsStorage()).thenReturn(decisionStorage);
@@ -384,7 +403,7 @@ public class TrustyServiceTest {
         trustyService.requestCounterfactuals(TEST_EXECUTION_ID, Collections.emptyList(), Collections.emptyList());
 
         verify(counterfactualStorage).put(anyString(), counterfactualArgumentCaptor.capture());
-        CounterfactualRequest counterfactual = counterfactualArgumentCaptor.getValue();
+        CounterfactualExplainabilityRequest counterfactual = counterfactualArgumentCaptor.getValue();
         assertNotNull(counterfactual);
         assertEquals(TEST_EXECUTION_ID, counterfactual.getExecutionId());
     }
@@ -393,7 +412,7 @@ public class TrustyServiceTest {
     @SuppressWarnings("unchecked")
     void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventIsEmitted() {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
-        Storage<String, CounterfactualRequest> counterfactualStorage = mock(Storage.class);
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
         ArgumentCaptor<BaseExplainabilityRequestDto> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequestDto.class);
 
         when(decisionStorage.containsKey(eq(TEST_EXECUTION_ID))).thenReturn(true);
@@ -413,9 +432,9 @@ public class TrustyServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventHasCorrectPaytload() {
+    void givenStoredExecutionWhenCounterfactualRequestIsMadeThenExplainabilityEventHasCorrectPayload() {
         Storage<String, Decision> decisionStorage = mock(Storage.class);
-        Storage<String, CounterfactualRequest> counterfactualStorage = mock(Storage.class);
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
         ArgumentCaptor<BaseExplainabilityRequestDto> explainabilityEventArgumentCaptor = ArgumentCaptor.forClass(BaseExplainabilityRequestDto.class);
 
         Decision decision = new Decision(

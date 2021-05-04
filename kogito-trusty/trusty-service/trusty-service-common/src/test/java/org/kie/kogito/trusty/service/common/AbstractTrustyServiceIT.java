@@ -34,10 +34,15 @@ import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
+import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
+import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
@@ -61,7 +66,7 @@ public abstract class AbstractTrustyServiceIT {
     public void setup() {
         trustyStorageService.getCounterfactualRequestStorage().clear();
         trustyStorageService.getCounterfactualResultStorage().clear();
-        trustyStorageService.getExplainabilityResultStorage().clear();
+        trustyStorageService.getLIMEResultStorage().clear();
         trustyStorageService.getDecisionsStorage().clear();
         trustyStorageService.getModelStorage().clear();
     }
@@ -167,13 +172,13 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecution(executionId, 0L);
 
-        CounterfactualRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
 
         assertNotNull(request);
         assertEquals(request.getExecutionId(), executionId);
         assertNotNull(request.getCounterfactualId());
 
-        CounterfactualRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
+        CounterfactualExplainabilityRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
         assertNotNull(result);
         assertEquals(request.getExecutionId(), result.getExecutionId());
         assertEquals(request.getCounterfactualId(), result.getCounterfactualId());
@@ -184,10 +189,10 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution2";
         storeExecution(executionId, 0L);
 
-        CounterfactualRequest request1 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
-        CounterfactualRequest request2 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request1 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request2 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
 
-        List<CounterfactualRequest> result = trustyService.getCounterfactualRequests(executionId);
+        List<CounterfactualExplainabilityRequest> result = trustyService.getCounterfactualRequests(executionId);
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.stream().anyMatch(c -> c.getCounterfactualId().equals(request1.getCounterfactualId())));
@@ -199,14 +204,14 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution3";
         storeExecution(executionId, 0L);
 
-        CounterfactualRequest request1 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
-        CounterfactualRequest request2 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request1 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request2 = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList());
 
-        CounterfactualRequest result1 = trustyService.getCounterfactualRequest(executionId, request1.getCounterfactualId());
+        CounterfactualExplainabilityRequest result1 = trustyService.getCounterfactualRequest(executionId, request1.getCounterfactualId());
         assertNotNull(result1);
         assertEquals(request1.getCounterfactualId(), result1.getCounterfactualId());
 
-        CounterfactualRequest result2 = trustyService.getCounterfactualRequest(executionId, request2.getCounterfactualId());
+        CounterfactualExplainabilityRequest result2 = trustyService.getCounterfactualRequest(executionId, request2.getCounterfactualId());
         assertNotNull(result2);
         assertEquals(request2.getCounterfactualId(), result2.getCounterfactualId());
     }
@@ -219,17 +224,17 @@ public abstract class AbstractTrustyServiceIT {
         String executionId2 = "myCFExecution2";
         storeExecution(executionId2, 0L);
 
-        CounterfactualRequest request1 = trustyService.requestCounterfactuals(executionId1, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request1 = trustyService.requestCounterfactuals(executionId1, Collections.emptyList(), Collections.emptyList());
         assertNotNull(request1);
         assertEquals(request1.getExecutionId(), executionId1);
         assertNotNull(request1.getCounterfactualId());
 
-        CounterfactualRequest request2 = trustyService.requestCounterfactuals(executionId2, Collections.emptyList(), Collections.emptyList());
+        CounterfactualExplainabilityRequest request2 = trustyService.requestCounterfactuals(executionId2, Collections.emptyList(), Collections.emptyList());
         assertNotNull(request2);
         assertEquals(request2.getExecutionId(), executionId2);
         assertNotNull(request2.getCounterfactualId());
 
-        CounterfactualRequest result1 = trustyService.getCounterfactualRequest(executionId1, request1.getCounterfactualId());
+        CounterfactualExplainabilityRequest result1 = trustyService.getCounterfactualRequest(executionId1, request1.getCounterfactualId());
         assertNotNull(result1);
         assertEquals(request1.getExecutionId(), result1.getExecutionId());
         assertEquals(request1.getCounterfactualId(), result1.getCounterfactualId());
@@ -243,7 +248,7 @@ public abstract class AbstractTrustyServiceIT {
         TypedVariableWithValue goal1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
         TypedVariableWithValue goal2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
 
-        CounterfactualRequest request = trustyService.requestCounterfactuals(executionId, List.of(goal1, goal2), Collections.emptyList());
+        CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, List.of(goal1, goal2), Collections.emptyList());
 
         assertNotNull(request);
         assertEquals(request.getExecutionId(), executionId);
@@ -253,7 +258,7 @@ public abstract class AbstractTrustyServiceIT {
         assertCounterfactualGoal(goal1, requestGoals.get(0));
         assertCounterfactualGoal(goal2, requestGoals.get(1));
 
-        CounterfactualRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
+        CounterfactualExplainabilityRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
         assertNotNull(result);
         assertEquals(request.getExecutionId(), result.getExecutionId());
         assertEquals(request.getCounterfactualId(), result.getCounterfactualId());
@@ -279,7 +284,7 @@ public abstract class AbstractTrustyServiceIT {
                 true,
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
-        CounterfactualRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain));
+        CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain));
 
         assertNotNull(request);
         assertEquals(request.getExecutionId(), executionId);
@@ -288,7 +293,7 @@ public abstract class AbstractTrustyServiceIT {
         List<CounterfactualSearchDomain> requestSearchDomains = new ArrayList<>(request.getSearchDomains());
         assertCounterfactualSearchDomainRange(searchDomain, requestSearchDomains.get(0));
 
-        CounterfactualRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
+        CounterfactualExplainabilityRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
         assertNotNull(result);
         assertEquals(request.getExecutionId(), result.getExecutionId());
         assertEquals(request.getCounterfactualId(), result.getCounterfactualId());
@@ -323,7 +328,7 @@ public abstract class AbstractTrustyServiceIT {
         Collection<JsonNode> categories = List.of(new TextNode("A"), new TextNode("B"));
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildUnit("field1", "typeRef1", true, new CounterfactualDomainCategorical(categories));
 
-        CounterfactualRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain));
+        CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain));
 
         assertNotNull(request);
         assertEquals(request.getExecutionId(), executionId);
@@ -332,7 +337,7 @@ public abstract class AbstractTrustyServiceIT {
         List<CounterfactualSearchDomain> requestSearchDomains = new ArrayList<>(request.getSearchDomains());
         assertCounterfactualSearchDomainCategorical(searchDomain, requestSearchDomains.get(0));
 
-        CounterfactualRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
+        CounterfactualExplainabilityRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
         assertNotNull(result);
         assertEquals(request.getExecutionId(), result.getExecutionId());
         assertEquals(request.getCounterfactualId(), result.getCounterfactualId());
@@ -357,6 +362,37 @@ public abstract class AbstractTrustyServiceIT {
 
         assertEquals(expectedDomainCategorical.getCategories().size(), actualDomainCategorical.getCategories().size());
         assertTrue(expectedDomainCategorical.getCategories().containsAll(actualDomainCategorical.getCategories()));
+    }
+
+    @Test
+    public void testStoreExplainabilityResult_LIME() {
+        String executionId = "myLIMEExecution1Store";
+
+        trustyService.storeExplainabilityResult(executionId,
+                new LIMEExplainabilityResult(executionId,
+                        ExplainabilityStatus.SUCCEEDED,
+                        "status",
+                        List.of(new SaliencyModel("outcomeId",
+                                "outcomeName",
+                                List.of(new FeatureImportanceModel("feature", 1.0))))));
+
+        LIMEExplainabilityResult result = trustyService.getExplainabilityResultById(executionId, LIMEExplainabilityResult.class);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testStoreExplainabilityResult_Counterfactual() {
+        String executionId = "myCFExecution1Store";
+
+        trustyService.storeExplainabilityResult(executionId,
+                new CounterfactualExplainabilityResult(executionId,
+                        "counterfactualId",
+                        "solutionId",
+                        ExplainabilityStatus.SUCCEEDED,
+                        "status"));
+
+        CounterfactualExplainabilityResult result = trustyService.getExplainabilityResultById(executionId, CounterfactualExplainabilityResult.class);
+        assertNotNull(result);
     }
 
     private Decision storeExecution(String executionId, Long timestamp) {

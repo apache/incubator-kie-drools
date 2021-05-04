@@ -24,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LIMEExplainabilityResult extends BaseExplainabilityResult {
 
+    public static final String EXPLAINABILITY_TYPE_NAME = "lime";
+
     public static final String SALIENCIES_FIELD = "saliencies";
 
     @JsonProperty(SALIENCIES_FIELD)

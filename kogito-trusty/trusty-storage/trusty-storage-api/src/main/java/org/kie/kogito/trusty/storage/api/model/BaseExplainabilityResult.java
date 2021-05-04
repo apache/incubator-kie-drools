@@ -18,10 +18,20 @@ package org.kie.kogito.trusty.storage.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = BaseExplainabilityResult.EXPLAINABILITY_TYPE_FIELD)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = LIMEExplainabilityResult.class, name = LIMEExplainabilityResult.EXPLAINABILITY_TYPE_NAME),
+        @JsonSubTypes.Type(value = CounterfactualExplainabilityResult.class, name = CounterfactualExplainabilityResult.EXPLAINABILITY_TYPE_NAME)
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class BaseExplainabilityResult {
 
+    public static final String EXPLAINABILITY_TYPE_FIELD = "type";
     public static final String EXECUTION_ID_FIELD = "executionId";
     public static final String STATUS_FIELD = "status";
     public static final String STATUS_DETAILS_FIELD = "statusDetails";

@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 import io.quarkus.test.Mock;
 
@@ -28,7 +28,7 @@ import io.quarkus.test.Mock;
 public class PredictionProviderFactoryMock implements PredictionProviderFactory {
 
     @Override
-    public PredictionProvider createPredictionProvider(ExplainabilityRequest request) {
+    public PredictionProvider createPredictionProvider(BaseExplainabilityRequest request) {
         return new PredictionProviderMock();
     }
 }

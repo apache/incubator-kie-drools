@@ -23,10 +23,16 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
+import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
@@ -35,6 +41,7 @@ import org.kie.kogito.tracing.typedvalue.UnitValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -46,6 +53,8 @@ import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConversionUtilsTest {
@@ -204,10 +213,10 @@ class ConversionUtilsTest {
         assertEquals(Type.COMPOSITE, name1.getType());
         assertTrue(name1.getValue().getUnderlyingObject() instanceof List);
         @SuppressWarnings("unchecked")
-        List<Feature> features = (List<Feature>) name1.getValue().getUnderlyingObject();
-        assertEquals(1, features.size());
-        assertEquals(Type.TEXT, features.get(0).getType());
-        assertEquals("stringValue", features.get(0).getValue().getUnderlyingObject());
+        List<Output> outputs = (List<Output>) name1.getValue().getUnderlyingObject();
+        assertEquals(1, outputs.size());
+        assertEquals(Type.TEXT, outputs.get(0).getType());
+        assertEquals("stringValue", outputs.get(0).getValue().getUnderlyingObject());
 
         List<TypedValue> values = List.of(new UnitValue("number", new DoubleNode(0d)),
                 new UnitValue("number", new DoubleNode(1d)));
@@ -243,4 +252,65 @@ class ConversionUtilsTest {
         assertEquals(type, result.get().getKey());
         assertEquals(value, result.get().getValue().getUnderlyingObject());
     }
+
+    @Test
+    void testToFeatureDomain_UnitRangeInteger() {
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("employmentAge",
+                new CounterfactualSearchDomainUnitDto("int",
+                        true,
+                        new CounterfactualDomainRangeDto(IntNode.valueOf(18),
+                                IntNode.valueOf(65))));
+        assertTrue(featureDomain instanceof NumericalFeatureDomain);
+        NumericalFeatureDomain numericalFeatureDomain = (NumericalFeatureDomain) featureDomain;
+        assertEquals(18.0, numericalFeatureDomain.getLowerBound());
+        assertEquals(65.0, numericalFeatureDomain.getUpperBound());
+        assertNull(numericalFeatureDomain.getCategories());
+    }
+
+    @Test
+    void testToFeatureDomain_UnitRangeDouble() {
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("temperature",
+                new CounterfactualSearchDomainUnitDto("double",
+                        true,
+                        new CounterfactualDomainRangeDto(DoubleNode.valueOf(-273.15),
+                                DoubleNode.valueOf(Double.MAX_VALUE))));
+
+        assertTrue(featureDomain instanceof NumericalFeatureDomain);
+        NumericalFeatureDomain numericalFeatureDomain = (NumericalFeatureDomain) featureDomain;
+        assertEquals(-273.15, numericalFeatureDomain.getLowerBound());
+        assertEquals(Double.MAX_VALUE, numericalFeatureDomain.getUpperBound());
+        assertNull(numericalFeatureDomain.getCategories());
+    }
+
+    @Test
+    void testToFeatureDomain_UnitRangeString() {
+        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain("lettersOfTheAlphabet",
+                new CounterfactualSearchDomainUnitDto("string",
+                        true,
+                        new CounterfactualDomainRangeDto(TextNode.valueOf("A"),
+                                TextNode.valueOf("Z")))));
+    }
+
+    @Test
+    void testToFeatureDomain_UnitCategoricalNumber() {
+        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain("numberOfFingers",
+                new CounterfactualSearchDomainUnitDto("string",
+                        true,
+                        new CounterfactualDomainCategoricalDto(List.of(IntNode.valueOf(1), IntNode.valueOf(2))))));
+    }
+
+    @Test
+    void testToFeatureDomain_UnitCategoricalString() {
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("zebraStripes",
+                new CounterfactualSearchDomainUnitDto("string",
+                        true,
+                        new CounterfactualDomainCategoricalDto(List.of(TextNode.valueOf("Black"), TextNode.valueOf("White")))));
+        assertTrue(featureDomain instanceof CategoricalFeatureDomain);
+        CategoricalFeatureDomain categoricalFeatureDomain = (CategoricalFeatureDomain) featureDomain;
+        assertEquals(2, categoricalFeatureDomain.getCategories().size());
+        assertTrue(categoricalFeatureDomain.getCategories().containsAll(List.of("White", "Black")));
+        assertNull(categoricalFeatureDomain.getLowerBound());
+        assertNull(categoricalFeatureDomain.getUpperBound());
+    }
+
 }

@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CounterfactualRequest {
+public class CounterfactualExplainabilityRequest {
 
     public static final String EXECUTION_ID_FIELD = "executionId";
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
@@ -42,14 +42,14 @@ public class CounterfactualRequest {
     @JsonProperty(COUNTERFACTUAL_SEARCH_DOMAINS)
     private Collection<CounterfactualSearchDomain> searchDomains;
 
-    public CounterfactualRequest() {
+    public CounterfactualExplainabilityRequest() {
     }
 
-    public CounterfactualRequest(String executionId, String counterfactualId) {
+    public CounterfactualExplainabilityRequest(String executionId, String counterfactualId) {
         this(executionId, counterfactualId, new ArrayList<>(), new ArrayList<>());
     }
 
-    public CounterfactualRequest(String executionId,
+    public CounterfactualExplainabilityRequest(String executionId,
             String counterfactualId,
             Collection<TypedVariableWithValue> goals,
             Collection<CounterfactualSearchDomain> searchDomains) {

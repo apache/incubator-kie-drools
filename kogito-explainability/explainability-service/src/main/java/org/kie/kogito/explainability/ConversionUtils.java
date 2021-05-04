@@ -26,11 +26,18 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
+import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
+import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;
+import org.kie.kogito.explainability.model.domain.FeatureDomain;
+import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
@@ -67,6 +74,22 @@ public class ConversionUtils {
         }
     }
 
+    public static FeatureDomain toFeatureDomain(String name, CounterfactualSearchDomainDto domain) {
+        if (domain.isUnit()) {
+            return toCounterfactualSearchDomain(domain.toUnit().getDomain()).orElse(null);
+        } else {
+            throw new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain kind %s", domain.getKind()));
+        }
+    }
+
+    public static Boolean toFeatureConstraint(String name, CounterfactualSearchDomainDto domain) {
+        if (domain.isUnit()) {
+            return domain.toUnit().isFixed();
+        } else {
+            throw new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain kind %s", domain.getKind()));
+        }
+    }
+
     protected static List<Feature> toFeatureList(String name, CollectionValue collectionValue) {
         Collection<TypedValue> values = collectionValue.getValue();
         List<Feature> list = new ArrayList<>(values.size());
@@ -86,6 +109,14 @@ public class ConversionUtils {
         return toList(values, ConversionUtils::toFeature);
     }
 
+    public static List<FeatureDomain> toFeatureDomainList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
+        return toList(searchDomains, ConversionUtils::toFeatureDomain);
+    }
+
+    public static List<Boolean> toFeatureConstraintList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
+        return toList(searchDomains, ConversionUtils::toFeatureConstraint);
+    }
+
     public static <T> List<T> toList(JsonObject mainObj, BiFunction<String, Object, T> unitConverter) {
         if (mainObj == null) {
             return Collections.emptyList();
@@ -96,7 +127,7 @@ public class ConversionUtils {
                 .collect(Collectors.toList());
     }
 
-    public static <T> List<T> toList(Map<String, TypedValue> values, BiFunction<String, TypedValue, T> unitConverter) {
+    public static <T, V> List<T> toList(Map<String, V> values, BiFunction<String, V, T> unitConverter) {
         if (values == null) {
             return Collections.emptyList();
         }
@@ -108,7 +139,7 @@ public class ConversionUtils {
 
     protected static Output toOutput(String name, Object value) {
         if (value instanceof JsonObject) {
-            return new Output(name, Type.COMPOSITE, new Value(toFeatureList((JsonObject) value)), 1d);
+            return new Output(name, Type.COMPOSITE, new Value(toOutputList((JsonObject) value)), 1d);
         }
         return toTypeValuePair(value)
                 .map(p -> new Output(name, p.getLeft(), p.getRight(), 1d))
@@ -121,11 +152,22 @@ public class ConversionUtils {
                     .map(p -> new Output(name, p.getLeft(), p.getRight(), 1d))
                     .orElse(null);
         } else if (value.isStructure()) {
-            return new Output(name, Type.COMPOSITE, new Value(toFeatureList(value.toStructure().getValue())), 1d);
+            return new Output(name, Type.COMPOSITE, new Value(toOutputList(value.toStructure().getValue())), 1d);
         } else if (value.isCollection()) {
-            return new Output(name, Type.COMPOSITE, new Value(toFeatureList(name, value.toCollection())), 1d);
+            return new Output(name, Type.COMPOSITE, new Value(toOutputList(name, value.toCollection())), 1d);
         }
         return null;
+    }
+
+    protected static List<Output> toOutputList(String name, CollectionValue collectionValue) {
+        Collection<TypedValue> values = collectionValue.getValue();
+        List<Output> list = new ArrayList<>(values.size());
+        int index = 0;
+        for (TypedValue typedValue : values) {
+            list.add(toOutput(name + "_" + index, typedValue));
+            index++;
+        }
+        return list;
     }
 
     public static List<Output> toOutputList(JsonObject mainObj) {
@@ -161,4 +203,29 @@ public class ConversionUtils {
         }
         return Optional.empty();
     }
+
+    public static Optional<FeatureDomain> toCounterfactualSearchDomain(CounterfactualDomainDto domain) {
+        if (domain instanceof CounterfactualDomainRangeDto) {
+            CounterfactualDomainRangeDto range = (CounterfactualDomainRangeDto) domain;
+            JsonNode lb = range.getLowerBound();
+            JsonNode ub = range.getUpperBound();
+            if (lb.isNumber() && ub.isNumber()) {
+                return Optional.of(NumericalFeatureDomain.create(range.getLowerBound().asDouble(), range.getUpperBound().asDouble()));
+            } else {
+                throw new IllegalArgumentException(String.format("Unsupported CounterfactualDomainRangeDto [%s, %s]", lb.asText(), ub.asText()));
+            }
+        } else if (domain instanceof CounterfactualDomainCategoricalDto) {
+            CounterfactualDomainCategoricalDto categorical = (CounterfactualDomainCategoricalDto) domain;
+            Collection<JsonNode> jsonCategories = categorical.getCategories();
+            String[] categories = new String[jsonCategories.size()];
+            if (jsonCategories.stream().allMatch(JsonNode::isTextual)) {
+                jsonCategories.stream().map(JsonNode::asText).collect(Collectors.toList()).toArray(categories);
+                return Optional.of(CategoricalFeatureDomain.create(categories));
+            } else {
+                throw new IllegalArgumentException(String.format("Unsupported CounterfactualDomainCategoricalDto [%s]", String.join(", ", categories)));
+            }
+        }
+        return Optional.empty();
+    }
+
 }

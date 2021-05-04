@@ -32,8 +32,9 @@ import org.kie.kogito.explainability.ExplanationService;
 import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
+import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ public class ExplainabilityMessagingHandler {
 
     protected ExplanationService explanationService;
     protected PredictionProviderFactory predictionProviderFactory;
+    protected LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry;
 
     @Inject
     ObjectMapper objectMapper;
@@ -62,9 +64,11 @@ public class ExplainabilityMessagingHandler {
     @Inject
     public ExplainabilityMessagingHandler(
             ExplanationService explanationService,
-            PredictionProviderFactory predictionProviderFactory) {
+            PredictionProviderFactory predictionProviderFactory,
+            LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry) {
         this.explanationService = explanationService;
         this.predictionProviderFactory = predictionProviderFactory;
+        this.explainerServiceHandlerRegistry = explainerServiceHandlerRegistry;
     }
 
     // Incoming
@@ -85,6 +89,7 @@ public class ExplainabilityMessagingHandler {
         return message.ack();
     }
 
+    @SuppressWarnings("unchecked")
     private CompletionStage<Void> handleCloudEvent(CloudEvent cloudEvent) {
         BaseExplainabilityRequestDto requestDto;
         try {
@@ -100,7 +105,7 @@ public class ExplainabilityMessagingHandler {
 
         LOGGER.info("Received CloudEvent with id {} from {}", cloudEvent.getId(), cloudEvent.getSource());
 
-        ExplainabilityRequest request = ExplainabilityRequest.from(requestDto);
+        BaseExplainabilityRequest request = explainerServiceHandlerRegistry.explainabilityRequestFrom(requestDto);
         PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
 
         return explanationService
@@ -110,7 +115,9 @@ public class ExplainabilityMessagingHandler {
 
     // Outgoing
     public Void sendEvent(BaseExplainabilityResultDto result) {
-        LOGGER.info("Explainability service emits explainability for execution with ID {}", result.getExecutionId());
+        LOGGER.info("Explainability service emits explainability {} for execution with ID {}",
+                result.getClass().getSimpleName(),
+                result.getExecutionId());
         Optional<String> optPayload = CloudEventUtils
                 .build(result.getExecutionId(), URI_PRODUCER, result, BaseExplainabilityResultDto.class)
                 .flatMap(CloudEventUtils::encode);
@@ -126,4 +133,5 @@ public class ExplainabilityMessagingHandler {
     public Publisher<String> getEventPublisher() {
         return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
     }
+
 }

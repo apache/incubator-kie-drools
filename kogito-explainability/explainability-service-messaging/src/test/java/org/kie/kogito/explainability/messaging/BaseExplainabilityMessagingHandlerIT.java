@@ -31,7 +31,7 @@ import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
@@ -55,6 +55,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
     private static final String TOPIC_RESULT = "trusty-explainability-result-test";
 
     protected static final String EXECUTION_ID = "idException";
+    protected static final String COUNTERFACTUAL_ID = "idCounterfactual";
     protected static final String SERVICE_URL = "http://localhost:8080";
     protected static final ModelIdentifierDto MODEL_IDENTIFIER_DTO = new ModelIdentifierDto("dmn", "namespace:name");
 
@@ -76,12 +77,12 @@ abstract class BaseExplainabilityMessagingHandlerIT {
         BaseExplainabilityRequestDto request = buildRequest();
         BaseExplainabilityResultDto result = buildResult();
 
-        when(explanationService.explainAsync(any(ExplainabilityRequest.class), any(PredictionProvider.class)))
+        when(explanationService.explainAsync(any(BaseExplainabilityRequest.class), any(PredictionProvider.class)))
                 .thenReturn(CompletableFuture.completedFuture(result));
 
         kafkaClient.produce(ExplainabilityCloudEventBuilder.buildCloudEventJsonString(request), TOPIC_REQUEST);
 
-        verify(explanationService, timeout(1000).times(1)).explainAsync(any(ExplainabilityRequest.class), any(PredictionProvider.class));
+        verify(explanationService, timeout(1000).times(1)).explainAsync(any(BaseExplainabilityRequest.class), any(PredictionProvider.class));
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 

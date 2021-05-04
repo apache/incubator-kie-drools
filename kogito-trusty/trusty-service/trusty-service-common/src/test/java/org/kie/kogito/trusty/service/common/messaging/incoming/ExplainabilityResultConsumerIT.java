@@ -76,4 +76,5 @@ public class ExplainabilityResultConsumerIT {
 
         verify(trustyService, timeout(3000).times(1)).storeExplainabilityResult(any(String.class), any(BaseExplainabilityResult.class));
     }
+
 }

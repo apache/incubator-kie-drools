@@ -20,17 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
 import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
+import org.kie.kogito.explainability.handlers.CounterfactualExplainerServiceHandler;
+import org.kie.kogito.explainability.handlers.LimeExplainerServiceHandler;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.CounterfactualExplainabilityRequest;
+import org.kie.kogito.explainability.models.LIMEExplainabilityRequest;
 import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
@@ -48,6 +50,7 @@ public class TestUtils {
     }
 
     public static final String EXECUTION_ID = "executionId";
+    public static final String COUNTERFACTUAL_ID = "counterfactualId";
     public static final String SERVICE_URL = "localhost:8080";
 
     public static final ModelIdentifier MODEL_IDENTIFIER = new ModelIdentifier("dmn", "name:namespace");
@@ -75,9 +78,21 @@ public class TestUtils {
 
     public static final Map<String, TypedValue> OUTPUTS = singletonMap("output1", new UnitValue("string", new TextNode("output")));
 
-    public static final BaseExplainabilityRequestDto COUNTERFACTUAL_REQUEST_DTO =
-            new CounterfactualExplainabilityRequestDto(EXECUTION_ID, SERVICE_URL, MODEL_IDENTIFIER, INPUTS, OUTPUTS, SEARCH_DOMAINS);
-    public static final BaseExplainabilityRequestDto LIME_REQUEST_DTO = new LIMEExplainabilityRequestDto(EXECUTION_ID, SERVICE_URL, MODEL_IDENTIFIER, INPUTS, OUTPUTS);
-    public static final ExplainabilityRequest LIME_REQUEST = ExplainabilityRequest.from(LIME_REQUEST_DTO);
+    public static final CounterfactualExplainabilityRequestDto COUNTERFACTUAL_REQUEST_DTO =
+            new CounterfactualExplainabilityRequestDto(EXECUTION_ID,
+                    COUNTERFACTUAL_ID,
+                    SERVICE_URL,
+                    MODEL_IDENTIFIER,
+                    INPUTS,
+                    OUTPUTS,
+                    SEARCH_DOMAINS);
+    public static final LIMEExplainabilityRequestDto LIME_REQUEST_DTO = new LIMEExplainabilityRequestDto(EXECUTION_ID,
+            SERVICE_URL,
+            MODEL_IDENTIFIER,
+            INPUTS,
+            OUTPUTS);
+
+    public static final LIMEExplainabilityRequest LIME_REQUEST = new LimeExplainerServiceHandler(null).explainabilityRequestFrom(LIME_REQUEST_DTO);
+    public static final CounterfactualExplainabilityRequest COUNTERFACTUAL_REQUEST = new CounterfactualExplainerServiceHandler(null).explainabilityRequestFrom(COUNTERFACTUAL_REQUEST_DTO);
 
 }

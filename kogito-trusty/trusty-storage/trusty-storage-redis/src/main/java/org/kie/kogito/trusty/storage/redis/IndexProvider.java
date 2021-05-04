@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 
 import org.kie.kogito.persistence.redis.index.RedisCreateIndexEvent;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualResult;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 import io.quarkus.runtime.Startup;
 import io.redisearch.Schema;
 
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualRequest.COUNTERFACTUAL_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualRequest.EXECUTION_ID_FIELD;
-import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUALS_STORAGE;
+import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD;
+import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD;
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUAL_REQUESTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.COUNTERFACTUAL_RESULTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.DECISIONS_STORAGE;
-import static org.kie.kogito.trusty.storage.common.TrustyStorageService.EXPLAINABILITY_RESULTS_STORAGE;
+import static org.kie.kogito.trusty.storage.common.TrustyStorageService.LIME_RESULTS_STORAGE;
 import static org.kie.kogito.trusty.storage.common.TrustyStorageService.MODELS_STORAGE;
 
 @Singleton
@@ -58,9 +58,9 @@ public class IndexProvider {
 
         createModelsStorageIndex();
 
-        createExplainabilityResultsStorageIndex();
+        createLIMEResultsStorageIndex();
 
-        createCounterfactualsStorageIndex();
+        createCounterfactualRequestsStorageIndex();
 
         createCounterfactualResultsStorageIndex();
 
@@ -79,13 +79,13 @@ public class IndexProvider {
         indexManager.createIndex(modelIndexEvent);
     }
 
-    private void createExplainabilityResultsStorageIndex() {
-        RedisCreateIndexEvent explainabilityIndexEvent = new RedisCreateIndexEvent(EXPLAINABILITY_RESULTS_STORAGE);
+    private void createLIMEResultsStorageIndex() {
+        RedisCreateIndexEvent explainabilityIndexEvent = new RedisCreateIndexEvent(LIME_RESULTS_STORAGE);
         indexManager.createIndex(explainabilityIndexEvent);
     }
 
-    private void createCounterfactualsStorageIndex() {
-        RedisCreateIndexEvent counterfactualsIndexEvent = new RedisCreateIndexEvent(COUNTERFACTUALS_STORAGE);
+    private void createCounterfactualRequestsStorageIndex() {
+        RedisCreateIndexEvent counterfactualsIndexEvent = new RedisCreateIndexEvent(COUNTERFACTUAL_REQUESTS_STORAGE);
         counterfactualsIndexEvent.withField(new Schema.Field(EXECUTION_ID_FIELD, Schema.FieldType.FullText, false));
         counterfactualsIndexEvent.withField(new Schema.Field(COUNTERFACTUAL_ID_FIELD, Schema.FieldType.FullText, false));
         indexManager.createIndex(counterfactualsIndexEvent);
@@ -93,8 +93,8 @@ public class IndexProvider {
 
     private void createCounterfactualResultsStorageIndex() {
         RedisCreateIndexEvent counterfactualResultsIndexEvent = new RedisCreateIndexEvent(COUNTERFACTUAL_RESULTS_STORAGE);
-        counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualResult.EXECUTION_ID_FIELD, Schema.FieldType.FullText, false));
-        counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualResult.COUNTERFACTUAL_ID_FIELD, Schema.FieldType.FullText, false));
+        counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualExplainabilityResult.EXECUTION_ID_FIELD, Schema.FieldType.FullText, false));
+        counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualExplainabilityResult.COUNTERFACTUAL_ID_FIELD, Schema.FieldType.FullText, false));
         indexManager.createIndex(counterfactualResultsIndexEvent);
     }
 }

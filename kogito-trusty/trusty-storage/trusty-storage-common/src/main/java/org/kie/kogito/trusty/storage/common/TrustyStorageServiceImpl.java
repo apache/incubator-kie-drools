@@ -21,11 +21,11 @@ import javax.inject.Inject;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualResult;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 
 @ApplicationScoped
 public class TrustyStorageServiceImpl implements TrustyStorageService {
@@ -39,8 +39,8 @@ public class TrustyStorageServiceImpl implements TrustyStorageService {
     }
 
     @Override
-    public Storage<String, BaseExplainabilityResult> getExplainabilityResultStorage() {
-        return storageService.getCache(EXPLAINABILITY_RESULTS_STORAGE, BaseExplainabilityResult.class);
+    public Storage<String, LIMEExplainabilityResult> getLIMEResultStorage() {
+        return storageService.getCache(LIME_RESULTS_STORAGE, LIMEExplainabilityResult.class);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class TrustyStorageServiceImpl implements TrustyStorageService {
     }
 
     @Override
-    public Storage<String, CounterfactualRequest> getCounterfactualRequestStorage() {
-        return storageService.getCache(COUNTERFACTUALS_STORAGE, CounterfactualRequest.class);
+    public Storage<String, CounterfactualExplainabilityRequest> getCounterfactualRequestStorage() {
+        return storageService.getCache(COUNTERFACTUAL_REQUESTS_STORAGE, CounterfactualExplainabilityRequest.class);
     }
 
     @Override
-    public Storage<String, CounterfactualResult> getCounterfactualResultStorage() {
-        return storageService.getCache(COUNTERFACTUAL_RESULTS_STORAGE, CounterfactualResult.class);
+    public Storage<String, CounterfactualExplainabilityResult> getCounterfactualResultStorage() {
+        return storageService.getCache(COUNTERFACTUAL_RESULTS_STORAGE, CounterfactualExplainabilityResult.class);
     }
 }

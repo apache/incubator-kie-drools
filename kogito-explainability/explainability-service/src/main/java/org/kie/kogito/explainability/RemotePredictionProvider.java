@@ -32,7 +32,7 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.explainability.models.PredictInput;
 import org.slf4j.Logger;
@@ -51,12 +51,12 @@ public class RemotePredictionProvider implements PredictionProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemotePredictionProvider.class);
 
-    private final ExplainabilityRequest request;
+    private final BaseExplainabilityRequest request;
     private final ThreadContext threadContext;
     private final Executor asyncExecutor;
     private final WebClient client;
 
-    public RemotePredictionProvider(ExplainabilityRequest request, Vertx vertx, ThreadContext threadContext, Executor asyncExecutor) {
+    public RemotePredictionProvider(BaseExplainabilityRequest request, Vertx vertx, ThreadContext threadContext, Executor asyncExecutor) {
         this.request = request;
         URI uri = URI.create(request.getServiceUrl());
         this.client = getClient(vertx, uri);

@@ -20,9 +20,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CounterfactualResult extends BaseExplainabilityResult {
+public class CounterfactualExplainabilityResult extends BaseExplainabilityResult {
+
+    public static final String EXPLAINABILITY_TYPE_NAME = "counterfactual";
 
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
+
     public static final String COUNTERFACTUAL_SOLUTION_ID_FIELD = "solutionId";
 
     @JsonProperty(COUNTERFACTUAL_ID_FIELD)
@@ -31,14 +34,14 @@ public class CounterfactualResult extends BaseExplainabilityResult {
     @JsonProperty(COUNTERFACTUAL_SOLUTION_ID_FIELD)
     private String solutionId;
 
-    public CounterfactualResult() {
+    public CounterfactualExplainabilityResult() {
     }
 
-    public CounterfactualResult(String executionId,
-            ExplainabilityStatus status,
-            String statusDetails,
+    public CounterfactualExplainabilityResult(String executionId,
             String counterfactualId,
-            String solutionId) {
+            String solutionId,
+            ExplainabilityStatus status,
+            String statusDetails) {
         super(executionId, status, statusDetails);
         this.counterfactualId = counterfactualId;
         this.solutionId = solutionId;

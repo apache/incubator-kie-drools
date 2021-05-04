@@ -17,6 +17,8 @@ package org.kie.kogito.explainability.api;
 
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,7 +29,13 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
 
     public static final String EXPLAINABILITY_TYPE_NAME = "Counterfactual";
 
+    public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
+
     public static final String SEARCH_DOMAINS_FIELD = "searchDomains";
+
+    @JsonProperty(COUNTERFACTUAL_ID_FIELD)
+    @NotNull(message = "counterfactualId must be provided.")
+    private String counterfactualId;
 
     @JsonProperty(SEARCH_DOMAINS_FIELD)
     private Map<String, CounterfactualSearchDomainDto> searchDomains;
@@ -37,13 +45,19 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
     }
 
     public CounterfactualExplainabilityRequestDto(String executionId,
+            String counterfactualId,
             String serviceUrl,
             ModelIdentifierDto modelIdentifier,
             Map<String, TypedValue> inputs,
             Map<String, TypedValue> outputs,
             Map<String, CounterfactualSearchDomainDto> searchDomains) {
         super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
+        this.counterfactualId = counterfactualId;
         this.searchDomains = searchDomains;
+    }
+
+    public String getCounterfactualId() {
+        return counterfactualId;
     }
 
     public Map<String, CounterfactualSearchDomainDto> getSearchDomains() {

@@ -22,7 +22,7 @@ import java.util.List;
 import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
@@ -48,15 +48,6 @@ public interface TrustyService {
     MatchedExecutionHeaders getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix);
 
     /**
-     * Gets a decision by execution ID.
-     *
-     * @param executionId The execution ID.
-     * @return The decision.
-     * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is not present in the system.
-     */
-    Decision getDecisionById(String executionId);
-
-    /**
      * Stores a decision.
      *
      * @param executionId The unique execution ID
@@ -64,6 +55,15 @@ public interface TrustyService {
      * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is already present in the system.
      */
     void storeDecision(String executionId, Decision decision);
+
+    /**
+     * Gets a decision by execution ID.
+     *
+     * @param executionId The execution ID.
+     * @return The decision.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is not present in the system.
+     */
+    Decision getDecisionById(String executionId);
 
     /**
      * Updates a decision. If the decision is not present in the storage, then it is created.
@@ -82,19 +82,20 @@ public interface TrustyService {
     void processDecision(String executionId, Decision decision);
 
     /**
-     * Gets a explainability result by execution ID.
-     *
-     * @param executionId The execution ID.
-     * @return The explainability result.
-     */
-    BaseExplainabilityResult getExplainabilityResultById(String executionId);
-
-    /**
      * Store the explainability result.
      *
      * @param executionId The execution ID.
      */
-    void storeExplainabilityResult(String executionId, BaseExplainabilityResult result);
+    <T extends BaseExplainabilityResult> void storeExplainabilityResult(String executionId, T result);
+
+    /**
+     * Gets a explainability result by execution ID.
+     *
+     * @param executionId The execution ID.
+     * @param type The type of explanation to lookup.
+     * @return The explainability result.
+     */
+    <T extends BaseExplainabilityResult> T getExplainabilityResultById(String executionId, Class<T> type);
 
     /**
      * Stores a Model definition.
@@ -123,7 +124,7 @@ public interface TrustyService {
      * @return A empty Counterfactual representing the request.
      * @throws IllegalArgumentException Throws IllegalArgumentException the executionId is not present in the system.
      */
-    CounterfactualRequest requestCounterfactuals(String executionId,
+    CounterfactualExplainabilityRequest requestCounterfactuals(String executionId,
             List<TypedVariableWithValue> goals,
             List<CounterfactualSearchDomain> searchDomains);
 
@@ -134,7 +135,7 @@ public interface TrustyService {
      * @return A list of all of the Counterfactuals for the execution.
      * @throws IllegalArgumentException Throws IllegalArgumentException the executionId is not present in the system.
      */
-    List<CounterfactualRequest> getCounterfactualRequests(String executionId);
+    List<CounterfactualExplainabilityRequest> getCounterfactualRequests(String executionId);
 
     /**
      * Gets a specific Counterfactual request for an execution.
@@ -144,5 +145,5 @@ public interface TrustyService {
      * @return A specific Counterfactual request for the execution.
      * @throws IllegalArgumentException Throws IllegalArgumentException the executionId or counterfactualId are not present in the system.
      */
-    CounterfactualRequest getCounterfactualRequest(String executionId, String counterfactualId);
+    CounterfactualExplainabilityRequest getCounterfactualRequest(String executionId, String counterfactualId);
 }

@@ -189,7 +189,7 @@ message DMNModelWithMetadata {
 }
 
 /* @Indexed */
-message CounterfactualRequest {
+message CounterfactualExplainabilityRequest {
 
     /* @Field(store = Store.YES) */
     optional string executionId = 1;
@@ -259,7 +259,7 @@ message CounterfactualSearchDomain {
 }
 
 /* @Indexed */
-message CounterfactualResult {
+message CounterfactualExplainabilityResult {
 
     /* @Field(store = Store.YES) */
     optional string executionId = 1;
@@ -269,4 +269,13 @@ message CounterfactualResult {
 
     /* @Field(store = Store.YES) */
     optional string solutionId = 3;
+
+    /* @Field(store = Store.YES) */
+    optional string status = 4;
+
+    /* @Field(store = Store.YES) */
+    optional string statusDetails = 5;
+
 }
+
+

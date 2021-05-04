@@ -41,7 +41,8 @@ import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
 import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualRequest;
+import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
@@ -69,14 +70,14 @@ public class ExplainabilityApiV1 {
                     description = "The execution ID.",
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
-        return retrieveLIMEExplainabilityResult(executionId)
+        return retrieveExplainabilityResult(executionId, LIMEExplainabilityResult.class)
                 .map(obj -> Response.ok(new SalienciesResponse(obj)).build())
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
     }
 
-    private Optional<LIMEExplainabilityResult> retrieveLIMEExplainabilityResult(String executionId) {
+    private <T extends BaseExplainabilityResult> Optional<T> retrieveExplainabilityResult(String executionId, Class<T> type) {
         try {
-            return Optional.ofNullable((LIMEExplainabilityResult) trustyService.getExplainabilityResultById(executionId));
+            return Optional.ofNullable(trustyService.getExplainabilityResultById(executionId, type));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }
@@ -116,7 +117,7 @@ public class ExplainabilityApiV1 {
                 .build();
     }
 
-    private Optional<CounterfactualRequest> requestCounterfactualsForExecution(String executionId,
+    private Optional<CounterfactualExplainabilityRequest> requestCounterfactualsForExecution(String executionId,
             List<TypedVariableWithValue> goals,
             List<CounterfactualSearchDomain> searchDomains) {
         try {
@@ -150,7 +151,7 @@ public class ExplainabilityApiV1 {
                 .build();
     }
 
-    private Optional<List<CounterfactualRequest>> getCounterfactualRequestsForExecution(String executionId) {
+    private Optional<List<CounterfactualExplainabilityRequest>> getCounterfactualRequestsForExecution(String executionId) {
         try {
             return Optional.ofNullable(trustyService.getCounterfactualRequests(executionId));
         } catch (IllegalArgumentException ex) {
@@ -187,7 +188,7 @@ public class ExplainabilityApiV1 {
                 .build();
     }
 
-    private Optional<CounterfactualRequest> getCounterfactualForExecution(String executionId, String counterfactualId) {
+    private Optional<CounterfactualExplainabilityRequest> getCounterfactualForExecution(String executionId, String counterfactualId) {
         try {
             return Optional.ofNullable(trustyService.getCounterfactualRequest(executionId, counterfactualId));
         } catch (IllegalArgumentException ex) {

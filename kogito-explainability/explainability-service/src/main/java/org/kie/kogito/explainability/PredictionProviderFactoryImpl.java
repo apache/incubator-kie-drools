@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.ExplainabilityRequest;
+import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 import io.vertx.mutiny.core.Vertx;
 
@@ -45,7 +45,7 @@ public class PredictionProviderFactoryImpl implements PredictionProviderFactory 
     }
 
     @Override
-    public PredictionProvider createPredictionProvider(ExplainabilityRequest request) {
+    public PredictionProvider createPredictionProvider(BaseExplainabilityRequest request) {
         return new RemotePredictionProvider(request, vertx, threadContext, managedExecutor);
     }
 }
