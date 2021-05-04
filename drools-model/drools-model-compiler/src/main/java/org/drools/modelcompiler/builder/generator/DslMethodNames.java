@@ -38,7 +38,6 @@ public class DslMethodNames {
     // variables
     public static final String BIND_AS_CALL = "as";
     public static final String DECLARATION_OF_CALL = "D.declarationOf";
-    public static final String INPUT_CALL = "D.input";
     public static final String GLOBAL_OF_CALL = "D.globalOf";
     public static final String TYPE_META_DATA_CALL = "D.typeMetaData";
 
@@ -77,7 +76,6 @@ public class DslMethodNames {
 
     // consequences
     public static final String EXECUTE_CALL = "execute";
-    public static final String EXECUTESCRIPT_CALL = "executeScript";
     public static final String ON_CALL = "D.on";
     public static final String UNIT_DATA_CALL = "D.unitData";
     public static final String WHEN_CALL = "D.when";

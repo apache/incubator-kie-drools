@@ -76,11 +76,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_TEMPLATE;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_PREDICATE_TEMPLATE;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_PREDICATE_TEMPLATE_JAVA;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE_JAVA;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_TEMPLATE;
@@ -214,15 +213,6 @@ public class KiePMMLPredicateFactoryTest {
     }
 
     @Test
-    public void getKiePMMLSimplePredicate() {
-        simplePredicates.forEach(simplePredicate -> {
-            KiePMMLSimplePredicate retrieved = KiePMMLPredicateFactory.getKiePMMLSimplePredicate(simplePredicate,
-                                                                                                 simplePredicateNameType.get(simplePredicate.getField().getValue()));
-            commonVerifySimplePredicate(retrieved, null);
-        });
-    }
-
-    @Test
     public void getKiePMMLSimpleSetPredicate() {
         simpleSetPredicates.forEach(simpleSetPredicate -> {
             KiePMMLSimpleSetPredicate retrieved =
@@ -285,19 +275,6 @@ public class KiePMMLPredicateFactoryTest {
     }
 
     @Test
-    public void getKiePMMLSimplePredicateSourcesMap() {
-        String predicateName = "PREDICATENAME";
-        KiePMMLSimplePredicate kiePMMLSimplePredicate = KiePMMLSimplePredicate
-                .builder(predicateName, Collections.emptyList(), OPERATOR.GREATER_OR_EQUAL)
-                .withValue(24)
-                .build();
-        String packageName = "PACKAGENAME";
-        final Map<String, String> retrieved =
-                KiePMMLPredicateFactory.getKiePMMLSimplePredicateSourcesMap(kiePMMLSimplePredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLSimplePredicate.getId()), 1);
-    }
-
-    @Test
     public void getKiePMMLSimpleSetPredicateSourcesMap() {
         String predicateName = "PREDICATENAME";
         ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
@@ -349,8 +326,8 @@ public class KiePMMLPredicateFactoryTest {
         commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLCompoundPredicate.getId()), 4);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getKiePMMLCompoundPredicateUnsupportedSourcesMap() {
+    @Test
+    public void getKiePMMLCompoundPredicateWithSurrogateSourcesMap() {
         KiePMMLSimplePredicate kiePMMLSimplePredicateInt = KiePMMLSimplePredicate
                 .builder("SIMPLEPREDICATEINTNAME", Collections.emptyList(), OPERATOR.GREATER_OR_EQUAL)
                 .withValue(24)
@@ -396,51 +373,6 @@ public class KiePMMLPredicateFactoryTest {
         final Map<String, String> retrieved =
                 KiePMMLPredicateFactory.getKiePMMLFalsePredicateSourcesMap(kiePMMLFalsePredicate, packageName);
         commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLFalsePredicate.getId()), 1);
-    }
-
-    @Test
-    public void setSimplePredicateConstructorGreaterOrEqual() {
-        init(KIE_PMML_SIMPLE_PREDICATE_TEMPLATE_JAVA, KIE_PMML_SIMPLE_PREDICATE_TEMPLATE);
-        AssignExpr valueAssignExpr =
-                assignExprs.stream().filter(assignExpr -> assignExpr.getTarget().asNameExpr().getNameAsString().equals("value"))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Missing \"value\" assign variable"));
-        assertTrue(valueAssignExpr.getValue() instanceof NullLiteralExpr);
-        String generatedClassName = "GENERATEDCLASSNAME";
-        String predicateName = "PREDICATENAME";
-        OPERATOR operator = OPERATOR.GREATER_OR_EQUAL;
-        Object value = 24;
-        KiePMMLPredicateFactory.setSimplePredicateConstructor(generatedClassName,
-                                                              predicateName,
-                                                              constructorDeclaration,
-                                                              operator, value);
-        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
-        superInvocationExpressionsMap.put(2,
-                                          new NameExpr(operator.getClass().getCanonicalName() + "." + operator.name()));
-        Map<String, Expression> assignExpressionMap = new HashMap<>();
-        assignExpressionMap.put("value", valueAssignExpr.getValue().asNameExpr());
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap,
-                                  assignExpressionMap));
-        assertEquals("24", valueAssignExpr.getValue().asNameExpr().toString());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setSimplePredicateConstructorIsMissing() {
-        init(KIE_PMML_SIMPLE_PREDICATE_TEMPLATE_JAVA, KIE_PMML_SIMPLE_PREDICATE_TEMPLATE);
-        AssignExpr valueAssignExpr =
-                assignExprs.stream().filter(assignExpr -> assignExpr.getTarget().asNameExpr().getNameAsString().equals("value"))
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Missing \"value\" assign variable"));
-        assertTrue(valueAssignExpr.getValue() instanceof NullLiteralExpr);
-        String generatedClassName = "GENERATEDCLASSNAME";
-        String predicateName = "PREDICATENAME";
-        OPERATOR operator = OPERATOR.IS_MISSING;
-        Object value = "VALUE";
-        KiePMMLPredicateFactory.setSimplePredicateConstructor(generatedClassName,
-                                                              predicateName,
-                                                              constructorDeclaration,
-                                                              operator, value);
     }
 
     @Test
@@ -568,8 +500,9 @@ public class KiePMMLPredicateFactoryTest {
                                   assignExpressionMap));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setCompoundPredicateUnsupportedConstructor() {
+    @Test
+    public void setCompoundPredicateConstructorSurrogate() {
+        init(KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
         String generatedClassName = "GENERATEDCLASSNAME";
         String predicateName = "PREDICATENAME";
         BOOLEAN_OPERATOR booleanOperator = BOOLEAN_OPERATOR.SURROGATE;
@@ -687,7 +620,7 @@ public class KiePMMLPredicateFactoryTest {
                                        int expectedSize) {
         assertNotNull(toVerify);
         assertEquals(expectedSize, toVerify.size());
-        String expectedKey = String.format("%s.%s", packageName, predicateName);
+        String expectedKey = String.format(PACKAGE_CLASS_TEMPLATE, packageName, predicateName);
         assertTrue(toVerify.containsKey(expectedKey));
         commonValidateCompilation(toVerify);
     }

@@ -41,6 +41,7 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -213,6 +214,7 @@ public class ExpressionTyper {
             return toTypedExpressionRec(binaryExpr);
 
         } else if (drlxExpr instanceof LiteralExpr) {
+            drlxExpr = normalizeDigit(drlxExpr);
             return of(new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr )));
 
         } else if (drlxExpr instanceof ThisExpr || (drlxExpr instanceof NameExpr && THIS_PLACEHOLDER.equals(printConstraint(drlxExpr)))) {
@@ -311,6 +313,13 @@ public class ExpressionTyper {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private Expression normalizeDigit(Expression expr) {
+        if (expr instanceof DoubleLiteralExpr) {
+            return new DoubleLiteralExpr(((DoubleLiteralExpr) expr).asDouble());
+        }
+        return expr;
     }
 
     private Optional<TypedExpression> transformToArrayOrMapExpressionWithType(Expression indexExpr, TypedExpression te) {
