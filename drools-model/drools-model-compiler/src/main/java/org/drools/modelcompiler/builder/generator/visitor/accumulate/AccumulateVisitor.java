@@ -599,10 +599,26 @@ public class AccumulateVisitor {
     }
 
     private MethodCallExpr replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {
+        // This method links a binding expression, used to evaluate the accumulated value,
+        // to the last pattern in a multi-pattern accumulate like the following
+        //
+        // accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ) and $s : String( this == $a.name ),
+        //             $sum : sum($a.getAge() + $c.getAge() + $s.length()) )
+        //
+        // In the case the bindExpression, that will have to be linked to the $s pattern, is originally generated as
+        //
+        // bind(var_$sum, var_$a, var_$c, var_$s, (Adult $a, Child $c, String $s) -> $a.getAge() + $c.getAge() + $s.length())
+
         final Expression bindingId = lastPattern.getArgument(0);
 
         bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId)).ifPresent( name -> {
+
+            // since the bind has to be linked to $s, the corresponding variable should be removed from the arguments list so it becomes
+            // bind(var_$sum, var_$a, var_$c, (Adult $a, Child $c, String $s) -> $a.getAge() + $c.getAge() + $s.length())
             bindExpression.remove(name);
+
+            // also the first formal parameter in the binding lambda has to be $s so it becomes
+            // bind(var_$sum, var_$a, var_$c, (String $s, Adult $a, Child $c) -> $a.getAge() + $c.getAge() + $s.length())
             LambdaExpr lambda = (LambdaExpr)bindExpression.getArgument( bindExpression.getArguments().size()-1 );
             if (lambda.getParameters().size() > 1) {
                 String formalArg = context.fromVar( name.getNameAsString() );
