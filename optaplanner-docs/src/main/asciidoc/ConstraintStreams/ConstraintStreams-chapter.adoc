@@ -10,17 +10,13 @@
 
 Constraint streams are a Functional Programming form of incremental score calculation in plain Java that is easy to
 read, write and debug.
-The API should feel familiar if you've worked with Java 8 Streams or SQL.
+The API should feel familiar if you're familiar with Java 8 Streams or SQL.
 
+// TODO Remove when PLANNER-1709 is fixed. https://issues.redhat.com/browse/PLANNER-1709
 [WARNING]
 ====
-The ConstraintStreams/ConstraintProvider API is an ongoing project.
-It works but it has many API gaps.
-Therefore, it is not rich enough yet to handle complex constraints.
-<<explainingTheScore,Constraint justifications>> may not function properly.
+For the ConstraintStreams API, <<explainingTheScore,Constraint justifications>> may not function properly yet.
 ====
-
-// TODO Remove the previous sentence when PLANNER-1709 is fixed.
 
 
 [[constraintStreamsIntroduction]]
