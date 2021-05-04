@@ -331,7 +331,7 @@ void commitAndCreatePR(String repo, String buildBranch) {
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
         })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
-        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
+        deployProperties["${repo}.pr.link"] = isRelease() ? githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) : githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
     }
 }
 
