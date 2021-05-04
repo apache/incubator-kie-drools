@@ -1,0 +1,73 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.dmg.org/PMML-4_2">
+  <Header>
+    <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
+  </Header>
+
+  <DataDictionary numberOfFields="3">
+    <DataField name="temperature" dataType="double" optype="continuous" />
+    <DataField name="humidity" dataType="double" optype="continuous" />
+    <DataField name="decision" dataType="string" optype="categorical">
+      <Value value="sunglasses" />
+      <Value value="umbrella" />
+      <Value value="nothing" />
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DefineFunction name="fun_humidity_fieldref" optype="continuous" dataType="double">
+      <ParameterField name="humidity_fake"/>
+      <FieldRef field="humidity_fake"/>
+    </DefineFunction>
+    <DefineFunction name="fun_humidity_apply" optype="continuous" dataType="double">
+      <ParameterField name="humidity_fake"/>
+      <Apply function="fun_humidity_fieldref">
+        <FieldRef field="humidity_fake"/>
+      </Apply>
+    </DefineFunction>
+    <DerivedField name="der_temperature" optype="continuous" dataType="double">
+      <FieldRef field="temperature"/>
+    </DerivedField>
+    <DerivedField name="der_fun_humidity_apply" optype="continuous" dataType="double">
+      <Apply function="fun_humidity_apply">
+        <FieldRef field="humidity"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="der_constant" optype="categorical" dataType="string">
+      <Constant>constant</Constant>
+    </DerivedField>
+  </TransformationDictionary>
+  <TreeModel modelName="SampleMineTreeModelWithTransformations" functionName="classification">
+    <MiningSchema>
+      <MiningField name="temperature"  usageType="active" />
+      <MiningField name="humidity"  usageType="active" />
+      <MiningField name="decision" usageType="predicted" />
+    </MiningSchema>
+    <Output>
+      <OutputField name="weatherdecision" targetField="decision" />
+      <OutputField name="out_der_temperature" dataType="double" feature="transformedValue">
+        <FieldRef field="der_temperature"/>
+      </OutputField>
+      <OutputField name="out_der_fun_humidity_apply" dataType="double" feature="transformedValue">
+        <FieldRef field="der_fun_humidity_apply"/>
+      </OutputField>
+      <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
+        <FieldRef field="der_constant"/>
+      </OutputField>
+    </Output>
+    <Node score="nothing" id="1">
+      <True />
+      <Node score="sunglasses" id="2">
+        <CompoundPredicate booleanOperator="and">
+          <SimplePredicate field="der_temperature" operator="greaterThan" value="25" />
+          <SimplePredicate field="der_fun_humidity_apply" operator="lessOrEqual" value="20" />
+        </CompoundPredicate>
+      </Node>
+      <Node score="umbrella" id="3">
+        <SimplePredicate field="der_fun_humidity_apply" operator="greaterThan" value="50" />
+      </Node>
+      <Node score="nothing" id="4">
+        <True />
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

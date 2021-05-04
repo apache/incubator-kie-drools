@@ -25,8 +25,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -44,11 +47,13 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -56,8 +61,13 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
+import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
+import static org.kie.pmml.commons.Constants.MISSING_METHOD_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
+import static org.kie.pmml.commons.Constants.MISSING_STATIC_INITIALIZER;
+import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
@@ -65,10 +75,10 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
  */
 public class CommonCodegenUtils {
 
-    public static String OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME ="kiePMMLNameValue";
     static final String LAMBDA_PARAMETER_NAME = "lmbdParam";
     static final String METHOD_NAME_TEMPLATE = "%s%s";
     static final String PARAMETER_NAME_TEMPLATE = "param%s";
+    public static String OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME = "kiePMMLNameValue";
 
     private CommonCodegenUtils() {
         // Avoid instantiation
@@ -76,7 +86,6 @@ public class CommonCodegenUtils {
 
     /**
      * Populate the <code>ClassOrInterfaceDeclaration</code> with the provided <code>MethodDeclaration</code>s
-     *
      * @param toPopulate
      * @param methodDeclarations
      */
@@ -93,17 +102,17 @@ public class CommonCodegenUtils {
      *      .filter((KiePMMLNameValue kpmmlnv) -> Objects.equals("(<i>fieldNameToRef</i>)", kpmmlnv.getName()))
      *      .findFirst();
      * </pre>
-     *
+     * <p>
      * expression, where <b>kiePMMLNameValueListParam</b> is the name of the
      * <code>List&lt;KiePMMLNameValue&gt;</code> parameter, and
      * <b>fieldNameToRef</b> is the name of the field to find, in the containing method
-     *
      * @param kiePMMLNameValueListParam
      * @param fieldNameToRef
-     * @param stringLiteralComparison if <code>true</code>, equals comparison is made on the String, e.g Objects.equals("(<i>fieldNameToRef</i>)", kpmmlnv.getName())),
-     * otherwise, is done on object reference,  e.g Objects.equals((<i>fieldNameToRef</i>), kpmmlnv.getName())). In this latter case, a <i>fieldNameToRef</i> variable is
+     * @param stringLiteralComparison if <code>true</code>, equals comparison is made on the String, e.g Objects
+     * .equals("(<i>fieldNameToRef</i>)", kpmmlnv.getName())),
+     * otherwise, is done on object reference,  e.g Objects.equals((<i>fieldNameToRef</i>), kpmmlnv.getName())). In
+     * this latter case, a <i>fieldNameToRef</i> variable is
      * expected to exists
-     *
      * @return
      */
     public static ExpressionStmt getFilteredKiePMMLNameValueExpression(final String kiePMMLNameValueListParam,
@@ -120,32 +129,41 @@ public class CommonCodegenUtils {
         } else {
             equalsComparisonExpression = new NameExpr(fieldNameToRef);
         }
-        argumentBodyExpression.setArguments(NodeList.nodeList(equalsComparisonExpression, argumentBodyExpressionArgument2));
+        argumentBodyExpression.setArguments(NodeList.nodeList(equalsComparisonExpression,
+                                                              argumentBodyExpressionArgument2));
         argumentBodyExpression.setScope(new NameExpr(Objects.class.getName()));
         ExpressionStmt argumentBody = new ExpressionStmt(argumentBodyExpression);
         // (KiePMMLNameValue kpmmlnv) -> Objects.equals(fieldNameToRef, kpmmlnv.getName())
-        Parameter argumentParameter = new Parameter(parseClassOrInterfaceType(KiePMMLNameValue.class.getName()), LAMBDA_PARAMETER_NAME);
+        Parameter argumentParameter = new Parameter(parseClassOrInterfaceType(KiePMMLNameValue.class.getName()),
+                                                    LAMBDA_PARAMETER_NAME);
         LambdaExpr argument = new LambdaExpr();
-        argument.setEnclosingParameters(true).setParameters(NodeList.nodeList(argumentParameter)); // (KiePMMLNameValue kpmmlnv) ->
+        argument.setEnclosingParameters(true).setParameters(NodeList.nodeList(argumentParameter)); //
+        // (KiePMMLNameValue kpmmlnv) ->
         argument.setBody(argumentBody); // Objects.equals(fieldNameToRef, kpmmlnv.getName())
         // kiePMMLNameValueListParam.stream()
         MethodCallExpr initializerScopeScope = new MethodCallExpr("stream");
         initializerScopeScope.setScope(new NameExpr(kiePMMLNameValueListParam));
-        // kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue kpmmlnv)  -> Objects.equals(fieldNameToRef, kpmmlnv.getName()))
+        // kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue kpmmlnv)  -> Objects.equals(fieldNameToRef,
+        // kpmmlnv.getName()))
         MethodCallExpr initializerScope = new MethodCallExpr("filter");
         initializerScope.setScope(initializerScopeScope);
         initializerScope.setArguments(NodeList.nodeList(argument));
 
-        // kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue kpmmlnv)  -> Objects.equals(fieldNameToRef, kpmmlnv.getName())).findFirst()
-        MethodCallExpr initializer = new MethodCallExpr( "findFirst");
+        // kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue kpmmlnv)  -> Objects.equals(fieldNameToRef,
+        // kpmmlnv.getName())).findFirst()
+        MethodCallExpr initializer = new MethodCallExpr("findFirst");
         initializer.setScope(initializerScope);
         // Optional<KiePMMLNameValue> kiePMMLNameValue
-        VariableDeclarator variableDeclarator = new VariableDeclarator(getTypedClassOrInterfaceType(Optional.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())),
-                                                                       OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME);
-        // Optional<KiePMMLNameValue> kiePMMLNameValue = kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue kpmmlnv)  -> Objects.equals(fieldNameToRef, kpmmlnv.getName())).findFirst()
+        VariableDeclarator variableDeclarator =
+                new VariableDeclarator(getTypedClassOrInterfaceType(Optional.class.getName(),
+                                                                    Collections.singletonList(KiePMMLNameValue.class.getName())),
+                                       OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME);
+        // Optional<KiePMMLNameValue> kiePMMLNameValue = kiePMMLNameValueListParam.stream().filter((KiePMMLNameValue
+        // kpmmlnv)  -> Objects.equals(fieldNameToRef, kpmmlnv.getName())).findFirst()
         variableDeclarator.setInitializer(initializer);
         //
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(NodeList.nodeList(variableDeclarator));
+        VariableDeclarationExpr variableDeclarationExpr =
+                new VariableDeclarationExpr(NodeList.nodeList(variableDeclarator));
         ExpressionStmt toReturn = new ExpressionStmt();
         toReturn.setExpression(variableDeclarationExpr);
         return toReturn;
@@ -164,7 +182,6 @@ public class CommonCodegenUtils {
      *     MAP_NAME.put("KEY_4", this::METHOD_46);
      * </pre>
      * inside the given <code>BlockStmt</code>
-     *
      * @param toAdd
      * @param body
      * @param mapName
@@ -194,14 +211,13 @@ public class CommonCodegenUtils {
      *     LIST_NAME.add(new OBJD());
      * </pre>
      * inside the given <code>BlockStmt</code>
-     *
      * @param toAdd
      * @param body
      * @param listName
      */
     public static void addListPopulation(final List<ObjectCreationExpr> toAdd,
-                                        final BlockStmt body,
-                                        final String listName) {
+                                         final BlockStmt body,
+                                         final String listName) {
         toAdd.forEach(objectCreationExpr -> {
             NodeList<Expression> arguments = NodeList.nodeList(objectCreationExpr);
             MethodCallExpr methodCallExpr = new MethodCallExpr();
@@ -216,7 +232,6 @@ public class CommonCodegenUtils {
 
     /**
      * Create an empty <b>Arrays.asList()</b> <code>ExpressionStmt</code>
-     *
      * @return
      */
     public static ExpressionStmt createArraysAsListExpression() {
@@ -231,7 +246,6 @@ public class CommonCodegenUtils {
 
     /**
      * Create a populated <b>Arrays.asList(?... a)</b> <code>ExpressionStmt</code>
-     *
      * @param source
      * @return
      */
@@ -251,14 +265,16 @@ public class CommonCodegenUtils {
      *     empty (<i>methodName</i>)((list of <i>parameterType</i> <i>parameter name</i>)) {
      * }
      * </pre>
-     *
-     *
-     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose names are the <b>key</b>s of the given <code>Map</code>
+     * <p>
+     * <p>
+     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose names are the <b>key</b>s of the given
+     * <code>Map</code>
      * and <b>methodArity</b>, and whose parameters types are the <b>value</b>s
      *
      * <b>The </b>
      * @param methodName
-     * @param parameterNameTypeMap expecting an <b>ordered</b> map here, since parameters order matter for <i>caller</i> code
+     * @param parameterNameTypeMap expecting an <b>ordered</b> map here, since parameters order matter for
+     * <i>caller</i> code
      * @return
      */
     public static MethodDeclaration getMethodDeclaration(final String methodName,
@@ -281,7 +297,7 @@ public class CommonCodegenUtils {
      *     empty (<i>methodName</i>)() {
      *     }
      * </pre>
-     *
+     * <p>
      * A <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
      * and <b>methodArity</b>
      * @param methodName
@@ -298,7 +314,7 @@ public class CommonCodegenUtils {
      * <pre>
      *     return (<i>returnedVariableName</i>);
      * </pre>
-     *
+     * <p>
      * e.g
      * <pre>
      *     return varOne;
@@ -317,7 +333,7 @@ public class CommonCodegenUtils {
      * <pre>
      *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
      * </pre>
-     *
+     * <p>
      * e.g
      * <pre>
      *     CLASS_NAME<TypeA, TypeB>
@@ -328,7 +344,7 @@ public class CommonCodegenUtils {
      * @return
      */
     public static ClassOrInterfaceType getTypedClassOrInterfaceType(final String className,
-                                                                    final List<String> typesName ) {
+                                                                    final List<String> typesName) {
         ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
         List<Type> types = typesName.stream()
                 .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());
@@ -342,20 +358,24 @@ public class CommonCodegenUtils {
      * @param body
      * @param assignExpressionName
      * @param value
-     *
-     * @throws <code>KiePMMLException</code> if <code>AssignExpr</code> with given <b>assignExpressionName</b> is not found
+     * @throws <code>KiePMMLException</code> if <code>AssignExpr</code> with given <b>assignExpressionName</b> is not
+     * found
      */
-    public static void setAssignExpressionValue( final BlockStmt body, final String assignExpressionName, final Expression value) {
+    public static void setAssignExpressionValue(final BlockStmt body, final String assignExpressionName,
+                                                final Expression value) {
         AssignExpr assignExpr = getAssignExpression(body, assignExpressionName)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, assignExpressionName, body)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, assignExpressionName,
+                                                                      body)));
         assignExpr.setValue(value);
     }
 
     /**
-     * Return an <code>Optional&lt;AssignExpr&gt;</code> with the given <b>assignExpressionName</b> from the given <code>BlockStmt</code>
+     * Return an <code>Optional&lt;AssignExpr&gt;</code> with the given <b>assignExpressionName</b> from the given
+     * <code>BlockStmt</code>
      * @param body
      * @param assignExpressionName
-     * @return <code>Optional&lt;AssignExpr&gt;</code> with the found <code>AssignExpr</code>, or <code>Optional.empty()</code> if no match
+     * @return <code>Optional&lt;AssignExpr&gt;</code> with the found <code>AssignExpr</code>, or <code>Optional
+     * .empty()</code> if no match
      * has been found
      */
     public static Optional<AssignExpr> getAssignExpression(final BlockStmt body, final String assignExpressionName) {
@@ -368,8 +388,8 @@ public class CommonCodegenUtils {
     /**
      * Return an <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> from the given <code>BlockStmt</code>
      * @param body
-     * @return <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> with the found <code>ExplicitConstructorInvocationStmt</code>, or <code>Optional.empty()</code> if none is found
-     *
+     * @return <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> with the found
+     * <code>ExplicitConstructorInvocationStmt</code>, or <code>Optional.empty()</code> if none is found
      */
     public static Optional<ExplicitConstructorInvocationStmt> getExplicitConstructorInvocationStmt(final BlockStmt body) {
         return body.getStatements().stream()
@@ -379,42 +399,154 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
+     * Set the <b>value</b> of the given <b>parameterName</b> in the given <code>ConstructorDeclaration</code>
+     * @param constructorDeclaration
+     * @param parameterName
+     * @param value
+     * @throws KiePMMLException if the given parameter is not found
+     */
+    public static void setConstructorDeclarationParameterArgument(final ConstructorDeclaration constructorDeclaration,
+                                                                  final String parameterName, final String value) {
+        final BlockStmt body = constructorDeclaration.getBody();
+        final ExplicitConstructorInvocationStmt superStatement =
+                CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(superStatement, parameterName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION,
+                                                                      parameterName, constructorDeclaration)));
+        if (value != null) {
+            parameterExpr.setName(value);
+        } else {
+            superStatement.getArguments().replace(parameterExpr, new NullLiteralExpr());
+        }
+    }
+
+    /**
+     * Set the <b>value</b> of the given <b>parameterName</b> in the given <code>ConstructorDeclaration</code>
+     * @param constructorDeclaration
+     * @param referenceName
+     * @param value
+     * @throws KiePMMLException if the given parameter is not found
+     */
+    public static void setConstructorDeclarationReferenceArgument(final ConstructorDeclaration constructorDeclaration,
+                                                                  final String referenceName, final String value) {
+        final BlockStmt body = constructorDeclaration.getBody();
+        final ExplicitConstructorInvocationStmt superStatement =
+                CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        final MethodReferenceExpr methodReferenceExpr = getExplicitConstructorInvocationMethodReference(superStatement,
+                                                                                                  referenceName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION,
+                                                                      referenceName, constructorDeclaration)));
+        if (value != null) {
+            methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(value)));
+        } else {
+            superStatement.getArguments().replace(methodReferenceExpr, new NullLiteralExpr());
+        }
+    }
+
+    /**
+     * Set the <b>value</b> of the given <b>parameterName</b> in the given
+     * <code>ExplicitConstructorInvocationStmt</code>
      * @param constructorInvocationStmt
      * @param parameterName
      * @param value
-     * @return <code>Optional&lt;NameExpr&gt;</code> with the found <code>NameExpr</code>, or <code>Optional.empty()</code> if none is found
+     * @throws KiePMMLException if the given parameter is not found
      */
-    public static void setExplicitConstructorInvocationArgument(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName, final String value) {
-        final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(constructorInvocationStmt, parameterName)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION, parameterName, constructorInvocationStmt)));
+    public static void setExplicitConstructorInvocationStmtArgument(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName, final String value) {
+        final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(constructorInvocationStmt,
+                                                                                 parameterName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION,
+                                                                      parameterName, constructorInvocationStmt)));
         parameterExpr.setName(value);
     }
 
     /**
+     * Return an <code>BlockStmt</code>  from the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     *
+     * @throws KiePMMLException if none is found
+     */
+    public static BlockStmt getInitializerBlockStmt(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+        return getInitializerDeclaration(classOrInterfaceDeclaration).getBody();
+    }
+
+    /**
+     * Return an <code>InitializerDeclaration</code>  from the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     *
+     * @throws KiePMMLException if none is found
+     */
+    public static InitializerDeclaration getInitializerDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+        return classOrInterfaceDeclaration.getMembers()
+                .stream()
+                .filter(InitializerDeclaration.class::isInstance)
+                .map(InitializerDeclaration.class::cast)
+                .findFirst()
+                .orElseThrow(() ->  new KiePMMLException(String.format(MISSING_STATIC_INITIALIZER, classOrInterfaceDeclaration)));
+    }
+
+    /**
      * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
      * @param constructorInvocationStmt
      * @param parameterName
-     * @return <code>Optional&lt;NameExpr&gt;</code> with the found <code>NameExpr</code>, or <code>Optional.empty()</code> if none is found
+     * @return <code>Optional&lt;NameExpr&gt;</code> with the found <code>NameExpr</code>, or <code>Optional.empty()
+     * </code> if none is found
      */
     public static Optional<NameExpr> getExplicitConstructorInvocationParameter(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName) {
         return constructorInvocationStmt.getArguments()
                 .stream()
-                .filter(expression -> expression instanceof NameExpr && ((NameExpr)expression).getName().asString().equals(parameterName))
-                .map(expression -> (NameExpr)expression )
+                .filter(expression -> expression instanceof NameExpr && ((NameExpr) expression).getName().asString().equals(parameterName))
+                .map(NameExpr.class::cast)
                 .findFirst();
     }
 
     /**
-     * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
+     * Return an <code>Optional&lt;MethodReferenceExpr&gt;</code>  from the given
+     * <code>ExplicitConstructorInvocationStmt</code>
+     * @param constructorInvocationStmt
+     * @param typeName
+     * @return <code>Optional&lt;MethodReferenceExpr&gt;</code> with the found <code>MethodReferenceExpr</code>, or
+     * <code>Optional.empty()</code> if none is found
+     */
+    public static Optional<MethodReferenceExpr> getExplicitConstructorInvocationMethodReference(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String typeName) {
+        return constructorInvocationStmt.getArguments()
+                .stream()
+                .filter(expression -> expression instanceof MethodReferenceExpr && ((MethodReferenceExpr) expression).getScope().asTypeExpr().getType().asString().equals(typeName))
+                .map(MethodReferenceExpr.class::cast)
+                .findFirst();
+    }
+
+    /**
+     * Return an <code>BlockStmt</code> for the method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
+     *
      * @param classOrInterfaceDeclaration
      * @param methodName
-     * @return <code>Optional&lt;MethodDeclaration&gt;</code> with the first found <code>MethodDeclaration</code>, or <code>Optional.empty()</code> if no match
+     *
+     * @throws KiePMMLException if none is found
+     */
+    public static BlockStmt getMethodDeclarationBlockStmt(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
+        return getMethodDeclaration(classOrInterfaceDeclaration, methodName)
+                .map(MethodDeclaration::getBody)
+                .map(Optional::get)
+                .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD, methodName)));
+    }
+
+
+    /**
+     * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from
+     * the given <code>ClassOrInterfaceDeclaration</code>
+     * @param classOrInterfaceDeclaration
+     * @param methodName
+     * @return <code>Optional&lt;MethodDeclaration&gt;</code> with the first found <code>MethodDeclaration</code>, or
+     * <code>Optional.empty()</code> if no match
      * has been found
      */
     public static Optional<MethodDeclaration> getMethodDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
-        final List<MethodDeclaration> assignExprs = classOrInterfaceDeclaration.getMethodsByName(methodName);
-        return assignExprs.isEmpty() ? Optional.empty() : Optional.of(assignExprs.get(0));
+        final List<MethodDeclaration> methodDeclarations = classOrInterfaceDeclaration.getMethodsByName(methodName);
+        return methodDeclarations.isEmpty() ? Optional.empty() : Optional.of(methodDeclarations.get(0));
     }
 
     /**
@@ -425,8 +557,8 @@ public class CommonCodegenUtils {
      * @return
      */
     public static MethodDeclaration addMethod(final MethodDeclaration methodTemplate,
-                                                 final ClassOrInterfaceDeclaration tableTemplate,
-                                                 final String methodName) {
+                                              final ClassOrInterfaceDeclaration tableTemplate,
+                                              final String methodName) {
         final BlockStmt body =
                 methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodTemplate.getName())));
         final MethodDeclaration toReturn = tableTemplate.addMethod(methodName).setBody(body);
@@ -437,10 +569,44 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b> from the given <code>BlockStmt</code>
+     * Set the value of the variable with the given <b>variableDeclaratorName</b> in the given <code>BlockStmt</code>
+     * It throws <code>KiePMMLException</code> if variable is not found
+     * @param body
+     * @param variableDeclaratorName
+     * @param value
+     * @throws <code>KiePMMLException</code> if <code>VariableDeclarator</code> with given <b>variableDeclaratorName</b> is not
+     * found
+     */
+    public static void setVariableDeclaratorValue(final BlockStmt body, final String variableDeclaratorName,
+                                                final Expression value) {
+        VariableDeclarator variableDeclarator = getVariableDeclarator(body, variableDeclaratorName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableDeclaratorName,
+                                                                      body)));
+        variableDeclarator.setInitializer(value);
+    }
+
+    /**
+     * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b>
+     * from the given <code>MethodDeclaration</code>
+     * @param methodDeclaration
+     * @param variableName
+     * @return <code>Optional&lt;VariableDeclarator&gt;</code> with the first found <code>VariableDeclarator</code>,
+     * or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<VariableDeclarator> getVariableDeclarator(final MethodDeclaration methodDeclaration, final String variableName) {
+        final BlockStmt body =  methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        return getVariableDeclarator(body, variableName);
+    }
+
+    /**
+     * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b>
+     * from the given <code>BlockStmt</code>
      * @param body
      * @param variableName
-     * @return <code>Optional&lt;VariableDeclarator&gt;</code> with the first found <code>VariableDeclarator</code>, or <code>Optional.empty()</code> if no match
+     * @return <code>Optional&lt;VariableDeclarator&gt;</code> with the first found <code>VariableDeclarator</code>,
+     * or <code>Optional.empty()</code> if no match
      * has been found
      */
     public static Optional<VariableDeclarator> getVariableDeclarator(final BlockStmt body, final String variableName) {
@@ -455,9 +621,9 @@ public class CommonCodegenUtils {
             return new NullLiteralExpr();
         }
         String className = source.getClass().getSimpleName();
-        switch(className) {
-            case "String" :
-            return new StringLiteralExpr((String) source);
+        switch (className) {
+            case "String":
+                return new StringLiteralExpr((String) source);
             case "int":
             case "Integer":
                 return new IntegerLiteralExpr((Integer) source);
@@ -469,12 +635,150 @@ public class CommonCodegenUtils {
                 return new DoubleLiteralExpr(((Float) source).doubleValue());
             case "boolean":
             case "Boolean":
-                return new BooleanLiteralExpr((Boolean)source);
+                return new BooleanLiteralExpr((Boolean) source);
             default:
                 return new NameExpr(source.toString());
-
-
         }
+    }
 
+    /**
+     * Return a <code>lit&lt;NameExpr&gt;</code> with all the instances of the given <b>exprName</b>
+     * @param toRead
+     * @param exprName
+     * @return
+     */
+    public static List<NameExpr> getNameExprsFromBlock(final BlockStmt toRead, final String exprName) {
+        return toRead.stream()
+                .filter(node -> node instanceof NameExpr &&
+                        ((NameExpr) node).getName().asString().equals(exprName))
+                .map(NameExpr.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Replace <code>StringLiteralExpresion</code>s in the given <code>Statement</code>
+     * @param container
+     * @param toReplace
+     * @param replacement
+     */
+    public static void replaceStringLiteralExpressionInStatement(final Statement container,
+                                                                 final String toReplace,
+                                                                 final String replacement) {
+        final StringLiteralExpr toReplaceExpr = new StringLiteralExpr(toReplace);
+        final StringLiteralExpr replacementExpr = new StringLiteralExpr(replacement);
+        container.walk(node -> {
+            if (node.equals(toReplaceExpr)) {
+                node.getParentNode()
+                        .ifPresent(parentNode -> parentNode.replace(node, replacementExpr));
+            }
+        });
+    }
+
+    /**
+     * Replace <code>Node</code>s in the given <code>Statement</code>
+     * @param container
+     * @param replacementTuplas
+     */
+    public static void replaceNodesInStatement(final Statement container,
+                                               final List<ReplacementTupla> replacementTuplas) {
+        replacementTuplas.forEach(replacementTupla -> replaceNodeInStatement(container, replacementTupla));
+    }
+
+    /**
+     * Replace <code>Node</code> in the given <code>Statement</code>
+     * @param container
+     * @param replacementTupla
+     */
+    public static void replaceNodeInStatement(final Statement container,
+                                              final ReplacementTupla replacementTupla) {
+        container.walk(node -> {
+                if (node.equals(replacementTupla.toReplace)) {
+                    node.getParentNode()
+                            .ifPresent(parentNode -> parentNode.replace(replacementTupla.toReplace, replacementTupla.replacement));
+                }
+        });
+    }
+
+    /**
+     * Add a <code>MethodDeclaration</code>s to the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     * @param toAdd
+     */
+    public static void addMethodDeclarationsToClass(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration,
+                                                   final List<MethodDeclaration> toAdd) {
+        toAdd.forEach(methodDeclaration -> addMethodDeclarationToClass(classOrInterfaceDeclaration, methodDeclaration));
+    }
+
+    /**
+     * Add a <code>MethodDeclaration</code> to the given <code>ClassOrInterfaceDeclaration</code>
+     *
+     * @param classOrInterfaceDeclaration
+     * @param toAdd
+     */
+    public static void addMethodDeclarationToClass(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration,
+            final MethodDeclaration toAdd) {
+        classOrInterfaceDeclaration.addMethod(toAdd.getName().asString())
+                .setModifiers(toAdd.getModifiers())
+                .setType(toAdd.getType())
+                .setParameters(toAdd.getParameters())
+                .setBody(toAdd.getBody().get());
+    }
+
+    /**
+     * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
+     * @return
+     */
+    public static Expression getVariableInitializer(final MethodDeclaration methodDeclaration, final String variableName) {
+        return getOptionalVariableInitializer(methodDeclaration, variableName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, variableName, methodDeclaration)));
+    }
+
+    /**
+     * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
+     * @return
+     */
+    public static Optional<Expression> getOptionalVariableInitializer(final MethodDeclaration methodDeclaration, final String variableName) {
+        final BlockStmt blockStmt = methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        return getVariableInitializer(blockStmt, variableName);
+    }
+
+    /**
+     * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
+     * @return
+     */
+    public static Optional<Expression> getVariableInitializer(final BlockStmt blockStmt, final String variableName) {
+        final VariableDeclarator variableDeclarator = getVariableDeclarator(blockStmt, variableName)
+                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, variableName, blockStmt)));
+         return variableDeclarator.getInitializer();
+    }
+
+    /**
+     * Replace the <code>List&lt;NameExpr&gt;</code>s in the given <code>Statement</code> with <code>NullLiteralExpr</code>
+     * @param container
+     * @param toReplace
+     */
+    public static void replaceNameExprWithNullInStatement(final Statement container,
+                                                          final List<NameExpr> toReplace) {
+        final List<ReplacementTupla> replacementTuplas =
+                toReplace.stream()
+                        .map(nameExpr -> {
+                            NullLiteralExpr toAdd = new NullLiteralExpr();
+                            return new ReplacementTupla(nameExpr, toAdd);
+                        })
+                        .collect(Collectors.toList());
+        replacementTuplas.forEach(replacementTupla -> replaceNodeInStatement(container, replacementTupla));
+    }
+
+    public static class ReplacementTupla {
+
+        final Node toReplace;
+        final Node replacement;
+
+        public ReplacementTupla(Node toReplace, Node replacement) {
+            this.toReplace = toReplace;
+            this.replacement = replacement;
+        }
     }
 }
