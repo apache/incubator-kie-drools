@@ -18,7 +18,9 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,6 +78,8 @@ public class ExecModelLambdaPostProcessor {
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes;
     private final Map<String, PredicateInformation> debugPredicateInformation;
     private final CompilationUnit clone;
+    private final List<Pair<LambdaExpr, Expression>> toBeReplacedLambdas =
+            Collections.synchronizedList(new ArrayList<>());
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
 
@@ -84,6 +88,45 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public static final PrettyPrinter MATERIALIZED_LAMBDA_PRETTY_PRINTER = new PrettyPrinter(configuration);
+
+    /**
+     * Just a helper class for pair of values
+     * @param <L>
+     * @param <R>
+     */
+    public static class Pair<L,R> {
+
+        private final L left;
+        private final R right;
+
+        public Pair(L left, R right) {
+            this.left = left;
+            this.right = right;
+        }
+
+        public L getLeft() { return left; }
+        public R getRight() { return right; }
+
+        @Override
+        public boolean equals(Object o) {
+            if ( this == o ) return true;
+            if ( !(o instanceof Pair) ) return false;
+
+            Pair<?, ?> pair = (Pair<?, ?>) o;
+
+            if ( left != null ? !left.equals( pair.left ) : pair.left != null ) return false;
+            return right != null ? right.equals( pair.right ) : pair.right == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = left != null ? left.hashCode() : 0;
+            result = 31 * result + (right != null ? right.hashCode() : 0);
+            return result;
+        }
+
+    }
 
     public ExecModelLambdaPostProcessor(PackageModel pkgModel,
                                         CompilationUnit clone) {
@@ -116,9 +159,9 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public void convertLambdas() {
-
         clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()) || EVAL_EXPR_CALL.equals(mc.getNameAsString()))
-             .forEach(methodCallExpr1 -> {
+                .stream().parallel()
+                .forEach(methodCallExpr1 -> {
                  if (containsTemporalPredicate(methodCallExpr1)) {
                      this.convertTemporalExpr(methodCallExpr1);
                  } else {
@@ -128,26 +171,34 @@ public class ExecModelLambdaPostProcessor {
              });
 
         clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString()))
-             .forEach(this::convertIndexedByCall);
+                .stream().parallel()
+                .forEach(this::convertIndexedByCall);
 
         clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-             .forEach(this::convertIndexedByCall);
+                .stream().parallel()
+                .forEach(this::convertIndexedByCall);
 
         clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-             .forEach(this::convertIndexedByCall);
+                .stream().parallel()
+                .forEach(this::convertIndexedByCall);
 
         clone.findAll(MethodCallExpr.class, mc -> BIND_CALL.equals(mc.getNameAsString()))
-             .forEach(this::convertBindCall);
+                .stream().parallel()
+                .forEach(this::convertBindCall);
 
         clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
                                                   REACTIVE_FROM_CALL.equals(mc.getNameAsString()))
-             .forEach(this::convertFromCall);
+                .stream().parallel()
+                .forEach(this::convertFromCall);
 
         clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
-             .forEach(methodCallExpr -> {
+                .stream().parallel()
+                .forEach(methodCallExpr -> {
                  List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
                  extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
              });
+
+        toBeReplacedLambdas.forEach((p) -> p.getLeft().replace(p.getRight()));
     }
 
     private PredicateInformation getPredicateInformation(Optional<String> exprId) {
@@ -384,10 +435,12 @@ public class ExecModelLambdaPostProcessor {
     private void replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
             CreatedClass aClass = lambdaExtractor.apply(exprId).create(lambdaExpr.toString(), imports, staticImports);
-            lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
-
+            synchronized (this) {
+                lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
+            }
             ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-            lambdaExpr.replace(lambdaInstance(type));
+            //lambdaExpr.replace(lambdaInstance(type));
+            toBeReplacedLambdas.add(new Pair<>(lambdaExpr, lambdaInstance(type)));
         } catch (DoNotConvertLambdaException e) {
             logger.debug("Cannot externalize lambdas {}", e.getMessage());
         }
