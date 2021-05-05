@@ -26,6 +26,10 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
+import org.drools.model.Model;
+import org.drools.model.impl.ModelImpl;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.mvel.compiler.oopath.model.Adult;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Group;
@@ -71,8 +75,7 @@ public class OOPathTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -145,69 +148,6 @@ public class OOPathTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("ball");
-    }
-
-    @Test
-    public void testRecursiveOOPathQuery() {
-        final String drl =
-                "import org.drools.mvel.compiler.oopath.model.Thing;\n" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule \"Print all things contained in the Office\" when\n" +
-                "    $office : Thing( name == \"office\" )\n" +
-                "    isContainedIn( $office, thing; )\n" +
-                "then\n" +
-                "    list.add( thing.getName() );\n" +
-                "end\n" +
-                "\n" +
-                "query isContainedIn( Thing $x, Thing $y )\n" +
-                "    $y := /$x/children\n" +
-                "or\n" +
-                "    ( $z := /$x/children and isContainedIn( $z, $y; ) )\n" +
-                "end\n";
-
-        final Thing house = new Thing( "house" );
-        final Thing office = new Thing( "office" );
-        house.addChild( office );
-        final Thing kitchen = new Thing( "kitchen" );
-        house.addChild( kitchen );
-
-        final Thing knife = new Thing( "knife" );
-        kitchen.addChild( knife );
-        final Thing cheese = new Thing( "cheese" );
-        kitchen.addChild( cheese );
-
-        final Thing desk = new Thing( "desk" );
-        office.addChild( desk );
-        final Thing chair = new Thing( "chair" );
-        office.addChild( chair );
-
-        final Thing computer = new Thing( "computer" );
-        desk.addChild( computer );
-        final Thing draw = new Thing( "draw" );
-        desk.addChild( draw );
-        final Thing key = new Thing( "key" );
-        draw.addChild( key );
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
-        KieSession ksession = kbase.newKieSession();
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
-
-        ksession.insert(house);
-        ksession.insert(office);
-        ksession.insert(kitchen);
-        ksession.insert(knife);
-        ksession.insert(cheese);
-        ksession.insert(desk);
-        ksession.insert(chair);
-        ksession.insert(computer);
-        ksession.insert(draw);
-        ksession.insert(key);
-
-        ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 
     @Test

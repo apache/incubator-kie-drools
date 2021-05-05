@@ -120,6 +120,7 @@ public class PackageModel {
 
     private Map<String, List<MethodDeclaration>> ruleMethods = new HashMap<>();
 
+    private Set<String> queryNames = new HashSet<>();
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
     private Map<String, Set<QueryModel>> queriesByRuleUnit = new HashMap<>();
 
@@ -315,8 +316,12 @@ public class PackageModel {
         this.queryMethods.put(queryMethod.getNameAsString(), queryMethod);
     }
 
-    public MethodDeclaration getQueryMethod(String key) {
-        return queryMethods.get(key);
+    public void registerQueryName(String queryName) {
+        queryNames.add(queryName);
+    }
+
+    public boolean hasQuery(String queryName) {
+        return queryNames.contains(queryName);
     }
 
     public void putQueryVariable(String queryName, QueryParameter qp) {
@@ -874,6 +879,10 @@ public class PackageModel {
 
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
         return lambdaReturnTypes;
+    }
+
+    public void registerLambdaReturnType(LambdaExpr lambdaExpr, java.lang.reflect.Type type) {
+        lambdaReturnTypes.put(lambdaExpr, type);
     }
 
     public void indexConstraint(String exprId, PredicateInformation predicateInformation) {

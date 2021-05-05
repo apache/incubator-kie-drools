@@ -76,13 +76,13 @@ public class PatternVisitor {
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
         String queryName = QUERY_METHOD_PREFIX + className;
-        final MethodDeclaration queryMethod = packageModel.getQueryMethod(queryName );
+        String queryDef = toQueryDef( className );
+
         // Expression is a query, get bindings from query parameter type
-        if ( queryMethod != null ) {
+        if ( packageModel.hasQuery(className) && !context.isRecurisveQuery(queryDef) ) {
             return new Query(context, packageModel, pattern, constraintDescrs, queryName );
         }
 
-        String queryDef = toQueryDef( className );
         if ( packageModel.getQueryDefWithType().containsKey( queryDef ) ) {
             return new QueryCall(context, packageModel, pattern, queryDef );
         }

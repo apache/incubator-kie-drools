@@ -57,6 +57,7 @@ public class QueryGenerator {
     public static String QUERY_METHOD_PREFIX = "query_";
 
     public static void processQueryDef(PackageModel packageModel, QueryDescr queryDescr, RuleContext context) {
+        packageModel.registerQueryName(queryDescr.getName());
         context.setDescr(queryDescr);
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
