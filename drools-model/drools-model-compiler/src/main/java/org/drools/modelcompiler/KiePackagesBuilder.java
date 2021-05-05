@@ -604,7 +604,7 @@ public class KiePackagesBuilder {
             for (Condition c : compositePatterns.getSubConditions()) {
                 recursivelyAddConditions( ctx, group, allSubConditions, c);
             }
-            source = allSubConditions;
+            source = allSubConditions.getChildren().size() == 1 ? allSubConditions.getChildren().get(0) : allSubConditions;
         } else {
             source = buildPattern( ctx, group, accumulatePattern );
         }
@@ -654,7 +654,10 @@ public class KiePackagesBuilder {
                 allSubConditions.addChild( rce );
             }
         } else if (c instanceof AccumulatePattern) {
-            allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
+            RuleConditionElement rce = buildAccumulate( ctx, group, (AccumulatePattern) c );
+            if (rce != null) {
+                allSubConditions.addChild( rce );
+            }
         } else if (c instanceof EvalImpl) {
             allSubConditions.addChild( buildEval( ctx, ( EvalImpl ) c ) );
         }

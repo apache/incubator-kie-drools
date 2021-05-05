@@ -135,8 +135,8 @@ public class KiePMMLSegmentationFactory {
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "multipleModelMethod",
-                                                                    multipleModelMethod.getClass().getCanonicalName() + "." + multipleModelMethod.name());
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "multipleModelMethod",
+                                                                        multipleModelMethod.getClass().getCanonicalName() + "." + multipleModelMethod.name());
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
         assignExprs.forEach(assignExpr -> {
             if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("segments")) {

@@ -29,7 +29,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -198,5 +197,56 @@ public class NodeSharingTest extends BaseModelTest {
         assertTrue(results.contains("Mark has 37 years"));
         assertTrue(results.contains("Mario is 40"));
         assertTrue(results.contains("Mario has 40 years"));
+    }
+
+    @Test
+    public void testShareAlphaHashable() {
+        String str =
+                "import " + Factor.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "    Factor( factorAmt == 10.00 )\n" +
+                     "then end\n" +
+                     "rule R2 when\n" +
+                     "    Factor( factorAmt == 10.0 )\n" +
+                     "then end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Factor(10.0));
+        assertEquals(2, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareAlphaRangeIndexable() {
+        String str =
+                "import " + Factor.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "    Factor( factorAmt > 10.00 )\n" +
+                     "then end\n" +
+                     "rule R2 when\n" +
+                     "    Factor( factorAmt > 10.0 )\n" +
+                     "then end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Factor(25.0));
+        assertEquals(2, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+    }
+
+    public static class Factor {
+
+        private final double factorAmt;
+
+        public Factor(double factorAmt) {
+            this.factorAmt = factorAmt;
+        }
+
+        public double getFactorAmt() {
+            return factorAmt;
+        }
     }
 }

@@ -32,7 +32,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segment;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
@@ -177,11 +176,11 @@ public class KiePMMLSegmentFactory {
         ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(classOrInterfaceType);
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "kiePMMLPredicate", objectCreationExpr.toString());
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "kiePMMLPredicate", objectCreationExpr.toString());
         classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
         objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(classOrInterfaceType);
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "model", objectCreationExpr.toString());
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "model", objectCreationExpr.toString());
         CommonCodegenUtils.setAssignExpressionValue(body, "weight", new DoubleLiteralExpr(weight));
         CommonCodegenUtils.setAssignExpressionValue(body, "id", new StringLiteralExpr(segmentName));
     }
