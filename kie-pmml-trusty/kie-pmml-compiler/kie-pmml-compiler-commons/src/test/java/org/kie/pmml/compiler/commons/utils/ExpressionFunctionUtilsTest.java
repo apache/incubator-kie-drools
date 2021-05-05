@@ -19,8 +19,11 @@ package org.kie.pmml.compiler.commons.utils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -33,6 +36,7 @@ import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
@@ -97,6 +101,31 @@ public class ExpressionFunctionUtilsTest {
         unsupportedExpressionSupplier.add(NormContinuous::new);
         unsupportedExpressionSupplier.add(NormDiscrete::new);
         unsupportedExpressionSupplier.add(TextIndex::new);
+    }
+
+    @Test
+    public void getKiePMMLNameValueExpressionMethodDeclarationUnsupportedExpression() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        unsupportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(), arityCounter);
+            try {
+                ExpressionFunctionUtils.getKiePMMLNameValueExpressionMethodDeclaration(expression, DataType.STRING, methodName);
+                fail("Expecting KiePMMLException for " + expression);
+            } catch (Exception e) {
+                assertTrue(e instanceof KiePMMLException);
+            }
+        });
+    }
+
+    @Test
+    public void getKiePMMLNameValueExpressionMethodDeclarationSupportedExpression() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        supportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(), arityCounter);
+            ExpressionFunctionUtils.getKiePMMLNameValueExpressionMethodDeclaration(expression, DataType.STRING, methodName);
+        });
     }
 
     @Test

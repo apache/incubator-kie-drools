@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -46,6 +47,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
@@ -62,12 +64,14 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -107,6 +111,53 @@ public class ExpressionFunctionUtils {
     private ExpressionFunctionUtils() {
         // Avoid instantiation
     }
+
+    /**
+     * Return a <code>MethodDeclaration</code> with <code>List&lt;KiePMMLNameValue&gt; param1</code> as parameter
+     *
+     * e.g.
+     * <pre>
+     *    _dataType_ _methodName_(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1)  {
+     *      ...
+     *    }
+     * </pre>
+     *
+     * @param expression
+     * @param dataType
+     * @param methodName
+     * @return
+     */
+    public static MethodDeclaration getKiePMMLNameValueExpressionMethodDeclaration(final Expression expression,
+                                                                                   final DataType dataType,
+                                                            final String methodName) {
+        final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(getBoxedClassName(dataType));
+        if (expression instanceof Aggregate) {
+            return getAggregatedExpressionMethodDeclaration(methodName, (Aggregate) expression, returnedType,
+                                                  DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof Apply) {
+            return getApplyExpressionMethodDeclaration(methodName, (Apply) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof Constant) {
+            return getConstantExpressionMethodDeclaration(methodName, (Constant) expression, returnedType);
+        } else if (expression instanceof Discretize) {
+            return getDiscretizeExpressionMethodDeclaration(methodName, (Discretize) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof FieldRef) {
+            return getFieldRefExpressionMethodDeclaration(methodName, (FieldRef) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof Lag) {
+            return getLagExpressionMethodDeclaration(methodName, (Lag) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof MapValues) {
+            return getMapValuesExpressionMethodDeclaration(methodName, (MapValues) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof NormContinuous) {
+            return getNormContinuousExpressionMethodDeclaration(methodName, (NormContinuous) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof NormDiscrete) {
+            return getNormDiscreteExpressionMethodDeclaration(methodName, (NormDiscrete) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else if (expression instanceof TextIndex) {
+            return getTextIndexExpressionMethodDeclaration(methodName, (TextIndex) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+        } else {
+            throw new IllegalArgumentException(String.format("Expression %s not managed", expression.getClass()));
+        }
+    }
+    
+    
 
     /**
      * For each <code>Expression</code> generates the code to retrieve the value, and then invoke the specified
@@ -156,7 +207,6 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param constant
      * @param returnedType
-     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     public static MethodDeclaration getConstantExpressionMethodDeclaration(final String methodName,
