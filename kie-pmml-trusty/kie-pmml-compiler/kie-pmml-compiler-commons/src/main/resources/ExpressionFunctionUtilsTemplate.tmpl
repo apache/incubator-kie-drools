@@ -14,30 +14,22 @@ public class ExpressionFunctionUtilsTemplate {
        return null;
    }
 
-   void fieldRefExpressionKiePMMLNameValueMethod(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
-        java.lang.Object variableName = variableRef != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, fieldRef) : (java.lang.Object) null;
+   void fieldRefExpressionFromKiePMMLNameValuesTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+       java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((lmbdParam) ->
+       java.util.Objects.equals(fieldRefName, lmbdParam.getName())).findFirst();
+       Object fieldRefVariable = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(fieldRefMapMissingTo);
    }
 
-   void fieldRefExpressionStringObjectMapMethod(java.util.Map<String, Object> param1) {
-           java.lang.Object variableName = variableRef != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, fieldRef) : (java.lang.Object) null;
+   void fieldRefExpressionFromInputValueTemplate(java.util.Map<String, Object> param1, java.lang.Object param2) {
+       java.lang.Object fieldRefVariable = param2 != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Double.class, param2) : (java.lang.Object) null;
    }
 
-    void constantExpressionKiePMMLNameValueMethod(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
-         double constantValue = null;
+    void constantExpressionTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+       double constantValue = null;
    }
-
-    void constantExpressionStringObjectMapMethod(java.util.Map<String, Object> param1) {
-            java.lang.Object variableName = variableRef != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, fieldRef) : (java.lang.Object) null;
-    }
 
    void methodDeclarationKiePMMLNameValueTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
             return toReturn;
    }
-
-   void methodDeclarationKiePMMLNameValueObjectTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1, java.lang.Object FIELD_REF) {
-       return toReturn;
-   }
-
-
 
 }

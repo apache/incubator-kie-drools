@@ -33,15 +33,14 @@ import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
@@ -64,9 +63,8 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
+import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
@@ -77,7 +75,10 @@ import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
  */
 public class ExpressionFunctionUtils {
 
+    public static final String APPLY_VARIABLE = "applyVariable";
     public static final String CONSTANT_VALUE = "constantValue";
+    public static final String KIEPMMLNAMEVALUE = "kiePMMLNameValue";
+    public static final String FIELDREFVARIABLE = "fieldRefVariable";
 
     static final String EXPRESSION_FUNCTION_UTILS_TEMPLATE_JAVA = "ExpressionFunctionUtilsTemplate.tmpl";
     static final String EXPRESSION_FUNCTION_UTILS_TEMPLATE = "ExpressionFunctionUtilsTemplate";
@@ -88,7 +89,11 @@ public class ExpressionFunctionUtils {
     static final LinkedHashMap<String, ClassOrInterfaceType> DEFAULT_PARAMETERTYPE_MAP;
     static final FieldAccessExpr CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR;
 
-    private static final String CONSTANTEXPRESSIONKIEPMMLNAMEVALUEMETHOD = "constantExpressionKiePMMLNameValueMethod";
+    private static final String FIELDREFEXPRESSIONFROMKIEPMMLNAMEVALUESTEMPLATE =
+            "fieldRefExpressionFromKiePMMLNameValuesTemplate";
+    private static final String FIELDREFEXPRESSIONFROMINPUTVALUETEMPLATE = "fieldRefExpressionFromInputValueTemplate";
+
+    private static final String CONSTANTEXPRESSIONTEMPLATE = "constantExpressionTemplate";
     private static final String METHODDECLARATIONKIEPMMLNAMEVALUETEMPLATE = "methodDeclarationKiePMMLNameValueTemplate";
     private static final String EXPRESSION_NOT_MANAGED = "Expression %s not managed";
 
@@ -113,14 +118,13 @@ public class ExpressionFunctionUtils {
 
     /**
      * Return a <code>MethodDeclaration</code> with <code>List&lt;KiePMMLNameValue&gt; param1</code> as parameter
-     *
+     * <p>
      * e.g.
      * <pre>
      *    _dataType_ _methodName_(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1)  {
      *      ...
      *    }
      * </pre>
-     *
      * @param expression
      * @param dataType
      * @param methodName
@@ -128,30 +132,38 @@ public class ExpressionFunctionUtils {
      */
     public static MethodDeclaration getKiePMMLNameValueExpressionMethodDeclaration(final Expression expression,
                                                                                    final DataType dataType,
-                                                            final String methodName) {
+                                                                                   final String methodName) {
         final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(getBoxedClassName(dataType));
         if (expression instanceof Aggregate) {
             return getAggregatedExpressionMethodDeclaration(methodName, (Aggregate) expression, returnedType,
-                                                  DEFAULT_PARAMETERTYPE_MAP);
+                                                            DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Apply) {
-            return getApplyExpressionMethodDeclaration(methodName, (Apply) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getApplyExpressionMethodDeclaration(methodName, (Apply) expression, returnedType,
+                                                       DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Constant) {
             return getConstantExpressionMethodDeclaration(methodName, (Constant) expression, returnedType,
                                                           DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Discretize) {
-            return getDiscretizeExpressionMethodDeclaration(methodName, (Discretize) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getDiscretizeExpressionMethodDeclaration(methodName, (Discretize) expression, returnedType,
+                                                            DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof FieldRef) {
-            return getFieldRefExpressionMethodDeclaration(methodName, (FieldRef) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getFieldRefExpressionMethodDeclaration(methodName, (FieldRef) expression, returnedType,
+                                                          DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Lag) {
-            return getLagExpressionMethodDeclaration(methodName, (Lag) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getLagExpressionMethodDeclaration(methodName, (Lag) expression, returnedType,
+                                                     DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof MapValues) {
-            return getMapValuesExpressionMethodDeclaration(methodName, (MapValues) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getMapValuesExpressionMethodDeclaration(methodName, (MapValues) expression, returnedType,
+                                                           DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof NormContinuous) {
-            return getNormContinuousExpressionMethodDeclaration(methodName, (NormContinuous) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getNormContinuousExpressionMethodDeclaration(methodName, (NormContinuous) expression, returnedType
+                    , DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof NormDiscrete) {
-            return getNormDiscreteExpressionMethodDeclaration(methodName, (NormDiscrete) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getNormDiscreteExpressionMethodDeclaration(methodName, (NormDiscrete) expression, returnedType,
+                                                              DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof TextIndex) {
-            return getTextIndexExpressionMethodDeclaration(methodName, (TextIndex) expression, returnedType, DEFAULT_PARAMETERTYPE_MAP);
+            return getTextIndexExpressionMethodDeclaration(methodName, (TextIndex) expression, returnedType,
+                                                           DEFAULT_PARAMETERTYPE_MAP);
         } else {
             throw new IllegalArgumentException(String.format(EXPRESSION_NOT_MANAGED, expression.getClass()));
         }
@@ -159,14 +171,13 @@ public class ExpressionFunctionUtils {
 
     /**
      * Return a <code>MethodDeclaration</code> with parameters retrieved from <b>parameterFields</b>
-     *
+     * <p>
      * e.g.
      * <pre>
      *    _dataType_ _methodName_(java.util.Map<String, Object> param1, Object param2)  {
      *      ...
      *    }
      * </pre>
-     *
      * @param methodName
      * @param expression
      * @param dataType
@@ -174,40 +185,42 @@ public class ExpressionFunctionUtils {
      * @return
      */
     public static MethodDeclaration getVariableParametersExpressionMethodDeclaration(final String methodName,
-                                                            final Expression expression,
-                                                            final DataType dataType,
-                                                            final List<ParameterField> parameterFields) {
+                                                                                     final Expression expression,
+                                                                                     final DataType dataType,
+                                                                                     final List<ParameterField> parameterFields) {
         final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(getBoxedClassName(dataType));
-        final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap = new LinkedHashMap<>(DEFAULT_PARAMETERTYPE_MAP); // Must be an ordered Map
+        final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap =
+                new LinkedHashMap<>(DEFAULT_PARAMETERTYPE_MAP); // Must be an ordered Map
         parameterNameTypeMap.putAll(getNameClassOrInterfaceTypeMap(parameterFields));
         if (expression instanceof Aggregate) {
             return getAggregatedExpressionMethodDeclaration(methodName, (Aggregate) expression, returnedType,
-                                                  parameterNameTypeMap);
+                                                            parameterNameTypeMap);
         } else if (expression instanceof Apply) {
-            return getApplyExpressionMethodDeclaration(methodName, (Apply) expression, returnedType, parameterNameTypeMap);
+            return getApplyExpressionMethodDeclaration(methodName, (Apply) expression, returnedType,
+                                                       parameterNameTypeMap);
         } else if (expression instanceof Constant) {
             return getConstantExpressionMethodDeclaration(methodName, (Constant) expression, returnedType,
-                                                parameterNameTypeMap);
+                                                          parameterNameTypeMap);
         } else if (expression instanceof Discretize) {
             return getDiscretizeExpressionMethodDeclaration(methodName, (Discretize) expression, returnedType,
-                                                  parameterNameTypeMap);
+                                                            parameterNameTypeMap);
         } else if (expression instanceof FieldRef) {
             return getFieldRefExpressionMethodDeclaration(methodName, (FieldRef) expression, returnedType,
-                                                parameterNameTypeMap);
+                                                          parameterNameTypeMap);
         } else if (expression instanceof Lag) {
             return getLagExpressionMethodDeclaration(methodName, (Lag) expression, returnedType, parameterNameTypeMap);
         } else if (expression instanceof MapValues) {
             return getMapValuesExpressionMethodDeclaration(methodName, (MapValues) expression, returnedType,
-                                                 parameterNameTypeMap);
+                                                           parameterNameTypeMap);
         } else if (expression instanceof NormContinuous) {
             return getNormContinuousExpressionMethodDeclaration(methodName, (NormContinuous) expression, returnedType,
-                                                      parameterNameTypeMap);
+                                                                parameterNameTypeMap);
         } else if (expression instanceof NormDiscrete) {
             return getNormDiscreteExpressionMethodDeclaration(methodName, (NormDiscrete) expression, returnedType,
-                                                    parameterNameTypeMap);
+                                                              parameterNameTypeMap);
         } else if (expression instanceof TextIndex) {
             return getTextIndexExpressionMethodDeclaration(methodName, (TextIndex) expression, returnedType,
-                                                 parameterNameTypeMap);
+                                                           parameterNameTypeMap);
         } else {
             throw new IllegalArgumentException(String.format(EXPRESSION_NOT_MANAGED, expression.getClass()));
         }
@@ -232,12 +245,12 @@ public class ExpressionFunctionUtils {
      * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    public static MethodDeclaration getApplyExpressionMethodDeclaration(final String methodName,
+    static MethodDeclaration getApplyExpressionMethodDeclaration(final String methodName,
                                                                         final Apply apply,
                                                                         final ClassOrInterfaceType returnedType,
                                                                         final LinkedHashMap<String,
                                                                                 ClassOrInterfaceType> parameterNameTypeMap) {
-        String variableName = "applyVariable";
+        String variableName = APPLY_VARIABLE;
         BlockStmt body = getApplyExpressionBlockStmt(variableName, apply, returnedType,
                                                      parameterNameTypeMap);
         return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
@@ -263,7 +276,7 @@ public class ExpressionFunctionUtils {
      * @param returnedType
      * @return
      */
-    public static MethodDeclaration getConstantExpressionMethodDeclaration(final String methodName,
+    static MethodDeclaration getConstantExpressionMethodDeclaration(final String methodName,
                                                                            final Constant constant,
                                                                            final ClassOrInterfaceType returnedType,
                                                                            final LinkedHashMap<String,
@@ -288,19 +301,17 @@ public class ExpressionFunctionUtils {
      * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    public static MethodDeclaration getFieldRefExpressionMethodDeclaration(final String methodName,
+    static MethodDeclaration getFieldRefExpressionMethodDeclaration(final String methodName,
                                                                            final FieldRef fieldRef,
                                                                            final ClassOrInterfaceType returnedType,
                                                                            final LinkedHashMap<String,
                                                                                    ClassOrInterfaceType> parameterNameTypeMap) {
-        String variableName = "fieldRefVariable";
+        String variableName = FIELDREFVARIABLE;
         final BlockStmt body;
         if (parameterNameTypeMap.size() == 1) {
-            body = getFieldRefExpressionFromCommonDataBlockStmt(variableName, fieldRef, returnedType,
-                                                                parameterNameTypeMap);
+            body = getFieldRefExpressionFromKiePMMLNameValuesBlockStmt(variableName, fieldRef, returnedType);
         } else {
-            body = getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef, returnedType,
-                                                                    parameterNameTypeMap);
+            body = getFieldRefExpressionFromInputValueBlockStmt(variableName, fieldRef, returnedType);
         }
         return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
     }
@@ -432,12 +443,11 @@ public class ExpressionFunctionUtils {
                                                     parameterNameTypeMap);
         } else if (expression instanceof FieldRef) {
             if (parameterNameTypeMap.size() == 1) {
-                return getFieldRefExpressionFromCommonDataBlockStmt(variableName, (FieldRef) expression, returnedType,
-                                                                    parameterNameTypeMap);
+                return getFieldRefExpressionFromKiePMMLNameValuesBlockStmt(variableName, (FieldRef) expression,
+                                                                           returnedType);
             } else {
-                return getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, (FieldRef) expression,
-                                                                        returnedType,
-                                                                        parameterNameTypeMap);
+                return getFieldRefExpressionFromInputValueBlockStmt(variableName, (FieldRef) expression,
+                                                                    returnedType);
             }
         } else if (expression instanceof Lag) {
             return getLagExpressionBlockStmt(variableName, (Lag) expression, returnedType, parameterNameTypeMap);
@@ -548,13 +558,10 @@ public class ExpressionFunctionUtils {
                                                     final Constant constant,
                                                     final ClassOrInterfaceType returnedType) {
         final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
-                .getMethodsByName(CONSTANTEXPRESSIONKIEPMMLNAMEVALUEMETHOD)
+                .getMethodsByName(CONSTANTEXPRESSIONTEMPLATE)
                 .get(0)
                 .clone();
-        final BlockStmt toReturn = EXPRESSION_TEMPLATE
-                .getMethodsByName(CONSTANTEXPRESSIONKIEPMMLNAMEVALUEMETHOD)
-                .get(0)
-                .clone().getBody()
+        final BlockStmt toReturn = methodDeclaration.getBody()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
 
         final Object constantValue = constant.getValue();
@@ -565,7 +572,8 @@ public class ExpressionFunctionUtils {
             initializer = new NameExpr(constantValue.toString());
         }
         final VariableDeclarator variableDeclarator = CommonCodegenUtils.getVariableDeclarator(toReturn, CONSTANT_VALUE)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, CONSTANT_VALUE, toReturn)));
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, CONSTANT_VALUE,
+                                                                      toReturn)));
         variableDeclarator.setName(new SimpleName(variableName));
         variableDeclarator.setType(returnedType);
         variableDeclarator.setInitializer(initializer);
@@ -587,6 +595,8 @@ public class ExpressionFunctionUtils {
     }
 
     /**
+     * This method is created when the actual value of the referred field must be looked upn inside <code>List&lt;
+     * KiePMMLNameValue&gt;</code> parameter.
      * Returns
      * <pre>
      *      Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) ->
@@ -596,117 +606,101 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param fieldRef
      * @param returnedType
-     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static BlockStmt getFieldRefExpressionFromCommonDataBlockStmt(final String variableName,
-                                                                  final FieldRef fieldRef,
-                                                                  final ClassOrInterfaceType returnedType,
-                                                                  final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
-        final BlockStmt toReturn = new BlockStmt();
+    static BlockStmt getFieldRefExpressionFromKiePMMLNameValuesBlockStmt(final String variableName,
+                                                                         final FieldRef fieldRef,
+                                                                         final ClassOrInterfaceType returnedType) {
+        final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
+                .getMethodsByName(FIELDREFEXPRESSIONFROMKIEPMMLNAMEVALUESTEMPLATE)
+                .get(0)
+                .clone();
+        final BlockStmt toReturn = methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
+        final VariableDeclarator optionalKiePMMLNameValue = CommonCodegenUtils
+                .getVariableDeclarator(toReturn, KIEPMMLNAMEVALUE)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, KIEPMMLNAMEVALUE,
+                                                                      toReturn)));
+        final MethodCallExpr optionalKiePMMLNameValueInitializer = optionalKiePMMLNameValue.getInitializer()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
+                                                                      KIEPMMLNAMEVALUE, toReturn)))
+                .asMethodCallExpr();
+
+        final ExpressionStmt expressionStmt = optionalKiePMMLNameValueInitializer.findAll(ExpressionStmt.class).get(0);
+        final MethodCallExpr methodCallExpr = expressionStmt.getExpression().asMethodCallExpr();
         String fieldNameToRef = fieldRef.getField().getValue();
-        toReturn.addStatement(getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM,
-                                                                    fieldNameToRef,
-                                                                    true));
-
-        //KiePMMLNameValue::getValue
-        MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-        methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
-        methodReferenceExpr.setIdentifier("getValue");
-
-        // kiePMMLNameValue.map
-        MethodCallExpr expressionScope = new MethodCallExpr("map");
-        expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
-        expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        MethodCallExpr expression = new MethodCallExpr("orElse");
-        expression.setScope(expressionScope);
+        final NameExpr nameExpr = new NameExpr(String.format("\"%s\"", fieldNameToRef));
+        methodCallExpr.getArguments().set(0, nameExpr);
+        final VariableDeclarator variableDeclarator = CommonCodegenUtils
+                .getVariableDeclarator(toReturn, FIELDREFVARIABLE)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, FIELDREFVARIABLE,
+                                                                      toReturn)));
+        variableDeclarator.setType(returnedType);
+        variableDeclarator.setName(variableName);
+        final CastExpr initializer = variableDeclarator.getInitializer()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
+                                                                      FIELDREFVARIABLE, toReturn)))
+                .asCastExpr();
+        initializer.setType(returnedType);
+        final MethodCallExpr expression = initializer.getExpression().asMethodCallExpr();
         com.github.javaparser.ast.expr.Expression orElseExpression = fieldRef.getMapMissingTo() != null ?
                 new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
         expression.setArguments(NodeList.nodeList(orElseExpression));
-
-        // (String) kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        CastExpr initializer = new CastExpr();
-        initializer.setType(returnedType);
-        initializer.setExpression(expression);
-
-        // String variableName = (String) kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef
-        // .getMapMissingTo() )
-        VariableDeclarator variableDeclarator = new VariableDeclarator();
-        variableDeclarator.setType(returnedType);
-        variableDeclarator.setName(variableName);
-        variableDeclarator.setInitializer(initializer);
-
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
-        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
-        toReturn.addStatement(variableDeclarationExpr);
-
         return toReturn;
     }
 
     /**
+     * This method is created when the actual value of the referred field is passed as parameter.
+     * If such value is not null, it is (eventually casted) assigned to the returned variable, otherwise the
+     * <b>missing value</b>.
+     * <p>
      * Returns
      * <pre>
-     *      Object (<i>variableName</i>) = (<i>fieldRef_name</i>) != null ? (<i>fieldRef_name</i>) : (<i>fieldRef_missingvalue</i>);
+     *      Object (<i>variableName</i>) = (<i>referred_field_value</i>) != null ? (<i>referred_field_value</i>) : (<i>fieldRef_missingvalue</i>);
      * </pre>
      * @param variableName
      * @param fieldRef
      * @param returnedType
-     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static BlockStmt getFieldRefExpressionFromDefineFunctionBlockStmt(final String variableName,
-                                                                      final FieldRef fieldRef,
-                                                                      final ClassOrInterfaceType returnedType,
-                                                                      final LinkedHashMap<String,
-                                                                              ClassOrInterfaceType> parameterNameTypeMap) {
-        final BlockStmt toReturn = new BlockStmt();
+    static BlockStmt getFieldRefExpressionFromInputValueBlockStmt(final String variableName,
+                                                                  final FieldRef fieldRef,
+                                                                  final ClassOrInterfaceType returnedType) {
+        final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
+                .getMethodsByName(FIELDREFEXPRESSIONFROMINPUTVALUETEMPLATE)
+                .get(0)
+                .clone();
+        final BlockStmt toReturn = methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
         String fieldNameToRef = fieldRef.getField().getValue();
-
-        // field_ref
-        NameExpr nameExpression = new NameExpr(fieldNameToRef);
-
-        // condition
-        BinaryExpr condition = new BinaryExpr();
-        condition.setLeft(nameExpression);
-        condition.setRight(new NullLiteralExpr());
-        condition.setOperator(BinaryExpr.Operator.NOT_EQUALS);
-        // then
-        CastExpr thenExpr = new CastExpr();
-        thenExpr.setType(returnedType);
-        // ((returnedType)) org.kie.pmml.api.utils.ConverterTypeUtil.convert((returnedType).class, (variable_name))
-        MethodCallExpr converterCallExpression = new MethodCallExpr();
-        converterCallExpression.setName("convert");
-        converterCallExpression.setScope(CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR);
-        ClassExpr expectedClassExpression = new ClassExpr();
-        expectedClassExpression.setType(returnedType);
-        converterCallExpression.setArguments(NodeList.nodeList(expectedClassExpression, nameExpression));
-        thenExpr.setExpression(converterCallExpression);
-        // else
-        com.github.javaparser.ast.expr.Expression elseExpression = fieldRef.getMapMissingTo() != null ?
-                new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
-        CastExpr elseExpr = new CastExpr();
-        elseExpr.setType(returnedType);
-        elseExpr.setExpression(elseExpression);
-
-        ConditionalExpr initializer = new ConditionalExpr();
-        initializer.setCondition(condition);
-        initializer.setThenExpr(thenExpr);
-        initializer.setElseExpr(elseExpr);
-
-        // (returnedType) (variableName) = (returnedType) field_ref;
-        VariableDeclarator variableDeclarator = new VariableDeclarator();
+        final VariableDeclarator variableDeclarator = CommonCodegenUtils
+                .getVariableDeclarator(toReturn, FIELDREFVARIABLE)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, FIELDREFVARIABLE,
+                                                                      toReturn)));
         variableDeclarator.setType(returnedType);
         variableDeclarator.setName(variableName);
-        variableDeclarator.setInitializer(initializer);
-
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
-        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
-        toReturn.addStatement(variableDeclarationExpr);
-
+        final ConditionalExpr initializer = variableDeclarator.getInitializer()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
+                                                                      FIELDREFVARIABLE, toReturn)))
+                .asConditionalExpr();
+        final BinaryExpr condition = initializer.getCondition().asBinaryExpr();
+        // condition
+        // field_ref
+        NameExpr nameExpression = new NameExpr(fieldNameToRef);
+        condition.setLeft(nameExpression);
+        // then
+        final CastExpr thenExpr = initializer.getThenExpr().asCastExpr();
+        thenExpr.setType(returnedType);
+        final MethodCallExpr converterCallExpression = thenExpr.getExpression().asMethodCallExpr();
+        final ClassExpr expectedClassExpression = new ClassExpr();
+        expectedClassExpression.setType(returnedType);
+        converterCallExpression.setArguments(NodeList.nodeList(expectedClassExpression, nameExpression));
+        // else
+        final CastExpr elseExpr = initializer.getElseExpr().asCastExpr();
+        com.github.javaparser.ast.expr.Expression elseExpression = fieldRef.getMapMissingTo() != null ?
+                new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
+        elseExpr.setType(returnedType);
+        elseExpr.setExpression(elseExpression);
         return toReturn;
     }
 
@@ -824,8 +818,8 @@ public class ExpressionFunctionUtils {
     }
 
     /**
-     * Create a <code>LinkedHashMap&lt;String, ClassOrInterfaceType&gt;</code> out of the given <code>List&lt;ParameterField&gt;</code>
-     *
+     * Create a <code>LinkedHashMap&lt;String, ClassOrInterfaceType&gt;</code> out of the given <code>List&lt;
+     * ParameterField&gt;</code>
      * @param parameterNameTypeMap
      * @return
      */
