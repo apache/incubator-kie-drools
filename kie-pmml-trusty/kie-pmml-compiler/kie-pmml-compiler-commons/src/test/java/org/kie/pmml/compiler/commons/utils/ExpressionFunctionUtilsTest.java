@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -36,7 +35,6 @@ import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
@@ -58,10 +56,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.DEFAULT_PARAMETERTYPE_MAP;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.TORETURN;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.CONSTANT_VALUE;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
 
 public class ExpressionFunctionUtilsTest {
@@ -181,10 +180,10 @@ public class ExpressionFunctionUtilsTest {
 
         MethodDeclaration retrieved = ExpressionFunctionUtils.getConstantExpressionMethodDeclaration(methodName,
                                                                                                      constant,
-                                                                                                     DOUBLE_CLASS);
+                                                                                                     DOUBLE_CLASS, DEFAULT_PARAMETERTYPE_MAP);
         String expectedVariableDeclaration = String.format("%s %s = %s;",
                                                            Double.class.getName(),
-                                                           TORETURN,
+                                                           CONSTANT_VALUE,
                                                            constant.getValue());
         commonValidateConstant(retrieved, constant, methodName, Double.class.getName(), expectedVariableDeclaration);
         //
@@ -193,10 +192,10 @@ public class ExpressionFunctionUtilsTest {
         constant.setValue("EXPECTED");
         methodArity = new Random().nextInt(20);
         methodName = String.format(METHOD_NAME_TEMPLATE, constant.getClass().getSimpleName(), methodArity);
-        retrieved = ExpressionFunctionUtils.getConstantExpressionMethodDeclaration(methodName, constant, STRING_CLASS);
+        retrieved = ExpressionFunctionUtils.getConstantExpressionMethodDeclaration(methodName, constant, STRING_CLASS, DEFAULT_PARAMETERTYPE_MAP);
         expectedVariableDeclaration = String.format("%s %s = \"%s\";",
                                                     String.class.getName(),
-                                                    TORETURN,
+                                                    CONSTANT_VALUE,
                                                     constant.getValue());
         commonValidateConstant(retrieved, constant, methodName, String.class.getName(), expectedVariableDeclaration);
     }
@@ -230,6 +229,24 @@ public class ExpressionFunctionUtilsTest {
     @Test
     public void converterTypeUtilFieldAccessorExpr() {
         assertEquals(ConverterTypeUtil.class.getName(), CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.toString());
+    }
+
+
+    @Test
+    public void getClassOrInterfaceTypes() {
+        List<ParameterField> parameterFields = getParameterFields();
+        Map<String, ClassOrInterfaceType> retrieved = ExpressionFunctionUtils.getNameClassOrInterfaceTypeMap(parameterFields);
+        assertEquals(parameterFields.size(), retrieved.size());
+        for (ParameterField parameter : parameterFields) {
+            assertTrue(retrieved.containsKey(parameter.getName().toString()));
+            commonVerifyParameterClassOrInterfaceType(retrieved.get(parameter.getName().toString()), parameter);
+        }
+    }
+
+
+    private void commonVerifyParameterClassOrInterfaceType(ClassOrInterfaceType toVerify, ParameterField parameterField) {
+        String expectedClass = ModelUtils.getBoxedClassName(parameterField);
+        assertEquals(expectedClass, toVerify.toString());
     }
 //
 //    @Test(expected = KiePMMLException.class)
@@ -518,7 +535,7 @@ public class ExpressionFunctionUtilsTest {
         assertTrue(statements.get(1) instanceof ReturnStmt);
         ReturnStmt returnStmt = (ReturnStmt) statements.get(1);
         String retrievedString = returnStmt.toString();
-        String expected = String.format("return %s;", TORETURN);
+        String expected = String.format("return %s;", CONSTANT_VALUE);
         assertEquals(expected, retrievedString);
         commonValidateCompilation(retrieved);
     }
