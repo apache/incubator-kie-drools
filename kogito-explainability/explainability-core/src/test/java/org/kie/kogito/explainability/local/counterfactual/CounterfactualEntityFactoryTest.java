@@ -19,7 +19,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.local.counterfactual.entities.*;
+import org.kie.kogito.explainability.local.counterfactual.entities.BooleanEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.CategoricalEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntityFactory;
+import org.kie.kogito.explainability.local.counterfactual.entities.DoubleEntity;
+import org.kie.kogito.explainability.local.counterfactual.entities.IntegerEntity;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;

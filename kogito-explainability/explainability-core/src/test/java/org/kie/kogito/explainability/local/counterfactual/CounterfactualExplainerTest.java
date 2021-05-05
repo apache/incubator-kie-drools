@@ -701,4 +701,47 @@ class CounterfactualExplainerTest {
         assertEquals((int) executionIds.stream().distinct().count(), 1);
         assertEquals(executionIds.get(0), executionId);
     }
+
+    /**
+     * The test rationale is to find the solution to (f-num1 + f-num2 = 10), for f-num1 with an initial
+     * value of 0 and f-num2 with an initial value of 5 and both varying in [0, 10].
+     * All the possible solutions will have the same distance, but the sparsity
+     * criteria will select the ones which leave one of the inputs (either f-num1 or f-num2) unchanged.
+     *
+     * @param seed
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws TimeoutException
+     */
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2, 3, 4 })
+    void testSparsity(int seed)
+            throws ExecutionException, InterruptedException, TimeoutException {
+        Random random = new Random();
+        random.setSeed(seed);
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
+
+        List<Feature> features = new ArrayList<>();
+        List<FeatureDomain> featureBoundaries = new ArrayList<>();
+        List<Boolean> constraints = new ArrayList<>();
+        features.add(FeatureFactory.newNumericalFeature("f-num1", 0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0, 10));
+        constraints.add(false);
+        featureBoundaries.add(NumericalFeatureDomain.create(0, 10));
+        features.add(FeatureFactory.newNumericalFeature("f-num2", 5));
+        constraints.add(false);
+        final DataDomain dataDomain = new DataDomain(featureBoundaries);
+
+        final double center = 10.0;
+        final double epsilon = 0.1;
+
+        final CounterfactualResult result =
+                runCounterfactualSearch((long) seed, goal,
+                        constraints,
+                        dataDomain, features,
+                        TestUtils.getSumThresholdModel(center, epsilon));
+
+        assertTrue(!result.getEntities().get(0).isChanged() || !result.getEntities().get(1).isChanged());
+        assertTrue(result.isValid());
+    }
 }

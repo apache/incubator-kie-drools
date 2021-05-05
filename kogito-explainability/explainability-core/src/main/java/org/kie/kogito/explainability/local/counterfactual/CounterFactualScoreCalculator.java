@@ -61,6 +61,7 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
         int secondaryHardScore = 0;
         int tertiaryHardScore = 0;
         double primarySoftScore = 0.0;
+        int secondarySoftscore = 0;
 
         StringBuilder builder = new StringBuilder();
 
@@ -70,8 +71,12 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
             final Feature f = entity.asFeature();
             builder.append(String.format("%s=%s (d:%f)", f.getName(), f.getValue().getUnderlyingObject(), entityDistance));
 
-            if (entity.isConstrained() && (entity.isChanged())) {
-                secondaryHardScore -= 1;
+            if (entity.isChanged()) {
+                secondarySoftscore -= 1;
+
+                if (entity.isConstrained()) {
+                    secondaryHardScore -= 1;
+                }
             }
         }
 
@@ -131,6 +136,6 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
                         BigDecimal.valueOf(secondaryHardScore),
                         BigDecimal.valueOf(tertiaryHardScore)
                 },
-                new BigDecimal[] { BigDecimal.valueOf(-Math.abs(primarySoftScore)) });
+                new BigDecimal[] { BigDecimal.valueOf(-Math.abs(primarySoftScore)), BigDecimal.valueOf(secondarySoftscore) });
     }
 }

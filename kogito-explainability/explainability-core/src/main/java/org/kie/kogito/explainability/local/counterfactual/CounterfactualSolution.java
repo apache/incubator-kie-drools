@@ -62,7 +62,7 @@ public class CounterfactualSolution {
         this.executionId = executionId;
     }
 
-    @PlanningScore(bendableHardLevelsSize = 3, bendableSoftLevelsSize = 1)
+    @PlanningScore(bendableHardLevelsSize = 3, bendableSoftLevelsSize = 2)
     public BendableBigDecimalScore getScore() {
         return score;
     }
