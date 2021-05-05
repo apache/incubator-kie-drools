@@ -19,7 +19,10 @@ package org.drools.modelcompiler.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +61,16 @@ public class PackageSources {
         RuleWriter rules = packageModelWriter.getRules();
         sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
 
+        List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> allReplacedLambdaResults = new ArrayList<>();
+
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
+            allReplacedLambdaResults.addAll(ruleSource.getLambdaResults());
         }
 
-        pkgModel.getLambdaClasses()
-                .values()
-                .stream()
-                .map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getCompilationUnitAsString())))
+        Map<String, String> distinctLambdaClasses = allReplacedLambdaResults.parallelStream().collect(Collectors.toMap(k -> k.getExternalisedLambda().getClassNamePath(),
+                                                                                                                   v -> v.getExternalisedLambda().getCompilationUnitAsString(), (a, b) -> a));
+        distinctLambdaClasses.entrySet().stream().map(gc -> new GeneratedFile(gc.getKey(), logSource(gc.getValue())))
                 .forEach(sources.lambdaClasses::add);
 
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();

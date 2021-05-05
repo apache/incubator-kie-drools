@@ -74,6 +74,7 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
+import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -147,7 +148,6 @@ public class PackageModel {
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
-    private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
@@ -387,11 +387,6 @@ public class PackageModel {
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
     }
-
-    public Map<String, CreatedClass> getLambdaClasses() {
-        return lambdaClasses;
-    }
-
 
     public void addRuleUnit(RuleUnitDescription ruleUnitDescription) {
         this.ruleUnits.add(ruleUnitDescription);
