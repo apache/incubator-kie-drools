@@ -66,7 +66,6 @@ import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_METHOD_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
-import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_STATIC_INITIALIZER;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
@@ -76,10 +75,10 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
  */
 public class CommonCodegenUtils {
 
-    public static String OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME ="kiePMMLNameValue";
     static final String LAMBDA_PARAMETER_NAME = "lmbdParam";
     static final String METHOD_NAME_TEMPLATE = "%s%s";
     static final String PARAMETER_NAME_TEMPLATE = "param%s";
+    public static String OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME = "kiePMMLNameValue";
 
     private CommonCodegenUtils() {
         // Avoid instantiation
@@ -107,7 +106,6 @@ public class CommonCodegenUtils {
      * expression, where <b>kiePMMLNameValueListParam</b> is the name of the
      * <code>List&lt;KiePMMLNameValue&gt;</code> parameter, and
      * <b>fieldNameToRef</b> is the name of the field to find, in the containing method
-     *
      * @param kiePMMLNameValueListParam
      * @param fieldNameToRef
      * @param stringLiteralComparison if <code>true</code>, equals comparison is made on the String, e.g Objects
@@ -184,7 +182,6 @@ public class CommonCodegenUtils {
      *     MAP_NAME.put("KEY_4", this::METHOD_46);
      * </pre>
      * inside the given <code>BlockStmt</code>
-     *
      * @param toAdd
      * @param body
      * @param mapName
@@ -201,16 +198,6 @@ public class CommonCodegenUtils {
         });
     }
 
-    public static void setReturnInitializer(final BlockStmt body, final Expression initializer) {
-        final ReturnStmt returnStmt = body.findFirst(ReturnStmt.class)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_RETURN_IN_METHOD, body)));
-        returnStmt.setExpression(initializer);
-    }
-
-    public static void addReturnStatement(final BlockStmt body, final Expression initializer) {
-        body.addStatement(new ReturnStmt(initializer));
-    }
-
     /**
      * For every entry in the given list, add
      * <pre>
@@ -224,7 +211,6 @@ public class CommonCodegenUtils {
      *     LIST_NAME.add(new OBJD());
      * </pre>
      * inside the given <code>BlockStmt</code>
-     *
      * @param toAdd
      * @param body
      * @param listName
@@ -246,7 +232,6 @@ public class CommonCodegenUtils {
 
     /**
      * Create an empty <b>Arrays.asList()</b> <code>ExpressionStmt</code>
-     *
      * @return
      */
     public static ExpressionStmt createArraysAsListExpression() {
@@ -261,7 +246,6 @@ public class CommonCodegenUtils {
 
     /**
      * Create a populated <b>Arrays.asList(?... a)</b> <code>ExpressionStmt</code>
-     *
      * @param source
      * @return
      */

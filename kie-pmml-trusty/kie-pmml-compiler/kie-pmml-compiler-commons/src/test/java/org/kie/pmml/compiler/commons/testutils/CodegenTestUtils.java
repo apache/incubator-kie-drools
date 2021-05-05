@@ -36,6 +36,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
