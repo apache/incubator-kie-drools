@@ -51,7 +51,7 @@ public class DerivedFieldFunctionUtils {
                                                               final AtomicInteger arityCounter) {
         final Expression expression = derivedField.getExpression();
         if (expression != null) {
-            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(), arityCounter);
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(), arityCounter.addAndGet(1));
             return getKiePMMLNameValueExpressionMethodDeclaration(expression, derivedField.getDataType(), methodName);
         } else {
             throw new KiePMMLException("Derived field without Expression are not supported, yet");
