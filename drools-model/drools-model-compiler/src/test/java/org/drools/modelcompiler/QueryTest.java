@@ -750,16 +750,17 @@ public class QueryTest extends BaseModelTest {
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
-                "query peeps( String $name, int $age ) \n" +
-                "    Person( $name := name, $age := age; ) \n" +
-                "end\n" +
                 "\n" +
                 "rule x1\n" +
                 "when\n" +
                 "    peeps($age1 : $age, $name1 : $name)\n" +
                 "then\n" +
                 "   list.add( $name1 + \" : \" + $age1 );\n" +
-                "end \n";
+                "end \n" +
+                "\n" +
+                "query peeps( String $name, int $age ) \n" +
+                "    Person( $name := name, $age := age; ) \n" +
+                "end\n";
 
         KieSession ksession = getKieSession( str );
 

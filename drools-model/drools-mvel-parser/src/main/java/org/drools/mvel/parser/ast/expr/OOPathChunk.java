@@ -33,6 +33,7 @@ public class OOPathChunk extends Expression {
     private final SimpleName field;
     private final SimpleName inlineCast;
     private final List<DrlxExpression> condition;
+    private boolean singleValue;
 
     public OOPathChunk(TokenRange range, SimpleName field, SimpleName inlineCast, List<DrlxExpression> condition ) {
         super( range );
@@ -63,4 +64,12 @@ public class OOPathChunk extends Expression {
         ((DrlVoidVisitor<A>)v).visit(this, arg);
     }
 
+    public OOPathChunk singleValue() {
+        singleValue = true;
+        return this;
+    }
+
+    public boolean isSingleValue() {
+        return singleValue;
+    }
 }

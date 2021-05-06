@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.mvel.compiler.oopath.model.Toy;
@@ -49,8 +50,7 @@ public class OOPathBindTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testBindIntegerFireAllRules, testBindIntegerFireUntilHalt, testBindListWithConstraint, testBindListWithConstraint etc. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test

@@ -18,6 +18,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -79,9 +80,10 @@ public class RuleContext {
     private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
+    private Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
     private List<Expression> expressions = new ArrayList<>();
     private Map<String, String> namedConsequences = new HashMap<>();
+    private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
 
     private List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
@@ -112,6 +114,8 @@ public class RuleContext {
     private int legacyAccumulateCounter = 0;
 
     private Optional<BaseDescr> currentConstraintDescr = empty();
+
+    private boolean hasCompilationError;
 
     public enum RuleDialect {
         JAVA,
@@ -189,10 +193,15 @@ public class RuleContext {
     }
 
     public void addCompilationError( KnowledgeBuilderResult error ) {
+        hasCompilationError = true;
         if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
             (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
         }
         kbuilder.addBuilderResult( error );
+    }
+
+    public boolean hasCompilationError() {
+        return hasCompilationError;
     }
 
     public boolean hasErrors() {
@@ -350,6 +359,21 @@ public class RuleContext {
         exprPointer.peek().accept(e);
     }
 
+    public void registerOOPathPatternExpr(String binding, MethodCallExpr patternExpr) {
+        if (ooPathBindingPatternExprs == null) {
+            ooPathBindingPatternExprs = new HashMap<>();
+        }
+        ooPathBindingPatternExprs.put( binding, patternExpr );
+    }
+
+    public void clearOOPathPatternExpr() {
+        ooPathBindingPatternExprs = null;
+    }
+
+    public MethodCallExpr getOOPathPatternExpr(String binding) {
+        return ooPathBindingPatternExprs == null ? null : ooPathBindingPatternExprs.get(binding);
+    }
+
     public void pushExprPointer(Consumer<Expression> p) {
         exprPointer.push(p);
     }
@@ -433,6 +457,10 @@ public class RuleContext {
 
     public void setQueryName(Optional<String> queryName) {
         this.queryName = queryName;
+    }
+
+    public boolean isRecurisveQuery(String queryName) {
+        return this.queryName.isPresent() && this.queryName.get().equals(queryName);
     }
 
     public boolean isQuery() {

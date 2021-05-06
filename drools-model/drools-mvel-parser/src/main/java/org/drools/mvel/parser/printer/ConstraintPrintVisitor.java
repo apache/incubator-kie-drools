@@ -223,10 +223,10 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
     @Override
     public void visit(OOPathExpr oopathExpr, Void arg ) {
         printComment(oopathExpr.getComment(), arg);
-        printer.print("/");
         NodeList<OOPathChunk> chunks = oopathExpr.getChunks();
         for (int i = 0; i <  chunks.size(); i++) {
             final OOPathChunk chunk = chunks.get(i);
+            printer.print(chunk.isSingleValue() ? "." : "/");
             chunk.accept(this, arg);
             printer.print(chunk.getField().toString());
 
@@ -241,10 +241,6 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
                     iterator.next().accept(this, arg);
                 }
                 printer.print("]");
-            }
-
-            if(i != chunks.size() - 1) { // Avoid printing last /
-                printer.print("/");
             }
         }
     }

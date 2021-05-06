@@ -300,6 +300,15 @@ public class DroolsMvelParserTest {
     }
 
     @Test
+    public void testOOPathExprWithDot() {
+        String expr = "/wife.children/toys";
+        DrlxExpression drlx = parseExpression( parser, expr );
+        Expression expression = drlx.getExpr();
+        assertTrue(expression instanceof OOPathExpr);
+        assertEquals(expr, printConstraint(drlx));
+    }
+
+    @Test
     public void testOOPathExprWithMultipleCondition() {
         String expr = "$address : /address[street == \"Elm\",city == \"Big City\"]";
         DrlxExpression drlx = parseExpression( parser, expr );
