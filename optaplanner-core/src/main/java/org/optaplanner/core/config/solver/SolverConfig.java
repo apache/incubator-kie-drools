@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -39,6 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.Solver;
@@ -55,6 +57,7 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
@@ -244,6 +247,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     @XmlElement(name = "entityClass")
     protected List<Class<?>> entityClassList = null;
     protected DomainAccessType domainAccessType = null;
+    @XmlTransient
+    protected Map<String, MemberAccessor> gizmoMemberAccessorMap = null;
+    @XmlTransient
+    protected Map<String, SolutionCloner> gizmoSolutionClonerMap = null;
 
     @XmlElement(name = "scoreDirectorFactory")
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
@@ -387,6 +394,22 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         this.domainAccessType = domainAccessType;
     }
 
+    public Map<String, MemberAccessor> getGizmoMemberAccessorMap() {
+        return gizmoMemberAccessorMap;
+    }
+
+    public void setGizmoMemberAccessorMap(Map<String, MemberAccessor> gizmoMemberAccessorMap) {
+        this.gizmoMemberAccessorMap = gizmoMemberAccessorMap;
+    }
+
+    public Map<String, SolutionCloner> getGizmoSolutionClonerMap() {
+        return gizmoSolutionClonerMap;
+    }
+
+    public void setGizmoSolutionClonerMap(Map<String, SolutionCloner> gizmoSolutionClonerMap) {
+        this.gizmoSolutionClonerMap = gizmoSolutionClonerMap;
+    }
+
     public ScoreDirectorFactoryConfig getScoreDirectorFactoryConfig() {
         return scoreDirectorFactoryConfig;
     }
@@ -472,6 +495,16 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public SolverConfig withDomainAccessType(DomainAccessType domainAccessType) {
         this.domainAccessType = domainAccessType;
+        return this;
+    }
+
+    public SolverConfig withGizmoMemberAccessorMap(Map<String, MemberAccessor> memberAccessorMap) {
+        this.gizmoMemberAccessorMap = memberAccessorMap;
+        return this;
+    }
+
+    public SolverConfig withGizmoSolutionClonerMap(Map<String, SolutionCloner> solutionClonerMap) {
+        this.gizmoSolutionClonerMap = solutionClonerMap;
         return this;
     }
 
@@ -586,6 +619,11 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         entityClassList = ConfigUtils.inheritMergeableListProperty(entityClassList,
                 inheritedConfig.getEntityClassList());
         domainAccessType = ConfigUtils.inheritOverwritableProperty(domainAccessType, inheritedConfig.getDomainAccessType());
+        gizmoMemberAccessorMap = ConfigUtils.inheritMergeableMapProperty(
+                gizmoMemberAccessorMap, inheritedConfig.getGizmoMemberAccessorMap());
+        gizmoSolutionClonerMap = ConfigUtils.inheritMergeableMapProperty(
+                gizmoSolutionClonerMap, inheritedConfig.getGizmoSolutionClonerMap());
+
         scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig,
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());

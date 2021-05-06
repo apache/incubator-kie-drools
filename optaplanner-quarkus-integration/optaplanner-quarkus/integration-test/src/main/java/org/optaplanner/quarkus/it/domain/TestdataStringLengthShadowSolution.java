@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.testdata.domain;
+package org.optaplanner.quarkus.it.domain;
 
 import java.util.List;
 

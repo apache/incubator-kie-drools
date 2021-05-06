@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -34,6 +35,7 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
@@ -72,6 +74,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<String> scoreDrlList = null;
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
+    @XmlTransient
+    protected KieBaseExtractor kieBaseExtractor = null;
 
     protected Boolean droolsAlphaNetworkCompilationEnabled = null;
 
@@ -163,6 +167,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public Boolean getDroolsAlphaNetworkCompilationEnabled() {
         return droolsAlphaNetworkCompilationEnabled;
+    }
+
+    public KieBaseExtractor getKieBaseExtractor() {
+        return kieBaseExtractor;
+    }
+
+    public void setKieBaseExtractor(KieBaseExtractor kieBaseExtractor) {
+        this.kieBaseExtractor = kieBaseExtractor;
     }
 
     public void setDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
@@ -257,6 +269,11 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
+    public ScoreDirectorFactoryConfig withKieBaseExtractor(KieBaseExtractor kieBaseExtractor) {
+        this.kieBaseExtractor = kieBaseExtractor;
+        return this;
+    }
+
     public ScoreDirectorFactoryConfig withDroolsAlphaNetworkCompilationEnabled(
             boolean droolsAlphaNetworkCompilationEnabled) {
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
@@ -294,6 +311,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
+        kieBaseExtractor = ConfigUtils.inheritOverwritableProperty(kieBaseExtractor, inheritedConfig.getKieBaseExtractor());
         droolsAlphaNetworkCompilationEnabled = ConfigUtils.inheritOverwritableProperty(
                 droolsAlphaNetworkCompilationEnabled, inheritedConfig.getDroolsAlphaNetworkCompilationEnabled());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(

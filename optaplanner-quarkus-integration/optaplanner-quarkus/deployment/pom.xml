@@ -80,7 +80,12 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Required to test Quarkus with constraints DRL. -->
+    <!-- Required to test Quarkus with constraints DRL.
+         kogito-quarkus-rules/kogito-quarkus-rules-deployment does
+         not pick Drools files in extension tests, but does in normal tests
+         so we mock it functionality via drools-core-dynamic for tests
+         in this module (and test drools with kogito-quarkus-rules
+         in a separate module) -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>

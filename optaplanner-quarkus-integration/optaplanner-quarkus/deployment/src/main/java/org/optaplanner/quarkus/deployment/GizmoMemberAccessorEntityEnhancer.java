@@ -42,6 +42,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.jboss.jandex.AnnotationInstance;
@@ -50,10 +53,13 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
@@ -64,11 +70,14 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
+import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
-import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
+import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
+import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.gizmo.BranchResult;
 import io.quarkus.gizmo.BytecodeCreator;
 import io.quarkus.gizmo.ClassCreator;
@@ -79,11 +88,14 @@ import io.quarkus.gizmo.Gizmo;
 import io.quarkus.gizmo.MethodCreator;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
+import io.quarkus.runtime.RuntimeValue;
 
 public class GizmoMemberAccessorEntityEnhancer {
 
     private static Set<Field> visitedFields = new HashSet<>();
     private static Set<MethodInfo> visitedMethods = new HashSet<>();
+    private final static String DROOLS_INITIALIZER_CLASS_NAME =
+            OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
 
     public static void addVirtualFieldGetter(ClassInfo classInfo, FieldInfo fieldInfo,
             BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
@@ -375,55 +387,27 @@ public class GizmoMemberAccessorEntityEnhancer {
         return out;
     }
 
-    public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedMemberAccessorsClassNames,
+    public static Map<String, RuntimeValue<MemberAccessor>> getGeneratedGizmoMemberAccessorMap(RecorderContext recorderContext,
+            Set<String> generatedMemberAccessorsClassNames) {
+        Map<String, RuntimeValue<MemberAccessor>> generatedGizmoMemberAccessorNameToInstanceMap = new HashMap<>();
+        for (String className : generatedMemberAccessorsClassNames) {
+            generatedGizmoMemberAccessorNameToInstanceMap.put(className, recorderContext.newInstance(className));
+        }
+        return generatedGizmoMemberAccessorNameToInstanceMap;
+    }
+
+    public static Map<String, RuntimeValue<SolutionCloner>> getGeneratedSolutionClonerMap(RecorderContext recorderContext,
             Set<String> generatedSolutionClonersClassNames) {
-        String generatedClassName = OptaPlannerGizmoInitializer.class.getName() + "$Implementation";
-        ClassCreator classCreator = ClassCreator
-                .builder()
-                .className(generatedClassName)
-                .interfaces(OptaPlannerGizmoInitializer.class)
-                .classOutput(classOutput)
-                .build();
-
-        classCreator.addAnnotation(ApplicationScoped.class);
-        MethodCreator methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
-                "setup", void.class));
-        ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-        for (String generatedMemberAccessor : generatedMemberAccessorsClassNames) {
-            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
-            ResultHandle memberAccessorInstance =
-                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
-            methodCreator.invokeInterfaceMethod(
-                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                    memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
+        Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerNameToInstanceMap = new HashMap<>();
+        for (String className : generatedSolutionClonersClassNames) {
+            generatedGizmoSolutionClonerNameToInstanceMap.put(className, recorderContext.newInstance(className));
         }
-        methodCreator.invokeStaticMethod(
-                MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
-                        void.class, Map.class),
-                memberAccessorMap);
-
-        ResultHandle solutionClonerMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-        for (String generatedSolutionCloner : generatedSolutionClonersClassNames) {
-            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedSolutionCloner);
-            ResultHandle memberAccessorInstance =
-                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedSolutionCloner));
-            methodCreator.invokeInterfaceMethod(
-                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                    solutionClonerMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
-        }
-
-        methodCreator.invokeStaticMethod(
-                MethodDescriptor.ofMethod(GizmoSolutionClonerFactory.class, "useSolutionClonerMap",
-                        void.class, Map.class),
-                solutionClonerMap);
-        methodCreator.returnValue(null);
-
-        classCreator.close();
-        return generatedClassName;
+        return generatedGizmoSolutionClonerNameToInstanceMap;
     }
 
     public static String generateGizmoBeanFactory(ClassOutput classOutput, Set<Class<?>> beanClasses) {
         String generatedClassName = OptaPlannerGizmoBeanFactory.class.getName() + "$Implementation";
+
         ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
@@ -455,6 +439,61 @@ public class GizmoMemberAccessorEntityEnhancer {
 
         classCreator.close();
         return generatedClassName;
+    }
+
+    public static String generateKieRuntimeBuilder(ClassOutput classOutput, ScoreDirectorFactoryConfig config,
+            BuildProducer<UnremovableBeanBuildItem> unremovableBeans) {
+        String generatedClassName = DROOLS_INITIALIZER_CLASS_NAME;
+        try (ClassCreator classCreator = ClassCreator
+                .builder()
+                .className(generatedClassName)
+                .interfaces(OptaPlannerDroolsInitializer.class)
+                .classOutput(classOutput)
+                .build()) {
+
+            classCreator.addAnnotation(ApplicationScoped.class);
+
+            MethodCreator methodCreator;
+            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList()) ||
+                    !ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+                unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(KieRuntimeBuilder.class));
+                methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
+                        "setup", void.class, ScoreDirectorFactoryConfig.class));
+
+                ResultHandle cdiResultHandle =
+                        methodCreator.invokeStaticMethod(MethodDescriptor.ofMethod(CDI.class, "current", CDI.class));
+                ResultHandle beanManagerResultHandle = methodCreator.invokeVirtualMethod(
+                        MethodDescriptor.ofMethod(CDI.class, "getBeanManager", BeanManager.class),
+                        cdiResultHandle);
+                ResultHandle instanceResultHandle = methodCreator.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(BeanManager.class, "createInstance", Instance.class),
+                        beanManagerResultHandle);
+                ResultHandle kieRuntimeBuilderClass = methodCreator.loadClass(KieRuntimeBuilder.class);
+                ResultHandle kieRuntimeBuilderInstanceResultHandle = methodCreator.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(Instance.class, "select", Instance.class, Class.class, Annotation[].class),
+                        instanceResultHandle, kieRuntimeBuilderClass, methodCreator.newArray(Annotation.class, 0));
+                ResultHandle kieRuntimeBuilder =
+                        methodCreator.invokeInterfaceMethod(MethodDescriptor.ofMethod(Instance.class, "get", Object.class),
+                                kieRuntimeBuilderInstanceResultHandle);
+                ResultHandle kieBaseExtractor = methodCreator.newInstance(
+                        MethodDescriptor.ofConstructor(KieBaseExtractor.class, KieRuntimeBuilder.class), kieRuntimeBuilder);
+                methodCreator.invokeVirtualMethod(
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setKieBaseExtractor", void.class,
+                                KieBaseExtractor.class),
+                        methodCreator.getMethodParam(0), kieBaseExtractor);
+
+            } else {
+                // No additional setup needed; Drools isn't used
+                methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
+                        "setup", void.class, ScoreDirectorFactoryConfig.class));
+            }
+            methodCreator.returnValue(null);
+        }
+        return generatedClassName;
+    }
+
+    public static RuntimeValue<OptaPlannerDroolsInitializer> getDroolsInitializer(RecorderContext recorderContext) {
+        return recorderContext.newInstance(DROOLS_INITIALIZER_CLASS_NAME);
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {

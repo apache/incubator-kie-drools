@@ -17,19 +17,5 @@
 package org.optaplanner.quarkus.gizmo;
 
 public interface OptaPlannerGizmoBeanFactory {
-    Reference INSTANCE = new Reference();
-
     <T> T newInstance(Class<T> clazz);
-
-    class Reference {
-        OptaPlannerGizmoBeanFactory instance;
-
-        public OptaPlannerGizmoBeanFactory getInstance() {
-            return instance;
-        }
-
-        public void setInstance(OptaPlannerGizmoBeanFactory instance) {
-            this.instance = instance;
-        }
-    }
 }

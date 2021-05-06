@@ -192,7 +192,8 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             // Cannot use Map.computeIfAbsent(), as we also want to cache null values.
             if (!planningIdAccessorCacheMap.containsKey(factClass)) {
                 planningIdAccessorCacheMap.put(factClass,
-                        ConfigUtils.findPlanningIdMemberAccessor(factClass, getSolutionDescriptor().getDomainAccessType()));
+                        ConfigUtils.findPlanningIdMemberAccessor(factClass, getSolutionDescriptor().getDomainAccessType(),
+                                getSolutionDescriptor().getGeneratedMemberAccessorMap()));
             }
             MemberAccessor planningIdAccessor = planningIdAccessorCacheMap.get(factClass);
             if (planningIdAccessor == null) { // There is no planning ID annotation.
@@ -764,6 +765,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     private Map<List<Object>, ConstraintMatch<Score_>> createConstraintMatchMap(
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         Comparator<Object> comparator = new ClassAndPlanningIdComparator(getSolutionDescriptor().getDomainAccessType(),
+                getSolutionDescriptor().getGeneratedMemberAccessorMap(),
                 false);
         Map<List<Object>, ConstraintMatch<Score_>> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {

@@ -17,5 +17,6 @@
     <module>runtime</module>
     <module>deployment</module>
     <module>integration-test</module>
+    <module>drl-integration-test</module>
   </modules>
 </project>

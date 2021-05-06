@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -35,16 +36,22 @@ public class MemberAccessorFactory {
 
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass,
-            DomainAccessType domainAccessType) {
-        switch (domainAccessType) {
-            case GIZMO:
-                return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+            DomainAccessType domainAccessType,
+            Map<String, MemberAccessor> memberAccessorMap) {
+        String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(member);
+        if (memberAccessorMap == null || !memberAccessorMap.containsKey(generatedClassName)) {
+            switch (domainAccessType) {
+                case GIZMO:
+                    return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
 
-            case REFLECTION:
-                return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
+                case REFLECTION:
+                    return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
 
-            default:
-                throw new IllegalStateException("The domainAccessType (" + domainAccessType + ") is not implemented.");
+                default:
+                    throw new IllegalStateException("The domainAccessType (" + domainAccessType + ") is not implemented.");
+            }
+        } else {
+            return memberAccessorMap.get(generatedClassName);
         }
     }
 

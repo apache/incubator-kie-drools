@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.testdata;
+package org.optaplanner.quarkus.drl.it;
 
 import static org.hamcrest.Matchers.is;
 
@@ -40,7 +40,7 @@ public class OptaPlannerTestResourceTest {
                 .post("/optaplanner/test/solver-factory")
                 .then()
                 .body(is(
-                        "0hard/5soft"));
+                        "0"));
     }
 
 }

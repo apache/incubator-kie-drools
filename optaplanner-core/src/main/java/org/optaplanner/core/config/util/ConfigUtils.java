@@ -391,7 +391,8 @@ public class ConfigUtils {
         }
     }
 
-    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz, DomainAccessType domainAccessType) {
+    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz, DomainAccessType domainAccessType,
+            Map<String, MemberAccessor> generatedMemberAccessorMap) {
         List<Member> memberList = getAllMembers(clazz, PlanningId.class);
         if (memberList.isEmpty()) {
             return null;
@@ -403,7 +404,8 @@ public class ConfigUtils {
         }
         Member member = memberList.get(0);
         MemberAccessor memberAccessor =
-                MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class, domainAccessType);
+                MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class, domainAccessType,
+                        generatedMemberAccessorMap);
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
                     + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()

@@ -52,6 +52,11 @@
                   <version>${version.io.quarkus.gizmo}</version>
                 </additionalDependency>
                 <additionalDependency>
+                  <groupId>org.kie.kogito</groupId>
+                  <artifactId>kogito-api</artifactId>
+                  <version>${version.org.kie.kogito}</version>
+                </additionalDependency>
+                <additionalDependency>
                   <groupId>org.ow2.asm</groupId>
                   <artifactId>asm</artifactId>
                   <version>${version.org.ow2.asm}</version>

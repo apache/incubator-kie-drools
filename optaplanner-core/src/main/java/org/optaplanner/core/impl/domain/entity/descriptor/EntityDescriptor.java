@@ -205,11 +205,11 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy,
-            Member member) {
+    private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
-                    ValueRangeProvider.class, descriptorPolicy.getDomainAccessType());
+                    ValueRangeProvider.class, descriptorPolicy.getDomainAccessType(),
+                    descriptorPolicy.getGeneratedMemberAccessorMap());
             descriptorPolicy.addFromEntityValueRangeProvider(
                     memberAccessor);
         }
@@ -227,7 +227,8 @@ public class EntityDescriptor<Solution_> {
                 memberAccessorType = FIELD_OR_GETTER_METHOD_WITH_SETTER;
             }
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, memberAccessorType,
-                    variableAnnotationClass, descriptorPolicy.getDomainAccessType());
+                    variableAnnotationClass, descriptorPolicy.getDomainAccessType(),
+                    descriptorPolicy.getGeneratedMemberAccessorMap());
             registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
         }
     }
@@ -273,7 +274,8 @@ public class EntityDescriptor<Solution_> {
             Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(PlanningPin.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
-                    PlanningPin.class, descriptorPolicy.getDomainAccessType());
+                    PlanningPin.class, descriptorPolicy.getDomainAccessType(),
+                    descriptorPolicy.getGeneratedMemberAccessorMap());
             Class<?> type = memberAccessor.getType();
             if (!Boolean.TYPE.isAssignableFrom(type) && !Boolean.class.isAssignableFrom(type)) {
                 throw new IllegalStateException("The entityClass (" + entityClass

@@ -44,6 +44,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
@@ -59,6 +60,10 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     private final ScoreDirectorFactoryConfig config;
 
     public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
+        this.config = config;
+    }
+
+    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config, KieBaseExtractor kieBaseExtractor) {
         this.config = config;
     }
 
@@ -275,24 +280,36 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             return null;
         }
 
-        KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
-                .setClassLoader(classLoader);
-        if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-            for (String scoreDrl : config.getScoreDrlList()) {
-                if (scoreDrl == null) {
-                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
-                }
-                kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
-            }
-        }
-        if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
-            for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                kieHelper.addResource(new FileSystemResource(scoreDrlFile));
-            }
-        }
-
         try {
-            KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
+            KieBase kieBase;
+            if (config.getKieBaseExtractor() != null) {
+                kieBase = config.getKieBaseExtractor().extractKieBase();
+            } else {
+                // Can't put this code in KieBaseExtractor since it reference
+                // KieRuntimeBuilder, which is an optional dependency
+                KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
+                        .setClassLoader(classLoader);
+                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
+                    for (String scoreDrl : config.getScoreDrlList()) {
+                        if (scoreDrl == null) {
+                            throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
+                        }
+                        kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
+                    }
+                }
+                if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+                    for (File scoreDrlFile : config.getScoreDrlFileList()) {
+                        kieHelper.addResource(new FileSystemResource(scoreDrlFile));
+                    }
+                }
+
+                try {
+                    kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
+                } catch (Exception ex) {
+                    throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
+                }
+            }
+
             if (config.isDroolsAlphaNetworkCompilationEnabled()) {
                 KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
             }

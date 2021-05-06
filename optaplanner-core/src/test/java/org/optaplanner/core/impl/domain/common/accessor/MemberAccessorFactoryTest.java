@@ -18,10 +18,15 @@ package org.optaplanner.core.impl.domain.common.accessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Member;
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataVisibilityModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
@@ -33,7 +38,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor =
                 MemberAccessorFactory.buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                         MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class,
-                        DomainAccessType.REFLECTION);
+                        DomainAccessType.REFLECTION, Collections.emptyMap());
         assertThat(memberAccessor)
                 .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("value");
@@ -52,7 +57,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
+                DomainAccessType.REFLECTION, Collections.emptyMap());
         assertThat(memberAccessor)
                 .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("privateField");
@@ -71,7 +76,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
+                DomainAccessType.REFLECTION, Collections.emptyMap());
         assertThat(memberAccessor)
                 .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("publicField");
@@ -90,7 +95,7 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
+                DomainAccessType.REFLECTION, Collections.emptyMap());
         assertThat(memberAccessor)
                 .isInstanceOf(LambdaBeanPropertyMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("publicProperty");
@@ -102,6 +107,20 @@ public class MemberAccessorFactoryTest {
         assertThat(memberAccessor.executeGetter(s1)).isEqualTo("firstValue");
         memberAccessor.executeSetter(s1, "secondValue");
         assertThat(memberAccessor.executeGetter(s1)).isEqualTo("secondValue");
+    }
+
+    @Test
+    public void shouldUseGeneratedMemberAccessorIfExists() throws NoSuchMethodException {
+        MemberAccessor mockMemberAccessor = Mockito.mock(MemberAccessor.class);
+        Member member = TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty");
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
+                member,
+                MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
+                DomainAccessType.REFLECTION, Collections.singletonMap(GizmoMemberAccessorFactory.getGeneratedClassName(member),
+                        mockMemberAccessor));
+
+        assertThat(memberAccessor)
+                .isSameAs(mockMemberAccessor);
     }
 
 }

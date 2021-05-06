@@ -136,6 +136,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         SolutionDescriptor<Solution_> solutionDescriptor =
                 SolutionDescriptor.buildSolutionDescriptor(solverConfig.determineDomainAccessType(),
                         (Class<Solution_>) solverConfig.getSolutionClass(),
+                        solverConfig.getGizmoMemberAccessorMap(),
+                        solverConfig.getGizmoSolutionClonerMap(),
                         solverConfig.getEntityClassList());
         if (environmentMode.isAsserted()) {
             solutionDescriptor.setAssertModelForCloning(true);

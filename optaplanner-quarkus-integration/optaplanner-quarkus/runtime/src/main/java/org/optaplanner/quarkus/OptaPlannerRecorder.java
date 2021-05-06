@@ -16,20 +16,39 @@
 
 package org.optaplanner.quarkus;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 
+import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class OptaPlannerRecorder {
 
-    public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig) {
+    public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig,
+            Map<String, RuntimeValue<MemberAccessor>> generatedGizmoMemberAccessorMap,
+            Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerMap,
+            RuntimeValue<OptaPlannerDroolsInitializer> droolsInitializer) {
         return new Supplier<SolverConfig>() {
             @Override
             public SolverConfig get() {
+                Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
+                Map<String, SolutionCloner> solutionClonerMap = new HashMap<>();
+                generatedGizmoMemberAccessorMap
+                        .forEach((className, runtimeValue) -> memberAccessorMap.put(className, runtimeValue.getValue()));
+                generatedGizmoSolutionClonerMap
+                        .forEach((className, runtimeValue) -> solutionClonerMap.put(className, runtimeValue.getValue()));
+
+                solverConfig.setGizmoMemberAccessorMap(memberAccessorMap);
+                solverConfig.setGizmoSolutionClonerMap(solutionClonerMap);
+                droolsInitializer.getValue().setup(solverConfig.getScoreDirectorFactoryConfig());
                 return solverConfig;
             }
         };

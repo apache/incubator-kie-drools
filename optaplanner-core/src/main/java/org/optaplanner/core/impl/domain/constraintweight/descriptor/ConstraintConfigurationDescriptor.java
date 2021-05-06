@@ -128,7 +128,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
             ScoreDefinition scoreDefinition) {
         if (((AnnotatedElement) member).isAnnotationPresent(ConstraintWeight.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
-                    ConstraintWeight.class, descriptorPolicy.getDomainAccessType());
+                    ConstraintWeight.class, descriptorPolicy.getDomainAccessType(),
+                    descriptorPolicy.getGeneratedMemberAccessorMap());
             if (constraintWeightDescriptorMap.containsKey(memberAccessor.getName())) {
                 MemberAccessor duplicate = constraintWeightDescriptorMap.get(memberAccessor.getName()).getMemberAccessor();
                 throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass

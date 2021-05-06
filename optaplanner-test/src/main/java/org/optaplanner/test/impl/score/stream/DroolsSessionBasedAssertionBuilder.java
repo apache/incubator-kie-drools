@@ -87,7 +87,8 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
         // Go over all the top-level classes, find and report duplicate IDs.
         entitiesByClassMap.forEach((clz, clzFacts) -> {
             MemberAccessor planningIdAccessor =
-                    ConfigUtils.findPlanningIdMemberAccessor(clz, solutionDescriptor.getDomainAccessType());
+                    ConfigUtils.findPlanningIdMemberAccessor(clz, solutionDescriptor.getDomainAccessType(),
+                            solutionDescriptor.getGeneratedMemberAccessorMap());
             if (planningIdAccessor == null) {
                 return;
             }
