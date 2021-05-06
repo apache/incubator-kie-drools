@@ -24,6 +24,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.functions.Operator;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
@@ -41,6 +42,9 @@ public class NativeOperatorSpec implements OperatorSpec {
 
         String opName = pointFreeExpr.getOperator().asString();
         Operator operator = addOperatorArgument( context, methodCallExpr, opName );
+        if (operator != null && !operator.isCompatibleWithType( left.getRawClass() )) {
+            context.addCompilationError( new InvalidExpressionErrorResult( "Cannot use contains on class " + left.getRawClass() + " in expression '" + pointFreeExpr + "'" ) );
+        }
 
         methodCallExpr.addArgument( left.getExpression() );
         for (Expression rightExpr : pointFreeExpr.getRight()) {

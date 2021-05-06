@@ -23,11 +23,11 @@ import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InlineCastTest extends BaseModelTest {
 
@@ -188,6 +188,29 @@ public class InlineCastTest extends BaseModelTest {
         assertEquals("Italy", results.iterator().next());
     }
 
+    @Test
+    public void testInlineCastProjectionOnMethod() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                "import " + InternationalAddress.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  Person( $a : address#InternationalAddress.getState() )\n" +
+                "then\n" +
+                "  insert($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        InternationalAddress a = new InternationalAddress("address", "Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals("Italy", results.iterator().next());
+    }
+
 
     @Test
     public void testInlineCastForAField() {
@@ -195,6 +218,28 @@ public class InlineCastTest extends BaseModelTest {
                      "import " + InternationalAddress.class.getCanonicalName() + ";" +
                      "rule R when\n" +
                      "  $p : Person( address#InternationalAddress.state.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(\"matched\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        InternationalAddress a = new InternationalAddress("address", "Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testInlineCastForAFieldWithFQN() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person( address#org.drools.modelcompiler.domain.InternationalAddress.state.length == 5 )\n" +
                      "then\n" +
                      "  insert(\"matched\");\n" +
                      "end";

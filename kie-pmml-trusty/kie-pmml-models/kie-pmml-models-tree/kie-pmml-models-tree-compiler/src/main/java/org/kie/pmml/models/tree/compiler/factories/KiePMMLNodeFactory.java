@@ -40,7 +40,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -58,9 +57,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.kie.pmml.commons.Constants.AS_LIST;
-import static org.kie.pmml.commons.Constants.EMPTY_LIST;
-import static org.kie.pmml.commons.Constants.EVALUATE_PREDICATE;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
@@ -68,21 +64,23 @@ import static org.kie.pmml.commons.Constants.MISSING_METHOD_REFERENCE_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
-import static org.kie.pmml.commons.Constants.PREDICATE_FUNCTION;
-import static org.kie.pmml.commons.Constants.SCORE;
-import static org.kie.pmml.commons.Constants.STRING_OBJECT_MAP;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
-import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.getNodeClassName;
+import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
 public class KiePMMLNodeFactory {
 
     static final String KIE_PMML_NODE_TEMPLATE_JAVA = "KiePMMLNodeTemplate.tmpl";
     static final String KIE_PMML_NODE_TEMPLATE = "KiePMMLNodeTemplate";
     static final String EVALUATE_NODE = "evaluateNode";
+    static final String EVALUATE_PREDICATE = "evaluatePredicate";
+    static final String PREDICATE_FUNCTION = "predicateFunction";
+    static final String STRING_OBJECT_MAP = "stringObjectMap";
+    static final String SCORE = "score";
     static final String NODE_FUNCTIONS = "nodeFunctions";
-
+    static final String EMPTY_LIST = "emptyList";
+    static final String AS_LIST = "asList";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLNodeFactory.class.getName());
 
     private KiePMMLNodeFactory() {
@@ -94,7 +92,7 @@ public class KiePMMLNodeFactory {
                                              final String packageName,
                                              final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLTreeNode {} {}", packageName, node);
-        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, getNodeClassName(), null);
+        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null);
         final Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary, packageName);
         String fullClassName = packageName + "." + nodeNamesDTO.nodeClassName;
         try {
@@ -534,7 +532,7 @@ public class KiePMMLNodeFactory {
             if (node.hasNodes()) {
                 childrenNodes = new LinkedHashMap<>();
                 for (Node nestedNode : node.getNodes()) {
-                    childrenNodes.put(nestedNode, KiePMMLTreeModelUtils.getNodeClassName());
+                    childrenNodes.put(nestedNode, KiePMMLTreeModelUtils.createNodeClassName());
                 }
             } else {
                 childrenNodes = Collections.emptyMap();

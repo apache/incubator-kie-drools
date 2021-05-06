@@ -214,7 +214,7 @@ public abstract class PatternDSL implements DSLNode {
             public DrlxParseResult onSuccess(DrlxParseSuccess drlxParseResult) {
 
                 String exprBinding = drlxParseResult.getExprBinding();
-                if (exprBinding == null && !drlxParseResult.isPredicate()) {
+                if (exprBinding == null && !drlxParseResult.isPredicate() && !drlxParseResult.getImplicitCastExpression().isPresent()) {
                     return new DrlxParseFail(new DescrBuildError(context.getRuleDescr(), context.getRuleDescr(), "",
                                                                  String.format("Predicate '%s' must be a Boolean expression", drlxParseResult.getOriginalDrlConstraint())));
                 } else {

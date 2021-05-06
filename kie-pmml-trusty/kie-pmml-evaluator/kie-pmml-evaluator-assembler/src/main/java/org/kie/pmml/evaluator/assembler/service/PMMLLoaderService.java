@@ -76,21 +76,40 @@ public class PMMLLoaderService {
      */
     public static List<KiePMMLModel> getKiePMMLModelsLoadedFromResource(final KnowledgeBuilderImpl kbuilderImpl,
                                                                         final Resource resource) {
+        try {
+            final KiePMMLModelFactory aClass = loadKiePMMLModelFactory(kbuilderImpl,
+                                                                       resource);
+            return getKiePMMLModelsLoadedFromFactory(kbuilderImpl, aClass);
+        } catch (ClassNotFoundException e) {
+            logger.info(String.format("KiePMMLModelFactory class for %s not found in rootClassLoader, going to compile model",
+                                      resource.getSourcePath()));
+        } catch (Exception e) {
+            throw new KiePMMLException("Exception while instantiating KiePMMLModelFactory for " + resource.getSourcePath(), e);
+        }
+        return Collections.emptyList();
+    }
+
+    public static KiePMMLModelFactory loadKiePMMLModelFactory(final KnowledgeBuilderImpl kbuilderImpl,
+                                                              final Resource resource) throws Exception {
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
         String fullFactoryClassName = packageName + "." + factoryClassName;
-        try {
-            final KiePMMLModelFactory aClass = loadKiePMMLModelFactory(kbuilderImpl.getRootClassLoader(),
-                                                                       fullFactoryClassName);
-            return getKiePMMLModelsLoadedFromFactory(kbuilderImpl, aClass);
-        } catch (ClassNotFoundException e) {
-            logger.info(String.format("%s class not found in rootClassLoader, going to compile model",
-                                      fullFactoryClassName));
-        } catch (Exception e) {
-            throw new KiePMMLException("Exception while instantiating " + fullFactoryClassName, e);
+        return loadKiePMMLModelFactory(kbuilderImpl.getRootClassLoader(),
+                                       fullFactoryClassName);
+    }
+
+    public static List<PMMLRuleMapper> getPMMLRuleMappers(final KnowledgeBuilderImpl kbuilderImpl,
+                                                              final KiePMMLModelFactory modelFactory) {
+        final List<PMMLRuleMapper> toReturn = new ArrayList<>();
+        for (KiePMMLModel kiePMMLModel : modelFactory.getKiePMMLModels()) {
+            toReturn.addAll(loadPMMLRuleMappers(kbuilderImpl.getRootClassLoader(), kiePMMLModel.getKModulePackageName()));
+            if (kiePMMLModel instanceof HasNestedModels) {
+                populatePMMLRuleMappers(kbuilderImpl, ((HasNestedModels)kiePMMLModel).getNestedModels(), toReturn);
+            }
         }
-        return Collections.emptyList();
+        return toReturn;
+
     }
 
     static List<KiePMMLModel> getKiePMMLModelsLoadedFromFactory(final KnowledgeBuilderImpl kbuilderImpl,

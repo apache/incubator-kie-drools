@@ -54,7 +54,7 @@ public class PMMLTreeModelEvaluator implements PMMLModelEvaluator<KiePMMLTreeMod
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());
-        // TO be fixed with common management of outputfields
+        // TODO fix with common management of outputfields ticket DROOLS-6218
         //model.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }

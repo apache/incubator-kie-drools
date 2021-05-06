@@ -19,6 +19,4 @@
     <module>kie-pmml-models-tree-evaluator</module>
     <module>kie-pmml-models-tree-tests</module>
   </modules>
-
-
 </project>
