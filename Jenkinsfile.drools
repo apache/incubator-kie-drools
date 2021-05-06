@@ -36,10 +36,17 @@ pipeline {
                     checkoutRepo('kogito-examples')
                     checkoutRepo('kogito-examples', 'kogito-examples-persistence')
                     checkoutRepo('kogito-examples', 'kogito-examples-events')
+
+                    if (params.DROOLS_VERSION) {
+                        currentBuild.displayName = "Check against ${DROOLS_VERSION}"
+                    } else {
+                        currentBuild.displayName = "Check against Drools snapshot"
+                    }
                 }
             }
         }
         stage('Retrieve drools snapshot version') {
+            when { expression { return !params.DROOLS_VERSION } }
             steps {
                 script {
                     dir('drools') {
@@ -181,9 +188,12 @@ pipeline {
 }
 
 void sendNotification() {
-    emailext body: "Kogito daily Drools #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+    if (!params.DROOLS_VERSION) {
+        emailext body: "Kogito daily Drools #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
              subject: "[${params.BUILD_BRANCH_NAME}][d] Runtimes Drools snapshot",
              to: env.KOGITO_CI_EMAIL_TO
+    }
+    // Do not send a notification in case DROOLS_VERSION was given
 }
 
 void checkoutRepo(String repoName, String dirName=repoName) {
@@ -215,10 +225,14 @@ void checkoutOptaplannerRepo() {
 }
 
 MavenCommand getMavenCommandWithDroolsVersion(String directory) {
-    return new MavenCommand(this, ['-fae'])
+    mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId('kogito_release_settings')
                 .inDirectory(directory)
                 .withProperty('version.org.kie7', "${DROOLS_VERSION}")
+    if (params.DROOLS_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('drools_repo', params.DROOLS_REPOSITORY)
+    }
+    return mvnCmd
 }
 
 void cleanContainers() {
