@@ -65,22 +65,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.AS_LIST;
+import static org.kie.pmml.commons.Constants.EMPTY_LIST;
+import static org.kie.pmml.commons.Constants.EVALUATE_PREDICATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.commons.Constants.PREDICATE_FUNCTION;
+import static org.kie.pmml.commons.Constants.SCORE;
+import static org.kie.pmml.commons.Constants.STRING_OBJECT_MAP;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomValue;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromSource;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.AS_LIST;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EMPTY_LIST;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EVALUATE_NODE;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EVALUATE_PREDICATE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.KIE_PMML_NODE_TEMPLATE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.KIE_PMML_NODE_TEMPLATE_JAVA;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.NODE_FUNCTIONS;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.PREDICATE_FUNCTION;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCORE;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.STRING_OBJECT_MAP;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.getNodeClassName;
 
 public class KiePMMLNodeFactoryTest {

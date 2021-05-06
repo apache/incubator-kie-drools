@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.clustering.ClusteringModel;
+import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasClassLoader;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Scorecard</b>
  */
-public class ScorecardModelImplementationProvider implements ModelImplementationProvider<ScorecardModel,KiePMMLScorecardModel>{
+public class ScorecardModelImplementationProvider implements ModelImplementationProvider<Scorecard,KiePMMLScorecardModel>{
 
 private static final Logger logger = LoggerFactory.getLogger(ScorecardModelImplementationProvider.class.getName());
 
@@ -48,7 +48,7 @@ private static final Logger logger = LoggerFactory.getLogger(ScorecardModelImple
     public KiePMMLScorecardModel getKiePMMLModel(final String packageName,
                                                     final DataDictionary dataDictionary,
                                                     final TransformationDictionary transformationDictionary,
-                                                    final ScorecardModel model,
+                                                    final Scorecard model,
                                                     final HasClassLoader hasClassloader) {
         logger.trace("getKiePMMLModel {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
         return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, transformationDictionary, model, packageName, hasClassloader);
@@ -58,7 +58,7 @@ private static final Logger logger = LoggerFactory.getLogger(ScorecardModelImple
     public KiePMMLScorecardModel getKiePMMLModelWithSources(final String packageName,
                                                              final DataDictionary dataDictionary,
                                                              final TransformationDictionary transformationDictionary,
-                                                             final ScorecardModel  model,
+                                                             final Scorecard  model,
                                                              final HasClassLoader hasClassloader) {
         logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
         try {

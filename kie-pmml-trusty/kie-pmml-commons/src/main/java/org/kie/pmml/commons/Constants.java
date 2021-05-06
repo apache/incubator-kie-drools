@@ -39,6 +39,14 @@ public class Constants {
     public static final String PACKAGE_CLASS_TEMPLATE = "%s.%s";
     public static final String WRONG_EXPRESSION_TEMPLATE = "Retrieved %s (%s) while a %s was expected from \n%s";
 
+    //
+    public static final String EVALUATE_PREDICATE = "evaluatePredicate";
+    public static final String PREDICATE_FUNCTION = "predicateFunction";
+    public static final String STRING_OBJECT_MAP = "stringObjectMap";
+    public static final String SCORE = "score";
+    public static final String EMPTY_LIST = "emptyList";
+    public static final String AS_LIST = "asList";
+
     private Constants() {
         // Avoid instantiation
     }

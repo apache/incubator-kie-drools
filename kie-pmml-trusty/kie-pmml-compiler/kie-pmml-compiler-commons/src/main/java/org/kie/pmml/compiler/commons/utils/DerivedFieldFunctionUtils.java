@@ -40,8 +40,8 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.DEFAULT_PARAMETERTYPE_MAP;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getKiePMMLNameValueListApplyExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
@@ -81,26 +81,26 @@ public class DerivedFieldFunctionUtils {
         int methodArity = arityCounter.addAndGet(1);
         if (expression instanceof Aggregate) {
             return getAggregatedMethodDeclaration((Aggregate) expression, returnedType, methodArity,
-                                                  DEFAULT_PARAMETERTYPE_MAP);
+                                                  KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof Apply) {
-            return getApplyMethodDeclaration((Apply) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getApplyMethodDeclaration((Apply) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof Constant) {
-            return getConstantMethodDeclaration((Constant) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getConstantMethodDeclaration((Constant) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof Discretize) {
             return getDiscretizeMethodDeclaration((Discretize) expression, returnedType, methodArity,
-                                                  DEFAULT_PARAMETERTYPE_MAP);
+                                                  KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof FieldRef) {
-            return getFieldRefMethodDeclaration((FieldRef) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getFieldRefMethodDeclaration((FieldRef) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof Lag) {
-            return getLagMethodDeclaration((Lag) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getLagMethodDeclaration((Lag) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof MapValues) {
-            return getMapValuesMethodDeclaration((MapValues) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getMapValuesMethodDeclaration((MapValues) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof NormContinuous) {
-            return getNormContinuousMethodDeclaration((NormContinuous) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getNormContinuousMethodDeclaration((NormContinuous) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof NormDiscrete) {
-            return getNormDiscreteMethodDeclaration((NormDiscrete) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getNormDiscreteMethodDeclaration((NormDiscrete) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else if (expression instanceof TextIndex) {
-            return getTextIndexMethodDeclaration((TextIndex) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
+            return getTextIndexMethodDeclaration((TextIndex) expression, returnedType, methodArity, KIEPMMLNAMEVALUE_LIST_PARAMETERTYPE_MAP);
         } else {
             throw new IllegalArgumentException(String.format("Expression %s not managed", expression.getClass()));
         }
@@ -132,7 +132,7 @@ public class DerivedFieldFunctionUtils {
                                                        final int methodArity,
                                                        final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String methodName = String.format(METHOD_NAME_TEMPLATE, apply.getClass().getSimpleName(), methodArity);
-        return getApplyExpressionMethodDeclaration(methodName, apply, returnedType, parameterNameTypeMap);
+        return getKiePMMLNameValueListApplyExpressionMethodDeclaration(methodName, apply, returnedType, parameterNameTypeMap);
     }
 
     /**
