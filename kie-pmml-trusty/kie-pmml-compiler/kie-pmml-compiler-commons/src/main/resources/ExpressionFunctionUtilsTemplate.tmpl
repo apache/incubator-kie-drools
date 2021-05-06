@@ -1,40 +1,33 @@
-/*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.kie.pmml.compiler.commons.factories;
+public class ExpressionFunctionUtilsTemplate {
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+     Object applyKiePMMLNameValueList(List<KiePMMLNameValue> param1)  {
+        Object variableVARIABLE_NAMEConstant1 = 34.6;
+        Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) -> Objects.equals("FIELD_NAME", lmbdParam.getName())).findFirst();
+        Object variableVARIABLE_NAMEFieldRef2 = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(null);
+        Object VARIABLE_NAME = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);
+        return null;
+     }
 
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
+   java.lang.Object expressionMethod() {
+       return null;
+   }
 
-public class KiePMMLModelFactoryTemplate implements KiePMMLModelFactory {
+   void fieldRefExpressionFromKiePMMLNameValuesTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+       java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((lmbdParam) ->
+       java.util.Objects.equals(fieldRefName, lmbdParam.getName())).findFirst();
+       Object fieldRefVariable = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(fieldRefMapMissingTo);
+   }
 
-    private static final List<KiePMMLModel> KIE_PMML_MODELS = Arrays.asList(new KiePMMLModel() {
-        @Override
-        public Object evaluate(Map<String, Object> requestData, String releaseId) {
-            return null;
-        }
-    });
+   void fieldRefExpressionFromInputValueTemplate(java.util.Map<String, Object> param1, java.lang.Object param2) {
+       java.lang.Object fieldRefVariable = param2 != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Double.class, param2) : (java.lang.Object) null;
+   }
 
-    @Override
-    public List<KiePMMLModel> getKiePMMLModels() {
-        return Collections.unmodifiableList(KIE_PMML_MODELS);
-    }
+    void constantExpressionTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+       double constantValue = null;
+   }
+
+   void methodDeclarationKiePMMLNameValueTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+            return toReturn;
+   }
 
 }

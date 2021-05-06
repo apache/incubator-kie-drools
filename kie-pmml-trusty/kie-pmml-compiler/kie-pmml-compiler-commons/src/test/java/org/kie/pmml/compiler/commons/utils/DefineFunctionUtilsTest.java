@@ -30,7 +30,6 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.applySupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
 
@@ -82,22 +81,10 @@ public class DefineFunctionUtilsTest {
         }
     }
 
-    @Test
-    public void getDefineFunctionMethodDeclarationSupportedExpressionApply() {
-        Expression expression = applySupplier.get();
-        DefineFunction defineFunction = new DefineFunction();
-        defineFunction.setName("DEFINE_FUNCTION_" + expression.getClass().getSimpleName());
-        defineFunction.setExpression(expression);
-            try {
-                DefineFunctionUtils.getDefineFunctionMethodDeclaration(defineFunction);
-            } catch (Exception e) {
-                fail(String.format("Unexpected %s for %s", e, defineFunction.getExpression().getClass()));
-            }
-    }
-
     @Test(expected = KiePMMLException.class)
     public void getDefineFunctionMethodDeclarationWithoutExpression() {
         DefineFunctionUtils.getDefineFunctionMethodDeclaration(new DefineFunction());
     }
+
 
 }

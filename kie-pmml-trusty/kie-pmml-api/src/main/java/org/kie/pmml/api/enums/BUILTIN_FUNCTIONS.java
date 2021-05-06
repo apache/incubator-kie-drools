@@ -25,6 +25,8 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
  */
 public enum BUILTIN_FUNCTIONS {
 
+
+
     PLUS("+"),
     MINUS("-"),
     MULTI("*"),
@@ -123,8 +125,8 @@ public enum BUILTIN_FUNCTIONS {
     }
 
     private double plus(final Object[] inputData) {
-        if (inputData.length < 2) {
-            throw new IllegalArgumentException("Expected at least two parameters for " + this);
+        if (inputData.length != 2) {
+            throw new IllegalArgumentException("Expected two parameters for " + this);
         }
         try {
             double a = ((Number) inputData[0]).doubleValue();
