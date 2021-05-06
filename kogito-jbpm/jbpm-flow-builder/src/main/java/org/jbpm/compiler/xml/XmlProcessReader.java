@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.text.MessageFormat;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -132,7 +132,7 @@ public class XmlProcessReader {
         return (ProcessBuildData) this.parser.getData();
     }
 
-    protected String processParserMessage(LinkedList<Object> parents, Attributes attr, String errorMessage) {
+    protected String processParserMessage(Collection<Object> parents, Attributes attr, String errorMessage) {
         String nodeId = (attr == null || attr.getValue("id") == null) ? "" : attr.getValue("id");
         String nodeName = (attr == null || attr.getValue("name") == null) ? "" : attr.getValue("name");
 

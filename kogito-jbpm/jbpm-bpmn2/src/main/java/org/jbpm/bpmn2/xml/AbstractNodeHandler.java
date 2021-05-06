@@ -16,6 +16,7 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -644,7 +645,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         if (variableName == null) {
             return null;
         }
-        List<?> parents = parser.getParents();
+        Collection<?> parents = parser.getParents();
 
         for (Object parent : parents) {
             if (parent instanceof ContextContainer) {
