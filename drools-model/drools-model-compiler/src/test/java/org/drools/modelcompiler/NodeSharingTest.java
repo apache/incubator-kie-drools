@@ -26,10 +26,12 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
@@ -248,5 +250,29 @@ public class NodeSharingTest extends BaseModelTest {
         public double getFactorAmt() {
             return factorAmt;
         }
+    }
+
+    @Test
+    public void testShareEval() {
+        final String str = "package myPkg;\n" +
+                           "rule R1 when\n" +
+                           "  i : Integer()\n" +
+                           "  eval(i > 100)\n" +
+                           "then\n" +
+                           "end\n" +
+                           "rule R2 when\n" +
+                           "  i : Integer()\n" +
+                           "  eval(i > 100)\n" +
+                           "then\n" +
+                           "end\n" +
+                           "";
+
+        KieSession ksession = getKieSession(str);
+        KieBase kbase = ksession.getKieBase();
+
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(Integer.class));
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) otn.getSinks()[0];
+        assertEquals(1, lian.getSinks().length);
     }
 }
