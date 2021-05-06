@@ -37,22 +37,6 @@ public enum OPERATOR {
     /**
      * <code>OPERATOR</code>s that operates with <code>Number</code>s
      */
-    static final List<OPERATOR> NUMBER_OPERATORS = Arrays.asList(LESS_THAN,
-                                                                 LESS_OR_EQUAL,
-                                                                 GREATER_THAN,
-                                                                 GREATER_OR_EQUAL);
-    /**
-     * <code>OPERATOR</code>s that operates with a <b>value</b>
-     */
-    static final List<OPERATOR> VALUE_OPERATORS = Arrays.asList(EQUAL,
-                                                                NOT_EQUAL,
-                                                                LESS_THAN,
-                                                                LESS_OR_EQUAL,
-                                                                GREATER_THAN,
-                                                                GREATER_OR_EQUAL);
-    /**
-     * <code>OPERATOR</code>s that operates with <code>Number</code>s
-     */
     static final List<OPERATOR> NUMBER_OPERATORS = Arrays.asList(EQUAL,
                                                                  NOT_EQUAL,
                                                                  LESS_THAN,

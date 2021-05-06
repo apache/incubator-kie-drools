@@ -89,10 +89,6 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
         return kiePMMLPredicates;
     }
 
-    private static Boolean puppa(Map<String, Object> values) {
-        return null;
-    }
-
     @Override
     public String toString() {
         return "KiePMMLCompoundPredicate{" +
