@@ -325,11 +325,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             generatedFiles.add(new RuleUnitDTOSourceClass(ruleUnit.getRuleUnitDescription(), ruleUnitHelper).generate());
         }
         if (context().getAddonsConfig().useMonitoring()) {
+            String dashboardName = GrafanaConfigurationWriter.buildDashboardName(context().getGAV(), ruleUnit.typeName());
             String dashboard = GrafanaConfigurationWriter.generateDomainSpecificDrlDashboard(
                     domainDashboardDrlTemplate,
+                    dashboardName,
                     ruleUnit.typeName(),
                     context().getAddonsConfig().useTracing());
-            generatedFiles.addAll(DashboardGeneratedFileUtils.domain(dashboard, ruleUnit.typeName() + ".json"));
+            generatedFiles.addAll(DashboardGeneratedFileUtils.domain(dashboard, dashboardName + ".json"));
         }
 
         return queries.stream().map(q -> generateQueryEndpoint(errors, generatedFiles, q))
@@ -354,11 +356,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
         if (context().hasREST()) {
             if (context().getAddonsConfig().usePrometheusMonitoring()) {
+                String dashboardName = GrafanaConfigurationWriter.buildDashboardName(context().getGAV(), query.getEndpointName());
                 String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(
                         operationalDashboardDrlTemplate,
+                        dashboardName,
                         query.getEndpointName(),
                         context().getAddonsConfig().useTracing());
-                generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, query.getEndpointName() + ".json"));
+                generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, dashboardName + ".json"));
             }
 
             generatedFiles.add(query.generate());

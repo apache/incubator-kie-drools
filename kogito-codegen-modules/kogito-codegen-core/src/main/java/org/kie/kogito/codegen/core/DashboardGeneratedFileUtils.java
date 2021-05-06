@@ -34,6 +34,7 @@ public class DashboardGeneratedFileUtils {
     private static final String DOMAIN_DASHBOARD_PREFIX = "domain-dashboard-";
     private static final String LIST_FILENAME = "list.json";
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String DASHBOARD_NAME_REGEX = "[ ,\\*\\+\\#&%\\$\\^]";
 
     private DashboardGeneratedFileUtils() {
         // utility class
@@ -42,7 +43,7 @@ public class DashboardGeneratedFileUtils {
     public static List<GeneratedFile> operational(String operationalDashboard, String name) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedFiles.add(new GeneratedFile(DASHBOARD_TYPE,
-                STATIC_RESOURCE_PATH + OPERATIONAL_DASHBOARD_PREFIX + name,
+                STATIC_RESOURCE_PATH + OPERATIONAL_DASHBOARD_PREFIX + name.replaceAll(DASHBOARD_NAME_REGEX, ""),
                 operationalDashboard));
         return generatedFiles;
     }
@@ -50,7 +51,7 @@ public class DashboardGeneratedFileUtils {
     public static List<GeneratedFile> domain(String domainDashboard, String name) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedFiles.add(new GeneratedFile(DASHBOARD_TYPE,
-                STATIC_RESOURCE_PATH + DOMAIN_DASHBOARD_PREFIX + name,
+                STATIC_RESOURCE_PATH + DOMAIN_DASHBOARD_PREFIX + name.replaceAll(DASHBOARD_NAME_REGEX, ""),
                 domainDashboard));
         return generatedFiles;
     }

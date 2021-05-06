@@ -231,17 +231,21 @@ public class DecisionCodegen extends AbstractGenerator {
         Definitions definitions = resourceGenerator.getDmnModel().getDefinitions();
         List<Decision> decisions = definitions.getDrgElement().stream().filter(x -> x.getParentDRDElement() instanceof Decision).map(x -> (Decision) x).collect(toList());
 
+        String dashboardName = GrafanaConfigurationWriter.buildDashboardName(context().getGAV(), resourceGenerator.getNameURL());
+
         String operationalDashboard = GrafanaConfigurationWriter.generateOperationalDashboard(
                 operationalDashboardDmnTemplate,
+                dashboardName,
                 resourceGenerator.getNameURL(),
                 context().getAddonsConfig().useTracing());
         String domainDashboard = GrafanaConfigurationWriter.generateDomainSpecificDMNDashboard(
                 domainDashboardDmnTemplate,
+                dashboardName,
                 resourceGenerator.getNameURL(),
                 decisions,
                 context().getAddonsConfig().useTracing());
-        generatedFiles.addAll(DashboardGeneratedFileUtils.operational(operationalDashboard, resourceGenerator.getNameURL() + ".json"));
-        generatedFiles.addAll(DashboardGeneratedFileUtils.domain(domainDashboard, resourceGenerator.getNameURL() + ".json"));
+        generatedFiles.addAll(DashboardGeneratedFileUtils.operational(operationalDashboard, dashboardName + ".json"));
+        generatedFiles.addAll(DashboardGeneratedFileUtils.domain(domainDashboard, dashboardName + ".json"));
     }
 
     private void storeFile(GeneratedFileType type, String path, String source) {

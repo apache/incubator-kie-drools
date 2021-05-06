@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.Decision;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
 import org.kie.kogito.grafana.model.functions.GrafanaFunction;
 import org.kie.kogito.grafana.model.functions.Label;
@@ -54,11 +56,11 @@ public class GrafanaConfigurationWriter {
      * @param handlerName: The name of the endpoint.
      * @return: The template customized for the endpoint.
      */
-    public static String generateOperationalDashboard(String templatePath, String handlerName, boolean generateAuditLink) {
+    public static String generateOperationalDashboard(String templatePath, String dashboardName, String handlerName, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
         template = customizeTemplate(template, handlerName);
 
-        JGrafana jgrafana = initialize(template, String.format("%s - Operational Dashboard", handlerName), generateAuditLink);
+        JGrafana jgrafana = initialize(template, String.format("%s - Operational Dashboard", dashboardName), generateAuditLink);
 
         return serialize(jgrafana);
     }
@@ -71,11 +73,11 @@ public class GrafanaConfigurationWriter {
      * @param decisions: The decisions in the DMN model.
      * @return: The customized template containing also specific panels for the DMN decisions that have been specified in the arguments.
      */
-    public static String generateDomainSpecificDMNDashboard(String templatePath, String endpoint, List<Decision> decisions, boolean generateAuditLink) {
+    public static String generateDomainSpecificDMNDashboard(String templatePath, String dashboardName, String endpoint, List<Decision> decisions, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
         template = customizeTemplate(template, endpoint);
 
-        JGrafana jgrafana = initialize(template, String.format("%s - Domain Dashboard", endpoint), generateAuditLink);
+        JGrafana jgrafana = initialize(template, String.format("%s - Domain Dashboard", dashboardName), generateAuditLink);
 
         for (Decision decision : decisions) {
             QName type = decision.getVariable().getTypeRef();
@@ -109,11 +111,11 @@ public class GrafanaConfigurationWriter {
      * @param endpoint: The name of the endpoint.
      * @return: The customized template containing also specific panels for the DMN decisions that have been specified in the arguments.
      */
-    public static String generateDomainSpecificDrlDashboard(String templatePath, String endpoint, boolean generateAuditLink) {
+    public static String generateDomainSpecificDrlDashboard(String templatePath, String dashboardName, String endpoint, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
         template = customizeTemplate(template, endpoint);
 
-        JGrafana jgrafana = initialize(template, String.format("%s - Domain Dashboard", endpoint), generateAuditLink);
+        JGrafana jgrafana = initialize(template, String.format("%s - Domain Dashboard", dashboardName), generateAuditLink);
 
         return serialize(jgrafana);
     }
@@ -140,6 +142,13 @@ public class GrafanaConfigurationWriter {
             logger.error("Could not serialize the grafana dashboard");
             throw new UncheckedIOException("Could not serialize the grafana dashboard.", e);
         }
+    }
+
+    public static String buildDashboardName(Optional<KogitoGAV> gav, String handlerName) {
+        if (gav.isPresent()) {
+            return String.format("%s:%s - %s", gav.get().getArtifactId(), gav.get().getVersion(), handlerName);
+        }
+        return handlerName;
     }
 
     private static String readStandardDashboard(String templatePath) {
