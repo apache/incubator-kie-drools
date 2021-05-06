@@ -17,17 +17,23 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -274,5 +280,170 @@ public class NodeSharingTest extends BaseModelTest {
         ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(Integer.class));
         LeftInputAdapterNode lian = (LeftInputAdapterNode) otn.getSinks()[0];
         assertEquals(1, lian.getSinks().length);
+    }
+
+    public void testShareFrom() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "global java.util.List list\n" +
+                     "rule R1 when\n" +
+                     "    $p : Person()\n" +
+                     "    $a : Address(city == \"Tokyo\") from $p.addresses\n" +
+                     "then\n" +
+                     "  list.add($a);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $p : Person()\n" +
+                     "    $a : Address(city == \"Tokyo\") from $p.addresses\n" +
+                     "then\n" +
+                     "  list.add($a);\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        List<Address> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p = new Person("John");
+        p.getAddresses().add(new Address("ABC", 1, "Tokyo"));
+        p.getAddresses().add(new Address("DEF", 2, "Tokyo"));
+        p.getAddresses().add(new Address("GHI", 3, "Osaka"));
+
+        ksession.insert(p);
+        assertEquals(4, ksession.fireAllRules());
+        assertEquals(4, list.size());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(FromNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule X1 when\n" +
+                     "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                $sum : sum($p.getAge())  \n" +
+                     "              )                          \n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end\n" +
+                     "rule X2 when\n" +
+                     "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                $sum : sum($p.getAge())  \n" +
+                     "              )                          \n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareFromAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule X1 when\n" +
+                     "  $sum : Number( intValue() > 0 )from accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                sum($p.getAge())  \n" +
+                     "              )\n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end\n" +
+                     "rule X2 when\n" +
+                     "  $sum : Number( intValue() > 0 )from accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                sum($p.getAge())  \n" +
+                     "              )\n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareExists() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  exists Person( name.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  exists Person( name.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person mario = new Person("Mario", 40);
+
+        ksession.insert(mario);
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals("ok", results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(ExistsNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareNot() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  not( Person( name.length == 4 ) )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  not( Person( name.length == 4 ) )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person mario = new Person("Mario", 40);
+
+        ksession.insert(mario);
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals("ok", results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(NotNode.class::isInstance).count());
     }
 }
