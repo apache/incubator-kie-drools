@@ -59,10 +59,12 @@ import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
 import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
+import org.kie.internal.conf.ParallelLambdaExternalizationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
+import org.kie.internal.conf.ParallelLambdaExternalizationOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +114,7 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.declarativeAgendaEnabled =  &lt;true|false&gt;
  * drools.permgenThreshold = &lt;1...n&gt;
  * drools.jittingThreshold = &lt;1...n&gt;
+ * drools.parallelLambdaExternalization = &lt;true|false&gt;
  * </pre>
  */
 public class RuleBaseConfiguration
@@ -151,6 +154,7 @@ public class RuleBaseConfiguration
     private String          ruleBaseUpdateHandler;
     private boolean         classLoaderCacheEnabled;
     private boolean         mutabilityEnabled;
+    private boolean         parallelLambdaExternalization;
 
     private boolean declarativeAgenda;
 
@@ -350,6 +354,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
         } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
             setMutabilityEnabled( StringUtils.isEmpty( value ) ? true : KieBaseMutabilityOption.determineMutability(value) == KieBaseMutabilityOption.ALLOWED );
+        } else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
+            setParallelLambdaExternalization(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         }
     }
 
@@ -409,6 +415,8 @@ public class RuleBaseConfiguration
             return Boolean.toString( isClassLoaderCacheEnabled() );
         } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
             return isMutabilityEnabled() ? "ALLOWED" : "DISABLED";
+        } else if ( name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME ) ) {
+            return Boolean.toString( isParallelLambdaExternalization() );
         }
 
         return null;
@@ -506,6 +514,9 @@ public class RuleBaseConfiguration
 
         setMutabilityEnabled( KieBaseMutabilityOption.determineMutability(
                 this.chainedProperties.getProperty( KieBaseMutabilityOption.PROPERTY_NAME, "ALLOWED" )) == KieBaseMutabilityOption.ALLOWED );
+
+        setParallelLambdaExternalization(Boolean.valueOf(this.chainedProperties.getProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME, "true")).booleanValue());
+
     }
 
     /**
@@ -943,6 +954,15 @@ public class RuleBaseConfiguration
         return mutabilityEnabled;
     }
 
+    public void setParallelLambdaExternalization(final boolean parallelLambdaExternalization) {
+        this.parallelLambdaExternalization = parallelLambdaExternalization;
+    }
+
+    public boolean isParallelLambdaExternalization() {
+        return this.parallelLambdaExternalization;
+    }
+
+
     public static class AssertBehaviour
             implements
             Externalizable {
@@ -1190,6 +1210,8 @@ public class RuleBaseConfiguration
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         } else if (KieBaseMutabilityOption.class.equals(option)) {
             return (T) (this.isMutabilityEnabled() ? KieBaseMutabilityOption.ALLOWED : KieBaseMutabilityOption.DISABLED);
+        } else if (ParallelLambdaExternalizationOption.class.equals(option)) {
+            return (T) (this.parallelLambdaExternalization ? ParallelLambdaExternalizationOption.YES : ParallelLambdaExternalizationOption.NO);
         }
         return null;
 
@@ -1244,6 +1266,8 @@ public class RuleBaseConfiguration
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         } else if (option instanceof KieBaseMutabilityOption) {
             setMutabilityEnabled(((KieBaseMutabilityOption) option) == KieBaseMutabilityOption.ALLOWED);
+        } else if (option instanceof ParallelLambdaExternalizationOption) {
+            setParallelLambdaExternalization(((ParallelLambdaExternalizationOption) option).isParallelLambdaExternalization());
         }
 
     }
