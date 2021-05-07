@@ -66,6 +66,7 @@ import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.MultiValueKnowledgeBuilderOption;
+import org.kie.internal.builder.conf.ParallelLambdaExternalizationOption;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -118,7 +119,7 @@ public class KnowledgeBuilderConfigurationImpl
     private final Map<String, DialectConfiguration> dialectConfigurations = new HashMap<>();
 
     private DefaultDialectOption              defaultDialect = DefaultDialectOption.get("java");
-    
+
     private ParallelRulesBuildThresholdOption parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD);
 
     private ClassLoader                       classLoader;
@@ -137,7 +138,10 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           classLoaderCache                      = true;
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
+
     private boolean                           externaliseCanonicalModelLambda       = true;
+    private boolean                           parallelLambdaExternalizationOption   = true;
+
     private AlphaNetworkCompilerOption        alphaNetworkCompilerOption            = AlphaNetworkCompilerOption.DISABLED;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
@@ -330,6 +334,8 @@ public class KnowledgeBuilderConfigurationImpl
         	setParallelRulesBuildThreshold(Integer.valueOf(value));
         }  else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
             setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
+        } else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
+            setParallelLambdaExternalizationOption(Boolean.valueOf(value));
         } else if (name.equals(AlphaNetworkCompilerOption.PROPERTY_NAME)) {
             try {
                 setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(value.toUpperCase()));
@@ -382,6 +388,8 @@ public class KnowledgeBuilderConfigurationImpl
         	return String.valueOf(getParallelRulesBuildThreshold());
         } else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
         	return String.valueOf(isExternaliseCanonicalModelLambda());
+        }else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
+        	return String.valueOf(isParallelLambdaExternalizationOption());
         }
         return null;
     }
@@ -736,6 +744,14 @@ public class KnowledgeBuilderConfigurationImpl
         this.externaliseCanonicalModelLambda = externaliseCanonicalModelLambda;
     }
 
+    public boolean isParallelLambdaExternalizationOption() {
+        return parallelLambdaExternalizationOption;
+    }
+
+    public void setParallelLambdaExternalizationOption(boolean parallelLambdaExternalizationOption) {
+        this.parallelLambdaExternalizationOption = parallelLambdaExternalizationOption;
+    }
+
     public AlphaNetworkCompilerOption getAlphaNetworkCompilerOption() {
         return alphaNetworkCompilerOption;
     }
@@ -766,6 +782,8 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) languageLevel;
         } else if (ExternaliseCanonicalModelLambdaOption.class.equals(option)) {
             return (T) (externaliseCanonicalModelLambda ? ExternaliseCanonicalModelLambdaOption.ENABLED : ExternaliseCanonicalModelLambdaOption.DISABLED);
+        } else if (ParallelLambdaExternalizationOption.class.equals(option)) {
+            return (T) (parallelLambdaExternalizationOption ? ParallelLambdaExternalizationOption.ENABLED : ParallelLambdaExternalizationOption.DISABLED);
         } else if (AlphaNetworkCompilerOption.class.equals(option)) {
             return (T) alphaNetworkCompilerOption;
         }
@@ -829,6 +847,8 @@ public class KnowledgeBuilderConfigurationImpl
             this.languageLevel = ((LanguageLevelOption) option);
         } else if (option instanceof ExternaliseCanonicalModelLambdaOption) {
             this.externaliseCanonicalModelLambda = ((ExternaliseCanonicalModelLambdaOption) option).isCanonicalModelLambdaExternalized();
+        } else if (option instanceof ParallelLambdaExternalizationOption) {
+            this.parallelLambdaExternalizationOption = ((ParallelLambdaExternalizationOption) option).isLambdaExternalizationParallel();
         } else if (option instanceof AlphaNetworkCompilerOption) {
             this.alphaNetworkCompilerOption = ((AlphaNetworkCompilerOption) option);
         }
