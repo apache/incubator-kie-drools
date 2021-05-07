@@ -22,6 +22,8 @@ public final class ContextAttributesConstants {
      */
     public static final String OPENAPI_DESCRIPTORS = "openApiDescriptor";
 
+    public static final String PROCESS_AUTO_SVG_MAPPING = "processAutoSVGMapping";
+
     private ContextAttributesConstants() {
     }
 }

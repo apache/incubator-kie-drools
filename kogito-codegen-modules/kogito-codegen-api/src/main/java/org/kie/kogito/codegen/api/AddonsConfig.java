@@ -32,15 +32,17 @@ public class AddonsConfig {
     private final boolean usePrometheusMonitoring;
     private final boolean useCloudEvents;
     private final boolean useExplainability;
+    private final boolean useProcessSVG;
 
     private AddonsConfig(boolean usePersistence, boolean useTracing, boolean useMonitoring, boolean usePrometheusMonitoring, boolean useCloudEvents,
-            boolean useExplainability) {
+            boolean useExplainability, boolean useProcessSVG) {
         this.usePersistence = usePersistence;
         this.useTracing = useTracing;
         this.useMonitoring = useMonitoring;
         this.usePrometheusMonitoring = usePrometheusMonitoring;
         this.useCloudEvents = useCloudEvents;
         this.useExplainability = useExplainability;
+        this.useProcessSVG = useProcessSVG;
     }
 
     public static AddonsConfigBuilder builder() {
@@ -71,6 +73,10 @@ public class AddonsConfig {
         return useExplainability;
     }
 
+    public boolean useProcessSVG() {
+        return useProcessSVG;
+    }
+
     @Override
     public String toString() {
         return "AddonsConfig{" +
@@ -80,16 +86,19 @@ public class AddonsConfig {
                 ", usePrometheusMonitoring=" + usePrometheusMonitoring +
                 ", useCloudEvents=" + useCloudEvents +
                 ", useExplainability=" + useExplainability +
+                ", useProcessSVG=" + useProcessSVG +
                 '}';
     }
 
     public static class AddonsConfigBuilder {
+
         private boolean usePersistence;
         private boolean useTracing;
         private boolean useMonitoring;
         private boolean usePrometheusMonitoring;
         private boolean useCloudEvents;
         private boolean useExplainability;
+        private boolean useProcessSVG;
 
         private AddonsConfigBuilder() {
         }
@@ -124,8 +133,13 @@ public class AddonsConfig {
             return this;
         }
 
+        public AddonsConfigBuilder withProcessSVG(boolean useProcessSVG) {
+            this.useProcessSVG = useProcessSVG;
+            return this;
+        }
+
         public AddonsConfig build() {
-            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability);
+            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability, useProcessSVG);
         }
     }
 }

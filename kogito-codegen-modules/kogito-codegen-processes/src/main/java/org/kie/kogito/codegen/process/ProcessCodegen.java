@@ -18,6 +18,8 @@ package org.kie.kogito.codegen.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,6 +50,7 @@ import org.kie.api.io.Resource;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.context.ContextAttributesConstants;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
@@ -83,6 +86,7 @@ public class ProcessCodegen extends AbstractGenerator {
     public static final Set<String> SUPPORTED_BPMN_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".bpmn", ".bpmn2")));
     private static final String YAML_PARSER = "yml";
     private static final String JSON_PARSER = "json";
+    public static final String SVG_EXPORT_NAME_EXPRESION = "%s-svg.svg";
     public static final Map<String, String> SUPPORTED_SW_EXTENSIONS;
 
     static {
@@ -100,11 +104,17 @@ public class ProcessCodegen extends AbstractGenerator {
     private final List<ProcessGenerator> processGenerators = new ArrayList<>();
 
     public static ProcessCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
+        Map<String, String> processSVGMap = new HashMap<>();
+        boolean useSvgAddon = context.getAddonsConfig().useProcessSVG();
         List<Process> processes = resources.stream()
                 .map(CollectedResource::resource)
                 .flatMap(resource -> {
                     if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
-                        return parseProcessFile(resource).stream();
+                        Collection<Process> p = parseProcessFile(resource);
+                        if (useSvgAddon && resource instanceof FileSystemResource) {
+                            processSVG((FileSystemResource) resource, resources, p, processSVGMap);
+                        }
+                        return p.stream();
                     } else {
                         return SUPPORTED_SW_EXTENSIONS.entrySet()
                                 .stream()
@@ -113,8 +123,43 @@ public class ProcessCodegen extends AbstractGenerator {
                     }
                 })
                 .collect(toList());
+        if (useSvgAddon) {
+            context.addContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, processSVGMap);
+        }
 
         return ofProcesses(context, processes);
+    }
+
+    private static void processSVG(FileSystemResource resource, Collection<CollectedResource> resources,
+            Collection<Process> processes, Map<String, String> processSVGMap) {
+        File f = resource.getFile();
+        String processFileCompleteName = f.getName();
+        String fileName = processFileCompleteName.substring(0, processFileCompleteName.lastIndexOf("."));
+        processes.stream().forEach(process -> {
+            if (isFilenameValid(process.getId() + ".svg")) {
+                resources.stream()
+                        .filter(r -> r.resource().getSourcePath().endsWith(String.format(SVG_EXPORT_NAME_EXPRESION, fileName)))
+                        .forEach(svg -> {
+                            try {
+                                processSVGMap.put(process.getId(),
+                                        new String(Files.readAllBytes(Paths.get(svg.resource().getSourcePath()))));
+                            } catch (IOException e) {
+                                LOGGER.error("\n IOException trying to add " + svg.resource().getSourcePath() +
+                                        " with processId:" + process.getId() + "\n" + e.getMessage(), e);
+                            }
+                        });
+            }
+        });
+    }
+
+    public static boolean isFilenameValid(String file) {
+        File f = new File(file);
+        try {
+            f.getCanonicalPath();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     private static ProcessCodegen ofProcesses(KogitoBuildContext context, List<Process> processes) {
@@ -403,6 +448,10 @@ public class ProcessCodegen extends AbstractGenerator {
             final CloudEventsResourceGenerator ceGenerator =
                     new CloudEventsResourceGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate());
+        }
+        if ((context().getAddonsConfig().useProcessSVG())) {
+            Map<String, String> svgs = context().getContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, Map.class);
+            svgs.keySet().stream().forEach(key -> storeFile(GeneratedFileType.RESOURCE, "META-INF/processSVG/" + key + ".svg", svgs.get(key)));
         }
 
         if (context().hasREST()) {

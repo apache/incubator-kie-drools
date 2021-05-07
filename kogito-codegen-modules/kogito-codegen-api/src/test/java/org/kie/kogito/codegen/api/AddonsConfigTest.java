@@ -32,6 +32,7 @@ public class AddonsConfigTest {
         assertThat(addonsConfig.useCloudEvents()).isFalse();
         assertThat(addonsConfig.usePersistence()).isFalse();
         assertThat(addonsConfig.useCloudEvents()).isFalse();
+        assertThat(addonsConfig.useProcessSVG()).isFalse();
     }
 
     @Test
@@ -54,5 +55,8 @@ public class AddonsConfigTest {
 
         assertThat(DEFAULT.useExplainability()).isFalse();
         assertThat(builder().withExplainability(true).build().useExplainability()).isTrue();
+
+        assertThat(DEFAULT.useProcessSVG()).isFalse();
+        assertThat(builder().withProcessSVG(true).build().useProcessSVG()).isTrue();
     }
 }
