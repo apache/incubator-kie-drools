@@ -24,6 +24,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,6 +46,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.model.BitMask;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -117,6 +119,22 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public List<ReplacedLambdaResult> convertLambdas() {
+        if(isParallel) {
+            return convertLambdasWithForkJoinPool();
+        } else {
+            return convertLambdasWithStream();
+        }
+    }
+
+    private List<ReplacedLambdaResult> convertLambdasWithForkJoinPool() {
+        try {
+            return KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(this::convertLambdasWithStream).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Externalized Lambda Creation Interrupted", e);
+        }
+    }
+
+    private List<ReplacedLambdaResult> convertLambdasWithStream() {
         Stream<ReplacedLambdaResult> resultsFromExpr = createStream(clone.findAll(MethodCallExpr.class, mc1 -> EXPR_CALL.equals(mc1.getNameAsString()) || EVAL_EXPR_CALL.equals(mc1.getNameAsString())))
                 .flatMap(methodCallExpr1 -> {
                  if (containsTemporalPredicate(methodCallExpr1)) {

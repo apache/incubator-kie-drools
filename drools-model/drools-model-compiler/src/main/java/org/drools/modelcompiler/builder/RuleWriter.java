@@ -82,14 +82,8 @@ public class RuleWriter {
 
                 if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
                     CompilationUnit postProcessedCU = cu.clone();
-                    List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResult;
-
-                    try {
-                        replacedLambdaResult = KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(
-                                () -> new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas()).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException("Externalized Lambda Creation Interrupted", e);
-                    }
+                    List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResult  =
+                                new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
 
                     for (ExecModelLambdaPostProcessor.ReplacedLambdaResult e : replacedLambdaResult) {
                         e.replaceLambda();
