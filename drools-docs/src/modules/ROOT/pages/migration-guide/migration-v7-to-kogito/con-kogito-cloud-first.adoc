@@ -1,0 +1,10 @@
+[id="con-kogito-cloud-first_{context}"]
+= Cloud-first priority
+
+{KOGITO} microservices are designed to run and scale on a cloud infrastructure. You can use {KOGITO} microservices in {PRODUCT} with the latest cloud-based technologies, such as Quarkus, to increase start times and instant scaling on container application platforms, such as {OPENSHIFT}.
+
+For example, {KOGITO} microservices are compatible with the following technologies:
+
+* *{OPENSHIFT}* is based on Kubernetes, and is the target platform for building and managing containerized applications.
+* *Quarkus* is a native Java stack for Kubernetes that you can use to build applications, using the {KOGITO} microservices.
+* *Spring Boot* is an application framework that you can use to configure Spring Framework with {PRODUCT}.

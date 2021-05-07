@@ -1,0 +1,12 @@
+[id="con-kogito-dmn-modelers_{context}"]
+= DMN modelers for {KOGITO} microservices
+
+{PRODUCT} provides extensions or applications that you can use to design Decision Model and Notation (DMN) decision models for your {KOGITO} microservices using graphical modelers.
+
+The following DMN modelers are available in the https://kiegroup.github.io/kogito-online/#/download[Business Modeler Hub] desktop application:
+
+* *VSCode extension*: Enables you to view and design DMN models in Visual Studio Code (VSCode). The VSCode extension requires VSCode 1.46.0 or later.
++
+To install the VSCode extension directly in VSCode, select the *Extensions* menu option in VSCode and search for and install the *Red Hat Business Automation Bundle* extension.
+* *Business Modeler online viewer*: Enables you to view and design DMN models online at `https://kiegroup.github.io/kogito-online/`. The online modeler supports the `.new` format, so you can also enter `dmn.new` in a web browser to start designing a new DMN model in the online modeler.
+* *Business Modeler standalone editors*: Enable you to view and design DMN models embedded in your web applications. To download the necessary files, you can either use the NPM artifacts from the https://www.npmjs.com/package/@kogito-tooling/kie-editors-standalone[Kogito tooling repository] or download the JavaScript files directly for the DMN standalone editor library at `https://kiegroup.github.io/kogito-online/standalone/dmn/index.js`.

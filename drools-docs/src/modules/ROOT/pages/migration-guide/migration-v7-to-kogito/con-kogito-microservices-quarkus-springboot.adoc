@@ -1,0 +1,12 @@
+[id="con-kogito-microservices-quarkus-springboot_{context}"]
+= {KOGITO} microservices on Quarkus and Spring Boot
+
+The primary Java frameworks that {KOGITO} microservices support are Quarkus and Spring Boot.
+
+https://quarkus.io/[Quarkus] is a Kubernetes-native Java framework with a container-first approach to building Java applications, especially for Java virtual machines (JVMs) such as OpenJDK HotSpot. Quarkus optimizes Java specifically for Kubernetes by reducing the size of both the Java application and container image footprint, eliminating some of the Java programming workload from previous generations, and reducing the amount of memory required to run those images.
+
+For {KOGITO} microservices, Quarkus is the preferred framework for optimal Kubernetes compatibility and enhanced developer features, such as live reload in development mode for advanced debugging.
+
+https://spring.io/projects/spring-boot[Spring Boot] is a Java-based framework for building standalone production-ready Spring applications. Spring Boot enables you to develop Spring applications with minimal configurations and without an entire Spring configuration setup.
+
+For {KOGITO} microservices, Spring Boot is supported for developers who need to use {PRODUCT} in an existing Spring Framework environment.
