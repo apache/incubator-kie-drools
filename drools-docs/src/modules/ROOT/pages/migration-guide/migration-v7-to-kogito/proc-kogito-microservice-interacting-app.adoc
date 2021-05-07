@@ -1,0 +1,92 @@
+[id="proc-kogito-microservice-interacting-app_{context}"]
+= Interacting with a running {KOGITO} microservice
+
+After your {KOGITO} microservice is running, you can send REST API requests to interact with your application and execute your microservices according to how you set up the application.
+
+This example tests the `/persons` REST API endpoint that is automatically generated the decisions in the `PersonDecisions.dmn` file (or the rules in the `PersonRules.drl` file if you used a DRL rule unit).
+
+For this example, use a REST client, curl utility, or the Swagger UI configured for the application (such as `\http://localhost:8080/q/swagger-ui` or `\http://localhost:8080/swagger-ui.html`) to send API requests with the following components:
+
+* *URL*: `\http://localhost:8080/persons`
+* *HTTP headers*: For `POST` requests only:
+** `accept`: `application/json`
+** `content-type`: `application/json`
+* *HTTP methods*: `GET`, `POST`, or `DELETE`
+
+.Example POST request body to add an adult (JSON)
+[source,json]
+----
+{
+  "person": {
+    "name": "John Quark",
+    "age": 20
+  }
+}
+----
+
+.Example curl command to add an adult
+[source]
+----
+curl -X POST http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json' -d '{"person": {"name":"John Quark", "age": 20}}'
+----
+
+.Example response (JSON)
+[source,json]
+----
+{
+  "id": "3af806dd-8819-4734-a934-728f4c819682",
+  "person": {
+    "name": "John Quark",
+    "age": 20,
+    "adult": false
+  },
+  "isAdult": true
+}
+----
+
+This example procedure uses curl commands for convenience.
+
+.Procedure
+In a command terminal window that is separate from your running application, navigate to the project that contains your {KOGITO} microservice and use any of the following curl commands with JSON requests to interact with your running microservice:
+
+NOTE: On Spring Boot, you might need to modify how your application exposes API endpoints in order for these example requests to function. For more information, see the `README` file included in the example Spring Boot project that you created for this tutorial.
+
+* Add an adult person:
++
+--
+.Example request
+[source]
+----
+curl -X POST http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json' -d '{"person": {"name":"John Quark", "age": 20}}'
+----
+
+.Example response
+[source]
+----
+{"id":"3af806dd-8819-4734-a934-728f4c819682","person":{"name":"John Quark","age":20,"adult":false},"isAdult":true}
+----
+--
+* Add an underage person:
++
+--
+.Example request
+[source]
+----
+curl -X POST http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json' -d '{"person": {"name":"Jenny Quark", "age": 15}}'
+----
+
+.Example response
+[source]
+----
+{"id":"8eef502b-012b-4628-acb7-73418a089c08","person":{"name":"Jenny Quark","age":15,"adult":false},"isAdult":false}
+----
+--
+* Complete the evaluation using the returned UUIDs:
++
+--
+.Example request
+[source]
+----
+curl -X POST http://localhost:8080/persons/8eef502b-012b-4628-acb7-73418a089c08/ChildrenHandling/cdec4241-d676-47de-8c55-4ee4f9598bac -H 'content-type: application/json' -H 'accept: application/json' -d '{}'
+----
+--

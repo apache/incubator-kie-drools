@@ -1,0 +1,64 @@
+[id="proc-kogito-designing-app-drl-unit_{context}"]
+= Using DRL rule units as an alternative decision service
+
+You can also use a Drools Rule Language (DRL) file implemented as a rule unit to define this example decision service, as an alternative to using Decision Model and Notation (DMN).
+
+A DRL rule unit is a module for rules and a unit of execution. A rule unit collects a set of rules with the declaration of the type of facts that the rules act on. A rule unit also serves as a unique namespace for each group of rules. A single rule base can contain multiple rule units. You typically store all the rules for a unit in the same file as the unit declaration so that the unit is self-contained. For more information about rule units, see {URL_DEVELOPING_DECISION_SERVICES}#assembly-drl-rules[_{DRL_RULES}_].
+
+.Prerequisites
+* You have created a project. For more information about creating a Maven project, see xref:proc-kogito-creating-maven-project_{context}[].
+
+.Procedure
+. In the `src/main/resources` folder of your example project, instead of using a DMN file, add the following `PersonRules.drl` file:
++
+--
+.Example `PersonRules` DRL file
+[source]
+----
+package org.acme
+unit PersonRules;
+
+import org.acme.Person;
+
+rule isAdult
+	when
+		$person: /person[ age > 18 ]
+	then
+    modify($person) {
+    	setAdult(true)
+    };
+	end
+
+	query persons
+		$p : /person[ adult ]
+		end
+----
+
+This example rule determines that any person who is older than 18 is classified as an adult. The rule file also declares that the rule belongs to the rule unit `PersonRules`. When you build the project, the rule unit is generated and associated with the DRL file.
+
+The rule also defines the condition using OOPath notation. OOPath is an object-oriented syntax extension to XPath for navigating through related elements while handling collections and filtering constraints.
+
+You can also rewrite the same rule condition in a more explicit form using the traditional rule pattern syntax, as shown in the following example:
+
+.Example `PersonRules` DRL file using traditional notation
+[source]
+----
+package org.acme
+unit PersonRules;
+
+import org.acme.Person;
+
+rule isAdult
+	when
+		$person: Person(age > 18) from person
+	then
+    modify($person) {
+    	setAdult(true)
+    };
+	end
+
+	query persons
+		$p : /person[ adult ]
+		end
+----
+--

@@ -1,0 +1,54 @@
+[id="proc-kogito-creating-maven-project_{context}"]
+= Creating a Maven project for a {KOGITO} microservice
+
+Before you can begin developing {KOGITO} microservices, you need to create a Maven project where you can build your assets and any other related resources for your application.
+
+.Procedure
+. In a command terminal, navigate to a local folder where you want to store the new project.
+. Enter the following command to generate a project within a defined folder:
++
+--
+.On Quarkus
+[source,subs="attributes+"]
+----
+$ mvn archetype:generate \
+    -DarchetypeGroupId=org.kie.kogito \
+    -DarchetypeArtifactId=kogito-quarkus-archetype \
+    -DgroupId=org.acme -DartifactId=sample-kogito \
+    -DarchetypeVersion={COMMUNITY_VERSION_FINAL} \
+    -Dversion=1.0-SNAPSHOT
+----
+
+.On Spring Boot
+[source,subs="attributes+"]
+----
+$ mvn archetype:generate \
+    -DarchetypeGroupId=org.kie.kogito \
+    -DarchetypeArtifactId=kogito-springboot-archetype \
+    -DgroupId=org.acme -DartifactId=sample-kogito \
+    -DarchetypeVersion={COMMUNITY_VERSION_FINAL} \
+    -Dversion=1.0-SNAPSHOT
+----
+
+This command generates a `sample-kogito` Maven project and imports the extension for all required dependencies and configurations to prepare your application for business automation.
+
+On Quarkus, if you plan to run your application on OpenShift, you must also import the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health` extension] for the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes], as shown in the following example:
+
+.SmallRye Health extension for Quarkus applications on OpenShift
+[source]
+----
+$ mvn quarkus:add-extension -Dextensions="smallrye-health"
+----
+
+This command generates the following dependency in the `pom.xml` file of your {PRODUCT} project on Quarkus:
+
+.SmallRye Heath dependency for Quarkus applications on OpenShift
+[source,xml]
+----
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-smallrye-health</artifactId>
+</dependency>
+----
+--
+. Open or import the project in your VSCode IDE to view the contents.
