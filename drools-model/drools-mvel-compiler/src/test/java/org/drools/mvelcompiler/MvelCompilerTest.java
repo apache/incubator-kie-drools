@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.mvelcompiler;
 
 import java.math.BigDecimal;
@@ -5,13 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class MvelCompilerTest implements CompilerTest {
 
@@ -33,6 +48,99 @@ public class MvelCompilerTest implements CompilerTest {
 
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.getParent().getParent().getName(); } ",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testConvertPropertyToAccessorForEach() {
+        String expectedJavaCode =  "{ for (org.drools.Address a : $p.getAddresses()) {\n" +
+                "  results.add(a.getCity());\n" +
+                "}\n }";
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ for(Address a: $p.addresses){\n" +
+                     "  results.add(a.city);\n" +
+                     "}\n }",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testConvertIfConditionAndStatements() {
+        String expectedJavaCode =  "{\n if ($p.getAddresses() != null) {\n" +
+                "  results.add($p.getName());\n" +
+                "} else {\n" +
+                "results.add($p.getAge());\n" +
+                "}\n }";
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ if($p.addresses != null){\n" +
+                     "  results.add($p.name);\n" +
+                     "} else {\n " +
+                     "  results.add($p.age);" +
+                     "} }",
+             expectedJavaCode);
+    }
+
+
+    @Test
+    public void testConvertPropertyToAccessorWhile() {
+        String expectedJavaCode =  "{\n while ($p.getAddresses() != null) {\n" +
+                "  results.add($p.getName());\n" +
+                "}\n" +
+                " }";
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ while($p.addresses != null){\n" +
+                     "  results.add($p.name);\n" +
+                     "}"+
+                     "}",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testConvertPropertyToAccessorDoWhile() {
+        String expectedJavaCode =  "{\n do {\n" +
+                "  results.add($p.getName());\n" +
+                "} while ($p.getAddresses() != null);\n" +
+                " }";
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ do {\n" +
+                     "  results.add($p.name);\n" +
+                     "} while($p.addresses != null);"+
+                     "}",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testConvertPropertyToAccessorFor() {
+        String expectedJavaCode =  "{\n for (int i = 0; i < $p.getAddresses(); i++) {\n" +
+                "  results.add($p.getName());\n" +
+                "}\n" +
+                " }";
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ for(int i = 0; i < $p.addresses; i++) {\n" +
+                     "  results.add($p.name);\n" +
+                     "} "+
+                     "}",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testConvertPropertyToAccessorSwitch() {
+        String expectedJavaCode =  "{\n " +
+                "        switch($p.getName()) {\n" +
+                "            case \"Luca\":\n" +
+                "                results.add($p.getName());\n" +
+                "        }\n}";
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{\n " +
+                     "        switch($p.name) {\n" +
+                     "            case \"Luca\":\n" +
+                     "                results.add($p.name);\n" +
+                     "        }\n}",
              expectedJavaCode);
     }
 
@@ -134,7 +242,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testSetterBigDecimalConstantModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000 }; }",
-             "{ $p.setSalary(new java.math.BigDecimal(50000)); }",
+             "{ { $p.setSalary(new java.math.BigDecimal(50000)); } }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -142,7 +250,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testSetterBigDecimalLiteralModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000B }; }",
-             "{ $p.setSalary(new java.math.BigDecimal(\"50000\")); }",
+             "{ { $p.setSalary(new java.math.BigDecimal(\"50000\")); } }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -190,7 +298,7 @@ public class MvelCompilerTest implements CompilerTest {
                           "}",
              "{\n " +
                          "      list.add(\"before \" + $p + \", money = \" + $p.getSalary()); " +
-                         "      $p.setSalary(new java.math.BigDecimal(50000));" +
+                         "      { $p.setSalary(new java.math.BigDecimal(50000)); }" +
                          "      list.add(\"after \" + $p + \", money = \" + $p.getSalary()); " +
                          "}\n",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
@@ -499,7 +607,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
-             "{ $p.setName(\"Luca\"); $p.setAge(35); }",
+             "{\n {\n $p.setName(\"Luca\");\n $p.setAge(35);\n }\n }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -507,7 +615,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testModifySemiColon() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { setAge(1); }; }",
-             "{ $p.setAge(1); }",
+             "{ { $p.setAge(1); } }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -515,7 +623,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testModifyWithAssignment() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { age = $p.age+1 }; }",
-             "{ $p.setAge($p.getAge() + 1); }",
+             "{ { $p.setAge($p.getAge() + 1); } }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -531,6 +639,14 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ with($p = new Person()) { age = $p.age+1 }; }",
              "{ org.drools.Person $p = new Person(); $p.setAge($p.getAge() + 1); }",
+             result -> assertThat(allUsedBindings(result), is(empty())));
+    }
+
+    @Test
+    public void testWithInIf() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ if (true) { with($p = new Person()) { age = $p.age+1 }; } }",
+             "{ if (true) { org.drools.Person $p = new Person(); $p.setAge($p.getAge() + 1); } }",
              result -> assertThat(allUsedBindings(result), is(empty())));
     }
 
@@ -572,8 +688,10 @@ public class MvelCompilerTest implements CompilerTest {
                      "{ " +
                      "  if ($p.getParent() != null) { " +
                      "      $p.setName(\"with_parent\"); " +
-                     "  } else { " +
-                     "      $p.setName(\"without_parent\"); " +
+                     "  } else {\n " +
+                     "      {\n" +
+                     "          $p.setName(\"without_parent\");\n" +
+                     "      }\n" +
                      "  } " +
                      "}",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
@@ -594,13 +712,13 @@ public class MvelCompilerTest implements CompilerTest {
                      "     }",
 
              "{ " +
-                             "org.drools.Person s0 = new Person(); " +
-                             "s0.setAge(0); " +
-                             "insertLogical(s0); " +
-                             "org.drools.Person s1 = new Person(); " +
-                             "s1.setAge(1); " +
-                             "insertLogical(s1); " +
-                          "}");
+                     "org.drools.Person s0 = new Person(); " +
+                     "s0.setAge(0); " +
+                     "insertLogical(s0);\n" +
+                     "org.drools.Person s1 = new Person(); " +
+                     "s1.setAge(1);\n" +
+                     "insertLogical(s1);\n" +
+                     "}");
     }
 
     @Test
@@ -613,14 +731,16 @@ public class MvelCompilerTest implements CompilerTest {
                      "        modify( $person ) {\n" +
                      "          setAddress( $newAddress )\n" +
                      "        }" +
-                            "}",
+                     "}",
 
              "{ " +
-                             "org.drools.Address $newAddress = new Address(); " +
-                             "$newAddress.setCity(\"Brno\"); " +
-                             "insert($newAddress); " +
-                             "$person.setAddress($newAddress); " +
-                          "}");
+                     "org.drools.Address $newAddress = new Address(); " +
+                     "$newAddress.setCity(\"Brno\"); " +
+                     "insert($newAddress);\n" +
+                     "{ " +
+                     "  $person.setAddress($newAddress);\n" +
+                     "}\n" +
+                     "}");
     }
 
     @Test

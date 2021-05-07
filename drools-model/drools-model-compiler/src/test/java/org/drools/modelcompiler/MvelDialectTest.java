@@ -1024,4 +1024,36 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert( me );
         assertEquals( 2, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testForEachAccessor() {
+        // DROOLS-6298
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Address.class.getCanonicalName() + ";" +
+                "global java.util.List results;" +
+                "dialect \"mvel\"\n" +
+                "rule \"rule_for_each\"\n" +
+                "    when\n" +
+                "        $p : Person( )\n" +
+                "    then\n" +
+                "        for(Address a: $p.addresses){\n" +
+                        "  results.add(a.city);\n" +
+                        "}\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ArrayList<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person me = new Person( "Mario", 47 );
+        Address address = new Address("Address");
+        me.addAddress(address);
+
+        ksession.insert( me);
+        assertEquals( 1, ksession.fireAllRules() );
+
+        assertThat(results).containsOnly("Address");
+    }
 }

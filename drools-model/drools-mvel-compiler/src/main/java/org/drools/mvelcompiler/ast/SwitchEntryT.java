@@ -17,28 +17,24 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.SwitchEntry;
 
-import static org.drools.mvelcompiler.util.CoercionUtils.PUT_CALL;
-import static org.drools.mvelcompiler.util.CoercionUtils.coerceMapValueToString;
+public class SwitchEntryT implements TypedExpression {
 
-public class MapPutExprT implements TypedExpression {
+    private final NodeList<Expression> labels;
+    private final List<TypedExpression> statements;
 
-    private final TypedExpression name;
-    private final Expression key;
-    private final TypedExpression value;
-    private final Optional<Type> type;
-
-    public MapPutExprT(TypedExpression name, Expression key, TypedExpression value, Optional<Type> type) {
-        this.name = name;
-        this.key = key;
-        this.value = value;
-        this.type = type;
+    public SwitchEntryT(NodeList<Expression> labels, List<TypedExpression> statements) {
+        this.labels = labels;
+        this.statements = statements;
     }
 
     @Override
@@ -48,11 +44,11 @@ public class MapPutExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        final Expression originalValue = (Expression) this.value.toJavaExpression();
-        final Expression coercedValue = coerceMapValueToString(type, originalValue);
-
-        return new MethodCallExpr((Expression) name.toJavaExpression(),
-                                  PUT_CALL,
-                                  NodeList.nodeList(key, coercedValue));
+        SwitchEntry entry = new SwitchEntry();
+        entry.setLabels(labels);
+        entry.setStatements(NodeList.nodeList(statements.stream().map(TypedExpression::toJavaExpression)
+                                                  .map(Statement.class::cast)
+                                                  .collect(Collectors.toList())));
+        return entry;
     }
 }
