@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,16 +71,21 @@ public class PackageSources {
             allReplacedLambdaResults.addAll(ruleSource.getLambdaResults());
         }
 
-        Map<String, String> distinctLambdaClasses = replacedLambdaResultStream(pkgModel.getConfiguration().isParallelLambdaExternalization(), allReplacedLambdaResults)
-                .collect(Collectors.toMap(k -> k.getExternalisedLambda().getClassNamePath(),
-                                          v -> v.getExternalisedLambda().getCompilationUnitAsString(), (a, b) -> a));
+        try {
+            KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() -> {
+                Map<String, String> distinctLambdaClasses = replacedLambdaResultStream(pkgModel.getConfiguration().isParallelLambdaExternalization(), allReplacedLambdaResults)
+                        .collect(Collectors.toMap(k -> k.getExternalisedLambda().getClassNamePath(),
+                                                  v -> v.getExternalisedLambda().getCompilationUnitAsString(), (a, b) -> a));
 
-        List<GeneratedFile> generatedFiles = sources.lambdaClasses;
-        for (Map.Entry<String, String> gc : distinctLambdaClasses.entrySet()) {
-            GeneratedFile generatedFile = new GeneratedFile(gc.getKey(), logSource(gc.getValue()));
-            generatedFiles.add(generatedFile);
+                List<GeneratedFile> generatedFiles = sources.lambdaClasses;
+                for (Map.Entry<String, String> gc : distinctLambdaClasses.entrySet()) {
+                    GeneratedFile generatedFile = new GeneratedFile(gc.getKey(), logSource(gc.getValue()));
+                    generatedFiles.add(generatedFile);
+                }
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Externalized Lambda Creation Interrupted", e);
         }
-
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
         sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
         return rules;
@@ -86,8 +93,10 @@ public class PackageSources {
 
     private static Stream<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResultStream(boolean parallelLambdaExternalization, List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> allReplacedLambdaResults) {
         if(parallelLambdaExternalization) {
+            logger.info("Using parallel lambda externalization");
             return allReplacedLambdaResults.parallelStream();
         } else {
+            logger.info("Using sequential lambda externalization");
             return allReplacedLambdaResults.stream();
         }
     }

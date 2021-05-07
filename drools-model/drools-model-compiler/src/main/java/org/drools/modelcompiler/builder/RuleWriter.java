@@ -22,17 +22,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.drools.modelcompiler.util.lambdareplace.NonExternalisedLambdaFoundException;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
-import static org.drools.modelcompiler.builder.PackageSources.logSource;
 
 public class RuleWriter {
 
@@ -81,8 +82,14 @@ public class RuleWriter {
 
                 if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
                     CompilationUnit postProcessedCU = cu.clone();
-                    List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResult =
-                            new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
+                    List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResult;
+
+                    try {
+                        replacedLambdaResult = KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(
+                                () -> new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas()).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException("Externalized Lambda Creation Interrupted", e);
+                    }
 
                     for (ExecModelLambdaPostProcessor.ReplacedLambdaResult e : replacedLambdaResult) {
                         e.replaceLambda();

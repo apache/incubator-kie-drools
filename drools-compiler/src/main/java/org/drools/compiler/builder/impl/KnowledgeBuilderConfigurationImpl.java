@@ -265,6 +265,9 @@ public class KnowledgeBuilderConfigurationImpl
         setProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"true"));
 
+        setProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,
+                    this.chainedProperties.getProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,"true"));
+
         this.componentFactory = new DroolsCompilerComponentFactory();
 
         this.kieComponentFactory = createKieComponentFactory();
