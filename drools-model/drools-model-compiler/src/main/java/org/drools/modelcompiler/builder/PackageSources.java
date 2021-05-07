@@ -93,10 +93,14 @@ public class PackageSources {
 
     private static Stream<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResultStream(boolean parallelLambdaExternalization, List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> allReplacedLambdaResults) {
         if(parallelLambdaExternalization) {
-            logger.info("Using parallel lambda externalization");
+            if(logger.isDebugEnabled()) {
+                logger.debug("Using parallel lambda externalization");
+            }
             return allReplacedLambdaResults.parallelStream();
         } else {
-            logger.info("Using sequential lambda externalization");
+            if(logger.isDebugEnabled()) {
+                logger.debug("Using sequential lambda externalization");
+            }
             return allReplacedLambdaResults.stream();
         }
     }

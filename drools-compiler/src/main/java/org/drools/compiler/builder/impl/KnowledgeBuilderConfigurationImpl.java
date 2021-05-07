@@ -140,7 +140,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           groupDRLsInKieBasesByFolder           = false;
 
     private boolean                           externaliseCanonicalModelLambda       = true;
-    private boolean parallelLambdaExternalization = true;
+    private boolean                           parallelLambdaExternalization         = true;
 
     private AlphaNetworkCompilerOption        alphaNetworkCompilerOption            = AlphaNetworkCompilerOption.DISABLED;
 
@@ -391,7 +391,7 @@ public class KnowledgeBuilderConfigurationImpl
         	return String.valueOf(getParallelRulesBuildThreshold());
         } else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
         	return String.valueOf(isExternaliseCanonicalModelLambda());
-        }else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
+        } else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
         	return String.valueOf(isParallelLambdaExternalization());
         }
         return null;
