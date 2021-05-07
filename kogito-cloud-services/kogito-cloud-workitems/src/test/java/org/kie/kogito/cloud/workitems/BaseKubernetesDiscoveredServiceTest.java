@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.cloud.workitems;
 
+import java.net.InetAddress;
+import java.util.Collections;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
@@ -32,7 +35,8 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
  */
 public abstract class BaseKubernetesDiscoveredServiceTest {
 
-    public KubernetesServer server = new KubernetesServer(true, true);
+    public static final int SERVICE_PORT = 65200;
+    public KubernetesServer server = new KubernetesServer(true, true, InetAddress.getLoopbackAddress(), SERVICE_PORT, Collections.emptyList());
 
     public static final String MOCK_NAMESPACE = "mock-namespace";
 

@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@org.junit.jupiter.api.Disabled
 public class KNativeDiscoveredServiceWorkItemHandlerTest extends BaseKubernetesDiscoveredServiceTest {
 
     public KNativeDiscoveredServiceWorkItemHandlerTest() {
