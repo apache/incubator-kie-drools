@@ -15,16 +15,53 @@
  */
 
 import { ProcessDetailsChannelApi, ProcessDetailsDriver } from '../api';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import {
+  ProcessInstance,
+  Job,
+  JobCancel,
+  AbortResponse,
+  SvgSuccessResponse,
+  SvgErrorResponse
+} from '@kogito-apps/management-console-shared';
 
 export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
   constructor(private readonly driver: ProcessDetailsDriver) {}
 
-  processDetails__initialLoad(): Promise<void> {
-    return this.driver.initialLoad();
+  processDetails__getProcessDiagram(
+    data: ProcessInstance
+  ): Promise<SvgSuccessResponse | SvgErrorResponse> {
+    return this.driver.getProcessDiagram(data);
+  }
+
+  processDetails__abortProcess(data: ProcessInstance): Promise<AbortResponse> {
+    return this.driver.abortProcess(data);
+  }
+
+  processDetails__cancelJob(
+    job: Pick<Job, 'id' | 'endpoint'>
+  ): Promise<JobCancel> {
+    return this.driver.cancelJob(job);
+  }
+
+  processDetails__rescheduleJob(
+    job,
+    repeatInterval: number | string,
+    repeatLimit: number | string,
+    scheduleDate: Date
+  ): Promise<{ modalTitle: string; modalContent: string }> {
+    return this.driver.rescheduleJob(
+      job,
+      repeatInterval,
+      repeatLimit,
+      scheduleDate
+    );
   }
 
   processDetails__processDetailsQuery(id: string): Promise<ProcessInstance> {
     return this.driver.processDetailsQuery(id);
+  }
+
+  processDetails__jobsQuery(id: string): Promise<Job[]> {
+    return this.driver.jobsQuery(id);
   }
 }

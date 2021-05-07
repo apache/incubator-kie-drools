@@ -17,6 +17,7 @@
 export { default as JobsCancelModal } from './src/components/JobsCancelModal/JobsCancelModal';
 export { default as JobsDetailsModal } from './src/components/JobsDetailsModal/JobsDetailsModal';
 export { default as JobsRescheduleModal } from './src/components/JobsRescheduleModal/JobsRescheduleModal';
+export { default as ProcessInfoModal } from './src/components/ProcessInfoModal/ProcessInfoModal';
 export * from './src/components/BulkList/BulkList';
 
 export * from './src/utils/Utils';

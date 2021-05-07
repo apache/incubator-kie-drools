@@ -66,6 +66,7 @@ export const MockedApiRequests = jest.fn<
   []
 >(() => ({
   processList__initialLoad: jest.fn(),
+  processList__openProcess: jest.fn(),
   processList__applyFilter: jest.fn(),
   processList__applySorting: jest.fn(),
   processList__query: jest.fn(),

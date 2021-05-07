@@ -16,7 +16,18 @@
 
 import { GraphQL } from '@kogito-apps/consoles-common';
 import axios from 'axios';
+import {
+  ProcessInstance,
+  ProcessInstanceState,
+  AbortResponse
+} from '@kogito-apps/management-console-shared';
 
+enum TitleType {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
+//Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
   jobsToBeActioned: (GraphQL.Job & { errorMessage?: string })[]
 ) => {
@@ -34,6 +45,7 @@ export const performMultipleCancel = async (
   return { successJobs, failedJobs };
 };
 
+//Rest Api to Cancel a Job
 export const jobCancel = async (
   job: Pick<GraphQL.Job, 'id' | 'endpoint'>
 ): Promise<{ modalTitle: string; modalContent: string }> => {
@@ -51,6 +63,7 @@ export const jobCancel = async (
   }
 };
 
+// Rest Api to Reschedule a Job
 export const handleJobReschedule = async (
   job,
   repeatInterval: number | string,
@@ -80,5 +93,58 @@ export const handleJobReschedule = async (
     modalTitle = 'failure';
     modalContent = `Reschedule of job ${job.id} failed. Message: ${error.message}`;
     return { modalTitle, modalContent };
+  }
+};
+
+// Rest Api to fetch Process Diagram
+export const getSvg = async (data: ProcessInstance): Promise<any> => {
+  return axios
+    .get(`/svg/processes/${data.processId}/instances/${data.id}`)
+    .then(res => {
+      return { svg: res.data };
+    })
+    .catch(async error => {
+      /* istanbul ignore else*/
+      if (data.serviceUrl) {
+        return axios
+          .get(
+            `${data.serviceUrl}/svg/processes/${data.processId}/instances/${data.id}`
+          )
+          .then(res => {
+            return { svg: res.data };
+          })
+          .catch(err => {
+            /* istanbul ignore else*/
+            if (err.response && err.response.status !== 404) {
+              return { error: err.message };
+            }
+          });
+      }
+    });
+};
+
+// Rest Api to Abort process instances
+export const handleAbort = async (
+  data: Pick<
+    ProcessInstance,
+    'id' | 'processId' | 'processName' | 'serviceUrl' | 'state'
+  >
+): Promise<AbortResponse> => {
+  try {
+    await axios.delete(
+      `${data.serviceUrl}/management/processes/${data.processId}/instances/${data.id}`
+    );
+    data.state = ProcessInstanceState.Aborted;
+    return {
+      title: 'Abort operation',
+      content: `The process ${data.processName} was successfully aborted.`,
+      type: TitleType.SUCCESS
+    };
+  } catch (error) {
+    return {
+      title: 'Abort operation',
+      content: `Failed to abort process ${data.processName}. Message: ${error.message}`,
+      type: TitleType.FAILURE
+    };
   }
 };

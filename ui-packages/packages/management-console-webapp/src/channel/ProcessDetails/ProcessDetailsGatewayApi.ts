@@ -15,11 +15,34 @@
  */
 
 import { ProcessDetailsQueries } from './ProcessDetailsQueries';
-import { ProcessInstance, Job } from '@kogito-apps/management-console-shared';
+import {
+  ProcessInstance,
+  Job,
+  JobCancel,
+  AbortResponse,
+  SvgSuccessResponse,
+  SvgErrorResponse
+} from '@kogito-apps/management-console-shared';
+import {
+  getSvg,
+  handleJobReschedule,
+  handleAbort,
+  jobCancel
+} from '../../apis';
 
 export interface ProcessDetailsGatewayApi {
   processDetailsState: any;
-  initialLoad: () => Promise<void>;
+  getProcessDiagram: (
+    data: ProcessInstance
+  ) => Promise<SvgSuccessResponse | SvgErrorResponse>;
+  abortProcess: (data: ProcessInstance) => Promise<AbortResponse>;
+  cancelJob: (job: Pick<Job, 'id' | 'endpoint'>) => Promise<JobCancel>;
+  rescheduleJob: (
+    job,
+    repeatInterval: number | string,
+    repeatLimit: number | string,
+    scheduleDate: Date
+  ) => Promise<{ modalTitle: string; modalContent: string }>;
   processDetailsQuery(id: string): Promise<ProcessInstance>;
   jobsQuery(id: string): Promise<Job[]>;
 }
@@ -41,8 +64,28 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return this._ProcessDetailsState;
   }
 
-  initialLoad = (): Promise<any> => {
-    return Promise.resolve();
+  getProcessDiagram = async (
+    data: ProcessInstance
+  ): Promise<SvgSuccessResponse | SvgErrorResponse> => {
+    const res = await getSvg(data);
+    return Promise.resolve(res);
+  };
+
+  abortProcess = (data: ProcessInstance): Promise<AbortResponse> => {
+    return handleAbort(data);
+  };
+
+  cancelJob = (job: Pick<Job, 'id' | 'endpoint'>): Promise<JobCancel> => {
+    return jobCancel(job);
+  };
+
+  rescheduleJob = (
+    job,
+    repeatInterval: number | string,
+    repeatLimit: number | string,
+    scheduleDate: Date
+  ): Promise<{ modalTitle: string; modalContent: string }> => {
+    return handleJobReschedule(job, repeatInterval, repeatLimit, scheduleDate);
   };
 
   processDetailsQuery(id: string): Promise<ProcessInstance> {
@@ -58,7 +101,7 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     });
   }
 
-  jobsQuery(id: string): Promise<any> {
+  jobsQuery(id: string): Promise<Job[]> {
     return new Promise<any>((resolve, reject) => {
       this.queries
         .getJobs(id)

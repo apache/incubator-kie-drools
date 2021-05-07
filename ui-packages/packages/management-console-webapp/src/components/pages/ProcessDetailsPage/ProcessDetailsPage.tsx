@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { Card, PageSection } from '@patternfly/react-core';
+import { PageSection } from '@patternfly/react-core';
 import {
   OUIAProps,
   ouiaPageTypeAndObjectId
@@ -45,13 +45,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
     <React.Fragment>
       <PageSectionHeader
         titleText="Process Details"
-        breadcrumbText={['Home', 'Process']}
+        breadcrumbText={['Home', 'Process Instances']}
         breadcrumbPath={['/']}
       />
       <PageSection>
-        <Card className="kogito-management-console__card-size">
-          <ProcessDetailsContainer processId={processId} />
-        </Card>
+        <ProcessDetailsContainer processId={processId} />
       </PageSection>
     </React.Fragment>
   );

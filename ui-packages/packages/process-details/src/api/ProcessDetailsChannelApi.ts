@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import {
+  ProcessInstance,
+  Job,
+  JobCancel,
+  AbortResponse,
+  SvgSuccessResponse,
+  SvgErrorResponse
+} from '@kogito-apps/management-console-shared';
 export interface ProcessDetailsChannelApi {
-  processDetails__initialLoad(): Promise<void>;
+  processDetails__getProcessDiagram(
+    data: ProcessInstance
+  ): Promise<SvgSuccessResponse | SvgErrorResponse>;
+  processDetails__abortProcess(data: ProcessInstance): Promise<AbortResponse>;
+  processDetails__cancelJob(
+    job: Pick<Job, 'id' | 'endpoint'>
+  ): Promise<JobCancel>;
+  processDetails__rescheduleJob(
+    job,
+    repeatInterval: number | string,
+    repeatLimit: number | string,
+    scheduleDate: Date
+  ): Promise<{ modalTitle: string; modalContent: string }>;
   processDetails__processDetailsQuery(id: string): Promise<ProcessInstance>;
+  processDetails__jobsQuery(id: string): Promise<Job[]>;
 }

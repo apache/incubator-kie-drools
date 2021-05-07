@@ -15,6 +15,12 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
         "applyFilter": [Function],
         "applySorting": [Function],
         "initialLoad": [Function],
+        "listeners": Array [
+          Object {
+            "onOpen": [Function],
+          },
+        ],
+        "openProcess": [Function],
         "queries": Object {
           "getChildProcessInstances": [MockFunction],
           "getProcessInstances": [MockFunction],

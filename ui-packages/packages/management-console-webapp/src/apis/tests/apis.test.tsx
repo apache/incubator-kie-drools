@@ -16,8 +16,18 @@
 
 import axios from 'axios';
 import { GraphQL } from '@kogito-apps/consoles-common';
+import {
+  ProcessInstanceState,
+  MilestoneStatus
+} from '@kogito-apps/management-console-shared';
 import wait from 'waait';
-import { handleJobReschedule, jobCancel, performMultipleCancel } from '../apis';
+import {
+  getSvg,
+  handleAbort,
+  handleJobReschedule,
+  jobCancel,
+  performMultipleCancel
+} from '../apis';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 describe('bulk cancel tests', () => {
@@ -227,5 +237,162 @@ describe('job cancel tests', () => {
       scheduleDate
     );
     expect(result).toEqual({ modalTitle, modalContent });
+  });
+});
+
+describe('test utility of svg panel', () => {
+  const data: any = {
+    id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
+    processId: 'hotelBooking',
+    processName: 'HotelBooking',
+    businessKey: 'T1234HotelBooking01',
+    parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+    parentProcessInstance: {
+      id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processName: 'travels',
+      businessKey: 'T1234'
+    },
+    roles: [],
+    variables:
+      '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+    state: ProcessInstanceState.Completed,
+    start: new Date('2019-10-22T03:40:44.089Z'),
+    lastUpdate: new Date('Thu, 22 Apr 2021 14:53:04 GMT'),
+    end: new Date('2019-10-22T05:40:44.089Z'),
+    addons: [],
+    endpoint: 'http://localhost:4000',
+    serviceUrl: 'http://localhost:4000',
+    error: {
+      nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e904e6b',
+      message: 'some thing went wrong',
+      __typename: 'ProcessInstanceError'
+    },
+    childProcessInstances: [],
+    nodes: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d751b6',
+        nodeId: '1',
+        name: 'End Event 1',
+        enter: new Date('2019-10-22T03:37:30.798Z'),
+        exit: new Date('2019-10-22T03:37:30.798Z'),
+        type: 'EndNode',
+        definitionId: 'EndEvent_1',
+        __typename: 'NodeInstance'
+      },
+      {
+        id: '41b3f49e-beb3-4b5f-8130-efd28f82b971',
+        nodeId: '2',
+        name: 'Book hotel',
+        enter: new Date('2019-10-22T03:37:30.795Z'),
+        exit: new Date('2019-10-22T03:37:30.798Z'),
+        type: 'WorkItemNode',
+        definitionId: 'ServiceTask_1',
+        __typename: 'NodeInstance'
+      },
+      {
+        id: '4165a571-2c79-4fd0-921e-c6d5e7851b67',
+        nodeId: '2',
+        name: 'StartProcess',
+        enter: new Date('2019-10-22T03:37:30.793Z'),
+        exit: new Date('2019-10-22T03:37:30.795Z'),
+        type: 'StartNode',
+        definitionId: 'StartEvent_1',
+        __typename: 'NodeInstance'
+      }
+    ],
+    milestones: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
+        name: 'Manager decision',
+        status: MilestoneStatus.Completed,
+        __typename: 'Milestone'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m36',
+        name: 'Milestone 1: Order placed',
+        status: MilestoneStatus.Active,
+        __typename: 'Milestone'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m66',
+        name: 'Milestone 2: Order shipped',
+        status: MilestoneStatus.Available,
+        __typename: 'Milestone'
+      }
+    ]
+  };
+
+  const svgResponse =
+    '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></g></g></svg>';
+  it('handle api to get svg', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: svgResponse,
+      status: 200,
+      statusText: 'OK'
+    });
+    const svgResults = await getSvg(data);
+    expect(svgResults).toEqual({ svg: svgResponse });
+  });
+  it('handle api to get svg', async () => {
+    const errorResponse404 = {
+      response: { status: 404 }
+    };
+    mockedAxios.get.mockRejectedValue(errorResponse404);
+    await getSvg(data);
+  });
+  it('check api response when call to management console fails ', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.reject({
+        error: mockedAxios.get.mockResolvedValue({
+          data: svgResponse,
+          status: 200,
+          statusText: 'OK'
+        })
+      })
+    );
+    const svgResults = await getSvg(data);
+    expect(svgResults).toEqual({ svg: svgResponse });
+  });
+  it('check api response when, call to both management console and runtimes fails ', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.reject({
+        error: mockedAxios.get.mockRejectedValue({
+          err: {
+            response: { status: 500 }
+          }
+        })
+      })
+    );
+    await getSvg(data);
+  });
+
+  describe('handle Abort tests', () => {
+    const processInstanceData = {
+      id: '123',
+      processId: 'travels',
+      processName: 'travels',
+      serviceUrl: 'http://localhost:4000',
+      state: ProcessInstanceState.Active
+    };
+    it('executes Abort process successfully', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      const abortResults = await handleAbort(processInstanceData);
+      await wait(0);
+      expect(abortResults).toEqual({
+        title: 'Abort operation',
+        content: `The process ${processInstanceData.processName} was successfully aborted.`,
+        type: 'success'
+      });
+    });
+    it('fails executing Abort process', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '403 error' });
+      const abortResults = await handleAbort(processInstanceData);
+      await wait(0);
+      expect(abortResults).toEqual({
+        title: 'Abort operation',
+        content: `Failed to abort process ${processInstanceData.processName}. Message: 403 error`,
+        type: 'failure'
+      });
+    });
   });
 });

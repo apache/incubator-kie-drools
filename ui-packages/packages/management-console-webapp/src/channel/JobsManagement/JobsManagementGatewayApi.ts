@@ -26,7 +26,7 @@ import {
   performMultipleCancel,
   jobCancel,
   handleJobReschedule
-} from '../../apis/apis';
+} from '../../apis';
 
 export interface JobsManagementGatewayApi {
   jobsManagementState: any;

@@ -48,7 +48,9 @@
       "core-js"
     ],
     "coveragePathIgnorePatterns": [
-      "./src/static"
+      "./src/static",
+      "./src/apis/index.ts",
+      "./src/pages/index.ts"
     ],
     "moduleFileExtensions": [
       "ts",

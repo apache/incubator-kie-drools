@@ -1,0 +1,1213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot tests with default prop 1`] = `
+<ProcessDetails
+  driver={
+    Object {
+      "abortProcess": [MockFunction],
+      "cancelJob": [MockFunction],
+      "getProcessDiagram": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "addons": Array [
+                "process-management",
+              ],
+              "businessKey": "T1234HotelBooking01",
+              "childProcessInstances": Array [],
+              "end": 2019-10-22T05:40:44.089Z,
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "__typename": "ProcessInstanceError",
+                "message": "some thing went wrong",
+                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+              },
+              "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+              "lastUpdate": 2021-04-22T14:53:04.000Z,
+              "milestones": Array [
+                Object {
+                  "__typename": "Milestone",
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                  "name": "Manager decision",
+                  "status": "COMPLETED",
+                },
+                Object {
+                  "__typename": "Milestone",
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                  "name": "Milestone 1: Order placed",
+                  "status": "ACTIVE",
+                },
+                Object {
+                  "__typename": "Milestone",
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                  "name": "Milestone 2: Order shipped",
+                  "status": "AVAILABLE",
+                },
+              ],
+              "nodes": Array [
+                Object {
+                  "__typename": "NodeInstance",
+                  "definitionId": "EndEvent_1",
+                  "enter": 2019-10-22T03:37:30.798Z,
+                  "exit": 2019-10-22T03:37:30.798Z,
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d751b6",
+                  "name": "End Event 1",
+                  "nodeId": "1",
+                  "type": "EndNode",
+                },
+                Object {
+                  "__typename": "NodeInstance",
+                  "definitionId": "ServiceTask_1",
+                  "enter": 2019-10-22T03:37:30.795Z,
+                  "exit": 2019-10-22T03:37:30.798Z,
+                  "id": "41b3f49e-beb3-4b5f-8130-efd28f82b971",
+                  "name": "Book hotel",
+                  "nodeId": "2",
+                  "type": "WorkItemNode",
+                },
+                Object {
+                  "__typename": "NodeInstance",
+                  "definitionId": "StartEvent_1",
+                  "enter": 2019-10-22T03:37:30.793Z,
+                  "exit": 2019-10-22T03:37:30.795Z,
+                  "id": "4165a571-2c79-4fd0-921e-c6d5e7851b67",
+                  "name": "StartProcess",
+                  "nodeId": "2",
+                  "type": "StartNode",
+                },
+              ],
+              "parentProcessInstance": Object {
+                "businessKey": "T1234",
+                "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+                "processName": "travels",
+              },
+              "parentProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+              "processId": "hotelBooking",
+              "processName": "HotelBooking",
+              "roles": Array [],
+              "serviceUrl": "http://localhost:4000",
+              "start": 2019-10-22T03:40:44.089Z,
+              "state": "COMPLETED",
+              "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Object {
+              "svg": "<svg version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"800\\" height=\\"300\\" viewBox=\\"0 0 1748 632\\"></g></g></svg>",
+            },
+          },
+        ],
+      },
+      "jobsQuery": [MockFunction] {
+        "calls": Array [
+          Array [
+            "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Array [
+              Object {
+                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                "endpoint": "http://localhost:4000/jobs",
+                "executionCounter": 0,
+                "expirationTime": 2020-08-29T04:35:54.631Z,
+                "id": "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
+                "lastUpdate": 2020-06-29T03:35:54.635Z,
+                "priority": 0,
+                "processId": "travels",
+                "processInstanceId": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                "repeatInterval": null,
+                "repeatLimit": null,
+                "retries": 2,
+                "rootProcessId": "",
+                "scheduledId": null,
+                "status": "SCHEDULED",
+              },
+            ],
+          },
+        ],
+      },
+      "processDetailsQuery": [MockFunction] {
+        "calls": Array [
+          Array [
+            "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Object {
+              "addons": Array [
+                "process-management",
+              ],
+              "businessKey": "T1234HotelBooking01",
+              "childProcessInstances": Array [],
+              "end": 2019-10-22T05:40:44.089Z,
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "__typename": "ProcessInstanceError",
+                "message": "some thing went wrong",
+                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+              },
+              "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+              "lastUpdate": 2021-04-22T14:53:04.000Z,
+              "milestones": Array [
+                Object {
+                  "__typename": "Milestone",
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                  "name": "Manager decision",
+                  "status": "COMPLETED",
+                },
+                Object {
+                  "__typename": "Milestone",
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                  "name": "Milestone 1: Order placed",
+                  "status": "ACTIVE",
+                },
+                Object {
+                  "__typename": "Milestone",
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                  "name": "Milestone 2: Order shipped",
+                  "status": "AVAILABLE",
+                },
+              ],
+              "nodes": Array [
+                Object {
+                  "__typename": "NodeInstance",
+                  "definitionId": "EndEvent_1",
+                  "enter": 2019-10-22T03:37:30.798Z,
+                  "exit": 2019-10-22T03:37:30.798Z,
+                  "id": "27107f38-d888-4edf-9a4f-11b9e6d751b6",
+                  "name": "End Event 1",
+                  "nodeId": "1",
+                  "type": "EndNode",
+                },
+                Object {
+                  "__typename": "NodeInstance",
+                  "definitionId": "ServiceTask_1",
+                  "enter": 2019-10-22T03:37:30.795Z,
+                  "exit": 2019-10-22T03:37:30.798Z,
+                  "id": "41b3f49e-beb3-4b5f-8130-efd28f82b971",
+                  "name": "Book hotel",
+                  "nodeId": "2",
+                  "type": "WorkItemNode",
+                },
+                Object {
+                  "__typename": "NodeInstance",
+                  "definitionId": "StartEvent_1",
+                  "enter": 2019-10-22T03:37:30.793Z,
+                  "exit": 2019-10-22T03:37:30.795Z,
+                  "id": "4165a571-2c79-4fd0-921e-c6d5e7851b67",
+                  "name": "StartProcess",
+                  "nodeId": "2",
+                  "type": "StartNode",
+                },
+              ],
+              "parentProcessInstance": Object {
+                "businessKey": "T1234",
+                "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+                "processName": "travels",
+              },
+              "parentProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+              "processId": "hotelBooking",
+              "processName": "HotelBooking",
+              "roles": Array [],
+              "serviceUrl": "http://localhost:4000",
+              "start": 2019-10-22T03:40:44.089Z,
+              "state": "COMPLETED",
+              "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+            },
+          },
+        ],
+      },
+      "rescheduleJob": [MockFunction],
+    }
+  }
+  id="a1e139d5-4e77-48c9-84ae-34578e904e5a"
+  isEnvelopeConnectedToChannel={true}
+>
+  <Grid
+    hasGutter={true}
+    lg={6}
+    md={1}
+    span={12}
+    xl={4}
+  >
+    <div
+      className="pf-l-grid pf-m-all-12-col pf-m-all-1-col-on-md pf-m-all-6-col-on-lg pf-m-all-4-col-on-xl pf-m-gutter"
+    >
+      <GridItem
+        span={12}
+      >
+        <div
+          className="pf-l-grid__item pf-m-12-col"
+        >
+          <Split
+            className="pf-u-align-items-center"
+            component="div"
+            hasGutter={true}
+          >
+            <div
+              className="pf-l-split pf-m-gutter pf-u-align-items-center"
+            >
+              <SplitItem
+                isFilled={true}
+              >
+                <div
+                  className="pf-l-split__item pf-m-fill"
+                >
+                  <Title
+                    className="kogito-process-details--details__title"
+                    headingLevel="h2"
+                    size="4xl"
+                  >
+                    <h2
+                      className="pf-c-title pf-m-4xl kogito-process-details--details__title"
+                    >
+                      <ItemDescriptor
+                        itemDescription={
+                          Object {
+                            "description": "T1234HotelBooking01",
+                            "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                            "name": "HotelBooking",
+                          }
+                        }
+                      >
+                        <Tooltip
+                          content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
+                          data-ouia-component-type="item-descriptor"
+                          data-ouia-safe={true}
+                        >
+                          <Popper
+                            appendTo={[Function]}
+                            distance={15}
+                            enableFlip={true}
+                            flipBehavior={
+                              Array [
+                                "top",
+                                "right",
+                                "bottom",
+                                "left",
+                                "top",
+                                "right",
+                                "bottom",
+                              ]
+                            }
+                            isVisible={false}
+                            onBlur={[Function]}
+                            onDocumentClick={false}
+                            onDocumentKeyDown={[Function]}
+                            onFocus={[Function]}
+                            onMouseEnter={[Function]}
+                            onMouseLeave={[Function]}
+                            onTriggerEnter={[Function]}
+                            placement="top"
+                            popper={
+                              <div
+                                className="pf-c-tooltip"
+                                data-ouia-component-type="item-descriptor"
+                                data-ouia-safe={true}
+                                id="pf-tooltip-2"
+                                role="tooltip"
+                                style={
+                                  Object {
+                                    "maxWidth": null,
+                                    "opacity": 0,
+                                    "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
+                                  }
+                                }
+                              >
+                                <TooltipArrow />
+                                <TooltipContent
+                                  isLeftAligned={false}
+                                >
+                                  a1e139d5-4e77-48c9-84ae-34578e904e5a
+                                </TooltipContent>
+                              </div>
+                            }
+                            popperMatchesTriggerWidth={false}
+                            positionModifiers={
+                              Object {
+                                "bottom": "pf-m-bottom",
+                                "left": "pf-m-left",
+                                "right": "pf-m-right",
+                                "top": "pf-m-top",
+                              }
+                            }
+                            trigger={
+                              <span
+                                aria-describedby="pf-tooltip-2"
+                              >
+                                HotelBooking
+                                 
+                                <Badge>
+                                  T1234HotelBooking01
+                                </Badge>
+                              </span>
+                            }
+                            zIndex={9999}
+                          >
+                            <FindRefWrapper
+                              onFoundRef={[Function]}
+                            >
+                              <span
+                                aria-describedby="pf-tooltip-2"
+                              >
+                                HotelBooking
+                                 
+                                <Badge>
+                                  <span
+                                    className="pf-c-badge pf-m-unread"
+                                  >
+                                    T1234HotelBooking01
+                                  </span>
+                                </Badge>
+                              </span>
+                            </FindRefWrapper>
+                          </Popper>
+                        </Tooltip>
+                      </ItemDescriptor>
+                    </h2>
+                  </Title>
+                </div>
+              </SplitItem>
+              <SplitItem>
+                <div
+                  className="pf-l-split__item"
+                >
+                  <OverflowMenu
+                    breakpoint="lg"
+                  >
+                    <div
+                      className="pf-c-overflow-menu"
+                    >
+                      <OverflowMenuContent
+                        isPersistent={true}
+                      >
+                        <div
+                          className="pf-c-overflow-menu__content"
+                        >
+                          <OverflowMenuGroup
+                            groupType="button"
+                            isPersistent={true}
+                          >
+                            <div
+                              className="pf-c-overflow-menu__group pf-m-button-group"
+                            >
+                              <Button
+                                className="kogito-process-details--details__buttonMargin"
+                                id="save-button"
+                                isDisabled={true}
+                                onClick={[Function]}
+                                variant="secondary"
+                              >
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-secondary pf-m-disabled kogito-process-details--details__buttonMargin"
+                                  data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="save-button"
+                                  onClick={[Function]}
+                                  role={null}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Save
+                                </button>
+                              </Button>
+                              <Button
+                                isDisabled={true}
+                                variant="secondary"
+                              >
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-secondary pf-m-disabled"
+                                  data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  role={null}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Abort
+                                </button>
+                              </Button>
+                              <Button
+                                aria-label="Refresh list"
+                                id="refresh-button"
+                                onClick={[Function]}
+                                variant="plain"
+                              >
+                                <button
+                                  aria-disabled={false}
+                                  aria-label="Refresh list"
+                                  className="pf-c-button pf-m-plain"
+                                  data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={false}
+                                  id="refresh-button"
+                                  onClick={[Function]}
+                                  role={null}
+                                  type="button"
+                                >
+                                  <SyncIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 512 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                                      />
+                                    </svg>
+                                  </SyncIcon>
+                                </button>
+                              </Button>
+                            </div>
+                          </OverflowMenuGroup>
+                        </div>
+                      </OverflowMenuContent>
+                    </div>
+                  </OverflowMenu>
+                </div>
+              </SplitItem>
+            </div>
+          </Split>
+        </div>
+      </GridItem>
+    </div>
+  </Grid>
+  <Flex
+    className="kogito-process-details--details__marginSpaces"
+    direction={
+      Object {
+        "default": "column",
+        "lg": "row",
+      }
+    }
+  >
+    <div
+      className="pf-l-flex pf-m-column pf-m-row-on-lg kogito-process-details--details__marginSpaces"
+    >
+      <Flex
+        direction={
+          Object {
+            "default": "column",
+          }
+        }
+      >
+        <div
+          className="pf-l-flex pf-m-column"
+        >
+          <Flex>
+            <div
+              className="pf-l-flex"
+            >
+              <FlexItem>
+                <div
+                  className=""
+                >
+                  <Card>
+                    <article
+                      className="pf-c-card"
+                      data-ouia-component-id="OUIA-Generated-Card-2"
+                      data-ouia-component-type="PF4/Card"
+                      data-ouia-safe={true}
+                      id=""
+                    >
+                       
+                      <MockedProcessDiagram
+                        svg={
+                          <InlineSVG
+                            cacheRequests={true}
+                            src="<svg version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"800\\" height=\\"300\\" viewBox=\\"0 0 1748 632\\"></g></g></svg>"
+                            uniquifyIDs={false}
+                          />
+                        }
+                      />
+                       
+                    </article>
+                  </Card>
+                </div>
+              </FlexItem>
+            </div>
+          </Flex>
+          <Flex>
+            <div
+              className="pf-l-flex"
+            >
+              <Flex
+                direction={
+                  Object {
+                    "default": "column",
+                  }
+                }
+                flex={
+                  Object {
+                    "default": "flex_1",
+                  }
+                }
+              >
+                <div
+                  className="pf-l-flex pf-m-flex-1 pf-m-column"
+                >
+                  <FlexItem>
+                    <div
+                      className=""
+                    >
+                      Process Details
+                    </div>
+                  </FlexItem>
+                  <FlexItem>
+                    <div
+                      className=""
+                    >
+                      Milestones
+                    </div>
+                  </FlexItem>
+                </div>
+              </Flex>
+              <Flex
+                direction={
+                  Object {
+                    "default": "column",
+                  }
+                }
+                flex={
+                  Object {
+                    "default": "flex_1",
+                  }
+                }
+              >
+                <div
+                  className="pf-l-flex pf-m-flex-1 pf-m-column"
+                />
+              </Flex>
+            </div>
+          </Flex>
+        </div>
+      </Flex>
+      <Flex
+        direction={
+          Object {
+            "default": "column",
+          }
+        }
+        flex={
+          Object {
+            "default": "flex_1",
+          }
+        }
+      >
+        <div
+          className="pf-l-flex pf-m-flex-1 pf-m-column"
+        >
+          <FlexItem>
+            <div
+              className=""
+            >
+              Process Timeline
+            </div>
+          </FlexItem>
+          <FlexItem>
+            <div
+              className=""
+            >
+              <MockedJobsPanel
+                driver={
+                  Object {
+                    "abortProcess": [MockFunction],
+                    "cancelJob": [MockFunction],
+                    "getProcessDiagram": [MockFunction] {
+                      "calls": Array [
+                        Array [
+                          Object {
+                            "addons": Array [
+                              "process-management",
+                            ],
+                            "businessKey": "T1234HotelBooking01",
+                            "childProcessInstances": Array [],
+                            "end": 2019-10-22T05:40:44.089Z,
+                            "endpoint": "http://localhost:4000",
+                            "error": Object {
+                              "__typename": "ProcessInstanceError",
+                              "message": "some thing went wrong",
+                              "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+                            },
+                            "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                            "lastUpdate": 2021-04-22T14:53:04.000Z,
+                            "milestones": Array [
+                              Object {
+                                "__typename": "Milestone",
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                                "name": "Manager decision",
+                                "status": "COMPLETED",
+                              },
+                              Object {
+                                "__typename": "Milestone",
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                                "name": "Milestone 1: Order placed",
+                                "status": "ACTIVE",
+                              },
+                              Object {
+                                "__typename": "Milestone",
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                                "name": "Milestone 2: Order shipped",
+                                "status": "AVAILABLE",
+                              },
+                            ],
+                            "nodes": Array [
+                              Object {
+                                "__typename": "NodeInstance",
+                                "definitionId": "EndEvent_1",
+                                "enter": 2019-10-22T03:37:30.798Z,
+                                "exit": 2019-10-22T03:37:30.798Z,
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d751b6",
+                                "name": "End Event 1",
+                                "nodeId": "1",
+                                "type": "EndNode",
+                              },
+                              Object {
+                                "__typename": "NodeInstance",
+                                "definitionId": "ServiceTask_1",
+                                "enter": 2019-10-22T03:37:30.795Z,
+                                "exit": 2019-10-22T03:37:30.798Z,
+                                "id": "41b3f49e-beb3-4b5f-8130-efd28f82b971",
+                                "name": "Book hotel",
+                                "nodeId": "2",
+                                "type": "WorkItemNode",
+                              },
+                              Object {
+                                "__typename": "NodeInstance",
+                                "definitionId": "StartEvent_1",
+                                "enter": 2019-10-22T03:37:30.793Z,
+                                "exit": 2019-10-22T03:37:30.795Z,
+                                "id": "4165a571-2c79-4fd0-921e-c6d5e7851b67",
+                                "name": "StartProcess",
+                                "nodeId": "2",
+                                "type": "StartNode",
+                              },
+                            ],
+                            "parentProcessInstance": Object {
+                              "businessKey": "T1234",
+                              "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+                              "processName": "travels",
+                            },
+                            "parentProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+                            "processId": "hotelBooking",
+                            "processName": "HotelBooking",
+                            "roles": Array [],
+                            "serviceUrl": "http://localhost:4000",
+                            "start": 2019-10-22T03:40:44.089Z,
+                            "state": "COMPLETED",
+                            "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+                          },
+                        ],
+                      ],
+                      "results": Array [
+                        Object {
+                          "type": "return",
+                          "value": Object {
+                            "svg": "<svg version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"800\\" height=\\"300\\" viewBox=\\"0 0 1748 632\\"></g></g></svg>",
+                          },
+                        },
+                      ],
+                    },
+                    "jobsQuery": [MockFunction] {
+                      "calls": Array [
+                        Array [
+                          "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                        ],
+                      ],
+                      "results": Array [
+                        Object {
+                          "type": "return",
+                          "value": Array [
+                            Object {
+                              "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                              "endpoint": "http://localhost:4000/jobs",
+                              "executionCounter": 0,
+                              "expirationTime": 2020-08-29T04:35:54.631Z,
+                              "id": "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
+                              "lastUpdate": 2020-06-29T03:35:54.635Z,
+                              "priority": 0,
+                              "processId": "travels",
+                              "processInstanceId": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                              "repeatInterval": null,
+                              "repeatLimit": null,
+                              "retries": 2,
+                              "rootProcessId": "",
+                              "scheduledId": null,
+                              "status": "SCHEDULED",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    "processDetailsQuery": [MockFunction] {
+                      "calls": Array [
+                        Array [
+                          "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                        ],
+                      ],
+                      "results": Array [
+                        Object {
+                          "type": "return",
+                          "value": Object {
+                            "addons": Array [
+                              "process-management",
+                            ],
+                            "businessKey": "T1234HotelBooking01",
+                            "childProcessInstances": Array [],
+                            "end": 2019-10-22T05:40:44.089Z,
+                            "endpoint": "http://localhost:4000",
+                            "error": Object {
+                              "__typename": "ProcessInstanceError",
+                              "message": "some thing went wrong",
+                              "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-34578e904e6b",
+                            },
+                            "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                            "lastUpdate": 2021-04-22T14:53:04.000Z,
+                            "milestones": Array [
+                              Object {
+                                "__typename": "Milestone",
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                                "name": "Manager decision",
+                                "status": "COMPLETED",
+                              },
+                              Object {
+                                "__typename": "Milestone",
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                                "name": "Milestone 1: Order placed",
+                                "status": "ACTIVE",
+                              },
+                              Object {
+                                "__typename": "Milestone",
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                                "name": "Milestone 2: Order shipped",
+                                "status": "AVAILABLE",
+                              },
+                            ],
+                            "nodes": Array [
+                              Object {
+                                "__typename": "NodeInstance",
+                                "definitionId": "EndEvent_1",
+                                "enter": 2019-10-22T03:37:30.798Z,
+                                "exit": 2019-10-22T03:37:30.798Z,
+                                "id": "27107f38-d888-4edf-9a4f-11b9e6d751b6",
+                                "name": "End Event 1",
+                                "nodeId": "1",
+                                "type": "EndNode",
+                              },
+                              Object {
+                                "__typename": "NodeInstance",
+                                "definitionId": "ServiceTask_1",
+                                "enter": 2019-10-22T03:37:30.795Z,
+                                "exit": 2019-10-22T03:37:30.798Z,
+                                "id": "41b3f49e-beb3-4b5f-8130-efd28f82b971",
+                                "name": "Book hotel",
+                                "nodeId": "2",
+                                "type": "WorkItemNode",
+                              },
+                              Object {
+                                "__typename": "NodeInstance",
+                                "definitionId": "StartEvent_1",
+                                "enter": 2019-10-22T03:37:30.793Z,
+                                "exit": 2019-10-22T03:37:30.795Z,
+                                "id": "4165a571-2c79-4fd0-921e-c6d5e7851b67",
+                                "name": "StartProcess",
+                                "nodeId": "2",
+                                "type": "StartNode",
+                              },
+                            ],
+                            "parentProcessInstance": Object {
+                              "businessKey": "T1234",
+                              "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+                              "processName": "travels",
+                            },
+                            "parentProcessInstanceId": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+                            "processId": "hotelBooking",
+                            "processName": "HotelBooking",
+                            "roles": Array [],
+                            "serviceUrl": "http://localhost:4000",
+                            "start": 2019-10-22T03:40:44.089Z,
+                            "state": "COMPLETED",
+                            "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+                          },
+                        },
+                      ],
+                    },
+                    "rescheduleJob": [MockFunction],
+                  }
+                }
+                jobs={
+                  Array [
+                    Object {
+                      "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                      "endpoint": "http://localhost:4000/jobs",
+                      "executionCounter": 0,
+                      "expirationTime": 2020-08-29T04:35:54.631Z,
+                      "id": "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
+                      "lastUpdate": 2020-06-29T03:35:54.635Z,
+                      "priority": 0,
+                      "processId": "travels",
+                      "processInstanceId": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+                      "repeatInterval": null,
+                      "repeatLimit": null,
+                      "retries": 2,
+                      "rootProcessId": "",
+                      "scheduledId": null,
+                      "status": "SCHEDULED",
+                    },
+                  ]
+                }
+              />
+            </div>
+          </FlexItem>
+        </div>
+      </Flex>
+      <Modal
+        actions={
+          Array [
+            <Button
+              id="retry-button"
+              onClick={[Function]}
+              variant="primary"
+            >
+              Retry
+            </Button>,
+            <Button
+              id="discard-button"
+              onClick={[Function]}
+              variant="link"
+            >
+              Discard
+            </Button>,
+          ]
+        }
+        appendTo={[Function]}
+        aria-describedby=""
+        aria-label="Error modal"
+        aria-labelledby="Error modal"
+        className=""
+        hasNoBodyWrapper={false}
+        header={
+          <React.Fragment>
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--danger-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+              Error
+            </Title>
+          </React.Fragment>
+        }
+        isOpen={false}
+        onClose={[Function]}
+        ouiaSafe={true}
+        showClose={true}
+        title=""
+        titleIconVariant={null}
+        titleLabel=""
+        variant="small"
+      >
+        <Portal
+          containerInfo={<div />}
+        >
+          <ModalContent
+            actions={
+              Array [
+                <Button
+                  id="retry-button"
+                  onClick={[Function]}
+                  variant="primary"
+                >
+                  Retry
+                </Button>,
+                <Button
+                  id="discard-button"
+                  onClick={[Function]}
+                  variant="link"
+                >
+                  Discard
+                </Button>,
+              ]
+            }
+            aria-describedby=""
+            aria-label="Error modal"
+            aria-labelledby="Error modal"
+            boxId="pf-modal-part-1"
+            className=""
+            descriptorId="pf-modal-part-3"
+            hasNoBodyWrapper={false}
+            header={
+              <React.Fragment>
+                <Title
+                  headingLevel="h1"
+                  size="2xl"
+                >
+                  <InfoCircleIcon
+                    className="pf-u-mr-sm"
+                    color="var(--pf-global--danger-color--100)"
+                    noVerticalAlign={false}
+                    size="sm"
+                  />
+                  Error
+                </Title>
+              </React.Fragment>
+            }
+            isOpen={false}
+            labelId="pf-modal-part-2"
+            onClose={[Function]}
+            ouiaId="OUIA-Generated-Modal-small-2"
+            ouiaSafe={true}
+            showClose={true}
+            title=""
+            titleIconVariant={null}
+            titleLabel=""
+            variant="small"
+          />
+        </Portal>
+      </Modal>
+      <Modal
+        actions={
+          Array [
+            <Button
+              id="confirm-button"
+              onClick={[Function]}
+              variant="primary"
+            >
+              Ok
+            </Button>,
+            <Button
+              id="cancel-button"
+              onClick={[Function]}
+              variant="link"
+            >
+              Cancel
+            </Button>,
+          ]
+        }
+        appendTo={[Function]}
+        aria-describedby=""
+        aria-label="Confirmation modal"
+        aria-labelledby="Confirmation modal"
+        className=""
+        hasNoBodyWrapper={false}
+        header={
+          <React.Fragment>
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--warning-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+              Refresh
+            </Title>
+          </React.Fragment>
+        }
+        isOpen={false}
+        onClose={[Function]}
+        ouiaSafe={true}
+        showClose={true}
+        title=""
+        titleIconVariant={null}
+        titleLabel=""
+        variant="small"
+      >
+        <Portal
+          containerInfo={<div />}
+        >
+          <ModalContent
+            actions={
+              Array [
+                <Button
+                  id="confirm-button"
+                  onClick={[Function]}
+                  variant="primary"
+                >
+                  Ok
+                </Button>,
+                <Button
+                  id="cancel-button"
+                  onClick={[Function]}
+                  variant="link"
+                >
+                  Cancel
+                </Button>,
+              ]
+            }
+            aria-describedby=""
+            aria-label="Confirmation modal"
+            aria-labelledby="Confirmation modal"
+            boxId="pf-modal-part-2"
+            className=""
+            descriptorId="pf-modal-part-4"
+            hasNoBodyWrapper={false}
+            header={
+              <React.Fragment>
+                <Title
+                  headingLevel="h1"
+                  size="2xl"
+                >
+                  <InfoCircleIcon
+                    className="pf-u-mr-sm"
+                    color="var(--pf-global--warning-color--100)"
+                    noVerticalAlign={false}
+                    size="sm"
+                  />
+                  Refresh
+                </Title>
+              </React.Fragment>
+            }
+            isOpen={false}
+            labelId="pf-modal-part-3"
+            onClose={[Function]}
+            ouiaId="OUIA-Generated-Modal-small-3"
+            ouiaSafe={true}
+            showClose={true}
+            title=""
+            titleIconVariant={null}
+            titleLabel=""
+            variant="small"
+          />
+        </Portal>
+      </Modal>
+    </div>
+  </Flex>
+  <ProcessInfoModal
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    modalContent=""
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <span>
+          
+        </span>
+      </Title>
+    }
+    processName="HotelBooking"
+  >
+    <Modal
+      actions={
+        Array [
+          <Button
+            onClick={[Function]}
+            variant="primary"
+          >
+            OK
+          </Button>,
+        ]
+      }
+      appendTo={[Function]}
+      aria-describedby=""
+      aria-label="process list modal"
+      aria-labelledby="process list modal"
+      className=""
+      data-ouia-component-type="process-list-modal"
+      data-ouia-safe={true}
+      hasNoBodyWrapper={false}
+      header={
+        <Title
+          headingLevel="h1"
+          size="2xl"
+        >
+          <span>
+            
+          </span>
+        </Title>
+      }
+      isOpen={false}
+      onClose={[Function]}
+      ouiaSafe={true}
+      showClose={true}
+      title=""
+      titleIconVariant={null}
+      titleLabel=""
+      variant="small"
+    >
+      <Portal
+        containerInfo={<div />}
+      >
+        <ModalContent
+          actions={
+            Array [
+              <Button
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Button>,
+            ]
+          }
+          aria-describedby=""
+          aria-label="process list modal"
+          aria-labelledby="process list modal"
+          boxId="pf-modal-part-0"
+          className=""
+          data-ouia-component-type="process-list-modal"
+          data-ouia-safe={true}
+          descriptorId="pf-modal-part-2"
+          hasNoBodyWrapper={false}
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <span>
+                
+              </span>
+            </Title>
+          }
+          isOpen={false}
+          labelId="pf-modal-part-1"
+          onClose={[Function]}
+          ouiaId="OUIA-Generated-Modal-small-1"
+          ouiaSafe={true}
+          showClose={true}
+          title=""
+          titleIconVariant={null}
+          titleLabel=""
+          variant="small"
+        />
+      </Portal>
+    </Modal>
+  </ProcessInfoModal>
+</ProcessDetails>
+`;

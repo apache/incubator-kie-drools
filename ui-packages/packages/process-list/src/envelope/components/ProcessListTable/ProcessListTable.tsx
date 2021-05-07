@@ -43,6 +43,7 @@ import {
   ProcessInstanceIconCreator
 } from '../utils/ProcessListUtils';
 import { ProcessListDriver } from '../../../api';
+import '../styles.css';
 
 interface ProcessListTableProps {
   processInstances: ProcessInstance[];
@@ -78,6 +79,10 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   const [rowPairs, setRowPairs] = useState<any>([]);
   const columns: string[] = ['Id', 'Status', 'Created', 'Last update'];
 
+  const handleClick = processInstance => {
+    driver.openProcess(processInstance);
+  };
+
   useEffect(() => {
     if (!_.isEmpty(processInstances)) {
       const tempRows = [];
@@ -86,7 +91,11 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
           id: processInstance.id,
           parent: [
             <>
-              <div>
+              <a
+                className="kogito-process-list__link"
+                onClick={() => handleClick(processInstance)}
+                {...componentOuiaProps(ouiaId, 'task-description', ouiaSafe)}
+              >
                 <strong>
                   <ItemDescriptor
                     itemDescription={getProcessInstanceDescription(
@@ -94,7 +103,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                     )}
                   />
                 </strong>
-              </div>
+              </a>
               <EndpointLink
                 serviceUrl={processInstance.serviceUrl}
                 isLinkShown={false}

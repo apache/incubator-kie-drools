@@ -32,6 +32,10 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
     return this.driver.initialLoad(filter, sortBy);
   }
 
+  processList__openProcess(process: ProcessInstance): Promise<void> {
+    return this.driver.openProcess(process);
+  }
+
   processList__applyFilter(filter: ProcessInstanceFilter): Promise<void> {
     return this.driver.applyFilter(filter);
   }

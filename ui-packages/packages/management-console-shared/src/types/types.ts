@@ -112,3 +112,24 @@ export interface ProcessInstance {
   lastUpdate: Date;
   businessKey?: string;
 }
+
+export interface SvgSuccessResponse {
+  svg: string;
+  error?: never;
+}
+
+export interface SvgErrorResponse {
+  error: string;
+  svg?: never;
+}
+
+enum TitleType {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
+export interface AbortResponse {
+  title: string;
+  content: string;
+  type: TitleType;
+}

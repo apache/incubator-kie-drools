@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
+<ForwardRef
+  driver={
+    Object {
+      "abortProcess": [MockFunction],
+      "cancelJob": [MockFunction],
+      "getProcessDiagram": [MockFunction],
+      "jobsQuery": [MockFunction],
+      "processDetailsQuery": [MockFunction],
+      "rescheduleJob": [MockFunction],
+    }
+  }
+  processId="a1e139d5-4e77-48c9-84ae-34578e904e5a"
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;

@@ -15,10 +15,10 @@
  */
 
 .kogito-process-details--details__title small {
-    --pf-c-content--small--Color: var(--pf-global--Color--100);
+    --pf-c-content--small--Color: var(--pf-global--Color--100) !important;
 }
 .kogito-process-details--details__buttonMargin {
-    margin-right: var(--pf-global--spacer--md)
+    margin-right: var(--pf-global--spacer--md) !important;
 }
 .kogito-process-details--details__marginSpaces {
     margin-top: 20px; 

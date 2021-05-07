@@ -50,7 +50,7 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
       const response = await this.client.query({
         query: GraphQL.GetJobsByProcessInstanceIdDocument,
         variables: {
-          id
+          processInstanceId: id
         },
         fetchPolicy: 'network-only'
       });

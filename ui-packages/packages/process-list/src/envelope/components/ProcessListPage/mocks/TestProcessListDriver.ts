@@ -43,6 +43,10 @@ export default class TestProcessListDriver implements ProcessListDriver {
     this.doSetState(filter, sortBy);
     return Promise.resolve();
   }
+
+  openProcess(process: ProcessInstance): Promise<void> {
+    return Promise.resolve();
+  }
   applyFilter(filter: ProcessInstanceFilter): Promise<void> {
     // do nothing
     return Promise.resolve();

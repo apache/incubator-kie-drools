@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { OUIAProps } from '@kogito-apps/components-common';
 import { EmbeddedProcessList } from '@kogito-apps/process-list';
 import { ProcessListGatewayApi } from '../../../channel/ProcessList';
 import { useProcessListGatewayApi } from '../../../channel/ProcessList/ProcessListContext';
+import { ProcessInstance } from '@kogito-apps/management-console-shared';
 
 const ProcessListContainer: React.FC<OUIAProps> = () => {
+  const history = useHistory();
   const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
+
+  useEffect(() => {
+    const unsubscriber = gatewayApi.onOpenProcessListen({
+      onOpen(process: ProcessInstance) {
+        history.push(`/Process/${process.id}`);
+      }
+    });
+
+    return () => {
+      unsubscriber.unSubscribe();
+    };
+  }, []);
+
   return (
     <EmbeddedProcessList
       driver={gatewayApi}

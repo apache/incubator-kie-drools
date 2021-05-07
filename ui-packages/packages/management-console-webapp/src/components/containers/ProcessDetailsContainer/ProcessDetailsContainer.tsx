@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
 import { EmbeddedProcessDetails } from '@kogito-apps/process-details';
 import { ProcessDetailsGatewayApi } from '../../../channel/ProcessDetails';
 import { useProcessDetailsGatewayApi } from '../../../channel/ProcessDetails/ProcessDetailsContext';
@@ -25,10 +25,11 @@ interface ProcessDetailsContainerProps {
 }
 
 const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
-  OUIAProps> = ({ processId }) => {
+  OUIAProps> = ({ processId, ouiaId, ouiaSafe }) => {
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
   return (
     <EmbeddedProcessDetails
+      {...componentOuiaProps(ouiaId, 'process-details-container', ouiaSafe)}
       driver={gatewayApi}
       targetOrigin={window.location.origin}
       processId={processId}

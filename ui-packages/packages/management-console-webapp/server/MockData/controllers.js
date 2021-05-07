@@ -2,7 +2,7 @@ const restData = require('./rest');
 const graphData = require('./graphql');
 const path = require('path');
 
-const processSvg = ['8035b580-6ae4-4aa8-9ec0-e18e19809e0b','8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop', '2d962eef-45b8-48a9-ad4e-9cde0ad6af88', 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e']
+const processSvg = ['8035b580-6ae4-4aa8-9ec0-e18e19809e0b','a1e139d5-4e77-48c9-84ae-34578e904e5a','8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop', '2d962eef-45b8-48a9-ad4e-9cde0ad6af88', 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e']
 module.exports = controller = {
   showError: (req, res) => {
     console.log('called', req.params.processId, req.params.processInstanceId);
@@ -187,6 +187,7 @@ module.exports = controller = {
     try {
       if(processSvg.includes(req.params.id)){
         if(req.params.processId === 'travels') {
+          console.log('travels')
           res.sendFile(path.resolve(__dirname+'/../static/travels.svg'))
         } else if (req.params.processId === 'flightBooking') {
           res.sendFile(path.resolve(__dirname+'/../static/flightBooking.svg'))

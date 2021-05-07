@@ -21,6 +21,17 @@ import {
   JobsManagementGatewayApiImpl
 } from '../JobsManagementGatewayApi';
 import { GraphQL } from '@kogito-apps/consoles-common';
+import {
+  handleJobReschedule,
+  jobCancel,
+  performMultipleCancel
+} from '../../../apis/apis';
+
+jest.mock('../../../apis/apis', () => ({
+  handleJobReschedule: jest.fn(),
+  jobCancel: jest.fn(),
+  performMultipleCancel: jest.fn()
+}));
 
 export const JobData: Job = {
   callbackEndpoint:
@@ -99,16 +110,46 @@ describe('JobsManagementChannelApiImpl tests', () => {
     const modalTitle = 'failure';
     const modalContent =
       'The job: eff4ee-11qw23-6675-pokau97-qwedjut45a0fj_0 failed to cancel. Error message: Network Error';
+    //@ts-ignore
+    jobCancel.mockReturnValueOnce({ modalTitle, modalContent });
     const result = await gatewayApi.cancelJob(job);
+    expect(jobCancel).toHaveBeenCalledWith(job);
+    expect(result).toStrictEqual({ modalTitle, modalContent });
+  });
 
-    expect(result).toEqual({ modalTitle, modalContent });
+  it('rescheduleJob', async () => {
+    const modalTitle = 'success';
+    const modalContent = `Reschedule of job: 'eff4ee-11qw23-6675-pokau97-qwedjut45a0fj_0' is successful`;
+    //@ts-ignore
+    handleJobReschedule.mockReturnValueOnce({ modalTitle, modalContent });
+    const repeatInterval = 0;
+    const repeatLimit = 0;
+    const scheduleDate = new Date('2021-08-27T03:35:50.147Z');
+    const rescheduleResult = await gatewayApi.rescheduleJob(
+      job,
+      repeatInterval,
+      repeatLimit,
+      scheduleDate
+    );
+    expect(handleJobReschedule).toHaveBeenCalledWith(
+      job,
+      repeatInterval,
+      repeatLimit,
+      scheduleDate
+    );
+    expect(rescheduleResult).toStrictEqual({
+      modalTitle,
+      modalContent
+    });
   });
 
   it('bulkCancel', async () => {
     const successJobs = [];
     const failedJobs = [job];
+    //@ts-ignore
+    performMultipleCancel.mockReturnValue({ successJobs, failedJobs });
     const result = await gatewayApi.bulkCancel([job]);
-
+    expect(performMultipleCancel).toHaveBeenCalledWith([job]);
     expect(result).toEqual({ successJobs, failedJobs });
   });
 

@@ -18,6 +18,7 @@ import { ProcessListDriver } from '../../../api';
 
 export const MockedProcessListDriver = jest.fn<ProcessListDriver, []>(() => ({
   initialLoad: jest.fn(),
+  openProcess: jest.fn(),
   applySorting: jest.fn(),
   applyFilter: jest.fn(),
   query: jest.fn(),

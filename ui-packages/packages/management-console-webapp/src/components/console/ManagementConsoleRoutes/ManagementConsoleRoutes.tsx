@@ -16,9 +16,12 @@
 
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { JobsManagementPage, ProcessListPage } from '../../pages';
+import {
+  JobsManagementPage,
+  ProcessListPage,
+  ProcessDetailsPage
+} from '../../pages';
 import { PageNotFound, NoData } from '@kogito-apps/consoles-common';
-import ProcessDetailsPage from '../../pages/ProcessDetailsPage/ProcessDetailsPage';
 
 const ManagementConsoleRoutes: React.FC = () => {
   return (

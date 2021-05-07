@@ -19,6 +19,7 @@ import { ProcessInstanceFilter, SortBy } from './ProcessListEnvelopeApi';
 
 export interface ProcessListDriver {
   initialLoad(filter: ProcessInstanceFilter, sortBy: SortBy): Promise<void>;
+  openProcess(process: ProcessInstance): Promise<void>;
   applyFilter(filter: ProcessInstanceFilter): Promise<void>;
   applySorting(sortBy: SortBy): Promise<void>;
   query(offset: number, limit: number): Promise<ProcessInstance[]>;
