@@ -113,8 +113,7 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public List<ReplacedLambdaResult> convertLambdas() {
-        Stream<ReplacedLambdaResult> resultsFromExpr = clone.findAll(MethodCallExpr.class, mc -> EXPR_CALL.equals(mc.getNameAsString()) || EVAL_EXPR_CALL.equals(mc.getNameAsString()))
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromExpr = createStream(clone.findAll(MethodCallExpr.class, mc1 -> EXPR_CALL.equals(mc1.getNameAsString()) || EVAL_EXPR_CALL.equals(mc1.getNameAsString())))
                 .flatMap(methodCallExpr1 -> {
                  if (containsTemporalPredicate(methodCallExpr1)) {
                      return this.convertTemporalExpr(methodCallExpr1);
@@ -124,29 +123,23 @@ public class ExecModelLambdaPostProcessor {
                  }
              });
 
-        Stream<ReplacedLambdaResult> resultsFromIndexedBy = clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString()))
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromIndexedBy = createStream(clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString())))
                 .flatMap(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromAlphaIndexedBy = clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromAlphaIndexedBy = createStream(clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString())))
                 .flatMap(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromBetaIndexedBy = clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromBetaIndexedBy = createStream(clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString())))
                 .flatMap(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromBind = clone.findAll(MethodCallExpr.class, mc -> BIND_CALL.equals(mc.getNameAsString()))
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromBind = createStream(clone.findAll(MethodCallExpr.class, mc -> BIND_CALL.equals(mc.getNameAsString())))
                 .flatMap(this::convertBindCall);
 
-        Stream<ReplacedLambdaResult> resultsFromFrom = clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
-                                                  REACTIVE_FROM_CALL.equals(mc.getNameAsString()))
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromFrom = createStream(clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
+                                                  REACTIVE_FROM_CALL.equals(mc.getNameAsString())))
                 .flatMap(this::convertFromCall);
 
-        Stream<ReplacedLambdaResult> resultsFromExecuteCall = clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
-                .stream().parallel()
+        Stream<ReplacedLambdaResult> resultsFromExecuteCall = createStream(clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall))
                 .flatMap(methodCallExpr -> {
                  List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
                  return extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
@@ -162,6 +155,11 @@ public class ExecModelLambdaPostProcessor {
                 .reduce(Stream::concat)
                 .orElseGet(Stream::empty)
                 .collect(Collectors.toList());
+    }
+
+    private Stream<MethodCallExpr> createStream(List<MethodCallExpr> expressionLists) {
+        return expressionLists
+                .stream().parallel();
     }
 
     private PredicateInformation getPredicateInformation(Optional<String> exprId) {
