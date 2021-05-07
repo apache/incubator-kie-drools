@@ -39,10 +39,10 @@ public class KiePMMLCharacteristic extends AbstractKiePMMLComponent {
      * @param requestData
      * @return
      */
-    public static Optional<Object> getCharacteristicScore(final List<Function<Map<String, Object>, Object>> attributeFunctions, final Map<String, Object> requestData) {
-        Optional<Object> toReturn = Optional.empty();
-        for (Function<Map<String, Object>, Object> function : attributeFunctions) {
-            final Object evaluation = function.apply(requestData);
+    public static Optional<Number> getCharacteristicScore(final List<Function<Map<String, Object>, Number>> attributeFunctions, final Map<String, Object> requestData) {
+        Optional<Number> toReturn = Optional.empty();
+        for (Function<Map<String, Object>, Number> function : attributeFunctions) {
+            final Number evaluation = function.apply(requestData);
             toReturn = Optional.ofNullable(evaluation);
             if (toReturn.isPresent()) {
                 break;

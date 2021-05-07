@@ -134,7 +134,6 @@ public class KiePMMLCharacteristicsFactoryTest {
         assertEquals(1, retrieved.size());
         String expected = String.format(PACKAGE_CLASS_TEMPLATE, PACKAGE_NAME, CONTAINER_CLASS_NAME);
         assertTrue(retrieved.containsKey(expected));
-        System.out.println(retrieved.get(expected));
     }
 
     @Test
@@ -231,19 +230,15 @@ public class KiePMMLCharacteristicsFactoryTest {
     public void getEvaluateAttributeMethodDeclaration() {
         String attributeName = "CharacteristicName_1";
         boolean hasComplexScore = false;
-        Object scoreParam = "OBJECTSCORE";
+        Object scoreParam = 243.4533;
+        // no complex score
         MethodDeclaration retrieved =
                 KiePMMLCharacteristicsFactory.getEvaluateAttributeMethodDeclaration(characteristicTemplate,
                                                                                     CONTAINER_CLASS_NAME, attributeName,
                                                                                     scoreParam,
                                                                                     hasComplexScore);
         commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, hasComplexScore);
-        scoreParam = 243.4533;
-        retrieved = KiePMMLCharacteristicsFactory.getEvaluateAttributeMethodDeclaration(characteristicTemplate,
-                                                                                        CONTAINER_CLASS_NAME,
-                                                                                        attributeName,
-                                                                                        scoreParam,
-                                                                                        hasComplexScore);
+        // complex score
         commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, hasComplexScore);
         scoreParam = null;
         hasComplexScore = true;
@@ -273,13 +268,8 @@ public class KiePMMLCharacteristicsFactoryTest {
                                                                     attributeName);
         expectedMethod = EVALUATE_COMPLEX_SCORE + attributeName;
         assertEquals(1, characteristicsTemplate.getMethodsByName(expectedMethod).size());
-        MethodDeclaration retrieved = characteristicsTemplate.getMethodsByName(expectedMethod).get(0);
-        System.out.println(retrieved);
-        // TODO check created method
         expectedMethod = COMPLEX_SCORE_FUNCTION + attributeName;
         assertEquals(1, characteristicsTemplate.getMethodsByName(expectedMethod).size());
-        retrieved = characteristicsTemplate.getMethodsByName(expectedMethod).get(0);
-        System.out.println(retrieved);
     }
 
     @Test
@@ -305,7 +295,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         assertNotNull(retrieved);
         String expected = EVALUATE_CHARACTERISTIC + characteristicName;
         assertEquals(expected, retrieved.getName().asString());
-        assertEquals("Object", retrieved.getType().asString());
+        assertEquals("Number", retrieved.getType().asString());
         assertTrue(retrieved.getBody().isPresent());
         BlockStmt bodyRetrieved = retrieved.getBody().get();
         // score
@@ -344,7 +334,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         assertNotNull(retrieved);
         String expected = EVALUATE_ATTRIBUTE + attributeName;
         assertEquals(expected, retrieved.getName().asString());
-        assertEquals("Object", retrieved.getType().asString());
+        assertEquals("Number", retrieved.getType().asString());
         assertTrue(retrieved.getBody().isPresent());
         BlockStmt bodyRetrieved = retrieved.getBody().get();
         // predicate function

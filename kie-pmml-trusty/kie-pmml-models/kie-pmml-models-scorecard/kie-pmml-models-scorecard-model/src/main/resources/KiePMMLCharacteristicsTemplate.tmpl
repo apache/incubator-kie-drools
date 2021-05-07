@@ -32,13 +32,13 @@ public class KiePMMLCharacteristicsTemplate extends KiePMMLCharacteristics {
         super(name);
     }
 
-    public static Object evaluateCharacteristics(final Map<String, Object> requestData) {
-            final List<Function<Map<String, Object>, Object>> characteristicFunctions = null;
-            if (characteristicFunctions.isEmpty()) {
-                return null;
-            }
-            Optional<Object> characteristicScore = KiePMMLCharacteristic.getCharacteristicScore(characteristicFunctions, requestData);
-            return characteristicScore.orElse(null);
+    public static Number evaluateCharacteristics(final Map<String, Object> requestData) {
+        final List<Function<Map<String, Object>, Number>> characteristicFunctions = null;
+        if (characteristicFunctions.isEmpty()) {
+            return null;
+        }
+        Optional<Number> characteristicScore = KiePMMLCharacteristic.getCharacteristicScore(characteristicFunctions, requestData);
+        return characteristicScore.orElse(null);
     }
 
 

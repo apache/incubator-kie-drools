@@ -63,8 +63,7 @@ import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PREDICATE_FUNCTION;
 import static org.kie.pmml.commons.Constants.SCORE;
 import static org.kie.pmml.commons.Constants.STRING_OBJECT_MAP;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getKiePMMLNameValueListExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getStringObjectMapExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getExpressionMethodDeclarationWithStringObjectMap;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 
@@ -277,8 +276,7 @@ public class KiePMMLCharacteristicsFactory {
             throw new IllegalArgumentException("Missing required Expression in ComplexPartialScore " + complexPartialScore);
         }
         String expressionMethodName = COMPLEX_SCORE_FUNCTION + attributeName;
-        MethodDeclaration retrieved = getStringObjectMapExpressionMethodDeclaration(expressionMethodName, expression, DataType.DOUBLE,
-                                                                                         Collections.emptyList());
+        MethodDeclaration retrieved = getExpressionMethodDeclarationWithStringObjectMap(expression, DataType.DOUBLE, expressionMethodName);
         retrieved.setModifiers(Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
         CommonCodegenUtils.addMethodDeclarationToClass(characteristicsTemplate, retrieved);
         final MethodDeclaration evaluateComplexScoreMethod =

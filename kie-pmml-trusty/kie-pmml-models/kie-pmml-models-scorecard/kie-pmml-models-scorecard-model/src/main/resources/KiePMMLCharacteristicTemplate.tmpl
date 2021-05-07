@@ -29,14 +29,14 @@ import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
 
 public class KiePMMLCharacteristicTemplate {
 
-    private static Object evaluateCharacteristic(final Map<String, Object> stringObjectMap) {
-            final List<Function<Map<String, Object>, Object>> attributeFunctions = null;
-            final Object score = null;
+    private static Number evaluateCharacteristic(final Map<String, Object> stringObjectMap) {
+            final List<Function<Map<String, Object>, Number>> attributeFunctions = null;
+            final Number score = null;
 
             if (attributeFunctions.isEmpty()) {
                 return score;
             }
-            Optional<Object> characteristicScore = KiePMMLCharacteristic.getCharacteristicScore(attributeFunctions, stringObjectMap);
+            Optional<Number> characteristicScore = KiePMMLCharacteristic.getCharacteristicScore(attributeFunctions, stringObjectMap);
             return characteristicScore.orElse(score);
     }
 
@@ -46,7 +46,7 @@ public class KiePMMLCharacteristicTemplate {
                 return null;
            }
            final Number score = null;
-           final Function<Map<String, Object>, Object> evaluateComplexScoreFunction = null;
+           final Function<Map<String, Object>, Number> evaluateComplexScoreFunction = null;
            return evaluateComplexScoreFunction != null ? evaluateComplexScoreFunction.apply(stringObjectMap) : score;
     }
 
