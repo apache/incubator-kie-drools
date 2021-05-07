@@ -37,7 +37,6 @@ import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
 import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
-import org.kie.internal.conf.ParallelLambdaExternalizationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
@@ -536,30 +535,8 @@ public class KnowledgeBaseConfigurationTest {
         assertEquals( "",
                       config.getProperty( "drools.ruleBaseUpdateHandler" ) );
     }
-
-    @Test
-    public void ParallelLambdaExternalizationOption() {
-        // setting the option using the type safe method
-        config.setOption(ParallelLambdaExternalizationOption.YES );
-
-        // checking the type safe getOption() method
-        assertEquals( ParallelLambdaExternalizationOption.YES,
-                      config.getOption( ParallelLambdaExternalizationOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "true",
-                      config.getProperty( ParallelLambdaExternalizationOption.PROPERTY_NAME ) );
-
-        // setting the options using the string based setProperty() method
-        config.setProperty( ParallelLambdaExternalizationOption.PROPERTY_NAME,
-                            "false" );
-
-        // checking the type safe getOption() method
-        assertEquals( ParallelLambdaExternalizationOption.NO,
-                      config.getOption( ParallelLambdaExternalizationOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "false",
-                      config.getProperty( ParallelLambdaExternalizationOption.PROPERTY_NAME ) );
-    }
+    
+    
     
 
 }
