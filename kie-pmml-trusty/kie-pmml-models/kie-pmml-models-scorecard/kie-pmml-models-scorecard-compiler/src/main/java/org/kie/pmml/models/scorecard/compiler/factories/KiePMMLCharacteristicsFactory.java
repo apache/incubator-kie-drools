@@ -38,6 +38,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Predicate;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
@@ -90,12 +91,14 @@ public class KiePMMLCharacteristicsFactory {
 
     public static KiePMMLCharacteristics getKiePMMLCharacteristics(final Characteristics characteristics,
                                                                    final DataDictionary dataDictionary,
+                                                                   final TransformationDictionary transformationDictionary,
                                                                    final String packageName,
                                                                    final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLCharacteristics {} {}", packageName, characteristics);
         String className = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         String fullClassName = packageName + "." + className;
         final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(characteristics, dataDictionary,
+                                                                                   transformationDictionary,
                                                                                    className, packageName);
         try {
             Class<?> kiePMMLCharacteristicsClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
@@ -107,6 +110,7 @@ public class KiePMMLCharacteristicsFactory {
 
     public static Map<String, String> getKiePMMLCharacteristicsSourcesMap(final Characteristics characteristics,
                                                                           final DataDictionary dataDictionary,
+                                                                          final TransformationDictionary transformationDictionary,
                                                                           final String containerClassName,
                                                                           final String packageName) {
         logger.trace("getKiePMMLCharacteristicsSourcesMap {} {}", characteristics, packageName);
@@ -127,7 +131,7 @@ public class KiePMMLCharacteristicsFactory {
         final NodeList<Expression> evaluateCharacteristicsReferences = new NodeList<>();
         for (Characteristic characteristic : characteristics) {
             String characteristicName = containerClassName + "Characteristic_" + atomicInteger.addAndGet(1);
-            addCharacteristic(characteristicsTemplate, characteristicTemplate, dataDictionary, characteristic,
+            addCharacteristic(characteristicsTemplate, characteristicTemplate, dataDictionary,  transformationDictionary, characteristic,
                               containerClassName, characteristicName);
             MethodReferenceExpr toAdd = new MethodReferenceExpr();
             toAdd.setScope(new NameExpr(containerClassName));
@@ -165,14 +169,18 @@ public class KiePMMLCharacteristicsFactory {
 
     static void addCharacteristic(final ClassOrInterfaceDeclaration characteristicsTemplate,
                                   final ClassOrInterfaceDeclaration characteristicTemplate,
-                                  final DataDictionary dataDictionary, final Characteristic characteristic,
+                                  final DataDictionary dataDictionary,
+                                  final TransformationDictionary transformationDictionary,
+                                  final Characteristic characteristic,
                                   final String containerClassName, final String characteristicName) {
         // Add score
         final AtomicInteger atomicInteger = new AtomicInteger(0);
         final NodeList<Expression> evaluateAttributesReferences = new NodeList<>();
         for (Attribute attribute : characteristic.getAttributes()) {
             String attributeName = characteristicName + "_" + atomicInteger.addAndGet(1);
-            addAttribute(characteristicsTemplate, characteristicTemplate, dataDictionary, attribute,
+            addAttribute(characteristicsTemplate, characteristicTemplate, dataDictionary,
+                         transformationDictionary,
+                         attribute,
                          containerClassName, attributeName);
             MethodReferenceExpr toAdd = new MethodReferenceExpr();
             toAdd.setScope(new NameExpr(containerClassName));
@@ -217,10 +225,12 @@ public class KiePMMLCharacteristicsFactory {
 
     static void addAttribute(final ClassOrInterfaceDeclaration characteristicsTemplate,
                              final ClassOrInterfaceDeclaration characteristicTemplate,
-                             final DataDictionary dataDictionary, final Attribute attribute,
+                             final DataDictionary dataDictionary,
+                             final TransformationDictionary transformationDictionary,
+                             final Attribute attribute,
                              final String containerClassName, final String attributeName) {
         // Add predicate
-        addPredicate(characteristicsTemplate, characteristicTemplate, dataDictionary, attribute.getPredicate(),
+        addPredicate(characteristicsTemplate, characteristicTemplate, dataDictionary, transformationDictionary, attribute.getPredicate(),
                      containerClassName, attributeName);
         // Add complex score
         final ComplexPartialScore complexPartialScore = attribute.getComplexPartialScore();
@@ -297,6 +307,7 @@ public class KiePMMLCharacteristicsFactory {
     static void addPredicate(final ClassOrInterfaceDeclaration characteristicsTemplate,
                              final ClassOrInterfaceDeclaration characteristicTemplate,
                              final DataDictionary dataDictionary,
+                             final TransformationDictionary transformationDictionary,
                              final Predicate predicate,
                              final String containerClassName,
                              final String attributeName) {
@@ -306,6 +317,7 @@ public class KiePMMLCharacteristicsFactory {
         evaluatePredicateMethod.setName(EVALUATE_PREDICATE + attributeName);
         final BlockStmt evaluatePredicateBody = KiePMMLPredicateFactory.getPredicateBody(predicate,
                                                                                          dataDictionary,
+                                                                                         transformationDictionary,
                                                                                          compoundPredicateMethods,
                                                                                          containerClassName,
                                                                                          attributeName,

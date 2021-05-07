@@ -88,7 +88,7 @@ public class KiePMMLScorecardModelFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         String characteristicsClassName = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         String fullCharacteristicsClassName = String.format(PACKAGE_CLASS_TEMPLATE, packageName, characteristicsClassName);
-        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(),  dataDictionary, characteristicsClassName, packageName);
+        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(), dataDictionary, transformationDictionary, characteristicsClassName, packageName);
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model, dataDictionary, constructorDeclaration, targetFieldName, fullCharacteristicsClassName);

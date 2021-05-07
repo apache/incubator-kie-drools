@@ -35,6 +35,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
@@ -79,6 +80,7 @@ public class KiePMMLCharacteristicsFactoryTest {
     private static final String PACKAGE_NAME = "packagename";
     private static PMML basicComplexPartialScorePmml;
     private static DataDictionary basicComplexPartialScoreDataDictionary;
+    private static TransformationDictionary basicComplexPartialScoreTransformationDictionary;
     private static Scorecard basicComplexPartialScore;
     private static Characteristics basicComplexPartialScoreCharacteristics;
     private static Characteristic basicComplexPartialScoreFirstCharacteristic;
@@ -89,6 +91,7 @@ public class KiePMMLCharacteristicsFactoryTest {
     public static void setupClass() throws Exception {
         basicComplexPartialScorePmml = TestUtils.loadFromFile(BASIC_COMPLEX_PARTIAL_SCORE_SOURCE);
         basicComplexPartialScoreDataDictionary = basicComplexPartialScorePmml.getDataDictionary();
+        basicComplexPartialScoreTransformationDictionary = basicComplexPartialScorePmml.getTransformationDictionary();
         basicComplexPartialScore = ((Scorecard) basicComplexPartialScorePmml.getModels().get(0));
         basicComplexPartialScoreCharacteristics = basicComplexPartialScore.getCharacteristics();
         basicComplexPartialScoreFirstCharacteristic =
@@ -118,6 +121,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         final KiePMMLCharacteristics retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(basicComplexPartialScoreCharacteristics,
                                                                         basicComplexPartialScoreDataDictionary,
+                                                                        basicComplexPartialScoreTransformationDictionary,
                                                                         PACKAGE_NAME,
                                                                         new HasClassLoaderMock());
         assertNotNull(retrieved);
@@ -128,6 +132,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         final Map<String, String> retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(basicComplexPartialScoreCharacteristics,
                                                                                   basicComplexPartialScoreDataDictionary,
+                                                                                  basicComplexPartialScoreTransformationDictionary,
                                                                                   CONTAINER_CLASS_NAME,
                                                                                   PACKAGE_NAME);
         assertNotNull(retrieved);
@@ -151,6 +156,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         KiePMMLCharacteristicsFactory.addCharacteristic(characteristicsTemplate,
                                                         characteristicTemplate,
                                                         basicComplexPartialScoreDataDictionary,
+                                                        basicComplexPartialScoreTransformationDictionary,
                                                         basicComplexPartialScoreFirstCharacteristic,
                                                         CONTAINER_CLASS_NAME,
                                                         characteristicName);
@@ -220,6 +226,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         KiePMMLCharacteristicsFactory.addAttribute(characteristicsTemplate,
                                                    characteristicTemplate,
                                                    basicComplexPartialScoreDataDictionary,
+                                                   basicComplexPartialScoreTransformationDictionary,
                                                    attribute,
                                                    CONTAINER_CLASS_NAME,
                                                    attributeName);
@@ -282,6 +289,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         KiePMMLCharacteristicsFactory.addPredicate(characteristicsTemplate,
                                                    characteristicTemplate,
                                                    basicComplexPartialScoreDataDictionary,
+                                                   basicComplexPartialScoreTransformationDictionary,
                                                    predicate,
                                                    CONTAINER_CLASS_NAME,
                                                    attributeName);

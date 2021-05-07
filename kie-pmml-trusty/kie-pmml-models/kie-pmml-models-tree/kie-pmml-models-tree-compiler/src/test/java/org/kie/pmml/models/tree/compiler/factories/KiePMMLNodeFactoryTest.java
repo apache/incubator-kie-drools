@@ -47,6 +47,7 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.tree.Node;
@@ -86,25 +87,31 @@ public class KiePMMLNodeFactoryTest {
     private static PMML pmml1;
     private static Node node1;
     private static DataDictionary dataDictionary1;
+    private static TransformationDictionary transformationDictionary1;
     private static PMML pmml2;
     private static Node nodeRoot;
     private static Node nodeLeaf;
     private static DataDictionary dataDictionary2;
+    private static TransformationDictionary transformationDictionary2;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         pmml1 = TestUtils.loadFromFile(SOURCE_1);
         dataDictionary1 = pmml1.getDataDictionary();
+        transformationDictionary1 = pmml1.getTransformationDictionary();
         node1 = ((TreeModel) pmml1.getModels().get(0)).getNode();
         pmml2 = TestUtils.loadFromFile(SOURCE_2);
         dataDictionary2 = pmml2.getDataDictionary();
+        transformationDictionary2 = pmml2.getTransformationDictionary();
         nodeRoot = ((TreeModel) pmml2.getModels().get(0)).getNode();
         nodeLeaf = nodeRoot.getNodes().get(0).getNodes().get(0).getNodes().get(0);
     }
 
     @Test
     public void getKiePMMLNode() {
-        final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1, dataDictionary1, PACKAGE_NAME,
+        final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1, dataDictionary1,
+                                                                        transformationDictionary1,
+                                                                        PACKAGE_NAME,
                                                                         new HasClassLoaderMock());
         assertNotNull(retrieved);
         commonVerifyNode(retrieved, node1);
@@ -117,6 +124,7 @@ public class KiePMMLNodeFactoryTest {
                                                                                                  null);
 
         Map<String, String> retrieved = KiePMMLNodeFactory.getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary1,
+                                                                                    transformationDictionary1,
                                                                                     PACKAGE_NAME);
         assertNotNull(retrieved);
         commonVerifyNodeSource(retrieved, node1, PACKAGE_NAME);
@@ -130,6 +138,7 @@ public class KiePMMLNodeFactoryTest {
                                                                                            createNodeClassName(), null);
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, PACKAGE_NAME);
         KiePMMLNodeFactory.populateJavaParserDTOAndSourcesMap(toPopulate, sourcesMap, nodeNamesDTO, dataDictionary2,
+                                                              transformationDictionary2,
                                                               isRoot);
         MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(toPopulate.nodeTemplate,
                                                                               EVALUATE_PREDICATE).orElseThrow(() -> new RuntimeException("No EVALUATE_PREDICATE in generated class"));
@@ -172,6 +181,7 @@ public class KiePMMLNodeFactoryTest {
     public void populateEvaluatePredicate() {
         final String packageName = "packageName";
         final DataDictionary dataDictionary = getRandomDataDictionary();
+        final TransformationDictionary transformationDictionary = new TransformationDictionary();
         final DataField dataField = dataDictionary.getDataFields().get(0);
         dataField.setDataType(DataType.DOUBLE);
 
@@ -182,7 +192,7 @@ public class KiePMMLNodeFactoryTest {
                                                                                            "PARENTNODECLASS");
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
 
-        KiePMMLNodeFactory.populateEvaluatePredicate(toPopulate, dataDictionary, nodeNamesDTO, isRoot);
+        KiePMMLNodeFactory.populateEvaluatePredicate(toPopulate, dataDictionary, transformationDictionary, nodeNamesDTO, isRoot);
         MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(toPopulate.nodeTemplate,
                                                                               EVALUATE_PREDICATE + nodeNamesDTO.nodeClassName).orElseThrow(() -> new RuntimeException("No EVALUATE_PREDICATE in generated class"));
         commonVerifyEvaluatePredicateMethodDeclaration(retrieved, nodeNamesDTO.nodeClassName, isRoot);
@@ -192,7 +202,7 @@ public class KiePMMLNodeFactoryTest {
         node = new NodeMock(true, dataField.getName().getValue(), dataField.getDataType());
         nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null);
         toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-        KiePMMLNodeFactory.populateEvaluatePredicate(toPopulate, dataDictionary, nodeNamesDTO, isRoot);
+        KiePMMLNodeFactory.populateEvaluatePredicate(toPopulate, dataDictionary, transformationDictionary, nodeNamesDTO, isRoot);
         retrieved =
                 CommonCodegenUtils.getMethodDeclaration(toPopulate.nodeTemplate, EVALUATE_PREDICATE).orElseThrow(() -> new RuntimeException("No EVALUATE_PREDICATE in generated class"));
         commonVerifyEvaluatePredicateMethodDeclaration(retrieved, nodeNamesDTO.nodeClassName, isRoot);

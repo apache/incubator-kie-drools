@@ -88,7 +88,7 @@ public class KiePMMLTreeModelFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(model.getNode(), createNodeClassName(), null);
         String fullNodeClassName =  packageName + "." + nodeNamesDTO.nodeClassName;
-        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,  dataDictionary, packageName);
+        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,  dataDictionary, transformationDictionary, packageName);
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model, dataDictionary, constructorDeclaration, targetFieldName, fullNodeClassName);

@@ -50,6 +50,7 @@ import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.True;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
@@ -66,6 +67,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,22 +174,20 @@ public class KiePMMLPredicateFactory {
 
     public static BlockStmt getPredicateBody(final Predicate predicate,
                                              final DataDictionary dataDictionary,
+                                             final TransformationDictionary transformationDictionary,
                                              final List<MethodDeclaration> compoundPredicateMethods,
                                              final String rootNodeClassName,
                                              final String nodeClassName,
                                              final AtomicInteger counter) {
         logger.trace("getPredicateBody {}", predicate);
         if (predicate instanceof SimplePredicate) {
-            final DataType dataType = dataDictionary.getDataFields().stream()
-                    .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))
-                    .map(DataField::getDataType)
-                    .findFirst()
-                    .orElseThrow(() -> new KiePMMLException("Failed to find DataField for predicate " + ((SimplePredicate) predicate).getField().getValue()));
+            String fieldName = ((SimplePredicate) predicate).getField().getValue();
+            final DataType dataType = ModelUtils.getDataType(dataDictionary, transformationDictionary, fieldName);
             return getSimplePredicateBody((SimplePredicate) predicate, dataType);
         } else if (predicate instanceof SimpleSetPredicate) {
             return getSimpleSetPredicateBody((SimpleSetPredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
-            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, compoundPredicateMethods,
+            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, transformationDictionary, compoundPredicateMethods,
                                             rootNodeClassName,
                                             nodeClassName,
                                             counter);
