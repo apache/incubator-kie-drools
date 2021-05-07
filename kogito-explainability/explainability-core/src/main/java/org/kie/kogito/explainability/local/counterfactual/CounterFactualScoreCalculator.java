@@ -96,6 +96,8 @@ public class CounterFactualScoreCalculator implements EasyScoreCalculator<Counte
             List<PredictionOutput> predictions = predictionAsync.get(Config.INSTANCE.getAsyncTimeout(),
                     Config.INSTANCE.getAsyncTimeUnit());
 
+            solution.setPredictionOutputs(predictions);
+
             double distance = 0.0;
 
             for (PredictionOutput predictionOutput : predictions) {

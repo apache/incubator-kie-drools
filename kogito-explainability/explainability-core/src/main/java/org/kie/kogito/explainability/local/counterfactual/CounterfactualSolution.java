@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.model.Output;
+import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -45,6 +46,8 @@ public class CounterfactualSolution {
 
     private UUID solutionId;
     private UUID executionId;
+
+    private List<PredictionOutput> predictionOutputs;
 
     protected CounterfactualSolution() {
     }
@@ -97,5 +100,13 @@ public class CounterfactualSolution {
 
     public void setExecutionId(UUID executionId) {
         this.executionId = executionId;
+    }
+
+    public List<PredictionOutput> getPredictionOutputs() {
+        return predictionOutputs;
+    }
+
+    public void setPredictionOutputs(List<PredictionOutput> predictionOutputs) {
+        this.predictionOutputs = predictionOutputs;
     }
 }

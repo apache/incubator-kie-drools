@@ -606,7 +606,7 @@ class CounterfactualExplainerTest {
         solverConfig.setRandomSeed((long) seed);
         solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
 
-        final Consumer<CounterfactualSolution> assertIntermediateCounterfactualNotNull = counterfactual -> {
+        final Consumer<CounterfactualResult> assertIntermediateCounterfactualNotNull = counterfactual -> {
         };
 
         final CounterfactualExplainer counterfactualExplainer =
@@ -670,11 +670,11 @@ class CounterfactualExplainerTest {
         final List<UUID> intermediateIds = new ArrayList<>();
         final List<UUID> executionIds = new ArrayList<>();
 
-        final Consumer<CounterfactualSolution> captureIntermediateIds = counterfactual -> {
+        final Consumer<CounterfactualResult> captureIntermediateIds = counterfactual -> {
             intermediateIds.add(counterfactual.getSolutionId());
         };
 
-        final Consumer<CounterfactualSolution> captureExecutionIds = counterfactual -> {
+        final Consumer<CounterfactualResult> captureExecutionIds = counterfactual -> {
             executionIds.add(counterfactual.getExecutionId());
         };
 
