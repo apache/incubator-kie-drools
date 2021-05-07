@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -30,15 +31,18 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
+import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -445,5 +449,78 @@ public class NodeSharingTest extends BaseModelTest {
         assertEquals("ok", results.iterator().next().getValue());
 
         assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(NotNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareCombinedConstraintAnd() throws Exception {
+        // DROOLS-6330
+        // Note: if DROOLS-6329 is resolved, this test may not produce CombinedConstraint
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"ACME\" && this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"ACME\" && this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(CepTest.getCepKieModuleModel(), str);
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        clock.advanceTime(4, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(0, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareCombinedConstraintOr() throws Exception {
+        // DROOLS-6330
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"XXXX\" || this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"XXXX\" || this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(CepTest.getCepKieModuleModel(), str);
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        clock.advanceTime(4, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(0, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count());
     }
 }
