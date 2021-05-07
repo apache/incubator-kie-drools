@@ -140,7 +140,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           groupDRLsInKieBasesByFolder           = false;
 
     private boolean                           externaliseCanonicalModelLambda       = true;
-    private boolean                           parallelLambdaExternalizationOption   = true;
+    private boolean parallelLambdaExternalization = true;
 
     private AlphaNetworkCompilerOption        alphaNetworkCompilerOption            = AlphaNetworkCompilerOption.DISABLED;
 
@@ -335,7 +335,7 @@ public class KnowledgeBuilderConfigurationImpl
         }  else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
             setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
         } else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
-            setParallelLambdaExternalizationOption(Boolean.valueOf(value));
+            setParallelLambdaExternalization(Boolean.valueOf(value));
         } else if (name.equals(AlphaNetworkCompilerOption.PROPERTY_NAME)) {
             try {
                 setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(value.toUpperCase()));
@@ -389,7 +389,7 @@ public class KnowledgeBuilderConfigurationImpl
         } else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
         	return String.valueOf(isExternaliseCanonicalModelLambda());
         }else if (name.equals(ParallelLambdaExternalizationOption.PROPERTY_NAME)) {
-        	return String.valueOf(isParallelLambdaExternalizationOption());
+        	return String.valueOf(isParallelLambdaExternalization());
         }
         return null;
     }
@@ -744,12 +744,12 @@ public class KnowledgeBuilderConfigurationImpl
         this.externaliseCanonicalModelLambda = externaliseCanonicalModelLambda;
     }
 
-    public boolean isParallelLambdaExternalizationOption() {
-        return parallelLambdaExternalizationOption;
+    public boolean isParallelLambdaExternalization() {
+        return parallelLambdaExternalization;
     }
 
-    public void setParallelLambdaExternalizationOption(boolean parallelLambdaExternalizationOption) {
-        this.parallelLambdaExternalizationOption = parallelLambdaExternalizationOption;
+    public void setParallelLambdaExternalization(boolean parallelLambdaExternalization) {
+        this.parallelLambdaExternalization = parallelLambdaExternalization;
     }
 
     public AlphaNetworkCompilerOption getAlphaNetworkCompilerOption() {
@@ -783,7 +783,7 @@ public class KnowledgeBuilderConfigurationImpl
         } else if (ExternaliseCanonicalModelLambdaOption.class.equals(option)) {
             return (T) (externaliseCanonicalModelLambda ? ExternaliseCanonicalModelLambdaOption.ENABLED : ExternaliseCanonicalModelLambdaOption.DISABLED);
         } else if (ParallelLambdaExternalizationOption.class.equals(option)) {
-            return (T) (parallelLambdaExternalizationOption ? ParallelLambdaExternalizationOption.ENABLED : ParallelLambdaExternalizationOption.DISABLED);
+            return (T) (parallelLambdaExternalization ? ParallelLambdaExternalizationOption.ENABLED : ParallelLambdaExternalizationOption.DISABLED);
         } else if (AlphaNetworkCompilerOption.class.equals(option)) {
             return (T) alphaNetworkCompilerOption;
         }
@@ -848,7 +848,7 @@ public class KnowledgeBuilderConfigurationImpl
         } else if (option instanceof ExternaliseCanonicalModelLambdaOption) {
             this.externaliseCanonicalModelLambda = ((ExternaliseCanonicalModelLambdaOption) option).isCanonicalModelLambdaExternalized();
         } else if (option instanceof ParallelLambdaExternalizationOption) {
-            this.parallelLambdaExternalizationOption = ((ParallelLambdaExternalizationOption) option).isLambdaExternalizationParallel();
+            this.parallelLambdaExternalization = ((ParallelLambdaExternalizationOption) option).isLambdaExternalizationParallel();
         } else if (option instanceof AlphaNetworkCompilerOption) {
             this.alphaNetworkCompilerOption = ((AlphaNetworkCompilerOption) option);
         }

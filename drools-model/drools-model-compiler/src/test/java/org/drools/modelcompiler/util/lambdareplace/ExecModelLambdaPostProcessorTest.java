@@ -31,7 +31,9 @@ public class ExecModelLambdaPostProcessorTest {
                                                                                                                          new ArrayList<>(),
                                                                                                                          new ArrayList<>(),
                                                                                                                          new HashMap<>(),
-                                                                                                                         new HashMap<>(), clone).convertLambdas();
+                                                                                                                         new HashMap<>(),
+                                                                                                                         clone,
+                                                                                                                         true).convertLambdas();
 
         replacedLambdaResults.forEach(ExecModelLambdaPostProcessor.ReplacedLambdaResult::replaceLambda);
 

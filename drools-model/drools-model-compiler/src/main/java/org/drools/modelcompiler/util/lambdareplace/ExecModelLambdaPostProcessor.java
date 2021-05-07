@@ -76,6 +76,7 @@ public class ExecModelLambdaPostProcessor {
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes;
     private final Map<String, PredicateInformation> debugPredicateInformation;
     private final CompilationUnit clone;
+    private final boolean isParallel;
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
 
@@ -94,6 +95,7 @@ public class ExecModelLambdaPostProcessor {
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
         this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
         this.clone = clone;
+        this.isParallel = pkgModel.getConfiguration().isParallelLambdaExternalization();
     }
 
     public ExecModelLambdaPostProcessor(String packageName,
@@ -102,7 +104,8 @@ public class ExecModelLambdaPostProcessor {
                                         Collection<String> staticImports,
                                         Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes,
                                         Map<String, PredicateInformation> debugPredicateInformation,
-                                        CompilationUnit clone) {
+                                        CompilationUnit clone,
+                                        boolean isParallel) {
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
         this.imports = imports;
@@ -110,6 +113,7 @@ public class ExecModelLambdaPostProcessor {
         this.lambdaReturnTypes = lambdaReturnTypes;
         this.debugPredicateInformation = debugPredicateInformation;
         this.clone = clone;
+        this.isParallel = isParallel;
     }
 
     public List<ReplacedLambdaResult> convertLambdas() {
@@ -158,8 +162,11 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private Stream<MethodCallExpr> createStream(List<MethodCallExpr> expressionLists) {
-        return expressionLists
-                .stream().parallel();
+        if(isParallel) {
+            return expressionLists.parallelStream();
+        } else {
+            return expressionLists.stream();
+        }
     }
 
     private PredicateInformation getPredicateInformation(Optional<String> exprId) {
