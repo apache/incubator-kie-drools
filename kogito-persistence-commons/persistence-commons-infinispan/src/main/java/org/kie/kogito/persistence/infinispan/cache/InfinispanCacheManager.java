@@ -30,14 +30,16 @@ import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
 import org.infinispan.commons.dataconversion.MediaType;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
-import org.kie.kogito.persistence.api.factory.StorageQualifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkus.arc.properties.IfBuildProperty;
+
+import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 import static org.kie.kogito.persistence.infinispan.Constants.INFINISPAN_STORAGE;
 
 @ApplicationScoped
-@StorageQualifier(INFINISPAN_STORAGE)
+@IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = INFINISPAN_STORAGE)
 public class InfinispanCacheManager implements StorageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanCacheManager.class);

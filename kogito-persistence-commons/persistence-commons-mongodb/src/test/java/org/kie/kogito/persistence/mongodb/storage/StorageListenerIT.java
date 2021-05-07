@@ -24,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
-import org.kie.kogito.persistence.api.factory.StorageQualifier;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.StorageUtilsIT.TestListener;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
@@ -35,7 +34,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.kogito.persistence.mongodb.Constants.MONGODB_STORAGE;
 
 @QuarkusTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)
@@ -45,7 +43,6 @@ class StorageListenerIT {
     MongoClientManager mongoClientManager;
 
     @Inject
-    @StorageQualifier(MONGODB_STORAGE)
     StorageService storageService;
 
     @BeforeEach

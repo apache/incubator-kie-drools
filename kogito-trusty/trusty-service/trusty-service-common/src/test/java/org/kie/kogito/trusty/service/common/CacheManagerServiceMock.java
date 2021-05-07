@@ -20,16 +20,15 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
-import org.kie.kogito.persistence.api.factory.StorageQualifier;
 
-import io.quarkus.test.Mock;
+import io.quarkus.arc.properties.IfBuildProperty;
 
+import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 import static org.mockito.Mockito.mock;
 
-@Mock
 @SuppressWarnings("unchecked")
 @ApplicationScoped
-@StorageQualifier("mock")
+@IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = "mock")
 public class CacheManagerServiceMock implements StorageService {
 
     @Override

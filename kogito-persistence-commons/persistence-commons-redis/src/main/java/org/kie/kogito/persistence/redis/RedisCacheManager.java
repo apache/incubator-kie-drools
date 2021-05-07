@@ -21,13 +21,15 @@ import javax.inject.Inject;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
-import org.kie.kogito.persistence.api.factory.StorageQualifier;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
 
+import io.quarkus.arc.properties.IfBuildProperty;
+
+import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 import static org.kie.kogito.persistence.redis.Constants.REDIS_STORAGE;
 
 @ApplicationScoped
-@StorageQualifier(REDIS_STORAGE)
+@IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = REDIS_STORAGE)
 public class RedisCacheManager implements StorageService {
 
     @Inject
