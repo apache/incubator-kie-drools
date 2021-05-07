@@ -16,53 +16,228 @@
 
 package org.kie.kogito.explainability.utils;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
+
+import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionOutput;
 
 public class MatrixUtils {
+    public enum Axis {
+        ROW,
+        COLUMN
+    }
 
     private MatrixUtils() {
         throw new IllegalStateException("Utility class");
     }
 
+    // === Creation ops ================================================================================================
+    /**
+     * Convert a prediction input to a row vector array compatible with matrix ops
+     * 
+     * @param p: the prediction inputs to convert into a double[][] row vector
+     * @return double[][] array, the converted matrix
+     */
+    public static double[][] matrixFromPredictionInput(PredictionInput p) {
+        return MatrixUtils.rowVector(p.getFeatures().stream()
+                .mapToDouble(f -> f.getValue().asNumber())
+                .toArray());
+    }
+
+    /**
+     * Convert a list of prediction inputs to an array compatible with matrix ops
+     * 
+     * @param ps: the list of prediction inputs to convert into a double[][] array
+     * @return double[][] array, the converted matrix
+     */
+    public static double[][] matrixFromPredictionInput(List<PredictionInput> ps) {
+        return ps.stream()
+                .map(p -> p.getFeatures().stream()
+                        .mapToDouble(f -> f.getValue().asNumber())
+                        .toArray())
+                .toArray(double[][]::new);
+    }
+
+    /**
+     * Convert a prediction input to a row vector array compatible with matrix ops
+     * 
+     * @param p: the prediction inputs to convert into a double[][] row vector
+     * @return double[][] array, the converted matrix
+     */
+    public static double[][] matrixFromPredictionOutput(PredictionOutput p) {
+        return MatrixUtils.rowVector(p.getOutputs().stream()
+                .mapToDouble(f -> f.getValue().asNumber())
+                .toArray());
+    }
+
+    /**
+     * Convert a list of prediction outputs to an array compatible with matrix ops
+     * 
+     * @param ps: the list of prediction outputs to convert into a double[][] array
+     * @return double[][] array, the converted matrix
+     */
+    public static double[][] matrixFromPredictionOutput(List<PredictionOutput> ps) {
+        return ps.stream()
+                .map(p -> p.getOutputs().stream()
+                        .mapToDouble(o -> o.getValue().asNumber())
+                        .toArray())
+                .toArray(double[][]::new);
+    }
+
+    /**
+     * Convert a 1D array into a row vector compatible with matrix ops
+     * 
+     * @param v: the array to convert into a double[][] array
+     * @return double[][] array, the converted matrix
+     */
+    public static double[][] rowVector(double[] v) {
+        double[][] out = new double[1][v.length];
+        out[0] = v;
+        return out;
+    }
+
+    /**
+     * Convert a 1D array into a column vector compatible with matrix ops
+     * 
+     * @param v: the array to convert into a double[][] array
+     * @return double[][] array, the converted matrix
+     */
+    public static double[][] columnVector(double[] v) {
+        double[][] out = new double[v.length][1];
+        for (int i = 0; i < v.length; i++) {
+            out[i][0] = v[i];
+        }
+        return out;
+    }
+
+    // === Matrix Information Retrieval ========================================
     /**
      * @param x: the double array to return the matrix shape of
      * @return shape, an int array of length 2, where shape[0] = number of rows and shape[1] is number of columns
      */
-    static int[] getShape(double[][] x) {
+    public static int[] getShape(double[][] x) {
         int rows = x.length;
         int cols = x[0].length;
         return new int[] { rows, cols };
     }
 
-    static double[] getCol(double[][] x, int i) throws IllegalArgumentException {
+    /*
+     * Retrieve the ith column of a matrix
+     *
+     * @param x: double array
+     * 
+     * @param i: the column to return
+     * 
+     * @return vector, the ith column of x
+     */
+    public static double[] getCol(double[][] x, int i) {
         int cols = MatrixUtils.getShape(x)[1];
-        if (cols <= i) {
+        if (cols <= i || i < 0) {
             throw new IllegalArgumentException(
                     String.format("Column index %d too large, matrix only has %d column(s)", i, cols));
         }
-        return IntStream.range(0, x.length)
-                .mapToDouble(rowIdx -> x[rowIdx][i])
-                .toArray();
+        return Arrays.stream(x).mapToDouble(doubles -> doubles[i]).toArray();
+    }
+
+    /*
+     * Retrieve a list of columns of a matrix
+     *
+     * @param x: double array
+     * 
+     * @param idxs: the columns to return
+     * 
+     * @return matrix, each column corresponding to the ith column from idxs.
+     */
+    public static double[][] getCols(double[][] x, List<Integer> idxs) {
+        if (idxs.isEmpty()) {
+            throw new IllegalArgumentException("Empty column idxs passed to getCols");
+        }
+
+        int[] shape = MatrixUtils.getShape(x);
+        double[][] out = new double[shape[0]][idxs.size()];
+
+        for (int i = 0; i < shape[0]; i++) {
+            for (int col = 0; col < idxs.size(); col++) {
+                if (idxs.get(col) >= shape[1] || idxs.get(col) < 0) {
+                    throw new IllegalArgumentException(
+                            String.format("Column index %d output bounds, matrix only has %d column(s)", col, shape[1]));
+                }
+                out[i][col] = x[i][idxs.get(col)];
+            }
+        }
+        return out;
+    }
+
+    // === Two matrix operations =======================================================================================
+    /**
+     * Find the matrix element-wise sum. Throws an error if the matrix shapes are misaligned
+     *
+     * @param a double[][]; the first matrix in the sum
+     * @param b double[][]; the second matrix in the sum
+     * @return the element-wise sum of a and b
+     */
+    public static double[][] matrixSum(double[][] a, double[][] b) {
+        int[] aShape = MatrixUtils.getShape(a);
+        int[] bShape = MatrixUtils.getShape(b);
+
+        if (!Arrays.equals(aShape, bShape)) {
+            throw new IllegalArgumentException("Shape of matrix A must shape of matrix B" +
+                    String.format("Matrix A shape:  %d x %d, ", aShape[0], aShape[1]) +
+                    String.format("Matrix B shape:  %d x %d,", bShape[0], bShape[1]));
+        }
+
+        double[][] sum = new double[aShape[0]][aShape[1]];
+        for (int i = 0; i < aShape[0]; i++) {
+            for (int j = 0; j < aShape[1]; j++) {
+                sum[i][j] = a[i][j] + b[i][j];
+            }
+        }
+        return sum;
     }
 
     /**
-     * Find the matrix transpose
+     * Find the matrix element-wise sum. Throws an error if the matrix shapes are misaligned
      *
-     * @param x double[][]; the matrix to be transposed
-     * @return the transpose of x
+     * @param a double[][]; the first matrix in the sum
+     * @param b double[]; the row to add
+     * @return the result from adding b from every row of a
      */
-    static double[][] transpose(double[][] x) {
-        int[] shape = MatrixUtils.getShape(x);
+    public static double[][] matrixRowSum(double[][] a, double[] b) {
+        int[] aShape = MatrixUtils.getShape(a);
+        double[][] bMat = MatrixUtils.rowVector(b);
+        double[][] out = new double[aShape[0]][aShape[1]];
 
-        double[][] transposed = new double[shape[1]][shape[0]];
-        for (int i = 0; i < shape[0]; i++) {
-            for (int j = 0; j < shape[1]; j++) {
-                transposed[j][i] = x[i][j];
-            }
+        for (int i = 0; i < aShape[0]; i++) {
+            out[i] = MatrixUtils.matrixSum(MatrixUtils.rowVector(a[i]), bMat)[0];
         }
-        return transposed;
+        return out;
+    }
+
+    /**
+     * Find the matrix element-wise difference. Throws an error if the matrix shapes are misaligned
+     *
+     * @param a double[][]; the first matrix in the difference
+     * @param b double[][]; the second matrix in the difference
+     * @return the element-wise matrix difference of a and b
+     */
+    public static double[][] matrixDifference(double[][] a, double[][] b) {
+        double[][] bNeg = MatrixUtils.matrixMultiply(b, -1.);
+        return matrixSum(a, bNeg);
+    }
+
+    /**
+     * Find the matrix row-wise difference. Throws an error if the matrix shapes are misaligned
+     *
+     * @param a double[][]; the first matrix in the difference
+     * @param b double[]; the row to subtract
+     * @return the result from subtracting b from every row of a
+     */
+    public static double[][] matrixRowDifference(double[][] a, double[] b) {
+        double[] bNeg = Arrays.stream(b).map(v -> -v).toArray();
+        return matrixRowSum(a, bNeg);
     }
 
     /**
@@ -72,7 +247,7 @@ public class MatrixUtils {
      * @param b double[][]; the second matrix in the multiplication
      * @return the matrix product of a and b
      */
-    static double[][] matrixMultiply(double[][] a, double[][] b) throws IllegalArgumentException {
+    public static double[][] matrixMultiply(double[][] a, double[][] b) {
         int[] aShape = MatrixUtils.getShape(a);
         int[] bShape = MatrixUtils.getShape(b);
 
@@ -91,6 +266,68 @@ public class MatrixUtils {
             }
         }
         return product;
+    }
+
+    /**
+     * Find the element-wise product of a matrix and a scalar.
+     *
+     * @param a double[][]; the first matrix in the multiplication
+     * @param b double; the scalar to multiply the matrix by
+     * @return the matrix product of a and the scalar b
+     */
+    public static double[][] matrixMultiply(double[][] a, double b) {
+        int[] aShape = MatrixUtils.getShape(a);
+
+        double[][] product = new double[aShape[0]][aShape[1]];
+        for (int i = 0; i < aShape[0]; i++) {
+            for (int j = 0; j < aShape[1]; j++) {
+                product[i][j] = a[i][j] * b;
+            }
+        }
+        return product;
+    }
+
+    // === Single matrix operations ====================================================================================
+    /**
+     * Find the sum of the elements within the matrix, along a certain axis
+     *
+     * @param x double[][]; the matrix within which to compute the sum
+     * @param axis enum; the direction which to sum. axis.ROW will add all rows together, axis.COLUMN adds columns
+     * @return the result of the sum along that dimension
+     */
+    public static double[] sum(double[][] x, Axis axis) {
+        int[] shape = MatrixUtils.getShape(x);
+        if (axis == MatrixUtils.Axis.ROW) {
+            double[][] out = new double[1][shape[1]];
+            for (int i = 0; i < shape[0]; i++) {
+                out = MatrixUtils.matrixSum(out, MatrixUtils.rowVector(x[i]));
+            }
+            return out[0];
+        } else {
+            double[][] out = new double[1][shape[0]];
+            for (int i = 0; i < shape[1]; i++) {
+                out = MatrixUtils.matrixSum(out, MatrixUtils.rowVector(MatrixUtils.getCol(x, i)));
+            }
+            return out[0];
+        }
+    }
+
+    /**
+     * Find the matrix transpose
+     *
+     * @param x double[][]; the matrix to be transposed
+     * @return the transpose of x
+     */
+    public static double[][] transpose(double[][] x) {
+        int[] shape = MatrixUtils.getShape(x);
+
+        double[][] transposed = new double[shape[1]][shape[0]];
+        for (int i = 0; i < shape[0]; i++) {
+            for (int j = 0; j < shape[1]; j++) {
+                transposed[j][i] = x[i][j];
+            }
+        }
+        return transposed;
     }
 
     /**
@@ -124,7 +361,7 @@ public class MatrixUtils {
      *         Dr. Debabrata DasGupta's description of the algorithm is here:
      *         https://www.researchgate.net/publication/271296470_In-Place_Matrix_Inversion_by_Modified_Gauss-Jordan_Algorithm
      */
-    public static double[][] invertSquareMatrix(double[][] x, double zeroThreshold) {
+    private static double[][] invertSquareMatrix(double[][] x, double zeroThreshold) {
         int size = MatrixUtils.getShape(x)[0];
         double[][] copy = new double[size][size];
         for (int i = 0; i < size; i++) {
@@ -179,9 +416,11 @@ public class MatrixUtils {
     /**
      * Attempt to invert the given matrix.
      * If the matrix is singular, jitter the values slightly to break singularity
-     * 
+     *
      * @param x a square double[][]; the matrix to be inverted
      * @param numRetries the number of times to attempt jittering before giving up
+     * @param zeroThreshold: the threshold to set such that x==0 if abs(x)<zeroThreshold. Use this avoid fp errors
+     * @param random: random number generator
      * @return double[][], the inverted matrix
      *
      */
@@ -203,8 +442,21 @@ public class MatrixUtils {
     }
 
     /**
+     * Jitter invert, but with a SecureRandom generator
+     *
+     * @param x a square double[][]; the matrix to be inverted
+     * @param numRetries the number of times to attempt jittering before giving up
+     * @return double[][], the inverted matrix
+     * @param zeroThreshold: the threshold to set such that x==0 if abs(x)<zeroThreshold. Use this avoid fp errors
+     *
+     */
+    public static double[][] jitterInvert(double[][] x, int numRetries, double zeroThreshold) {
+        return jitterInvert(x, numRetries, zeroThreshold, new SecureRandom());
+    }
+
+    /**
      * Jitters the values of a matrix IN-PLACE by a random number in range (0, delta)
-     * 
+     *
      * @param x the matrix to be jittered
      * @param delta the scale of the jittering
      *
