@@ -21,30 +21,32 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.Statement;
 
-public class ExpressionStmtT implements TypedExpression {
+public class IfStmtT implements TypedExpression {
 
-    private final TypedExpression child;
+    private final TypedExpression typedCondition;
+    private final TypedExpression typedThen;
+    private final Optional<TypedExpression> typedElse;
 
-    public ExpressionStmtT(TypedExpression child) {
-        this.child = child;
+    public IfStmtT(TypedExpression typedCondition, TypedExpression typedThen, Optional<TypedExpression> typedElse) {
+        this.typedCondition = typedCondition;
+        this.typedThen = typedThen;
+        this.typedElse = typedElse;
     }
 
     @Override
     public Optional<Type> getType() {
-        return child.getType();
+        return Optional.empty();
     }
 
     @Override
     public Node toJavaExpression() {
-        return new ExpressionStmt((Expression) child.toJavaExpression());
-    }
-
-    @Override
-    public String toString() {
-        return "ExpressionStmtT{\n" +
-                "\tchild=" + child +
-                '}';
+        IfStmt stmt = new IfStmt();
+        stmt.setCondition((Expression) typedCondition.toJavaExpression());
+        stmt.setThenStmt((Statement) typedThen.toJavaExpression());
+        typedElse.ifPresent(e -> stmt.setElseStmt((Statement) e.toJavaExpression()));
+        return stmt;
     }
 }

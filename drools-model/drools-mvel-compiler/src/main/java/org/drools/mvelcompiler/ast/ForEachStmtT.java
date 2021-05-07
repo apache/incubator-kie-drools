@@ -21,30 +21,31 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.ForEachStmt;
+import com.github.javaparser.ast.stmt.Statement;
 
-public class ExpressionStmtT implements TypedExpression {
+public class ForEachStmtT implements TypedExpression {
 
-    private final TypedExpression child;
+    private TypedExpression variableDeclaratorExpr;
+    private TypedExpression iterable;
+    private TypedExpression body;
 
-    public ExpressionStmtT(TypedExpression child) {
-        this.child = child;
+    public ForEachStmtT(TypedExpression variableDeclaratorExpr, TypedExpression iterable, TypedExpression body) {
+        this.variableDeclaratorExpr = variableDeclaratorExpr;
+        this.iterable = iterable;
+        this.body = body;
     }
 
     @Override
     public Optional<Type> getType() {
-        return child.getType();
+        return Optional.empty();
     }
 
     @Override
     public Node toJavaExpression() {
-        return new ExpressionStmt((Expression) child.toJavaExpression());
-    }
-
-    @Override
-    public String toString() {
-        return "ExpressionStmtT{\n" +
-                "\tchild=" + child +
-                '}';
+        return new ForEachStmt((VariableDeclarationExpr) variableDeclaratorExpr.toJavaExpression(),
+                               (Expression) iterable.toJavaExpression(),
+                               (Statement) body.toJavaExpression());
     }
 }
