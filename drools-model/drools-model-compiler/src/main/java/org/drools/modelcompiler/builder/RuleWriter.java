@@ -22,12 +22,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.drools.modelcompiler.util.lambdareplace.NonExternalisedLambdaFoundException;
 
@@ -80,13 +82,20 @@ public class RuleWriter {
 
                 if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
                     CompilationUnit postProcessedCU = cu.clone();
-                    new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
+                    List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResult  =
+                                new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
+
+                    for (ExecModelLambdaPostProcessor.ReplacedLambdaResult e : replacedLambdaResult) {
+                        e.replaceLambda();
+                    }
+
                     if (checkNonExternalisedLambda) {
                         checkNonExternalisedLambda(postProcessedCU);
                     }
-                    rules.add(new RuleFileSource(addFileName, postProcessedCU));
+
+                    rules.add(new RuleFileSource(addFileName, postProcessedCU, replacedLambdaResult));
                 } else {
-                    rules.add(new RuleFileSource(addFileName, cu));
+                    rules.add(new RuleFileSource(addFileName, cu, new ArrayList<>()));
                 }
             }
         }
@@ -113,10 +122,12 @@ public class RuleWriter {
 
         protected final CompilationUnit source;
         private final String name;
+        private List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> lambdaResults;
 
-        private RuleFileSource(String name, CompilationUnit source) {
+        private RuleFileSource(String name, CompilationUnit source, List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> lambdaResults) {
             this.name = name;
             this.source = source;
+            this.lambdaResults = lambdaResults;
         }
 
         public String getName() {
@@ -125,6 +136,10 @@ public class RuleWriter {
 
         public String getSource() {
             return prettyPrinter.print(source);
+        }
+
+        public List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> getLambdaResults() {
+            return lambdaResults;
         }
     }
 }
