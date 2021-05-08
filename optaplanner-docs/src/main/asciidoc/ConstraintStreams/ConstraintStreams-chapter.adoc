@@ -273,7 +273,7 @@ defined in <<constraintConfiguration,constraint configuration>>.
 constraint weights defined in <<constraintConfiguration,constraint configuration>>, multiplied by the number of hours in
 every matching `Shift` in the constraint stream.
 
-By replacing the keyword `penalize` by `reward` in the name of these building blocks, you will get operations that
+By replacing the keyword `penalize` by `reward` in the name of these building blocks, you get operations that
 affect score in the opposite direction.
 
 
@@ -418,18 +418,22 @@ In the previous example, `filter()` and all subsequent operations no longer have
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
-[collectorsOutOfTheBox]
+[[collectorsOutOfTheBox]]
 ==== Out-of-the-box collectors
 
-The following section focuses on the collector implementations provided out of the box. This section only describes the
-`int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable
-result data types, such as `long`, `BigDecimal` or `Duration`. You can find a complete list by exploring the
-`org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
+The following collectors are provided out of the box:
 
-[collectorsCount]
-===== Collecting `count()`
+* <<collectorsCount,`count()`>>
+* <<collectorsCountDistinct,`countDistinct()`>>
+* <<collectorsSum,`sum()`>>
+* <<collectorsMinMax,`min()` and `max()`>>
+* <<collectorsCollection,`toList()`, `toSet()` and `toMap()`>>
 
-The `ConstraintCollectors.count(...)` counts all elements in a group. For example, the following use of the collector
+
+[[collectorsCount]]
+===== `count()` collector
+
+The `ConstraintCollectors.count(...)` counts all elements per group. For example, the following use of the collector
 gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they
 don't.
 
@@ -444,12 +448,17 @@ don't.
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
+The count is collected in an `int`. Variants of this collector:
 
-[collectorsCountDistinct]
-===== Collecting `countDistinct()`
+* `countLong()` collects a `long` value instead of an `int` value.
 
-The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it
+To count a bi, tri or quad stream, use `countBi()`, `countTri()` or `countQuad()` respectively,
+because - unlike the other build-in collectors - they aren't overloaded methods due to Java's generics erasure.
+
+[[collectorsCountDistinct]]
+===== `countDistinct()` collector
+
+The `ConstraintCollectors.countDistinct(...)` counts any element per group once, regardless of how many times it
 occurs. For example, the following use of the collector gives a number of talks in each unique room.
 
 [source,java,options="nowrap"]
@@ -463,12 +472,15 @@ occurs. For example, the following use of the collector gives a number of talks 
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
+The distinct count is collected in an `int`. Variants of this collector:
 
-[collectorsSum]
-===== Collecting `sum()`
+* `countDistinctLong()` collects a `long` value instead of an `int` value.
 
-To sum the values of a particular property of all elements in the group, use the `ConstraintCollectors.sum(...)`
+
+[[collectorsSum]]
+===== `sum()` collector
+
+To sum the values of a particular property of all elements per group, use the `ConstraintCollectors.sum(...)`
 collector. The following code snippet first groups all processes by the computer they run on and sums up all the power
 required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector.
 
@@ -483,20 +495,20 @@ required by the processes on that computer using the `ConstraintCollectors.sum(.
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There are also the following variants:
+The sum is collected in an `int`. Variants of this collector:
 
-* 64-bit variant `sumLong()`
-* `java.math.BigDecimal`-based variant `sumBigDecimal()`
-* `java.math.BigInteger`-based variant `sumBigInteger()`
-* `java.time.Duration`-based variant `sumDuration()`
-* `java.time.Period`-based variant `sumPeriod()`
-* generic `sum()` variant for summing up custom types.
+* `sumLong()` collects a `long` value instead of an `int` value.
+* `sumBigDecimal()` collects a `java.math.BigDecimal` value instead of an `int` value.
+* `sumBigInteger()` collects a `java.math.BigInteger` value instead of an `int` value.
+* `sumDuration()` collects a `java.time.Duration` value instead of an `int` value.
+* `sumPeriod()` collects a `java.time.Period` value instead of an `int` value.
+* a generic `sum()` variant for summing up custom types
 
 
-[collectorsMinMax]
-===== Minimums and maximums
+[[collectorsMinMax]]
+===== `min()` and `max()` collectors
 
-To extract the minimum or maximum of a group, use the `ConstraintCollectors.min(...)` and
+To extract the minimum or maximum per group, use the `ConstraintCollectors.min(...)` and
 `ConstraintCollectors.max(...)` collectors respectively.
 
 These collectors operate on values of properties which are `Comparable` (such as `Integer`, `String` or `Duration`),
@@ -523,12 +535,10 @@ See https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html[Javadoc 
 ====
 
 
-[collectorsCollection]
-===== Collection collectors
+[[collectorsCollection]]
+===== `toList()`, `toSet()` and `toMap()` collectors
 
-To extract all elements in the group into a collection, use the `ConstraintCollectors.toList(...)` and
-`ConstraintCollectors.toSet(...)` collectors respectively.
-`ConstraintCollectors.toCollection(...)` enables you to use a custom `Collection` implementation.
+To extract all elements per group into a collection, use the `ConstraintCollectors.toList(...)`.
 
 The following example retrieves all processes running on a computer in a `List`:
 
@@ -543,10 +553,18 @@ The following example retrieves all processes running on a computer in a `List`:
     }
 ----
 
+Variants of this collector:
+
+* `toList()` collects a `List` value.
+* `toSet()` collects a `Set` value.
+* `toSortedSet()` collects a `SortedSet` value.
+* `toMap()` collects a `Map` value.
+* `toSortedMap()` collects a `SortedMap` value.
+
 [NOTE]
 ====
-The iteration order of elements in the resulting collection is not guaranteed to be stable.
-To achieve stable iteration order, use `ConstraintCollectors.toCollection()` together with a sorted collection, such as `TreeSet`.
+The iteration order of elements in the resulting collection is not guaranteed to be stable,
+unless it is a sorted collector such as `toSortedSet` or `toSortedMap.
 ====
 
 
@@ -624,7 +642,7 @@ The result of such mapping is `UniConstraintStream` of the mapped tuples.
 [NOTE]
 ====
 In the example above, the mapping function produces duplicate tuples if two different `CloudProcess`es share a single `CloudComputer`.
-That is, such `CloudComputer` will appear in the resulting constraint stream twice.
+That is, such `CloudComputer` appears in the resulting constraint stream twice.
 See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
 ====
 
@@ -648,7 +666,7 @@ When designing the mapping function, follow these guidelines for optimal perform
 [[constraintStreamsDealingWithDuplicateTuplesUsingDistinct]]
 ==== Dealing with duplicate tuples using `distinct()`
 
-As a general rule, tuples in constraint streams will be distinct.
+As a general rule, tuples in constraint streams are distinct.
 That is, no two tuples that equal one another.
 However, certain operations such as <<constraintStreamsMappingTuples,tuple mapping>> may produce constraint streams
 where that is not true.
@@ -677,7 +695,7 @@ For optimal performance, don't use constraint stream operations that produce dup
 === Flattening
 
 Flattening enables you to transform any Java `Iterable` (such as `List` or `Set`)
-into a set of tuples, which will be sent downstream.
+into a set of tuples, which are sent downstream.
 (Similar to Java Stream's `flatMap(...)`.)
 This is done by applying a mapping function to the final element in the source tuple.
 
@@ -698,7 +716,7 @@ This is done by applying a mapping function to the final element in the source t
 In the example above, the mapping function produces duplicate tuples
 if `Job.getRequiredRoles()` contains duplicate values.
 Assuming that the function returns `[USER, USER, ADMIN]`,
-the tuple `(SomePerson, USER)` will be sent downstream twice.
+the tuple `(SomePerson, USER)` is sent downstream twice.
 See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
 ====
 
@@ -782,9 +800,9 @@ Further down, the following code test the constraint:
 ----
 
 The `verifyThat(...)` call is used to specify a method on the `NQueensConstraintProvider` class which is under test.
-This method must be visible to the test class, which the Java compiler will enforce.
+This method must be visible to the test class, which the Java compiler enforces.
 
-The `given(...)` call is used to enumerate all the facts that the constraint stream will operate on.
+The `given(...)` call is used to enumerate all the facts that the constraint stream operates on.
 In this case, the `given(...)` call takes the `queen1` and `queen2` instances previously created.
 Alternatively, you can use a `givenSolution(...)` method here and provide a planning solution instead.
 
@@ -829,7 +847,7 @@ remains consistent as your code base evolves.
 [[constraintStreamsTestingQuarkus]]
 === Testing in Quarkus
 
-If you are using the `optaplanner-quarkus` extension, you can inject the `ConstraintVerifier` in your tests.
+If you are using the `optaplanner-quarkus` extension, inject the `ConstraintVerifier` in your tests:
 
 [source,java,options="nowrap"]
 ----
@@ -843,7 +861,7 @@ public class MyConstraintProviderTest {
 [[constraintStreamsTestingSpringBoot]]
 === Testing in Spring Boot
 
-If you are using the `optaplanner-spring-boot-starter` module, you can autowire the `ConstraintVerifier` in your tests.
+If you are using the `optaplanner-spring-boot-starter` module, autowire the `ConstraintVerifier` in your tests:
 
 [source,java,options="nowrap"]
 ----
@@ -857,24 +875,26 @@ public class MyConstraintProviderTest {
 [[constraintStreamsImplementations]]
 == Variant implementation types
 
-Constraint streams come in two flavors, a default implementation using Drools under the hood and a pure Java-based
-implementation called _Bavet_.
-The Drools-based implementation is more feature-complete.
-Both of these variants implement the same `ConstraintProvider` API.
-No Java code changes are necessary to switch between the two.
+Constraint streams come in two flavors:
 
-Bavet is an experimental implementation that focuses on raw speed and provides superior performance.
-However, it lacks features and therefore many of the <<examplesOverview,examples>> are not supported.
-To try it out, implement the `ConstraintProvider` interface and use the following in your solver config:
+* *CS Drools* (default): a fast, feature-complete implementation that uses Drools underneath.
 
+* *Bavet*: a fast, experimental implementation.
+It lacks features and therefore many of the <<examplesOverview,examples>> are not supported.
+To try it out set the `constraintStreamImplType` to `BAVET` in your solver config:
++
 [source,xml,options="nowrap"]
 ----
     <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
+        <!-- BAVET is experimental -->
         <constraintStreamImplType>BAVET</constraintStreamImplType>
         <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       ...
     </solver>
 ----
+
+Both of these variants implement the same `ConstraintProvider` API.
+No Java code changes are necessary to switch between the two.
