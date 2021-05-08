@@ -40,7 +40,7 @@
     <version.org.apache.commons.lang3>3.9</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
-    <version.org.assertj>3.14.0</version.org.assertj>
+    <version.org.assertj>3.19.0</version.org.assertj>
     <version.org.freemarker>2.3.28</version.org.freemarker>
     <version.org.hibernate>5.4.29.Final</version.org.hibernate>
     <version.org.jboss.jandex>2.2.3.Final</version.org.jboss.jandex>
@@ -503,8 +503,7 @@
               </goals>
               <configuration>
                 <rules>
-                  <requireManagedDeps
-                      implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                  <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
                     <checkProfiles>true</checkProfiles>
                     <failOnViolation>true</failOnViolation>
                   </requireManagedDeps>
