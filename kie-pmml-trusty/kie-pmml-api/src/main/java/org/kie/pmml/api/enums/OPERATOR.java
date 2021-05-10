@@ -43,6 +43,14 @@ public enum OPERATOR {
                                                                  LESS_OR_EQUAL,
                                                                  GREATER_THAN,
                                                                  GREATER_OR_EQUAL);
+
+    /**
+     * <code>OPERATOR</code>s that operates <b>ONLY</b >with <code>Number</code>s
+     */
+    static final List<OPERATOR> ONLY_NUMBER_OPERATORS = Arrays.asList(LESS_THAN,
+                                                                 LESS_OR_EQUAL,
+                                                                 GREATER_THAN,
+                                                                 GREATER_OR_EQUAL);
     /**
      * <code>OPERATOR</code>s that operates with a <b>value</b>
      */
@@ -67,8 +75,12 @@ public enum OPERATOR {
                 .orElseThrow(() -> new KieEnumException("Failed to find OPERATOR with name: " + name));
     }
 
-    public boolean isNumberOperator() {
-        return NUMBER_OPERATORS.contains(this);
+    /**
+     * Returns <code>true</code> if the <code>OPERATOR</code> is applicable only for <code>NUMBER</code>s
+     * @return
+     */
+    public boolean isOnlyNumberOperator() {
+        return ONLY_NUMBER_OPERATORS.contains(this);
     }
 
     public boolean isValueOperator() {

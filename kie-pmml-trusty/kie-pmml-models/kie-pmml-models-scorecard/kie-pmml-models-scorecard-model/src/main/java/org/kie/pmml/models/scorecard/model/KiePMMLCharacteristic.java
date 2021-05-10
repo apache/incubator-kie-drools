@@ -43,12 +43,24 @@ public class KiePMMLCharacteristic extends AbstractKiePMMLComponent {
         Optional<Number> toReturn = Optional.empty();
         for (Function<Map<String, Object>, Number> function : attributeFunctions) {
             final Number evaluation = function.apply(requestData);
-            toReturn = Optional.ofNullable(evaluation);
-            if (toReturn.isPresent()) {
-                break;
+            if (evaluation != null) {
+                toReturn = toReturn.map(number -> Optional.of(addNumbers(number, evaluation)))
+                        .orElseGet(() -> Optional.of(evaluation));
             }
         }
         return toReturn;
+    }
+
+    private static Number addNumbers(Number a, Number b) {
+        if (a instanceof Double || b instanceof Double) {
+            return a.doubleValue() + b.doubleValue();
+        } else if (a instanceof Float || b instanceof Float) {
+            return a.floatValue() + b.floatValue();
+        } else if (a instanceof Long || b instanceof Long) {
+            return a.longValue() + b.longValue();
+        } else {
+            return a.intValue() + b.intValue();
+        }
     }
 
 }
