@@ -35,7 +35,7 @@ public class KogitoKafkaContainer extends KafkaContainer implements TestResource
 
     public KogitoKafkaContainer() {
         super(DockerImageName.parse(kafkaImage()));
-        withLogConsumer(f -> System.out.println(f.getUtf8String()));
+        withLogConsumer(f -> System.out.print(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         waitingFor(Wait.forLogMessage(".*Startup complete.*", 2));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);

@@ -40,7 +40,7 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer implements Te
     }
 
     private Consumer<OutputFrame> getLogger() {
-        return f -> System.out.println(f.getUtf8String());
+        return f -> System.out.print(f.getUtf8String());
     }
 
     @Override

@@ -34,7 +34,7 @@ public abstract class KogitoGenericContainer<T extends GenericContainer<T>> exte
         super(getImageName(containerName));
         withStartupTimeout(CONTAINER_START_TIMEOUT);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        withLogConsumer(f -> System.out.println(f.getUtf8String()));
+        withLogConsumer(f -> System.out.print(f.getUtf8String()));
     }
 
     public static String getImageName(String containerName) {
