@@ -16,14 +16,9 @@
 
 package org.drools.modelcompiler;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -35,7 +30,6 @@ import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.model.Global;
-import org.drools.model.Rule;
 import org.drools.model.Variable;
 
 public class RuleContext {
@@ -46,14 +40,8 @@ public class RuleContext {
 
     private final Map<Variable, Declaration> declarations = new HashMap<>();
 
-    private Set<Variable> groupKeyVariables;
-    private Map<Variable, Declaration> dependantDeclarations;
-
     private Map<Variable, Declaration> queryDeclarations;
     private Map<Variable, Accumulate> accumulateSource;
-    private boolean afterAccumulate;
-
-    private List<Rule> subRules;
 
     private int patternIndex = -1;
     private boolean needStreamMode = false;
@@ -84,10 +72,7 @@ public class RuleContext {
     }
 
     void registerPattern( Variable variable, Pattern pattern ) {
-        Declaration existing = declarations.get( variable );
-        if (existing == null) {
-            declarations.put( variable, pattern.getDeclaration() );
-        }
+        declarations.computeIfAbsent(variable, k -> pattern.getDeclaration());
     }
 
     Pattern getPattern( Variable variable ) {
@@ -128,16 +113,8 @@ public class RuleContext {
         declarations.put( variable, declaration );
     }
 
-    void addGroupByDeclaration( Variable groupKeyVar, Variable dependingOn, Declaration declaration ) {
+    void addGroupByDeclaration( Variable groupKeyVar, Declaration declaration ) {
         addDeclaration( groupKeyVar, declaration );
-        if ( groupKeyVariables == null) {
-            groupKeyVariables = new HashSet<>();
-        }
-        groupKeyVariables.add( groupKeyVar );
-        if (dependantDeclarations == null) {
-            dependantDeclarations = new HashMap<>();
-        }
-        dependantDeclarations.put( dependingOn, declaration );
     }
 
     Accumulate getAccumulateSource( Variable variable) {
@@ -149,30 +126,6 @@ public class RuleContext {
             accumulateSource = new HashMap<>();
         }
         accumulateSource.put( variable, accumulate );
-        afterAccumulate = true;
-    }
-
-    public boolean isAfterAccumulate() {
-        return afterAccumulate;
-    }
-
-    public void setAfterAccumulate( boolean afterAccumulate ) {
-        this.afterAccumulate = afterAccumulate;
-    }
-
-    boolean hasSubRules() {
-        return subRules != null;
-    }
-
-    List<Rule> getSubRules() {
-        return subRules == null ? Collections.emptyList() : subRules;
-    }
-
-    public void addSubRule(Rule rule) {
-        if (subRules == null) {
-            subRules = new ArrayList<>();
-        }
-        subRules.add( rule );
     }
 
     public ClassLoader getClassLoader() {
@@ -191,14 +144,5 @@ public class RuleContext {
         Map<String, Declaration> decls = new HashMap<>();
         declarations.forEach( ( var, decl) -> decls.put( var.getName(), decl ) );
         return decls;
-    }
-
-    public Class<?> getDeclarationClass(String name) {
-        for (Map.Entry<Variable, Declaration> entry : declarations.entrySet()) {
-            if (entry.getKey().getName().equals( name )) {
-                return entry.getValue().getDeclarationClass();
-            }
-        }
-        return null;
     }
 }

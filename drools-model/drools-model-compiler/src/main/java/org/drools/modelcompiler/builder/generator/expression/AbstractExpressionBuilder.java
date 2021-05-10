@@ -150,10 +150,9 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr :
-                generateLambdaWithoutParameters(usedDeclarations,
-                                                expr,
-                                                drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
+        return drlxParseResult.isStatic() ?
+                expr :
+                generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
     }
 
     boolean shouldCreateIndex(SingleDrlxParseSuccess drlxParseResult ) {
@@ -321,7 +320,7 @@ public abstract class AbstractExpressionBuilder {
         }
         Expression generatedExpr = generateLambdaWithoutParameters(usedDeclarations, expr, !containsThis, Optional.ofNullable(patternType), context);
         if (generatedExpr instanceof LambdaExpr) {
-            context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr) generatedExpr, typedExpression.getType());
+            context.getPackageModel().registerLambdaReturnType((LambdaExpr) generatedExpr, typedExpression.getType());
         }
         return generatedExpr;
     }

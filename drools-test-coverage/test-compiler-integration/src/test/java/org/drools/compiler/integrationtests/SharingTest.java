@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.testcoverage.common.model.FactWithList;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -79,6 +83,16 @@ public class SharingTest {
                 "";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("sharing-test", kieBaseTestConfiguration, drl1, drl2);
+
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(TestObject.class));
+
+        if (kieBaseTestConfiguration.isExecutableModel()) {
+            assertEquals(3, otn.getSinks().length); // See DROOLS-6328
+        } else {
+            assertEquals(2, otn.getSinks().length);
+        }
+
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
@@ -111,6 +125,11 @@ public class SharingTest {
                 "";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("sharing-test", kieBaseTestConfiguration, drl1, drl2);
+
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(TestObject.class));
+        assertEquals(2, otn.getSinks().length);
+
         final KieSession kieSession = kbase.newKieSession();
         try {
             kieSession.insert(new TestObject(1));
@@ -144,6 +163,11 @@ public class SharingTest {
                 "";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("sharing-test", kieBaseTestConfiguration, drl1, drl2);
+
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(FactWithList.class));
+        assertEquals(2, otn.getSinks().length);
+
         final KieSession kieSession = kbase.newKieSession();
         try {
             final FactWithList factWithList = new FactWithList("test");
@@ -188,6 +212,13 @@ public class SharingTest {
                         "end\n";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("sharing-test", kieBaseTestConfiguration, drl);
+
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otnA = epn.getObjectTypeNodes().get(new ClassObjectType(A.class));
+        assertEquals(2, otnA.getSinks().length);
+        ObjectTypeNode otnB = epn.getObjectTypeNodes().get(new ClassObjectType(B.class));
+        assertEquals(1, otnB.getSinks().length);
+
         final KieSession kieSession = kbase.newKieSession();
         try {
             final List<String> list = new ArrayList<>();
