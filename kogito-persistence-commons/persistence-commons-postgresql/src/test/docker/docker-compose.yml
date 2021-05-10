@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  postgres-compose:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: kogito
+      POSTGRES_PASSWORD: kogito
+      POSTGRES_DB: kogito
+    ports:
+      - 5432:5432
+    networks:
+      - postgres-compose-network
+    container_name: postgres
+
+  pgadmin-compose:
+    image: dpage/pgadmin4:5.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@user.org
+      PGADMIN_DEFAULT_PASSWORD: pass
+    ports:
+      - 8055:80
+    depends_on:
+      - postgres-compose
+    networks:
+      - postgres-compose-network
+    container_name: pgadmin
+
+networks:
+  postgres-compose-network:
+    driver: bridge
