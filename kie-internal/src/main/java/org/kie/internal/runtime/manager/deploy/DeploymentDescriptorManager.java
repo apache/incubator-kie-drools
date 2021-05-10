@@ -34,7 +34,7 @@ public class DeploymentDescriptorManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DeploymentDescriptorManager.class);
     private static Set<String> locations = Collections.synchronizedSet(new LinkedHashSet<>());
-    
+
     private String defaultPU;
 
     public static void addDescriptorLocation(String location) {
@@ -52,16 +52,29 @@ public class DeploymentDescriptorManager {
     public DeploymentDescriptor getDefaultDescriptor() {
         List<DeploymentDescriptor> descriptors = new ArrayList<>();
         String defaultDescriptorLocation = System.getProperty("org.kie.deployment.desc.location");
-        descriptors.add(defaultDescriptorLocation != null ? loadDescriptor(defaultDescriptorLocation)
-                : new DeploymentDescriptorImpl(defaultPU));
-        locations.forEach(url -> descriptors.add(loadDescriptor(url)));
+        DeploymentDescriptor defaultDesc = loadDescriptor(defaultDescriptorLocation);
+        descriptors.add(defaultDesc != null ? defaultDesc : new DeploymentDescriptorImpl(defaultPU));
+        locations.forEach(url -> addDescriptor(descriptors, url));
         return DeploymentDescriptorMerger.merge(descriptors, MergeMode.MERGE_COLLECTIONS);
+    }
+
+    private void addDescriptor(List<DeploymentDescriptor> descriptors, String url) {
+        DeploymentDescriptor desc = loadDescriptor(url);
+        if (desc != null) {
+            descriptors.add(desc);
+        }
     }
 
     private DeploymentDescriptor loadDescriptor(String location) {
         try {
             logger.debug("Reading default descriptor from {}", location);
-            return DeploymentDescriptorIO.fromXml(getLocationURL(location).openStream());
+            if (location != null) {
+                URL locationURL = getLocationURL(location);
+                if (locationURL != null) {
+                    return DeploymentDescriptorIO.fromXml(locationURL.openStream());
+                }
+            }
+            return null;
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to read default deployment descriptor from " + location, e);
         }
