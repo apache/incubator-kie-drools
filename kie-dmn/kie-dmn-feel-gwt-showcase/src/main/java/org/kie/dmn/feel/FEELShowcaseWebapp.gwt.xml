@@ -4,5 +4,9 @@
 <module rename-to="FEELShowcaseWebapp">
   <inherits name="org.jboss.errai.enterprise.All"/>
   <inherits name="org.kie.dmn.feel.DMNFeelGWT"/>
+
   <source path="client"/>
+
+  <set-property name="user.agent" value="safari" />
+
 </module>

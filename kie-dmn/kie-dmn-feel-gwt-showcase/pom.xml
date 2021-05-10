@@ -183,6 +183,8 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${maven.gwt.plugin.version}</version>
         <configuration>
+          <localWorkers>8</localWorkers>
+          <optimizationLevel>0</optimizationLevel>
           <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx1g -Xms756m -XX:CompileThreshold=1000</extraJvmArgs>
           <hostedWebapp>src/main/webapp/</hostedWebapp>
@@ -222,8 +224,8 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <warName>${project.artifactId}</warName>
 
-          <!-- Exclude GWT client local classes from the deployment, lest 
-            classpath scanners such as Hibernate and Weld get confused when the webapp 
+          <!-- Exclude GWT client local classes from the deployment, lest
+            classpath scanners such as Hibernate and Weld get confused when the webapp
             is bootstrapping. -->
           <packagingExcludes>**/javax/**/*.*,**/client/local/**/*.class</packagingExcludes>
           <warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
