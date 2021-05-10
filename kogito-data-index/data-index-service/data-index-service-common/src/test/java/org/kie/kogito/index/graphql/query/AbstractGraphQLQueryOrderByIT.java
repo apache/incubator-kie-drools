@@ -27,13 +27,14 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
+import io.restassured.http.ContentType;
+
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchemaElement;
-import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;

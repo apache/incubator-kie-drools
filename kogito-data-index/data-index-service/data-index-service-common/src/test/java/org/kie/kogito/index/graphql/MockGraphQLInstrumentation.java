@@ -19,10 +19,11 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.quarkus.test.Mock;
+
 import graphql.ExecutionResult;
 import graphql.execution.instrumentation.parameters.InstrumentationExecutionParameters;
 import graphql.execution.reactive.CompletionStageMappingPublisher;
-import io.quarkus.test.Mock;
 
 @Mock
 @ApplicationScoped

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import io.redisearch.Client;
 import io.redisearch.Schema;
+
 import redis.clients.jedis.exceptions.JedisDataException;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;

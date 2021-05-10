@@ -34,6 +34,7 @@ import io.redisearch.client.AddOptions;
 import io.redisearch.client.Client;
 import io.redisearch.client.ConfigOption;
 import io.redisearch.client.SuggestionOptions;
+
 import redis.clients.jedis.Jedis;
 
 public class RedisClientMock implements io.redisearch.Client {

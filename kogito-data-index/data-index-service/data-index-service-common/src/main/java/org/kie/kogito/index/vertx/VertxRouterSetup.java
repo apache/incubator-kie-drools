@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import graphql.GraphQL;
 import io.quarkus.oidc.AccessTokenCredential;
 import io.quarkus.vertx.http.runtime.security.QuarkusHttpUser;
 import io.vertx.core.MultiMap;
@@ -38,6 +37,8 @@ import io.vertx.ext.web.handler.graphql.GraphQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandlerOptions;
+
+import graphql.GraphQL;
 
 @ApplicationScoped
 public class VertxRouterSetup {
