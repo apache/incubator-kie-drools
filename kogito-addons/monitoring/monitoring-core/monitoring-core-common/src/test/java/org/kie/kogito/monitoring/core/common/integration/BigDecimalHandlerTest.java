@@ -24,8 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.BigDecimalHandler;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 
-import ch.obermuhlner.math.big.stream.BigDecimalStream;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
+import ch.obermuhlner.math.big.stream.BigDecimalStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

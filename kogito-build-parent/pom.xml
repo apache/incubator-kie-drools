@@ -1301,7 +1301,7 @@ limitations under the License.
           <version>${version.impsort.plugin}</version>
           <configuration>
             <!-- keep in sync with kogito-ide-config/src/main/resources/eclipse.importorder -->
-            <groups>java.,javax.,org.,com.</groups>
+            <groups>java.,javax.,org.,com.,io.</groups>
             <staticGroups>*</staticGroups>
             <staticAfter>true</staticAfter>
             <!-- keep in sync with the formatter-maven-plugin -->
