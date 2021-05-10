@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -54,18 +55,18 @@ public class DMNModelIOSets {
         buildInputSet();
         buildOutputSet();
         buildIODoc();
-        for (DecisionServiceNode ds : model.getDecisionServices()) {
+        for (DecisionServiceNode ds : fromThisModel(model.getDecisionServices())) {
             dsIOSets.put(ds.getName(), new DSIOSets(model, ds));
         }
     }
 
     private void buildOutputSet() {
         CompositeTypeImpl is = new CompositeTypeImpl(model.getNamespace(), TEMP, model.getDefinitions().getId() + "OutputSet");
-        for (DecisionNode dn : model.getDecisions()) {
+        for (DecisionNode dn : fromThisModel(model.getDecisions())) {
             DMNType idnType = dn.getResultType();
             is.addField(dn.getName(), idnType);
         }
-        for (InputDataNode idn : model.getInputs()) {
+        for (InputDataNode idn : fromThisModel(model.getInputs())) {
             DMNType idnType = idn.getType();
             is.addField(idn.getName(), idnType);
         }
@@ -74,11 +75,15 @@ public class DMNModelIOSets {
 
     private void buildInputSet() {
         CompositeTypeImpl is = new CompositeTypeImpl(model.getNamespace(), TEMP, model.getDefinitions().getId() + "InputSet");
-        for (InputDataNode idn : model.getInputs()) {
+        for (InputDataNode idn : fromThisModel(model.getInputs())) {
             DMNType idnType = idn.getType();
             is.addField(idn.getName(), idnType);
         }
         this.inputSet = is;
+    }
+
+    private <T extends DMNNode> Collection<T> fromThisModel(Collection<T> ins) {
+        return ins.stream().filter(e -> e.getModelNamespace().equals(this.model.getNamespace())).collect(Collectors.toList());
     }
 
     private void buildIODoc() {
