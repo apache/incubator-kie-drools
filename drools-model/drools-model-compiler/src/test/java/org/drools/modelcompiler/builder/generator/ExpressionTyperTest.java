@@ -49,8 +49,7 @@ public class ExpressionTyperTest {
         imports = new HashSet<>();
         packageModel = new PackageModel("", "", null, null, new DRLIdGenerator());
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-        ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver);
-        ruleContext.setDescr(ruleDescr);
+        ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver, ruleDescr);
         imports.add("org.drools.modelcompiler.domain.Person");
     }
 

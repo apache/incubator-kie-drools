@@ -68,9 +68,8 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -136,30 +135,49 @@ public class ModelGenerator {
         TypeResolver typeResolver = pkg.getTypeResolver();
         initPackageModel( kbuilder, pkg, typeResolver, packageDescr, packageModel );
 
-        for (RuleDescr descr : packageDescr.getRules()) {
-            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
+        List<RuleDescr> ruleDescrs = packageDescr.getRules();
+        if (ruleDescrs.isEmpty()) {
+            return;
+        }
+
+        for (RuleDescr descr : ruleDescrs) {
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, descr);
             context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQueryDef(packageModel, (QueryDescr) descr, context);
+                QueryGenerator.processQueryDef(packageModel, context);
             }
         }
 
-        HashSet<RuleUnitDescription> ruleUnitDescriptions = new HashSet<>();
+        int parallelRulesBuildThreshold = kbuilder.getBuilderConfiguration().getParallelRulesBuildThreshold();
+        boolean parallelRulesBuild = parallelRulesBuildThreshold != -1 && ruleDescrs.size() > parallelRulesBuildThreshold;
 
-        for (RuleDescr descr : packageDescr.getRules()) {
-            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
-            context.setDialectFromAttributes(packageDescr.getAttributes());
-            if (descr instanceof QueryDescr) {
-                QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
-            } else {
-                processRule(kbuilder, packageModel, packageDescr, descr, context);
-                RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
-                if (ruleUnitDescr != null) ruleUnitDescriptions.add(ruleUnitDescr);
+        if (parallelRulesBuild) {
+            List<RuleContext> ruleContexts = new ArrayList<>();
+            int i = 0;
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
+                ruleContexts.add(new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ )) ;
+            }
+            KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
+                    ruleContexts.parallelStream().forEach(context -> processRuleDescr(context, packageDescr))
+            ).join();
+        } else {
+            int i = 0;
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
+                processRuleDescr(new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ ), packageDescr) ;
             }
         }
+    }
 
-        for (RuleUnitDescription rud : ruleUnitDescriptions) {
-            packageModel.addRuleUnit(rud);
+    private static void processRuleDescr(RuleContext context, PackageDescr packageDescr) {
+        if (context.getRuleDescr() instanceof QueryDescr) {
+            QueryGenerator.processQuery(context.getPackageModel(), (QueryDescr) context.getRuleDescr());
+            return;
+        }
+        context.setDialectFromAttributes(packageDescr.getAttributes());
+        processRule(packageDescr, context);
+        RuleUnitDescription rud = context.getRuleUnitDescr();
+        if (rud != null) {
+            context.getPackageModel().addRuleUnit(rud);
         }
     }
 
@@ -168,14 +186,15 @@ public class ModelGenerator {
         packageModel.addStaticImports( pkg.getStaticImports());
         packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());
         packageModel.addGlobals( pkg );
-        packageModel.addAccumulateFunctions( pkg.getAccumulateFunctions());
+        packageModel.setAccumulateFunctions( pkg.getAccumulateFunctions());
         packageModel.setInternalKnowledgePackage( pkg );
         new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( kbuilder, packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions( packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
     }
 
-    private static void processRule(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, RuleContext context) {
-        context.setDescr(ruleDescr);
+    private static void processRule(PackageDescr packageDescr, RuleContext context) {
+        PackageModel packageModel = context.getPackageModel();
+        RuleDescr ruleDescr = context.getRuleDescr();
         context.addGlobalDeclarations(packageModel.getGlobals());
         context.setDialectFromAttributes(ruleDescr.getAttributes().values());
 
@@ -224,7 +243,7 @@ public class ModelGenerator {
 
         MethodCallExpr buildCall = new MethodCallExpr(buildCallScope, BUILD_CALL, NodeList.nodeList(context.getExpressions()));
 
-        createVariables(kbuilder, ruleVariablesBlock, packageModel, context);
+        createVariables(ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
         MethodCallExpr executeCall = new Consequence(context).createCall(ruleDescr, ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
@@ -233,7 +252,7 @@ public class ModelGenerator {
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
 
         ruleVariablesBlock.addStatement( new ReturnStmt("rule") );
-        packageModel.putRuleMethod(ruleUnitDescr != null ? ruleUnitDescr.getSimpleName() : DEFAULT_RULE_UNIT, ruleMethod);
+        packageModel.putRuleMethod(ruleUnitDescr != null ? ruleUnitDescr.getSimpleName() : DEFAULT_RULE_UNIT, ruleMethod, context.getRuleIndex());
     }
 
     private static AndDescr getExtendedLhs(PackageDescr packageDescr, RuleDescr ruleDescr) {
@@ -454,18 +473,18 @@ public class ModelGenerator {
         ruleBlock.addStatement(var_assign);
     }
 
-    public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
+    public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
             boolean domainClass = packageModel.registerDomainClass( decl.getDeclarationClass() );
             if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
-                addVariable(kbuilder, block, decl, context, domainClass);
+                addVariable(block, decl, context, domainClass);
             }
         }
     }
 
-    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec declaration, RuleContext context, boolean domainClass) {
+    private static void addVariable(BlockStmt ruleBlock, DeclarationSpec declaration, RuleContext context, boolean domainClass) {
         if (declaration.getDeclarationClass() == null) {
-            kbuilder.addBuilderResult( new UnknownDeclarationError( declaration.getBindingId() ) );
+            context.addCompilationError( new UnknownDeclarationError( declaration.getBindingId() ) );
             return;
         }
         Type declType = classToReferenceType( declaration );
