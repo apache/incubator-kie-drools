@@ -15,10 +15,11 @@
  */
 package org.jbpm.util;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.IoUtils;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
@@ -36,40 +37,40 @@ public class WidMVELEvaluatorTest extends AbstractBaseTest {
 
     @Test
     public void testWidNoImports() throws Exception {
-        assertCorrectWids(WidMVELEvaluator.eval(getResouceContent("/wids/test-noimports.wid")));
+        assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-noimports.wid")));
     }
 
     @Test
     public void testWidBackwardsCompatImports() throws Exception {
-        assertCorrectWids(WidMVELEvaluator.eval(getResouceContent("/wids/test-backwardscompat.wid")));
+        assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-backwardscompat.wid")));
     }
 
     @Test
     public void testWidBackwardsCompatPkgImports() throws Exception {
-        assertCorrectWids(WidMVELEvaluator.eval(getResouceContent("/wids/test-backwardscompatpkgimport.wid")));
+        assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-backwardscompatpkgimport.wid")));
     }
 
     @Test
     public void testWidBackwardsCompatMixedAndMissingImports() throws Exception {
-        assertCorrectWids(WidMVELEvaluator.eval(getResouceContent("/wids/test-backwardscompatmixedandmissingimports.wid")));
+        assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-backwardscompatmixedandmissingimports.wid")));
     }
 
     @Test
     public void testWidCustomDataType() throws Exception {
-        assertCorrectWids(WidMVELEvaluator.eval(getResouceContent("/wids/test-customdatatype.wid")));
+        assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-customdatatype.wid")));
     }
 
     @Test
     public void testWidCustomDataTypeNoImport() {
         try {
-            assertCorrectWids(WidMVELEvaluator.eval(getResouceContent("/wids/test-customdatatypenoimport.wid")));
+            assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-customdatatypenoimport.wid")));
         } catch (Throwable t) {
             assertTrue(t instanceof CompileException);
         }
     }
 
-    protected String getResouceContent(String path) throws Exception {
-        return new String(IoUtils.readBytesFromInputStream(this.getClass().getResourceAsStream(path)), "UTF-8");
+    protected String getResourceContent(String path) throws Exception {
+        return new String(Files.readAllBytes(Paths.get(this.getClass().getResource(path).getPath())), "UTF-8");
     }
 
     protected String getResouce(String path) throws Exception {

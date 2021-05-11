@@ -22,12 +22,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
-import org.drools.core.util.IoUtils;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.slf4j.Logger;
@@ -123,7 +123,7 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
             initializeLog();
         }
         try (FileOutputStream fileOut = new FileOutputStream(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
-                Writer writer = new OutputStreamWriter(fileOut, IoUtils.UTF8_CHARSET)) {
+                Writer writer = new OutputStreamWriter(fileOut, StandardCharsets.UTF_8)) {
             final XStream xstream = createTrustingXStream();
 
             WorkingMemoryLog log;
@@ -149,7 +149,7 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
 
     private void initializeLog() {
         try (FileOutputStream fileOut = new FileOutputStream(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), false);
-                Writer writer = new OutputStreamWriter(fileOut, IoUtils.UTF8_CHARSET)) {
+                Writer writer = new OutputStreamWriter(fileOut, StandardCharsets.UTF_8)) {
             writer.append("<object-stream>\n");
             initialized = true;
         } catch (final FileNotFoundException exc) {
@@ -161,7 +161,7 @@ public class KogitoWorkingMemoryFileLogger extends KogitoWorkingMemoryLogger imp
 
     private void closeLog() {
         try (FileOutputStream fileOut = new FileOutputStream(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
-                Writer writer = new OutputStreamWriter(fileOut, IoUtils.UTF8_CHARSET)) {
+                Writer writer = new OutputStreamWriter(fileOut, StandardCharsets.UTF_8)) {
             writer.append("</object-stream>\n");
         } catch (final FileNotFoundException exc) {
             throw new RuntimeException("Could not close the log file.  Please make sure that directory that the log file should be placed in does exist.");

@@ -16,6 +16,8 @@
 package org.jbpm.bpmn2;
 
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
@@ -115,7 +116,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testTimerStartDateISO() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
-        byte[] content = IoUtils.readBytesFromInputStream(this.getClass().getResourceAsStream("/BPMN2-TimerStartDate.bpmn2"));
+        byte[] content = Files.readAllBytes(Paths.get(this.getClass().getResource("/BPMN2-TimerStartDate.bpmn2").getPath()));
         String processContent = new String(content, "UTF-8");
 
         OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);

@@ -15,9 +15,9 @@
  */
 package org.jbpm.bpmn2;
 
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-import org.drools.core.util.IoUtils;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.jbpm.process.core.impl.XmlProcessDumperFactory;
 import org.junit.jupiter.api.Test;
@@ -29,10 +29,10 @@ public class BrokenStructureRefTest {
 
     @Test
     public void testProcessWithBrokenItemDefinitionUri() throws Exception {
-        InputStream inputBpmn = getClass().getResourceAsStream("/BPMN2-BrokenStructureRef.bpmn2");
+        String inputBpmn = getClass().getResource("/BPMN2-BrokenStructureRef.bpmn2").getPath();
         XmlProcessDumper dumper = XmlProcessDumperFactory.getXmlProcessDumperFactoryService().newXmlProcessDumper();
         assertNotNull(dumper);
-        String processXml = new String(IoUtils.readBytesFromInputStream(inputBpmn), "UTF-8");
+        String processXml = new String(Files.readAllBytes(Paths.get(inputBpmn)));
         assertNotNull(processXml);
         org.kie.api.definition.process.Process proc = dumper.readProcess(processXml);
         assertNotNull(proc);

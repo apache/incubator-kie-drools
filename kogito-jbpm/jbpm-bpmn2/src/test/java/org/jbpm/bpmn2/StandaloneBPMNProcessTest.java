@@ -18,6 +18,8 @@ package org.jbpm.bpmn2;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +27,6 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -790,12 +791,12 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         File dtdFile = new File("src/test/resources/xxe-protection/external.dtd");
         assertThat(dtdFile).exists();
 
-        String dtdContent = IoUtils.readFileAsString(dtdFile);
+        String dtdContent = new String(Files.readAllBytes(dtdFile.toPath()));
         dtdContent = dtdContent.replaceAll("@@PATH@@", dtdFile.getParentFile().getAbsolutePath());
 
-        IoUtils.write(dtdFile, dtdContent.getBytes("UTF-8"));
+        Files.write(dtdFile.toPath(), dtdContent.getBytes("UTF-8"));
 
-        byte[] data = IoUtils.readBytesFromInputStream(processResource.getInputStream());
+        byte[] data = Files.readAllBytes(Paths.get(this.getClass().getResource("/xxe-protection/BPMN2-XXE-Process.bpmn2").getPath()));
         String processAsString = new String(data, "UTF-8");
         // replace place holders with actual paths
         File testFiles = new File("src/test/resources/xxe-protection");

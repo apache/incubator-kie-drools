@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -36,7 +37,6 @@ import org.drools.compiler.kproject.models.QualifierModelImpl;
 import org.drools.compiler.kproject.models.RuleTemplateModelImpl;
 import org.drools.compiler.kproject.models.WorkItemHandlerModelImpl;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.IoUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
@@ -220,7 +220,7 @@ public class KogitoKieModuleMarshaller {
         }
 
         private static void validate(String kModuleString) {
-            byte[] bytes = kModuleString.getBytes(IoUtils.UTF8_CHARSET);
+            byte[] bytes = kModuleString.getBytes(StandardCharsets.UTF_8);
             validate(bytes);
         }
 
