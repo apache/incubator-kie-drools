@@ -44,6 +44,7 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
@@ -60,6 +61,8 @@ import static org.kie.pmml.commons.Constants.EMPTY_LIST;
 import static org.kie.pmml.commons.Constants.EVALUATE_PREDICATE;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PREDICATE_FUNCTION;
+import static org.kie.pmml.commons.Constants.REASON_CODE;
+import static org.kie.pmml.commons.Constants.REASON_CODE_ALGORITHM;
 import static org.kie.pmml.commons.Constants.SCORE;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.ATTRIBUTE_FUNCTIONS;
@@ -122,6 +125,8 @@ public class KiePMMLCharacteristicsFactoryTest {
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(basicComplexPartialScoreCharacteristics,
                                                                         basicComplexPartialScoreDataDictionary,
                                                                         basicComplexPartialScoreTransformationDictionary,
+                                                                        basicComplexPartialScore.getInitialScore(),
+                                                                        basicComplexPartialScore.getReasonCodeAlgorithm(),
                                                                         PACKAGE_NAME,
                                                                         new HasClassLoaderMock());
         assertNotNull(retrieved);
@@ -133,6 +138,8 @@ public class KiePMMLCharacteristicsFactoryTest {
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(basicComplexPartialScoreCharacteristics,
                                                                                   basicComplexPartialScoreDataDictionary,
                                                                                   basicComplexPartialScoreTransformationDictionary,
+                                                                                  basicComplexPartialScore.getInitialScore(),
+                                                                                  basicComplexPartialScore.getReasonCodeAlgorithm(),
                                                                                   CONTAINER_CLASS_NAME,
                                                                                   PACKAGE_NAME);
         assertNotNull(retrieved);
@@ -157,6 +164,7 @@ public class KiePMMLCharacteristicsFactoryTest {
                                                         characteristicTemplate,
                                                         basicComplexPartialScoreDataDictionary,
                                                         basicComplexPartialScoreTransformationDictionary,
+                                                        basicComplexPartialScore.getReasonCodeAlgorithm(),
                                                         basicComplexPartialScoreFirstCharacteristic,
                                                         CONTAINER_CLASS_NAME,
                                                         characteristicName);
@@ -174,31 +182,53 @@ public class KiePMMLCharacteristicsFactoryTest {
     public void getEvaluateCharacteristicMethodDeclaration() {
         final String characteristicName = "CharacteristicName";
         Object scoreParam = null;
+        String reasonCode = null;
+        Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm = Scorecard.ReasonCodeAlgorithm.POINTS_ABOVE;
         NodeList<Expression> evaluateAttributesReferences = new NodeList<>();
         MethodDeclaration retrieved =
                 KiePMMLCharacteristicsFactory.getEvaluateCharacteristicMethodDeclaration(characteristicTemplate,
                                                                                          characteristicName,
                                                                                          scoreParam,
+                                                                                         reasonCode,
+                                                                                         reasonCodeAlgorithm,
                                                                                          evaluateAttributesReferences);
-        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved, characteristicName, scoreParam,
+        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved,
+                                                               characteristicName,
+                                                               scoreParam,
+                                                               reasonCode,
+                                                               reasonCodeAlgorithm,
                                                                evaluateAttributesReferences);
         //
         scoreParam = "ScorePar";
+        reasonCode = "reasonCode";
         retrieved =
                 KiePMMLCharacteristicsFactory.getEvaluateCharacteristicMethodDeclaration(characteristicTemplate,
                                                                                          characteristicName,
                                                                                          scoreParam,
+                                                                                         reasonCode,
+                                                                                         reasonCodeAlgorithm,
                                                                                          evaluateAttributesReferences);
-        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved, characteristicName, scoreParam,
+        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved,
+                                                               characteristicName,
+                                                               scoreParam,
+                                                               reasonCode,
+                                                               reasonCodeAlgorithm,
                                                                evaluateAttributesReferences);
         //
         scoreParam = 23432.34;
+        reasonCodeAlgorithm = Scorecard.ReasonCodeAlgorithm.POINTS_BELOW;
         retrieved =
                 KiePMMLCharacteristicsFactory.getEvaluateCharacteristicMethodDeclaration(characteristicTemplate,
                                                                                          characteristicName,
                                                                                          scoreParam,
+                                                                                         reasonCode,
+                                                                                         reasonCodeAlgorithm,
                                                                                          evaluateAttributesReferences);
-        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved, characteristicName, scoreParam,
+        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved,
+                                                               characteristicName,
+                                                               scoreParam,
+                                                               reasonCode,
+                                                               reasonCodeAlgorithm,
                                                                evaluateAttributesReferences);
 
         //
@@ -212,8 +242,14 @@ public class KiePMMLCharacteristicsFactoryTest {
                 KiePMMLCharacteristicsFactory.getEvaluateCharacteristicMethodDeclaration(characteristicTemplate,
                                                                                          characteristicName,
                                                                                          scoreParam,
+                                                                                         reasonCode,
+                                                                                         reasonCodeAlgorithm,
                                                                                          evaluateAttributesReferences);
-        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved, characteristicName, scoreParam,
+        commonVerifyGetEvaluateCharacteristicMethodDeclaration(retrieved,
+                                                               characteristicName,
+                                                               scoreParam,
+                                                               reasonCode,
+                                                               reasonCodeAlgorithm,
                                                                evaluateAttributesReferences);
     }
 
@@ -238,23 +274,27 @@ public class KiePMMLCharacteristicsFactoryTest {
         String attributeName = "CharacteristicName_1";
         boolean hasComplexScore = false;
         Object scoreParam = 243.4533;
+        String reasonCode = null;
         // no complex score
         MethodDeclaration retrieved =
                 KiePMMLCharacteristicsFactory.getEvaluateAttributeMethodDeclaration(characteristicTemplate,
                                                                                     CONTAINER_CLASS_NAME, attributeName,
                                                                                     scoreParam,
+                                                                                    reasonCode,
                                                                                     hasComplexScore);
-        commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, hasComplexScore);
+        commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, reasonCode, hasComplexScore);
         // complex score
-        commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, hasComplexScore);
+        commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, reasonCode, hasComplexScore);
         scoreParam = null;
+        reasonCode = "reasonCode";
         hasComplexScore = true;
         retrieved = KiePMMLCharacteristicsFactory.getEvaluateAttributeMethodDeclaration(characteristicTemplate,
                                                                                         CONTAINER_CLASS_NAME,
                                                                                         attributeName,
                                                                                         scoreParam,
+                                                                                        reasonCode,
                                                                                         hasComplexScore);
-        commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, hasComplexScore);
+        commonVerifyGetEvaluateAttributeMethodDeclaration(retrieved, attributeName, scoreParam, reasonCode, hasComplexScore);
     }
 
     @Test
@@ -299,6 +339,8 @@ public class KiePMMLCharacteristicsFactoryTest {
     private void commonVerifyGetEvaluateCharacteristicMethodDeclaration(final MethodDeclaration retrieved,
                                                                         final String characteristicName,
                                                                         final Object scoreParam,
+                                                                        final String reasonCode,
+                                                                        final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                                                         final NodeList<Expression> evaluateAttributesReferences) {
         assertNotNull(retrieved);
         String expected = EVALUATE_CHARACTERISTIC + characteristicName;
@@ -313,6 +355,28 @@ public class KiePMMLCharacteristicsFactoryTest {
         if (scoreParam != null) {
             NameExpr nameExpr = retrievedExpression.get().asNameExpr();
             expected = scoreParam instanceof String ? String.format("\"%s\"", scoreParam) : scoreParam.toString();
+            assertEquals(expected, nameExpr.toString());
+        } else {
+            assertTrue(retrievedExpression.get() instanceof NullLiteralExpr);
+        }
+        // reason code
+        retrievedExpression = CommonCodegenUtils.getVariableInitializer(bodyRetrieved,
+                                                                        REASON_CODE);
+        assertTrue(retrievedExpression.isPresent());
+        if (reasonCode != null) {
+            NameExpr nameExpr = retrievedExpression.get().asNameExpr();
+            expected = String.format("\"%s\"", reasonCode);
+            assertEquals(expected, nameExpr.toString());
+        } else {
+            assertTrue(retrievedExpression.get() instanceof NullLiteralExpr);
+        }
+        // reasonCodeAlgorithm
+        retrievedExpression = CommonCodegenUtils.getVariableInitializer(bodyRetrieved,
+                                                                        REASON_CODE_ALGORITHM);
+        assertTrue(retrievedExpression.isPresent());
+        if (reasonCodeAlgorithm != null) {
+            NameExpr nameExpr = retrievedExpression.get().asNameExpr();
+            expected = String.format("%s.%s", REASONCODE_ALGORITHM.class.getName(), reasonCodeAlgorithm.name());
             assertEquals(expected, nameExpr.toString());
         } else {
             assertTrue(retrievedExpression.get() instanceof NullLiteralExpr);
@@ -338,6 +402,7 @@ public class KiePMMLCharacteristicsFactoryTest {
     private void commonVerifyGetEvaluateAttributeMethodDeclaration(final MethodDeclaration retrieved,
                                                                    final String attributeName,
                                                                    final Object scoreParam,
+                                                                   final String reasonCode,
                                                                    final boolean hasComplexScore) {
         assertNotNull(retrieved);
         String expected = EVALUATE_ATTRIBUTE + attributeName;
@@ -370,6 +435,17 @@ public class KiePMMLCharacteristicsFactoryTest {
         if (scoreParam != null) {
             NameExpr nameExpr = retrievedExpression.get().asNameExpr();
             expected = scoreParam instanceof String ? String.format("\"%s\"", scoreParam) : scoreParam.toString();
+            assertEquals(expected, nameExpr.toString());
+        } else {
+            assertTrue(retrievedExpression.get() instanceof NullLiteralExpr);
+        }
+        // reason code
+        retrievedExpression = CommonCodegenUtils.getVariableInitializer(bodyRetrieved,
+                                                                        REASON_CODE);
+        assertTrue(retrievedExpression.isPresent());
+        if (reasonCode != null) {
+            NameExpr nameExpr = retrievedExpression.get().asNameExpr();
+            expected = String.format("\"%s\"", reasonCode);
             assertEquals(expected, nameExpr.toString());
         } else {
             assertTrue(retrievedExpression.get() instanceof NullLiteralExpr);

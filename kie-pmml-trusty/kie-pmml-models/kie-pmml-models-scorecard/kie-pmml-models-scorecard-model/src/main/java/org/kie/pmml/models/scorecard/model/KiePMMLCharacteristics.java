@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 /**
@@ -31,26 +31,64 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = 2399787298848608820L;
 
+    public static Number addNumbers(Number a, Number b) {
+        if (a == null && b == null) {
+            return null;
+        }
+        if (a == null) {
+            return b;
+        }
+        if (b == null) {
+            return a;
+        }
+        return a.doubleValue() + b.doubleValue();
+    }
+
+    public static Number calculatePartialScore(Number baselineScore, Number partialScore, REASONCODE_ALGORITHM reasoncodeAlgorithm) {
+        if (baselineScore == null && partialScore == null) {
+            return null;
+        }
+        if (baselineScore == null) {
+            return partialScore;
+        }
+        if (partialScore == null) {
+            return baselineScore;
+        }
+        switch (reasoncodeAlgorithm) {
+            case POINTS_BELOW:
+                return baselineScore.doubleValue() - partialScore.doubleValue();
+            case POINTS_ABOVE:
+                return partialScore.doubleValue() - baselineScore.doubleValue();
+            default:
+                throw new IllegalArgumentException(String.format("Unknown REASONCODE_ALGORITHM %s", reasoncodeAlgorithm));
+        }
+    }
+
     protected KiePMMLCharacteristics(String modelName) {
         super(modelName, Collections.emptyList());
     }
 
     /**
      * Method to return the <b>first</b> matching <code>Characteristic</code> score
-     * @param characteristicFunctions
+     * @param characteristicFunctions: the first <code>Map</code> is the input data, the second <code>Map</code> is the <b>outputfieldsmap</b>
      * @param requestData
      * @return
      */
-    protected static Optional<Object> getCharacteristicsScore(final List<Function<Map<String, Object>, Object>> characteristicFunctions, final Map<String, Object> requestData) {
-        Optional<Object> toReturn = Optional.empty();
-        for (Function<Map<String, Object>, Object> function : characteristicFunctions) {
-            final Object evaluation = function.apply(requestData);
-            toReturn = Optional.ofNullable(evaluation);
-            if (toReturn.isPresent()) {
-                break;
+    protected static Optional<Number> getCharacteristicsScore(final List<BiFunction<Map<String, Object>, Map<String, Object>, Number>> characteristicFunctions,
+                                                              final Map<String, Object> requestData,
+                                                              final Map<String, Object> outputFieldsMap,
+                                                              final Number initialScore) {
+        Number accumulator = null;
+        for (BiFunction<Map<String, Object>, Map<String, Object>, Number> function : characteristicFunctions) {
+            final Number evaluation = function.apply(requestData, outputFieldsMap);
+            if (evaluation != null) {
+                if (accumulator == null) {
+                    accumulator = initialScore != null ? initialScore : 0;
+                }
+                accumulator = addNumbers(accumulator, evaluation);
             }
         }
-        return toReturn;
+        return Optional.ofNullable(accumulator);
     }
 
 }

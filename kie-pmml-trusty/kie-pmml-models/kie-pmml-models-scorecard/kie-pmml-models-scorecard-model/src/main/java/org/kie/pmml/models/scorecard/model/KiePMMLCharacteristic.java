@@ -19,8 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 /**
@@ -39,28 +40,27 @@ public class KiePMMLCharacteristic extends AbstractKiePMMLComponent {
      * @param requestData
      * @return
      */
-    public static Optional<Number> getCharacteristicScore(final List<Function<Map<String, Object>, Number>> attributeFunctions, final Map<String, Object> requestData) {
+    public static Optional<Number> getCharacteristicScore(final List<BiFunction<Map<String, Object>, Map<String, Object>, Number>> attributeFunctions,
+                                                          final Map<String, Object> requestData,
+                                                          final Map<String, Object> outputFieldsMap,
+                                                          final String reasonCode,
+                                                          final Number baseScore,
+                                                          final REASONCODE_ALGORITHM reasoncodeAlgorithm) {
         Optional<Number> toReturn = Optional.empty();
-        for (Function<Map<String, Object>, Number> function : attributeFunctions) {
-            final Number evaluation = function.apply(requestData);
+        for (BiFunction<Map<String, Object>, Map<String, Object>, Number> function : attributeFunctions) {
+            final Number evaluation = function.apply(requestData, outputFieldsMap);
             if (evaluation != null) {
-                toReturn = toReturn.map(number -> Optional.of(addNumbers(number, evaluation)))
-                        .orElseGet(() -> Optional.of(evaluation));
+                toReturn = Optional.ofNullable(evaluation);
+                if (reasonCode != null) {
+                    Number rankingScore = KiePMMLCharacteristics.calculatePartialScore(baseScore, evaluation, reasoncodeAlgorithm);
+                    outputFieldsMap.put(reasonCode, rankingScore);
+                }
+            }
+            if (toReturn.isPresent()) {
+                break;
             }
         }
         return toReturn;
-    }
-
-    private static Number addNumbers(Number a, Number b) {
-        if (a instanceof Double || b instanceof Double) {
-            return a.doubleValue() + b.doubleValue();
-        } else if (a instanceof Float || b instanceof Float) {
-            return a.floatValue() + b.floatValue();
-        } else if (a instanceof Long || b instanceof Long) {
-            return a.longValue() + b.longValue();
-        } else {
-            return a.intValue() + b.intValue();
-        }
     }
 
 }

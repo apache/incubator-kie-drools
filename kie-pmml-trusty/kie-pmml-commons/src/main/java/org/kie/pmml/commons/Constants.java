@@ -43,7 +43,10 @@ public class Constants {
     public static final String EVALUATE_PREDICATE = "evaluatePredicate";
     public static final String PREDICATE_FUNCTION = "predicateFunction";
     public static final String STRING_OBJECT_MAP = "stringObjectMap";
+    public static final String INITIAL_SCORE = "initialScore";
     public static final String SCORE = "score";
+    public static final String REASON_CODE = "reasonCode";
+    public static final String REASON_CODE_ALGORITHM = "reasonCodeAlgorithm";
     public static final String EMPTY_LIST = "emptyList";
     public static final String AS_LIST = "asList";
 

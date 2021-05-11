@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -32,12 +33,13 @@ public class KiePMMLCharacteristicsTemplate extends KiePMMLCharacteristics {
         super(name);
     }
 
-    public static Number evaluateCharacteristics(final Map<String, Object> requestData) {
-        final List<Function<Map<String, Object>, Number>> characteristicFunctions = null;
+    public static Number evaluateCharacteristics(final Map<String, Object> requestData, final Map<String, Object> outputFieldsMap) {
+        final Number initialScore = null;
+        final List<BiFunction<Map<String, Object>, Map<String, Object>, Number>> characteristicFunctions = null;
         if (characteristicFunctions.isEmpty()) {
             return null;
         }
-        Optional<Number> characteristicScore = KiePMMLCharacteristic.getCharacteristicScore(characteristicFunctions, requestData);
+        Optional<Number> characteristicScore = KiePMMLCharacteristics.getCharacteristicsScore(characteristicFunctions, requestData, outputFieldsMap, initialScore);
         return characteristicScore.orElse(null);
     }
 

@@ -17,30 +17,32 @@ package  org.kie.pmml.models.scorecard.model;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-public class KiePMMLScorecardModel extends KiePMMLModel {
+public abstract class KiePMMLScorecardModel extends KiePMMLModel {
 
     private static final long serialVersionUID = 1798360806171346217L;
 
-    protected Function<Map<String, Object>, Object> characteristicsFunction;
+    /**
+     * The first <code>Map</code> is the input data, the second <code>Map</code> is the <b>outputfieldsmap</b>
+     */
+    protected BiFunction<Map<String, Object>, Map<String, Object>, Object> characteristicsFunction;
 
     public KiePMMLScorecardModel(String modelName) {
         super(modelName, Collections.emptyList());
     }
 
-    @Override
-    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        return characteristicsFunction.apply(requestData);
-    }
+
 
     @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        // TODO
-        throw new UnsupportedOperationException();
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
+        return characteristicsFunction.apply(requestData, outputFieldsMap);
     }
+
+
 
 
 }

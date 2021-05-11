@@ -43,6 +43,8 @@ import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.ComplexPartialScore;
+import org.dmg.pmml.scorecard.Scorecard;
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
@@ -58,10 +60,13 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.AS_LIST;
 import static org.kie.pmml.commons.Constants.EMPTY_LIST;
 import static org.kie.pmml.commons.Constants.EVALUATE_PREDICATE;
+import static org.kie.pmml.commons.Constants.INITIAL_SCORE;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.Constants.PREDICATE_FUNCTION;
+import static org.kie.pmml.commons.Constants.REASON_CODE;
+import static org.kie.pmml.commons.Constants.REASON_CODE_ALGORITHM;
 import static org.kie.pmml.commons.Constants.SCORE;
 import static org.kie.pmml.commons.Constants.STRING_OBJECT_MAP;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getExpressionMethodDeclarationWithStringObjectMap;
@@ -92,6 +97,8 @@ public class KiePMMLCharacteristicsFactory {
     public static KiePMMLCharacteristics getKiePMMLCharacteristics(final Characteristics characteristics,
                                                                    final DataDictionary dataDictionary,
                                                                    final TransformationDictionary transformationDictionary,
+                                                                   final Number initialScore,
+                                                                   final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                                                    final String packageName,
                                                                    final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLCharacteristics {} {}", packageName, characteristics);
@@ -99,6 +106,8 @@ public class KiePMMLCharacteristicsFactory {
         String fullClassName = packageName + "." + className;
         final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(characteristics, dataDictionary,
                                                                                    transformationDictionary,
+                                                                                   initialScore,
+                                                                                   reasonCodeAlgorithm,
                                                                                    className, packageName);
         try {
             Class<?> kiePMMLCharacteristicsClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
@@ -111,6 +120,8 @@ public class KiePMMLCharacteristicsFactory {
     public static Map<String, String> getKiePMMLCharacteristicsSourcesMap(final Characteristics characteristics,
                                                                           final DataDictionary dataDictionary,
                                                                           final TransformationDictionary transformationDictionary,
+                                                                          final Number initialScore,
+                                                                          final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                                                           final String containerClassName,
                                                                           final String packageName) {
         logger.trace("getKiePMMLCharacteristicsSourcesMap {} {}", characteristics, packageName);
@@ -131,7 +142,7 @@ public class KiePMMLCharacteristicsFactory {
         final NodeList<Expression> evaluateCharacteristicsReferences = new NodeList<>();
         for (Characteristic characteristic : characteristics) {
             String characteristicName = containerClassName + "Characteristic_" + atomicInteger.addAndGet(1);
-            addCharacteristic(characteristicsTemplate, characteristicTemplate, dataDictionary,  transformationDictionary, characteristic,
+            addCharacteristic(characteristicsTemplate, characteristicTemplate, dataDictionary,  transformationDictionary,reasonCodeAlgorithm, characteristic,
                               containerClassName, characteristicName);
             MethodReferenceExpr toAdd = new MethodReferenceExpr();
             toAdd.setScope(new NameExpr(containerClassName));
@@ -139,12 +150,18 @@ public class KiePMMLCharacteristicsFactory {
             toAdd.setIdentifier(identifier);
             evaluateCharacteristicsReferences.add(toAdd);
         }
-        // Set characteristics
+
         final MethodDeclaration characteristicsMethodDeclaration =
                 characteristicsTemplate.getMethodsByName(EVALUATE_CHARACTERISTICS).get(0);
         final BlockStmt body = characteristicsMethodDeclaration.getBody()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE,
                                                                               characteristicsMethodDeclaration)));
+        // Set initialScore
+        if (initialScore != null) {
+            NameExpr initialScoreExpression = new NameExpr(initialScore.toString());
+            CommonCodegenUtils.setVariableDeclaratorValue(body, INITIAL_SCORE, initialScoreExpression);
+        }
+        // Set characteristics
         final MethodCallExpr valuesInit = new MethodCallExpr();
         if (evaluateCharacteristicsReferences.isEmpty()) {
             valuesInit.setScope(new TypeExpr(parseClassOrInterfaceType(Collections.class.getName())));
@@ -171,9 +188,10 @@ public class KiePMMLCharacteristicsFactory {
                                   final ClassOrInterfaceDeclaration characteristicTemplate,
                                   final DataDictionary dataDictionary,
                                   final TransformationDictionary transformationDictionary,
+                                  final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                   final Characteristic characteristic,
                                   final String containerClassName, final String characteristicName) {
-        // Add score
+
         final AtomicInteger atomicInteger = new AtomicInteger(0);
         final NodeList<Expression> evaluateAttributesReferences = new NodeList<>();
         for (Attribute attribute : characteristic.getAttributes()) {
@@ -191,12 +209,19 @@ public class KiePMMLCharacteristicsFactory {
         final MethodDeclaration evaluateCharacteristicMethodDeclaration =
                 getEvaluateCharacteristicMethodDeclaration(characteristicTemplate, characteristicName,
                                                            characteristic.getBaselineScore(),
+                                                           characteristic.getReasonCode(),
+                                                           reasonCodeAlgorithm,
                                                            evaluateAttributesReferences);
         CommonCodegenUtils.addMethodDeclarationToClass(characteristicsTemplate,
                                                        evaluateCharacteristicMethodDeclaration);
     }
 
-    static MethodDeclaration getEvaluateCharacteristicMethodDeclaration(final ClassOrInterfaceDeclaration characteristicTemplate, final String characteristicName, final Object scoreParam, final NodeList<Expression> evaluateAttributesReferences) {
+    static MethodDeclaration getEvaluateCharacteristicMethodDeclaration(final ClassOrInterfaceDeclaration characteristicTemplate,
+                                                                        final String characteristicName,
+                                                                        final Object scoreParam,
+                                                                        final String reasonCode,
+                                                                        final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
+                                                                        final NodeList<Expression> evaluateAttributesReferences) {
         final MethodDeclaration toReturn =
                 characteristicTemplate.getMethodsByName(EVALUATE_CHARACTERISTIC).get(0).clone();
         toReturn.setName(EVALUATE_CHARACTERISTIC + characteristicName);
@@ -208,6 +233,19 @@ public class KiePMMLCharacteristicsFactory {
                     scoreParam.toString();
             NameExpr scoreExpression = new NameExpr(scoreParamExpr);
             CommonCodegenUtils.setVariableDeclaratorValue(body, SCORE, scoreExpression);
+        }
+        // Set reasonCode
+        if (reasonCode != null) {
+            String reasonCodeParamExpr = String.format("\"%s\"", reasonCode);
+            NameExpr reasonCodeExpression = new NameExpr(reasonCodeParamExpr);
+            CommonCodegenUtils.setVariableDeclaratorValue(body, REASON_CODE, reasonCodeExpression);
+        }
+        // Set reasonCodeAlgorithm
+        if (reasonCodeAlgorithm != null) {
+            REASONCODE_ALGORITHM reasCdAl = REASONCODE_ALGORITHM.byName(reasonCodeAlgorithm.value());
+            String reasonCodeAlgorithmParamExpr = String.format("%s.%s", reasCdAl.getClass().getName(), reasCdAl.name());
+            NameExpr reasonCodeAlgorithmExpression = new NameExpr(reasonCodeAlgorithmParamExpr);
+            CommonCodegenUtils.setVariableDeclaratorValue(body, REASON_CODE_ALGORITHM, reasonCodeAlgorithmExpression);
         }
         // Set attributes
         final MethodCallExpr valuesInit = new MethodCallExpr();
@@ -243,11 +281,11 @@ public class KiePMMLCharacteristicsFactory {
         // Add method declaration
         final MethodDeclaration attributeMethodDeclaration =
                 getEvaluateAttributeMethodDeclaration(characteristicTemplate, containerClassName, attributeName,
-                                                      attribute.getPartialScore(), hasComplexScore);
+                                                      attribute.getPartialScore(), attribute.getReasonCode(), hasComplexScore);
         CommonCodegenUtils.addMethodDeclarationToClass(characteristicsTemplate, attributeMethodDeclaration);
     }
 
-    static MethodDeclaration getEvaluateAttributeMethodDeclaration(final ClassOrInterfaceDeclaration characteristicTemplate, final String containerClassName, final String attributeName, final Object scoreParam, final boolean hasComplexScore) {
+    static MethodDeclaration getEvaluateAttributeMethodDeclaration(final ClassOrInterfaceDeclaration characteristicTemplate, final String containerClassName, final String attributeName, final Object scoreParam, final String reasonCode, final boolean hasComplexScore) {
         final MethodDeclaration toReturn =
                 characteristicTemplate.getMethodsByName(EVALUATE_ATTRIBUTE).get(0).clone();
         toReturn.setName(EVALUATE_ATTRIBUTE + attributeName);
@@ -267,11 +305,18 @@ public class KiePMMLCharacteristicsFactory {
             CommonCodegenUtils.setVariableDeclaratorValue(body, EVALUATE_COMPLEX_SCORE_FUNCTION,
                                                           evaluateComplexScoreReference);
         }
+        // Set score
         if (scoreParam != null) {
             String scoreParamExpr = scoreParam instanceof String ? String.format("\"%s\"", scoreParam) :
                     scoreParam.toString();
             NameExpr scoreExpression = new NameExpr(scoreParamExpr);
             CommonCodegenUtils.setVariableDeclaratorValue(body, SCORE, scoreExpression);
+        }
+        // Set reasonCode
+        if (reasonCode != null) {
+            String reasonCodeParamExpr = String.format("\"%s\"", reasonCode);
+            NameExpr reasonCodeExpression = new NameExpr(reasonCodeParamExpr);
+            CommonCodegenUtils.setVariableDeclaratorValue(body, REASON_CODE, reasonCodeExpression);
         }
         return toReturn;
     }
