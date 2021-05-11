@@ -9,9 +9,8 @@ global SimpleScoreHolder scoreHolder;
 
 rule "Don't assign 2 entities the same value."
     when
-        TestdataQuarkusEntity()
-        $a : TestdataQuarkusEntity(value != null, $v : value)
-        TestdataQuarkusEntity(value == $v, this != $a)
+        $a : TestdataQuarkusEntity($fullValue: fullValue)
+        TestdataQuarkusEntity($fullValue == fullValue, this != $a)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end

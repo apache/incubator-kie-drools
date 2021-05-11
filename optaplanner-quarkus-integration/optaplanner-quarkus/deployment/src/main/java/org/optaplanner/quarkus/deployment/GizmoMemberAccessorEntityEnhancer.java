@@ -53,12 +53,15 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -441,8 +444,9 @@ public class GizmoMemberAccessorEntityEnhancer {
         return generatedClassName;
     }
 
-    public static String generateKieRuntimeBuilder(ClassOutput classOutput, ScoreDirectorFactoryConfig config,
-            BuildProducer<UnremovableBeanBuildItem> unremovableBeans) {
+    public static String generateKieRuntimeBuilder(ClassOutput classOutput, SolverConfig config,
+            BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = DROOLS_INITIALIZER_CLASS_NAME;
         try (ClassCreator classCreator = ClassCreator
                 .builder()
@@ -454,8 +458,8 @@ public class GizmoMemberAccessorEntityEnhancer {
             classCreator.addAnnotation(ApplicationScoped.class);
 
             MethodCreator methodCreator;
-            if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList()) ||
-                    !ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
+            if (!ConfigUtils.isEmptyCollection(config.getScoreDirectorFactoryConfig().getScoreDrlList()) ||
+                    !ConfigUtils.isEmptyCollection(config.getScoreDirectorFactoryConfig().getScoreDrlFileList())) {
                 unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(KieRuntimeBuilder.class));
                 methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
                         "setup", void.class, ScoreDirectorFactoryConfig.class));
@@ -482,6 +486,14 @@ public class GizmoMemberAccessorEntityEnhancer {
                                 KieBaseExtractor.class),
                         methodCreator.getMethodParam(0), kieBaseExtractor);
 
+                // Workaround for https://issues.redhat.com/browse/KOGITO-5101
+                transformers.produce(new BytecodeTransformerBuildItem(config.getSolutionClass().getName(),
+                        (className, classVisitor) -> new OptaPlannerDroolsReactiveClassVisitor(config.getSolutionClass(),
+                                classVisitor)));
+                for (Class<?> entityClass : config.getEntityClassList()) {
+                    transformers.produce(new BytecodeTransformerBuildItem(entityClass.getName(),
+                            (className, classVisitor) -> new OptaPlannerDroolsReactiveClassVisitor(entityClass, classVisitor)));
+                }
             } else {
                 // No additional setup needed; Drools isn't used
                 methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerDroolsInitializer.class,
@@ -494,6 +506,25 @@ public class GizmoMemberAccessorEntityEnhancer {
 
     public static RuntimeValue<OptaPlannerDroolsInitializer> getDroolsInitializer(RecorderContext recorderContext) {
         return recorderContext.newInstance(DROOLS_INITIALIZER_CLASS_NAME);
+    }
+
+    private static class OptaPlannerDroolsReactiveClassVisitor extends ClassVisitor {
+        final Class<?> clazz;
+
+        public OptaPlannerDroolsReactiveClassVisitor(Class<?> clazz, ClassVisitor outputClassVisitor) {
+            super(Gizmo.ASM_API_VERSION, outputClassVisitor);
+            this.clazz = clazz;
+        }
+
+        @Override
+        public void visitEnd() {
+            super.visitEnd();
+
+            if (clazz.getAnnotation(ClassReactive.class) == null && clazz.getAnnotation(PropertyReactive.class) == null) {
+                this.cv.visitAnnotation(Type.getDescriptor(ClassReactive.class), true);
+            }
+        }
+
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {

@@ -28,19 +28,30 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 @PlanningSolution
 public class TestdataQuarkusSolution {
 
-    private List<String> valueList;
+    private List<String> leftValueList;
+    private List<String> rightValueList;
     private List<TestdataQuarkusEntity> entityList;
 
     private SimpleScore score;
 
-    @ValueRangeProvider(id = "valueRange")
+    @ValueRangeProvider(id = "leftValueRange")
     @ProblemFactCollectionProperty
-    public List<String> getValueList() {
-        return valueList;
+    public List<String> getLeftValueList() {
+        return leftValueList;
     }
 
-    public void setValueList(List<String> valueList) {
-        this.valueList = valueList;
+    public void setLeftValueList(List<String> valueList) {
+        this.leftValueList = valueList;
+    }
+
+    @ValueRangeProvider(id = "rightValueRange")
+    @ProblemFactCollectionProperty
+    public List<String> getRightValueList() {
+        return rightValueList;
+    }
+
+    public void setRightValueList(List<String> valueList) {
+        this.rightValueList = valueList;
     }
 
     @PlanningEntityCollectionProperty

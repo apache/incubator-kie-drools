@@ -16,21 +16,40 @@
 
 package org.optaplanner.quarkus.drl.it.domain;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
 public class TestdataQuarkusEntity {
+    @PlanningVariable(valueRangeProviderRefs = "leftValueRange")
+    public String leftValue;
 
-    private String value;
+    @PlanningVariable(valueRangeProviderRefs = "rightValueRange")
+    public String rightValue;
 
-    @PlanningVariable(valueRangeProviderRefs = "valueRange")
-    public String getValue() {
-        return value;
+    public String getLeftValue() {
+        return leftValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public String getRightValue() {
+        return rightValue;
     }
 
+    public void setLeftValue(String leftValue) {
+        this.leftValue = leftValue;
+    }
+
+    public void setRightValue(String rightValue) {
+        this.rightValue = rightValue;
+    }
+
+    public String getFullValue() {
+        return ObjectUtils.defaultIfNull(leftValue, "") + ObjectUtils.defaultIfNull(rightValue, "");
+    }
+
+    @Override
+    public String toString() {
+        return "TestdataQuarkusEntity(" + "leftValue=" + leftValue + ";rightValue=" + rightValue + ";)";
+    }
 }
