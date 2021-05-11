@@ -61,7 +61,6 @@ public class PredictionCodegen extends AbstractGenerator {
     private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
     private static final String DECLARED_TYPE_IDENTIFIER = "org.drools.core.factmodel.GeneratedFact";
     private final List<PMMLResource> resources;
-    private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
     public PredictionCodegen(KogitoBuildContext context, List<PMMLResource> resources) {
         super(context, GENERATOR_NAME, new PredictionConfigGenerator(context));
@@ -105,14 +104,11 @@ public class PredictionCodegen extends AbstractGenerator {
 
     @Override
     public List<GeneratedFile> generate() {
-        if (resources.isEmpty()) {
-            return Collections.emptyList();
-        }
+        List<GeneratedFile> files = new ArrayList<>();
         for (PMMLResource resource : resources) {
-            List<KiePMMLModel> kiepmmlModels = resource.getKiePmmlModels();
-            addModels(kiepmmlModels, resource);
+            generateModelsFromResource(files, resource);
         }
-        return generatedFiles;
+        return files;
     }
 
     @Override
@@ -120,66 +116,76 @@ public class PredictionCodegen extends AbstractGenerator {
         return 40;
     }
 
-    private void addModels(final List<KiePMMLModel> kiepmmlModels, final PMMLResource resource) {
-        for (KiePMMLModel model : kiepmmlModels) {
-            if (model.getName() == null || model.getName().isEmpty()) {
-                String errorMessage = String.format("Model name should not be empty inside %s",
-                        resource.getModelPath());
-                throw new RuntimeException(errorMessage);
-            }
-            if (!(model instanceof HasSourcesMap)) {
-                String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
-                        model.getClass().getName(),
-                        resource.getModelPath());
-                throw new RuntimeException(errorMessage);
-            }
-            Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
-            for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
-                String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                storeFile(PMML_TYPE, path, sourceMapEntry.getValue());
-            }
-            Map<String, String> rulesSourceMap = ((HasSourcesMap) model).getRulesSourcesMap();
-            if (rulesSourceMap != null) {
-                List<String> pojoClasses = new ArrayList<>();
-                for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
-                    String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                    storeFile(IncrementalRuleCodegen.RULE_TYPE, path, rulesSourceMapEntry.getValue());
-                    if (isDeclaredType(rulesSourceMapEntry.getValue())) {
-                        pojoClasses.add(rulesSourceMapEntry.getKey());
-                    }
-                }
-                if (!pojoClasses.isEmpty()) {
-                    final org.drools.modelcompiler.builder.GeneratedFile reflectConfigFile =
-                            getReflectConfigFile(model.getKModulePackageName(), pojoClasses);
-                    storeFile(GeneratedFileType.RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData()));
-                }
-            }
-            if (context().hasREST() && !(model instanceof KiePMMLFactoryModel)) {
-                PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model,
-                        applicationCanonicalName());
-                storeFile(REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
-                final PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
-                try {
-                    String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());
-                    String jsonFile = String.format("%s.json", getSanitizedClassName(model.getName()));
-                    String jsonFilePath = String.format("META-INF/resources/%s", jsonFile);
-                    storeFile(GeneratedFileType.RESOURCE, jsonFilePath, jsonContent);
-                } catch (Exception e) {
-                    LOGGER.warn("Failed to write OAS schema");
+    private void generateModelsFromResource(List<GeneratedFile> files, PMMLResource resource) {
+        for (KiePMMLModel model : resource.getKiePmmlModels()) {
+            generateModel(files, model, resource.getModelPath());
+        }
+    }
+
+    private void generateModel(List<GeneratedFile> files, KiePMMLModel model, String modelPath) {
+        generateModelBaseFiles(files, model, modelPath);
+        generateModelRESTFiles(files, model);
+    }
+
+    private void generateModelBaseFiles(List<GeneratedFile> files, KiePMMLModel model, String modelPath) {
+        if (model.getName() == null || model.getName().isEmpty()) {
+            String errorMessage = String.format("Model name should not be empty inside %s", modelPath);
+            throw new IllegalArgumentException(errorMessage);
+        }
+        if (!(model instanceof HasSourcesMap)) {
+            String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s", model.getClass().getName(), modelPath);
+            throw new IllegalStateException(errorMessage);
+        }
+
+        Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
+        for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
+            String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
+            files.add(new GeneratedFile(PMML_TYPE, path, sourceMapEntry.getValue()));
+        }
+
+        Map<String, String> rulesSourceMap = ((HasSourcesMap) model).getRulesSourcesMap();
+        if (rulesSourceMap != null) {
+            List<String> pojoClasses = new ArrayList<>();
+
+            for (Map.Entry<String, String> rulesSourceMapEntry : rulesSourceMap.entrySet()) {
+                String path = rulesSourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
+                files.add(new GeneratedFile(IncrementalRuleCodegen.RULE_TYPE, path, rulesSourceMapEntry.getValue()));
+
+                if (rulesSourceMapEntry.getValue().contains(DECLARED_TYPE_IDENTIFIER)) {
+                    pojoClasses.add(rulesSourceMapEntry.getKey());
                 }
             }
-            if (model instanceof HasNestedModels) {
-                addModels(((HasNestedModels) model).getNestedModels(), resource);
+
+            if (!pojoClasses.isEmpty()) {
+                org.drools.modelcompiler.builder.GeneratedFile reflectConfigFile =
+                        getReflectConfigFile(model.getKModulePackageName(), pojoClasses);
+                files.add(new GeneratedFile(GeneratedFileType.RESOURCE, reflectConfigFile.getPath(), new String(reflectConfigFile.getData())));
+            }
+        }
+
+        if (model instanceof HasNestedModels) {
+            for (KiePMMLModel nestedModel : ((HasNestedModels) model).getNestedModels()) {
+                generateModelBaseFiles(files, nestedModel, modelPath);
             }
         }
     }
 
-    private void storeFile(GeneratedFileType type, String path, String source) {
-        generatedFiles.add(new GeneratedFile(type, path, source));
-    }
+    private void generateModelRESTFiles(List<GeneratedFile> files, KiePMMLModel model) {
+        if (!context().hasREST() || (model instanceof KiePMMLFactoryModel)) {
+            return;
+        }
 
-    private boolean isDeclaredType(String source) {
-        return source.contains(DECLARED_TYPE_IDENTIFIER);
-    }
+        PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model, applicationCanonicalName());
+        files.add(new GeneratedFile(REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate()));
 
+        PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
+        try {
+            String jsonContent = new ObjectMapper().writeValueAsString(oasResult.jsonSchemaNode());
+            String jsonFile = String.format("%s.json", getSanitizedClassName(model.getName()));
+            String jsonFilePath = String.format("META-INF/resources/%s", jsonFile);
+            files.add(new GeneratedFile(GeneratedFileType.RESOURCE, jsonFilePath, jsonContent));
+        } catch (Exception e) {
+            LOGGER.warn("Failed to write OAS schema");
+        }
+    }
 }

@@ -18,9 +18,11 @@ package org.kie.kogito.codegen.prediction;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.ApplicationSection;
@@ -28,13 +30,20 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
+import org.kie.pmml.commons.model.HasNestedModels;
+import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.commons.model.KiePMMLModel;
 
 import com.github.javaparser.ast.CompilationUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 class PredictionCodegenTest {
 
@@ -43,32 +52,24 @@ class PredictionCodegenTest {
     private static final Path REGRESSION_FULL_SOURCE = BASE_PATH.resolve(REGRESSION_SOURCE);
     private static final String SCORECARD_SOURCE = "prediction/test_scorecard.pmml";
     private static final Path SCORECARD_FULL_SOURCE = BASE_PATH.resolve(SCORECARD_SOURCE);
+    private static final String MINING_SOURCE = "prediction/test_miningmodel.pmml";
+    private static final Path MINING_FULL_SOURCE = BASE_PATH.resolve(MINING_SOURCE);
+    private static final String MULTIPLE_SOURCE = "prediction/test_multiplemodels.pmml";
+    private static final Path MULTIPLE_FULL_SOURCE = BASE_PATH.resolve(MULTIPLE_SOURCE);
     private static final String REFLECT_JSON = "reflect-config.json";
+
+    private static final String EMPTY = "";
+    private static final String MOCK = "mock";
+    private static final String NESTED_MOCK = "nestedMock";
+    private static final String PMML = "PMML";
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     void generateAllFilesRegression(KogitoBuildContext.Builder contextBuilder) {
         KogitoBuildContext context = contextBuilder.build();
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
-                contextBuilder.build(),
-                CollectedResourceProducer.fromFiles(BASE_PATH, REGRESSION_FULL_SOURCE.toFile()));
-
-        int expectedRestResources = context.hasREST() ? 2 : 0;
-
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(3 + expectedRestResources, generatedFiles.size());
-        assertEquals(3, generatedFiles.stream()
-                .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.SOURCE) &&
-                        generatedFile.type().name().equals("PMML") &&
-                        generatedFile.relativePath().endsWith(".java"))
-                .count());
-
-        assertEndpoints(context, generatedFiles);
-
-        Optional<ApplicationSection> optionalApplicationSection = codeGenerator.section();
-        assertTrue(optionalApplicationSection.isPresent());
-        CompilationUnit compilationUnit = optionalApplicationSection.get().compilationUnit();
-        assertNotNull(compilationUnit);
+                context, CollectedResourceProducer.fromFiles(BASE_PATH, REGRESSION_FULL_SOURCE.toFile()));
+        generateAllFiles(context, codeGenerator, 5, 3, 1, false);
     }
 
     @ParameterizedTest
@@ -76,45 +77,135 @@ class PredictionCodegenTest {
     void generateAllFilesScorecard(KogitoBuildContext.Builder contextBuilder) {
         KogitoBuildContext context = contextBuilder.build();
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
-                context,
-                CollectedResourceProducer.fromFiles(BASE_PATH, SCORECARD_FULL_SOURCE.toFile()));
+                context, CollectedResourceProducer.fromFiles(BASE_PATH, SCORECARD_FULL_SOURCE.toFile()));
+        generateAllFiles(context, codeGenerator, 27, 4, 1, true);
+    }
 
-        // for each REST endpoint it also generates OpenAPI json schema
-        int expectedRestResources = context.hasREST() ? 2 : 0;
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void generateAllFilesMining(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+                context, CollectedResourceProducer.fromFiles(BASE_PATH, MINING_FULL_SOURCE.toFile()));
+        generateAllFiles(context, codeGenerator, 67, 18, 1, true);
+    }
 
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void generateAllFilesMultiple(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+                context, CollectedResourceProducer.fromFiles(BASE_PATH, MULTIPLE_FULL_SOURCE.toFile()));
+        generateAllFiles(context, codeGenerator, 36, 6, 2, true);
+    }
+
+    private static void generateAllFiles(KogitoBuildContext context, PredictionCodegen codeGenerator, int expectedTotalFiles, int expectedJavaSources, int expectedRestEndpoints,
+            boolean assertReflect) {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(25 + expectedRestResources, generatedFiles.size());
-        assertEquals(4, generatedFiles.stream()
+
+        int expectedGeneratedFilesSize = expectedTotalFiles - (context.hasREST() ? 0 : expectedRestEndpoints * 2);
+        assertEquals(expectedGeneratedFilesSize, generatedFiles.size());
+
+        assertEquals(expectedJavaSources, generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.SOURCE) &&
-                        generatedFile.type().name().equals("PMML") &&
+                        generatedFile.type().name().equals(PMML) &&
                         generatedFile.relativePath().endsWith(".java"))
                 .count());
 
-        assertEndpoints(context, generatedFiles);
-
-        assertEquals(1, generatedFiles.stream()
+        int expectedReflectResource = assertReflect ? 1 : 0;
+        assertEquals(expectedReflectResource, generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.RESOURCE) &&
                         generatedFile.type().name().equals(GeneratedFileType.RESOURCE.name()) &&
                         generatedFile.relativePath().endsWith(REFLECT_JSON))
                 .count());
+
+        assertEndpoints(context, generatedFiles, expectedRestEndpoints);
+
         Optional<ApplicationSection> optionalApplicationSection = codeGenerator.section();
         assertTrue(optionalApplicationSection.isPresent());
+
         CompilationUnit compilationUnit = optionalApplicationSection.get().compilationUnit();
         assertNotNull(compilationUnit);
     }
 
-    private void assertEndpoints(KogitoBuildContext context, Collection<GeneratedFile> generatedFiles) {
+    private static void assertEndpoints(KogitoBuildContext context, Collection<GeneratedFile> generatedFiles, int expectedRestEndpoints) {
         if (context.hasREST()) {
             // REST resource
-            assertEquals(1, generatedFiles.stream()
+            assertEquals(expectedRestEndpoints, generatedFiles.stream()
                     .filter(generatedFile -> generatedFile.type().equals(REST_TYPE))
                     .count());
             // OpenAPI Json schema
-            assertEquals(1, generatedFiles.stream()
+            assertEquals(expectedRestEndpoints, generatedFiles.stream()
                     .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.RESOURCE) &&
                             generatedFile.type().name().equals(GeneratedFileType.RESOURCE.name()) &&
                             !generatedFile.relativePath().endsWith(REFLECT_JSON))
                     .count());
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void generateThrowsExceptionWithInvalidModel(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+
+        KiePMMLModel nullNameMock = buildInvalidMockedModel(null);
+        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, nullNameMock));
+
+        KiePMMLModel emptyNameMock = buildInvalidMockedModel(EMPTY);
+        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, emptyNameMock));
+
+        KiePMMLModel invalidClassMock = buildInvalidMockedModel(MOCK);
+        assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, invalidClassMock));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void generateThrowsExceptionWithInvalidNestedModel(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+
+        KiePMMLModel nullNameMock = buildMockedModelWithInvalidNestedMockedModel(null);
+        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, nullNameMock));
+
+        KiePMMLModel emptyNameMock = buildMockedModelWithInvalidNestedMockedModel(EMPTY);
+        assertThrows(IllegalArgumentException.class, buildMockedGenerateExecutable(context, emptyNameMock));
+
+        KiePMMLModel invalidClassMock = buildMockedModelWithInvalidNestedMockedModel(NESTED_MOCK);
+        assertThrows(IllegalStateException.class, buildMockedGenerateExecutable(context, invalidClassMock));
+    }
+
+    private static KiePMMLModel buildInvalidMockedModel(String name) {
+        KiePMMLModel mock = mock(KiePMMLModel.class);
+        when(mock.getName()).thenReturn(name);
+        return mock;
+    }
+
+    private static KiePMMLModel buildMockedModelWithInvalidNestedMockedModel(String name) {
+        KiePMMLModel mock = mock(KiePMMLModel.class, withSettings().extraInterfaces(HasSourcesMap.class, HasNestedModels.class));
+        when(mock.getName()).thenReturn(MOCK);
+
+        HasSourcesMap smMock = (HasSourcesMap) mock;
+        when(smMock.getSourcesMap()).thenReturn(Collections.emptyMap());
+        when(smMock.getRulesSourcesMap()).thenReturn(null);
+
+        List<KiePMMLModel> nestedModelsMock = Collections.singletonList(buildInvalidMockedModel(name));
+        HasNestedModels nmMock = (HasNestedModels) mock;
+        when(nmMock.getNestedModels()).thenReturn(nestedModelsMock);
+
+        return mock;
+    }
+
+    private static PMMLResource buildMockedResource(KiePMMLModel mockedModel) {
+        PMMLResource mock = mock(PMMLResource.class);
+        when(mock.getModelPath()).thenReturn(EMPTY);
+        when(mock.getKiePmmlModels()).thenReturn(Collections.singletonList(mockedModel));
+        return mock;
+    }
+
+    private static Executable buildMockedGenerateExecutable(KogitoBuildContext context, KiePMMLModel mockedModel) {
+        return () -> {
+            List<PMMLResource> mockedResourceList = Collections.singletonList(buildMockedResource(mockedModel));
+            PredictionCodegen codeGenerator = new PredictionCodegen(context, mockedResourceList);
+            codeGenerator.generate();
+        };
     }
 }
