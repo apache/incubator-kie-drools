@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.service.repository.postgresql.marshaller;
+package org.kie.kogito.jobs.service.repository.marshaller;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.model.job.Recipient;

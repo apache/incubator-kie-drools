@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.service.repository.postgresql.marshaller;
+package org.kie.kogito.jobs.service.repository.marshaller;
 
 import java.util.Date;
 import java.util.Optional;

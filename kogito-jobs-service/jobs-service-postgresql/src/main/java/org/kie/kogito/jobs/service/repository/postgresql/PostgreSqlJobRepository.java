@@ -32,8 +32,8 @@ import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
-import org.kie.kogito.jobs.service.repository.postgresql.marshaller.RecipientMarshaller;
-import org.kie.kogito.jobs.service.repository.postgresql.marshaller.TriggerMarshaller;
+import org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller;
+import org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller;
 import org.kie.kogito.jobs.service.stream.JobStreams;
 
 import io.smallrye.mutiny.Multi;

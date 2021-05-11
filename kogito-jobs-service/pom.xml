@@ -29,5 +29,6 @@
         <module>jobs-service-common</module>
         <module>jobs-service-infinispan</module>
         <module>jobs-service-postgresql</module>
+        <module>jobs-service-mongodb</module>
     </modules>
 </project>
