@@ -19,6 +19,7 @@
     <module>kie-pmml-models-mining</module>
     <module>kie-pmml-models-tests</module>
     <module>kie-pmml-models-tree</module>
+    <module>kie-pmml-models-clustering</module>
   </modules>
 
 </project>

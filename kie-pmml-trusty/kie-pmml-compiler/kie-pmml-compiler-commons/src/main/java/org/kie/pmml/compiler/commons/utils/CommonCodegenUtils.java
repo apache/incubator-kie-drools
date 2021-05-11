@@ -64,7 +64,6 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
-import static org.kie.pmml.commons.Constants.MISSING_METHOD_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_STATIC_INITIALIZER;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
@@ -653,6 +652,65 @@ public class CommonCodegenUtils {
                         ((NameExpr) node).getName().asString().equals(exprName))
                 .map(NameExpr.class::cast)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Return a new {@link AssignExpr} from a target name and a generic {@link Expression}.
+     * @param target {@link String} containing the name to assign the expression to
+     * @param value the value to be assigned
+     * @return the new {@link AssignExpr}
+     */
+    public static AssignExpr assignExprFrom(String target, Expression value) {
+        return new AssignExpr(new NameExpr(target), value, AssignExpr.Operator.ASSIGN);
+    }
+
+    /**
+     * Return a new {@link AssignExpr} from a target name and an enum literal.
+     * @param target {@link String} containing the name to assign the expression to
+     * @param value the enum value to be assigned
+     * @return the new {@link AssignExpr}
+     */
+    public static AssignExpr assignExprFrom(String target, Enum<?> value) {
+        return assignExprFrom(target, literalExprFrom(value));
+    }
+
+    /**
+     * Return a new {@link AssignExpr} from a target name and {@link String} literal.
+     * @param target {@link String} containing the name to assign the expression to
+     * @param value the {@link String} value to be assigned
+     * @return the new {@link AssignExpr}
+     */
+    public static AssignExpr assignExprFrom(String target, String value) {
+        return assignExprFrom(target, literalExprFrom(value));
+    }
+
+    /**
+     * Return a new {@link Expression} containing an enum literal.
+     * @param input the enum value to be assigned
+     * @return the new {@link Expression}
+     */
+    public static Expression literalExprFrom(Enum<?> input) {
+        return input == null ? new NullLiteralExpr() : new NameExpr(input.getClass().getCanonicalName() + "." + input.name());
+    }
+
+    /**
+     * Return a new {@link Expression} containing an {@link String}.
+     * @param input the {@link String} value to be assigned
+     * @return the new {@link Expression}
+     */
+    public static Expression literalExprFrom(String input) {
+        return input == null ? new NullLiteralExpr() : new StringLiteralExpr(input);
+    }
+
+    /**
+     * Return a new {@link MethodCallExpr} from scope, name and arguments.
+     * @param scope the scope of the method to call
+     * @param name the name of the method to call
+     * @param arguments vararg list of {@link Expression} arguments
+     * @return the new {@link MethodCallExpr}
+     */
+    public static MethodCallExpr methodCallExprFrom(String scope, String name, Expression... arguments) {
+        return new MethodCallExpr(new NameExpr(scope), name, new NodeList<>(arguments));
     }
 
     /**
