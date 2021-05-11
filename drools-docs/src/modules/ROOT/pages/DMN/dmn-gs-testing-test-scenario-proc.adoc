@@ -15,7 +15,7 @@ image::dmn/dmn-gs-traffic-violation-test-scenarios.png[]
 .. Enter `Violation Scenarios` in the *Test Scenario* field.
 .. From the *Package* list, select `com.myspace.traffic_violation`.
 .. Select `DMN` as the *Source type*.
-.. Click the *Choose DMN asset* text field and select the path to the DMN asset.
+.. From the *Choose a DMN asset* list, select the path to the DMN asset.
 .. Click *Ok* to open the *Violation Scenarios* test scenario in the *Test Scenarios* designer.
 . Under *Driver* column sub-header, right-click the *State*, *City*, *Age*, and *Name* value cells and select *Delete column* from the context menu options to remove them.
 . Under *Violation* column sub-header, right-click the *Date* and *Code* value cells and select *Delete column* to remove them.
