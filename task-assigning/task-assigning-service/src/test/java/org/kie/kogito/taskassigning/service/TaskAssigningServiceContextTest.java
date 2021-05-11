@@ -106,4 +106,20 @@ class TaskAssigningServiceContextTest {
         assertThat(context.isNewTaskEventTime(TASK_ID, TASK_LAST_UPDATE.plus(1, ChronoUnit.MILLIS))).isTrue();
     }
 
+    @Test
+    void setStatus() {
+        context.setStatus(ServiceStatus.READY);
+        assertThat(context.getStatus()).isEqualTo(ServiceStatus.READY);
+        assertThat(context.getStatusInfo().getStatus()).isEqualTo(ServiceStatus.READY);
+    }
+
+    @Test
+    void setStatusWithMessage() {
+        String message = "some message";
+        context.setStatus(ServiceStatus.STARTING, ServiceMessage.info(message));
+        assertThat(context.getStatus()).isEqualTo(ServiceStatus.STARTING);
+        assertThat(context.getStatusInfo().getStatus()).isEqualTo(ServiceStatus.STARTING);
+        assertThat(context.getStatusInfo().getStatusMessage().getType()).isEqualTo(ServiceMessage.Type.INFO);
+        assertThat(context.getStatusInfo().getStatusMessage().getValue()).isEqualTo(message);
+    }
 }

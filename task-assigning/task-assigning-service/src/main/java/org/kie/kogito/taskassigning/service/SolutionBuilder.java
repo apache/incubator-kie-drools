@@ -28,8 +28,8 @@ import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
+import org.kie.kogito.taskassigning.service.processing.AttributesProcessorRegistry;
 import org.kie.kogito.taskassigning.service.util.IndexedElement;
-import org.kie.kogito.taskassigning.service.util.UserUtil;
 
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT;
 import static org.kie.kogito.taskassigning.core.model.ModelConstants.DUMMY_TASK_ASSIGNMENT_PLANNER_1738;
@@ -39,11 +39,13 @@ import static org.kie.kogito.taskassigning.service.TaskState.RESERVED;
 import static org.kie.kogito.taskassigning.service.util.IndexedElement.addInOrder;
 import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromTaskData;
 import static org.kie.kogito.taskassigning.service.util.UserUtil.filterDuplicates;
+import static org.kie.kogito.taskassigning.service.util.UserUtil.fromExternalUser;
 
 public class SolutionBuilder {
 
     private List<TaskData> taskDataList;
     private List<org.kie.kogito.taskassigning.user.service.User> externalUsers;
+    private AttributesProcessorRegistry processorRegistry;
 
     private SolutionBuilder() {
     }
@@ -62,17 +64,23 @@ public class SolutionBuilder {
         return this;
     }
 
+    public SolutionBuilder withProcessors(AttributesProcessorRegistry processorRegistry) {
+        this.processorRegistry = processorRegistry;
+        return this;
+    }
+
     public TaskAssigningSolution build() {
         final List<TaskAssignment> taskAssignments = new ArrayList<>();
         final Map<String, List<IndexedElement<TaskAssignment>>> assignmentsByUserId = new HashMap<>();
         final Map<String, User> usersById = filterDuplicates(externalUsers)
                 .filter(externalUser -> !IS_PLANNING_USER.test(externalUser.getId()))
-                .map(UserUtil::fromExternalUser)
+                .map(externalUser -> fromExternalUser(externalUser, processorRegistry))
                 .collect(Collectors.toMap(User::getId, Function.identity()));
         usersById.put(PLANNING_USER.getId(), PLANNING_USER);
 
         taskDataList.forEach(taskData -> {
             Task task = fromTaskData(taskData);
+            processorRegistry.applyAttributesProcessor(task, task.getAttributes());
             TaskAssignment taskAssignment = new TaskAssignment(task);
             String state = task.getState();
             taskAssignments.add(taskAssignment);

@@ -20,10 +20,11 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.enterprise.event.Event;
+
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -39,8 +40,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfig.UserServiceSyncOnRetriesExceededStrategy.SYNC_IMMEDIATELY;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfig.UserServiceSyncOnRetriesExceededStrategy.SYNC_ON_NEXT_INTERVAL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -54,7 +53,9 @@ import static org.mockito.Mockito.verify;
 class UserServiceAdapterTest {
 
     private static final Duration SYNC_INTERVAL = Duration.parse("PT2H");
-    private static final Duration SYNC_RETRY_INTERVAL = Duration.parse("PT1S");
+
+    @Mock
+    private TaskAssigningService service;
 
     @Mock
     private TaskAssigningConfig config;
@@ -63,10 +64,13 @@ class UserServiceAdapterTest {
     private TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
 
     @Mock
-    private ExecutorService executorService;
+    private ManagedExecutor managedExecutor;
 
     @Mock
     private UserServiceConnector userServiceConnector;
+
+    @Mock
+    private Event<UserServiceAdapter.StartExecution> startExecutionEvent;
 
     private UserServiceAdapter adapter;
 
@@ -79,17 +83,14 @@ class UserServiceAdapterTest {
     @Captor
     private ArgumentCaptor<UserDataEvent> eventCaptor;
 
+    @Captor
+    private ArgumentCaptor<Exception> failureCaptor;
+
     @BeforeEach
     void setUp() {
         lenient().doReturn(SYNC_INTERVAL).when(config).getUserServiceSyncInterval();
-        lenient().doReturn(SYNC_RETRY_INTERVAL).when(config).getUserServiceSyncRetryInterval();
-        executorService = Executors.newFixedThreadPool(1);
-        adapter = spy(new UserServiceAdapter(config, taskAssigningServiceEventConsumer, executorService, userServiceConnector) {
-            @Override
-            void scheduleExecution(Duration nextStartTime, Runnable command) {
-                //override for facilitating testing.
-            }
-        });
+        adapter = spy(new UserServiceAdapter(service, config, taskAssigningServiceEventConsumer,
+                managedExecutor, userServiceConnector, startExecutionEvent));
     }
 
     @Test
@@ -102,15 +103,10 @@ class UserServiceAdapterTest {
     }
 
     @Test
-    void startWithSyncDisabledZero() {
-        startWithSyncDisabled(Duration.ZERO);
-    }
-
-    private void startWithSyncDisabled(Duration userServiceSyncInterval) {
-        doReturn(userServiceSyncInterval).when(config).getUserServiceSyncInterval();
+    void startWithSyncDisabled() {
+        doReturn(Duration.ZERO).when(config).getUserServiceSyncInterval();
         adapter.start();
         verify(adapter, never()).scheduleExecution(any(), any());
-
     }
 
     @Test
@@ -120,6 +116,9 @@ class UserServiceAdapterTest {
         adapter.start();
         verify(adapter).scheduleExecution(any(), executionCaptor.capture());
         executionCaptor.getValue().run();
+        verify(startExecutionEvent).fire(any());
+        adapter.executeQuery(new UserServiceAdapter.StartExecution());
+
         verify(adapter, times(2)).scheduleExecution(nextStartTimeCaptor.capture(), any());
         assertThat(nextStartTimeCaptor.getAllValues().get(0)).isEqualTo(SYNC_INTERVAL);
         assertThat(nextStartTimeCaptor.getAllValues().get(1)).isEqualTo(SYNC_INTERVAL);
@@ -129,26 +128,23 @@ class UserServiceAdapterTest {
     }
 
     @Test
-    void executionFailureWithRemainingRetries() {
-        doReturn(5).when(config).getUserServiceSyncRetries();
-        executeWithFailure();
-        assertThat(nextStartTimeCaptor.getAllValues().get(1)).isEqualTo(SYNC_RETRY_INTERVAL);
-    }
+    void executionWithFailure() {
+        String serviceFailure = "User service failed";
+        doThrow(new RuntimeException(serviceFailure))
+                .when(userServiceConnector)
+                .findAllUsers();
+        adapter.start();
+        verify(adapter).scheduleExecution(any(), executionCaptor.capture());
+        executionCaptor.getValue().run();
+        verify(startExecutionEvent).fire(any());
+        adapter.executeQuery(new UserServiceAdapter.StartExecution());
 
-    @Test
-    void executionFailureWithNoRemainingRetriesSyncOnNextIntervalStrategy() {
-        doReturn(0).when(config).getUserServiceSyncRetries();
-        doReturn(SYNC_ON_NEXT_INTERVAL).when(config).getUserServiceSyncOnRetriesExceededStrategy();
-        executeWithFailure();
-        assertThat(nextStartTimeCaptor.getAllValues().get(1)).isEqualTo(SYNC_INTERVAL);
-    }
-
-    @Test
-    void executionFailureWithNoRemainingRetriesSyncImmediatelyStrategy() {
-        doReturn(0).when(config).getUserServiceSyncRetries();
-        doReturn(SYNC_IMMEDIATELY).when(config).getUserServiceSyncOnRetriesExceededStrategy();
-        executeWithFailure();
-        assertThat(nextStartTimeCaptor.getAllValues().get(1)).isEqualTo(SYNC_RETRY_INTERVAL);
+        verify(adapter, times(1)).scheduleExecution(nextStartTimeCaptor.capture(), any());
+        verify(taskAssigningServiceEventConsumer, never()).accept(eventCaptor.capture());
+        verify(service).failFast(failureCaptor.capture());
+        assertThat(failureCaptor.getValue())
+                .isNotNull()
+                .hasMessageContaining("An error was produced during users information synchronization, error: %s", serviceFailure);
     }
 
     @Test
@@ -156,26 +152,30 @@ class UserServiceAdapterTest {
     void scheduleExecution() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final AtomicBoolean wasExecuted = new AtomicBoolean();
-        ExecutorService realExecutorService = Executors.newSingleThreadExecutor();
-        UserServiceAdapter realAdapter = new UserServiceAdapter(config, taskAssigningServiceEventConsumer,
-                realExecutorService, userServiceConnector);
+        ManagedExecutor realManagedExecutor = ManagedExecutor.builder()
+                .maxAsync(1)
+                .maxQueued(1)
+                .build();
+
+        UserServiceAdapter realAdapter = new UserServiceAdapter(service, config, taskAssigningServiceEventConsumer,
+                realManagedExecutor, userServiceConnector, startExecutionEvent);
         realAdapter.scheduleExecution(Duration.parse("PT1S"), () -> {
             wasExecuted.set(true);
             countDownLatch.countDown();
         });
         countDownLatch.await();
         assertThat(wasExecuted).isTrue();
-        realExecutorService.shutdown();
+        realManagedExecutor.shutdown();
     }
 
-    private void executeWithFailure() {
-        doThrow(new RuntimeException("User service failed"))
-                .when(userServiceConnector)
-                .findAllUsers();
+    @Test
+    void destroy() {
         adapter.start();
         verify(adapter).scheduleExecution(any(), executionCaptor.capture());
+        adapter.destroy();
         executionCaptor.getValue().run();
-        verify(taskAssigningServiceEventConsumer, never()).accept(eventCaptor.capture());
-        verify(adapter, times(2)).scheduleExecution(nextStartTimeCaptor.capture(), any());
+        verify(startExecutionEvent).fire(any());
+        adapter.executeQuery(new UserServiceAdapter.StartExecution());
+        verify(taskAssigningServiceEventConsumer, never()).accept(any());
     }
 }

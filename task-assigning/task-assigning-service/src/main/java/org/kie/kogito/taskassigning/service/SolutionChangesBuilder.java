@@ -30,7 +30,6 @@ import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
-import org.kie.kogito.taskassigning.core.model.solver.realtime.AbstractTaskPropertyChangeProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AddTaskProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AddUserProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AssignTaskProblemFactChange;
@@ -38,14 +37,12 @@ import org.kie.kogito.taskassigning.core.model.solver.realtime.DisableUserProble
 import org.kie.kogito.taskassigning.core.model.solver.realtime.ReleaseTaskProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveTaskProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveUserProblemFactChange;
-import org.kie.kogito.taskassigning.core.model.solver.realtime.TaskPriorityChangeProblemFactChange;
-import org.kie.kogito.taskassigning.core.model.solver.realtime.TaskStateChangeProblemFactChange;
+import org.kie.kogito.taskassigning.core.model.solver.realtime.TaskInfoChangeProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.UserPropertyChangeProblemFactChange;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
+import org.kie.kogito.taskassigning.service.processing.AttributesProcessorRegistry;
 import org.kie.kogito.taskassigning.service.util.IndexedElement;
 import org.kie.kogito.taskassigning.service.util.TraceUtil;
-import org.kie.kogito.taskassigning.service.util.UserUtil;
-import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,17 +66,18 @@ public class SolutionChangesBuilder {
     private final Set<TaskAssignment> removedTasksSet = new HashSet<>();
     private final List<ReleaseTaskProblemFactChange> releasedTasksChanges = new ArrayList<>();
     private final Map<String, List<IndexedElement<AssignTaskProblemFactChange>>> assignToUserChangesByUserId = new HashMap<>();
-    private final List<AbstractTaskPropertyChangeProblemFactChange> taskPropertyChanges = new ArrayList<>();
+    private final List<TaskInfoChangeProblemFactChange> taskPropertyChanges = new ArrayList<>();
     private final List<AddUserProblemFactChange> newUserChanges = new ArrayList<>();
     private final List<ProblemFactChange<TaskAssigningSolution>> updateUserChanges = new ArrayList<>();
     private final List<RemoveUserProblemFactChange> removableUserChanges = new ArrayList<>();
     private final List<ProblemFactChange<TaskAssigningSolution>> totalChanges = new ArrayList<>();
 
     private TaskAssigningServiceContext context;
-    private UserServiceConnector userServiceConnector;
+    private UserServiceConnectorDelegate userServiceConnector;
     private TaskAssigningSolution solution;
     private List<TaskData> taskDataList;
     private UserDataEvent userDataEvent;
+    private AttributesProcessorRegistry processorRegistry;
 
     private SolutionChangesBuilder() {
     }
@@ -93,8 +91,13 @@ public class SolutionChangesBuilder {
         return this;
     }
 
-    public SolutionChangesBuilder withUserServiceConnector(UserServiceConnector userServiceConnector) {
+    public SolutionChangesBuilder withUserServiceConnector(UserServiceConnectorDelegate userServiceConnector) {
         this.userServiceConnector = userServiceConnector;
+        return this;
+    }
+
+    public SolutionChangesBuilder withProcessors(AttributesProcessorRegistry processorRegistry) {
+        this.processorRegistry = processorRegistry;
         return this;
     }
 
@@ -170,10 +173,12 @@ public class SolutionChangesBuilder {
         Task newTask;
         if (READY.value().equals(taskData.getState())) {
             newTask = fromTaskData(taskData);
+            processorRegistry.applyAttributesProcessor(newTask, newTask.getAttributes());
             newTasksChanges.add(new AddTaskProblemFactChange(new TaskAssignment(newTask)));
             context.setTaskPublished(taskData.getId(), false);
         } else if (RESERVED.value().equals(taskData.getState())) {
             newTask = fromTaskData(taskData);
+            processorRegistry.applyAttributesProcessor(newTask, newTask.getAttributes());
             User user = getUser(usersById.get(taskData.getActualOwner()), taskData.getActualOwner());
             AssignTaskProblemFactChange change = new AssignTaskProblemFactChange(new TaskAssignment(newTask), user, true);
             context.setTaskPublished(taskData.getId(), true);
@@ -207,14 +212,14 @@ public class SolutionChangesBuilder {
             removedTasksSet.add(taskAssignment);
         }
 
-        //TODO, discuss other traceable change types.
         if (!removedTasksSet.contains(taskAssignment)) {
-            if (!Objects.equals(taskAssignment.getTask().getPriority(), taskData.getPriority())) {
-                taskPropertyChanges.add(new TaskPriorityChangeProblemFactChange(taskAssignment, taskData.getPriority()));
+            Task updatedTask = fromTaskData(taskData);
+            if (!equalsByTaskInfoProperties(taskAssignment.getTask(), updatedTask)) {
+                processorRegistry.applyAttributesProcessor(updatedTask, updatedTask.getAttributes());
+            } else {
+                updatedTask.setAttributes(taskAssignment.getTask().getAttributes());
             }
-            if (!Objects.equals(taskAssignment.getTask().getState(), taskData.getState())) {
-                taskPropertyChanges.add(new TaskStateChangeProblemFactChange(taskAssignment, taskData.getState()));
-            }
+            taskPropertyChanges.add(new TaskInfoChangeProblemFactChange(taskAssignment, updatedTask));
         }
     }
 
@@ -224,20 +229,19 @@ public class SolutionChangesBuilder {
         } else {
             LOGGER.debug("User {} was not found in current solution, it'll we looked up in the external user system .", userId);
             User user;
-            org.kie.kogito.taskassigning.user.service.User externalUser = null;
+            org.kie.kogito.taskassigning.user.service.User externalUser;
             try {
                 externalUser = userServiceConnector.findUser(userId);
             } catch (Exception e) {
-                LOGGER.warn("An error was produced while querying user {} from the external user system.", userId);
+                throw new TaskAssigningException("An error was produced while querying user: " + userId + " in the external user system.", e);
             }
             if (externalUser != null) {
-                user = fromExternalUser(externalUser);
+                user = fromExternalUser(externalUser, processorRegistry);
             } else {
                 // We add it by convention, since the kogito runtime supports the assignment of tasks to whatever user id.
                 LOGGER.warn("User {} was not found in the external user system, it looks like it's a manual" +
-                        " assignment from the kogito tasks administration to a non existing user or an error was produced when" +
-                        " querying the external user system (in this last case the user will be updated on next synchronization)." +
-                        " It'll be added to the solution to respect the assignment.", userId);
+                        " assignment from the kogito tasks administration to a non existing user. It'll be added to the" +
+                        " solution to respect the assignment.", userId);
                 user = new User(userId);
             }
             return user;
@@ -248,7 +252,7 @@ public class SolutionChangesBuilder {
         final Set<String> updatedUserIds = new HashSet<>();
         externalUserList.stream()
                 .filter(externalUser -> !IS_PLANNING_USER.test(externalUser.getId()))
-                .map(UserUtil::fromExternalUser)
+                .map(externalUser -> fromExternalUser(externalUser, processorRegistry))
                 .forEach(synchedUser -> {
                     final User previousUser = usersById.get(synchedUser.getId());
                     updatedUserIds.add(synchedUser.getId());
@@ -286,6 +290,17 @@ public class SolutionChangesBuilder {
         return Objects.equals(a.isEnabled(), b.isEnabled()) &&
                 Objects.equals(a.getGroups(), b.getGroups()) &&
                 Objects.equals(a.getAttributes(), b.getAttributes());
+    }
+
+    private static boolean equalsByTaskInfoProperties(Task a, Task b) {
+        return Objects.equals(a.getDescription(), b.getDescription()) &&
+                Objects.equals(a.getPriority(), b.getPriority()) &&
+                Objects.equals(a.getPotentialUsers(), b.getPotentialUsers()) &&
+                Objects.equals(a.getPotentialGroups(), b.getPotentialGroups()) &&
+                Objects.equals(a.getExcludedUsers(), b.getExcludedUsers()) &&
+                Objects.equals(a.getAdminUsers(), b.getAdminUsers()) &&
+                Objects.equals(a.getAdminGroups(), b.getAdminGroups()) &&
+                Objects.equals(a.getInputData(), b.getInputData());
     }
 
     private void traceChanges() {

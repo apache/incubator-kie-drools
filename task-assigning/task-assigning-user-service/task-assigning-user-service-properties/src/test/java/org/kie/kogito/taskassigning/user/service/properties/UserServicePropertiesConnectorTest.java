@@ -105,11 +105,6 @@ class UserServicePropertiesConnectorTest {
     }
 
     @Test
-    void getName() {
-        assertThat(connector.getName()).isEqualTo(UserServicePropertiesConnector.NAME);
-    }
-
-    @Test
     void start() {
         assertThat(connector.findAllUsers()).isEmpty();
         connector.start();

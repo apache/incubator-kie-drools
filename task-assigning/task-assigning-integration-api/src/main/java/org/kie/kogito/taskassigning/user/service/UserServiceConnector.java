@@ -18,13 +18,25 @@ package org.kie.kogito.taskassigning.user.service;
 
 import java.util.List;
 
+/**
+ * User service connector implementations are loaded by CDI and must be qualified with the UserServiceConnectorQualifier
+ * in order to configure the particular implementation name. This name is used for configuring the property
+ * kogito.task-assigning.user-service-connector in cases where this connector is to be used.
+ * 
+ * e.g.
+ * 
+ * <pre>
+ *  
+ *     {@code
+ *     &#64;ApplicationScoped
+ *     &#64;UserServiceConnectorName("MyUserServiceConnector")
+ *     public class MyUserServiceConnector implements UserServiceConnector {
+ *          ......
+ *     }
+ *     }
+ * </pre>
+ */
 public interface UserServiceConnector {
-
-    /**
-     * @return the name of the concrete UserServiceConnector implementation. This value is used for configuring
-     *         the property kogito.task-assigning.user-service-connector in cases this where this connector is to be used.
-     */
-    String getName();
 
     /**
      * Invoked by the task assigning service as part of the initialization procedure and before any other method

@@ -76,15 +76,5 @@ public class TaskAssigningConfigValidator {
                     TaskAssigningConfigProperties.USER_SERVICE_SYNC_INTERVAL,
                     config.getUserServiceSyncInterval()));
         }
-        if (config.getUserServiceSyncRetries() < 0) {
-            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
-                    TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRIES,
-                    config.getUserServiceSyncRetries()));
-        }
-        if (config.getUserServiceSyncRetryInterval().isNegative()) {
-            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
-                    TaskAssigningConfigProperties.USER_SERVICE_SYNC_RETRY_INTERVAL,
-                    config.getUserServiceSyncRetryInterval()));
-        }
     }
 }

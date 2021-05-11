@@ -12,4 +12,11 @@
   <artifactId>task-assigning-integration-api</artifactId>
   <name>Kogito :: Task Assigning :: Integration API</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>

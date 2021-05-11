@@ -17,14 +17,13 @@
 package org.kie.kogito.taskassigning.service;
 
 import java.net.URL;
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,7 +31,6 @@ import java.util.stream.Stream;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.taskassigning.ClientServices;
 import org.kie.kogito.taskassigning.core.model.Task;
@@ -48,6 +46,8 @@ import org.kie.kogito.taskassigning.service.event.BufferedTaskAssigningServiceEv
 import org.kie.kogito.taskassigning.service.event.DataEvent;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
+import org.kie.kogito.taskassigning.service.messaging.ReactiveMessagingEventConsumer;
+import org.kie.kogito.taskassigning.service.processing.AttributesProcessorRegistry;
 import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -102,8 +102,6 @@ class TaskAssigningServiceTest {
     private static final ZonedDateTime USER_DATA_EVENT_1_TIME = parseZonedDateTime("2021-03-11T15:00:00.001Z");
     private static final ZonedDateTime USER_DATA_EVENT_2_TIME = parseZonedDateTime("2021-03-11T15:00:00.002Z");
 
-    private static final Duration DATA_LOADER_RETRY_INTERVAL = Duration.ofMillis(5000);
-    private static final int DATA_LOADER_RETRIES = 5;
     private static final int DATA_LOADER_PAGE_SIZE = 10;
     private static final int PUBLISH_WINDOW_SIZE = 5;
 
@@ -117,16 +115,19 @@ class TaskAssigningServiceTest {
     private ManagedExecutor managedExecutor;
 
     @Mock
-    private TaskServiceConnector taskServiceConnector;
+    private UserServiceConnector userServiceConnector;
 
     @Mock
-    private UserServiceConnector userServiceConnector;
+    UserServiceConnectorDelegate userServiceConnectorDelegate;
 
     @Mock
     private UserServiceAdapter userServiceAdapter;
 
     @Mock
     private BufferedTaskAssigningServiceEventConsumer serviceEventConsumer;
+
+    @Mock
+    private ReactiveMessagingEventConsumer serviceMessageConsumer;
 
     @Mock
     private ClientServices clientServices;
@@ -140,16 +141,20 @@ class TaskAssigningServiceTest {
     @Mock
     private SolutionDataLoader solutionDataLoader;
 
+    private CompletableFuture<SolutionDataLoader.Result> solutionDataLoaderInitialExecution = new CompletableFuture<>();
+
+    private CompletableFuture<SolutionDataLoader.Result> solutionDataLoaderSecondExecution = new CompletableFuture<>();
+
+    @Captor
+    private ArgumentCaptor<Throwable> solutionDataLoaderExecutionErrorCaptor;
+
     @Mock
-    private TaskAssigningServiceHelper serviceHelper;
+    private AttributesProcessorRegistry processorRegistry;
 
     private TaskAssigningServiceContext context;
 
     @Captor
     private ArgumentCaptor<SolverEventListener<TaskAssigningSolution>> solverListenerCaptor;
-
-    @Captor
-    private ArgumentCaptor<Consumer<SolutionDataLoader.Result>> solutionDataLoaderConsumerCaptor;
 
     @Captor
     private ArgumentCaptor<Consumer<List<DataEvent<?>>>> dataEventsConsumerCaptor;
@@ -163,24 +168,29 @@ class TaskAssigningServiceTest {
     @Captor
     private ArgumentCaptor<List<ProblemFactChange<TaskAssigningSolution>>> problemFactChangesCaptor;
 
+    @Captor
+    private ArgumentCaptor<Runnable> managedExecutorCaptor;
+
     @Mock
-    SolverEventListener<TaskAssigningSolution> solverEventListener;
+    private SolverEventListener<TaskAssigningSolution> solverEventListener;
 
     private TaskAssigningService taskAssigningService;
-
-    private CountDownLatch eventsProcessed;
 
     @BeforeEach
     void setUp() {
         context = spy(new TaskAssigningServiceContext());
-        taskAssigningService = spy(new TaskAssigningServiceMock());
+        taskAssigningService = spy(new TaskAssigningService());
         taskAssigningService.solverFactory = solverFactory;
         taskAssigningService.config = config;
         taskAssigningService.managedExecutor = managedExecutor;
-        taskAssigningService.taskServiceConnector = taskServiceConnector;
         taskAssigningService.serviceEventConsumer = serviceEventConsumer;
+        taskAssigningService.serviceMessageConsumer = serviceMessageConsumer;
         taskAssigningService.clientServices = clientServices;
-        taskAssigningService.serviceHelper = serviceHelper;
+        taskAssigningService.userServiceConnector = userServiceConnector;
+        taskAssigningService.userServiceConnectorDelegate = userServiceConnectorDelegate;
+        taskAssigningService.userServiceAdapter = userServiceAdapter;
+        taskAssigningService.solutionDataLoader = solutionDataLoader;
+        taskAssigningService.processorRegistry = processorRegistry;
     }
 
     @Test
@@ -191,7 +201,6 @@ class TaskAssigningServiceTest {
     @Test
     void startWithSolverValidationFailure() throws Exception {
         doReturn(new URL(DATA_INDEX_SERVER_URL)).when(config).getDataIndexServerUrl();
-        doReturn(userServiceConnector).when(serviceHelper).validateAndGetUserServiceConnector();
         String errorMessage = "Solver factory error";
         doThrow(new RuntimeException(errorMessage)).when(solverFactory).buildSolver();
         assertThatThrownBy(() -> taskAssigningService.start()).hasMessage(errorMessage);
@@ -208,18 +217,21 @@ class TaskAssigningServiceTest {
     void startWithUserServiceValidationFailure() throws Exception {
         doReturn(new URL(DATA_INDEX_SERVER_URL)).when(config).getDataIndexServerUrl();
         String errorMessage = "User service validate and get error";
-        doThrow(new RuntimeException(errorMessage)).when(serviceHelper).validateAndGetUserServiceConnector();
+        doThrow(new RuntimeException(errorMessage)).when(userServiceConnector).start();
         assertThatThrownBy(() -> taskAssigningService.start()).hasMessage(errorMessage);
     }
 
     @Test
     void startWithDataLoadErrors() throws Exception {
         prepareStart();
-        SolutionDataLoader.Result result = new SolutionDataLoader.Result(Collections.singletonList(new Exception("Data loading error")));
-        solutionDataLoaderConsumerCaptor.getValue().accept(result);
-        verify(solutionDataLoader, times(2))
-                .start(solutionDataLoaderConsumerCaptor.capture(), eq(true), eq(true),
-                        eq(DATA_LOADER_RETRY_INTERVAL), eq(DATA_LOADER_RETRIES), eq(DATA_LOADER_PAGE_SIZE));
+        Throwable dataLoadException = new Exception("Data loading error");
+        solutionDataLoaderInitialExecution.completeExceptionally(dataLoadException);
+
+        verify(taskAssigningService).failFast(solutionDataLoaderExecutionErrorCaptor.capture());
+        assertThat(solutionDataLoaderExecutionErrorCaptor.getValue())
+                .isNotNull()
+                .hasMessageContaining(dataLoadException.getMessage())
+                .hasCause(dataLoadException);
     }
 
     @Test
@@ -230,7 +242,8 @@ class TaskAssigningServiceTest {
                         mockTaskData(TASK_2_ID, TaskState.RESERVED.value(), TASK_2_LAST_UPDATE)),
                 Collections.singletonList(mockExternalUser(USER_1_ID)));
         prepareStart();
-        solutionDataLoaderConsumerCaptor.getValue().accept(result);
+        solutionDataLoaderInitialExecution.complete(result);
+        verify(taskAssigningService).onSolutionDataLoad(result);
         verify(solverExecutor).start(any());
         verify(serviceEventConsumer, never()).resume();
         assertThat(context.isTaskPublished(TASK_1_ID)).isFalse();
@@ -244,7 +257,8 @@ class TaskAssigningServiceTest {
         SolutionDataLoader.Result result = new SolutionDataLoader.Result(Collections.emptyList(),
                 Collections.emptyList());
         prepareStart();
-        solutionDataLoaderConsumerCaptor.getValue().accept(result);
+        solutionDataLoaderInitialExecution.complete(result);
+        verify(taskAssigningService).onSolutionDataLoad(result);
         verify(solverExecutor, never()).start(any());
         verify(context, never()).setTaskPublished(anyString(), anyBoolean());
         verify(context, never()).setTaskPublished(anyString(), anyBoolean());
@@ -253,21 +267,26 @@ class TaskAssigningServiceTest {
     }
 
     @Test
-    @Timeout(5)
     void startSolutionFromEventsAndEmptySolution() throws Exception {
-        eventsProcessed = new CountDownLatch(1);
         prepareStart();
+        doReturn(solutionDataLoaderSecondExecution).when(solutionDataLoader).loadSolutionData(false, true, DATA_LOADER_PAGE_SIZE);
+
+        // produce the initial solution data load
         SolutionDataLoader.Result initialEmptyData = new SolutionDataLoader.Result(Collections.emptyList(),
                 Collections.emptyList());
-        solutionDataLoaderConsumerCaptor.getValue().accept(initialEmptyData);
+        solutionDataLoaderInitialExecution.complete(initialEmptyData);
+        verify(taskAssigningService).onSolutionDataLoad(initialEmptyData);
 
         List<DataEvent<?>> eventList = Arrays.asList(
                 mockTaskDataEvent(TASK_1_ID, TaskState.READY.value(), TASK_1_LAST_UPDATE),
                 mockTaskDataEvent(TASK_2_ID, TaskState.ABORTED.value(), TASK_2_LAST_UPDATE));
 
+        // produce the events arrival
         dataEventsConsumerCaptor.getValue().accept(eventList);
-        eventsProcessed.await();
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
 
+        // produce events arrival in the middle
         List<DataEvent<?>> queuedEventList = Arrays.asList(
                 mockTaskDataEvent(TASK_1_ID, TaskState.COMPLETED.value(), TASK_1_LAST_UPDATE.plusSeconds(1)),
                 mockTaskDataEvent(TASK_3_ID, TaskState.SKIPPED.value(), TASK_3_LAST_UPDATE));
@@ -278,7 +297,9 @@ class TaskAssigningServiceTest {
         SolutionDataLoader.Result userData = new SolutionDataLoader.Result(Collections.emptyList(),
                 Collections.singletonList(mockExternalUser(USER_1_ID)));
 
-        solutionDataLoaderConsumerCaptor.getValue().accept(userData);
+        // produce the second solution data load
+        solutionDataLoaderSecondExecution.complete(userData);
+        verify(taskAssigningService).onSolutionDataLoad(userData);
 
         verify(solverExecutor, never()).start(any());
         verify(serviceEventConsumer, times(2)).resume();
@@ -291,21 +312,24 @@ class TaskAssigningServiceTest {
     }
 
     @Test
-    @Timeout(5)
     void startSolutionFromEventsAndNonEmptySolution() throws Exception {
-        eventsProcessed = new CountDownLatch(1);
         prepareStart();
+        doReturn(solutionDataLoaderSecondExecution).when(solutionDataLoader).loadSolutionData(false, true, DATA_LOADER_PAGE_SIZE);
 
+        // produce the initial solution data load
         SolutionDataLoader.Result initialEmptyData = new SolutionDataLoader.Result(Collections.emptyList(),
                 Collections.emptyList());
-        solutionDataLoaderConsumerCaptor.getValue().accept(initialEmptyData);
+        solutionDataLoaderInitialExecution.complete(initialEmptyData);
+        verify(taskAssigningService).onSolutionDataLoad(initialEmptyData);
 
         List<DataEvent<?>> eventList = Arrays.asList(
                 mockTaskDataEvent(TASK_1_ID, TaskState.READY.value(), TASK_1_LAST_UPDATE),
                 mockTaskDataEvent(TASK_2_ID, TaskState.RESERVED.value(), TASK_2_LAST_UPDATE));
 
+        // produce the events arrival
         dataEventsConsumerCaptor.getValue().accept(eventList);
-        eventsProcessed.await();
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
 
         List<DataEvent<?>> queuedEventList = Arrays.asList(
                 mockTaskDataEvent(TASK_3_ID, TaskState.READY.value(), TASK_3_LAST_UPDATE),
@@ -317,7 +341,9 @@ class TaskAssigningServiceTest {
         SolutionDataLoader.Result userData = new SolutionDataLoader.Result(Collections.emptyList(),
                 Collections.singletonList(mockExternalUser(USER_1_ID)));
 
-        solutionDataLoaderConsumerCaptor.getValue().accept(userData);
+        // produce the second solution data load
+        solutionDataLoaderSecondExecution.complete(userData);
+        verify(taskAssigningService).onSolutionDataLoad(userData);
 
         verify(solverExecutor).start(any());
         assertThat(context.isTaskPublished(TASK_1_ID)).isFalse();
@@ -342,9 +368,9 @@ class TaskAssigningServiceTest {
                 mockTaskDataEvent(TASK_2_ID, TaskState.READY.value(), TASK_2_LAST_UPDATE),
                 mockTaskDataEvent(TASK_3_ID, TaskState.READY.value(), TASK_3_LAST_UPDATE));
 
-        eventsProcessed = new CountDownLatch(1);
         dataEventsConsumerCaptor.getValue().accept(eventList);
-        eventsProcessed.await();
+        verify(managedExecutor, times(2)).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
 
         verify(solverExecutor).addProblemFactChanges(problemFactChangesCaptor.capture());
         assertThat(problemFactChangesCaptor.getValue())
@@ -367,9 +393,9 @@ class TaskAssigningServiceTest {
                 mockTaskDataEvent(TASK_2_ID, TaskState.ABORTED.value(), TASK_2_LAST_UPDATE),
                 mockTaskDataEvent(TASK_3_ID, TaskState.ABORTED.value(), TASK_3_LAST_UPDATE));
 
-        eventsProcessed = new CountDownLatch(1);
         dataEventsConsumerCaptor.getValue().accept(eventList);
-        eventsProcessed.await();
+        verify(managedExecutor, times(2)).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
 
         verify(solverExecutor, never()).addProblemFactChanges(any());
         verify(serviceEventConsumer, times(2)).resume();
@@ -386,6 +412,9 @@ class TaskAssigningServiceTest {
         context.setTaskPublished(TASK_4_ID, true);
 
         taskAssigningService.onBestSolutionChange(mockEvent(solution, true, true));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
         verify(planningExecutor).start(planningCaptor.capture(), any());
         List<PlanningItem> planningItems = planningCaptor.getValue();
         assertThat(planningItems)
@@ -404,6 +433,8 @@ class TaskAssigningServiceTest {
         context.setTaskPublished(TASK_4_ID, true);
 
         taskAssigningService.onBestSolutionChange(mockEvent(solution, true, true));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
         verify(planningExecutor, never()).start(any(), any());
         verify(serviceEventConsumer).resume();
     }
@@ -419,6 +450,9 @@ class TaskAssigningServiceTest {
         context.setTaskPublished(TASK_4_ID, true);
 
         taskAssigningService.onBestSolutionChange(mockEvent(initialSolution, true, true));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
         verify(planningExecutor).start(planningCaptor.capture(), any());
         assertThat(planningCaptor.getValue())
                 .isNotNull()
@@ -435,7 +469,11 @@ class TaskAssigningServiceTest {
 
         TaskAssigningSolution newSolution = buildSolution();
         context.setCurrentChangeSetId(context.nextChangeSetId());
+
         taskAssigningService.onBestSolutionChange(mockEvent(newSolution, true, true));
+        verify(managedExecutor, times(2)).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
         verify(solverExecutor, times(2)).addProblemFactChanges(problemFactChangesCaptor.capture());
         List<ProblemFactChange<TaskAssigningSolution>> changes = problemFactChangesCaptor.getAllValues().get(1);
         assertHasRemoveTaskChangeForTask(changes, TASK_1_ID);
@@ -449,7 +487,11 @@ class TaskAssigningServiceTest {
                 Arrays.asList(mockUser(USER_1_ID, Collections.emptyList()),
                         mockUser(USER_2_ID, Collections.emptyList())),
                 Collections.emptyList());
+
         taskAssigningService.onBestSolutionChange(mockEvent(solution, true, true));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
         context.setTaskPublished(TASK_1_ID, false);
         context.setTaskPublished(TASK_2_ID, false);
         PlanningItem planningItem1 = new PlanningItem(Task.newBuilder().id(TASK_1_ID).build(), USER_1_ID);
@@ -508,9 +550,9 @@ class TaskAssigningServiceTest {
                         mockExternalUser(USER_2_ID),
                         mockExternalUser(USER_3_ID)), USER_DATA_EVENT_2_TIME));
 
-        eventsProcessed = new CountDownLatch(1);
         dataEventsConsumerCaptor.getValue().accept(eventList);
-        eventsProcessed.await();
+        verify(managedExecutor, times(2)).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
 
         verify(solverExecutor).addProblemFactChanges(problemFactChangesCaptor.capture());
         assertThat(problemFactChangesCaptor.getValue())
@@ -532,9 +574,9 @@ class TaskAssigningServiceTest {
         List<DataEvent<?>> eventList = Collections.singletonList(
                 mockUserDataEvent(Collections.singletonList(mockExternalUser(USER_1_ID)), USER_DATA_EVENT_1_TIME));
 
-        eventsProcessed = new CountDownLatch(1);
         dataEventsConsumerCaptor.getValue().accept(eventList);
-        eventsProcessed.await();
+        verify(managedExecutor, times(2)).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
 
         verify(solverExecutor, never()).addProblemFactChanges(any());
         verify(serviceEventConsumer, times(2)).resume();
@@ -547,6 +589,8 @@ class TaskAssigningServiceTest {
                         mockUser(USER_2_ID, Collections.emptyList())),
                 Collections.emptyList());
         taskAssigningService.onBestSolutionChange(mockEvent(solution, true, true));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
         context.setTaskPublished(TASK_1_ID, false);
         context.setTaskPublished(TASK_2_ID, false);
         PlanningItem planningItem1 = new PlanningItem(Task.newBuilder().id(TASK_1_ID).build(), USER_1_ID);
@@ -556,6 +600,21 @@ class TaskAssigningServiceTest {
                         new PlanningExecutionResultItem(planningItem2, new RuntimeException("planningItem2 failed"))));
         doReturn(queuedEvents).when(serviceEventConsumer).queuedEvents();
         taskAssigningService.onPlanningExecuted(executionResult);
+    }
+
+    @Test
+    void failFast() throws Exception {
+        prepareStart();
+        String error = "unexpected error was produced";
+        taskAssigningService.failFast(new RuntimeException(error));
+        verify(solverExecutor).destroy();
+        verify(planningExecutor).destroy();
+        verify(userServiceAdapter).destroy();
+        verify(serviceMessageConsumer).failFast();
+        ServiceStatusInfo statusInfo = context.getStatusInfo();
+        assertThat(statusInfo).isNotNull();
+        assertThat(statusInfo.getStatus()).isEqualTo(ServiceStatus.ERROR);
+        assertThat(statusInfo.getStatusMessage().getValue()).contains(error);
     }
 
     @Test
@@ -589,21 +648,8 @@ class TaskAssigningServiceTest {
         assertThat(planningExecutor).isNotNull();
     }
 
-    @Test
-    void createSolutionDataLoader() {
-        SolutionDataLoader solutionDataLoader = taskAssigningService.createSolutionDataLoader(taskServiceConnector, userServiceConnector);
-        assertThat(solutionDataLoader).isNotNull();
-    }
-
-    @Test
-    void createUserServiceAdapter() {
-        UserServiceAdapter adapter = taskAssigningService.createUserServiceAdapter(config, serviceEventConsumer, managedExecutor, userServiceConnector);
-        assertThat(adapter).isNotNull();
-    }
-
     private void verifyDestroy() {
         verify(solverExecutor).destroy();
-        verify(solutionDataLoader).destroy();
         verify(planningExecutor).destroy();
         verify(userServiceAdapter).destroy();
     }
@@ -626,15 +672,11 @@ class TaskAssigningServiceTest {
     private void prepareStart() throws Exception {
         doReturn(context).when(taskAssigningService).createContext();
         doReturn(new URL(DATA_INDEX_SERVER_URL)).when(config).getDataIndexServerUrl();
-        doReturn(DATA_LOADER_RETRY_INTERVAL).when(config).getDataLoaderRetryInterval();
-        doReturn(DATA_LOADER_RETRIES).when(config).getDataLoaderRetries();
         doReturn(DATA_LOADER_PAGE_SIZE).when(config).getDataLoaderPageSize();
+        doReturn(solutionDataLoaderInitialExecution).when(solutionDataLoader).loadSolutionData(true, true, DATA_LOADER_PAGE_SIZE);
         lenient().doReturn(PUBLISH_WINDOW_SIZE).when(config).getPublishWindowSize();
-        doReturn(userServiceConnector).when(serviceHelper).validateAndGetUserServiceConnector();
         doReturn(solverExecutor).when(taskAssigningService).createSolverExecutor(eq(solverFactory), solverListenerCaptor.capture());
         doReturn(planningExecutor).when(taskAssigningService).createPlanningExecutor(clientServices, config);
-        doReturn(solutionDataLoader).when(taskAssigningService).createSolutionDataLoader(taskServiceConnector, userServiceConnector);
-        doReturn(userServiceAdapter).when(taskAssigningService).createUserServiceAdapter(config, serviceEventConsumer, managedExecutor, userServiceConnector);
 
         assertDoesNotThrow(() -> taskAssigningService.start());
 
@@ -642,18 +684,20 @@ class TaskAssigningServiceTest {
         verify(serviceEventConsumer).setConsumer(dataEventsConsumerCaptor.capture());
         verify(managedExecutor).execute(solverExecutor);
         verify(managedExecutor).execute(planningExecutor);
-        verify(managedExecutor).execute(solutionDataLoader);
-        verify(solutionDataLoader).start(solutionDataLoaderConsumerCaptor.capture(),
-                eq(true), eq(true), eq(DATA_LOADER_RETRY_INTERVAL), eq(DATA_LOADER_RETRIES), eq(DATA_LOADER_PAGE_SIZE));
+        verify(solutionDataLoader).loadSolutionData(true, true, DATA_LOADER_PAGE_SIZE);
     }
 
     private void prepareStartAndSetInitialSolution(SolutionDataLoader.Result result) throws Exception {
         prepareStart();
-        solutionDataLoaderConsumerCaptor.getValue().accept(result);
+        solutionDataLoaderInitialExecution.complete(result);
+        verify(taskAssigningService).onSolutionDataLoad(result);
         verify(solverExecutor).start(solutionCaptor.capture());
         TaskAssigningSolution initialSolution = solutionCaptor.getValue();
         BestSolutionChangedEvent<TaskAssigningSolution> solutionChangedEvent = mockEvent(initialSolution, true, true);
         solverListenerCaptor.getValue().bestSolutionChanged(solutionChangedEvent);
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
         verify(serviceEventConsumer).resume();
     }
 
@@ -738,13 +782,5 @@ class TaskAssigningServiceTest {
                 .filter(Objects::nonNull)
                 .filter(clazz::isInstance)
                 .map(change -> (T) change);
-    }
-
-    private class TaskAssigningServiceMock extends TaskAssigningService {
-        @Override
-        void processDataEvents(List<DataEvent<?>> events) {
-            super.processDataEvents(events);
-            eventsProcessed.countDown();
-        }
     }
 }

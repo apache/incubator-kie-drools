@@ -37,10 +37,6 @@ public class TaskAssigningConfigProperties {
 
     public static final String DATA_INDEX_SERVER_URL = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-index.server-url";
 
-    public static final String DATA_LOADER_RETRY_INTERVAL_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.retry-interval-duration";
-
-    public static final String DATA_LOADER_RETRIES = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.retries";
-
     public static final String DATA_LOADER_PAGE_SIZE = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.page-size";
 
     public static final String PUBLISH_WINDOW_SIZE = TASK_ASSIGNING_PROPERTY_PREFIX + ".publish-window-size";
@@ -48,11 +44,4 @@ public class TaskAssigningConfigProperties {
     public static final String USER_SERVICE_CONNECTOR = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-connector";
 
     public static final String USER_SERVICE_SYNC_INTERVAL = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-sync.interval";
-
-    public static final String USER_SERVICE_SYNC_RETRIES = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-sync.retries";
-
-    public static final String USER_SERVICE_SYNC_ON_RETRIES_EXCEEDED_STRATEGY = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-sync.on-retries-exceeded-strategy";
-
-    public static final String USER_SERVICE_SYNC_RETRY_INTERVAL = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-sync.retry-interval";
-
 }

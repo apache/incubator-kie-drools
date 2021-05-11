@@ -20,12 +20,15 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import org.kie.kogito.taskassigning.service.ServiceStatus;
+import org.kie.kogito.taskassigning.service.ServiceStatusInfo;
+import org.kie.kogito.taskassigning.service.TaskAssigningException;
 import org.kie.kogito.taskassigning.service.TaskAssigningService;
+import org.kie.kogito.taskassigning.service.TaskAssigningServiceContext;
+import org.kie.kogito.taskassigning.util.JsonUtils;
 
-/**
- * Class in experimental status! don't waste time here!
- */
 @Path("/task-assigning")
 @ApplicationScoped
 public class TaskAssigningResource {
@@ -35,9 +38,14 @@ public class TaskAssigningResource {
 
     @GET
     @Path("/service/status")
-    @Produces({ "application/json" })
+    @Produces(MediaType.APPLICATION_JSON)
     public String getServiceStatus() {
-        //TODO, future iteration, define the set of useful operations.
-        return "{\"result\": \"Not yet implemented!\"}";
+        TaskAssigningServiceContext context = service.getContext();
+        ServiceStatusInfo statusInfo = context != null ? context.getStatusInfo() : new ServiceStatusInfo(ServiceStatus.UNKNOWN);
+        try {
+            return JsonUtils.OBJECT_MAPPER.writeValueAsString(statusInfo);
+        } catch (Exception e) {
+            throw new TaskAssigningException(e.getMessage(), e);
+        }
     }
 }

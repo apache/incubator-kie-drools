@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.taskassigning.core.model.solver.realtime;
 
-import org.kie.kogito.taskassigning.core.model.Task;
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
+package org.kie.kogito.taskassigning.model.processing;
 
-public class TaskPriorityChangeProblemFactChange extends AbstractTaskPropertyChangeProblemFactChange {
-
-    private String newPriority;
-
-    public TaskPriorityChangeProblemFactChange(TaskAssignment taskAssignment, String newPriority) {
-        super(taskAssignment);
-        this.newPriority = newPriority;
-    }
-
-    @Override
-    protected void applyChange(Task task) {
-        task.setPriority(newPriority);
-    }
+public interface TaskAttributesProcessor extends AttributesProcessor<TaskInfo> {
 }

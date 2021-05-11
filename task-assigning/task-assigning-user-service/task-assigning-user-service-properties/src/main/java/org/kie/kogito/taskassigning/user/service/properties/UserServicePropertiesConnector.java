@@ -29,6 +29,9 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.kie.kogito.taskassigning.user.service.User;
 import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
+import org.kie.kogito.taskassigning.user.service.UserServiceConnectorQualifier;
+
+import static org.kie.kogito.taskassigning.user.service.properties.UserServicePropertiesConnector.NAME;
 
 /**
  * Simple user service connector implementation that reads the users definitions from a configuration.
@@ -52,9 +55,10 @@ import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
  * @see Config
  */
 @ApplicationScoped
+@UserServiceConnectorQualifier(NAME)
 public class UserServicePropertiesConnector implements UserServiceConnector {
 
-    public static final String NAME = "PropertiesConnector";
+    static final String NAME = "PropertiesConnector";
 
     private final Map<String, User> users = new HashMap<>();
 
@@ -63,11 +67,6 @@ public class UserServicePropertiesConnector implements UserServiceConnector {
     @Inject
     public UserServicePropertiesConnector(Config config) {
         this.config = config;
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
     @Override

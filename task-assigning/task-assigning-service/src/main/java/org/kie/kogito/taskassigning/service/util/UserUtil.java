@@ -17,27 +17,36 @@
 package org.kie.kogito.taskassigning.service.util;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.kie.kogito.taskassigning.core.model.Group;
 import org.kie.kogito.taskassigning.core.model.User;
+import org.kie.kogito.taskassigning.service.processing.AttributesProcessorRegistry;
 
 public class UserUtil {
 
     private UserUtil() {
     }
 
-    public static User fromExternalUser(org.kie.kogito.taskassigning.user.service.User externalUser) {
+    public static User fromExternalUser(org.kie.kogito.taskassigning.user.service.User externalUser,
+            AttributesProcessorRegistry processorRegistry) {
         final User user = new User(externalUser.getId(), true);
         final Set<Group> groups = new HashSet<>();
         user.setGroups(groups);
         if (externalUser.getGroups() != null) {
             externalUser.getGroups().forEach(externalGroup -> groups.add(new Group(externalGroup.getId())));
         }
-        user.setAttributes(externalUser.getAttributes());
+        Map<String, Object> targetAttributes = new HashMap<>();
+        if (externalUser.getAttributes() != null) {
+            targetAttributes.putAll(externalUser.getAttributes());
+        }
+        processorRegistry.applyAttributesProcessor(externalUser, targetAttributes);
+        user.setAttributes(targetAttributes);
         return user;
     }
 

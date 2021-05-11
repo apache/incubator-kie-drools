@@ -18,13 +18,22 @@ package org.kie.kogito.taskassigning.service;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfig;
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties;
 import org.kie.kogito.taskassigning.service.event.TaskAssigningServiceEventConsumer;
@@ -34,43 +43,44 @@ import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfig.UserServiceSyncOnRetriesExceededStrategy.SYNC_ON_NEXT_INTERVAL;
-
+@ApplicationScoped
 public class UserServiceAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceAdapter.class);
 
-    private static final String QUERY_ERROR_RETRIES = "An error was produced during users information synchronization." +
-            " Next attempt will be in a period of {}, error: {}";
-
-    private static final String QUERY_ERROR_RETRIES_EXCEEDED = "An error was produced during users information synchronization." +
-            " The configured number of retries {} was exceeded. The configured on-retries-exceeded-strategy is {}," +
-            " next attempt will be in a period of {}, error: {}";
+    private final TaskAssigningService service;
 
     private final TaskAssigningConfig config;
 
     private final TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
 
-    private final ExecutorService executorService;
+    private final ManagedExecutor managedExecutor;
 
     private final UserServiceConnector userServiceConnector;
 
+    private final Event<StartExecution> startExecutionEvent;
+
     private final AtomicBoolean destroyed = new AtomicBoolean();
 
-    private int pendingRetries;
+    static class StartExecution {
+    }
 
-    public UserServiceAdapter(TaskAssigningConfig config,
+    @Inject
+    public UserServiceAdapter(TaskAssigningService service,
+            TaskAssigningConfig config,
             TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer,
-            ExecutorService executorService,
-            UserServiceConnector userServiceConnector) {
+            ManagedExecutor managedExecutor,
+            UserServiceConnector userServiceConnector,
+            Event<StartExecution> startExecutionEvent) {
+        this.service = service;
         this.config = config;
         this.taskAssigningServiceEventConsumer = taskAssigningServiceEventConsumer;
-        this.executorService = executorService;
+        this.managedExecutor = managedExecutor;
         this.userServiceConnector = userServiceConnector;
+        this.startExecutionEvent = startExecutionEvent;
     }
 
     public void start() {
-        pendingRetries = config.getUserServiceSyncRetries();
         if (syncIsEnabled()) {
             programNextExecution(config.getUserServiceSyncInterval());
         } else {
@@ -86,95 +96,60 @@ public class UserServiceAdapter {
 
     private void programNextExecution(Duration nextStartTime) {
         if (!destroyed.get()) {
-            scheduleExecution(nextStartTime, this::executeQuery);
+            scheduleExecution(nextStartTime, () -> startExecutionEvent.fire(new StartExecution()));
         }
     }
 
     void scheduleExecution(Duration nextStartTime, Runnable command) {
         CompletableFuture.delayedExecutor(nextStartTime.toMillis(),
                 TimeUnit.MILLISECONDS,
-                executorService)
+                managedExecutor)
                 .execute(command);
     }
 
-    private void executeQuery() {
+    void executeQuery(@Observes StartExecution evt) {
         if (!destroyed.get()) {
-            Result result = loadUsers();
-            onQueryResult(result);
+            loadUsersData()
+                    .thenAccept(this::onQuerySuccessful)
+                    .exceptionally(throwable -> {
+                        onQueryFailure(throwable);
+                        return null;
+                    });
+
         }
     }
 
-    private void onQueryResult(Result result) {
+    private void onQuerySuccessful(List<User> users) {
         if (!destroyed.get()) {
-            Duration nextStartTime;
-            if (!result.hasError()) {
-                taskAssigningServiceEventConsumer.accept(new UserDataEvent(result.getUsers(), ZonedDateTime.now()));
-                pendingRetries = config.getUserServiceSyncRetries();
-                nextStartTime = config.getUserServiceSyncInterval();
-            } else {
-                if (pendingRetries > 0) {
-                    pendingRetries--;
-                    nextStartTime = config.getUserServiceSyncRetryInterval();
-                    LOGGER.warn(QUERY_ERROR_RETRIES, nextStartTime, result.getError().getMessage());
-                } else {
-                    pendingRetries = config.getUserServiceSyncRetries();
-                    if (config.getUserServiceSyncOnRetriesExceededStrategy() == SYNC_ON_NEXT_INTERVAL) {
-                        nextStartTime = config.getUserServiceSyncInterval();
-                    } else {
-                        nextStartTime = config.getUserServiceSyncRetryInterval();
-                    }
-                    LOGGER.warn(QUERY_ERROR_RETRIES_EXCEEDED, config.getUserServiceSyncRetries(),
-                            config.getUserServiceSyncOnRetriesExceededStrategy(), nextStartTime, result.getError().getMessage());
-                }
-            }
-            programNextExecution(nextStartTime);
+            taskAssigningServiceEventConsumer.accept(new UserDataEvent(users, ZonedDateTime.now()));
+            programNextExecution(config.getUserServiceSyncInterval());
         }
+    }
+
+    private void onQueryFailure(Throwable throwable) {
+        service.failFast(throwable);
     }
 
     private boolean syncIsEnabled() {
         return !config.getUserServiceSyncInterval().isZero();
     }
 
-    private Result loadUsers() {
+    @Asynchronous
+    @Retry(maxRetries = -1,
+            delay = 2000,
+            maxDuration = 5,
+            durationUnit = ChronoUnit.MINUTES)
+    @Timeout(value = 10,
+            unit = ChronoUnit.MINUTES)
+    public CompletionStage<List<User>> loadUsersData() {
+        CompletableFuture<List<User>> future = new CompletableFuture<>();
         try {
-            List<User> users = userServiceConnector.findAllUsers();
-            return Result.successful(users);
+            future.complete(userServiceConnector.findAllUsers());
         } catch (Exception e) {
-            return Result.error(e);
+            String msg = String.format("An error was produced during users information synchronization, error: %s", e.getMessage());
+            LOGGER.warn(msg);
+            future.completeExceptionally(new TaskAssigningException(msg, e));
         }
+        return future;
     }
-
-    private static class Result {
-
-        private List<User> users = new ArrayList<>();
-        private Exception error;
-
-        private Result() {
-        }
-
-        public static Result successful(List<User> users) {
-            Result result = new Result();
-            result.users = users;
-            return result;
-        }
-
-        public static Result error(Exception error) {
-            Result result = new Result();
-            result.error = error;
-            return result;
-        }
-
-        public List<User> getUsers() {
-            return users;
-        }
-
-        public boolean hasError() {
-            return error != null;
-        }
-
-        public Exception getError() {
-            return error;
-        }
-    }
-
 }

@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.core.model.solver.realtime;
+package org.kie.kogito.taskassigning.model.processing;
 
-import org.kie.kogito.taskassigning.core.model.Task;
-import org.kie.kogito.taskassigning.core.model.TaskAssignment;
+import java.util.Map;
 
-public class TaskStateChangeProblemFactChange extends AbstractTaskPropertyChangeProblemFactChange {
+public interface AttributesProcessor<T> {
 
-    private String newState;
+    int getPriority();
 
-    public TaskStateChangeProblemFactChange(TaskAssignment taskAssignment, String newState) {
-        super(taskAssignment);
-        this.newState = newState;
-    }
+    boolean isEnabled();
 
-    @Override
-    protected void applyChange(Task task) {
-        task.setState(newState);
-    }
+    void process(T entity, Map<String, Object> targetAttributes);
+
 }

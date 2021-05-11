@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.taskassigning.core.model.solver.realtime;
 
 import org.kie.kogito.taskassigning.core.TaskAssigningRuntimeException;
@@ -22,16 +23,23 @@ import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 
-public abstract class AbstractTaskPropertyChangeProblemFactChange implements ProblemFactChange<TaskAssigningSolution> {
+public class TaskInfoChangeProblemFactChange implements ProblemFactChange<TaskAssigningSolution> {
 
     private TaskAssignment taskAssignment;
 
-    protected AbstractTaskPropertyChangeProblemFactChange(TaskAssignment taskAssignment) {
+    private Task taskInfo;
+
+    public TaskInfoChangeProblemFactChange(TaskAssignment taskAssignment, Task taskInfo) {
         this.taskAssignment = taskAssignment;
+        this.taskInfo = taskInfo;
     }
 
     public TaskAssignment getTaskAssignment() {
         return taskAssignment;
+    }
+
+    public Task getTaskInfo() {
+        return taskInfo;
     }
 
     @Override
@@ -42,27 +50,39 @@ public abstract class AbstractTaskPropertyChangeProblemFactChange implements Pro
         }
         scoreDirector.beforeProblemPropertyChanged(workingTaskAssignment);
         Task currentTask = workingTaskAssignment.getTask();
-        Task clonedTask = cloneCurrentTask(currentTask);
-        applyChange(clonedTask);
+        Task clonedTask = cloneByUnmodifiableFields(currentTask);
+        setModifiableFields(clonedTask, taskInfo);
         workingTaskAssignment.setTask(clonedTask);
         scoreDirector.afterProblemPropertyChanged(workingTaskAssignment);
         scoreDirector.triggerVariableListeners();
     }
 
-    /**
-     * Apply the necessary changes on the shallow cloned task instance.
-     * 
-     * @see ##cloneCurrentTask(Task)
-     * @see Task.CloneBuilder
-     */
-    protected abstract void applyChange(Task task);
+    private Task cloneByUnmodifiableFields(Task task) {
+        return Task.newBuilder()
+                .id(task.getId())
+                .name(task.getName())
+                .referenceName(task.getReferenceName())
+                .processInstanceId(task.getProcessInstanceId())
+                .processId(task.getProcessId())
+                .rootProcessInstanceId(task.getRootProcessInstanceId())
+                .rootProcessId(task.getRootProcessId())
+                .started(task.getStarted())
+                .endpoint(task.getEndpoint())
+                .build();
+    }
 
-    /**
-     * Generates a convenient shallow clone of currentTask.
-     * 
-     * @see Task.CloneBuilder
-     */
-    protected Task cloneCurrentTask(Task currentTask) {
-        return Task.CloneBuilder.newInstance(currentTask).build();
+    private void setModifiableFields(Task currentTask, Task taskInfo) {
+        currentTask.setState(taskInfo.getState());
+        currentTask.setDescription(taskInfo.getDescription());
+        currentTask.setPriority(taskInfo.getPriority());
+        currentTask.setPotentialUsers(taskInfo.getPotentialUsers());
+        currentTask.setPotentialGroups(taskInfo.getPotentialGroups());
+        currentTask.setAdminUsers(taskInfo.getAdminUsers());
+        currentTask.setAdminGroups(taskInfo.getAdminGroups());
+        currentTask.setExcludedUsers(taskInfo.getExcludedUsers());
+        currentTask.setCompleted(taskInfo.getCompleted());
+        currentTask.setLastUpdate(taskInfo.getLastUpdate());
+        currentTask.setInputData(taskInfo.getInputData());
+        currentTask.setAttributes(taskInfo.getAttributes());
     }
 }

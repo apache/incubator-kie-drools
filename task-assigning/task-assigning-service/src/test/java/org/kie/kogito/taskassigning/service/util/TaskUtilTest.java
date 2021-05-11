@@ -19,8 +19,10 @@ package org.kie.kogito.taskassigning.service.util;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,10 @@ import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstanc
 import org.kie.kogito.taskassigning.service.TaskData;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.messaging.UserTaskEvent;
+import org.kie.kogito.taskassigning.util.JsonUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
@@ -62,6 +66,12 @@ class TaskUtilTest {
     private static final String PROCESS_ID = "PROCESS_ID";
     private static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
 
+    private static final String INPUT_PARAM1_NAME = "INPUT_PARAM1_NAME";
+    private static final String INPUT_PARAM1_VALUE = "INPUT_PARAM1_VALUE";
+    private static final String INPUT_PARAM2_NAME = "INPUT_PARAM2_NAME";
+    private static final String INPUT_PARAM2_VALUE = "INPUT_PARAM2_VALUE";
+    private static final JsonNode TASK_INPUTS = mockTaskInputs();
+
     @Test
     void fromUserTaskInstances() {
         UserTaskInstance userTaskInstance = new UserTaskInstance();
@@ -84,6 +94,7 @@ class TaskUtilTest {
         userTaskInstance.setPotentialUsers(POTENTIAL_USERS);
         userTaskInstance.setReferenceName(REFERENCE_NAME);
         userTaskInstance.setLastUpdate(LAST_UPDATE);
+        userTaskInstance.setInputs(TASK_INPUTS);
         userTaskInstance.setEndpoint(ENDPOINT);
         List<TaskData> result = TaskUtil.fromUserTaskInstances(Collections.singletonList(userTaskInstance));
         assertThat(result).hasSize(1);
@@ -122,6 +133,7 @@ class TaskUtilTest {
         userTaskEvent.setPotentialUsers(POTENTIAL_USERS);
         userTaskEvent.setReferenceName(REFERENCE_NAME);
         userTaskEvent.setLastUpdate(LAST_UPDATE);
+        userTaskEvent.setInputs(TASK_INPUTS);
         userTaskEvent.setEndpoint(ENDPOINT);
         TaskData result = TaskUtil.fromUserTaskEvent(userTaskEvent);
         assertThat(result).isNotNull();
@@ -228,7 +240,7 @@ class TaskUtilTest {
 
             @Override
             public JsonNode getInputs() {
-                return null;
+                return TASK_INPUTS;
             }
 
             @Override
@@ -255,6 +267,7 @@ class TaskUtilTest {
         assertThat(task.getReferenceName()).isEqualTo(REFERENCE_NAME);
         assertThat(task.getLastUpdate()).isEqualTo(LAST_UPDATE);
         assertThat(task.getEndpoint()).isEqualTo(ENDPOINT);
+        assertThat(task.getInputData()).containsExactlyInAnyOrderEntriesOf(buildExpectedInputs());
     }
 
     private void assertExpectedTaskData(TaskData taskData) {
@@ -277,5 +290,20 @@ class TaskUtilTest {
         assertThat(taskData.getReferenceName()).isEqualTo(REFERENCE_NAME);
         assertThat(taskData.getLastUpdate()).isEqualTo(LAST_UPDATE);
         assertThat(taskData.getEndpoint()).isEqualTo(ENDPOINT);
+        assertThat(taskData.getInputs()).isEqualTo(TASK_INPUTS);
+    }
+
+    private static JsonNode mockTaskInputs() {
+        ObjectNode inputs = JsonUtils.OBJECT_MAPPER.createObjectNode();
+        inputs.put(INPUT_PARAM1_NAME, INPUT_PARAM1_VALUE);
+        inputs.put(INPUT_PARAM2_NAME, INPUT_PARAM2_VALUE);
+        return inputs;
+    }
+
+    private static Map<String, Object> buildExpectedInputs() {
+        Map<String, Object> result = new HashMap<>();
+        result.put(INPUT_PARAM1_NAME, INPUT_PARAM1_VALUE);
+        result.put(INPUT_PARAM2_NAME, INPUT_PARAM2_VALUE);
+        return result;
     }
 }

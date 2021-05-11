@@ -42,7 +42,9 @@ import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveTaskProblem
 import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveUserProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.UserPropertyChangeProblemFactChange;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
-import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
+import org.kie.kogito.taskassigning.service.processing.AttributesProcessorRegistry;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -54,8 +56,11 @@ import static org.kie.kogito.taskassigning.service.TaskState.RESERVED;
 import static org.kie.kogito.taskassigning.service.TestUtil.mockTaskData;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
 import static org.kie.kogito.taskassigning.service.util.TaskUtil.fromTaskData;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,10 +82,16 @@ class SolutionChangesBuilderTest {
     private TaskAssigningServiceContext context;
 
     @Mock
-    private UserServiceConnector userServiceConnector;
+    private UserServiceConnectorDelegate userServiceConnector;
 
     @Mock
     private ScoreDirector<TaskAssigningSolution> scoreDirector;
+
+    @Mock
+    private AttributesProcessorRegistry processorRegistry;
+
+    @Captor
+    private ArgumentCaptor<Task> taskCaptor;
 
     @BeforeEach
     void setUp() {
@@ -96,6 +107,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(taskDataList)
                 .forSolution(solution)
                 .build();
@@ -104,6 +116,8 @@ class SolutionChangesBuilderTest {
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, expected);
         assertTaskPublishStatus(taskData.getId(), false);
+        assertThatTaskProcessorsWereApplied(TASK_1_ID);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -111,6 +125,7 @@ class SolutionChangesBuilderTest {
         TaskData taskData = mockTaskData(TASK_1_ID, TaskState.RESERVED.value(), USER_1, TASK_1_LAST_UPDATE);
         TaskAssigningSolution solution = mockSolution(Collections.singletonList(mockUser(USER_1)), Collections.emptyList());
         addNewReservedTaskChangeWithActualOwner(solution, taskData);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -121,6 +136,7 @@ class SolutionChangesBuilderTest {
         TaskAssigningSolution solution = mockSolution(Collections.emptyList(), Collections.emptyList());
         addNewReservedTaskChangeWithActualOwner(solution, taskData);
         verify(userServiceConnector).findUser(USER_1);
+        assertThatUserProcessorsWereApplied(externalUser);
     }
 
     @Test
@@ -129,6 +145,7 @@ class SolutionChangesBuilderTest {
         TaskAssigningSolution solution = mockSolution(Collections.emptyList(), Collections.emptyList());
         addNewReservedTaskChangeWithActualOwner(solution, taskData);
         verify(userServiceConnector).findUser(USER_1);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     private void addNewReservedTaskChangeWithActualOwner(TaskAssigningSolution solution, TaskData taskData) {
@@ -136,6 +153,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(taskDataList)
                 .forSolution(solution)
                 .build();
@@ -144,6 +162,7 @@ class SolutionChangesBuilderTest {
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, expected);
         assertTaskPublishStatus(taskData.getId(), true);
+        assertThatTaskProcessorsWereApplied(taskData.getId());
     }
 
     @Test
@@ -156,6 +175,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(mockTaskDataList(taskData))
                 .forSolution(solution)
                 .build();
@@ -163,6 +183,8 @@ class SolutionChangesBuilderTest {
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, new ReleaseTaskProblemFactChange(new TaskAssignment(fromTaskData(taskData))));
         assertTaskPublishStatus(TASK_1_ID, false);
+        assertThatTaskProcessorsWhereNotApplied();
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -173,6 +195,7 @@ class SolutionChangesBuilderTest {
         TaskAssigningSolution solution = mockSolution(Arrays.asList(user1, user2), Collections.singletonList(user1Assignment));
         TaskData taskData = mockTaskData(TASK_1_ID, RESERVED.value(), USER_2, TASK_1_LAST_UPDATE);
         addReservedTaskChangeForAnotherUser(solution, taskData, user2);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -185,6 +208,7 @@ class SolutionChangesBuilderTest {
         TaskData taskData = mockTaskData(TASK_1_ID, RESERVED.value(), USER_2, TASK_1_LAST_UPDATE);
         addReservedTaskChangeForAnotherUser(solution, taskData, mockUser(USER_2));
         verify(userServiceConnector).findUser(USER_2);
+        assertThatUserProcessorsWereApplied(user2);
     }
 
     @Test
@@ -195,12 +219,14 @@ class SolutionChangesBuilderTest {
         TaskData taskData = mockTaskData(TASK_1_ID, RESERVED.value(), USER_2, TASK_1_LAST_UPDATE);
         addReservedTaskChangeForAnotherUser(solution, taskData, mockUser(USER_2));
         verify(userServiceConnector).findUser(USER_2);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     private void addReservedTaskChangeForAnotherUser(TaskAssigningSolution solution, TaskData taskData, User user) {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(mockTaskDataList(taskData))
                 .forSolution(solution)
                 .build();
@@ -208,6 +234,7 @@ class SolutionChangesBuilderTest {
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, new AssignTaskProblemFactChange(new TaskAssignment(fromTaskData(taskData)), user, true));
         assertTaskPublishStatus(TASK_1_ID, true);
+        assertThatTaskProcessorsWhereNotApplied();
     }
 
     @Test
@@ -219,6 +246,8 @@ class SolutionChangesBuilderTest {
         TaskAssigningSolution solution = mockSolution(Collections.singletonList(user1), Collections.singletonList(user1Assignment));
         TaskData taskData = mockTaskData(TASK_1_ID, RESERVED.value(), USER_1, TASK_1_LAST_UPDATE);
         addReservedTaskChangeForAnotherUser(solution, taskData, user1);
+        assertThatTaskProcessorsWhereNotApplied();
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -246,12 +275,15 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(mockTaskDataList(taskData))
                 .forSolution(solution)
                 .build();
 
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, new RemoveTaskProblemFactChange(new TaskAssignment(fromTaskData(taskData))));
+        assertThatTaskProcessorsWhereNotApplied();
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -264,6 +296,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(Collections.emptyList())
                 .fromUserDataEvent(event)
                 .forSolution(solution)
@@ -272,6 +305,7 @@ class SolutionChangesBuilderTest {
         AddUserProblemFactChange expected = new AddUserProblemFactChange(newUser);
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, expected);
+        assertThatUserProcessorsWereApplied(newExternalUser);
     }
 
     @Test
@@ -309,6 +343,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(Collections.emptyList())
                 .fromUserDataEvent(event)
                 .forSolution(solution)
@@ -323,6 +358,7 @@ class SolutionChangesBuilderTest {
                 expectedGroups);
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, expected);
+        assertThatUserProcessorsWereApplied(updatedExternalUser);
     }
 
     @Test
@@ -335,6 +371,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(Collections.emptyList())
                 .fromUserDataEvent(event)
                 .forSolution(solution)
@@ -343,6 +380,7 @@ class SolutionChangesBuilderTest {
         DisableUserProblemFactChange expected = new DisableUserProblemFactChange(user);
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, expected);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     @Test
@@ -354,6 +392,7 @@ class SolutionChangesBuilderTest {
         List<ProblemFactChange<TaskAssigningSolution>> result = SolutionChangesBuilder.create()
                 .withContext(context)
                 .withUserServiceConnector(userServiceConnector)
+                .withProcessors(processorRegistry)
                 .fromTasksData(Collections.emptyList())
                 .forSolution(solution)
                 .build();
@@ -361,6 +400,7 @@ class SolutionChangesBuilderTest {
         RemoveUserProblemFactChange expected = new RemoveUserProblemFactChange(user);
         assertChangeIsTheChangeSetId(result, 0);
         assertChange(result, 1, expected);
+        assertThatUserProcessorsWereNotApplied();
     }
 
     private static TaskAssigningSolution mockSolution(List<User> users, List<TaskAssignment> task) {
@@ -480,4 +520,21 @@ class SolutionChangesBuilderTest {
         assertThat(context.isTaskPublished(taskId)).isEqualTo(published);
     }
 
+    private void assertThatTaskProcessorsWereApplied(String taskId) {
+        verify(processorRegistry).applyAttributesProcessor(taskCaptor.capture(), any());
+        assertThat(taskCaptor.getValue()).isNotNull();
+        assertThat(taskCaptor.getValue().getId()).isEqualTo(taskId);
+    }
+
+    private void assertThatTaskProcessorsWhereNotApplied() {
+        verify(processorRegistry, never()).applyAttributesProcessor(any(Task.class), any());
+    }
+
+    private void assertThatUserProcessorsWereApplied(org.kie.kogito.taskassigning.user.service.User externalUser) {
+        verify(processorRegistry).applyAttributesProcessor(eq(externalUser), any());
+    }
+
+    private void assertThatUserProcessorsWereNotApplied() {
+        verify(processorRegistry, never()).applyAttributesProcessor(any(org.kie.kogito.taskassigning.user.service.User.class), any());
+    }
 }

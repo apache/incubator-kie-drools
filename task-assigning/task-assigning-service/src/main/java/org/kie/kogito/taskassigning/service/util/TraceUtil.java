@@ -22,7 +22,6 @@ import java.util.Map;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
 import org.kie.kogito.taskassigning.core.model.User;
-import org.kie.kogito.taskassigning.core.model.solver.realtime.AbstractTaskPropertyChangeProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AddTaskProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AddUserProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.AssignTaskProblemFactChange;
@@ -30,6 +29,7 @@ import org.kie.kogito.taskassigning.core.model.solver.realtime.DisableUserProble
 import org.kie.kogito.taskassigning.core.model.solver.realtime.ReleaseTaskProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveTaskProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveUserProblemFactChange;
+import org.kie.kogito.taskassigning.core.model.solver.realtime.TaskInfoChangeProblemFactChange;
 import org.kie.kogito.taskassigning.core.model.solver.realtime.UserPropertyChangeProblemFactChange;
 import org.kie.kogito.taskassigning.service.PlanningItem;
 import org.optaplanner.core.api.solver.ProblemFactChange;
@@ -47,7 +47,7 @@ public class TraceUtil {
             List<RemoveTaskProblemFactChange> removedTasksChanges,
             List<ReleaseTaskProblemFactChange> releasedTasksChanges,
             Map<String, List<IndexedElement<AssignTaskProblemFactChange>>> changesByUserId,
-            List<AbstractTaskPropertyChangeProblemFactChange> taskPropertyChanges,
+            List<TaskInfoChangeProblemFactChange> taskPropertyChanges,
             List<AddTaskProblemFactChange> newTasksChanges,
             List<AddUserProblemFactChange> newUsersChanges,
             List<ProblemFactChange<TaskAssigningSolution>> usersChanges,

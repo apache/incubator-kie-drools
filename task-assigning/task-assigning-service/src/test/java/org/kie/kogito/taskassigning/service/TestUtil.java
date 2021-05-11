@@ -34,6 +34,7 @@ import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstanc
 import org.kie.kogito.taskassigning.user.service.Group;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
 public class TestUtil {
@@ -53,8 +54,8 @@ public class TestUtil {
         org.kie.kogito.taskassigning.user.service.User externalUser = mock(org.kie.kogito.taskassigning.user.service.User.class);
         doReturn(id).when(externalUser).getId();
         Set<Group> externalGroups = groups.stream().map(TestUtil::mockExternalGroup).collect(Collectors.toSet());
-        doReturn(externalGroups).when(externalUser).getGroups();
-        doReturn(attributes).when(externalUser).getAttributes();
+        lenient().doReturn(externalGroups).when(externalUser).getGroups();
+        lenient().doReturn(attributes).when(externalUser).getAttributes();
         return externalUser;
     }
 

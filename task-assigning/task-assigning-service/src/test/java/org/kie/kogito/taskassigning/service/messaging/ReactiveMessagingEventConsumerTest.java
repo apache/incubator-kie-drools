@@ -17,22 +17,26 @@
 package org.kie.kogito.taskassigning.service.messaging;
 
 import java.time.ZonedDateTime;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.taskassigning.service.TaskAssigningException;
 import org.kie.kogito.taskassigning.service.event.TaskAssigningServiceEventConsumer;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,22 +45,64 @@ class ReactiveMessagingEventConsumerTest {
     private static final String TASK_ID = "TASK_ID";
     private static final ZonedDateTime LAST_MODIFICATION_DATE = parseZonedDateTime("2021-03-11T15:00:00.001Z");
 
+    @Mock
+    private ManagedExecutor managedExecutor;
+
+    @Mock
+    private CompletableFuture<Void> future;
+
+    @Captor
+    private ArgumentCaptor<Runnable> runAsyncCaptor;
+
+    @Captor
+    private ArgumentCaptor<Runnable> thenRunCaptor;
+
+    @Mock
+    private Message<UserTaskEvent> message;
+
     @Captor
     private ArgumentCaptor<TaskDataEvent> taskDataEventCaptor;
 
-    @Test
-    @Timeout(10)
-    void onUserTaskEvent() throws Exception {
-        TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer = mock(TaskAssigningServiceEventConsumer.class);
-        ReactiveMessagingEventConsumer consumer = spy(new ReactiveMessagingEventConsumer(taskAssigningServiceEventConsumer));
+    @Captor
+    private ArgumentCaptor<TaskAssigningException> exceptionCaptor;
+
+    @Mock
+    private TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
+
+    private ReactiveMessagingEventConsumer consumer;
+
+    @BeforeEach
+    void setUp() {
+        taskAssigningServiceEventConsumer = mock(TaskAssigningServiceEventConsumer.class);
+        consumer = new ReactiveMessagingEventConsumer(taskAssigningServiceEventConsumer, managedExecutor);
         UserTaskEvent event = new UserTaskEvent();
         event.setTaskId(TASK_ID);
         event.setLastUpdate(LAST_MODIFICATION_DATE);
-        Message<UserTaskEvent> message = Message.of(event);
-        CompletionStage<Void> stage = consumer.onUserTaskEvent(message);
-        stage.toCompletableFuture().get();
+        doReturn(event).when(message).getPayload();
+    }
+
+    @Test
+    void onUserTaskEvent() {
+        doReturn(future).when(managedExecutor).runAsync(any());
+        consumer.onUserTaskEvent(message);
+        verify(managedExecutor).runAsync(runAsyncCaptor.capture());
+        runAsyncCaptor.getValue().run();
         verify(taskAssigningServiceEventConsumer).accept(taskDataEventCaptor.capture());
         assertThat(taskDataEventCaptor.getValue().getTaskId()).isEqualTo(TASK_ID);
         assertThat(taskDataEventCaptor.getValue().getEventTime()).isEqualTo(LAST_MODIFICATION_DATE);
+        verify(future).thenRun(thenRunCaptor.capture());
+        thenRunCaptor.getValue().run();
+        verify(message).ack();
+    }
+
+    @Test
+    void failFast() {
+        consumer.failFast();
+        consumer.onUserTaskEvent(message);
+        verify(message).nack(exceptionCaptor.capture());
+        assertThat(exceptionCaptor.getValue())
+                .isInstanceOf(TaskAssigningException.class)
+                .hasMessageStartingWith("Task assigning service is in fail fast mode");
+
     }
 }

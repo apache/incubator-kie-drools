@@ -16,40 +16,34 @@
 
 package org.kie.kogito.taskassigning.service;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.function.Consumer;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 import org.kie.kogito.taskassigning.user.service.User;
 import org.kie.kogito.taskassigning.user.service.UserServiceConnector;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
+@ExtendWith(MockitoExtension.class)
+class SolutionDataLoaderTest {
 
+    private static final String UNEXPECTED_SERVICE_ERROR = "UNEXPECTED_SERVICE_ERROR";
     private static final String TASK_ID = "TASK_ID";
-    private static final Duration DURATION = Duration.of(10, ChronoUnit.MILLIS);
-    private static final int RETRIES = 5;
     private static final int PAGE_SIZE = 10;
 
     @Mock
@@ -58,74 +52,51 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
     @Mock
     private UserServiceConnector userServiceConnector;
 
-    @Captor
-    private ArgumentCaptor<SolutionDataLoader.Result> resultCaptor;
+    private SolutionDataLoader solutionDataLoader;
 
-    @Mock
-    private Consumer<SolutionDataLoader.Result> resultConsumer;
-
-    private CountDownLatch resultApplied;
-
-    @Override
-    protected SolutionDataLoader createRunnableBase() {
-        return spy(new SolutionDataLoaderMock(taskServiceConnector, userServiceConnector));
+    @BeforeEach
+    void setUp() {
+        solutionDataLoader = new SolutionDataLoader(taskServiceConnector, userServiceConnector);
     }
 
     @Test
-    @Timeout(TEST_TIMEOUT)
-    void startWithSuccessfulExecution() throws Exception {
-        CompletableFuture<Void> future = startRunnableBase();
-
-        List<List<UserTaskInstance>> taskServiceResults = Arrays.asList(new ArrayList<>(), null, Collections.singletonList(createUserTaskInstance()));
-        List<List<User>> userServiceResults = Arrays.asList(null, Collections.singletonList(createExternalUser()));
-        doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
-        doAnswer(createExecutions(userServiceResults)).when(userServiceConnector).findAllUsers();
-
-        resultApplied = new CountDownLatch(1);
-        runnableBase.start(resultConsumer, true, true, DURATION, RETRIES, PAGE_SIZE);
-        resultApplied.await();
-
-        runnableBase.destroy();
-        future.get();
-        assertThat(runnableBase.isDestroyed()).isTrue();
-
-        verify(resultConsumer).accept(resultCaptor.capture());
-        assertThat(resultCaptor.getValue().hasErrors()).isFalse();
-        SolutionDataLoader.Result result = resultCaptor.getValue();
-        assertThat(result.getTasks())
-                .isNotNull()
-                .hasSize(1)
-                .element(0)
-                .isNotNull();
-        assertThat(result.getTasks().get(0).getId()).isEqualTo(TASK_ID);
-        assertThat(result.getUsers()).isSameAs(userServiceResults.get(1));
+    void loadSolutionDataSuccessful() throws Exception {
+        List<UserTaskInstance> taskServiceResults = Collections.singletonList(createUserTaskInstance());
+        List<User> userServiceResults = Collections.singletonList(createExternalUser());
+        doReturn(taskServiceResults).when(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
+        doReturn(userServiceResults).when(userServiceConnector).findAllUsers();
+        solutionDataLoader.loadSolutionData(true, true, PAGE_SIZE)
+                .thenApply(result -> {
+                    assertThat(result.getTasks())
+                            .isNotNull()
+                            .hasSize(1)
+                            .element(0)
+                            .isNotNull();
+                    assertThat(result.getTasks().get(0).getId()).isEqualTo(TASK_ID);
+                    assertThat(result.getUsers()).isSameAs(userServiceResults);
+                    return null;
+                }).toCompletableFuture().get();
     }
 
     @Test
-    @Timeout(TEST_TIMEOUT)
-    void startWithUnsuccessfulExecution() throws Exception {
-        CompletableFuture<Void> future = startRunnableBase();
+    void loadSolutionDataWithUnsuccessfulTasksQuery() {
+        doThrow(new RuntimeException(UNEXPECTED_SERVICE_ERROR)).when(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
+        assertThatThrownBy(() -> solutionDataLoader.loadSolutionData(true, true, PAGE_SIZE).toCompletableFuture().get())
+                .hasMessageContaining(UNEXPECTED_SERVICE_ERROR)
+                .hasMessageContaining("Task Service");
+        verify(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
+        verify(userServiceConnector, never()).findAllUsers();
+    }
 
-        List<List<UserTaskInstance>> taskServiceResults = Arrays.asList(new ArrayList<>(),
-                null,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                null);
-        List<List<User>> userServiceResults = Arrays.asList(null, null, null, null);
-        doAnswer(createExecutions(taskServiceResults)).when(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
-        doAnswer(createExecutions(userServiceResults)).when(userServiceConnector).findAllUsers();
-
-        resultApplied = new CountDownLatch(1);
-        runnableBase.start(resultConsumer, true, true, DURATION, RETRIES, PAGE_SIZE);
-        resultApplied.await();
-
-        runnableBase.destroy();
-        future.get();
-        assertThat(runnableBase.isDestroyed()).isTrue();
-
-        verify(resultConsumer).accept(resultCaptor.capture());
-        assertThat(resultCaptor.getValue().hasErrors()).isTrue();
+    @Test
+    void loadSolutionDataWithUnsuccessfulUsersQuery() {
+        doReturn(Collections.emptyList()).when(taskServiceConnector).findAllTasks(any(), eq(PAGE_SIZE));
+        doThrow(new RuntimeException(UNEXPECTED_SERVICE_ERROR)).when(userServiceConnector).findAllUsers();
+        assertThatThrownBy(() -> solutionDataLoader.loadSolutionData(true, true, PAGE_SIZE).toCompletableFuture().get())
+                .hasMessageContaining(UNEXPECTED_SERVICE_ERROR)
+                .hasMessageContaining("User Service");
+        verify(taskServiceConnector).findAllTasks(anyList(), eq(PAGE_SIZE));
+        verify(userServiceConnector).findAllUsers();
     }
 
     private static UserTaskInstance createUserTaskInstance() {
@@ -136,32 +107,5 @@ class SolutionDataLoaderTest extends RunnableBaseTest<SolutionDataLoader> {
 
     private static org.kie.kogito.taskassigning.user.service.User createExternalUser() {
         return mock(org.kie.kogito.taskassigning.user.service.User.class);
-    }
-
-    private class SolutionDataLoaderMock extends SolutionDataLoader {
-
-        public SolutionDataLoaderMock(TaskServiceConnector taskServiceConnector, UserServiceConnector userServiceConnector) {
-            super(taskServiceConnector, userServiceConnector);
-        }
-
-        @Override
-        protected void applyResult(Result result) {
-            super.applyResult(result);
-            resultApplied.countDown();
-        }
-    }
-
-    private <T> Answer createExecutions(List<T> results) {
-        return new Answer() {
-            private int invocations = 0;
-
-            public Object answer(InvocationOnMock invocation) {
-                T result = results.get(invocations++);
-                if (result == null) {
-                    throw new RuntimeException("Emulate an error, the loader must retry.");
-                }
-                return result;
-            }
-        };
     }
 }
