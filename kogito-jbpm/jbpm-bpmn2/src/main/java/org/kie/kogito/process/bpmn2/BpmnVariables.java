@@ -72,8 +72,9 @@ public class BpmnVariables implements Model {
     }
 
     @Override
-    public void fromMap(Map<String, Object> vs) {
+    public BpmnVariables fromMap(Map<String, Object> vs) {
         variables.putAll(vs);
+        return this;
     }
 
     public List<Variable> definitions() {

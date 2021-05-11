@@ -15,17 +15,19 @@
  */
 package org.jbpm.process.codegen;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-public class XXXTaskOutput implements org.kie.kogito.MapOutput {
+import org.kie.kogito.MapOutput;
 
-    
+public class XXXTaskOutput implements MapOutput {
+
+    @Override
     public Map<String, Object> toMap() {
-        
+
     }
-    
-    public static XXXTaskOutput fromMap (Map<String,Object> params) {
-        
+
+    public static XXXTaskOutput fromMap(Map<String, Object> params) {
+
     }
 }

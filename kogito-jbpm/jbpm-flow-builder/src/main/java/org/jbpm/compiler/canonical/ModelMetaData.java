@@ -15,6 +15,7 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class ModelMetaData {
     private String visibility;
     private boolean hidden;
     private String templateName;
-    private Consumer<CompilationUnit> customGenerator;
+    private Consumer<CompilationUnit>[] customGenerator;
 
     private boolean supportsValidation;
 
@@ -84,7 +85,7 @@ public class ModelMetaData {
     }
 
     public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden, String templateName,
-            Consumer<CompilationUnit> customGenerator) {
+            Consumer<CompilationUnit>... customGenerator) {
         this.processId = processId;
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
@@ -98,7 +99,7 @@ public class ModelMetaData {
 
     public String generate() {
         CompilationUnit modelClass = compilationUnit();
-        customGenerator.accept(modelClass);
+        Arrays.stream(customGenerator).forEach(generator -> generator.accept(modelClass));
         return modelClass.toString();
     }
 
@@ -234,10 +235,18 @@ public class ModelMetaData {
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
         toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
 
+        //first setting return type for the fromMap with no id parameter
+        modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 1)
+                .ifPresent(m -> m.setType(modelClassSimpleName));
+
+        //second setting return type for the fromMap with id parameter
         modelClass.findFirst(
                 // make sure to take only the method with two parameters (id, businessKey and params)
                 MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 2)
-                .ifPresent(m -> m.setBody(staticFromMap));
+                .ifPresent(m -> {
+                    m.setBody(staticFromMap.addStatement(new ReturnStmt(new ThisExpr())));
+                    m.setType(modelClassSimpleName);
+                });
 
         return compilationUnit;
     }

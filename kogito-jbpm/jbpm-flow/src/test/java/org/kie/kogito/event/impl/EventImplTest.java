@@ -69,8 +69,9 @@ public class EventImplTest {
         private DummyEvent dummyEvent;
 
         @Override
-        public void fromMap(Map<String, Object> params) {
+        public DummyModel fromMap(Map<String, Object> params) {
             this.dummyEvent = (DummyEvent) params.get("dummyEvent");
+            return this;
         }
 
         @Override

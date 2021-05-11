@@ -116,6 +116,7 @@ public class ProcessToExecModelGenerator {
         String packageName = process.getPackageName();
         String name = extractModelClassName(process.getId());
         VariableScope variableScope = getVariableScope(process);
+        String toModelClassName = extractModelClassName(process.getId()) + "Output";
         return new ModelMetaData(process.getId(),
                 packageName,
                 name,
@@ -123,7 +124,7 @@ public class ProcessToExecModelGenerator {
                 VariableDeclarations.of(variableScope),
                 false,
                 "/class-templates/ModelTemplate.java",
-                new AddMethodConsumer("toOutput", extractModelClassName(process.getId()) + "Output",
+                new AddMethodConsumer("toModel", toModelClassName,
                         VariableDeclarations.ofOutput(variableScope), true));
     }
 
@@ -143,12 +144,18 @@ public class ProcessToExecModelGenerator {
 
     public ModelMetaData generateOutputModel(WorkflowProcess process) {
         String packageName = process.getPackageName();
-        String name = extractModelClassName(process.getId()) + "Output";
+        String modelName = extractModelClassName(process.getId());
+        String name = modelName + "Output";
+        VariableScope variableScope = getVariableScope(process);
         return new ModelMetaData(process.getId(),
                 packageName,
                 name,
                 ((KogitoWorkflowProcess) process).getVisibility(),
-                VariableDeclarations.ofOutput(getVariableScope(process)), true);
+                VariableDeclarations.ofOutput(variableScope),
+                true,
+                "/class-templates/ModelTemplate.java",
+                new AddMethodConsumer("toModel", modelName,
+                        VariableDeclarations.ofOutput(variableScope), true));
     }
 
     private static VariableScope getVariableScope(WorkflowProcess process) {
@@ -178,7 +185,18 @@ public class ProcessToExecModelGenerator {
             }
             ClassOrInterfaceType type = parseClassOrInterfaceType(returnClassName);
             final String resultVarName = "result";
-            MethodDeclaration method = clazz.get().addMethod(methodName, Modifier.Keyword.PUBLIC).setType(type);
+
+            //Setting the Class type in the interface implementation
+            clazz.get().findAll(ClassOrInterfaceType.class)
+                    .stream()
+                    .filter(t -> t.getNameAsString().equals("$modelClass$"))
+                    .forEach(t -> t.setName(returnClassName));
+
+            //Adding the Method itself
+            MethodDeclaration method = clazz.get()
+                    .addMethod(methodName, Modifier.Keyword.PUBLIC)
+                    .setType(type)
+                    .addAnnotation(Override.class);
             BlockStmt body = new BlockStmt();
             VariableDeclarationExpr returnVar = new VariableDeclarationExpr(type, resultVarName);
             body.addStatement(new AssignExpr(returnVar, new ObjectCreationExpr(null, type, NodeList.nodeList()),

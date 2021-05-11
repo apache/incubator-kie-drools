@@ -140,8 +140,8 @@ public class AbstractProcessInstanceTest {
         }
 
         @Override
-        public void fromMap(Map<String, Object> params) {
-
+        public TestModel fromMap(Map<String, Object> params) {
+            return this;
         }
     }
 }

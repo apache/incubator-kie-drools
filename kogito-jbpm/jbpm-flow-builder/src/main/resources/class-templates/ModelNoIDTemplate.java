@@ -18,7 +18,11 @@ package org.jbpm.process.codegen;
 import java.util.Map;
 import java.util.HashMap;
 
-public class XXXModel implements org.kie.kogito.Model {
+import org.kie.kogito.MappableToModel;
+import org.kie.kogito.Model;
+
+public class XXXModel implements Model,
+                                 MappableToModel<$modelClass$> {
     
     @Override
     public Map<String, Object> toMap() {
@@ -26,8 +30,8 @@ public class XXXModel implements org.kie.kogito.Model {
     }
     
     @Override
-    public void fromMap(Map<String, Object> params) {
-        fromMap(null, params);
+    public XXXModel fromMap(Map<String, Object> params) {
+        return fromMap(null, params);
     }
 
     @Override
@@ -35,7 +39,7 @@ public class XXXModel implements org.kie.kogito.Model {
         fromMap(params);
     }
 
-    public void fromMap(String id, Map<String, Object> params) {
+    public XXXModel fromMap(String id, Map<String, Object> params) {
         
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito;
+package org.kie.kogito.codegen.api.di;
 
-import java.util.Map;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * To be implemented by classes which can be populated from a Map
- */
-public interface MapInput {
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Injectable {
 
-    /**
-     * Fills the class with information retrieved from the map
-     * 
-     * @param params Map containing keys which matches names of fields
-     *        in the class
-     */
-    MapInput fromMap(Map<String, Object> params);
 }

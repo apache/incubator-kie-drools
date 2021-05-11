@@ -29,7 +29,6 @@ import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.codegen.core.CodegenUtils;
@@ -141,12 +140,6 @@ public class ProcessResourceGenerator {
         return isQuarkus && isReactiveGenerator ? REACTIVE_REST_TEMPLATE_NAME : REST_TEMPLATE_NAME;
     }
 
-    protected String getSignalResponseType(String outputType) {
-        boolean isSpring = context.name().equals(SpringBootKogitoBuildContext.CONTEXT_NAME);
-
-        return isSpring ? "ResponseEntity<" + outputType + ">" : outputType;
-    }
-
     public String generate() {
         TemplatedGenerator.Builder templateBuilder = TemplatedGenerator.builder()
                 .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME);
@@ -189,7 +182,7 @@ public class ProcessResourceGenerator {
                                                 body.findAll(NameExpr.class, nameExpr -> "data".equals(nameExpr.getNameAsString())).forEach(name -> name.replace(new NullLiteralExpr()));
                                             }
                                             template.addMethod(methodName, Keyword.PUBLIC)
-                                                    .setType(getSignalResponseType(outputType))
+                                                    .setType(outputType)
                                                     // Remove data parameter ( payload ) if signalType is null 
                                                     .setParameters(signalType == null ? NodeList.nodeList(cloned.getParameter(0)) : cloned.getParameters())
                                                     .setBody(body)
@@ -272,15 +265,9 @@ public class ProcessResourceGenerator {
         if (context.hasDI()) {
             template.findAll(FieldDeclaration.class,
                     CodegenUtils::isProcessField).forEach(fd -> context.getDependencyInjectionAnnotator().withNamedInjection(fd, processId));
-
-            template.findAll(FieldDeclaration.class,
-                    CodegenUtils::isApplicationField).forEach(fd -> context.getDependencyInjectionAnnotator().withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
                     CodegenUtils::isProcessField).forEach(this::initializeProcessField);
-
-            template.findAll(FieldDeclaration.class,
-                    CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
         }
 
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
@@ -323,10 +310,6 @@ public class ProcessResourceGenerator {
 
     private void initializeProcessField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
-    }
-
-    private void initializeApplicationField(FieldDeclaration fd) {
-        fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
 
     private void interpolateStrings(StringLiteralExpr vv) {

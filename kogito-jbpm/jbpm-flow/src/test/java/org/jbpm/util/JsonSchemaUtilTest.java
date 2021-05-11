@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.Application;
 import org.kie.kogito.Config;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
@@ -115,16 +114,14 @@ public class JsonSchemaUtilTest {
         WorkItem task = mock(WorkItem.class);
         when(processInstance.workItem("task", policies)).thenReturn(task);
         when(task.getPhase()).thenReturn("active");
-        Application application = mock(Application.class);
         Config config = mock(Config.class);
         ProcessConfig processConfig = mock(ProcessConfig.class);
-        when(application.config()).thenReturn(config);
         when(config.get(any())).thenReturn(processConfig);
         WorkItemHandlerConfig workItemHandlerConfig = mock(WorkItemHandlerConfig.class);
         when(processConfig.workItemHandlers()).thenReturn(workItemHandlerConfig);
         KogitoWorkItemHandler workItemHandler = new HumanTaskWorkItemHandler();
         when(workItemHandlerConfig.forName("Human Task")).thenReturn(workItemHandler);
-        schemaMap = JsonSchemaUtil.addPhases(process, application, "pepe", "task", policies, schemaMap);
+        schemaMap = JsonSchemaUtil.addPhases(process, workItemHandler, "pepe", "task", policies, schemaMap);
         assertFalse(((Collection) schemaMap.get("phases")).isEmpty());
     }
 }

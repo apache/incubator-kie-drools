@@ -24,10 +24,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
-import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
@@ -75,7 +73,7 @@ public class JsonSchemaUtil {
     }
 
     public static <T> Map<String, Object> addPhases(Process<T> process,
-            Application application,
+            KogitoWorkItemHandler workItemHandler,
             String processInstanceId,
             String workItemId,
             Policy<?>[] policies,
@@ -85,7 +83,7 @@ public class JsonSchemaUtil {
                     .put(
                             "phases",
                             allowedPhases(
-                                    application.config().get(ProcessConfig.class).workItemHandlers().forName("Human Task"),
+                                    workItemHandler,
                                     pi.workItem(workItemId, policies)));
             return jsonSchema;
         }).orElseThrow(() -> new ProcessInstanceNotFoundException(processInstanceId));

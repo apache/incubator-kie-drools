@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,7 @@
  */
 package org.kie.kogito;
 
-import java.util.Map;
+public interface MappableToModel<T> extends Model {
 
-/**
- * To be implemented by classes which can be populated from a Map
- */
-public interface MapInput {
-
-    /**
-     * Fills the class with information retrieved from the map
-     * 
-     * @param params Map containing keys which matches names of fields
-     *        in the class
-     */
-    MapInput fromMap(Map<String, Object> params);
+    T toModel();
 }

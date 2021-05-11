@@ -22,28 +22,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 import org.jbpm.util.JsonSchemaUtil;
-import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceReadMode;
-import org.kie.kogito.process.impl.Sig;
-import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.process.workitem.TaskModel;
-import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
-import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
+import org.kie.kogito.auth.IdentityProvider;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +49,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -65,88 +61,51 @@ public class $Type$Resource {
 
     Process<$Type$> process;
 
-    Application application;
+    @Autowired
+    ProcessService processService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<$Type$Output> createResource_$name$(@RequestHeader HttpHeaders httpHeaders,
                                                               @RequestParam(value = "businessKey", required = false) String businessKey,
                                                               @RequestBody(required = false) $Type$Input resource,
                                                               UriComponentsBuilder uriComponentsBuilder) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            $Type$Input inputModel = resource != null ? resource : new $Type$Input();
-            ProcessInstance<$Type$> pi = process.createInstance(businessKey, inputModel.toModel());
-            List<String> startFromNode = httpHeaders.get("X-KOGITO-StartFromNode");
-
-            if (startFromNode != null && !startFromNode.isEmpty()) {
-                pi.startFrom(startFromNode.get(0));
-            } else {
-                pi.start();
-            }
-            UriComponents uriComponents = uriComponentsBuilder.path("/$name$/{id}").buildAndExpand(pi.id());
-            URI location = uriComponents.toUri();
-            return ResponseEntity.created(location)
-                    .body(pi.checkError().variables().toOutput());
-        });
+        ProcessInstance<$Type$> pi = processService.createProcessInstance(process,
+                                                                          businessKey,
+                                                                          Optional.ofNullable(resource).orElse(new $Type$Input()).toModel(),
+                                                                          httpHeaders.getOrEmpty("X-KOGITO-StartFromNode").stream().findFirst().orElse(null));
+        return ResponseEntity.created(uriComponentsBuilder.path("/$name$/{id}").buildAndExpand(pi.id()).toUri())
+                .body(pi.checkError().variables().toModel());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<$Type$Output> getResources_$name$() {
-        return process.instances()
-                .values()
-                .stream()
-                .map(pi -> pi.variables().toOutput())
-                .collect(Collectors.toList());
+        return processService.getProcessInstanceOutput(process);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> getResource_$name$(@PathVariable("id") String id) {
-        return process.instances()
-                .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(m -> ResponseEntity.ok(m.variables().toOutput()))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public $Type$Output getResource_$name$(@PathVariable("id") String id) {
+        return processService.findById(process, id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> deleteResource_$name$(@PathVariable("id") final String id) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(),
-                () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> {
-                            pi.abort();
-                            return pi.checkError().variables().toOutput();
-                        })
-                        .map(m -> ResponseEntity.ok(m)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public $Type$Output deleteResource_$name$(@PathVariable("id") final String id) {
+        return processService.delete(process, id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> updateModel_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$ resource) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(),
-                () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateVariables(resource).toOutput())
-                        .map(m -> ResponseEntity.ok(m)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public $Type$Output updateModel_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$ resource) {
+        return processService.update(process, id, resource).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TaskModel>> getTasks_$name$(@PathVariable("id") String id,
-                                                          @RequestParam(value = "user", required = false) final String user,
-                                                          @RequestParam(value = "group", required = false) final List<String> groups) {
-        return process.instances()
-                .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi
-                        .workItems(Policies.of(user, groups))
-                        .stream()
-                        .map($TaskModelFactory$::from)
-                        .collect(Collectors.toList()))
-                .map(m -> ResponseEntity.ok(m))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-                
+    public List<TaskModel> getTasks_$name$(@PathVariable("id") String id,
+                                           @RequestParam(value = "user", required = false) final String user,
+                                           @RequestParam(value = "group", required = false) final List<String> groups) {
+        return processService.getTasks(process, id, user, groups)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .stream()
+                .map($TaskModelFactory$::from)
+                .collect(Collectors.toList());
     }
 }

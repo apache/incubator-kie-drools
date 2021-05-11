@@ -15,11 +15,7 @@
  */
 package com.myspace.demo;
 
-import java.util.List;
-
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.Sig;
 
 public class $Type$Resource {
 
@@ -30,11 +26,7 @@ public class $Type$Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output signal(@PathParam("id") final String id, final $signalType$ data) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            return process.instances().findById(id).map(pi -> {
-                pi.send(Sig.of("$signalName$", data));
-                return pi.checkError().variables().toOutput();
-            });
-        }).orElseThrow(() -> new NotFoundException());
+        return processService.signalProcessInstance(process, id, data, "$signalName$")
+                .orElseThrow(() -> new NotFoundException());
     }
 }

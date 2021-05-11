@@ -82,6 +82,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final GeneratedFileType PROCESS_INSTANCE_TYPE = GeneratedFileType.of("PROCESS_INSTANCE", GeneratedFileType.Category.SOURCE);
     private static final GeneratedFileType MESSAGE_PRODUCER_TYPE = GeneratedFileType.of("MESSAGE_PRODUCER", GeneratedFileType.Category.SOURCE);
     private static final GeneratedFileType MESSAGE_CONSUMER_TYPE = GeneratedFileType.of("MESSAGE_CONSUMER", GeneratedFileType.Category.SOURCE);
+    private static final GeneratedFileType PRODUCER_TYPE = GeneratedFileType.of("PRODUCER", GeneratedFileType.Category.SOURCE);
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
     public static final Set<String> SUPPORTED_BPMN_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".bpmn", ".bpmn2")));
     private static final String YAML_PARSER = "yml";
@@ -415,6 +416,11 @@ public class ProcessCodegen extends AbstractGenerator {
                         resourceGenerator.generate());
                 storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(resourceGenerator.getTaskModelFactoryClassName()), resourceGenerator.getTaskModelFactory());
             }
+            //Generating the Producer classes for Dependency Injection
+            StaticDependencyInjectionProducerGenerator.of(context())
+                    .generate()
+                    .entrySet()
+                    .forEach(entry -> storeFile(PRODUCER_TYPE, entry.getKey(), entry.getValue()));
         }
 
         for (MessageDataEventGenerator messageDataEventGenerator : mdegs) {
