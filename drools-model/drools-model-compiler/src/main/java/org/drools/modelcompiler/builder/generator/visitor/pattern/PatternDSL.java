@@ -232,7 +232,7 @@ public abstract class PatternDSL implements DSLNode {
                 new ParseResultVoidVisitor() {
                     @Override
                     public void onSuccess( DrlxParseSuccess drlxParseResult ) {
-                        DSLNode constraint = drlxParseResult.getExpr() instanceof OOPathExpr ?
+                        DSLNode constraint = drlxParseResult.isOOPath() ?
                             new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult ) :
                             createSimpleConstraint( drlxParseResult, pattern );
                         constraint.buildPattern();

@@ -254,14 +254,6 @@ public class KiePackagesBuilder {
         setRuleAttributes( rule, ruleImpl, ctx );
         setRuleMetaAttributes( rule, ruleImpl );
 
-        if (ctx.hasSubRules()) {
-            List<RuleImpl> rules = new ArrayList<>();
-            for (Rule subRule : ctx.getSubRules()) {
-                rules.addAll( compileRule( pkg, subRule ) );
-            }
-            rules.add(ruleImpl);
-            return rules;
-        }
         return Collections.singletonList( ruleImpl );
     }
 
@@ -756,9 +748,6 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement buildPattern(RuleContext ctx, GroupElement group, org.drools.model.Pattern<?> modelPattern) {
         Variable patternVariable = modelPattern.getPatternVariable();
-        if (ctx.getAccumulateSource( patternVariable ) == null) {
-            ctx.setAfterAccumulate( false );
-        }
 
         Pattern pattern = addPatternForVariable( ctx, group, patternVariable, modelPattern.getType() );
 
@@ -844,7 +833,7 @@ public class KiePackagesBuilder {
                              isGroupBy, accFunctions[i],
                              selfReader, accumulators, requiredDeclarationList, arrayIndexOffset, i);
             if (isGroupBy) {
-                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), boundVar, groupByDeclaration);
+                ctx.addGroupByDeclaration(((GroupByPattern) accPattern).getVarKey(), groupByDeclaration);
             }
         }
 

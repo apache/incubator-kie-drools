@@ -102,7 +102,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
 
-    private final DMNEvaluatorCompiler evaluatorCompiler;
+    private final DMNDecisionLogicCompiler evaluatorCompiler;
     private DMNCompilerConfiguration dmnCompilerConfig;
     private Deque<DRGElementCompiler> drgCompilers = new LinkedList<>();
     {
@@ -121,7 +121,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         this.dmnCompilerConfig = dmnCompilerConfig;
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         addDRGElementCompilers(cc.getDRGElementCompilers());
-        this.evaluatorCompiler = DMNEvaluatorCompiler.dmnEvaluatorCompilerFactory(this, cc);
+        this.evaluatorCompiler = cc.getDecisionLogicCompilerFactory().newDMNDecisionLogicCompiler(this, cc);
     }
 
     private void addDRGElementCompiler(DRGElementCompiler compiler) {
@@ -744,7 +744,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
     
-    public DMNEvaluatorCompiler getEvaluatorCompiler() {
+    public DMNDecisionLogicCompiler getEvaluatorCompiler() {
         return evaluatorCompiler;
     }
     

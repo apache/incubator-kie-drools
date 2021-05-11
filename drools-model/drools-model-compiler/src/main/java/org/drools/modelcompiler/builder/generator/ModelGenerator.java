@@ -136,7 +136,7 @@ public class ModelGenerator {
         TypeResolver typeResolver = pkg.getTypeResolver();
         initPackageModel( kbuilder, pkg, typeResolver, packageDescr, packageModel );
 
-        for(RuleDescr descr : packageDescr.getRules()) {
+        for (RuleDescr descr : packageDescr.getRules()) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
             context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
@@ -191,6 +191,10 @@ public class ModelGenerator {
         }
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
+        if (context.hasCompilationError()) {
+            return;
+        }
+
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), ruleMethodName);
 

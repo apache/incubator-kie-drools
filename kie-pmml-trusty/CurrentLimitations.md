@@ -11,6 +11,7 @@ Implemented models:
 2) Tree model
 3) Scorecard model
 4) Mining model
+5) Clustering model
 
 Overall limitations
 ===================
@@ -96,3 +97,11 @@ Mining model
 4. ModelVerification unimplemented
 5. VariableWeight unimplemented   
 5. see Tree model about predicates
+
+Clustering model
+----------------
+1. _distributionBased_ models not implemented
+2. _table_ compare function not implemented
+3. Only _euclidean_ and _squaredEuclidean_ aggregation functions are implemented
+4. Input field type must be numerical (_integer_ / _double_)
+5. Target field type must be _string_

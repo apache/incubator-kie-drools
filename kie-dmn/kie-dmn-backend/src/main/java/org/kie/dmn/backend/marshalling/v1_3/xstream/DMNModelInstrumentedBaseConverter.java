@@ -36,9 +36,12 @@ public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNModelInstrumentedBaseConverter.class);
+    
+    protected XStream xstream;
 
     public DMNModelInstrumentedBaseConverter(XStream xstream) {
         super( xstream.getMapper() );
+        this.xstream = xstream;
     }
 
     @Override

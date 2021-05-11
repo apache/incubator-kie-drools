@@ -74,6 +74,7 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
+import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -120,6 +121,7 @@ public class PackageModel {
 
     private Map<String, List<MethodDeclaration>> ruleMethods = new HashMap<>();
 
+    private Set<String> queryNames = new HashSet<>();
     private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
     private Map<String, Set<QueryModel>> queriesByRuleUnit = new HashMap<>();
 
@@ -146,7 +148,6 @@ public class PackageModel {
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
-    private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
@@ -315,8 +316,12 @@ public class PackageModel {
         this.queryMethods.put(queryMethod.getNameAsString(), queryMethod);
     }
 
-    public MethodDeclaration getQueryMethod(String key) {
-        return queryMethods.get(key);
+    public void registerQueryName(String queryName) {
+        queryNames.add(queryName);
+    }
+
+    public boolean hasQuery(String queryName) {
+        return queryNames.contains(queryName);
     }
 
     public void putQueryVariable(String queryName, QueryParameter qp) {
@@ -382,11 +387,6 @@ public class PackageModel {
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
     }
-
-    public Map<String, CreatedClass> getLambdaClasses() {
-        return lambdaClasses;
-    }
-
 
     public void addRuleUnit(RuleUnitDescription ruleUnitDescription) {
         this.ruleUnits.add(ruleUnitDescription);
@@ -874,6 +874,10 @@ public class PackageModel {
 
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
         return lambdaReturnTypes;
+    }
+
+    public void registerLambdaReturnType(LambdaExpr lambdaExpr, java.lang.reflect.Type type) {
+        lambdaReturnTypes.put(lambdaExpr, type);
     }
 
     public void indexConstraint(String exprId, PredicateInformation predicateInformation) {

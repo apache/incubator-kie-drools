@@ -58,6 +58,7 @@ public class DslMethodNames {
     public static final String ACC_FUNCTION_CALL = "D.accFunction";
     public static final String ACC_WITH_EXTERNAL_DECLRS_CALL = "with";
     public static final String EVAL_CALL = "D.eval";
+    public static final String NO_OP_EXPR = "NO_OP_EXPR";
 
     // expressions
     public static final String EVAL_EXPR_CALL = "D.expr";
