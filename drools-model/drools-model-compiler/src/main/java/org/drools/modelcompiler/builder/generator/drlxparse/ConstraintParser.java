@@ -184,7 +184,7 @@ public class ConstraintParser {
         }
 
         if (drlxExpr instanceof OOPathExpr ) {
-            return new SingleDrlxParseSuccess( patternType, bindingId, drlxExpr, null ).setIsPredicate(true);
+            return parseOOPathExpr( (OOPathExpr) drlxExpr, patternType, bindingId, drlxExpr, hasBind, expression);
         }
 
         if (drlxExpr instanceof LiteralExpr ) {
@@ -272,6 +272,22 @@ public class ConstraintParser {
         } else {
             throw new IllegalArgumentException("Specified function call is not present!");
         }
+    }
+
+    private DrlxParseResult parseOOPathExpr(OOPathExpr ooPathExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression) {
+        Type exprType = null;
+        if (hasBind) {
+            // if oopath expression isn't bound it is useless to discover its type
+            final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, false, new ExpressionTyperContext());
+
+            TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(ooPathExpr);
+            Optional<TypedExpression> typedExpression = typedExpressionResult.getTypedExpression();
+            if (!typedExpression.isPresent()) {
+                return new DrlxParseFail();
+            }
+            exprType = typedExpression.get().getType();
+        }
+        return new SingleDrlxParseSuccess( patternType, bindingId, drlxExpr, exprType ).setIsPredicate(true);
     }
 
     private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression) {

@@ -1118,8 +1118,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
     }
 
-    private static class ForkJoinPoolHolder {
-        private static ForkJoinPool COMPILER_POOL = new ForkJoinPool(); // avoid common pool
+    public static class ForkJoinPoolHolder {
+        public static final ForkJoinPool COMPILER_POOL = new ForkJoinPool(); // avoid common pool
     }
 
     private void compileRulesLevel(PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules) {

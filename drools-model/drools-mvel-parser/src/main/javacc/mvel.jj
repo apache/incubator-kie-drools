@@ -3166,7 +3166,11 @@ OOPathExpr OOPathExpr():
 {
   "/" { begin=token(); }
   chunk = OOPathChunk() { chunks.add(chunk); }
-  ( "/" chunk = OOPathChunk() { chunks.add(chunk); } )*
+  (
+    ( "/" chunk = OOPathChunk() { chunks.add(chunk); } )
+    |
+    ( "." chunk = OOPathChunk() { chunks.add(chunk.singleValue()); } )
+  )*
 
     { return new OOPathExpr(range(begin, token()), chunks); }
 }

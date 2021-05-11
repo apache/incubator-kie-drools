@@ -15,12 +15,14 @@
 
 package org.drools.mvel.compiler.oopath;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Room;
 import org.drools.mvel.compiler.oopath.model.SensorEvent;
 import org.drools.mvel.compiler.oopath.model.Thing;
@@ -178,5 +180,68 @@ public class OOPathQueriesTest {
         assertThat(room.getHeating().isOn()).as("Query is not reactive. Heating should still be turned on.").isTrue();
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testRecursiveOOPathQuery() {
+        final String drl =
+                "import org.drools.mvel.compiler.oopath.model.Thing;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule \"Print all things contained in the Office\" when\n" +
+                        "    $office : Thing( name == \"office\" )\n" +
+                        "    isContainedIn( $office, thing; )\n" +
+                        "then\n" +
+                        "    list.add( thing.getName() );\n" +
+                        "end\n" +
+                        "\n" +
+                        "query isContainedIn( Thing $x, Thing $y )\n" +
+                        "    $y := /$x/children\n" +
+                        "or\n" +
+                        "    ( $z := /$x/children and isContainedIn( $z, $y; ) )\n" +
+                        "end\n";
+
+        final Thing house = new Thing( "house" );
+        final Thing office = new Thing( "office" );
+        house.addChild( office );
+        final Thing kitchen = new Thing( "kitchen" );
+        house.addChild( kitchen );
+
+        final Thing knife = new Thing( "knife" );
+        kitchen.addChild( knife );
+        final Thing cheese = new Thing( "cheese" );
+        kitchen.addChild( cheese );
+
+        final Thing desk = new Thing( "desk" );
+        office.addChild( desk );
+        final Thing chair = new Thing( "chair" );
+        office.addChild( chair );
+
+        final Thing computer = new Thing( "computer" );
+        desk.addChild( computer );
+        final Thing draw = new Thing( "draw" );
+        desk.addChild( draw );
+        final Thing key = new Thing( "key" );
+        draw.addChild( key );
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(house);
+        ksession.insert(office);
+        ksession.insert(kitchen);
+        ksession.insert(knife);
+        ksession.insert(cheese);
+        ksession.insert(desk);
+        ksession.insert(chair);
+        ksession.insert(computer);
+        ksession.insert(draw);
+        ksession.insert(key);
+
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 }

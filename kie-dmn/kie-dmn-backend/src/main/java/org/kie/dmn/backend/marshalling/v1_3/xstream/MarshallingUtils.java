@@ -16,12 +16,16 @@
 
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import org.kie.dmn.backend.marshalling.v1x.ConverterDefinesExpressionNodeName;
 import org.kie.dmn.model.api.Context;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
@@ -69,8 +73,18 @@ public final class MarshallingUtils {
             return qname.toString();
         }
     }
+    
+    public static String defineExpressionNodeName(XStream xstream, Expression e) {
+        Converter converter = xstream.getConverterLookup().lookupConverterForType(e.getClass());
+        if (converter instanceof ConverterDefinesExpressionNodeName) {
+            ConverterDefinesExpressionNodeName defines = (ConverterDefinesExpressionNodeName) converter;
+            return defines.defineExpressionNodeName(e);
+        } else {
+            return defineExpressionNodeName(e);
+        }
+    }
 
-    public static String defineExpressionNodeName(Expression e) {
+    private static String defineExpressionNodeName(Expression e) {
         String nodeName = "expression";
         if (e instanceof Context) {
             nodeName = "context";

@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.Reader;
 import java.util.List;
 
+import javax.xml.validation.Schema;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.model.api.Definitions;
 
@@ -137,6 +139,13 @@ public interface DMNValidator {
          * @return a reference to this, so the API can be used fluently
          */
         public ValidatorBuilder usingImports(ValidatorImportReaderResolver r);
+
+        /**
+         * A custom schema setup to be used for {@link DMNValidator.Validation#VALIDATE_SCHEMA}.
+         * 
+         * @return a reference to this, so the API can be used fluently
+         */
+        public ValidatorBuilder usingSchema(Schema r);
 
         /**
          * Validate the models and return the results. 

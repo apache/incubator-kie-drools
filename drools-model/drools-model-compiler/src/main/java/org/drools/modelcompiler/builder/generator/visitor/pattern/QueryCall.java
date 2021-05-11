@@ -52,9 +52,9 @@ class QueryCall implements DSLNode {
         MethodCallExpr callMethod = new MethodCallExpr(new NameExpr(queryDef), QUERY_INVOCATION_CALL);
         callMethod.addArgument("" + !pattern.isQuery());
 
+        String queryName = context.getQueryName().orElseThrow(RuntimeException::new);
         List<QueryParameter> parameters = packageModel.getQueryDefWithType().get(queryDef).getContext().getQueryParameters();
         for (int i = 0; i < parameters.size(); i++) {
-            String queryName = context.getQueryName().orElseThrow(RuntimeException::new);
             ExprConstraintDescr variableExpr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(i);
             String variableName = variableExpr.toString();
             int unifPos = variableName.indexOf( ":=" );
