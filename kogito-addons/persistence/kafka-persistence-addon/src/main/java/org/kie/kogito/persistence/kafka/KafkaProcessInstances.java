@@ -21,20 +21,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.infinispan.protostream.BaseMarshaller;
-import org.kie.kogito.persistence.protobuf.ProtoStreamObjectMarshallingStrategy;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,14 +48,14 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     private KafkaProducer<String, byte[]> producer;
     private String topic;
     private ReadOnlyKeyValueStore<String, byte[]> store;
-    private ProcessInstanceMarshaller marshaller;
+    private ProcessInstanceMarshallerService marshaller;
     private CountDownLatch latch = new CountDownLatch(1);
 
-    public KafkaProcessInstances(Process<?> process, KafkaProducer<String, byte[]> producer, String proto, BaseMarshaller<?>... marshallers) {
+    public KafkaProcessInstances(Process<?> process, KafkaProducer<String, byte[]> producer) {
         this.process = process;
         this.topic = topicName(process.id());
         this.producer = producer;
-        setMarshaller(new ProcessInstanceMarshaller(new ProtoStreamObjectMarshallingStrategy(proto, marshallers)));
+        setMarshaller(ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build());
     }
 
     protected Process<?> getProcess() {
@@ -92,7 +91,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
         }
     }
 
-    protected void setMarshaller(ProcessInstanceMarshaller marshaller) {
+    protected void setMarshaller(ProcessInstanceMarshallerService marshaller) {
         this.marshaller = marshaller;
     }
 
@@ -168,15 +167,7 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     }
 
     protected void disconnect(ProcessInstance instance) {
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
-
-            try {
-                byte[] reloaded = getStore().get(instance.id());
-                return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
-            } catch (RuntimeException e) {
-                LOGGER.error("Unexpected exception thrown when reloading process instance {}", instance.id(), e);
-                return null;
-            }
-        });
+        Supplier<byte[]> supplier = () -> getStore().get(instance.id());
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 }

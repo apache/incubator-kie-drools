@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package org.kie.kogito.serialization.process.protobuf;
+
+option java_outer_classname = "KogitoTypesProtobuf";
+
+import "google/protobuf/any.proto";
+
+message Variable {
+    string name = 1;
+    string data_type = 2;
+    optional google.protobuf.Any value = 3;
+}
+
+message NodeInstance {
+    string id = 1;
+    int64 node_id = 2;
+    google.protobuf.Any content = 3;
+
+    optional int32 level = 4;
+    optional int64 trigger_date = 5;
+
+    optional SLAContext sla = 6;
+}
+
+message WorkflowContext {
+    repeated Variable variable = 1;
+    repeated NodeInstance node_instance = 2;
+    repeated NodeInstanceGroup exclusive_group = 3;
+    repeated IterationLevel iterationLevels = 4;
+}
+
+message SwimlaneContext {
+    optional string swimlane = 1;
+    optional string actor_id = 2;
+}
+
+message SLAContext {
+    optional string sla_timer_id = 1;
+    optional int64 sla_due_date = 2;
+    optional int32 sla_compliance = 3;
+}
+
+message IterationLevel {
+    optional string id = 1;
+    optional int32 level = 2;
+}
+
+message NodeInstanceGroup {
+    repeated string group_node_instance_id = 1;
+}
+

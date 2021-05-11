@@ -15,12 +15,11 @@
  */
 package org.kie.kogito.mongodb.utils;
 
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.kie.kogito.mongodb.codec.ProcessInstanceDocumentCodecProvider;
-import org.kie.kogito.mongodb.marshalling.DocumentMarshallingException;
-import org.kie.kogito.mongodb.marshalling.DocumentUnmarshallingException;
-import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
+import org.kie.kogito.mongodb.DocumentMarshallingException;
+import org.kie.kogito.mongodb.DocumentUnmarshallingException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,8 +28,6 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 public class DocumentUtils {
 
@@ -44,10 +41,10 @@ public class DocumentUtils {
         return MAPPER;
     }
 
-    public static MongoCollection<ProcessInstanceDocument> getCollection(MongoClient mongoClient, String processId, String dbName) {
-        CodecRegistry registry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), fromProviders(new ProcessInstanceDocumentCodecProvider()));
+    public static MongoCollection<Document> getCollection(MongoClient mongoClient, String processId, String dbName) {
+        CodecRegistry registry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry());
         MongoDatabase mongoDatabase = mongoClient.getDatabase(dbName).withCodecRegistry(registry);
-        return mongoDatabase.getCollection(processId, ProcessInstanceDocument.class).withCodecRegistry(registry);
+        return mongoDatabase.getCollection(processId, Document.class).withCodecRegistry(registry);
     }
 
     public static byte[] toByteArray(Object object) {

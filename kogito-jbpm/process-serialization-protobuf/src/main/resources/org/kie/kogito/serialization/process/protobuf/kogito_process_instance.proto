@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package org.kie.kogito.serialization.process.protobuf;
+
+option java_outer_classname = "KogitoProcessInstanceProtobuf";
+
+import "org/kie/kogito/serialization/process/protobuf/kogito_types.proto";
+
+message ProcessInstance {
+    string process_type = 1;
+    string process_id = 2;
+
+    string id = 3;
+    optional string parent_process_instance_id = 4;
+    optional string business_key = 5;
+    optional string deploymentId = 6;
+    optional string description = 7;
+    int32 state = 8;
+    optional int64 start_date = 9;
+
+    optional int64 node_instance_counter = 10;
+
+    bool signal_completion = 11;
+
+    optional string root_process_instance_id = 12;
+    optional string root_process_id = 13;
+
+    optional string error_node_id = 14;
+    optional string error_message = 15;
+
+    optional string reference_id = 16;
+
+    optional SLAContext sla = 17;
+
+    optional WorkflowContext context = 18;
+    repeated SwimlaneContext swimlane_context = 19;
+
+    repeated string completedNodeIds = 20;
+
+}

@@ -25,7 +25,6 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
-import org.infinispan.protostream.BaseMarshaller;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -113,7 +112,7 @@ public class MockCacheProcessInstancesTest {
         mutablePi.start();
         assertThat(mutablePi.status()).isEqualTo(STATE_ERROR);
         assertThat(mutablePi.error()).hasValueSatisfying(error -> {
-            assertThat(error.errorMessage()).endsWith("java.lang.NullPointerException - null");
+            assertThat(error.errorMessage()).contains("java.lang.NullPointerException");
             assertThat(error.failedNodeId()).isEqualTo("ScriptTask_1");
         });
         assertThat(mutablePi.variables().toMap()).containsExactly(entry("var", "value"));
@@ -126,7 +125,7 @@ public class MockCacheProcessInstancesTest {
         ProcessInstance<BpmnVariables> readOnlyPi = instances.findById(mutablePi.id(), ProcessInstanceReadMode.READ_ONLY).get();
         assertThat(readOnlyPi.status()).isEqualTo(STATE_ERROR);
         assertThat(readOnlyPi.error()).hasValueSatisfying(error -> {
-            assertThat(error.errorMessage()).endsWith("java.lang.NullPointerException - null");
+            assertThat(error.errorMessage()).contains("java.lang.NullPointerException");
             assertThat(error.failedNodeId()).isEqualTo("ScriptTask_1");
         });
         assertThat(readOnlyPi.variables().toMap()).containsExactly(entry("var", "value"));
@@ -234,7 +233,7 @@ public class MockCacheProcessInstancesTest {
         Optional<ProcessError> errorOp = processInstance.error();
         assertThat(errorOp).isPresent();
         assertThat(errorOp.get().failedNodeId()).isEqualTo("ScriptTask_1");
-        assertThat(errorOp.get().errorMessage()).isNotNull().contains("java.lang.NullPointerException - null");
+        assertThat(errorOp.get().errorMessage()).isNotNull().contains("java.lang.NullPointerException");
 
         op.accept(processInstance);
 
@@ -253,14 +252,5 @@ public class MockCacheProcessInstancesTest {
             super(cacheManager);
         }
 
-        @Override
-        public String proto() {
-            return null;
-        }
-
-        @Override
-        public List<BaseMarshaller<?>> marshallers() {
-            return Collections.emptyList();
-        }
     }
 }

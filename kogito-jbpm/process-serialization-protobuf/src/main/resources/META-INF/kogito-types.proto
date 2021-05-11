@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package kogito;
+
+message String {      
+  optional string data = 1;
+}
+
+message Integer {      
+  optional int32 data = 1;
+}
+
+message Long {      
+  optional int64 data = 1;
+}
+
+message Double {      
+  optional double data = 1;
+}
+
+message Float {      
+  optional float data = 1;
+}
+
+message Boolean {      
+  optional bool data = 1;
+}
+
+message Date {  
+  option java_package = "java.util";    
+  optional int64 data = 1;
+}

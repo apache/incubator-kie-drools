@@ -24,26 +24,24 @@ import org.bson.Document;
 import org.drools.core.io.impl.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.mongodb.marshalling.DocumentMarshallingException;
-import org.kie.kogito.mongodb.marshalling.DocumentMarshallingStrategy;
-import org.kie.kogito.mongodb.marshalling.DocumentProcessInstanceMarshaller;
-import org.kie.kogito.mongodb.marshalling.DocumentUnmarshallingException;
-import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.serialization.process.MarshallerContextName;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DocumentProcessInstanceMarshallerTest {
 
-    DocumentProcessInstanceMarshaller marshaller = new DocumentProcessInstanceMarshaller(new DocumentMarshallingStrategy());
+    ProcessInstanceMarshallerService marshaller =
+            ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, "json")).build();
 
     static BpmnProcess process;
-    static ProcessInstanceDocument doc;
+    static Document doc;
 
     @BeforeAll
     static void setup() throws URISyntaxException, IOException {
@@ -56,22 +54,22 @@ class DocumentProcessInstanceMarshallerTest {
     void testMarshalProcessInstance() {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "testValue")));
         processInstance.start();
-        doc = marshaller.marshalProcessInstance(processInstance);
+        doc = Document.parse(new String(marshaller.marshallProcessInstance(processInstance)));
         assertNotNull(doc, "Marshalled value should not be null");
-        assertThat(doc.getId()).isEqualTo(processInstance.id());
-        assertThat(doc.getProcessInstance().get("description")).isEqualTo(processInstance.description());
-        assertThat(doc.getProcessInstance().getList("variable", Document.class).size()).isEqualTo(1);
-        assertThat(doc.getProcessInstance().getList("variable", Document.class).get(0).get("name")).isEqualTo("test");
-        assertThat(doc.getProcessInstance().getList("variable", Document.class).get(0).get("value")).isEqualTo("testValue");
+        assertThat(doc.get("id")).isEqualTo(processInstance.id());
+        assertThat(doc.get("description")).isEqualTo(processInstance.description());
+        assertThat(doc.get("context", Document.class).getList("variable", Document.class).size()).isEqualTo(1);
+        assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("name")).isEqualTo("test");
+        assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("value", Document.class).get("value")).isEqualTo("testValue");
 
     }
 
     @Test
     void testUnmarshalProcessInstance() {
-        ProcessInstance<BpmnVariables> processInstance = marshaller.unmarshallProcessInstance(doc, process);
+        ProcessInstance<BpmnVariables> processInstance = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(doc.toJson().getBytes(), process);
         assertNotNull(processInstance, "Unmarshalled value should not be null");
-        assertThat(processInstance.id()).isEqualTo(doc.getProcessInstance().get("id"));
-        assertThat(processInstance.description()).isEqualTo(doc.getProcessInstance().get("description"));
+        assertThat(processInstance.id()).isEqualTo(doc.get("id"));
+        assertThat(processInstance.description()).isEqualTo(doc.get("description"));
         assertThat(processInstance.description()).isEqualTo("User Task");
         Collection<? extends ProcessInstance<BpmnVariables>> values = process.instances().values();
         assertThat(values).isNotEmpty();
@@ -84,28 +82,17 @@ class DocumentProcessInstanceMarshallerTest {
     void testProcessInstanceReadOnly() {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "testValue")));
         processInstance.start();
-        doc = marshaller.marshalProcessInstance(processInstance);
-        ProcessInstance<BpmnVariables> processInstanceReadOnly = process.createReadOnlyInstance(marshaller.unmarshallWorkflowProcessInstance(doc, process));
+        doc = Document.parse(new String(marshaller.marshallProcessInstance(processInstance)));
+        ProcessInstance<BpmnVariables> processInstanceReadOnly = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(doc.toJson().getBytes(), process);
         assertNotNull(processInstanceReadOnly, "Unmarshalled value should not be null");
-        ProcessInstance<BpmnVariables> pi = marshaller.unmarshallReadOnlyProcessInstance(doc, process);
+        ProcessInstance<BpmnVariables> pi = (ProcessInstance<BpmnVariables>) marshaller.unmarshallReadOnlyProcessInstance(doc.toJson().getBytes(), process);
         assertNotNull(pi, "Unmarshalled value should not be null");
     }
 
     @Test
     void testDocumentMarshallingException() {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "testValue")));
-        assertThatExceptionOfType(DocumentMarshallingException.class).isThrownBy(() -> marshaller.marshalProcessInstance(processInstance));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> marshaller.marshallProcessInstance(processInstance));
     }
 
-    @Test
-    void testDocumentUnmarshallingException() {
-        ProcessInstanceDocument document = new ProcessInstanceDocument();
-        assertThrows(DocumentUnmarshallingException.class, () -> marshaller.unmarshallProcessInstance(document, process));
-    }
-
-    @Test
-    void testNoStrategy() {
-        DocumentProcessInstanceMarshaller m = new DocumentProcessInstanceMarshaller(null);
-        assertNotNull(m, "DocumentProcessInstanceMarshaller can be created with no object marshalling strategy");
-    }
 }

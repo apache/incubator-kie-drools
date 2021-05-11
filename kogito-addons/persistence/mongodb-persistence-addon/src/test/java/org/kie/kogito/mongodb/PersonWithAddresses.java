@@ -15,9 +15,10 @@
  */
 package org.kie.kogito.mongodb;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PersonWithAddresses {
+public class PersonWithAddresses implements Serializable {
 
     private String name;
     private int age;

@@ -44,8 +44,6 @@ public class KogitoProcessInstancesFactoryTest {
 
         assertThat(factory.createProcessInstances(mock(Process.class))).isNotNull();
 
-        assertThat(factory.marshallers()).isEmpty();
-        assertThat(factory.proto()).isNull();
         verify(listener).addProcessInstances(any());
     }
 }

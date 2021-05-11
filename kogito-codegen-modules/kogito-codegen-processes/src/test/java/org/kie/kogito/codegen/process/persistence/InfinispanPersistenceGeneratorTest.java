@@ -17,7 +17,11 @@ package org.kie.kogito.codegen.process.persistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +35,6 @@ import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,15 +74,9 @@ class InfinispanPersistenceGeneratorTest {
 
         final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
 
-        final ClassOrInterfaceDeclaration classDeclaration = compilationUnit
+        compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
-        final MethodDeclaration methodDeclaration = classDeclaration
-                .findFirst(MethodDeclaration.class, d -> d.getName().getIdentifier().equals("marshallers"))
-                .orElseThrow(() -> new NoSuchElementException("Class declaration doesn't contain a method named \"marshallers\"!"));
-
-        assertThat(methodDeclaration.getBody()).isNotEmpty();
-        assertThat(methodDeclaration.getBody().get().toString()).contains(expectedMarshaller);
     }
 }

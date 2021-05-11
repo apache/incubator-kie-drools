@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>protobuf-persistence-common</artifactId>
+      <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
 
     <!-- test dependencies -->

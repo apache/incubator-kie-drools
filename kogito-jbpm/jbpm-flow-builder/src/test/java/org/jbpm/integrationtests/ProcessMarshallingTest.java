@@ -28,11 +28,9 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
@@ -40,7 +38,6 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.jbpm.integrationtests.JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProcessMarshallingTest extends AbstractBaseTest {
@@ -272,52 +269,6 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         }
         assertEquals(0, kruntime.getKogitoProcessInstances().size());
-    }
-
-    @Test
-    @Disabled
-    public void testMarshallingProcessInstanceWithTimer() throws Exception {
-        String process =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                        "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
-                        "  xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                        "  xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-                        "  type=\"RuleFlow\" name=\"ruleflow\" id=\"com.sample.ruleflow\" package-name=\"com.sample\" >\n" +
-                        "\n" +
-                        "    <header>\n" +
-                        "    </header>\n" +
-                        "\n" +
-                        "    <nodes>\n" +
-                        "      <start id=\"1\" name=\"Start\" />\n" +
-                        "      <timerNode id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
-                        "      <end id=\"3\" name=\"End\" />\n" +
-                        "    </nodes>\n" +
-                        "\n" +
-                        "    <connections>\n" +
-                        "      <connection from=\"1\" to=\"4\" />\n" +
-                        "      <connection from=\"4\" to=\"3\" />\n" +
-                        "    </connections>\n" +
-                        "\n" +
-                        "</process>\n";
-        builder.add(new ReaderResource(new StringReader(process)), ResourceType.DRF);
-
-        KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
-
-        kruntime.startProcess("com.sample.ruleflow");
-        assertEquals(1, kruntime.getKieSession().getProcessInstances().size());
-        kruntime.getKieSession().halt();
-
-        final StatefulKnowledgeSession session2 = getSerialisedStatefulKnowledgeSession(kruntime.getKieSession());
-        int sleeps = 3;
-        int procInstsAlive = session2.getProcessInstances().size();
-        while (procInstsAlive > 0 && sleeps > 0) {
-            Thread.sleep(1000);
-            --sleeps;
-            procInstsAlive = session2.getProcessInstances().size();
-        }
-        assertEquals(0, session2.getProcessInstances().size());
-
-        session2.halt();
     }
 
     private static class TestListWorkItemHandler implements KogitoWorkItemHandler {

@@ -15,9 +15,8 @@
  */
 package org.kie.kogito.mongodb;
 
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.mongodb.marshalling.DocumentUnmarshallingException;
-import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
 import org.kie.kogito.mongodb.utils.DocumentUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,8 +32,8 @@ class DocumentUtilsTest extends TestHelper {
 
     @Test
     void testGetCollection() {
-        MongoCollection<ProcessInstanceDocument> collection = DocumentUtils.getCollection(getMongoClient(), "testCollection", DB_NAME);
-        assertThat(collection.getDocumentClass().getSimpleName()).isEqualTo(ProcessInstanceDocument.class.getSimpleName());
+        MongoCollection<Document> collection = DocumentUtils.getCollection(getMongoClient(), "testCollection", DB_NAME);
+        assertThat(collection.getDocumentClass().getSimpleName()).isEqualTo(Document.class.getSimpleName());
         assertEquals(DB_NAME, collection.getNamespace().getDatabaseName());
         assertEquals("testCollection", collection.getNamespace().getCollectionName());
     }

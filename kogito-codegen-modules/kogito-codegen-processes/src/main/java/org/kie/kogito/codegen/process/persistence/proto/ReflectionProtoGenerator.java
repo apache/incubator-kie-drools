@@ -216,7 +216,8 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             String processId = generatedData.reference();
             Proto modelProto = generate("@Indexed",
                     INDEX_COMMENT,
-                    modelClazz.getPackage().getName() + "." + processId, modelClazz, "import \"kogito-index.proto\";",
+                    modelClazz.getPackage().getName() + "." + processId, modelClazz,
+                    "import \"kogito-index.proto\";",
                     "import \"kogito-types.proto\";",
                     "option kogito_model = \"" + generatedData.name() + "\";",
                     "option kogito_id = \"" + processId + "\";");
@@ -258,7 +259,9 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                     for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
                         Class<?> propertyType = pd.getPropertyType();
                         if (propertyType.getCanonicalName().startsWith("java.lang")
-                                || propertyType.getCanonicalName().equals(Date.class.getCanonicalName())) {
+                                || propertyType.getCanonicalName().equals(Date.class.getCanonicalName())
+                                || propertyType.isPrimitive()
+                                || propertyType.isInterface()) {
                             continue;
                         }
 

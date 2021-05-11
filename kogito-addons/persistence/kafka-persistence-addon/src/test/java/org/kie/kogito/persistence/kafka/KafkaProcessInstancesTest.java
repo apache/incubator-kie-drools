@@ -19,7 +19,7 @@ package org.kie.kogito.persistence.kafka;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -34,7 +34,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -65,7 +65,7 @@ public class KafkaProcessInstancesTest {
     ReadOnlyKeyValueStore<String, byte[]> store;
 
     @Mock
-    ProcessInstanceMarshaller marshaller;
+    ProcessInstanceMarshallerService marshaller;
 
     String id = UUID.randomUUID().toString();
 
@@ -73,14 +73,14 @@ public class KafkaProcessInstancesTest {
     public void setup() {
         doReturn("aProcessId").when(process).id();
 
-        instances = new KafkaProcessInstances(process, producer, null, null);
+        instances = new KafkaProcessInstances(process, producer);
         instances.setStore(store);
         instances.setMarshaller(marshaller);
     }
 
     @Test
     public void testProcessInstancesSetup() {
-        instances = new KafkaProcessInstances(process, producer, null, null);
+        instances = new KafkaProcessInstances(process, producer);
 
         assertThat(instances.getProcess()).isEqualTo(process);
 
@@ -173,7 +173,6 @@ public class KafkaProcessInstancesTest {
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
         doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
-        when(instance.id()).thenReturn(id);
 
         instances.update(id, instance);
 
@@ -183,11 +182,8 @@ public class KafkaProcessInstancesTest {
         assertThat(captor.getValue().key()).isEqualTo(id);
         assertThat(captor.getValue().topic()).isEqualTo(topicName(process.id()));
 
-        ArgumentCaptor<Supplier> supplierCaptor = ArgumentCaptor.forClass(Supplier.class);
-        verify(instance).internalRemoveProcessInstance(supplierCaptor.capture());
-        supplierCaptor.getValue().get();
-        verify(store).get(id);
-        verify(marshaller).unmarshallWorkflowProcessInstance(any(), any());
+        verify(instance).internalRemoveProcessInstance(any());
+        verify(marshaller).createdReloadFunction(any());
     }
 
     @Test
@@ -216,7 +212,6 @@ public class KafkaProcessInstancesTest {
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
         doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
-
         instances.create(id, instance);
 
         ArgumentCaptor<ProducerRecord> kafkaCaptor = ArgumentCaptor.forClass(ProducerRecord.class);
@@ -225,11 +220,10 @@ public class KafkaProcessInstancesTest {
         assertThat(kafkaCaptor.getValue().key()).isEqualTo(id);
         assertThat(kafkaCaptor.getValue().topic()).isEqualTo(topicName(process.id()));
 
-        ArgumentCaptor<Supplier> supplierCaptor = ArgumentCaptor.forClass(Supplier.class);
-        verify(instance).internalRemoveProcessInstance(supplierCaptor.capture());
-        supplierCaptor.getValue().get();
+        ArgumentCaptor<Consumer> supplierCaptor = ArgumentCaptor.forClass(Consumer.class);
+        verify(instance).internalRemoveProcessInstance(any());
         verify(store).get(id);
-        verify(marshaller).unmarshallWorkflowProcessInstance(any(), any());
+        verify(marshaller).createdReloadFunction(any());
     }
 
     @Test

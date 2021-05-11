@@ -401,15 +401,16 @@
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>protobuf-persistence-common</artifactId>
+        <artifactId>protobuf-serialization-protobuf</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>protobuf-persistence-common</artifactId>
+        <artifactId>protobuf-serialization-protobuf</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>infinispan-persistence-addon</artifactId>

@@ -16,8 +16,8 @@
 package org.kie.kogito.persistence;
 
 import org.kie.kogito.persistence.postgresql.PostgreProcessInstances;
-import org.kie.kogito.persistence.protobuf.ProtoStreamProcessInstancesFactory;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessInstancesFactory;
 
 import io.vertx.pgclient.PgPool;
 
@@ -25,7 +25,7 @@ import io.vertx.pgclient.PgPool;
  * This class must always have exact FQCN as <code>org.kie.kogito.persistence.KogitoProcessInstancesFactory</code>
  *
  */
-public abstract class KogitoProcessInstancesFactory implements ProtoStreamProcessInstancesFactory {
+public abstract class KogitoProcessInstancesFactory implements ProcessInstancesFactory {
 
     private final Long queryTimeout;
     private final PgPool client;
@@ -47,6 +47,6 @@ public abstract class KogitoProcessInstancesFactory implements ProtoStreamProces
 
     @Override
     public PostgreProcessInstances createProcessInstances(Process<?> process) {
-        return new PostgreProcessInstances(process, client(), autoDDL, queryTimeout, proto(), marshallersAsArray());
+        return new PostgreProcessInstances(process, client(), autoDDL, queryTimeout);
     }
 }

@@ -56,7 +56,7 @@ class PostgrePersistenceGeneratorTest {
                 protoGenerator);
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
-        assertThat(generatedFiles).hasSize(5);
+        assertThat(generatedFiles).hasSize(16);
 
         Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
                 .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
@@ -66,7 +66,7 @@ class PostgrePersistenceGeneratorTest {
 
         final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
 
-        final ClassOrInterfaceDeclaration classDeclaration = compilationUnit
+        compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
     }

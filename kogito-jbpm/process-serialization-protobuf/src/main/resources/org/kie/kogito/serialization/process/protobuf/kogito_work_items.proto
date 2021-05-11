@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package org.kie.kogito.serialization.process.protobuf;
+
+option java_outer_classname = "KogitoWorkItemsProtobuf";
+
+
+message HumanTaskWorkItemData {
+    
+    optional string task_name = 1;
+    optional string task_description = 2;
+    optional string task_priority = 3;
+    optional string actual_owner = 4;
+
+    repeated string pot_users = 5;
+    repeated string pot_groups = 6;
+    repeated string excluded_users = 7;
+    repeated string admin_users = 8;
+    repeated string admin_groups = 9;
+
+    optional string task_reference_name = 10;
+
+    repeated Comment comments = 11;
+    repeated Attachment attachments = 12;
+    map<string, Deadline> start_deadlines = 13;
+    map<string, Deadline> completed_deadlines = 14;
+    map<string, Reassignment> start_reassigments = 15;
+    map<string, Reassignment> completed_reassigments = 16;
+}
+
+message Comment {
+    string id = 1;
+    optional string content = 2;
+    optional int64  updatedAt = 3;
+    optional string updatedBy = 4;
+}
+
+message Attachment {
+    string id = 1;
+    optional string content = 2;
+    optional int64  updatedAt = 3;
+    optional string updatedBy = 4;
+    optional string name = 5;
+}
+
+message Deadline {
+    map<string, string> content = 1;
+}
+
+message Reassignment {
+    repeated string users = 1;
+    repeated string groups = 2;
+}

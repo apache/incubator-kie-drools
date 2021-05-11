@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,7 +34,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,13 +51,13 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     private Process<?> process;
     private Path storage;
 
-    private ProcessInstanceMarshaller marshaller;
+    private ProcessInstanceMarshallerService marshaller;
 
     public FileSystemProcessInstances(Process<?> process, Path storage) {
-        this(process, storage, new ProcessInstanceMarshaller());
+        this(process, storage, ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build());
     }
 
-    public FileSystemProcessInstances(Process<?> process, Path storage, ProcessInstanceMarshaller marshaller) {
+    public FileSystemProcessInstances(Process<?> process, Path storage, ProcessInstanceMarshallerService marshaller) {
         this.process = process;
         this.storage = Paths.get(storage.toString(), process.id());
         this.marshaller = marshaller;
@@ -162,16 +163,8 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     }
 
     protected void disconnect(Path processInstanceStorage, ProcessInstance instance) {
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
-
-            try {
-                byte[] reloaded = readBytesFromFile(processInstanceStorage);
-                return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
-            } catch (RuntimeException e) {
-                LOGGER.error("Unexpected exception thrown when reloading process instance {}", instance.id(), e);
-                return null;
-            }
-        });
+        Supplier<byte[]> supplier = () -> readBytesFromFile(processInstanceStorage);
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 
     public String getMetadata(Path file, String key) {

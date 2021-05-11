@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package org.kie.kogito.serialization.process.protobuf;
+
+import "org/kie/kogito/serialization/process/protobuf/kogito_types.proto";
+import "google/protobuf/any.proto";
+
+option java_outer_classname = "KogitoNodeInstanceContentsProtobuf";
+
+message RuleSetNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    optional string rule_flow_group = 2;
+}
+
+message WorkItemNodeInstanceContent {
+    string work_item_id = 1;
+    repeated string timer_instance_id = 2;
+    optional string error_handling_process_instance_id = 3;
+
+    // work item data
+    int32 state = 4;
+    repeated Variable variable = 5;
+    repeated Variable result = 6;
+    optional string phase_id = 7;
+    optional string phase_status = 8;
+    optional string name = 9;
+    optional int64 start_date = 10;
+    optional int64 complete_date = 11;
+    optional google.protobuf.Any work_item_data = 12;
+}
+
+message LambdaSubProcessNodeInstanceContent {
+    optional string process_instance_id = 1;
+    repeated string timer_instance_id = 2;
+}
+
+message SubProcessNodeInstanceContent {
+    optional string process_instance_id = 1;
+    repeated string timer_instance_id = 2;
+}
+
+message MilestoneNodeInstanceContent { 
+    repeated string timer_instance_id = 1; 
+}
+
+message EventNodeInstanceContent {
+}
+
+message TimerNodeInstanceContent {
+   optional string timer_id = 1; 
+}
+
+message JoinNodeInstanceContent {
+    repeated JoinTrigger trigger = 1;
+    message JoinTrigger {
+        optional int64 node_id = 1;
+        optional int32 counter = 2;
+    }
+}
+
+message StateNodeInstanceContent { 
+    repeated string timer_instance_id = 1; 
+}
+
+message CompositeContextNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    WorkflowContext context = 2;
+}
+
+message DynamicNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    WorkflowContext context = 2;
+}
+
+message EventSubProcessNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    WorkflowContext context = 2;
+}
+
+message ForEachNodeInstanceContent {
+    repeated string timer_instance_id = 1;
+    WorkflowContext context = 2;
+}
+

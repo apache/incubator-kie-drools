@@ -17,19 +17,18 @@ package org.kie.kogito.infinispan;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.protostream.BaseMarshaller;
-import org.kie.kogito.persistence.protobuf.ProtoStreamObjectMarshallingStrategy;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
@@ -37,13 +36,13 @@ import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 public class CacheProcessInstances implements MutableProcessInstances {
 
     private final RemoteCache<String, byte[]> cache;
-    private ProcessInstanceMarshaller marshaller;
+    private ProcessInstanceMarshallerService marshaller;
     private org.kie.kogito.process.Process<?> process;
 
-    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, String proto, BaseMarshaller<?>... marshallers) {
+    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName) {
         this.process = process;
         this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", ignoreNullOrEmpty(templateName));
-        this.marshaller = new ProcessInstanceMarshaller(new ProtoStreamObjectMarshallingStrategy(proto, marshallers));
+        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
     }
 
     @Override
@@ -105,14 +104,8 @@ public class CacheProcessInstances implements MutableProcessInstances {
             } else {
                 cache.put(id, data);
             }
-
-            ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
-                byte[] reloaded = cache.get(id);
-                if (reloaded != null) {
-                    return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
-                }
-                return null;
-            });
+            Supplier<byte[]> supplier = () -> cache.get(id);
+            ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
         }
     }
 

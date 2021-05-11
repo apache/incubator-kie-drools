@@ -14,39 +14,49 @@
   <artifactId>process-serialization-protobuf</artifactId>
   <name>Kogito :: Process :: Protobuf Serialization</name>
   <description>Kogito Process Protobuf Serialization</description>
+  <properties>
+      <sonar.exclusions>**/org/kie/kogito/serialization/process/protobuf/*</sonar.exclusions>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-serialization-protobuf</artifactId>
-      <version>${version.org.kie7}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-core</artifactId>
-        </exclusion>
-      </exclusions>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java-util</artifactId>
     </dependency>
+    <dependency>
+        <groupId>org.infinispan.protostream</groupId>
+        <artifactId>protostream</artifactId>
+    </dependency>
+
+
   </dependencies>
+  <build>
+    <plugins>
+    <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+        <configuration>
+            <excludes>
+                <exclude>**/org/kie/kogito/serialization/process/protobuf/*</exclude>
+            </excludes>
+        </configuration>
+    </plugin>
+     </plugins>
+  </build>
+  <!-- 
+    to invoke protobuff files again just use this command:
+        mvn generate-sources  -Pproto
+   -->
   <profiles>
-    <profile>
-    <id>sonarcloud-analysis</id>
-      <properties>
-        <sonar.exclusions>org.jbpm.marshalling.impl.JBPMMessages</sonar.exclusions>
-      </properties>
-    </profile>
     <profile>
     <id>proto</id>
     <build>
@@ -54,20 +64,6 @@
           <plugin>
             <groupId>org.xolstice.maven.plugins</groupId>
             <artifactId>protobuf-maven-plugin</artifactId>
-            <version>0.6.1</version>
-            <configuration>
-              <protocArtifact>com.google.protobuf:protoc:3.12.0:exe:</protocArtifact>
-              <protoSourceRoot>${basedir}/src/main/resources/org/jbpm/marshalling</protoSourceRoot>
-              <clearOutputDirectory>false</clearOutputDirectory>
-              <outputDirectory>${basedir}/src/main/java</outputDirectory>
-             </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>

@@ -48,7 +48,7 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -464,7 +464,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        ProcessInstanceMarshaller marshaller = new ProcessInstanceMarshaller();
+        ProcessInstanceMarshallerService marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
 
         byte[] data = marshaller.marshallProcessInstance(processInstance);
         assertNotNull(data);

@@ -17,14 +17,14 @@ package org.kie.kogito.persistence;
 
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.kie.kogito.infinispan.CacheProcessInstances;
-import org.kie.kogito.persistence.protobuf.ProtoStreamProcessInstancesFactory;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessInstancesFactory;
 
 /**
  * This class must always have exact FQCN as <code>org.kie.kogito.persistence.KogitoProcessInstancesFactory</code>
  *
  */
-public abstract class KogitoProcessInstancesFactory implements ProtoStreamProcessInstancesFactory {
+public abstract class KogitoProcessInstancesFactory implements ProcessInstancesFactory {
 
     protected RemoteCacheManager cacheManager;
 
@@ -33,7 +33,7 @@ public abstract class KogitoProcessInstancesFactory implements ProtoStreamProces
     }
 
     public CacheProcessInstances createProcessInstances(Process<?> process) {
-        return new CacheProcessInstances(process, cacheManager, template(), proto(), marshallersAsArray());
+        return new CacheProcessInstances(process, cacheManager, template());
     }
 
     public String template() {

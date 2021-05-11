@@ -19,16 +19,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.bson.Document;
 import org.kie.kogito.Model;
-import org.kie.kogito.mongodb.marshalling.DocumentMarshallingStrategy;
-import org.kie.kogito.mongodb.marshalling.DocumentProcessInstanceMarshaller;
-import org.kie.kogito.mongodb.model.ProcessInstanceDocument;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.kie.kogito.serialization.process.MarshallerContextName;
+import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 
-import static org.kie.kogito.mongodb.utils.DocumentConstants.DOCUMENT_ID;
+import static java.util.Collections.singletonMap;
+import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
 import static org.kie.kogito.mongodb.utils.DocumentUtils.getCollection;
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
@@ -45,33 +47,39 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBProcessInstances.class);
     private org.kie.kogito.process.Process<?> process;
-    private DocumentProcessInstanceMarshaller marshaller;
-    private final MongoCollection<ProcessInstanceDocument> collection;
+    private ProcessInstanceMarshallerService marshaller;
+    private final MongoCollection<Document> collection;
 
     public MongoDBProcessInstances(MongoClient mongoClient, org.kie.kogito.process.Process<?> process, String dbName) {
         this.process = process;
         collection = getCollection(mongoClient, process.id(), dbName);
-        marshaller = new DocumentProcessInstanceMarshaller(new DocumentMarshallingStrategy());
+        marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, "json")).build();
     }
 
     @Override
     public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
-        ProcessInstanceDocument piDoc = find(id);
+        Document piDoc = find(id);
         if (piDoc == null) {
             return Optional.empty();
         }
-        return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(piDoc, process) : marshaller.unmarshallReadOnlyProcessInstance(piDoc, process));
+
+        return Optional.of(unmarshall(piDoc, mode));
     }
 
     @Override
     public Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode) {
         List<ProcessInstance<T>> list = new ArrayList<>();
-        try (MongoCursor<ProcessInstanceDocument> cursor = collection.find().iterator()) {
+        try (MongoCursor<Document> cursor = collection.find().iterator()) {
             while (cursor.hasNext()) {
-                list.add(mode == MUTABLE ? marshaller.unmarshallProcessInstance(cursor.next(), process) : marshaller.unmarshallReadOnlyProcessInstance(cursor.next(), process));
+                list.add(unmarshall(cursor.next(), mode));
             }
         }
         return list;
+    }
+
+    private ProcessInstance<T> unmarshall(Document document, ProcessInstanceReadMode mode) {
+        byte[] content = document.toJson().getBytes();
+        return mode == MUTABLE ? (ProcessInstance<T>) marshaller.unmarshallProcessInstance(content, process) : (ProcessInstance<T>) marshaller.unmarshallReadOnlyProcessInstance(content, process);
     }
 
     @Override
@@ -86,7 +94,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     protected void updateStorage(String id, ProcessInstance<T> instance, boolean checkDuplicates) {
         if (isActive(instance)) {
-            ProcessInstanceDocument doc = marshaller.marshalProcessInstance(instance);
+            Document doc = Document.parse(new String(marshaller.marshallProcessInstance(instance)));
             if (checkDuplicates) {
                 if (exists(id)) {
                     throw new ProcessInstanceDuplicatedException(id);
@@ -94,14 +102,14 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
                     collection.insertOne(doc);
                 }
             } else {
-                collection.replaceOne(Filters.eq(DOCUMENT_ID, id), doc);
+                collection.replaceOne(Filters.eq(PROCESS_INSTANCE_ID, id), doc);
             }
         }
         reloadProcessInstance(instance, id);
     }
 
-    private ProcessInstanceDocument find(String id) {
-        return collection.find(Filters.eq(DOCUMENT_ID, id)).first();
+    private Document find(String id) {
+        return collection.find(Filters.eq(PROCESS_INSTANCE_ID, id)).first();
     }
 
     @Override
@@ -111,21 +119,19 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public void remove(String id) {
-        collection.deleteOne(Filters.eq(DOCUMENT_ID, id));
+        collection.deleteOne(Filters.eq(PROCESS_INSTANCE_ID, id));
     }
 
     private void reloadProcessInstance(ProcessInstance<T> instance, String id) {
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
-            try {
-                ProcessInstanceDocument reloaded = find(id);
-                if (reloaded != null) {
-                    return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
-                }
-            } catch (RuntimeException e) {
-                LOGGER.error("Unexpected exception thrown when reloading process instance {}", instance.id(), e);
+        Supplier<byte[]> supplier = () -> {
+            Document reloaded = find(id);
+            if (reloaded != null) {
+                return reloaded.toJson().getBytes();
             }
-            return null;
-        });
+            throw new IllegalArgumentException("process instance id " + id + " does not exists in mongodb");
+        };
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+
     }
 
     @Override

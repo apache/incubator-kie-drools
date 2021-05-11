@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.persistence;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PreDestroy;
@@ -26,7 +24,6 @@ import javax.inject.Named;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.infinispan.protostream.BaseMarshaller;
 import org.kie.kogito.persistence.kafka.KafkaProcessInstances;
 import org.kie.kogito.persistence.kafka.KafkaStreamsStateListener;
 import org.kie.kogito.process.Process;
@@ -65,7 +62,7 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
     public KafkaProcessInstances createProcessInstances(Process<?> process) {
         try {
             LOGGER.info("Creating KafkaProcessInstances for process: {}", process.id());
-            KafkaProcessInstances pi = new KafkaProcessInstances(process, producer, proto(), marshallers().toArray(new BaseMarshaller<?>[0]));
+            KafkaProcessInstances pi = new KafkaProcessInstances(process, producer);
             stateListener.addProcessInstances(pi);
             return pi;
         } catch (Exception ex) {
@@ -74,11 +71,4 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
         }
     }
 
-    public String proto() {
-        return null;
-    }
-
-    public List<BaseMarshaller> marshallers() {
-        return Collections.emptyList();
-    }
 }

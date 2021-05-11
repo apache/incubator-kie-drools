@@ -92,12 +92,14 @@
     <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
     <version.formatter.plugin>2.13.0</version.formatter.plugin>
     <version.impsort.plugin>1.5.0</version.impsort.plugin>
+    <version.kr.motd.maven.os>1.6.0</version.kr.motd.maven.os>
     <version.license.plugin>4.0.rc2</version.license.plugin>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
     <version.de.skuzzle.enforcer>1.1.0</version.de.skuzzle.enforcer>
     <version.maven>3.6.2</version.maven>
     <version.maven.plugin>3.6.0</version.maven.plugin>
     <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>
+    <version.org.xolstice.maven.protobuf>0.6.1</version.org.xolstice.maven.protobuf>
     <version.plexus>1.6</version.plexus>
     <version.plexus.classworld>2.5.2</version.plexus.classworld>
     <version.plugin.plugin>3.6.0</version.plugin.plugin>
@@ -128,7 +130,7 @@
     <version.com.github.victools>4.12.1</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
     <version.com.github.ben-manes.caffeine>2.9.0</version.com.github.ben-manes.caffeine>
-    <version.com.google.protobuf>3.14.0</version.com.google.protobuf>
+    <version.com.google.protobuf>3.15.0</version.com.google.protobuf>
     <version.com.google.guava>16.0.1</version.com.google.guava>
     <version.org.openapitools>5.0.1</version.org.openapitools>
     <version.org.openapitools.jackson.databind.nullable>0.2.0</version.org.openapitools.jackson.databind.nullable>
@@ -924,8 +926,37 @@
   </dependencyManagement>
 
   <build>
+    <extensions>
+        <extension>
+            <groupId>kr.motd.maven</groupId>
+            <artifactId>os-maven-plugin</artifactId>
+            <version>${version.kr.motd.maven.os}</version>
+        </extension>
+    </extensions>
     <pluginManagement>
       <plugins>
+        <plugin>
+            <groupId>org.xolstice.maven.plugins</groupId>
+            <artifactId>protobuf-maven-plugin</artifactId>
+            <version>${version.org.xolstice.maven.protobuf}</version>
+            <configuration>
+              <protocArtifact>com.google.protobuf:protoc:${version.com.google.protobuf}:exe:${os.detected.classifier}</protocArtifact>
+              <protoSourceRoot>${basedir}/src/main/resources/</protoSourceRoot>
+              <excludes>
+                <exclude>META-INF/**</exclude>
+              </excludes>
+              <clearOutputDirectory>false</clearOutputDirectory>
+              <outputDirectory>${basedir}/src/main/java</outputDirectory>
+             </configuration>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>

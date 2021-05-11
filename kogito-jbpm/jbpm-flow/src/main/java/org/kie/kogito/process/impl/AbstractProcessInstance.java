@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -82,7 +81,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected ProcessError processError;
 
-    protected Supplier<WorkflowProcessInstance> reloadSupplier;
+    protected Consumer<AbstractProcessInstance<?>> reloadSupplier;
 
     protected CompletionEventListener completionEventListener;
 
@@ -183,7 +182,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         return processInstance;
     }
 
-    public void internalRemoveProcessInstance(Supplier<WorkflowProcessInstance> reloadSupplier) {
+    public void internalSetProcessInstance(WorkflowProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
+
+    public void internalRemoveProcessInstance(Consumer<AbstractProcessInstance<?>> reloadSupplier) {
         this.reloadSupplier = reloadSupplier;
         this.status = processInstance.getState();
         if (this.status == STATE_ERROR) {
@@ -378,7 +381,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected WorkflowProcessInstance processInstance() {
         if (this.processInstance == null) {
-            this.processInstance = reloadSupplier.get();
+            reloadSupplier.accept(this);
             if (this.processInstance == null) {
                 throw new ProcessInstanceNotFoundException(id);
             } else if (getProcessRuntime() != null) {

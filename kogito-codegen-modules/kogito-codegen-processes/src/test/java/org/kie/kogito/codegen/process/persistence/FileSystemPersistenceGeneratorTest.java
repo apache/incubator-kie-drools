@@ -62,7 +62,7 @@ class FileSystemPersistenceGeneratorTest {
 
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE)).count()).isEqualTo(2);
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE) && gf.relativePath().endsWith(".json")).count()).isEqualTo(1);
-        assertThat(generatedFiles).hasSize(3);
+        assertThat(generatedFiles).hasSize(15);
 
         Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
                 .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))

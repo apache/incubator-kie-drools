@@ -22,10 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.bson.Document;
-import org.jbpm.marshalling.impl.JBPMMessages;
-import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.kie.kogito.serialization.process.protobuf.KogitoProcessInstanceProtobuf;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 
@@ -76,8 +75,8 @@ public class TestHelper {
         return doc;
     }
 
-    public static ProcessInstance getprocessInstance() throws InvalidProtocolBufferException, URISyntaxException, IOException {
-        JBPMMessages.ProcessInstance.Builder builder = JBPMMessages.ProcessInstance.newBuilder();
+    public static KogitoProcessInstanceProtobuf.ProcessInstance getprocessInstance() throws InvalidProtocolBufferException, URISyntaxException, IOException {
+        KogitoProcessInstanceProtobuf.ProcessInstance.Builder builder = KogitoProcessInstanceProtobuf.ProcessInstance.newBuilder();
         JsonFormat.Parser parser = JsonFormat.parser();
         parser.merge(readFileContent("process_instance.json"), builder);
         return builder.build();

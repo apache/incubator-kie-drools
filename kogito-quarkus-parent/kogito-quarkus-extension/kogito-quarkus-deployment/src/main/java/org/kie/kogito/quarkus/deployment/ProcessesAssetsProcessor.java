@@ -45,6 +45,10 @@ import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.quarkus.common.deployment.InMemoryClassLoader;
 import org.kie.kogito.quarkus.common.deployment.KogitoGeneratedClassesBuildItem;
+import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf;
+import org.kie.kogito.serialization.process.protobuf.KogitoProcessInstanceProtobuf;
+import org.kie.kogito.serialization.process.protobuf.KogitoTypesProtobuf;
+import org.kie.kogito.serialization.process.protobuf.KogitoWorkItemsProtobuf;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.bootstrap.model.AppDependency;
@@ -192,7 +196,10 @@ public class ProcessesAssetsProcessor {
                 protoGenerator);
 
         if (persistenceGenerator.persistenceType().equals(PersistenceGenerator.MONGODB_PERSISTENCE_TYPE)) {
-            addInnerClasses(org.jbpm.marshalling.impl.JBPMMessages.class, reflectiveClass);
+            addInnerClasses(KogitoProcessInstanceProtobuf.class, reflectiveClass);
+            addInnerClasses(KogitoTypesProtobuf.class, reflectiveClass);
+            addInnerClasses(KogitoNodeInstanceContentsProtobuf.class, reflectiveClass);
+            addInnerClasses(KogitoWorkItemsProtobuf.class, reflectiveClass);
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, "java.lang.String"));
         } else if (persistenceGenerator.persistenceType().equals(PersistenceGenerator.KAFKA_PERSISTENCE_TYPE)) {
             String processIds = protoGenerator.getProcessIds().stream().map(s -> "kogito.process." + s).collect(joining(","));

@@ -27,13 +27,10 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
-import org.kie.kogito.persistence.protobuf.marshallers.BooleanMessageMarshaller;
-import org.kie.kogito.persistence.protobuf.marshallers.StringMessageMarshaller;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,20 +43,11 @@ class KogitoProcessInstancesFactoryTest {
         when(cacheManager.administration()).thenReturn(mock(RemoteCacheManagerAdmin.class));
         List<BaseMarshaller<?>> myMarshallers = new ArrayList<>();
         KogitoProcessInstancesFactory factory = new KogitoProcessInstancesFactory(cacheManager) {
-            @Override
-            public List<BaseMarshaller<?>> marshallers() {
-                return myMarshallers;
-            }
 
-            @Override
-            public String proto() {
-                return null;
-            }
         };
         Process<?> myProcess = new MyProcessImpl();
         CacheProcessInstances instances = factory.createProcessInstances(myProcess);
         assertNotNull(instances);
-        assertEquals(myMarshallers, factory.marshallers());
     }
 
     private static class MyProcessImpl extends AbstractProcess<Model> {
@@ -88,8 +76,6 @@ class KogitoProcessInstancesFactoryTest {
     List<BaseMarshaller<?>> getMarshallers() {
         List<BaseMarshaller<?>> marshallers = new ArrayList<>();
         marshallers.add(new TheEnumMarshaller());
-        marshallers.add(new BooleanMessageMarshaller());
-        marshallers.add(new StringMessageMarshaller());
         return marshallers;
     }
 

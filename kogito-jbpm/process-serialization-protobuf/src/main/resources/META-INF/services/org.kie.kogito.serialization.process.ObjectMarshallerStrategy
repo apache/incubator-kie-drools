@@ -1,0 +1,8 @@
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufStringMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufObjectMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufBooleanMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufLongMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufFloatMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufIntegerMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufDateMarshallerStrategy
+org.kie.kogito.serialization.process.impl.marshallers.ProtobufDoubleMarshallerStrategy
