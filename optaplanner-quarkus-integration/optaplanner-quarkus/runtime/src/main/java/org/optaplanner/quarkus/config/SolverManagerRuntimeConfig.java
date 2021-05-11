@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.deployment.config;
+package org.optaplanner.quarkus.config;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ import io.quarkus.runtime.annotations.ConfigItem;
  * During build time, this is translated into OptaPlanner's {@link SolverManagerConfig}.
  */
 @ConfigGroup
-public class SolverManagerBuildTimeConfig {
+public class SolverManagerRuntimeConfig {
 
     /**
      * The number of solvers that run in parallel. This directly influences CPU consumption.

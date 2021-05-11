@@ -17,6 +17,7 @@
 package org.optaplanner.quarkus.config;
 
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverManagerConfig;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
@@ -30,4 +31,10 @@ public class OptaPlannerRuntimeConfig {
      */
     @ConfigItem
     public SolverRuntimeConfig solver;
+
+    /**
+     * Configuration properties that overwrite OptaPlanner's {@link SolverManagerConfig}.
+     */
+    @ConfigItem
+    public SolverManagerRuntimeConfig solverManager;
 }

@@ -23,9 +23,12 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 
+import io.quarkus.arc.Arc;
 import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -39,6 +42,9 @@ public class OptaPlannerRecorder {
         return new Supplier<SolverConfig>() {
             @Override
             public SolverConfig get() {
+                OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
+                        Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
+                updateSolverConfigWithRuntimeProperties(solverConfig, optaPlannerRuntimeConfig);
                 Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
                 Map<String, SolutionCloner> solutionClonerMap = new HashMap<>();
                 generatedGizmoMemberAccessorMap
@@ -58,9 +64,31 @@ public class OptaPlannerRecorder {
         return new Supplier<SolverManagerConfig>() {
             @Override
             public SolverManagerConfig get() {
+                OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
+                        Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
+                updateSolverManagerConfigWithRuntimeProperties(solverManagerConfig, optaPlannerRuntimeConfig);
                 return solverManagerConfig;
             }
         };
+    }
+
+    private void updateSolverConfigWithRuntimeProperties(SolverConfig solverConfig,
+            OptaPlannerRuntimeConfig optaPlannerRunTimeConfig) {
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        if (terminationConfig == null) {
+            terminationConfig = new TerminationConfig();
+            solverConfig.setTerminationConfig(terminationConfig);
+        }
+        optaPlannerRunTimeConfig.solver.termination.spentLimit.ifPresent(terminationConfig::setSpentLimit);
+        optaPlannerRunTimeConfig.solver.termination.unimprovedSpentLimit
+                .ifPresent(terminationConfig::setUnimprovedSpentLimit);
+        optaPlannerRunTimeConfig.solver.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
+        optaPlannerRunTimeConfig.solver.moveThreadCount.ifPresent(solverConfig::setMoveThreadCount);
+    }
+
+    private void updateSolverManagerConfigWithRuntimeProperties(SolverManagerConfig solverManagerConfig,
+            OptaPlannerRuntimeConfig optaPlannerRunTimeConfig) {
+        optaPlannerRunTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
     }
 
 }

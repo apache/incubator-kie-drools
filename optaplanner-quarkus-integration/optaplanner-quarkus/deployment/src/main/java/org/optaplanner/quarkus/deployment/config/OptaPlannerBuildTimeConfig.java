@@ -22,7 +22,6 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverManagerConfig;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -59,9 +58,5 @@ public class OptaPlannerBuildTimeConfig {
      */
     @ConfigItem
     public SolverBuildTimeConfig solver;
-    /**
-     * Configuration properties that overwrite OptaPlanner's {@link SolverManagerConfig}.
-     */
-    @ConfigItem
-    public SolverManagerBuildTimeConfig solverManager;
+
 }
