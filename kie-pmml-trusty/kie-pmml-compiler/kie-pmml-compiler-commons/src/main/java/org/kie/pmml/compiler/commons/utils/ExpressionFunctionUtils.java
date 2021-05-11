@@ -761,7 +761,10 @@ public class ExpressionFunctionUtils {
                     .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, INPUT_DATA, applyBlock)))
                     .asArrayInitializerExpr();
             arrayInitializerExpr.setValues(NodeList.nodeList(innerVariables.stream().map(NameExpr::new).collect(Collectors.toList())));
-            functionCallArguments = NodeList.nodeList(new NameExpr(INPUT_DATA));
+            String inputDataVariableName = variableName + INPUT_DATA;
+            inputData.setName(inputDataVariableName);
+            functionCallArguments = NodeList.nodeList(new NameExpr(inputDataVariableName));
+
         } else {
             final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
                     .getMethodsByName(APPLYEXPRESSIONLOCALMETHODINVOCATION)
