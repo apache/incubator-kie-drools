@@ -109,6 +109,10 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         this.outputFields = Collections.unmodifiableList(outputFields);
     }
 
+    public List<KiePMMLOutputField> getKiePMMLOutputFields() {
+        return kiePMMLOutputFields;
+    }
+
     /**
      * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct
      * dependency. It is needed only by <b>Drools-dependent</b>

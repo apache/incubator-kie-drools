@@ -13,34 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.scorecard.model.enums;
+package org.kie.pmml.api.enums;
 
 import java.util.Arrays;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
 /**
- * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#reasoncodealgorithm>reasonCodeAlgorithm</a>
+ * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#baselinemethod>baselinemethod</a>
  */
-public enum REASONCODE_ALGORITHM {
+public enum BASELINE_METHOD {
 
-    POINTS_ABOVE("pointsAbove"),
-    POINTS_BELOW("pointsBelow");
+    MAX("max"),
+    MIN("min"),
+    MEAN("mean"),
+    NEUTRAL("neutral"),
+    OTHER("other");
 
     private String name;
 
-    REASONCODE_ALGORITHM(String name) {
+    BASELINE_METHOD(String name) {
         this.name = name;
     }
 
-    public static REASONCODE_ALGORITHM byName(String name) {
-        return Arrays.stream(REASONCODE_ALGORITHM.values())
+    public static BASELINE_METHOD byName(String name) {
+        return Arrays.stream(BASELINE_METHOD.values())
                 .filter(value -> name.equals(value.name))
                 .findFirst()
-                .orElseThrow(() -> new KieEnumException("Failed to find REASONCODE_ALGORITHM with name: " + name));
+                .orElseThrow(() -> new KieEnumException("Failed to find BASELINE_METHOD with name: " + name));
     }
 
     public String getName() {
         return name;
     }
+
 }
