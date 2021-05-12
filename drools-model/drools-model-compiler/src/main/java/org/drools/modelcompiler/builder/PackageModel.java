@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -73,20 +75,18 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
-import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -119,11 +119,11 @@ public class PackageModel {
 
     private Map<String, Class<?>> globals = new HashMap<>();
 
-    private Map<String, List<MethodDeclaration>> ruleMethods = new HashMap<>();
+    private Map<String, Map<Integer, MethodDeclaration>> ruleMethods = new ConcurrentHashMap<>();
 
     private Set<String> queryNames = new HashSet<>();
-    private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
-    private Map<String, Set<QueryModel>> queriesByRuleUnit = new HashMap<>();
+    private Map<String, MethodDeclaration> queryMethods = new ConcurrentHashMap<>();
+    private Map<String, Set<QueryModel>> queriesByRuleUnit = new ConcurrentHashMap<>();
 
     private Map<String, QueryGenerator.QueryDefWithType> queryDefWithType = new HashMap<>();
 
@@ -148,13 +148,11 @@ public class PackageModel {
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
-    private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
+    private Set<RuleUnitDescription> ruleUnits = Collections.synchronizedSet( new HashSet<>() );
 
-    private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
-
-    private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
-
-    private Map<String, TypedExpression> dateFields = new HashMap<>();
+    private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new ConcurrentHashMap<>();
+    private Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
+    private Map<String, TypedExpression> dateFields = new ConcurrentHashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -253,7 +251,7 @@ public class PackageModel {
 
     private Map<String, Method> getStaticMethods() {
         if (staticMethods == null) {
-            staticMethods = new HashMap<>();
+            Map<String, Method> methodsMap = new HashMap<>();
             for (String i : staticImports) {
                 if (i.endsWith( ".*" )) {
                     String className = i.substring( 0, i.length()-2 );
@@ -261,7 +259,7 @@ public class PackageModel {
                         Class<?> importedClass = pkg.getTypeResolver().resolveType( className );
                         for (Method m : importedClass.getMethods()) {
                             if (java.lang.reflect.Modifier.isStatic(m.getModifiers())) {
-                                staticMethods.put(m.getName(), m);
+                                methodsMap.put(m.getName(), m);
                             }
                         }
                     } catch (ClassNotFoundException e1) {
@@ -275,7 +273,7 @@ public class PackageModel {
                         Class<?> importedClass = pkg.getTypeResolver().resolveType( className );
                         for (Method m : importedClass.getMethods()) {
                             if (java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getName().equals( methodName )) {
-                                staticMethods.put(methodName, m);
+                                methodsMap.put(methodName, m);
                                 break;
                             }
                         }
@@ -284,6 +282,7 @@ public class PackageModel {
                     }
                 }
             }
+            staticMethods = methodsMap;
         }
         return staticMethods;
     }
@@ -304,12 +303,12 @@ public class PackageModel {
         typeMetaDataExpressions.add(typeMetaDataExpression);
     }
 
-    public void putRuleMethod(String unitName, MethodDeclaration ruleMethod) {
-        ruleMethods.computeIfAbsent(unitName, k -> new ArrayList<>()).add( ruleMethod );
+    public void putRuleMethod(String unitName, MethodDeclaration ruleMethod, int ruleIndex) {
+        ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() )).put( ruleIndex, ruleMethod );
     }
 
     public void putRuleUnit(String unitName) {
-        ruleMethods.computeIfAbsent(unitName, k -> new ArrayList<>());
+        ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() ));
     }
 
     public void putQueryMethod(MethodDeclaration queryMethod) {
@@ -398,7 +397,7 @@ public class PackageModel {
 
     public void addQueryInRuleUnit(RuleUnitDescription ruleUnitDescription, QueryModel query) {
         addRuleUnit(ruleUnitDescription);
-        queriesByRuleUnit.computeIfAbsent( ruleUnitDescription.getSimpleName(), k -> new HashSet<>() ).add(query);
+        queriesByRuleUnit.computeIfAbsent( ruleUnitDescription.getSimpleName(), k -> Collections.synchronizedSet( new HashSet<>() ) ).add(query);
     }
 
     public Collection<QueryModel> getQueriesInRuleUnit(Class<?> ruleUnitType) {
@@ -617,7 +616,7 @@ public class PackageModel {
 
         results.withModel( name + "." + ruleUnitName, name + "." + rulesClass.getNameAsString() );
 
-        List<MethodDeclaration> ruleMethodsInUnit = ruleMethods.get(ruleUnitName);
+        Collection<MethodDeclaration> ruleMethodsInUnit = ofNullable(ruleMethods.get(ruleUnitName)).map(Map::values).orElse(null);
         if (ruleMethodsInUnit == null || ruleMethodsInUnit.isEmpty()) {
             BodyDeclaration<?> getQueriesMethod = parseBodyDeclaration(
                     "    @Override\n" +
@@ -810,7 +809,7 @@ public class PackageModel {
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
 
-    public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
+    public void setAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
         this.accumulateFunctions = accumulateFunctions;
     }
 
@@ -820,8 +819,11 @@ public class PackageModel {
 
     public boolean registerDomainClass(Class<?> domainClass) {
         if (!domainClass.isPrimitive() && !domainClass.isArray()) {
-            domainClasses.add( domainClass );
-            classDefinitionsMap.put(domainClass, createClassDefinition(domainClass));
+            synchronized (domainClasses) {
+                if (domainClasses.add(domainClass)) {
+                    classDefinitionsMap.put(domainClass, createClassDefinition(domainClass));
+                }
+            }
             return true;
         }
         return false;
@@ -885,7 +887,7 @@ public class PackageModel {
     }
 
     public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
-        return Optional.ofNullable(allConstraintsMap.get(exprId));
+        return ofNullable(allConstraintsMap.get(exprId));
     }
 
     public Map<String, PredicateInformation> getAllConstraintsMap() {
