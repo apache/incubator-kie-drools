@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>protobuf-persistence-common</artifactId>
+      <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
