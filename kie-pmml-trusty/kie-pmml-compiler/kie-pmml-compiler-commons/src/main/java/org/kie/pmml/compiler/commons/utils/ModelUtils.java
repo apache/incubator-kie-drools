@@ -24,10 +24,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -36,6 +38,7 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.Target;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Value;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
@@ -164,6 +167,25 @@ public class ModelUtils {
         }
         return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find OpType for field" +
                                                                                              " %s", targetFieldName)));
+    }
+
+    /**
+     * <code>DATA_TYPE</code> of the given <b>field</b>
+     * @param dataDictionary
+     * @param fieldName
+     * @return
+     */
+    public static DataType getDataType(final DataDictionary dataDictionary,
+                                       final TransformationDictionary transformationDictionary,
+                                       final String fieldName) {
+        return Stream.of(getDataTypeFromDataDictionary(dataDictionary, fieldName),
+                         getDataTypeFromTransformationDictionary(transformationDictionary, fieldName))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
+                                                                                      "field %s",
+                                                                              fieldName)));
     }
 
     /**
@@ -304,6 +326,32 @@ public class ModelUtils {
     public static String getBoxedClassName(DataType dataType) {
         Class<?> c = dataType == null ? Object.class : DATA_TYPE.byName(dataType.value()).getMappedClass();
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
+    }
+
+    /**
+     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
+     * @param dataDictionary
+     * @param fieldName
+     * @return
+     */
+    static Optional<DataType> getDataTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
+        return (dataDictionary != null && dataDictionary.getDataFields() != null) ? dataDictionary.getDataFields().stream()
+                .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()))
+                .findFirst()
+                .map(DataField::getDataType) : Optional.empty();
+    }
+
+    /**
+     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
+     * @param fieldName
+     * @param fieldName
+     * @return
+     */
+    static Optional<DataType> getDataTypeFromTransformationDictionary(TransformationDictionary transformationDictionary, String fieldName) {
+        return (transformationDictionary != null &&  transformationDictionary.getDerivedFields() != null) ?  transformationDictionary.getDerivedFields().stream()
+                .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
+                .findFirst()
+                .map(DerivedField::getDataType) : Optional.empty();
     }
 
     static List<String> convertDataFieldValues(List<Value> toConvert) {
