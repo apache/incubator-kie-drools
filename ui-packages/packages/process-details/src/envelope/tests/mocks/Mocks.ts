@@ -134,7 +134,8 @@ export const MockedApiNotifications = jest.fn<
   >,
   []
 >(() => ({
-  jobList__sortBy: jest.fn()
+  jobList__sortBy: jest.fn(),
+  processDetails__openProcessDetails: jest.fn()
 }));
 
 export const MockedMessageBusClientApi = jest.fn<

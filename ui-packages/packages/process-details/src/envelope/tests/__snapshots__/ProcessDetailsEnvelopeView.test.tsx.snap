@@ -8,6 +8,7 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
     Object {
       "notifications": Object {
         "jobList__sortBy": [MockFunction],
+        "processDetails__openProcessDetails": [MockFunction],
       },
       "requests": Object {
         "processDetails__abortProcess": [MockFunction],
@@ -29,6 +30,7 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
         "channelApi": Object {
           "notifications": Object {
             "jobList__sortBy": [MockFunction],
+            "processDetails__openProcessDetails": [MockFunction],
           },
           "requests": Object {
             "processDetails__abortProcess": [MockFunction],

@@ -15,10 +15,17 @@
  */
 
 import React from 'react';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import {
+  BanIcon,
+  CheckCircleIcon,
+  ErrorCircleOIcon,
+  InfoCircleIcon,
+  OnRunningIcon,
+  PausedIcon
+} from '@patternfly/react-icons';
 import { Title, TitleSizes } from '@patternfly/react-core';
 import { BulkListItem } from '../components/BulkList/BulkList';
-import { Job } from '../types';
+import { Job, ProcessInstance, ProcessInstanceState } from '../types';
 
 export const setTitle = (
   titleStatus: string,
@@ -80,4 +87,63 @@ export const formatForBulkListJob = (
     formattedItems.push(formattedObj);
   });
   return formattedItems;
+};
+
+export const getProcessInstanceDescription = (
+  processInstance: ProcessInstance
+) => {
+  return {
+    id: processInstance.id,
+    name: processInstance.processName,
+    description: processInstance.businessKey
+  };
+};
+
+/* tslint:disable:no-floating-promises */
+export const ProcessInstanceIconCreator = (
+  state: ProcessInstanceState
+): JSX.Element => {
+  switch (state) {
+    case ProcessInstanceState.Active:
+      return (
+        <>
+          <OnRunningIcon className="pf-u-mr-sm" />
+          Active
+        </>
+      );
+    case ProcessInstanceState.Completed:
+      return (
+        <>
+          <CheckCircleIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--success-color--100)"
+          />
+          Completed
+        </>
+      );
+    case ProcessInstanceState.Aborted:
+      return (
+        <>
+          <BanIcon className="pf-u-mr-sm" />
+          Aborted
+        </>
+      );
+    case ProcessInstanceState.Suspended:
+      return (
+        <>
+          <PausedIcon className="pf-u-mr-sm" />
+          Suspended
+        </>
+      );
+    case ProcessInstanceState.Error:
+      return (
+        <>
+          <ErrorCircleOIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--danger-color--100)"
+          />
+          Error
+        </>
+      );
+  }
 };

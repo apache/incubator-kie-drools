@@ -8,6 +8,7 @@ exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
       "jobsQuery": [MockFunction],
+      "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],
       "rescheduleJob": [MockFunction],
     }

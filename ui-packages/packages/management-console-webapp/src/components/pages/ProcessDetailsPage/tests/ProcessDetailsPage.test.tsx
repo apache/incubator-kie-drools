@@ -19,6 +19,20 @@ import * as H from 'history';
 import { getWrapper } from '@kogito-apps/components-common';
 import ProcessDetailsPage from '../ProcessDetailsPage';
 import { BrowserRouter } from 'react-router-dom';
+import { ProcessDetailsQueries } from '../../../../channel/ProcessDetails/ProcessDetailsQueries';
+import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
+import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
+
+const MockQueries = jest.fn<ProcessDetailsQueries, []>(() => ({
+  getProcessDetails: jest.fn(),
+  getJobs: jest.fn()
+}));
+
+jest
+  .spyOn(ProcessDetailsContext, 'useProcessDetailsGatewayApi')
+  .mockImplementation(
+    () => new ProcessDetailsGatewayApiImpl(new MockQueries())
+  );
 
 describe('WebApp - ProcessDetailsPage tests', () => {
   const props = {

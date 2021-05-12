@@ -36,4 +36,5 @@ export interface ProcessDetailsDriver {
   ): Promise<{ modalTitle: string; modalContent: string }>;
   processDetailsQuery(id: string): Promise<ProcessInstance>;
   jobsQuery(id: string): Promise<Job[]>;
+  openProcessInstanceDetails(id: string): void;
 }

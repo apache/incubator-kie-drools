@@ -38,4 +38,5 @@ export interface ProcessDetailsChannelApi {
   ): Promise<{ modalTitle: string; modalContent: string }>;
   processDetails__processDetailsQuery(id: string): Promise<ProcessInstance>;
   processDetails__jobsQuery(id: string): Promise<Job[]>;
+  processDetails__openProcessDetails(id: string): void;
 }

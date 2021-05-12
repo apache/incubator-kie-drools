@@ -17,6 +17,20 @@
 import { getWrapper } from '@kogito-apps/components-common';
 import React from 'react';
 import ProcessDetailsContainer from '../ProcessDetailsContainer';
+import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
+import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
+import { ProcessDetailsQueries } from '../../../../channel/ProcessDetails/ProcessDetailsQueries';
+
+const MockQueries = jest.fn<ProcessDetailsQueries, []>(() => ({
+  getProcessDetails: jest.fn(),
+  getJobs: jest.fn()
+}));
+
+jest
+  .spyOn(ProcessDetailsContext, 'useProcessDetailsGatewayApi')
+  .mockImplementation(
+    () => new ProcessDetailsGatewayApiImpl(new MockQueries())
+  );
 
 describe('WebApp - ProcessDetailsContainer tests', () => {
   it('Snapshot test with default values', () => {

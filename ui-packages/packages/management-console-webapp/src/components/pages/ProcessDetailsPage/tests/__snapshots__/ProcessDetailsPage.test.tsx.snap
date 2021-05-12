@@ -188,7 +188,26 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
         <ForwardRef
           data-ouia-component-type="process-details-container"
           data-ouia-safe={true}
-          driver={null}
+          driver={
+            ProcessDetailsGatewayApiImpl {
+              "_ProcessDetailsState": Object {
+                "id": "",
+              },
+              "abortProcess": [Function],
+              "cancelJob": [Function],
+              "getProcessDiagram": [Function],
+              "listeners": Array [
+                Object {
+                  "onOpen": [Function],
+                },
+              ],
+              "queries": Object {
+                "getJobs": [MockFunction],
+                "getProcessDetails": [MockFunction],
+              },
+              "rescheduleJob": [Function],
+            }
+          }
           processId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
           targetOrigin="http://localhost"
         >

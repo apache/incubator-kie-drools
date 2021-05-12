@@ -64,4 +64,7 @@ export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
   processDetails__jobsQuery(id: string): Promise<Job[]> {
     return this.driver.jobsQuery(id);
   }
+  processDetails__openProcessDetails(id: string): void {
+    this.driver.openProcessInstanceDetails(id);
+  }
 }

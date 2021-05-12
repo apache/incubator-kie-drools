@@ -8,6 +8,7 @@ exports[`Processdetails jobs pannel component tests Jobs empty response 1`] = `
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
       "jobsQuery": [MockFunction],
+      "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],
       "rescheduleJob": [MockFunction],
     }
@@ -25,6 +26,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
       "jobsQuery": [MockFunction],
+      "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],
       "rescheduleJob": [MockFunction],
     }
@@ -148,6 +150,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                             "cancelJob": [MockFunction],
                             "getProcessDiagram": [MockFunction],
                             "jobsQuery": [MockFunction],
+                            "openProcessInstanceDetails": [MockFunction],
                             "processDetailsQuery": [MockFunction],
                             "rescheduleJob": [MockFunction],
                           }
@@ -1274,6 +1277,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                         "cancelJob": [MockFunction],
                                         "getProcessDiagram": [MockFunction],
                                         "jobsQuery": [MockFunction],
+                                        "openProcessInstanceDetails": [MockFunction],
                                         "processDetailsQuery": [MockFunction],
                                         "rescheduleJob": [MockFunction],
                                       }
@@ -1321,6 +1325,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                         "cancelJob": [MockFunction],
                                         "getProcessDiagram": [MockFunction],
                                         "jobsQuery": [MockFunction],
+                                        "openProcessInstanceDetails": [MockFunction],
                                         "processDetailsQuery": [MockFunction],
                                         "rescheduleJob": [MockFunction],
                                       }
@@ -1377,6 +1382,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -1464,6 +1470,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                         "cancelJob": [MockFunction],
                                         "getProcessDiagram": [MockFunction],
                                         "jobsQuery": [MockFunction],
+                                        "openProcessInstanceDetails": [MockFunction],
                                         "processDetailsQuery": [MockFunction],
                                         "rescheduleJob": [MockFunction],
                                       }
@@ -1520,6 +1527,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -1797,6 +1805,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -1853,6 +1862,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "cancelJob": [MockFunction],
                                             "getProcessDiagram": [MockFunction],
                                             "jobsQuery": [MockFunction],
+                                            "openProcessInstanceDetails": [MockFunction],
                                             "processDetailsQuery": [MockFunction],
                                             "rescheduleJob": [MockFunction],
                                           }
@@ -1967,6 +1977,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -2023,6 +2034,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "cancelJob": [MockFunction],
                                             "getProcessDiagram": [MockFunction],
                                             "jobsQuery": [MockFunction],
+                                            "openProcessInstanceDetails": [MockFunction],
                                             "processDetailsQuery": [MockFunction],
                                             "rescheduleJob": [MockFunction],
                                           }
@@ -2112,6 +2124,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                             "cancelJob": [MockFunction],
                                             "getProcessDiagram": [MockFunction],
                                             "jobsQuery": [MockFunction],
+                                            "openProcessInstanceDetails": [MockFunction],
                                             "processDetailsQuery": [MockFunction],
                                             "rescheduleJob": [MockFunction],
                                           }
@@ -2168,6 +2181,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                               "cancelJob": [MockFunction],
                                               "getProcessDiagram": [MockFunction],
                                               "jobsQuery": [MockFunction],
+                                              "openProcessInstanceDetails": [MockFunction],
                                               "processDetailsQuery": [MockFunction],
                                               "rescheduleJob": [MockFunction],
                                             }
@@ -2462,6 +2476,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                   "cancelJob": [MockFunction],
                                                   "getProcessDiagram": [MockFunction],
                                                   "jobsQuery": [MockFunction],
+                                                  "openProcessInstanceDetails": [MockFunction],
                                                   "processDetailsQuery": [MockFunction],
                                                   "rescheduleJob": [MockFunction],
                                                 }
@@ -2518,6 +2533,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                     "cancelJob": [MockFunction],
                                                     "getProcessDiagram": [MockFunction],
                                                     "jobsQuery": [MockFunction],
+                                                    "openProcessInstanceDetails": [MockFunction],
                                                     "processDetailsQuery": [MockFunction],
                                                     "rescheduleJob": [MockFunction],
                                                   }
@@ -2607,6 +2623,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                     "cancelJob": [MockFunction],
                                                     "getProcessDiagram": [MockFunction],
                                                     "jobsQuery": [MockFunction],
+                                                    "openProcessInstanceDetails": [MockFunction],
                                                     "processDetailsQuery": [MockFunction],
                                                     "rescheduleJob": [MockFunction],
                                                   }
@@ -2663,6 +2680,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                       "cancelJob": [MockFunction],
                                                       "getProcessDiagram": [MockFunction],
                                                       "jobsQuery": [MockFunction],
+                                                      "openProcessInstanceDetails": [MockFunction],
                                                       "processDetailsQuery": [MockFunction],
                                                       "rescheduleJob": [MockFunction],
                                                     }
@@ -2976,6 +2994,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                                             "cancelJob": [MockFunction],
                                                             "getProcessDiagram": [MockFunction],
                                                             "jobsQuery": [MockFunction],
+                                                            "openProcessInstanceDetails": [MockFunction],
                                                             "processDetailsQuery": [MockFunction],
                                                             "rescheduleJob": [MockFunction],
                                                           }
@@ -3036,6 +3055,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
       "jobsQuery": [MockFunction],
+      "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],
       "rescheduleJob": [MockFunction],
     }
@@ -3183,6 +3203,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                             "cancelJob": [MockFunction],
                             "getProcessDiagram": [MockFunction],
                             "jobsQuery": [MockFunction],
+                            "openProcessInstanceDetails": [MockFunction],
                             "processDetailsQuery": [MockFunction],
                             "rescheduleJob": [MockFunction],
                           }
@@ -4332,6 +4353,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                         "cancelJob": [MockFunction],
                                         "getProcessDiagram": [MockFunction],
                                         "jobsQuery": [MockFunction],
+                                        "openProcessInstanceDetails": [MockFunction],
                                         "processDetailsQuery": [MockFunction],
                                         "rescheduleJob": [MockFunction],
                                       }
@@ -4379,6 +4401,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                         "cancelJob": [MockFunction],
                                         "getProcessDiagram": [MockFunction],
                                         "jobsQuery": [MockFunction],
+                                        "openProcessInstanceDetails": [MockFunction],
                                         "processDetailsQuery": [MockFunction],
                                         "rescheduleJob": [MockFunction],
                                       }
@@ -4458,6 +4481,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -4568,6 +4592,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                         "cancelJob": [MockFunction],
                                         "getProcessDiagram": [MockFunction],
                                         "jobsQuery": [MockFunction],
+                                        "openProcessInstanceDetails": [MockFunction],
                                         "processDetailsQuery": [MockFunction],
                                         "rescheduleJob": [MockFunction],
                                       }
@@ -4647,6 +4672,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -4947,6 +4973,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -5026,6 +5053,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "cancelJob": [MockFunction],
                                             "getProcessDiagram": [MockFunction],
                                             "jobsQuery": [MockFunction],
+                                            "openProcessInstanceDetails": [MockFunction],
                                             "processDetailsQuery": [MockFunction],
                                             "rescheduleJob": [MockFunction],
                                           }
@@ -5163,6 +5191,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                           "cancelJob": [MockFunction],
                                           "getProcessDiagram": [MockFunction],
                                           "jobsQuery": [MockFunction],
+                                          "openProcessInstanceDetails": [MockFunction],
                                           "processDetailsQuery": [MockFunction],
                                           "rescheduleJob": [MockFunction],
                                         }
@@ -5242,6 +5271,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "cancelJob": [MockFunction],
                                             "getProcessDiagram": [MockFunction],
                                             "jobsQuery": [MockFunction],
+                                            "openProcessInstanceDetails": [MockFunction],
                                             "processDetailsQuery": [MockFunction],
                                             "rescheduleJob": [MockFunction],
                                           }
@@ -5354,6 +5384,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                             "cancelJob": [MockFunction],
                                             "getProcessDiagram": [MockFunction],
                                             "jobsQuery": [MockFunction],
+                                            "openProcessInstanceDetails": [MockFunction],
                                             "processDetailsQuery": [MockFunction],
                                             "rescheduleJob": [MockFunction],
                                           }
@@ -5433,6 +5464,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                               "cancelJob": [MockFunction],
                                               "getProcessDiagram": [MockFunction],
                                               "jobsQuery": [MockFunction],
+                                              "openProcessInstanceDetails": [MockFunction],
                                               "processDetailsQuery": [MockFunction],
                                               "rescheduleJob": [MockFunction],
                                             }
@@ -5750,6 +5782,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                   "cancelJob": [MockFunction],
                                                   "getProcessDiagram": [MockFunction],
                                                   "jobsQuery": [MockFunction],
+                                                  "openProcessInstanceDetails": [MockFunction],
                                                   "processDetailsQuery": [MockFunction],
                                                   "rescheduleJob": [MockFunction],
                                                 }
@@ -5829,6 +5862,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                     "cancelJob": [MockFunction],
                                                     "getProcessDiagram": [MockFunction],
                                                     "jobsQuery": [MockFunction],
+                                                    "openProcessInstanceDetails": [MockFunction],
                                                     "processDetailsQuery": [MockFunction],
                                                     "rescheduleJob": [MockFunction],
                                                   }
@@ -5941,6 +5975,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                     "cancelJob": [MockFunction],
                                                     "getProcessDiagram": [MockFunction],
                                                     "jobsQuery": [MockFunction],
+                                                    "openProcessInstanceDetails": [MockFunction],
                                                     "processDetailsQuery": [MockFunction],
                                                     "rescheduleJob": [MockFunction],
                                                   }
@@ -6020,6 +6055,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                       "cancelJob": [MockFunction],
                                                       "getProcessDiagram": [MockFunction],
                                                       "jobsQuery": [MockFunction],
+                                                      "openProcessInstanceDetails": [MockFunction],
                                                       "processDetailsQuery": [MockFunction],
                                                       "rescheduleJob": [MockFunction],
                                                     }
@@ -6381,6 +6417,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                                             "cancelJob": [MockFunction],
                                                             "getProcessDiagram": [MockFunction],
                                                             "jobsQuery": [MockFunction],
+                                                            "openProcessInstanceDetails": [MockFunction],
                                                             "processDetailsQuery": [MockFunction],
                                                             "rescheduleJob": [MockFunction],
                                                           }

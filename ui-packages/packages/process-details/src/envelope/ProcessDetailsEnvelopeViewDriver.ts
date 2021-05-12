@@ -66,4 +66,7 @@ export default class ProcessDetailsEnvelopeViewDriver
   jobsQuery(id: string): Promise<Job[]> {
     return this.channelApi.requests.processDetails__jobsQuery(id);
   }
+  openProcessInstanceDetails(id: string): void {
+    return this.channelApi.notifications.processDetails__openProcessDetails(id);
+  }
 }

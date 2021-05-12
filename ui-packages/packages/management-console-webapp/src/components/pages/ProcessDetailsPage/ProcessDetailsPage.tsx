@@ -40,6 +40,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
   useEffect(() => {
     return ouiaPageTypeAndObjectId('process-details');
   });
+
   const processId = props.match.params.instanceID;
   return (
     <React.Fragment>

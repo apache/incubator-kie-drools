@@ -8,6 +8,7 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
       "jobsQuery": [MockFunction],
+      "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],
       "rescheduleJob": [MockFunction],
     }

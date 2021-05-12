@@ -55,6 +55,7 @@ import JobsPanel from '../JobsPanel/JobsPanel';
 import ProcessDiagramErrorModal from '../ProcessDiagramErrorModal/ProcessDiagramErrorModal';
 import SVG from 'react-inlinesvg';
 import '../styles.css';
+import ProcessDetailsPanel from '../ProcessDetailsPanel/ProcessDetailsPanel';
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -249,7 +250,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const renderProcessDetails = (): JSX.Element => {
     return (
       <Flex direction={{ default: 'column' }} flex={{ default: 'flex_1' }}>
-        <FlexItem>Process Details</FlexItem>
+        <FlexItem>
+          <ProcessDetailsPanel processInstance={data} driver={driver} />
+        </FlexItem>
         {data.milestones.length > 0 && <FlexItem>Milestones</FlexItem>}
       </Flex>
     );

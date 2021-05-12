@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import { ProcessDetailsDriver } from '../../../api';
+import React from 'react';
 
-export const MockedProcessDetailsDriver = jest.fn<ProcessDetailsDriver, []>(
-  () => ({
-    getProcessDiagram: jest.fn(),
-    cancelJob: jest.fn(),
-    rescheduleJob: jest.fn(),
-    processDetailsQuery: jest.fn(),
-    jobsQuery: jest.fn(),
-    abortProcess: jest.fn(),
-    openProcessInstanceDetails: jest.fn()
-  })
-);
+const MockedProcessDetails = (): React.ReactElement => {
+  return <></>;
+};
+
+export default MockedProcessDetails;

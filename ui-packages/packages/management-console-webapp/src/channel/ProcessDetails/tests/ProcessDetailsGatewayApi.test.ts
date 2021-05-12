@@ -22,6 +22,7 @@ import {
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
 import {
+  OnOpenProcessInstanceDetailsListener,
   ProcessDetailsGatewayApi,
   ProcessDetailsGatewayApiImpl
 } from '../ProcessDetailsGatewayApi';
@@ -245,5 +246,21 @@ describe('ProcessDetailsGatewayApi tests', () => {
     gatewayApi.jobsQuery(id);
 
     expect(queries.getJobs).toHaveBeenCalledWith(id);
+  });
+
+  it('openProcessDetails', () => {
+    const listener: OnOpenProcessInstanceDetailsListener = {
+      onOpen: jest.fn()
+    };
+
+    const unsubscribe = gatewayApi.onOpenProcessInstanceDetailsListener(
+      listener
+    );
+
+    gatewayApi.openProcessInstanceDetails('testId');
+
+    expect(listener.onOpen).toHaveBeenLastCalledWith('testId');
+
+    unsubscribe.unSubscribe();
   });
 });
