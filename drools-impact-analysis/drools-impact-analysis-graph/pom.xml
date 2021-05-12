@@ -12,6 +12,8 @@
   <artifactId>drools-impact-analysis-graph</artifactId>
   <packaging>pom</packaging>
 
+  <name>Drools :: Impact Analysis Graph</name>
+
   <modules>
     <module>drools-impact-analysis-graph-common</module>
     <module>drools-impact-analysis-graph-graphviz</module>
