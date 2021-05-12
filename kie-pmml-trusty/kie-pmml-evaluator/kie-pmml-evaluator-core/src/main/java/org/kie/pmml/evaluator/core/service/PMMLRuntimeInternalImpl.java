@@ -44,8 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.enums.ResultCode.OK;
 
-import static org.kie.pmml.api.enums.ResultCode.OK;
-
 public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeInternalImpl.class);
@@ -53,8 +51,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     private final KieBase knowledgeBase;
     private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase,
-                                   final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase, final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -146,10 +143,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         logger.debug("executeTransformations {} {}", model, context);
         final PMMLRequestData requestData = context.getRequestData();
         final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
-        final List<KiePMMLNameValue> kiePMMLNameValues =
-                getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
-        final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap =
-                model.getCommonTransformationsMap();
+        final List<KiePMMLNameValue> kiePMMLNameValues = getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
+        final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = model.getCommonTransformationsMap();
         commonTransformationsMap.forEach((fieldName, transformationFunction) -> {
             // Common Transformations need to be done only once
             if (!mappedRequestParams.containsKey(fieldName)) {
@@ -160,8 +155,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
                 kiePMMLNameValues.add(new KiePMMLNameValue(fieldName, commonTranformation));
             }
         });
-        final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap =
-                model.getLocalTransformationsMap();
+        final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = model.getLocalTransformationsMap();
         localTransformationsMap.forEach((fieldName, transformationFunction) -> {
             logger.debug("localTransformation {} {}", fieldName, transformationFunction);
             Object localTransformation = transformationFunction.apply(kiePMMLNameValues);
