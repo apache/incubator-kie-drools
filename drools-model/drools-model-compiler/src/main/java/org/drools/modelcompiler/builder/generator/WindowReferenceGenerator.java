@@ -135,7 +135,7 @@ public class WindowReferenceGenerator {
         return descrs.stream()
                 .map( descr -> {
                     String expression = descr.toString();
-                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver);
+                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, null);
                     DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
                     return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
                         @Override

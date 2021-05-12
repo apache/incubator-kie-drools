@@ -19,12 +19,12 @@ package org.drools.modelcompiler.util.lambdareplace;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,7 +63,6 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_EXP
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
@@ -77,7 +76,7 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> staticImports;
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes;
     private final Map<String, PredicateInformation> debugPredicateInformation;
-    private final CompilationUnit clone;
+    private final CompilationUnit cu;
     private final boolean isParallel;
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
@@ -89,14 +88,14 @@ public class ExecModelLambdaPostProcessor {
     public static final PrettyPrinter MATERIALIZED_LAMBDA_PRETTY_PRINTER = new PrettyPrinter(configuration);
 
     public ExecModelLambdaPostProcessor(PackageModel pkgModel,
-                                        CompilationUnit clone) {
+                                        CompilationUnit cu) {
         this.packageName = pkgModel.getName();
         this.ruleClassName = pkgModel.getRulesFileNameWithPackage();
         this.imports = pkgModel.getImports();
         this.staticImports = pkgModel.getStaticImports();
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
         this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
-        this.clone = clone;
+        this.cu = cu;
         this.isParallel = pkgModel.getConfiguration().isParallelLambdaExternalization();
     }
 
@@ -106,7 +105,7 @@ public class ExecModelLambdaPostProcessor {
                                         Collection<String> staticImports,
                                         Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes,
                                         Map<String, PredicateInformation> debugPredicateInformation,
-                                        CompilationUnit clone,
+                                        CompilationUnit cu,
                                         boolean isParallel) {
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
@@ -114,12 +113,12 @@ public class ExecModelLambdaPostProcessor {
         this.staticImports = staticImports;
         this.lambdaReturnTypes = lambdaReturnTypes;
         this.debugPredicateInformation = debugPredicateInformation;
-        this.clone = clone;
+        this.cu = cu;
         this.isParallel = isParallel;
     }
 
     public List<ReplacedLambdaResult> convertLambdas() {
-        if(isParallel) {
+        if (isParallel) {
             return convertLambdasWithForkJoinPool();
         } else {
             return convertLambdasWithStream();
@@ -127,41 +126,49 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private List<ReplacedLambdaResult> convertLambdasWithForkJoinPool() {
-        try {
-            return KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(this::convertLambdasWithStream).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Externalized Lambda Creation Interrupted", e);
-        }
+        return KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(this::convertLambdasWithStream).join();
     }
 
     private List<ReplacedLambdaResult> convertLambdasWithStream() {
-        Stream<ReplacedLambdaResult> resultsFromExpr = createStream(clone.findAll(MethodCallExpr.class, mc1 -> EXPR_CALL.equals(mc1.getNameAsString()) || EVAL_EXPR_CALL.equals(mc1.getNameAsString())))
-                .flatMap(methodCallExpr1 -> {
-                 if (containsTemporalPredicate(methodCallExpr1)) {
-                     return this.convertTemporalExpr(methodCallExpr1);
-                 } else {
-                     return extractLambdaFromMethodCall(methodCallExpr1,
-                                                 (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId)));
-                 }
-             });
+        List<MethodCallExpr> exprMethods = new ArrayList<>();
+        List<MethodCallExpr> alphaIndexMethods = new ArrayList<>();
+        List<MethodCallExpr> betaIndexMethods = new ArrayList<>();
+        List<MethodCallExpr> bindMethods = new ArrayList<>();
+        List<MethodCallExpr> fromMethods = new ArrayList<>();
+        List<MethodCallExpr> executeMethods = new ArrayList<>();
 
-        Stream<ReplacedLambdaResult> resultsFromIndexedBy = createStream(clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString())))
-                .flatMap(this::convertIndexedByCall);
+        cu.walk(MethodCallExpr.class, mc -> {
+            String methodName = mc.getNameAsString();
+            if ( EXPR_CALL.equals(methodName) || EVAL_EXPR_CALL.equals(methodName) ){
+                exprMethods.add(mc);
+            } else if ( ALPHA_INDEXED_BY_CALL.contains(methodName) ){
+                alphaIndexMethods.add(mc);
+            } else if ( BETA_INDEXED_BY_CALL.contains(methodName) ){
+                betaIndexMethods.add(mc);
+            } else if ( BIND_CALL.equals(methodName) ){
+                bindMethods.add(mc);
+            } else if ( FROM_CALL.equals(methodName) || REACTIVE_FROM_CALL.equals(methodName) ){
+                fromMethods.add(mc);
+            } else if ( isExecuteNonNestedCall(mc) ){
+                executeMethods.add(mc);
+            }
+        });
 
-        Stream<ReplacedLambdaResult> resultsFromAlphaIndexedBy = createStream(clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString())))
-                .flatMap(this::convertIndexedByCall);
+        Stream<ReplacedLambdaResult> resultsFromExpr = createStream(exprMethods)
+                .flatMap( methodCallExpr1 ->
+                        containsTemporalPredicate(methodCallExpr1) ?
+                                convertTemporalExpr(methodCallExpr1) :
+                                extractLambdaFromMethodCall(methodCallExpr1, (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId))) );
 
-        Stream<ReplacedLambdaResult> resultsFromBetaIndexedBy = createStream(clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString())))
-                .flatMap(this::convertIndexedByCall);
+        Stream<ReplacedLambdaResult> resultsFromAlphaIndexedBy = createStream(alphaIndexMethods).flatMap(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromBind = createStream(clone.findAll(MethodCallExpr.class, mc -> BIND_CALL.equals(mc.getNameAsString())))
-                .flatMap(this::convertBindCall);
+        Stream<ReplacedLambdaResult> resultsFromBetaIndexedBy = createStream(betaIndexMethods).flatMap(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromFrom = createStream(clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
-                                                  REACTIVE_FROM_CALL.equals(mc.getNameAsString())))
-                .flatMap(this::convertFromCall);
+        Stream<ReplacedLambdaResult> resultsFromBind = createStream(bindMethods).flatMap(this::convertBindCall);
 
-        Stream<ReplacedLambdaResult> resultsFromExecuteCall = createStream(clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall))
+        Stream<ReplacedLambdaResult> resultsFromFrom = createStream(fromMethods).flatMap(this::convertFromCall);
+
+        Stream<ReplacedLambdaResult> resultsFromExecuteCall = createStream(executeMethods)
                 .flatMap(methodCallExpr -> {
                  List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
                  return extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
@@ -172,7 +179,6 @@ public class ExecModelLambdaPostProcessor {
                          resultsFromBind,
                          resultsFromExecuteCall,
                          resultsFromExpr,
-                         resultsFromIndexedBy,
                          resultsFromFrom)
                 .reduce(Stream::concat)
                 .orElseGet(Stream::empty)
@@ -180,11 +186,7 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private Stream<MethodCallExpr> createStream(List<MethodCallExpr> expressionLists) {
-        if(isParallel) {
-            return expressionLists.parallelStream();
-        } else {
-            return expressionLists.stream();
-        }
+        return isParallel ? expressionLists.parallelStream() : expressionLists.stream();
     }
 
     private PredicateInformation getPredicateInformation(Optional<String> exprId) {

@@ -155,7 +155,7 @@ public class NamedConsequenceVisitor {
             return null;
         }
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createVariables(context.getKbuilder(), ruleVariablesBlock, packageModel, context);
+        createVariables(ruleVariablesBlock, packageModel, context);
         return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }
 
