@@ -28,7 +28,7 @@
   <artifactId>drools-impact-analysis</artifactId>
   <packaging>pom</packaging>
 
-  <name>drools-impact-analysis</name>
+  <name>Drools :: Impact Analysis</name>
   <description>A tool to analyze relationships between rules and also impacts of changing a rule. Visualizes the graph using Dot language format</description>
   <url>http://drools.org</url>
 
