@@ -71,7 +71,6 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRand
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomMiningField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomOutputField;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
-import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDiscretizeMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 

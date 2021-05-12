@@ -18,8 +18,11 @@ package org.kie.pmml.compiler.commons.utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import com.github.javaparser.ast.NodeList;
@@ -54,7 +57,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.CONSTANT_VALUE;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.DEFAULT_PARAMETERTYPE_MAP;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
@@ -99,14 +104,72 @@ public class ExpressionFunctionUtilsTest {
     }
 
     @Test
-    public void converterTypeUtilFieldAccessorExpr() {
-        assertEquals(ConverterTypeUtil.class.getName(), CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.toString());
+    public void getKiePMMLNameValueExpressionMethodDeclarationUnsupportedExpression() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        unsupportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(),
+                                              arityCounter);
+            try {
+                ExpressionFunctionUtils.getKiePMMLNameValueExpressionMethodDeclaration(expression, DataType.STRING,
+                                                                                       methodName);
+                fail("Expecting KiePMMLException for " + expression);
+            } catch (Exception e) {
+                assertTrue(e instanceof KiePMMLException);
+            }
+        });
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getAggregatedExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getAggregatedExpressionMethodDeclaration("", new Aggregate(), OBJECT_CLASS,
-                                                                         DEFAULT_PARAMETERTYPE_MAP);
+    @Test
+    public void getKiePMMLNameValueExpressionMethodDeclarationSupportedExpression() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        supportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(),
+                                              arityCounter);
+            assertNotNull(ExpressionFunctionUtils.getKiePMMLNameValueExpressionMethodDeclaration(expression, DataType.STRING,
+                                                                                   methodName));
+        });
+    }
+
+    @Test
+    public void getVariableParametersExpressionMethodUnsupportedDeclaration() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        final List<ParameterField> parameterFields = new LinkedList<>();
+        ParameterField toAdd = new ParameterField();
+        toAdd.setDataType(DataType.DOUBLE);
+        toAdd.setName(FieldName.create("otherParameter"));
+        parameterFields.add(toAdd);
+        unsupportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(),
+                                              arityCounter);
+            try {
+                ExpressionFunctionUtils.getVariableParametersExpressionMethodDeclaration(methodName, expression,
+                                                                                         DataType.STRING,
+                                                                                         parameterFields);
+                fail("Expecting KiePMMLException for " + expression);
+            } catch (Exception e) {
+                assertTrue(e instanceof KiePMMLException);
+            }
+        });
+    }
+
+    @Test
+    public void getVariableParametersExpressionMethodSupportedDeclaration() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        final List<ParameterField> parameterFields = new LinkedList<>();
+        ParameterField toAdd = new ParameterField();
+        toAdd.setDataType(DataType.DOUBLE);
+        toAdd.setName(FieldName.create("otherParameter"));
+        parameterFields.add(toAdd);
+        supportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(),
+                                              arityCounter);
+            assertNotNull(ExpressionFunctionUtils.getVariableParametersExpressionMethodDeclaration(methodName, expression,
+                                                                                     DataType.STRING, parameterFields));
+        });
     }
 
     @Test
@@ -117,11 +180,12 @@ public class ExpressionFunctionUtilsTest {
         MethodDeclaration retrieved = ExpressionFunctionUtils.getApplyExpressionMethodDeclaration(methodName, apply,
                                                                                                   OBJECT_CLASS,
                                                                                                   DEFAULT_PARAMETERTYPE_MAP);
-        String expected = String.format("java.lang.Object %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {\n" +
+        String expected = String.format("java.lang.Object %s(java.util.List<org.kie.pmml.commons.model.tuples" +
+                                                ".KiePMMLNameValue> param1) {\n" +
                                                 "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
                                                 "    java.util.Optional<org.kie.pmml.commons.model.tuples" +
-                                                ".KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org" +
-                                                ".kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java" +
+                                                ".KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter(" +
+                                                "(lmbdParam) -> java" +
                                                 ".util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst" +
                                                 "();\n" +
                                                 "    java.lang.Object variableapplyVariableFieldRef2 = (java.lang" +
@@ -135,21 +199,27 @@ public class ExpressionFunctionUtilsTest {
         assertEquals(expected, retrieved.toString());
         //
         ParameterField parameterField = new ParameterField(FieldName.create("FIELD_REF"));
-        LinkedHashMap<String, ClassOrInterfaceType> modifiedParametersMap = new LinkedHashMap<>(DEFAULT_PARAMETERTYPE_MAP);
-        modifiedParametersMap.put(parameterField.getName().toString(), parseClassOrInterfaceType(getBoxedClassName(parameterField)));
+        LinkedHashMap<String, ClassOrInterfaceType> modifiedParametersMap =
+                new LinkedHashMap<>(DEFAULT_PARAMETERTYPE_MAP);
+        modifiedParametersMap.put(parameterField.getName().toString(),
+                                  parseClassOrInterfaceType(getBoxedClassName(parameterField)));
         retrieved = ExpressionFunctionUtils.getApplyExpressionMethodDeclaration(methodName, apply,
-                                                                                                  OBJECT_CLASS,
+                                                                                OBJECT_CLASS,
                                                                                 modifiedParametersMap);
-        expected = String.format("java.lang.Object %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> " +
-                "param1, java.lang.Object FIELD_REF) {\n" +
-                "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
-                "    java.lang.Object variableapplyVariableFieldRef2 = FIELD_REF != null ? (java.lang.Object) org.kie" +
-                ".pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang" +
-                ".Object) null;\n" +
-                "    java.lang.Object applyVariable = this.FUNCTION_NAME(param1, variableapplyVariableConstant1, " +
-                "variableapplyVariableFieldRef2);\n" +
-                "    return applyVariable;\n" +
-                "}", methodName);
+        expected = String.format("java.lang.Object %s(java.util.List<org.kie.pmml.commons.model.tuples" +
+                                         ".KiePMMLNameValue> " +
+                                         "param1, java.lang.Object FIELD_REF) {\n" +
+                                         "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
+                                         "    java.lang.Object variableapplyVariableFieldRef2 = FIELD_REF != null ? " +
+                                         "(java.lang.Object) org.kie" +
+                                         ".pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, " +
+                                         "FIELD_REF) : (java.lang" +
+                                         ".Object) null;\n" +
+                                         "    java.lang.Object applyVariable = this.FUNCTION_NAME(param1, " +
+                                         "variableapplyVariableConstant1, " +
+                                         "variableapplyVariableFieldRef2);\n" +
+                                         "    return applyVariable;\n" +
+                                         "}", methodName);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
@@ -164,8 +234,9 @@ public class ExpressionFunctionUtilsTest {
                                                                                                      constant,
                                                                                                      DOUBLE_CLASS,
                                                                                                      DEFAULT_PARAMETERTYPE_MAP);
-        String expectedVariableDeclaration = String.format("%1$s constantVariable = %2$s;",
+        String expectedVariableDeclaration = String.format("%s %s = %s;",
                                                            Double.class.getName(),
+                                                           CONSTANT_VALUE,
                                                            constant.getValue());
         commonValidateConstant(retrieved, constant, methodName, Double.class.getName(), expectedVariableDeclaration);
         //
@@ -174,18 +245,13 @@ public class ExpressionFunctionUtilsTest {
         constant.setValue("EXPECTED");
         methodArity = new Random().nextInt(20);
         methodName = String.format(METHOD_NAME_TEMPLATE, constant.getClass().getSimpleName(), methodArity);
-        retrieved = ExpressionFunctionUtils.getConstantExpressionMethodDeclaration(methodName, constant, STRING_CLASS,
-                                                                                   DEFAULT_PARAMETERTYPE_MAP);
-        expectedVariableDeclaration = String.format("%1$s constantVariable = \"%2$s\";",
+        retrieved = ExpressionFunctionUtils.getConstantExpressionMethodDeclaration(methodName, constant, STRING_CLASS
+                , DEFAULT_PARAMETERTYPE_MAP);
+        expectedVariableDeclaration = String.format("%s %s = \"%s\";",
                                                     String.class.getName(),
+                                                    CONSTANT_VALUE,
                                                     constant.getValue());
         commonValidateConstant(retrieved, constant, methodName, String.class.getName(), expectedVariableDeclaration);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getDiscretizeExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getDiscretizeExpressionMethodDeclaration("", new Discretize(), OBJECT_CLASS,
-                                                                         DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test
@@ -214,70 +280,34 @@ public class ExpressionFunctionUtilsTest {
         commonValidateFieldRefMethod(retrieved, methodName, expected, String.class.getName());
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getLagExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getLagExpressionMethodDeclaration("methodName", new Lag(), OBJECT_CLASS,
-                                                                  DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getMapValuesExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getMapValuesExpressionMethodDeclaration("methodName", new MapValues(), OBJECT_CLASS,
-                                                                        DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getNormContinuousExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getNormContinuousExpressionMethodDeclaration("methodName", new NormContinuous(),
-                                                                             OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getNormDiscreteExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getNormDiscreteExpressionMethodDeclaration("methodName", new NormDiscrete(),
-                                                                           OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getTextIndexExpressionMethodDeclaration() {
-        ExpressionFunctionUtils.getTextIndexExpressionMethodDeclaration("methodName", new TextIndex(), OBJECT_CLASS,
-                                                                        DEFAULT_PARAMETERTYPE_MAP);
+    @Test
+    public void getUnsupportedExpressionBlockStmt() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(Object.class.getName());
+        unsupportedExpressionSupplier.forEach(supplier -> {
+            Expression expression = supplier.get();
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(),
+                                              arityCounter);
+            try {
+                ExpressionFunctionUtils.getExpressionBlockStmt(methodName, expression, returnedType,
+                                                               new LinkedHashMap<>());
+                fail("Expecting KiePMMLException for " + expression);
+            } catch (Exception e) {
+                assertTrue(e instanceof KiePMMLException);
+            }
+        });
     }
 
     @Test
-    public void getExpressionBlockStmtUnsupportedExpression() {
-        for (Supplier<Expression> supplier : unsupportedExpressionSupplier) {
+    public void getSupportedExpressionBlockStmt() {
+        final AtomicInteger arityCounter = new AtomicInteger();
+        final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(Object.class.getName());
+        supportedExpressionSupplier.forEach(supplier -> {
             Expression expression = supplier.get();
-            try {
-                ExpressionFunctionUtils.getExpressionBlockStmt("variableName", expression,
-                                                               parseClassOrInterfaceType(Object.class.getName()),
-                                                               DEFAULT_PARAMETERTYPE_MAP);
-                fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
-            } catch (Exception e) {
-                assertEquals(KiePMMLException.class, e.getClass());
-            }
-        }
-    }
-
-    @Test
-    public void getExpressionBlockStmtSupportedExpression() {
-        for (Supplier<Expression> supplier : supportedExpressionSupplier) {
-            Expression expression = supplier.get();
-            try {
-                ExpressionFunctionUtils.getExpressionBlockStmt("variableName", expression,
-                                                               parseClassOrInterfaceType(Object.class.getName()),
-                                                               DEFAULT_PARAMETERTYPE_MAP);
-            } catch (Exception e) {
-                fail(String.format("Unexpected %s for %s", e, expression.getClass()));
-            }
-        }
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getAggregatedExpressionBlockStmt() {
-        ExpressionFunctionUtils.getAggregatedExpressionBlockStmt("variableName", new Aggregate(),
-                                                                 parseClassOrInterfaceType(Object.class.getName()),
-                                                                 DEFAULT_PARAMETERTYPE_MAP);
+            String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(),
+                                              arityCounter);
+            assertNotNull(ExpressionFunctionUtils.getExpressionBlockStmt(methodName, expression, returnedType, new LinkedHashMap<>()));
+        });
     }
 
     @Test
@@ -285,17 +315,23 @@ public class ExpressionFunctionUtilsTest {
         Apply apply = applySupplier.get();
         String variableName = "VARIABLE_NAME";
         BlockStmt retrieved = ExpressionFunctionUtils.getApplyExpressionBlockStmt(variableName, apply,
-                                                                                  parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
-        String expected = "{\n" +
-                "    java.lang.Object variableVARIABLE_NAMEConstant1 = 34.6;\n" +
-                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1" +
-                ".stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects" +
-                ".equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                "    java.lang.Object variableVARIABLE_NAMEFieldRef2 = (java.lang.Object) kiePMMLNameValue.map(org" +
-                ".kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                "    java.lang.Object VARIABLE_NAME = this.FUNCTION_NAME(param1, variableVARIABLE_NAMEConstant1, " +
-                "variableVARIABLE_NAMEFieldRef2);\n" +
-                "}";
+                                                                                  parseClassOrInterfaceType(Object
+                                                                                                                    .class.getName()),
+                                                                                  DEFAULT_PARAMETERTYPE_MAP);
+        String expected = String.format("{\n" +
+                                                "    java.lang.Object variable%1$sConstant1 = 34.6;\n" +
+                                                "    java.util.Optional<org.kie.pmml.commons.model.tuples" +
+                                                ".KiePMMLNameValue> kiePMMLNameValue = param1" +
+                                                ".stream().filter((lmbdParam) -> java.util.Objects" +
+                                                ".equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
+                                                "    java.lang.Object variable%1$sFieldRef2 = (java.lang.Object) " +
+                                                "kiePMMLNameValue.map(org" +
+                                                ".kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse" +
+                                                "(null);\n" +
+                                                "    java.lang.Object %1$s = this.FUNCTION_NAME(param1, " +
+                                                "variable%1$sConstant1, " +
+                                                "variable%1$sFieldRef2);\n" +
+                                                "}", variableName);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
@@ -313,20 +349,27 @@ public class ExpressionFunctionUtilsTest {
         apply.setFunction(functionName);
         String variableName = "VARIABLE_NAME";
         BlockStmt retrieved = ExpressionFunctionUtils.getApplyExpressionBlockStmt(variableName, apply,
-                                                                                  parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
-        String expected = "{\n" +
-                "    java.lang.Object variableVARIABLE_NAMEConstant1 = \"STRING_VALUE\";\n" +
-                "    java.lang.Object variablevariableVARIABLE_NAMEApply2Constant1 = 34.6;\n" +
-                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1" +
-                ".stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects" +
-                ".equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                "    java.lang.Object variablevariableVARIABLE_NAMEApply2FieldRef2 = (java.lang.Object) " +
-                "kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                "    java.lang.Object variableVARIABLE_NAMEApply2 = this.FUNCTION_NAME(param1, " +
-                "variablevariableVARIABLE_NAMEApply2Constant1, variablevariableVARIABLE_NAMEApply2FieldRef2);\n" +
-                "    java.lang.Object VARIABLE_NAME = this.EXTERNAL_FUNCTION_NAME(param1, " +
-                "variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEApply2);\n" +
-                "}";
+                                                                                  parseClassOrInterfaceType(Object
+                                                                                                                    .class.getName()),
+                                                                                  DEFAULT_PARAMETERTYPE_MAP);
+        String expected = String.format("{\n" +
+                                                "    java.lang.Object variable%1$sConstant1 = \"STRING_VALUE\";\n" +
+                                                "    java.lang.Object variablevariable%1$sApply2Constant1 = 34.6;\n" +
+                                                "    java.util.Optional<org.kie.pmml.commons.model.tuples" +
+                                                ".KiePMMLNameValue> kiePMMLNameValue = param1" +
+                                                ".stream().filter((lmbdParam) -> java.util.Objects" +
+                                                ".equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
+                                                "    java.lang.Object variablevariable%1$sApply2FieldRef2 = (java" +
+                                                ".lang.Object) " +
+                                                "kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples" +
+                                                ".KiePMMLNameValue::getValue).orElse(null);\n" +
+                                                "    java.lang.Object variable%1$sApply2 = this.FUNCTION_NAME(param1," +
+                                                " " +
+                                                "variablevariableVARIABLE_NAMEApply2Constant1, " +
+                                                "variablevariable%1$sApply2FieldRef2);\n" +
+                                                "    java.lang.Object %1$s = this.EXTERNAL_FUNCTION_NAME(param1, " +
+                                                "variable%1$sConstant1, variable%1$sApply2);\n" +
+                                                "}", variableName);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
@@ -336,9 +379,9 @@ public class ExpressionFunctionUtilsTest {
         String variableName = "VARIABLE_NAME";
         Constant constant = constantSupplier.get();
         ClassOrInterfaceType returnedType = parseClassOrInterfaceType(Double.class.getName());
-        BlockStmt retrieved = ExpressionFunctionUtils.getConstantExpressionBlockStmt(variableName, constant,
-                                                                                     returnedType,
-                                                                                     DEFAULT_PARAMETERTYPE_MAP);
+        BlockStmt retrieved = ExpressionFunctionUtils.getConstantExpressionBlockStmt(variableName,
+                                                                                     constant,
+                                                                                     returnedType);
         String expected = String.format("{\n" +
                                                 "    %1$s %2$s = %3$s;\n" +
                                                 "}",
@@ -350,8 +393,7 @@ public class ExpressionFunctionUtilsTest {
         constant.setDataType(DataType.STRING);
         constant.setValue("STRING_VALUE");
         returnedType = parseClassOrInterfaceType(String.class.getName());
-        retrieved = ExpressionFunctionUtils.getConstantExpressionBlockStmt(variableName, constant, returnedType,
-                                                                           DEFAULT_PARAMETERTYPE_MAP);
+        retrieved = ExpressionFunctionUtils.getConstantExpressionBlockStmt(variableName, constant, returnedType);
         expected = String.format("{\n" +
                                          "    %1$s %2$s = \"%3$s\";\n" +
                                          "}",
@@ -362,118 +404,112 @@ public class ExpressionFunctionUtilsTest {
         assertEquals(expected, retrieved.toString());
     }
 
-    @Test(expected = KiePMMLException.class)
-    public void getDiscretizeExpressionBlockStmt() {
-        ExpressionFunctionUtils.getDiscretizeExpressionBlockStmt("variableName", new Discretize(),
-                                                                 parseClassOrInterfaceType(Object.class.getName()),
-                                                                 DEFAULT_PARAMETERTYPE_MAP);
-    }
-
     @Test
-    public void getFieldRefExpressionFromCommonDataBlockStmt() {
+    public void getFieldRefExpressionFromKiePMMLNameValuesBlockStmt() {
         String variableName = "VARIABLE_NAME";
         FieldRef fieldRef = fieldRefSupplier.get();
-        BlockStmt retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromCommonDataBlockStmt(variableName, fieldRef,
-                                                                                                   parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
-        String expected = "{\n" +
+        String classType = Object.class.getName();
+        final ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(classType);
+        BlockStmt retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromKiePMMLNameValuesBlockStmt(variableName,
+                                                                                                          fieldRef,
+                                                                                                          classOrInterfaceType);
+        String expected = String.format("{\n" +
                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1" +
-                ".stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects" +
+                ".stream().filter((lmbdParam) -> java.util.Objects" +
                 ".equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                "    java.lang.Object VARIABLE_NAME = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons" +
+                "    %1$s %2$s = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons" +
                 ".model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                "}";
+                "}", classType, variableName);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
         fieldRef.setMapMissingTo(mapMissingTo);
-        retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromCommonDataBlockStmt(variableName, fieldRef,
-                                                                                         parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
-        expected = "{\n" +
+        retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromKiePMMLNameValuesBlockStmt(variableName,
+                                                                                                fieldRef,
+                                                                                                classOrInterfaceType);
+        String mapMissingQuoted = String.format("\"%s\"", mapMissingTo);
+        expected = String.format("{\n" +
                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1" +
-                ".stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects" +
+                ".stream().filter((lmbdParam) -> java.util.Objects" +
                 ".equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                "    java.lang.Object VARIABLE_NAME = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons" +
-                ".model.tuples.KiePMMLNameValue::getValue).orElse(\"MAP_MISSING_TO\");\n" +
-                "}";
+                "    %1$s %2$s = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons" +
+                ".model.tuples.KiePMMLNameValue::getValue).orElse(%3$s);\n" +
+                "}", classType, variableName, mapMissingQuoted);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
     }
 
     @Test
-    public void getFieldRefExpressionFromDefineFunctionBlockStmt() {
+    public void getFieldRefExpressionFromInputValueBlockStmt() {
         String variableName = "VARIABLE_NAME";
         FieldRef fieldRef = fieldRefSupplier.get();
-        ParameterField parameterField = new ParameterField(FieldName.create("FIELD_REF"));
-        LinkedHashMap<String, ClassOrInterfaceType> modifiedParametersMap = new LinkedHashMap<>(DEFAULT_PARAMETERTYPE_MAP);
-        modifiedParametersMap.put(parameterField.getName().toString(), parseClassOrInterfaceType(getBoxedClassName(parameterField)));
-        BlockStmt retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef,
-                                                                                                   parseClassOrInterfaceType(Object.class.getName()), modifiedParametersMap);
-        String expected = "{\n" +
-                "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) null;\n" +
-                "}";
+        String classType = Object.class.getName();
+        final ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(classType);
+        BlockStmt retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromInputValueBlockStmt(variableName,
+                                                                                                   fieldRef,
+                                                                                                   classOrInterfaceType);
+        String expected = String.format("{\n" +
+                "    %1$s %2$s = FIELD_REF != null ? (%1$s) org.kie.pmml.api.utils" +
+                ".ConverterTypeUtil.convert(%1$s.class, FIELD_REF) : (%1$s) null;\n" +
+                "}", classType, variableName);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
         fieldRef.setMapMissingTo(mapMissingTo);
-        retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef,
-                                                                                         parseClassOrInterfaceType(Object.class.getName()), modifiedParametersMap);
-        expected = "{\n" +
-                "    java.lang.Object VARIABLE_NAME = FIELD_REF != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Object.class, FIELD_REF) : (java.lang.Object) \"MAP_MISSING_TO\";\n" +
-                "}";
+        retrieved = ExpressionFunctionUtils.getFieldRefExpressionFromInputValueBlockStmt(variableName,
+                                                                                         fieldRef,
+                                                                                         classOrInterfaceType);
+        String mapMissingQuoted = String.format("\"%s\"", mapMissingTo);
+        expected = String.format("{\n" +
+                "    %1$s %2$s = FIELD_REF != null ? (%1$s) " +
+                "org.kie.pmml.api.utils.ConverterTypeUtil.convert(%1$s.class, FIELD_REF) : (%1$s) %3$s;\n" +
+                "}", classType, variableName, mapMissingQuoted);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getLagExpressionBlockStmt() {
-        ExpressionFunctionUtils.getLagExpressionBlockStmt("variableName", new Lag(),
-                                                          parseClassOrInterfaceType(Object.class.getName()),
-                                                          DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getMapValuesExpressionBlockStmt() {
-        ExpressionFunctionUtils.getMapValuesExpressionBlockStmt("variableName", new MapValues(),
-                                                                parseClassOrInterfaceType(Object.class.getName()),
-                                                                DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getNormContinuousExpressionBlockStmtn() {
-        ExpressionFunctionUtils.getNormContinuousExpressionBlockStmt("variableName", new NormContinuous(),
-                                                                     parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getNormDiscreteExpressionBlockStmt() {
-        ExpressionFunctionUtils.getNormDiscreteExpressionBlockStmt("variableName", new NormDiscrete(),
-                                                                   parseClassOrInterfaceType(Object.class.getName()),
-                                                                   DEFAULT_PARAMETERTYPE_MAP);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void getTextIndexExpressionBlockStmt() {
-        ExpressionFunctionUtils.getTextIndexExpressionBlockStmt("variableName", new TextIndex(),
-                                                                parseClassOrInterfaceType(Object.class.getName()),
-                                                                DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test
     public void getExpressionMethodDeclaration() {
         String methodName = "METHOD_NAME";
         String variableName = "VARIABLE_NAME";
+        String classType = Object.class.getName();
+        final ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(classType);
         MethodDeclaration retrieved = ExpressionFunctionUtils.getExpressionMethodDeclaration(methodName,
                                                                                              variableName,
                                                                                              new BlockStmt(),
-                                                                                             parseClassOrInterfaceType(Object.class.getName()),
+                                                                                             classOrInterfaceType,
                                                                                              DEFAULT_PARAMETERTYPE_MAP);
         assertNotNull(retrieved);
-        String expected = "java.lang.Object METHOD_NAME(java.util.List<org.kie.pmml.commons.model.tuples" +
+        String expected = String.format("%1$s %2$s(java.util.List<org.kie.pmml.commons.model.tuples" +
                 ".KiePMMLNameValue> param1) {\n" +
-                "    return VARIABLE_NAME;\n" +
-                "}";
+                "    return %3$s;\n" +
+                "}", classType, methodName, variableName);
         expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, retrieved.toString());
+    }
+
+
+    @Test
+    public void converterTypeUtilFieldAccessorExpr() {
+        assertEquals(ConverterTypeUtil.class.getName(), CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.toString());
+    }
+
+    @Test
+    public void getClassOrInterfaceTypes() {
+        List<ParameterField> parameterFields = getParameterFields();
+        Map<String, ClassOrInterfaceType> retrieved =
+                ExpressionFunctionUtils.getNameClassOrInterfaceTypeMap(parameterFields);
+        assertEquals(parameterFields.size(), retrieved.size());
+        for (ParameterField parameter : parameterFields) {
+            assertTrue(retrieved.containsKey(parameter.getName().toString()));
+            commonVerifyParameterClassOrInterfaceType(retrieved.get(parameter.getName().toString()), parameter);
+        }
+    }
+
+    private void commonVerifyParameterClassOrInterfaceType(ClassOrInterfaceType toVerify,
+                                                           ParameterField parameterField) {
+        String expectedClass = ModelUtils.getBoxedClassName(parameterField);
+        assertEquals(expectedClass, toVerify.toString());
     }
 
     private void commonValidateConstant(MethodDeclaration retrieved, Constant constant, String expectedMethodName,
@@ -488,7 +524,8 @@ public class ExpressionFunctionUtilsTest {
         assertTrue(statements.get(1) instanceof ReturnStmt);
         ReturnStmt returnStmt = (ReturnStmt) statements.get(1);
         String retrievedString = returnStmt.toString();
-        assertEquals("return constantVariable;", retrievedString);
+        String expected = String.format("return %s;", CONSTANT_VALUE);
+        assertEquals(expected, retrievedString);
         commonValidateCompilation(retrieved);
     }
 
