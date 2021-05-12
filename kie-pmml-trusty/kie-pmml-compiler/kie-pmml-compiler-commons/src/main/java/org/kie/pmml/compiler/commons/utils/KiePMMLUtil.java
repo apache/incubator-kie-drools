@@ -248,12 +248,10 @@ public class KiePMMLUtil {
      * @param segmentId
      */
     static void populateMissingSegmentModelName(final Model model, final String segmentId) {
-        if (model.getModelName() == null || model.getModelName().isEmpty()) {
-            String modelName = String.format(SEGMENTMODELNAME_TEMPLATE,
-                                             segmentId,
-                                             model.getClass().getSimpleName());
-            model.setModelName(modelName);
-        }
+        String modelName = String.format(SEGMENTMODELNAME_TEMPLATE,
+                                         segmentId,
+                                         model.getClass().getSimpleName());
+        model.setModelName(modelName);
     }
 
     /**
