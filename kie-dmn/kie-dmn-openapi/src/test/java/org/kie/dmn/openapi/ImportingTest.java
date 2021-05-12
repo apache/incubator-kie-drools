@@ -46,13 +46,13 @@ public class ImportingTest extends BaseDMNOASTest {
 
         String mutOutputSetName = result.getNamingPolicy().getName(result.lookupIOSetsByModel(modelUnderTest).getOutputSet());
         JsonNode mutOutputSet = syntheticJSONSchema.get("definitions").get(mutOutputSetName);
-        assertThat(() -> mutOutputSet.get("properties").fieldNames()).doesNotContain("baseSum Decision");
+        assertThat((Iterable<String>) () -> mutOutputSet.get("properties").fieldNames()).doesNotContain("baseSum Decision");
 
         final DMNModel importedModel = runtime.getModel("https://kiegroup.org/dmn/_FCC62740-4998-47A2-B5F2-CB3E15C98419",
                                                         "baseSum");
         String importedOutputSetName = result.getNamingPolicy().getName(result.lookupIOSetsByModel(importedModel).getOutputSet());
         JsonNode importedOutputSet = syntheticJSONSchema.get("definitions").get(importedOutputSetName);
-        assertThat(() -> importedOutputSet.get("properties").fieldNames()).contains("baseSum Decision");
+        assertThat((Iterable<String>) () -> importedOutputSet.get("properties").fieldNames()).contains("baseSum Decision");
     }
 
 }
