@@ -17,21 +17,32 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.FromNode;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
+import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -198,5 +209,318 @@ public class NodeSharingTest extends BaseModelTest {
         assertTrue(results.contains("Mark has 37 years"));
         assertTrue(results.contains("Mario is 40"));
         assertTrue(results.contains("Mario has 40 years"));
+    }
+
+    @Test
+    public void testShareAlphaHashable() {
+        String str =
+                "import " + Factor.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "    Factor( factorAmt == 10.00 )\n" +
+                     "then end\n" +
+                     "rule R2 when\n" +
+                     "    Factor( factorAmt == 10.0 )\n" +
+                     "then end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Factor(10.0));
+        assertEquals(2, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareAlphaRangeIndexable() {
+        String str =
+                "import " + Factor.class.getCanonicalName() + ";\n" +
+                     "rule R1 when\n" +
+                     "    Factor( factorAmt > 10.00 )\n" +
+                     "then end\n" +
+                     "rule R2 when\n" +
+                     "    Factor( factorAmt > 10.0 )\n" +
+                     "then end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Factor(25.0));
+        assertEquals(2, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+    }
+
+    public static class Factor {
+
+        private final double factorAmt;
+
+        public Factor(double factorAmt) {
+            this.factorAmt = factorAmt;
+        }
+
+        public double getFactorAmt() {
+            return factorAmt;
+        }
+    }
+
+    @Test
+    public void testShareEval() {
+        final String str = "package myPkg;\n" +
+                           "rule R1 when\n" +
+                           "  i : Integer()\n" +
+                           "  eval(i > 100)\n" +
+                           "then\n" +
+                           "end\n" +
+                           "rule R2 when\n" +
+                           "  i : Integer()\n" +
+                           "  eval(i > 100)\n" +
+                           "then\n" +
+                           "end\n" +
+                           "";
+
+        KieSession ksession = getKieSession(str);
+        KieBase kbase = ksession.getKieBase();
+
+        EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(Integer.class));
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) otn.getSinks()[0];
+        assertEquals(1, lian.getSinks().length);
+    }
+
+    public void testShareFrom() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "global java.util.List list\n" +
+                     "rule R1 when\n" +
+                     "    $p : Person()\n" +
+                     "    $a : Address(city == \"Tokyo\") from $p.addresses\n" +
+                     "then\n" +
+                     "  list.add($a);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $p : Person()\n" +
+                     "    $a : Address(city == \"Tokyo\") from $p.addresses\n" +
+                     "then\n" +
+                     "  list.add($a);\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        List<Address> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p = new Person("John");
+        p.getAddresses().add(new Address("ABC", 1, "Tokyo"));
+        p.getAddresses().add(new Address("DEF", 2, "Tokyo"));
+        p.getAddresses().add(new Address("GHI", 3, "Osaka"));
+
+        ksession.insert(p);
+        assertEquals(4, ksession.fireAllRules());
+        assertEquals(4, list.size());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(FromNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule X1 when\n" +
+                     "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                $sum : sum($p.getAge())  \n" +
+                     "              )                          \n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end\n" +
+                     "rule X2 when\n" +
+                     "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                $sum : sum($p.getAge())  \n" +
+                     "              )                          \n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareFromAccumulate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule X1 when\n" +
+                     "  $sum : Number( intValue() > 0 )from accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                sum($p.getAge())  \n" +
+                     "              )\n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end\n" +
+                     "rule X2 when\n" +
+                     "  $sum : Number( intValue() > 0 )from accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                     "                sum($p.getAge())  \n" +
+                     "              )\n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareExists() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  exists Person( name.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  exists Person( name.length == 5 )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person mario = new Person("Mario", 40);
+
+        ksession.insert(mario);
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals("ok", results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(ExistsNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareNot() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  not( Person( name.length == 4 ) )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  not( Person( name.length == 4 ) )\n" +
+                     "then\n" +
+                     "  insert(new Result(\"ok\"));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person mario = new Person("Mario", 40);
+
+        ksession.insert(mario);
+        assertEquals(2, ksession.fireAllRules());
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(2, results.size());
+        assertEquals("ok", results.iterator().next().getValue());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(NotNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareCombinedConstraintAnd() throws Exception {
+        // DROOLS-6330
+        // Note: if DROOLS-6329 is resolved, this test may not produce CombinedConstraint
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"ACME\" && this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"ACME\" && this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(CepTest.getCepKieModuleModel(), str);
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        clock.advanceTime(4, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(0, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count());
+    }
+
+    @Test
+    public void testShareCombinedConstraintOr() throws Exception {
+        // DROOLS-6330
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"XXXX\" || this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $a : StockTick( company == \"DROO\" )\n" +
+                     "    $b : StockTick( company == \"XXXX\" || this after[5s,8s] $a )\n" +
+                     "then\n" +
+                     "  System.out.println(\"fired\");\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(CepTest.getCepKieModuleModel(), str);
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert(new StockTick("DROO"));
+        clock.advanceTime(6, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(2, ksession.fireAllRules());
+
+        clock.advanceTime(4, TimeUnit.SECONDS);
+        ksession.insert(new StockTick("ACME"));
+
+        assertEquals(0, ksession.fireAllRules());
+
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count());
     }
 }

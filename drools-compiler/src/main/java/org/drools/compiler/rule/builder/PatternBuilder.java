@@ -620,14 +620,14 @@ public class PatternBuilder
             ClassDefinition clsDef = tDecl.getTypeClassDef();
             if (clsDef == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
+                                        "Unable to find @Positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
                 return;
             }
 
             FieldDefinition field = clsDef.getField(descr.getPosition());
             if (field == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
+                                        "Unable to find @Positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
                 return;
             }
 
@@ -1075,6 +1075,11 @@ public class PatternBuilder
             return null;
         }
 
+        if ("contains".equals( relDescr.getOperator() ) && !isTypeCompatibleWithContainsOperator( extractor.getExtractToClass() )) {
+            registerDescrBuildError(context, relDescr, "Cannot use contains on " + extractor.getExtractToClass() + " in expression '" + expr + "'");
+            return null;
+        }
+
         int dotPos = value1.indexOf('.');
         if (dotPos > 0) {
             String part0 = value1.substring(0, dotPos).trim();
@@ -1152,6 +1157,10 @@ public class PatternBuilder
         }
 
         return getConstraintBuilder().buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr, aliases);
+    }
+
+    private boolean isTypeCompatibleWithContainsOperator(Class<?> type) {
+        return Collection.class.isAssignableFrom( type ) || type.isArray() || type == String.class;
     }
 
     private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String value2) {

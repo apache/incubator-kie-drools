@@ -7,6 +7,10 @@ dependencies:
     dependencies:
       - project: kiegroup/drools
 
+  - project: kiegroup/optaplanner
+    dependencies:
+      - project: kiegroup/kogito-runtimes
+
   - project: kiegroup/kogito-apps
     dependencies:
       - project: kiegroup/kogito-runtimes

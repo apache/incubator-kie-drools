@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.builder.Message;
@@ -975,5 +976,84 @@ public class MvelDialectTest extends BaseModelTest {
         int fired = ksession.fireAllRules();
 
         assertEquals(1, fired);
+    }
+
+    @Test
+    public void testSetNullInModify() {
+        // RHDM-1713
+        String str =
+                "dialect \"mvel\"\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) { name = null }\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p : Person( name == null )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 47 );
+        ksession.insert( me );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testSetSubclassInModify() {
+        // RHDM-1713
+        String str =
+                "dialect \"mvel\"\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + InternationalAddress.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) { address = new InternationalAddress(\"home\") }\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $p : Person( address != null )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 47 );
+        ksession.insert( me );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testForEachAccessor() {
+        // DROOLS-6298
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Address.class.getCanonicalName() + ";" +
+                "global java.util.List results;" +
+                "dialect \"mvel\"\n" +
+                "rule \"rule_for_each\"\n" +
+                "    when\n" +
+                "        $p : Person( )\n" +
+                "    then\n" +
+                "        for(Address a: $p.addresses){\n" +
+                        "  results.add(a.city);\n" +
+                        "}\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ArrayList<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person me = new Person( "Mario", 47 );
+        Address address = new Address("Address");
+        me.addAddress(address);
+
+        ksession.insert( me);
+        assertEquals( 1, ksession.fireAllRules() );
+
+        assertThat(results).containsOnly("Address");
     }
 }

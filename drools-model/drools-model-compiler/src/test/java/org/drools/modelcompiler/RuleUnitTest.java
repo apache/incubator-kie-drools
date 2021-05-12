@@ -33,11 +33,11 @@ import org.drools.ruleunit.RuleUnitExecutor;
 
 import static java.util.Arrays.asList;
 
-import static org.drools.model.FlowDSL.declarationOf;
-import static org.drools.model.FlowDSL.expr;
-import static org.drools.model.FlowDSL.on;
-import static org.drools.model.FlowDSL.rule;
-import static org.drools.model.FlowDSL.unitData;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.unitData;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
 import static org.junit.Assert.assertTrue;
 
 public class RuleUnitTest {
@@ -74,7 +74,7 @@ public class RuleUnitTest {
 
         Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( AdultUnit.class )
                 .build(
-                        expr("$expr$1$", adult, p -> p.getAge() > 18),
+                        pattern(adult).expr("$expr$1$", p -> p.getAge() > 18),
                         on(adult).execute(p -> {
                             System.out.println( p.getName() );
                             result.add( p.getName() );
@@ -103,7 +103,8 @@ public class RuleUnitTest {
 
         Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( RuleUnitTest.AdultUnit.class )
                 .build(
-                        expr("$expr$1$", adult, unit, (p, u) -> p.getAge() > u.getAdultAge()),
+                        pattern(unit),
+                        pattern(adult).expr("$expr$1$", unit, (p, u) -> p.getAge() > u.getAdultAge()),
                         on(adult, unitData(List.class, "results")).execute((p, r) -> {
                             System.out.println( p.getName() );
                             r.add( p.getName() );

@@ -17,9 +17,7 @@
 
 package org.drools.modelcompiler.builder.generator.expression;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.body.Parameter;
@@ -42,20 +40,21 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import static java.util.Optional.of;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_END_AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_END_OR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_OR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NO_OP_EXPR;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
-
-    public static final String EXPR_CALL = "expr";
-    public static final String REACT_ON_CALL = "D.reactOn";
-    public static final String BIND_CALL = "bind";
-    public static final String OR_CALL = "or";
-    public static final String AND_CALL = "and";
-    public static final String END_OR_CALL = "endOr";
-    public static final String END_AND_CALL = "endAnd";
 
     public PatternExpressionBuilder(RuleContext context) {
         super(context);
@@ -66,7 +65,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(drlxParseResult);
             context.addExpression(dslExpr);
-        } else if (drlxParseResult.isValidExpression()) {
+        } else if (drlxParseResult.isPredicate()) {
             Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }
@@ -81,13 +80,13 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     public MethodCallExpr buildExpressionWithIndexing(DrlxParseSuccess drlxParseResult) {
         if (drlxParseResult instanceof MultipleDrlxParseSuccess) {
             MultipleDrlxParseSuccess multi = ( MultipleDrlxParseSuccess ) drlxParseResult;
-            MethodCallExpr exprDSL = new MethodCallExpr(null, multi.getOperator() == BinaryExpr.Operator.OR ? OR_CALL : AND_CALL);
+            MethodCallExpr exprDSL = new MethodCallExpr(null, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_OR_CALL : EXPR_AND_CALL );
             for (DrlxParseSuccess child : multi.getResults()) {
                 MethodCallExpr childExpr = buildExpressionWithIndexing(child);
                 childExpr.setScope( exprDSL );
                 exprDSL = childExpr;
             }
-            return new MethodCallExpr(exprDSL, multi.getOperator() == BinaryExpr.Operator.OR ? END_OR_CALL : END_AND_CALL);
+            return new MethodCallExpr(exprDSL, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_END_OR_CALL : EXPR_END_AND_CALL );
         }
         return buildSingleExpressionWithIndexing((SingleDrlxParseSuccess ) drlxParseResult);
     }
@@ -111,18 +110,29 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             return buildTemporalExpression(drlxParseResult, exprDSL);
         }
 
-        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-
-        usedDeclarationsWithUnification.stream()
-                .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
-                .map(context::getVarExpr)
-                .forEach(exprDSL::addArgument);
+        MethodCallExpr ooPathPatternExpr = null;
+        for (String usedDeclarattion : drlxParseResult.getUsedDeclarations()) {
+            if ( !(drlxParseResult.isSkipThisAsParam() && usedDeclarattion.equals( drlxParseResult.getPatternBinding() ) ) ) {
+                MethodCallExpr ooPathExpr = context.getOOPathPatternExpr(usedDeclarattion);
+                if (ooPathExpr == null) {
+                    exprDSL.addArgument(context.getVarExpr(usedDeclarattion));
+                } else {
+                    ooPathPatternExpr = ooPathExpr;
+                }
+            }
+        }
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
         }
 
+        if (ooPathPatternExpr != null) {
+            // this constraints belongs to an external oopath pattern so transfer its evaluation there
+            exprDSL.setScope(ooPathPatternExpr.clone());
+            // flag the old oopath pattern as a no_op in order to remove it from the generated dsl
+            findLastMethodInChain(ooPathPatternExpr).setName(NO_OP_EXPR);
+            drlxParseResult.setSkipThisAsParam(true);
+        }
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
         return exprDSL;
     }
@@ -168,7 +178,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
             MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaConstraint() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
-            indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
+            indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
             indexedByDSL.addArgument(indexedByLeftOperandExtractor);
@@ -197,7 +207,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
-        indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
+        indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
         indexedByDSL.addArgument( indexedBy_constraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
         indexedByDSL.addArgument(indexedBy_leftOperandExtractor );
@@ -205,7 +215,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
         if ( drlxParseResult.isBetaConstraint() ) {
-            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType, drlxParseResult);
+            addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations);
         } else {
             indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
         }

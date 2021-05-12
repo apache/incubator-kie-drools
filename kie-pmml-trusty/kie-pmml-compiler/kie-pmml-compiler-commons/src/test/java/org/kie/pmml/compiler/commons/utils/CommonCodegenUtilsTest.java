@@ -40,6 +40,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -55,6 +56,7 @@ import org.junit.Test;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static com.github.javaparser.StaticJavaParser.parseBlock;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -339,23 +341,23 @@ public class CommonCodegenUtilsTest {
     }
 
     @Test
-    public void setExplicitConstructorInvocationArgumentWithParameter() {
+    public void setExplicitConstructorInvocationStmtArgumentWithParameter() {
         final String parameterName = "PARAMETER_NAME";
         final String value = "VALUE";
         final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
         assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, value);
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, value);
         assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
         assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value).isPresent());
     }
 
     @Test(expected = KiePMMLException.class)
-    public void setExplicitConstructorInvocationArgumentNoParameter() {
+    public void setExplicitConstructorInvocationStmtArgumentNoParameter() {
         final String parameterName = "PARAMETER_NAME";
         final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
         explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
     }
 
     @Test
@@ -445,6 +447,66 @@ public class CommonCodegenUtilsTest {
         retrieved = CommonCodegenUtils.getExpressionForObject(c);
         assertTrue(retrieved instanceof BooleanLiteralExpr);
         assertEquals(c, ((BooleanLiteralExpr)retrieved).getValue());
+    }
+
+    @Test
+    public void getNameExprsFromBlock() {
+        BlockStmt toRead = new BlockStmt();
+        List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isEmpty());
+        toRead = getBlockStmt();
+        retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        assertNotNull(retrieved);
+        assertEquals(2, retrieved.size());
+    }
+
+    @Test
+    public void replaceNodesInBlock() {
+        final BlockStmt toRead = getBlockStmt();
+        final List<NameExpr> retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        assertEquals(2, retrieved.size());
+        final List<NullLiteralExpr> nullExprs =  toRead.stream()
+                .filter(node -> node instanceof NullLiteralExpr)
+                .map(NullLiteralExpr.class::cast)
+                .collect(Collectors.toList());
+        assertNotNull(nullExprs);
+        assertTrue(nullExprs.isEmpty());
+
+        final List<CommonCodegenUtils.ReplacementTupla> replacementTuplas =
+                retrieved.stream()
+                        .map(nameExpr -> {
+                            NullLiteralExpr toAdd = new NullLiteralExpr();
+                            nullExprs.add(toAdd);
+                            return new CommonCodegenUtils.ReplacementTupla(nameExpr, toAdd);
+                        })
+                .collect(Collectors.toList());
+        CommonCodegenUtils.replaceNodesInStatement(toRead, replacementTuplas);
+        final List<NameExpr> newRetrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
+        assertTrue(newRetrieved.isEmpty());
+
+        final List<NullLiteralExpr> retrievedNullExprs =  toRead.stream()
+                .filter(node -> node instanceof NullLiteralExpr)
+                .map(NullLiteralExpr.class::cast)
+                .collect(Collectors.toList());
+        assertNotNull(nullExprs);
+        assertEquals(nullExprs.size(), retrievedNullExprs.size());
+        nullExprs.forEach(nullExpr -> assertTrue(retrievedNullExprs.contains(nullExpr)));
+    }
+
+    private BlockStmt getBlockStmt() {
+        String blockStatement = "{\nObject inputValue = 12;\n" +
+                "        if (stringObjectMap.containsKey(\"avalue\")) {\n" +
+                "            inputValue = stringObjectMap.get(\"avalue\");\n" +
+                "        } else {\n" +
+                "            return false;\n" +
+                "        }\n" +
+                "        if (inputValue instanceof Number && value instanceof Number) {\n" +
+                "            return ((Number) inputValue).doubleValue() >= ((Number) value).doubleValue();\n" +
+                "        } else {\n" +
+                "            return false;\n" +
+                "        }\n}";
+        return parseBlock(blockStatement);
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {

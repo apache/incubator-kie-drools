@@ -15,13 +15,15 @@
  */
 package org.kie.pmml.models.regression.model.tuples;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Class to represent a <b>table source/table category</b> tupla
  */
-public class KiePMMLTableSourceCategory {
+public class KiePMMLTableSourceCategory implements Serializable {
 
+    private static final long serialVersionUID = -8635798961429806015L;
     private final String source;
 
     private final String category;

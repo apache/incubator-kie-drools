@@ -24,10 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.smallrye.openapi.runtime.io.JsonUtil;
-import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -38,6 +36,11 @@ import org.kie.dmn.openapi.model.DMNModelIOSets;
 import org.kie.dmn.openapi.model.DMNModelIOSets.DSIOSets;
 import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNTypeUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.smallrye.openapi.runtime.io.JsonUtil;
+import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 
 public class DMNOASGeneratorImpl implements DMNOASGenerator {
 
@@ -91,7 +94,22 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         if (namingIntegrityCheck()) {
             return;
         }
-        throw new IllegalStateException("Couldn't determine unique naming policy");
+        reportCollisions();
+    }
+
+    private void reportCollisions() {
+        List<String> messages = new ArrayList<>();
+        Map<String, Long> countByName = typesIndex.stream().collect(Collectors.groupingBy(namingPolicy::getName, Collectors.counting()));
+        for (Entry<String, Long> kv : countByName.entrySet()) {
+            if (kv.getValue() > 1) {
+                List<DMNType> collidingOverName = typesIndex.stream().filter(t -> namingPolicy.getName(t).equals(kv.getKey())).collect(Collectors.toList());
+                List<DMNModel> fromModels = dmnModels.stream().filter(m -> m.getItemDefinitions().stream().anyMatch(itemDef -> collidingOverName.contains(itemDef.getType()))).collect(Collectors.toList());
+                String modelsCoords = fromModels.stream().map(m -> String.format("Model '%s' (namespace '%s')", m.getName(), m.getNamespace())).collect(Collectors.joining(", "));
+                String message = String.format("Naming collision for types named: %s defined in the DMN models: %s (colliding on '%s')", collidingOverName, modelsCoords, kv.getKey());
+                messages.add(message);
+            }
+        }
+        throw new IllegalStateException("Couldn't determine unique naming policy.\nEnsure all DMN models are defined in their own namespace.\n" + messages.stream().collect(Collectors.joining("\n")));
     }
 
     private boolean namingIntegrityCheck() {

@@ -596,7 +596,7 @@ public class QueryTest extends BaseModelTest {
 
                 "query unravel( String $g, String $c ) " +
                 "    ( " +
-                "        ( Anon( $g, $c ; ) and $c := String( this.contains( \"b\" ) ) ) " +
+                "        ( Anon( $g, $c ; ) and String( $c := this, this.contains( \"b\" ) ) ) " +
                 "        or " +
                 "        ( Anon( $g, $x ; ) and unravel( $x, $c ; ) ) " +
                 "    ) " +
@@ -750,16 +750,17 @@ public class QueryTest extends BaseModelTest {
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
-                "query peeps( String $name, int $age ) \n" +
-                "    Person( $name := name, $age := age; ) \n" +
-                "end\n" +
                 "\n" +
                 "rule x1\n" +
                 "when\n" +
                 "    peeps($age1 : $age, $name1 : $name)\n" +
                 "then\n" +
                 "   list.add( $name1 + \" : \" + $age1 );\n" +
-                "end \n";
+                "end \n" +
+                "\n" +
+                "query peeps( String $name, int $age ) \n" +
+                "    Person( $name := name, $age := age; ) \n" +
+                "end\n";
 
         KieSession ksession = getKieSession( str );
 
@@ -907,5 +908,232 @@ public class QueryTest extends BaseModelTest {
         }
         assertEquals(1, list.size());
         assertEquals("Mario", list.get(0));
+    }
+
+    @Test
+    public void testPositionalQueryWithAccumulate() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "declare Person\n" +
+                        "    name : String \n" +
+                        "    age : int \n" +
+                        "end" +
+                        "\n" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "  insert(new Person(\"Mark\", 37));\n" +
+                        "  insert(new Person(\"Edson\", 35));\n" +
+                        "  insert(new Person(\"Mario\", 40));\n" +
+                        "end\n" +
+                        "query accAge(String arg)\n" +
+                        "  accumulate ( Person ( arg, $age; ); \n" +
+                        "                $sum : sum($age)  \n" +
+                        "              )                          \n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+
+        QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
+
+        assertEquals( 1, results.size() );
+        final QueryResultsRow firstResult = results.iterator().next();
+
+        Object resultDrlx = firstResult.get("$sum");
+        assertEquals(37, resultDrlx);
+    }
+
+    @Test
+    public void testPositionalQueryWithAmbigousName() {
+        // DROOLS-6128
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "declare Person\n" +
+                        "    name : String \n" +
+                        "    age : int \n" +
+                        "end" +
+                        "\n" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "  insert(new Person(\"Mark\", 37));\n" +
+                        "  insert(new Person(\"Edson\", 35));\n" +
+                        "  insert(new Person(\"Mario\", 40));\n" +
+                        "end\n" +
+                        "query accAge(String arg)\n" +
+                        "  accumulate ( Person ( arg, age; ); \n" +
+                        "                $sum : sum(age)  \n" +
+                        "              )                          \n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+
+        QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
+
+        assertEquals( 1, results.size() );
+        final QueryResultsRow firstResult = results.iterator().next();
+
+        Object resultDrlx = firstResult.get("$sum");
+        assertEquals(37, resultDrlx);
+    }
+
+    @Test
+    public void testQueryWithAccumulateAndUnification() {
+        // DROOLS-6105
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "declare Person\n" +
+                "    name : String \n" +
+                "    age : int \n" +
+                "end" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new Person(\"Mark\", 37));\n" +
+                "  insert(new Person(\"Edson\", 35));\n" +
+                "  insert(new Person(\"Mario\", 40));\n" +
+                "end\n" +
+                "query accAge(String arg, int $sum)\n" +
+                "  $sum := Number() from accumulate ( Person ( arg, $age; ); \n" +
+                "                sum($age)  \n" +
+                "              )                          \n" +
+                "end\n" +
+                "rule callAcc when\n" +
+                "    $s: String()\n" +
+                "    accAge($s, $sum;)\n" +
+                "then\n" +
+                "    result.add($sum);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal( "result", result );
+
+        ksession.insert( "Mark" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, result.size() );
+        assertEquals( 37, (int)result.get(0) );
+    }
+
+    @Test
+    public void testQueryWithAccumulateInvokingQuery() {
+        // DROOLS-6105
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "declare Person\n" +
+                "    name : String \n" +
+                "    age : int \n" +
+                "end" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert(new Person(\"Mark\", 37));\n" +
+                "  insert(new Person(\"Edson\", 35));\n" +
+                "  insert(new Person(\"Mario\", 40));\n" +
+                "end\n" +
+                "query findPerson(String $name, int $age)\n" +
+                "  Person ( $name, $age; )\n" +
+                "end\n" +
+                "query accAge(String arg, int $sum)\n" +
+                "  $sum := Number() from accumulate ( findPerson( arg, $age; ); \n" +
+                "                sum($age)  \n" +
+                "              )                          \n" +
+                "end\n" +
+                "rule callAcc when\n" +
+                "    $s: String()\n" +
+                "    accAge($s, $sum;)\n" +
+                "then\n" +
+                "    result.add($sum);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal( "result", result );
+
+        ksession.insert( "Mark" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, result.size() );
+        assertEquals( 37, (int)result.get(0) );
+    }
+
+    @Test
+    public void testQueryDoubleUnification() {
+        // DROOLS-6105
+        final String str = "" +
+                "package org.drools.compiler.test  \n" +
+                "declare Location\n" +
+                "    thing : String \n" +
+                "    location : String \n" +
+                "end" +
+                "\n" +
+                "declare Edible\n" +
+                "   thing : String\n" +
+                "end" +
+                "\n" +
+                "query whereFood( String x, String y ) \n" +
+                "    Location(x, y;) \n" +
+                "    Edible(x;) \n" +
+                "end\n" +
+                "\n" +
+                "rule init when\n" +
+                "then\n" +
+                "        insert( new Location(\"crackers\", \"kitchen\") );\n" +
+                "        insert( new Edible(\"crackers\") );\n" +
+                "end\n" +
+                "";
+
+        KieSession ksession = getKieSession( str );
+        ksession.fireAllRules();
+
+        QueryResults results = ksession.getQueryResults("whereFood", Variable.v, "kitchen");
+        assertEquals(1, results.size());
+        QueryResultsRow row = results.iterator().next();
+        assertEquals("crackers", row.get( "x" ));
+    }
+
+    @Test
+    public void testQueryWithInheritance() {
+        // DROOLS-6105
+        final String str = "" +
+                "global java.util.List list;\n" +
+                "declare Thing \n" +
+                "    thing : String \n" +
+                "end \n" +
+                "declare Edible extends Thing \n" +
+                "end \n" +
+                "\n" +
+                "query look(List food)  \n" +
+                "    food := List() from accumulate( Edible(x;), \n" +
+                "                                    collectList( x ) ) \n" +
+                "end\n" +
+                "\n" +
+                "rule init when\n" +
+                "then\n" +
+                "        insert( new Edible( 'peach' ) ); \n" +
+                "end\n" +
+                "\n" +
+                "rule reactiveLook \n" +
+                "when \n" +
+                "    look($food;) \n" +
+                "then \n" +
+                "    list.addAll( $food ); \n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("peach", list.get(0));
     }
 }

@@ -1,6 +1,0 @@
-grant {
-    permission java.security.AllPermission;
-    
-    // Only for test purposes
-    permission java.lang.RuntimePermission "setSecurityManager";
- };

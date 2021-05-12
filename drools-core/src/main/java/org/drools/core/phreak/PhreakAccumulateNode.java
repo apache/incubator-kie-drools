@@ -48,6 +48,7 @@ import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakAccumulateNode {
+
     public void doNode(AccumulateNode accNode,
                        LeftTupleSink sink,
                        AccumulateMemory am,
@@ -610,14 +611,14 @@ public class PhreakAccumulateNode {
 
         Object result = accumulate.getResult(memory.workingMemoryContext, accctx, leftTuple, workingMemory);
         propagateResult( accNode, sink, leftTuple, context, workingMemory, memory, trgLeftTuples, stagedLeftTuples,
-                         null, result, (AccumulateContextEntry) accctx, propagationContext );
+                         null, result, (AccumulateContextEntry) accctx, propagationContext, workingMemory.getSessionConfiguration().isAccumulateNullPropagation());
     }
 
     protected final void propagateResult(AccumulateNode accNode, LeftTupleSink sink, LeftTuple leftTuple, PropagationContext context,
                                          InternalWorkingMemory workingMemory, AccumulateMemory memory, TupleSets<LeftTuple> trgLeftTuples,
                                          TupleSets<LeftTuple> stagedLeftTuples, Object key, Object result,
-                                         AccumulateContextEntry accPropCtx, PropagationContext propagationContext) {
-        if ( result == null) {
+                                         AccumulateContextEntry accPropCtx, PropagationContext propagationContext, boolean allowNullPropagation) {
+        if ( !allowNullPropagation && result == null) {
             if ( accPropCtx.isPropagated()) {
                 // retract
                 trgLeftTuples.addDelete( accPropCtx.getResultLeftTuple());

@@ -102,7 +102,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
 
         int nonStaticFields = 0;
         for (FieldDefinition fieldDefinition : typeDeclarationFields) {
-            if (fieldDefinition.isStatic()) {
+            if (fieldDefinition.isStatic() || fieldDefinition.isOverride()) {
                 continue;
             }
             nonStaticFields++;
@@ -110,9 +110,9 @@ class FullArgumentConstructor implements GeneratedConstructor {
             Type returnType = parseType(fieldDefinition.getObjectType());
             addConstructorArgument(constructor, returnType, fieldName);
             fieldAssignStatement.add(fieldAssignment(fieldName));
-
-            constructor.setBody(new BlockStmt(fieldAssignStatement));
         }
+
+        constructor.setBody(new BlockStmt(fieldAssignStatement));
 
         if (constructor.getParameters().isNonEmpty()) {
             generatedClass.addMember( constructor );

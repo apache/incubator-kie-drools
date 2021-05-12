@@ -292,8 +292,8 @@ public abstract class AbstractRunnerHelper {
     private String determineExceptionMessage(FactMappingValue factMappingValue, String factName) {
         if (factMappingValue.getCollectionPathToValue() == null) {
             return ScenarioSimulationServerMessages.getFactWithWrongValueExceptionMessage(factName,
-                                                                                          factMappingValue.getErrorValue(),
-                                                                                          factMappingValue.getRawValue());
+                                                                                          factMappingValue.getRawValue(),
+                                                                                          factMappingValue.getErrorValue());
         }
         return ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName,
                                                                                   factMappingValue.getCollectionPathToValue(),

@@ -73,7 +73,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
             Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, workingMemory);
 
             propagateResult( accNode, sink, leftTuple, context, workingMemory, memory, trgLeftTuples, stagedLeftTuples,
-                             contextEntry.getKey(), result, contextEntry, propagationContext );
+                             contextEntry.getKey(), result, contextEntry, propagationContext, false ); // don't want to propagate null
 
             contextEntry.setToPropagate(false);
         }

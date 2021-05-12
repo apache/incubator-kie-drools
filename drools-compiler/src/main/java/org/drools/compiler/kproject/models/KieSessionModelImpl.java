@@ -66,6 +66,8 @@ public class KieSessionModelImpl
 
     private boolean                          threadSafe = true;
 
+    private boolean                          accumulateNullPropagation = false;
+
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
@@ -109,6 +111,17 @@ public class KieSessionModelImpl
     @Override
     public KieSessionModel setThreadSafe( boolean threadSafe ) {
         this.threadSafe = threadSafe;
+        return this;
+    }
+
+    @Override
+    public boolean isAccumulateNullPropagation() {
+        return accumulateNullPropagation;
+    }
+
+    @Override
+    public KieSessionModel setAccumulateNullPropagation(boolean accumulateNullPropagation) {
+        this.accumulateNullPropagation = accumulateNullPropagation;
         return this;
     }
 
@@ -280,6 +293,7 @@ public class KieSessionModelImpl
             writer.addAttribute( "default", Boolean.toString(kSession.isDefault()) );
             writer.addAttribute( "directFiring", Boolean.toString(kSession.isDirectFiring()) );
             writer.addAttribute( "threadSafe", Boolean.toString(kSession.isThreadSafe()) );
+            writer.addAttribute( "accumulateNullPropagation", Boolean.toString(kSession.isAccumulateNullPropagation()) );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
@@ -329,6 +343,7 @@ public class KieSessionModelImpl
             kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
             kSession.setDirectFiring( "true".equals(reader.getAttribute( "directFiring" )) );
             kSession.setThreadSafe( "true".equals(reader.getAttribute( "threadSafe" )) );
+            kSession.setAccumulateNullPropagation( "true".equals(reader.getAttribute( "accumulateNullPropagation" )) );
 
             String kSessionType = reader.getAttribute("type");
             kSession.setType(kSessionType != null ? KieSessionType.valueOf( kSessionType.toUpperCase() ) : KieSessionType.STATEFUL);

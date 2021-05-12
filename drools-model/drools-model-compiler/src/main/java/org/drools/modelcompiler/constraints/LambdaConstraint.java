@@ -75,6 +75,10 @@ public class LambdaConstraint extends AbstractConstraint {
         this(evaluator, PredicateInformation.EMPTY_PREDICATE_INFORMATION);
     }
 
+    public ConstraintEvaluator getEvaluator() {
+        return evaluator;
+    }
+
     private void initIndexes() {
         Index index = evaluator.getIndex();
         if (index != null) {

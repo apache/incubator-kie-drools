@@ -54,11 +54,11 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class WindowReferenceGenerator {
 
@@ -112,7 +112,7 @@ public class WindowReferenceGenerator {
 
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
-        final Type initType = parseType(initClass.getCanonicalName());
+        final Type initType = toJPType(initClass);
         initializer.addArgument(new ClassExpr(initType));
 
         if (pattern.getSource() != null) {
@@ -135,7 +135,7 @@ public class WindowReferenceGenerator {
         return descrs.stream()
                 .map( descr -> {
                     String expression = descr.toString();
-                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, true);
+                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, null);
                     DrlxParseResult drlxParseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
                     return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
                         @Override

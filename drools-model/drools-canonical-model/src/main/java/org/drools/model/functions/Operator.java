@@ -36,6 +36,10 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
         return false;
     }
 
+    default boolean isCompatibleWithType(Class<?> type) {
+        return true;
+    }
+
     interface SingleValue<A, B> extends Operator<A, B> {
         default boolean test( A o1, B[] o2 ) {
             return eval( o1, o2[0] );

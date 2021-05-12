@@ -919,44 +919,44 @@ public class AlphaNodeRangeIndexingTest {
 
     @Test
     public void testMixedRangeHashAndOther() {
-        final String drl =             "package org.drools.compiler.test\n" +
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "global java.util.List results;\n" +
-                "rule test1\n when\n" +
-                "   Person( age >= 18 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n" +
-                "rule test2\n when\n" +
-                "   Person( age < 25 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n" +
-                "rule test3\n when\n" +
-                "   Person( age > 8 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n" +
-                "rule test4\n when\n" +
-                "   Person( age == 60 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n" +
-                "rule test5\n when\n" +
-                "   Person( age == 12 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n" +
-                "rule test6\n when\n" +
-                "   Person( age == 4 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n" +
-                "rule test7\n when\n" +
-                "   Person( age != 18 )\n" +
-                "then\n" +
-                "   results.add(drools.getRule().getName());" +
-                "end\n";
+        final String drl = "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "global java.util.List results;\n" +
+                           "rule test1\n when\n" +
+                           "   Person( age >= 18 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
+                           "rule test2\n when\n" +
+                           "   Person( age < 25 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
+                           "rule test3\n when\n" +
+                           "   Person( age > 8 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
+                           "rule test4\n when\n" +
+                           "   Person( age == 60 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
+                           "rule test5\n when\n" +
+                           "   Person( age == 12 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
+                           "rule test6\n when\n" +
+                           "   Person( age == 4 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
+                           "rule test7\n when\n" +
+                           "   Person( age != 18 )\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n";
 
         final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
@@ -1017,5 +1017,55 @@ public class AlphaNodeRangeIndexingTest {
         ksession.insert(new Person("10"));
         fired = ksession.fireAllRules();
         assertEquals(1, fired);
+    }
+
+    @Test
+    public void testDifferentNumberOfDigitsInDecimal() {
+        // DROOLS-6313
+        checkDifferentNumberOfDigitsInDecimal("10");
+        checkDifferentNumberOfDigitsInDecimal("10.00");
+        checkDifferentNumberOfDigitsInDecimal("10B");
+    }
+
+    private void checkDifferentNumberOfDigitsInDecimal(String value) {
+        String drl =
+                "import " + Factor.class.getCanonicalName() + ";\n" +
+                 "rule R1 when\n" +
+                 "    Factor( factorAmt > " + value + " )\n" +
+                 "then end\n" +
+                 "rule R2 when\n" +
+                 "    Factor( factorAmt > 0.0, factorAmt <= 1.0 )\n" +
+                 "then end\n" +
+                 "rule R3 when\n" +
+                 "    Factor( factorAmt > 1.0, factorAmt <= 3.0 )\n" +
+                 "then end\n" +
+                 "rule R4 when\n" +
+                 "    Factor( factorAmt > 3.0, factorAmt <= 6.0 )\n" +
+                 "then end\n" +
+                 "rule R5 when\n" +
+                 "    Factor( factorAmt > 6.0, factorAmt <= 10.0 )\n" +
+                 "then end\n" +
+                 "rule R6 when\n" +
+                 "    Factor( factorAmt > 10.0 )\n" +
+                 "then end\n";
+
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+
+        final KieSession ksession = kbase.newKieSession();
+        ksession.insert(new Factor(25.0));
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    public static class Factor {
+
+        private final double factorAmt;
+
+        public Factor(double factorAmt) {
+            this.factorAmt = factorAmt;
+        }
+
+        public double getFactorAmt() {
+            return factorAmt;
+        }
     }
 }
