@@ -1,6 +1,6 @@
-name: Build Chain Full Downstream
+name: Apps Build
 
-on: [pull_request]
+on: [pull_request_target]
 
 jobs:
   build-chain:
@@ -25,9 +25,12 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.3
+        uses: kiegroup/github-action-build-chain@v2.5.4
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
-          flow-type: full-downstream
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          BUILD_MVN_OPTS: "-fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
+      - name: Publish Test Report
+        uses: scacap/action-surefire-report@v1
+        with:
+          report_paths: '**/*-reports/TEST-*.xml'
