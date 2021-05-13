@@ -15,9 +15,9 @@
  */
 import { getWrapper } from '@kogito-apps/components-common';
 import React from 'react';
-import TestProcessListDriver from '../mocks/TestProcessListDriver';
+import TestProcessListDriver from './mocks/TestProcessListDriver';
 import ProcessListPage from '../ProcessListPage';
-import { processInstances } from '../mocks/Mocks';
+import { processInstances } from './mocks/Mocks';
 import wait from 'waait';
 import { SortByDirection } from '@patternfly/react-table';
 import { act } from 'react-dom/test-utils';

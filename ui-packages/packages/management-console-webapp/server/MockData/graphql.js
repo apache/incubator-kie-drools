@@ -86,7 +86,7 @@ module.exports ={ ProcessInstanceData : [
     rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'ERROR',
-    addons: ['jobs-management', 'prometheus-monitoring'],
+    addons: ['jobs-management', 'prometheus-monitoring','process-management'],
     serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     error: {

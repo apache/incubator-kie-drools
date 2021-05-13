@@ -39,14 +39,14 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
               <Link
                 aria-current={null}
                 className="pf-c-nav__link"
-                data-ouia-navigation-name="process-instances"
+                data-ouia-navigation-name="Processes"
                 onClick={[Function]}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
                   aria-current={null}
                   className="pf-c-nav__link"
-                  data-ouia-navigation-name="process-instances"
+                  data-ouia-navigation-name="Processes"
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
@@ -54,7 +54,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                   <a
                     aria-current={null}
                     className="pf-c-nav__link"
-                    data-ouia-navigation-name="process-instances"
+                    data-ouia-navigation-name="Processes"
                     href="/ProcessInstances"
                     onClick={[Function]}
                   >
@@ -148,14 +148,14 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
               <Link
                 aria-current="page"
                 className="pf-c-nav__link pf-m-current"
-                data-ouia-navigation-name="process-instances"
+                data-ouia-navigation-name="Processes"
                 onClick={[Function]}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
                   aria-current="page"
                   className="pf-c-nav__link pf-m-current"
-                  data-ouia-navigation-name="process-instances"
+                  data-ouia-navigation-name="Processes"
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
@@ -163,7 +163,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                   <a
                     aria-current="page"
                     className="pf-c-nav__link pf-m-current"
-                    data-ouia-navigation-name="process-instances"
+                    data-ouia-navigation-name="Processes"
                     href="/ProcessInstances"
                     onClick={[Function]}
                   >

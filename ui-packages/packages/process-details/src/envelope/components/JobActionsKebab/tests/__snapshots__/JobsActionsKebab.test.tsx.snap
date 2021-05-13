@@ -4,9 +4,9 @@ exports[`job actions kebab tests dropdown open/close tests and details click 1`]
 <JobActionsKebab
   driver={
     Object {
-      "abortProcess": [MockFunction],
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
+      "handleProcessAbort": [MockFunction],
       "jobsQuery": [MockFunction],
       "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],

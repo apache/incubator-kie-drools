@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import {
+  BulkProcessInstanceActionResponse,
+  OperationType,
+  ProcessInstance
+} from '@kogito-apps/management-console-shared';
 import {
   ProcessInstanceFilter,
   ProcessListDriver,
   SortBy
-} from '../../../../api';
+} from '../../../../../api';
 
 export default class TestProcessListDriver implements ProcessListDriver {
   private readonly processInstances: ProcessInstance[];
@@ -33,6 +37,24 @@ export default class TestProcessListDriver implements ProcessListDriver {
   ) {
     this.processInstances = processInstances;
     this.childProcessInstances = childProcessInstances;
+  }
+  handleProcessMultipleAction(
+    processInstances: ProcessInstance[],
+    operationType: OperationType
+  ): Promise<BulkProcessInstanceActionResponse> {
+    return Promise.resolve({
+      successProcessInstances: [],
+      failedProcessInstances: []
+    });
+  }
+  handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
+    return Promise.resolve();
+  }
+  handleProcessRetry(processInstance: ProcessInstance): Promise<void> {
+    return Promise.resolve();
+  }
+  handleProcessAbort(processInstance: ProcessInstance): Promise<void> {
+    return Promise.resolve();
   }
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   private doSetState(processListFilter: ProcessInstanceFilter, sortBy: SortBy) {

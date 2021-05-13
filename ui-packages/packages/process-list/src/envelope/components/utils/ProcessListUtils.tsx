@@ -23,7 +23,8 @@ import {
 } from '@patternfly/react-icons';
 import {
   ProcessInstanceState,
-  ProcessInstance
+  ProcessInstance,
+  BulkListItem
 } from '@kogito-apps/management-console-shared';
 export const ProcessInstanceIconCreator = (
   state: ProcessInstanceState
@@ -101,4 +102,38 @@ export const alterOrderByObj = (orderByObj: {
     delete orderByObj['created'];
   }
   return orderByObj;
+};
+
+export const checkProcessInstanceState = (
+  processInstance: Pick<ProcessInstance, 'state' | 'addons' | 'serviceUrl'>
+): boolean => {
+  if (
+    (processInstance.state === ProcessInstanceState.Error ||
+      processInstance.state === ProcessInstanceState.Active ||
+      processInstance.state === ProcessInstanceState.Suspended) &&
+    processInstance.addons.includes('process-management') &&
+    processInstance.serviceUrl
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const formatForBulkListProcessInstance = (
+  processInstanceList: (ProcessInstance & { errorMessage?: string })[]
+): BulkListItem[] => {
+  const formattedItems: BulkListItem[] = [];
+  processInstanceList.forEach(
+    (item: ProcessInstance & { errorMessage?: string }) => {
+      const formattedObj: BulkListItem = {
+        id: item.id,
+        description: item.businessKey,
+        name: item.processName,
+        errorMessage: item.errorMessage ? item.errorMessage : null
+      };
+      formattedItems.push(formattedObj);
+    }
+  );
+  return formattedItems;
 };

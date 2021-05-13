@@ -16,7 +16,6 @@
 
 import { ProcessDetailsDriver } from '../../../api';
 import {
-  AbortResponse,
   Job,
   JobCancel,
   ProcessInstance,
@@ -47,7 +46,7 @@ export default class TestProcessDetailsDriver implements ProcessDetailsDriver {
     // do nothing
   }
 
-  abortProcess(data: ProcessInstance): Promise<AbortResponse> {
+  handleProcessAbort(data: ProcessInstance): Promise<void> {
     return Promise.resolve(undefined);
   }
 

@@ -16,10 +16,13 @@
 import { getWrapper } from '@kogito-apps/components-common';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import TestProcessListDriver from '../../ProcessListPage/mocks/TestProcessListDriver';
-import { childProcessInstances } from '../mocks/Mocks';
+import TestProcessListDriver from '../../ProcessListPage/tests/mocks/TestProcessListDriver';
+import { childProcessInstances } from './mocks/Mocks';
 import ProcessListChildTable from '../ProcessListChildTable';
+import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
+import { Checkbox } from '@patternfly/react-core';
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
+
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
@@ -43,6 +46,12 @@ jest.mock('@kogito-apps/components-common', () => ({
   }
 }));
 
+jest.mock('@kogito-apps/management-console-shared', () => ({
+  ...jest.requireActual('@kogito-apps/management-console-shared'),
+  ProcessInfoModal: () => {
+    return <MockedComponent />;
+  }
+}));
 describe('ProcessListChildTable test', () => {
   it('render table', async () => {
     const driver = new TestProcessListDriver([], childProcessInstances);
@@ -52,8 +61,22 @@ describe('ProcessListChildTable test', () => {
     );
     const props = {
       driver,
-      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d'
+      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processInstances: [
+        ...ProcessInstances,
+        { ...ProcessInstances[0], id: 'e4448857-fa0c-403b-ad69-f0a353458b9d' }
+      ],
+      setProcessInstances: jest.fn(),
+      selectedInstances: [],
+      setSelectedInstances: jest.fn(),
+      setSelectableInstances: jest.fn(),
+      onSkipClick: jest.fn(),
+      onRetryClick: jest.fn(),
+      onAbortClick: jest.fn()
     };
+    driverGetChildQueryMock.mockImplementation(() => {
+      return Promise.resolve(props.processInstances);
+    });
     let wrapper;
     await act(async () => {
       wrapper = getWrapper(
@@ -61,6 +84,7 @@ describe('ProcessListChildTable test', () => {
         'ProcessListChildTable'
       );
     });
+    wrapper = wrapper.update();
     expect(wrapper).toMatchSnapshot();
     expect(driverGetChildQueryMock).toHaveBeenCalledWith(props.parentProcessId);
   });
@@ -73,7 +97,18 @@ describe('ProcessListChildTable test', () => {
     );
     const props = {
       driver,
-      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d'
+      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processInstances: [
+        ...ProcessInstances,
+        { ...ProcessInstances[0], id: 'e4448857-fa0c-403b-ad69-f0a353458b9d' }
+      ],
+      setProcessInstances: jest.fn(),
+      selectedInstances: [],
+      setSelectedInstances: jest.fn(),
+      setSelectableInstances: jest.fn(),
+      onSkipClick: jest.fn(),
+      onRetryClick: jest.fn(),
+      onAbortClick: jest.fn()
     };
     driverGetChildQueryMock.mockImplementation(() => {
       throw new Error('404 error');
@@ -99,7 +134,22 @@ describe('ProcessListChildTable test', () => {
     );
     const props = {
       driver,
-      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d'
+      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processInstances: [
+        ...ProcessInstances,
+        {
+          ...ProcessInstances[0],
+          id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+          childProcessInstances: []
+        }
+      ],
+      setProcessInstances: jest.fn(),
+      selectedInstances: [],
+      setSelectedInstances: jest.fn(),
+      setSelectableInstances: jest.fn(),
+      onSkipClick: jest.fn(),
+      onRetryClick: jest.fn(),
+      onAbortClick: jest.fn()
     };
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve([]);
@@ -116,5 +166,90 @@ describe('ProcessListChildTable test', () => {
     const EmptyState = wrapper.find('KogitoEmptyState');
     expect(EmptyState.exists()).toBeTruthy();
     expect(EmptyState).toMatchSnapshot();
+  });
+  it('checkbox selected - true', async () => {
+    const driver = new TestProcessListDriver([], childProcessInstances);
+    const driverGetChildQueryMock = jest.spyOn(
+      driver,
+      'getChildProcessesQuery'
+    );
+    const props = {
+      driver,
+      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processInstances: [
+        ...ProcessInstances,
+        { ...ProcessInstances[0], id: 'e4448857-fa0c-403b-ad69-f0a353458b9d' }
+      ],
+      setProcessInstances: jest.fn(),
+      selectedInstances: [],
+      setSelectedInstances: jest.fn(),
+      setSelectableInstances: jest.fn(),
+      onSkipClick: jest.fn(),
+      onRetryClick: jest.fn(),
+      onAbortClick: jest.fn()
+    };
+    driverGetChildQueryMock.mockImplementation(() => {
+      return Promise.resolve(props.processInstances);
+    });
+    let wrapper;
+    await act(async () => {
+      wrapper = getWrapper(
+        <ProcessListChildTable {...props} />,
+        'ProcessListChildTable'
+      );
+    });
+    wrapper = wrapper.update();
+    await act(async () => {
+      wrapper
+        .find(Checkbox)
+        .at(0)
+        .find('input')
+        .simulate('change', { target: { checked: true } });
+    });
+    wrapper = wrapper.update();
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+
+  it('checkbox selected - false', async () => {
+    const driver = new TestProcessListDriver([], childProcessInstances);
+    const driverGetChildQueryMock = jest.spyOn(
+      driver,
+      'getChildProcessesQuery'
+    );
+    const props = {
+      driver,
+      parentProcessId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+      processInstances: [
+        ...ProcessInstances,
+        { ...ProcessInstances[0], id: 'e4448857-fa0c-403b-ad69-f0a353458b9d' }
+      ],
+      setProcessInstances: jest.fn(),
+      selectedInstances: [],
+      setSelectedInstances: jest.fn(),
+      setSelectableInstances: jest.fn(),
+      onSkipClick: jest.fn(),
+      onRetryClick: jest.fn(),
+      onAbortClick: jest.fn()
+    };
+    driverGetChildQueryMock.mockImplementation(() => {
+      return Promise.resolve(props.processInstances);
+    });
+    let wrapper;
+    await act(async () => {
+      wrapper = getWrapper(
+        <ProcessListChildTable {...props} />,
+        'ProcessListChildTable'
+      );
+    });
+    wrapper = wrapper.update();
+    await act(async () => {
+      wrapper
+        .find(Checkbox)
+        .at(0)
+        .find('input')
+        .simulate('change', { target: { checked: false } });
+    });
+    wrapper = wrapper.update();
+    expect(props.setSelectedInstances).toHaveBeenCalled();
   });
 });

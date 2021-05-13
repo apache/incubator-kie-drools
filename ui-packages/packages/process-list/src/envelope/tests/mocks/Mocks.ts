@@ -69,6 +69,10 @@ export const MockedApiRequests = jest.fn<
   processList__openProcess: jest.fn(),
   processList__applyFilter: jest.fn(),
   processList__applySorting: jest.fn(),
+  processList__handleProcessSkip: jest.fn(),
+  processList__handleProcessRetry: jest.fn(),
+  processList__handleProcessAbort: jest.fn(),
+  processList__handleProcessMultipleAction: jest.fn(),
   processList__query: jest.fn(),
   processList__getChildProcessesQuery: jest.fn()
 }));

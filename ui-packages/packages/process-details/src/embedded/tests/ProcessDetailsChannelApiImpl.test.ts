@@ -140,10 +140,10 @@ describe('ProcessDetailsChannelApiImpl tests', () => {
     expect(driver.getProcessDiagram).toHaveBeenCalledWith(data);
   });
 
-  it('processDetails__abortProcess', () => {
-    api.processDetails__abortProcess(data);
+  it('processDetails__handleProcessAbort', () => {
+    api.processDetails__handleProcessAbort(data);
 
-    expect(driver.abortProcess).toHaveBeenCalledWith(data);
+    expect(driver.handleProcessAbort).toHaveBeenCalledWith(data);
   });
   it('processDetails__rescheduleJob', () => {
     const repeatInterval = 0;

@@ -7413,7 +7413,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 <time
                                                   dateTime={"2020-08-27T03:35:50.147Z"}
                                                 >
-                                                  8 months ago
+                                                  9 months ago
                                                 </time>
                                               </t>
                                             </td>
@@ -8970,7 +8970,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 <time
                                                   dateTime={"2020-08-27T04:35:54.631Z"}
                                                 >
-                                                  8 months
+                                                  9 months
                                                 </time>
                                               </t>
                                             </td>
@@ -9108,7 +9108,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 <time
                                                   dateTime={"2020-08-27T03:35:54.635Z"}
                                                 >
-                                                  8 months ago
+                                                  9 months ago
                                                 </time>
                                               </t>
                                             </td>
@@ -10745,7 +10745,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 <time
                                                   dateTime={"2020-08-27T04:35:54.631Z"}
                                                 >
-                                                  8 months
+                                                  9 months
                                                 </time>
                                               </t>
                                             </td>
@@ -10883,7 +10883,7 @@ exports[`Jobs management table component tests Snapshot test with default props 
                                                 <time
                                                   dateTime={"2020-08-27T03:35:54.635Z"}
                                                 >
-                                                  8 months ago
+                                                  9 months ago
                                                 </time>
                                               </t>
                                             </td>

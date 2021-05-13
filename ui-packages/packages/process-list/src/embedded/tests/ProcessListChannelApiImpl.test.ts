@@ -18,6 +18,7 @@ import { ProcessListChannelApiImpl } from '../ProcessListChannelApiImpl';
 import { OrderBy, ProcessListDriver } from '../../api';
 import { MockedProcessListDriver } from './utils/Mocks';
 import {
+  OperationType,
   ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
@@ -94,7 +95,28 @@ describe('ProcessListChannelApiImpl tests', () => {
     api.processList__applySorting(initialState.sortBy);
     expect(driver.applySorting).toHaveBeenCalledWith(initialState.sortBy);
   });
-
+  it('processList__handleProcessSkip', () => {
+    api.processList__handleProcessSkip(processInstance);
+    expect(driver.handleProcessSkip).toHaveBeenCalledWith(processInstance);
+  });
+  it('processList__handleProcessRetry', () => {
+    api.processList__handleProcessRetry(processInstance);
+    expect(driver.handleProcessRetry).toHaveBeenCalledWith(processInstance);
+  });
+  it('processList__handleProcessAbort', () => {
+    api.processList__handleProcessAbort(processInstance);
+    expect(driver.handleProcessAbort).toHaveBeenCalledWith(processInstance);
+  });
+  it('processList__handleProcessMultipleAction', () => {
+    api.processList__handleProcessMultipleAction(
+      [processInstance],
+      OperationType.ABORT
+    );
+    expect(driver.handleProcessMultipleAction).toHaveBeenCalledWith(
+      [processInstance],
+      OperationType.ABORT
+    );
+  });
   it('processList__getProcessInstancesquery', () => {
     api.processList__query(0, 10);
     expect(driver.query).toHaveBeenCalledWith(0, 10);

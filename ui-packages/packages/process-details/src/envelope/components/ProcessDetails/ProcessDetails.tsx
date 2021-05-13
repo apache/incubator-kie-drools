@@ -45,7 +45,7 @@ import {
   ProcessInstance,
   ProcessInstanceState,
   setTitle,
-  AbortResponse,
+  TitleType,
   SvgSuccessResponse,
   SvgErrorResponse
 } from '@kogito-apps/management-console-shared';
@@ -194,20 +194,29 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     );
   };
 
-  const onShowMessage = (abortResults: AbortResponse): void => {
-    setTitleType(abortResults.type);
-    setInfoModalTitle(abortResults.title);
-    setInfoModalContent(abortResults.content);
-    handleInfoModalToggle();
-  };
-
   const handleInfoModalToggle = (): void => {
     setIsInfoModalOpen(!isInfoModalOpen);
   };
 
-  const onAbortClick = async (): Promise<void> => {
-    const abortResults: AbortResponse = await driver.abortProcess(data);
-    onShowMessage(abortResults);
+  const onAbortClick = async (
+    processInstance: ProcessInstance
+  ): Promise<void> => {
+    try {
+      await driver.handleProcessAbort(processInstance);
+      setTitleType(TitleType.SUCCESS);
+      setInfoModalTitle('Abort operation');
+      setInfoModalContent(
+        `The process ${processInstance.processName} was successfully aborted.`
+      );
+    } catch (abortError) {
+      setTitleType(TitleType.FAILURE);
+      setInfoModalTitle('Abort operation');
+      setInfoModalContent(
+        `Failed to abort process ${processInstance.processName}. Message: ${abortError.message}`
+      );
+    } finally {
+      handleInfoModalToggle();
+    }
   };
 
   const abortButton = (): JSX.Element => {
@@ -219,7 +228,11 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       data.serviceUrl !== null
     ) {
       return (
-        <Button variant="secondary" id="abort-button" onClick={onAbortClick}>
+        <Button
+          variant="secondary"
+          id="abort-button"
+          onClick={() => onAbortClick(data)}
+        >
           Abort
         </Button>
       );

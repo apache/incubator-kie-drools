@@ -15,7 +15,11 @@
  */
 
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import {
+  BulkProcessInstanceActionResponse,
+  OperationType,
+  ProcessInstance
+} from '@kogito-apps/management-console-shared';
 import {
   ProcessInstanceFilter,
   ProcessListChannelApi,
@@ -39,6 +43,30 @@ export default class ProcessListEnvelopeViewDriver
   }
   applySorting(sortBy: SortBy): Promise<void> {
     return this.channelApi.requests.processList__applySorting(sortBy);
+  }
+  handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
+    return this.channelApi.requests.processList__handleProcessSkip(
+      processInstance
+    );
+  }
+  handleProcessRetry(processInstance: ProcessInstance): Promise<void> {
+    return this.channelApi.requests.processList__handleProcessRetry(
+      processInstance
+    );
+  }
+  handleProcessAbort(processInstance: ProcessInstance): Promise<void> {
+    return this.channelApi.requests.processList__handleProcessAbort(
+      processInstance
+    );
+  }
+  handleProcessMultipleAction(
+    processInstances: ProcessInstance[],
+    operationType: OperationType
+  ): Promise<BulkProcessInstanceActionResponse> {
+    return this.channelApi.requests.processList__handleProcessMultipleAction(
+      processInstances,
+      operationType
+    );
   }
   query(offset: number, limit: number): Promise<ProcessInstance[]> {
     return this.channelApi.requests.processList__query(offset, limit);

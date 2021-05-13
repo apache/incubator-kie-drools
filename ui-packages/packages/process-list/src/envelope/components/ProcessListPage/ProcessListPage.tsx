@@ -70,6 +70,12 @@ const ProcessListPage: React.FC<ProcessListPageProps & OUIAProps> = ({
     index: 3,
     direction: SortByDirection.desc
   });
+  const [selectedInstances, setSelectedInstances] = useState<ProcessInstance[]>(
+    []
+  );
+  const [selectableInstances, setSelectableInstances] = useState<number>(0);
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+
   useEffect(() => {
     if (isEnvelopeConnectedToChannel) {
       initLoad();
@@ -89,10 +95,19 @@ const ProcessListPage: React.FC<ProcessListPageProps & OUIAProps> = ({
     doQuery(0, 10, true);
   };
 
-  const countExpandableRows = (processInstances: ProcessInstance[]) => {
-    processInstances.forEach(
-      (processInstance, index) => (expanded[index] = false)
-    );
+  const countExpandableRows = (instances: ProcessInstance[]): void => {
+    instances.forEach((processInstance, index) => {
+      expanded[index] = false;
+      processInstance.isSelected = false;
+      processInstance.isOpen = false;
+      processInstance.childProcessInstances = [];
+      if (
+        processInstance.serviceUrl &&
+        processInstance.addons.includes('process-management')
+      ) {
+        setSelectableInstances(prev => prev + 1);
+      }
+    });
   };
 
   const doQuery = async (
@@ -103,6 +118,8 @@ const ProcessListPage: React.FC<ProcessListPageProps & OUIAProps> = ({
     _loadMore: boolean = false
   ): Promise<void> => {
     setIsLoadingMore(_loadMore);
+    setSelectableInstances(0);
+    setSelectedInstances([]);
     try {
       const response: ProcessInstance[] = await driver.query(_offset, _limit);
       setLimit(response.length);
@@ -124,6 +141,17 @@ const ProcessListPage: React.FC<ProcessListPageProps & OUIAProps> = ({
       setIsLoadingMore(false);
     }
   };
+
+  useEffect(() => {
+    if (
+      selectedInstances.length === selectableInstances &&
+      selectableInstances !== 0
+    ) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
+    }
+  }, [processInstances]);
 
   const applyFilter = async (filter: ProcessInstanceFilter): Promise<void> => {
     setIsLoading(true);
@@ -187,6 +215,13 @@ const ProcessListPage: React.FC<ProcessListPageProps & OUIAProps> = ({
         setFilters={setFilters}
         processStates={processStates}
         setProcessStates={setProcessStates}
+        selectedInstances={selectedInstances}
+        setSelectedInstances={setSelectedInstances}
+        processInstances={processInstances}
+        setProcessInstances={setProcessInstances}
+        isAllChecked={isAllChecked}
+        setIsAllChecked={setIsAllChecked}
+        driver={driver}
       />
       {filters.status.length > 0 ? (
         <>
@@ -198,6 +233,12 @@ const ProcessListPage: React.FC<ProcessListPageProps & OUIAProps> = ({
             driver={driver}
             onSort={applySorting}
             sortBy={sortBy}
+            setProcessInstances={setProcessInstances}
+            selectedInstances={selectedInstances}
+            setSelectedInstances={setSelectedInstances}
+            selectableInstances={selectableInstances}
+            setSelectableInstances={setSelectableInstances}
+            setIsAllChecked={setIsAllChecked}
           />
           {mustShowLoadMore && (
             <LoadMore

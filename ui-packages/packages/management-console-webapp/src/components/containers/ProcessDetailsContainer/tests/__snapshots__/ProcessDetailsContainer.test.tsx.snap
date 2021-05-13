@@ -12,9 +12,9 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
         "_ProcessDetailsState": Object {
           "id": "",
         },
-        "abortProcess": [Function],
         "cancelJob": [Function],
         "getProcessDiagram": [Function],
+        "handleProcessAbort": [Function],
         "listeners": Array [
           Object {
             "onOpen": [Function],

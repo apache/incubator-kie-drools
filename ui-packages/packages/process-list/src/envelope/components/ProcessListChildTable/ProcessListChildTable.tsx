@@ -17,7 +17,10 @@
 import { ProcessListDriver } from '../../../api';
 import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import React, { useEffect, useState } from 'react';
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import {
+  ProcessInstance,
+  ProcessInstanceState
+} from '@kogito-apps/management-console-shared';
 import _ from 'lodash';
 import {
   ServerErrors,
@@ -35,12 +38,38 @@ import {
 } from '../utils/ProcessListUtils';
 import { HistoryIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
+import ProcessListActionsKebab from '../ProcessListActionsKebab/ProcessListActionsKebab';
+import { Checkbox } from '@patternfly/react-core';
+import DisablePopup from '../DisablePopup/DisablePopup';
+import ErrorPopover from '../ErrorPopover/ErrorPopover';
+import '../styles.css';
 export interface ProcessListChildTableProps {
   parentProcessId: string;
+  processInstances: ProcessInstance[];
+  setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
+  selectedInstances: ProcessInstance[];
+  setSelectedInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   driver: ProcessListDriver;
+  onSkipClick: (processInstance: ProcessInstance) => Promise<void>;
+  onRetryClick: (processInstance: ProcessInstance) => Promise<void>;
+  onAbortClick: (processInstance: ProcessInstance) => Promise<void>;
+  setSelectableInstances: React.Dispatch<React.SetStateAction<number>>;
 }
 const ProcessListChildTable: React.FC<ProcessListChildTableProps &
-  OUIAProps> = ({ parentProcessId, driver, ouiaId, ouiaSafe }) => {
+  OUIAProps> = ({
+  parentProcessId,
+  selectedInstances,
+  setSelectedInstances,
+  processInstances,
+  setProcessInstances,
+  driver,
+  onSkipClick,
+  onRetryClick,
+  onAbortClick,
+  setSelectableInstances,
+  ouiaId,
+  ouiaSafe
+}) => {
   const [rows, setRows] = useState<(IRow | string[])[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showNoDataEmptyState, setShowNoDataEmptyState] = useState<boolean>(
@@ -48,6 +77,9 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps &
   );
   const [error, setError] = useState<string>(undefined);
   const columns = [
+    {
+      title: ''
+    },
     {
       title: 'Id'
     },
@@ -59,25 +91,95 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps &
     },
     {
       title: 'Last update'
+    },
+    {
+      title: ''
     }
   ];
 
-  const createRows = (processInstances: ProcessInstance[]): void => {
-    if (!_.isEmpty(processInstances)) {
+  const handleClick = (childProcessInstance: ProcessInstance): void => {
+    driver.openProcess(childProcessInstance);
+  };
+
+  const checkBoxSelect = (processInstance: ProcessInstance): void => {
+    const clonedProcessInstances = [...processInstances];
+    clonedProcessInstances.forEach((instance: ProcessInstance) => {
+      if (instance.id === parentProcessId) {
+        instance.childProcessInstances.forEach(
+          (childInstance: ProcessInstance) => {
+            if (childInstance.id === processInstance.id) {
+              if (childInstance.isSelected) {
+                childInstance.isSelected = false;
+                setSelectedInstances(
+                  selectedInstances.filter(
+                    selectedInstance => selectedInstance.id !== childInstance.id
+                  )
+                );
+              } else {
+                childInstance.isSelected = true;
+                setSelectedInstances([...selectedInstances, childInstance]);
+              }
+            }
+          }
+        );
+      }
+    });
+    setProcessInstances(clonedProcessInstances);
+  };
+
+  const createRows = (childProcessInstances: ProcessInstance[]): void => {
+    if (!_.isEmpty(childProcessInstances)) {
       const tempRows = [];
-      processInstances.forEach((child: ProcessInstance) => {
+      childProcessInstances.forEach((child: ProcessInstance) => {
         tempRows.push({
           cells: [
             {
               title: (
                 <>
-                  <div>
+                  {child.addons.includes('process-management') &&
+                  child.serviceUrl !== null ? (
+                    <Checkbox
+                      isChecked={child.isSelected}
+                      onChange={() => {
+                        checkBoxSelect(child);
+                      }}
+                      aria-label="process-list-checkbox"
+                      id={`checkbox-${child.id}`}
+                      name={`checkbox-${child.id}`}
+                    />
+                  ) : (
+                    <DisablePopup
+                      processInstanceData={child}
+                      component={
+                        <Checkbox
+                          aria-label="process-list-checkbox-disabled"
+                          id={`checkbox-${child.id}`}
+                          isDisabled={true}
+                        />
+                      }
+                    />
+                  )}
+                </>
+              )
+            },
+            {
+              title: (
+                <>
+                  <a
+                    className="kogito-process-list__link"
+                    onClick={() => handleClick(child)}
+                    {...componentOuiaProps(
+                      ouiaId,
+                      'process-description',
+                      ouiaSafe
+                    )}
+                  >
                     <strong>
                       <ItemDescriptor
                         itemDescription={getProcessInstanceDescription(child)}
                       />
                     </strong>
-                  </div>
+                  </a>
                   <EndpointLink
                     serviceUrl={child.serviceUrl}
                     isLinkShown={false}
@@ -86,7 +188,16 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps &
               )
             },
             {
-              title: ProcessInstanceIconCreator(child.state)
+              title:
+                child.state === ProcessInstanceState.Error ? (
+                  <ErrorPopover
+                    processInstanceData={child}
+                    onSkipClick={onSkipClick}
+                    onRetryClick={onRetryClick}
+                  />
+                ) : (
+                  ProcessInstanceIconCreator(child.state)
+                )
             },
             {
               title: child.start ? (
@@ -105,6 +216,17 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps &
               ) : (
                 ''
               )
+            },
+            {
+              title: (
+                <ProcessListActionsKebab
+                  processInstance={child}
+                  onSkipClick={onSkipClick}
+                  onRetryClick={onRetryClick}
+                  onAbortClick={onAbortClick}
+                  key={child.id}
+                />
+              )
             }
           ]
         });
@@ -119,7 +241,23 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps &
   const getChildProcessInstances = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const response = await driver.getChildProcessesQuery(parentProcessId);
+      const response: ProcessInstance[] = await driver.getChildProcessesQuery(
+        parentProcessId
+      );
+      processInstances.forEach((processInstance: ProcessInstance) => {
+        if (processInstance.id === parentProcessId) {
+          response.forEach((child: ProcessInstance) => {
+            child.isSelected = false;
+            if (
+              child.serviceUrl &&
+              child.addons.includes('process-management')
+            ) {
+              setSelectableInstances(prev => prev + 1);
+            }
+          });
+          processInstance.childProcessInstances = response;
+        }
+      });
       createRows(response);
     } catch (error) {
       setError(error);
@@ -127,6 +265,15 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps &
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (processInstances.length > 0) {
+      const processInstance: ProcessInstance = processInstances.find(
+        (instance: ProcessInstance) => instance.id === parentProcessId
+      );
+      createRows(processInstance.childProcessInstances);
+    }
+  }, [processInstances]);
 
   useEffect(() => {
     getChildProcessInstances();

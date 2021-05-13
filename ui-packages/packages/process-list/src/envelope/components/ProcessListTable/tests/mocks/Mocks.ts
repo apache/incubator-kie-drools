@@ -66,7 +66,10 @@ export const ProcessInstances: ProcessInstance[] = [
           '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
         nodes: [],
         milestones: [],
-        childProcessInstances: []
+        childProcessInstances: [],
+        isSelected: true,
+        isOpen: false,
+        errorMessage: ''
       }
     ]
   },
@@ -118,7 +121,9 @@ export const ProcessInstances: ProcessInstance[] = [
           '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
         nodes: [],
         milestones: [],
-        childProcessInstances: []
+        childProcessInstances: [],
+        isSelected: false,
+        isOpen: false
       }
     ]
   }

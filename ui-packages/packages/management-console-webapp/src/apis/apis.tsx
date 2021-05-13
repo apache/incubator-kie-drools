@@ -15,17 +15,12 @@
  */
 
 import { GraphQL } from '@kogito-apps/consoles-common';
-import axios from 'axios';
 import {
-  ProcessInstance,
-  ProcessInstanceState,
-  AbortResponse
+  BulkProcessInstanceActionResponse,
+  OperationType,
+  ProcessInstance
 } from '@kogito-apps/management-console-shared';
-
-enum TitleType {
-  SUCCESS = 'success',
-  FAILURE = 'failure'
-}
+import axios from 'axios';
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
@@ -123,28 +118,86 @@ export const getSvg = async (data: ProcessInstance): Promise<any> => {
     });
 };
 
-// Rest Api to Abort process instances
-export const handleAbort = async (
-  data: Pick<
-    ProcessInstance,
-    'id' | 'processId' | 'processName' | 'serviceUrl' | 'state'
-  >
-): Promise<AbortResponse> => {
-  try {
-    await axios.delete(
-      `${data.serviceUrl}/management/processes/${data.processId}/instances/${data.id}`
-    );
-    data.state = ProcessInstanceState.Aborted;
-    return {
-      title: 'Abort operation',
-      content: `The process ${data.processName} was successfully aborted.`,
-      type: TitleType.SUCCESS
-    };
-  } catch (error) {
-    return {
-      title: 'Abort operation',
-      content: `Failed to abort process ${data.processName}. Message: ${error.message}`,
-      type: TitleType.FAILURE
-    };
-  }
+// Rest Api to skip a process in error state
+export const handleProcessSkip = async (
+  processInstance: ProcessInstance
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/skip`
+      )
+      .then(() => {
+        resolve();
+      })
+      .catch(error => reject(error));
+  });
+};
+
+// Rest Api to retrigger a process in error state
+export const handleProcessRetry = async (
+  processInstance: ProcessInstance
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/retrigger`
+      )
+      .then(() => {
+        resolve();
+      })
+      .catch(error => reject(error));
+  });
+};
+
+// Rest Api to abort a process
+export const handleProcessAbort = (
+  processInstance: ProcessInstance
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}`
+      )
+      .then(() => {
+        resolve();
+      })
+      .catch(error => reject(error));
+  });
+};
+
+// function to handle multiple actions(abort, skip and retry) on processes
+export const handleProcessMultipleAction = async (
+  processInstances: ProcessInstance[],
+  operationType: OperationType
+): Promise<BulkProcessInstanceActionResponse> => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
+    let operation: (processInstance: ProcessInstance) => Promise<void>;
+    const successProcessInstances: ProcessInstance[] = [];
+    const failedProcessInstances: ProcessInstance[] = [];
+    switch (operationType) {
+      case OperationType.ABORT:
+        operation = handleProcessAbort;
+        break;
+      case OperationType.SKIP:
+        operation = handleProcessSkip;
+        break;
+      case OperationType.RETRY:
+        operation = handleProcessRetry;
+        break;
+    }
+    for (const processInstance of processInstances) {
+      await operation(processInstance)
+        .then(() => {
+          successProcessInstances.push(processInstance);
+        })
+        .catch(error => {
+          processInstance.errorMessage = error.message;
+          failedProcessInstances.push(processInstance);
+        });
+    }
+
+    resolve({ successProcessInstances, failedProcessInstances });
+  });
 };

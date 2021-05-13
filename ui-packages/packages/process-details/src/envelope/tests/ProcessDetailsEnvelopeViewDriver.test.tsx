@@ -155,10 +155,12 @@ describe('ProcessDetailsEnvelopeViewDriver tests', () => {
       );
     });
 
-    it('abortProcess', () => {
-      driver.abortProcess(data);
+    it('handleProcessAbort', () => {
+      driver.handleProcessAbort(data);
 
-      expect(requests.processDetails__abortProcess).toHaveBeenCalledWith(data);
+      expect(requests.processDetails__handleProcessAbort).toHaveBeenCalledWith(
+        data
+      );
     });
 
     it('rescheduleJob', () => {

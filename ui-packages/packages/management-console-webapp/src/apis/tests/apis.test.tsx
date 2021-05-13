@@ -16,20 +16,63 @@
 
 import axios from 'axios';
 import { GraphQL } from '@kogito-apps/consoles-common';
-import {
-  ProcessInstanceState,
-  MilestoneStatus
-} from '@kogito-apps/management-console-shared';
 import wait from 'waait';
 import {
   getSvg,
-  handleAbort,
+  handleProcessAbort,
   handleJobReschedule,
+  handleProcessMultipleAction,
+  handleProcessRetry,
+  handleProcessSkip,
   jobCancel,
   performMultipleCancel
 } from '../apis';
+import {
+  BulkProcessInstanceActionResponse,
+  OperationType,
+  ProcessInstanceState,
+  MilestoneStatus
+} from '@kogito-apps/management-console-shared';
+import { processInstance } from '../../channel/ProcessList/tests/ProcessListGatewayApi.test';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+const processInstances = [
+  {
+    id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
+    processId: 'hotelBooking',
+    businessKey: 'T1234HotelBooking01',
+    parentProcessInstanceId: null,
+    parentProcessInstance: null,
+    processName: 'HotelBooking',
+    rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
+    roles: [],
+    state: ProcessInstanceState.Error,
+    start: new Date('2019-10-22T03:40:44.089Z'),
+    end: new Date('2019-10-22T05:40:44.089Z'),
+    lastUpdate: new Date('2019-10-22T05:40:44.089Z'),
+    serviceUrl: 'http://localhost:4000',
+    endpoint: 'http://localhost:4000',
+    error: {
+      nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e904e6b',
+      message: 'some thing went wrong'
+    },
+    addons: [],
+    variables:
+      '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+    nodes: [
+      {
+        nodeId: '1',
+        name: 'End Event 1',
+        definitionId: 'EndEvent_1',
+        id: '27107f38-d888-4edf-9a4f-11b9e6d751b6',
+        enter: new Date('2019-10-22T03:37:30.798Z'),
+        exit: new Date('2019-10-22T03:37:30.798Z'),
+        type: 'EndNode'
+      }
+    ]
+  }
+];
+
 describe('bulk cancel tests', () => {
   const bulkJobs = [
     {
@@ -366,33 +409,143 @@ describe('test utility of svg panel', () => {
     await getSvg(data);
   });
 
-  describe('handle Abort tests', () => {
-    const processInstanceData = {
-      id: '123',
-      processId: 'travels',
-      processName: 'travels',
-      serviceUrl: 'http://localhost:4000',
-      state: ProcessInstanceState.Active
-    };
-    it('executes Abort process successfully', async () => {
-      mockedAxios.delete.mockResolvedValue({});
-      const abortResults = await handleAbort(processInstanceData);
-      await wait(0);
-      expect(abortResults).toEqual({
-        title: 'Abort operation',
-        content: `The process ${processInstanceData.processName} was successfully aborted.`,
-        type: 'success'
-      });
+  describe('handle skip test', () => {
+    it('on successful skip', async () => {
+      mockedAxios.post.mockResolvedValue({});
+      let result = null;
+      await handleProcessSkip(processInstance)
+        .then(() => {
+          result = 'success';
+        })
+        .catch(error => {
+          result = error.message;
+        });
+      expect(result).toEqual('success');
     });
-    it('fails executing Abort process', async () => {
-      mockedAxios.delete.mockRejectedValue({ message: '403 error' });
-      const abortResults = await handleAbort(processInstanceData);
-      await wait(0);
-      expect(abortResults).toEqual({
-        title: 'Abort operation',
-        content: `Failed to abort process ${processInstanceData.processName}. Message: 403 error`,
-        type: 'failure'
-      });
+    it('on failed skip', async () => {
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      let result = null;
+      await handleProcessSkip(processInstance)
+        .then(() => {
+          result = 'success';
+        })
+        .catch(error => {
+          result = error.message;
+        });
+      expect(result).toEqual('404 error');
+    });
+  });
+
+  describe('handle retry test', () => {
+    it('on successful retrigger', async () => {
+      mockedAxios.post.mockResolvedValue({});
+      let result = null;
+      await handleProcessRetry(processInstances[0])
+        .then(() => {
+          result = 'success';
+        })
+        .catch(error => {
+          result = error.message;
+        });
+      expect(result).toEqual('success');
+    });
+    it('on failed retrigger', async () => {
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      let result = null;
+      await handleProcessRetry(processInstance[0])
+        .then(() => {
+          result = 'success';
+        })
+        .catch(error => {
+          result = error.message;
+        });
+      expect(result).toEqual("Cannot read property 'serviceUrl' of undefined");
+    });
+  });
+
+  describe('handle abort test', () => {
+    it('on successful abort', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      let result = null;
+      await handleProcessAbort(processInstances[0])
+        .then(() => {
+          result = 'success';
+        })
+        .catch(error => {
+          result = error.message;
+        });
+      expect(result).toEqual('success');
+    });
+    it('on failed abort', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      let result = null;
+      await handleProcessAbort(processInstances[0])
+        .then(() => {
+          result = 'success';
+        })
+        .catch(error => {
+          result = error.message;
+        });
+      expect(result).toEqual('404 error');
+    });
+  });
+
+  describe('multiple action in process list', () => {
+    it('multiple skip test', async () => {
+      mockedAxios.post.mockResolvedValue({});
+      const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
+        processInstances,
+        OperationType.SKIP
+      );
+      expect(result.successProcessInstances.length).toEqual(1);
+    });
+    it('multiple skip test', async () => {
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
+        processInstances,
+        OperationType.SKIP
+      );
+      expect(result.failedProcessInstances[0].errorMessage).toEqual(
+        '404 error'
+      );
+    });
+
+    it('multiple retry test', async () => {
+      mockedAxios.post.mockResolvedValue({});
+      const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
+        processInstances,
+        OperationType.RETRY
+      );
+      expect(result.successProcessInstances.length).toEqual(1);
+    });
+    it('multiple retry test', async () => {
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
+        processInstances,
+        OperationType.RETRY
+      );
+      expect(result.failedProcessInstances[0].errorMessage).toEqual(
+        '404 error'
+      );
+    });
+
+    it('multiple abort test', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
+        processInstances,
+        OperationType.ABORT
+      );
+      expect(result.successProcessInstances.length).toEqual(1);
+    });
+    it('multiple abort test', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
+        processInstances,
+        OperationType.ABORT
+      );
+      expect(result.failedProcessInstances[0].errorMessage).toEqual(
+        '404 error'
+      );
     });
   });
 });

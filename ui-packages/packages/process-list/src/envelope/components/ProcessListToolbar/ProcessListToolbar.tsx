@@ -27,19 +27,46 @@ import {
   SelectVariant,
   InputGroup,
   TextInput,
-  Tooltip
+  Tooltip,
+  OverflowMenuContent,
+  OverflowMenuControl,
+  Dropdown,
+  DropdownItem,
+  KebabToggle,
+  OverflowMenu,
+  OverflowMenuItem,
+  DropdownPosition,
+  DropdownToggle,
+  DropdownToggleCheckbox
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
-import { ProcessInstanceFilter } from '../../../api';
+import {
+  BulkListType,
+  IOperationResults,
+  IOperations,
+  OperationType,
+  ProcessInstance,
+  ProcessInstanceState,
+  ProcessInfoModal,
+  setTitle
+} from '@kogito-apps/management-console-shared';
+import { ProcessInstanceFilter, ProcessListDriver } from '../../../api';
 import '../styles.css';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { formatForBulkListProcessInstance } from '../utils/ProcessListUtils';
 
 enum Category {
   STATUS = 'Status',
   BUSINESS_KEY = 'Business key'
 }
+
+enum BulkSelectionType {
+  NONE = 'NONE',
+  PARENT = 'PARENT',
+  PARENT_CHILD = 'PARENT_CHILD'
+}
+
 interface ProcessListToolbarProps {
   filters: ProcessInstanceFilter;
   setFilters: React.Dispatch<React.SetStateAction<ProcessInstanceFilter>>;
@@ -49,6 +76,13 @@ interface ProcessListToolbarProps {
   setProcessStates: React.Dispatch<
     React.SetStateAction<ProcessInstanceState[]>
   >;
+  selectedInstances: ProcessInstance[];
+  setSelectedInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
+  processInstances: ProcessInstance[];
+  setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
+  isAllChecked: boolean;
+  setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  driver: ProcessListDriver;
 }
 
 const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
@@ -58,14 +92,210 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   refresh,
   processStates,
   setProcessStates,
+  selectedInstances,
+  setSelectedInstances,
+  processInstances,
+  setProcessInstances,
+  isAllChecked,
+  setIsAllChecked,
+  driver,
   ouiaId,
   ouiaSafe
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [businessKeyInput, setBusinessKeyInput] = useState<string>('');
+  const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [titleType, setTitleType] = useState<string>('');
+  const [operationType, setOperationType] = useState<OperationType>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState<boolean>(
+    false
+  );
+  const [operationResults, setOperationResults] = useState<IOperationResults>({
+    ABORT: {
+      successItems: [],
+      failedItems: [],
+      ignoredItems: []
+    },
+    SKIP: {
+      successItems: [],
+      failedItems: [],
+      ignoredItems: []
+    },
+    RETRY: {
+      successItems: [],
+      failedItems: [],
+      ignoredItems: []
+    }
+  });
+
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const operations: IOperations = {
+    ABORT: {
+      type: BulkListType.PROCESS_INSTANCE,
+      results: operationResults[OperationType.ABORT],
+      messages: {
+        successMessage: 'Aborted process: ',
+        noItemsMessage: 'No processes were aborted',
+        warningMessage: !processStates.includes(ProcessInstanceState.Aborted)
+          ? 'Note: The process status has been updated. The list may appear inconsistent until you refresh any applied filters.'
+          : '',
+        ignoredMessage:
+          'These processes were ignored because they were already completed or aborted.'
+      },
+      functions: {
+        perform: async () => {
+          const ignoredItems = [];
+          const remainingInstances = selectedInstances.filter(
+            (instance: ProcessInstance) => {
+              if (
+                instance.state === ProcessInstanceState.Aborted ||
+                instance.state === ProcessInstanceState.Completed
+              ) {
+                ignoredItems.push(instance);
+              } else {
+                return true;
+              }
+            }
+          );
+          await driver
+            .handleProcessMultipleAction(
+              remainingInstances,
+              OperationType.ABORT
+            )
+            .then(result => {
+              onShowMessage(
+                'Abort operation',
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.ABORT
+              );
+              processInstances.forEach(instance => {
+                result.successProcessInstances.forEach(successInstances => {
+                  if (successInstances.id === instance.id) {
+                    instance.state = ProcessInstanceState.Aborted;
+                  }
+                });
+              });
+              setProcessInstances([...processInstances]);
+            });
+        }
+      }
+    },
+    SKIP: {
+      type: BulkListType.PROCESS_INSTANCE,
+      results: operationResults[OperationType.SKIP],
+      messages: {
+        successMessage: 'Skipped process: ',
+        noItemsMessage: 'No processes were skipped',
+        ignoredMessage:
+          'These processes were ignored because they were not in error state.'
+      },
+      functions: {
+        perform: async () => {
+          const ignoredItems = [];
+          const remainingInstances = selectedInstances.filter(
+            (instance: ProcessInstance) => {
+              if (instance.state !== ProcessInstanceState.Error) {
+                ignoredItems.push(instance);
+              } else {
+                return true;
+              }
+            }
+          );
+          await driver
+            .handleProcessMultipleAction(remainingInstances, OperationType.SKIP)
+            .then(result => {
+              onShowMessage(
+                'Skip operation',
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.SKIP
+              );
+            });
+        }
+      }
+    },
+    RETRY: {
+      type: BulkListType.PROCESS_INSTANCE,
+      results: operationResults[OperationType.RETRY],
+      messages: {
+        successMessage: 'Retriggered process: ',
+        noItemsMessage: 'No processes were retriggered',
+        ignoredMessage:
+          'These processes were ignored because they were not in error state.'
+      },
+      functions: {
+        perform: async () => {
+          const ignoredItems = [];
+          const remainingInstances = selectedInstances.filter(instance => {
+            if (instance['state'] !== ProcessInstanceState.Error) {
+              ignoredItems.push(instance);
+            } else {
+              return true;
+            }
+          });
+          await driver
+            .handleProcessMultipleAction(
+              remainingInstances,
+              OperationType.RETRY
+            )
+            .then(result => {
+              onShowMessage(
+                'Retry operation',
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.RETRY
+              );
+            });
+        }
+      }
+    }
+  };
+
+  const onShowMessage = (
+    title: string,
+    successItems: ProcessInstance[],
+    failedItems: ProcessInstance[],
+    ignoredItems: ProcessInstance[],
+    operation: OperationType
+  ) => {
+    setModalTitle(title);
+    setTitleType('success');
+    setOperationType(operation);
+    setOperationResults({
+      ...operationResults,
+      [operation]: {
+        ...operationResults[operation],
+        successItems: formatForBulkListProcessInstance(successItems),
+        failedItems: formatForBulkListProcessInstance(failedItems),
+        ignoredItems: formatForBulkListProcessInstance(ignoredItems)
+      }
+    });
+    handleModalToggle();
+  };
+
+  const checkboxDropdownToggle = (): void => {
+    setisCheckboxDropdownOpen(!isCheckboxDropdownOpen);
+  };
 
   const onStatusToggle = (isExpandedItem: boolean): void => {
     setIsExpanded(isExpandedItem);
+  };
+
+  const onProcessManagementButtonSelect = (): void => {
+    setIsKebabOpen(!isKebabOpen);
+  };
+
+  const onProcessManagementKebabToggle = (isOpen: boolean) => {
+    setIsKebabOpen(isOpen);
   };
 
   const onSelect = (event, selection): void => {
@@ -139,6 +369,115 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     applyFilter(defaultFilters);
   };
 
+  const resetSelected = (): void => {
+    const clonedProcessInstances = _.cloneDeep(processInstances);
+    clonedProcessInstances.forEach((processInstance: ProcessInstance) => {
+      processInstance.isSelected = false;
+      if (!_.isEmpty(processInstance.childProcessInstances)) {
+        processInstance.childProcessInstances.forEach(
+          (childInstance: ProcessInstance) => {
+            childInstance.isSelected = false;
+          }
+        );
+      }
+    });
+    setProcessInstances(clonedProcessInstances);
+    setSelectedInstances([]);
+    setIsAllChecked(false);
+  };
+
+  const handleCheckboxSelectClick = (
+    selection: string,
+    isCheckBoxClicked: boolean
+  ): void => {
+    const clonedProcessInstances = [...processInstances];
+    if (selection === BulkSelectionType.NONE) {
+      clonedProcessInstances.forEach((instance: ProcessInstance) => {
+        instance.isSelected = false;
+        instance.childProcessInstances.length > 0 &&
+          instance.childProcessInstances.forEach(
+            (childInstance: ProcessInstance) => {
+              childInstance.isSelected = false;
+            }
+          );
+      });
+      setSelectedInstances([]);
+    }
+    if (selection === BulkSelectionType.PARENT) {
+      const tempSelectedInstances = [];
+      clonedProcessInstances.forEach((instance: ProcessInstance) => {
+        if (
+          instance.serviceUrl &&
+          instance.addons.includes('process-management')
+        ) {
+          instance.isSelected = true;
+          tempSelectedInstances.push(instance);
+        }
+        instance.childProcessInstances.length > 0 &&
+          instance.childProcessInstances.forEach(
+            (childInstance: ProcessInstance) => {
+              childInstance.isSelected = false;
+            }
+          );
+      });
+      setSelectedInstances(tempSelectedInstances);
+    }
+    if (selection === BulkSelectionType.PARENT_CHILD) {
+      const tempSelectedInstances = [];
+      if (isAllChecked && isCheckBoxClicked) {
+        tempSelectedInstances.length = 0;
+        clonedProcessInstances.forEach((instance: ProcessInstance) => {
+          if (
+            instance.serviceUrl &&
+            instance.addons.includes('process-management')
+          ) {
+            instance.isSelected = false;
+          }
+          instance.childProcessInstances.length > 0 &&
+            instance.childProcessInstances.forEach(
+              (childInstance: ProcessInstance) => {
+                if (
+                  childInstance.serviceUrl &&
+                  childInstance.addons.includes('process-management')
+                ) {
+                  if (instance.isOpen) {
+                    childInstance.isSelected = false;
+                  }
+                }
+              }
+            );
+        });
+      } else {
+        clonedProcessInstances.forEach((instance: ProcessInstance) => {
+          if (
+            instance.serviceUrl &&
+            instance.addons.includes('process-management')
+          ) {
+            instance.isSelected = true;
+            tempSelectedInstances.push(instance);
+          }
+
+          instance.childProcessInstances.length > 0 &&
+            instance.childProcessInstances.forEach(
+              (childInstance: ProcessInstance) => {
+                if (
+                  childInstance.serviceUrl &&
+                  childInstance.addons.includes('process-management')
+                ) {
+                  if (instance.isOpen) {
+                    childInstance.isSelected = true;
+                    tempSelectedInstances.push(childInstance);
+                  }
+                }
+              }
+            );
+        });
+      }
+      setSelectedInstances(tempSelectedInstances);
+    }
+    setProcessInstances(clonedProcessInstances);
+  };
+
   const statusMenuItems: JSX.Element[] = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
     <SelectOption key="COMPLETED" value="COMPLETED" />,
@@ -147,9 +486,136 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     <SelectOption key="SUSPENDED" value="SUSPENDED" />
   ];
 
+  const checkboxItems = [
+    <DropdownItem
+      key="none"
+      onClick={() => handleCheckboxSelectClick(BulkSelectionType.NONE, false)}
+      id="none"
+    >
+      Select none
+    </DropdownItem>,
+    <DropdownItem
+      key="all-parent"
+      onClick={() => handleCheckboxSelectClick(BulkSelectionType.PARENT, false)}
+      id="all-parent"
+    >
+      Select all parent processes
+    </DropdownItem>,
+    <DropdownItem
+      key="all-parent-child"
+      onClick={() =>
+        handleCheckboxSelectClick(BulkSelectionType.PARENT_CHILD, false)
+      }
+      id="all-parent-child"
+    >
+      Select all processes
+    </DropdownItem>
+  ];
+
+  const dropdownItemsProcesManagementButtons = () => {
+    return [
+      <DropdownItem
+        key="abort"
+        onClick={operations[OperationType.ABORT].functions.perform}
+        isDisabled={selectedInstances.length === 0}
+      >
+        Abort selected
+      </DropdownItem>,
+      <DropdownItem
+        key="skip"
+        onClick={operations[OperationType.SKIP].functions.perform}
+        isDisabled={selectedInstances.length === 0}
+      >
+        Skip selected
+      </DropdownItem>,
+      <DropdownItem
+        key="retry"
+        onClick={operations[OperationType.RETRY].functions.perform}
+        isDisabled={selectedInstances.length === 0}
+      >
+        Retry selected
+      </DropdownItem>
+    ];
+  };
+
+  const buttonItems = (
+    <OverflowMenu breakpoint="xl">
+      <OverflowMenuContent>
+        <OverflowMenuItem>
+          <Button
+            variant="secondary"
+            onClick={operations[OperationType.ABORT].functions.perform}
+            isDisabled={selectedInstances.length === 0}
+          >
+            Abort selected
+          </Button>
+        </OverflowMenuItem>
+        <OverflowMenuItem>
+          <Button
+            variant="secondary"
+            onClick={operations[OperationType.SKIP].functions.perform}
+            isDisabled={selectedInstances.length === 0}
+          >
+            Skip selected
+          </Button>
+        </OverflowMenuItem>
+        <OverflowMenuItem>
+          <Button
+            variant="secondary"
+            onClick={operations[OperationType.RETRY].functions.perform}
+            isDisabled={selectedInstances.length === 0}
+          >
+            Retry selected
+          </Button>
+        </OverflowMenuItem>
+      </OverflowMenuContent>
+      <OverflowMenuControl>
+        <Dropdown
+          onSelect={onProcessManagementButtonSelect}
+          toggle={<KebabToggle onToggle={onProcessManagementKebabToggle} />}
+          isOpen={isKebabOpen}
+          isPlain
+          dropdownItems={dropdownItemsProcesManagementButtons()}
+        />
+      </OverflowMenuControl>
+    </OverflowMenu>
+  );
+
   const toggleGroupItems: JSX.Element = (
     <React.Fragment>
       <ToolbarGroup variant="filter-group">
+        <ToolbarItem variant="bulk-select" id="bulk-select">
+          <Dropdown
+            position={DropdownPosition.left}
+            toggle={
+              <DropdownToggle
+                isDisabled={filters.status.length === 0}
+                onToggle={checkboxDropdownToggle}
+                splitButtonItems={[
+                  <DropdownToggleCheckbox
+                    id="select-all-checkbox"
+                    key="split-checkbox"
+                    aria-label="Select all"
+                    isChecked={isAllChecked}
+                    onChange={() =>
+                      handleCheckboxSelectClick(
+                        BulkSelectionType.PARENT_CHILD,
+                        true
+                      )
+                    }
+                    isDisabled={filters.status.length === 0}
+                  />
+                ]}
+              >
+                {selectedInstances.length === 0
+                  ? ''
+                  : selectedInstances.length + ' selected'}
+              </DropdownToggle>
+            }
+            dropdownItems={checkboxItems}
+            isOpen={isCheckboxDropdownOpen}
+          />
+        </ToolbarItem>
         <ToolbarFilter
           chips={filters.status}
           deleteChip={onDeleteChip}
@@ -198,6 +664,12 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
           </Button>
         </ToolbarItem>
       </ToolbarGroup>
+      <ToolbarGroup>
+        <ToolbarItem variant="separator" />
+        <ToolbarGroup className="pf-u-ml-md" id="process-management-buttons">
+          {buttonItems}
+        </ToolbarGroup>
+      </ToolbarGroup>
     </React.Fragment>
   );
 
@@ -220,6 +692,14 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
 
   return (
     <>
+      <ProcessInfoModal
+        modalTitle={setTitle(titleType, modalTitle)}
+        isModalOpen={isModalOpen}
+        operationResult={operations[operationType]}
+        handleModalToggle={handleModalToggle}
+        resetSelected={resetSelected}
+        ouiaId="operation-result"
+      />
       <Toolbar
         id="data-toolbar-with-filter"
         className="pf-m-toggle-group-container kogito-management-console__state-dropdown-list"

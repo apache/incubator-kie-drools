@@ -11,7 +11,7 @@ exports[`ProcessListPage tests Snapshot 1`] = `
     breadcrumbText={
       Array [
         "Home",
-        "process-instances",
+        "Processes",
       ]
     }
     titleText="Process Instances"
@@ -93,7 +93,7 @@ exports[`ProcessListPage tests Snapshot 1`] = `
                       </svg>
                     </AngleRightIcon>
                   </span>
-                  process-instances
+                  Processes
                 </li>
               </BreadcrumbItem>
             </ol>

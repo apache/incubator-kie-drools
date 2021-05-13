@@ -19,9 +19,12 @@ import {
 } from '@kogito-apps/management-console-shared';
 import {
   alterOrderByObj,
+  checkProcessInstanceState,
+  formatForBulkListProcessInstance,
   getProcessInstanceDescription,
   ProcessInstanceIconCreator
 } from '../ProcessListUtils';
+import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
 import { OrderBy } from '../../../../api';
 describe('uitility function testing', () => {
   it('state icon creator tests', () => {
@@ -103,5 +106,50 @@ describe('uitility function testing', () => {
       name: 'Travels',
       description: 'GRT32'
     });
+  });
+
+  it('test checkProcessInstanceState method', () => {
+    const testProcessInstance1 = {
+      state: ProcessInstanceState.Active,
+      addons: ['process-management'],
+      serviceUrl: 'http://localhost:4000'
+    };
+    const testProcessInstance2 = {
+      state: ProcessInstanceState.Aborted,
+      addons: [],
+      serviceUrl: null
+    };
+    const falseResult = checkProcessInstanceState(testProcessInstance1);
+    const trueResult = checkProcessInstanceState(testProcessInstance2);
+    expect(falseResult).toBeFalsy();
+    expect(trueResult).toBeTruthy();
+  });
+
+  it('test format process instance for bulklist function', () => {
+    const testProcessInstance = [
+      { ...ProcessInstances[0], errorMessage: '404 error' }
+    ];
+    const testResultWithError = formatForBulkListProcessInstance(
+      testProcessInstance
+    );
+    expect(testResultWithError).toEqual([
+      {
+        id: testProcessInstance[0].id,
+        name: testProcessInstance[0].processName,
+        description: testProcessInstance[0].businessKey,
+        errorMessage: testProcessInstance[0].errorMessage
+      }
+    ]);
+    const testResultWithoutError = formatForBulkListProcessInstance([
+      { ...ProcessInstances[0], errorMessage: null }
+    ]);
+    expect(testResultWithoutError).toEqual([
+      {
+        id: testProcessInstance[0].id,
+        name: testProcessInstance[0].processName,
+        description: testProcessInstance[0].businessKey,
+        errorMessage: null
+      }
+    ]);
   });
 });

@@ -33,7 +33,7 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
         >
           <Link
             to="/ProcessInstances"
-            {...ouiaAttribute('data-ouia-navigation-name', 'process-instances')}
+            {...ouiaAttribute('data-ouia-navigation-name', 'Processes')}
           >
             Process Instances
           </Link>
