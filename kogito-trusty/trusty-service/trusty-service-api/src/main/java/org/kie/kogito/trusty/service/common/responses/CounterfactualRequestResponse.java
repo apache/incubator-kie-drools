@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.trusty.service.common.responses;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,17 +29,20 @@ public class CounterfactualRequestResponse {
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
 
     @JsonProperty(EXECUTION_ID_FIELD)
+    @NotNull(message = "executionId must be provided.")
     private String executionId;
 
     @JsonProperty(COUNTERFACTUAL_ID_FIELD)
+    @NotNull(message = "counterfactualId must be provided.")
     private String counterfactualId;
 
     public CounterfactualRequestResponse() {
     }
 
-    public CounterfactualRequestResponse(String executionId, String counterfactualId) {
-        this.executionId = executionId;
-        this.counterfactualId = counterfactualId;
+    public CounterfactualRequestResponse(@NotNull String executionId,
+            @NotNull String counterfactualId) {
+        this.executionId = Objects.requireNonNull(executionId);
+        this.counterfactualId = Objects.requireNonNull(counterfactualId);
     }
 
     public String getExecutionId() {

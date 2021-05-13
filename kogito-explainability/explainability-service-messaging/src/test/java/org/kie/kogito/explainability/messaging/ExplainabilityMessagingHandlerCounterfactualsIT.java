@@ -16,6 +16,8 @@
 package org.kie.kogito.explainability.messaging;
 
 import java.util.Collections;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
@@ -32,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
 class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainabilityMessagingHandlerIT {
 
+    protected static final String COUNTERFACTUAL_ID = UUID.randomUUID().toString();
+    protected static final String SOLUTION_ID = UUID.randomUUID().toString();
+
     @Override
     protected BaseExplainabilityRequestDto buildRequest() {
         return new CounterfactualExplainabilityRequestDto(EXECUTION_ID,
@@ -47,7 +52,9 @@ class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainability
     protected BaseExplainabilityResultDto buildResult() {
         return CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
+                SOLUTION_ID,
                 Boolean.TRUE,
+                CounterfactualExplainabilityResultDto.Stage.FINAL,
                 Collections.emptyMap(),
                 Collections.emptyMap());
     }
@@ -55,5 +62,22 @@ class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainability
     @Override
     protected void assertResult(BaseExplainabilityResultDto result) {
         assertTrue(result instanceof CounterfactualExplainabilityResultDto);
+    }
+
+    @Override
+    protected int getTotalExpectedEventCountWithIntermediateResults() {
+        return 2;
+    }
+
+    @Override
+    protected void mockExplainAsyncInvocationWithIntermediateResults(Consumer<BaseExplainabilityResultDto> callback) {
+        CounterfactualExplainabilityResultDto intermediateResult = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                SOLUTION_ID,
+                Boolean.TRUE,
+                CounterfactualExplainabilityResultDto.Stage.INTERMEDIATE,
+                Collections.emptyMap(),
+                Collections.emptyMap());
+        callback.accept(intermediateResult);
     }
 }

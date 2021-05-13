@@ -23,15 +23,9 @@ import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public abstract class BaseExplainerServiceHandlerTest<H extends ExplainerServiceHandler<R, D>, R extends BaseExplainabilityResult, D extends BaseExplainabilityResultDto> {
 
@@ -82,35 +76,16 @@ public abstract class BaseExplainerServiceHandlerTest<H extends ExplainerService
     }
 
     @Test
-    public void testGetExplainabilityResultById_WhenStored() {
-        when(storage.containsKey(anyString())).thenReturn(true);
-        when(storage.get(eq(EXECUTION_ID))).thenReturn(result);
-
-        assertEquals(result, handler.getExplainabilityResultById(EXECUTION_ID));
-    }
+    public abstract void testGetExplainabilityResultById_WhenStored();
 
     @Test
-    public void testGetExplainabilityResultById_WhenNotStored() {
-        when(storage.containsKey(anyString())).thenReturn(false);
-
-        assertThrows(IllegalArgumentException.class, () -> handler.getExplainabilityResultById(EXECUTION_ID));
-    }
+    public abstract void testGetExplainabilityResultById_WhenNotStored();
 
     @Test
-    public void testStoreExplainabilityResult_WhenAlreadyStored() {
-        when(storage.containsKey(anyString())).thenReturn(true);
-
-        assertThrows(IllegalArgumentException.class, () -> handler.storeExplainabilityResult(EXECUTION_ID, result));
-    }
+    public abstract void testStoreExplainabilityResult_WhenAlreadyStored();
 
     @Test
-    public void testStoreExplainabilityResultById_WhenNotAlreadyStored() {
-        when(storage.containsKey(anyString())).thenReturn(false);
-
-        handler.storeExplainabilityResult(EXECUTION_ID, result);
-
-        verify(storage).put(eq(EXECUTION_ID), eq(result));
-    }
+    public abstract void testStoreExplainabilityResultById_WhenNotAlreadyStored();
 
     @Test
     public abstract void testExplainabilityResultFrom_Success();

@@ -17,14 +17,20 @@
 package org.kie.kogito.trusty.service.common.messaging;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainCollectionDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainStructureDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
+import org.kie.kogito.tracing.typedvalue.CollectionValue;
+import org.kie.kogito.tracing.typedvalue.StructureValue;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
@@ -36,29 +42,35 @@ public class MessagingUtils {
     private MessagingUtils() {
     }
 
-    public static org.kie.kogito.tracing.typedvalue.TypedValue modelToTracingTypedValue(TypedVariableWithValue value) {
+    /*
+     * ================================================
+     * TrustyService DTOs to ExplainabilityService DTOs
+     * ================================================
+     */
+
+    public static TypedValue modelToTracingTypedValue(TypedVariableWithValue value) {
         if (value == null) {
             return null;
         }
         switch (value.getKind()) {
             case UNIT:
-                return new org.kie.kogito.tracing.typedvalue.UnitValue(value.getTypeRef(), null, value.getValue());
+                return new UnitValue(value.getTypeRef(), null, value.getValue());
             case COLLECTION:
-                return new org.kie.kogito.tracing.typedvalue.CollectionValue(value.getTypeRef(), modelToTracingTypedValueCollection(value.getComponents()));
+                return new CollectionValue(value.getTypeRef(), modelToTracingTypedValueCollection(value.getComponents()));
             case STRUCTURE:
-                return new org.kie.kogito.tracing.typedvalue.StructureValue(value.getTypeRef(), modelToTracingTypedValueMap(value.getComponents()));
+                return new StructureValue(value.getTypeRef(), modelToTracingTypedValueMap(value.getComponents()));
         }
         throw new IllegalStateException("Can't convert org.kie.kogito.trusty.storage.api.model.TypedVariable of kind " + value.getKind() + " to TypedValue");
     }
 
-    public static Collection<org.kie.kogito.tracing.typedvalue.TypedValue> modelToTracingTypedValueCollection(Collection<TypedVariableWithValue> input) {
+    public static Collection<TypedValue> modelToTracingTypedValueCollection(Collection<TypedVariableWithValue> input) {
         if (input == null) {
             return null;
         }
         return input.stream().map(MessagingUtils::modelToTracingTypedValue).collect(Collectors.toList());
     }
 
-    public static Map<String, org.kie.kogito.tracing.typedvalue.TypedValue> modelToTracingTypedValueMap(Collection<TypedVariableWithValue> input) {
+    public static Map<String, TypedValue> modelToTracingTypedValueMap(Collection<TypedVariableWithValue> input) {
         if (input == null) {
             return null;
         }
@@ -82,10 +94,7 @@ public class MessagingUtils {
         throw new IllegalStateException("Can't convert CounterfactualSearchDomain of kind " + value.getKind() + " to CounterfactualSearchDomainDto");
     }
 
-    public static org.kie.kogito.explainability.api.CounterfactualDomainDto modelToCounterfactualDomain(CounterfactualDomain domain) {
-        if (domain == null) {
-            return null;
-        }
+    private static org.kie.kogito.explainability.api.CounterfactualDomainDto modelToCounterfactualDomain(CounterfactualDomain domain) {
         switch (domain.getType()) {
             case CATEGORICAL:
                 CounterfactualDomainCategorical categorical = (CounterfactualDomainCategorical) domain;
@@ -97,20 +106,66 @@ public class MessagingUtils {
         throw new IllegalStateException("Can't convert CounterfactualDomain of type " + domain.getType() + " to org.kie.kogito.explainability.api.CounterfactualDomain");
     }
 
-    public static Collection<CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoCollection(Collection<CounterfactualSearchDomain> searchDomains) {
+    private static Collection<CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoCollection(Collection<CounterfactualSearchDomain> searchDomains) {
         if (searchDomains == null) {
-            return null;
+            return Collections.emptyList();
         }
         return searchDomains.stream().map(MessagingUtils::modelToCounterfactualSearchDomainDto).collect(Collectors.toList());
     }
 
-    public static Map<String, CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoMap(Collection<CounterfactualSearchDomain> searchDomains) {
+    private static Map<String, CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoMap(Collection<CounterfactualSearchDomain> searchDomains) {
         if (searchDomains == null) {
-            return null;
+            return Collections.emptyMap();
         }
         return searchDomains.stream()
                 .filter(m -> m.getName() != null)
                 .collect(HashMap::new, (m, v) -> m.put(v.getName(), modelToCounterfactualSearchDomainDto(v)), HashMap::putAll);
+    }
+
+    /*
+     * ================================================
+     * ExplainabilityService DTOs to TrustyService DTOs
+     * ================================================
+     */
+
+    public static Collection<TypedVariableWithValue> tracingTypedValueToModel(Map<String, TypedValue> typedValues) {
+        if (Objects.isNull(typedValues) || typedValues.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return typedValues
+                .entrySet()
+                .stream()
+                .map(MessagingUtils::tracingTypedValueToModel)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+    }
+
+    public static TypedVariableWithValue tracingTypedValueToModel(Map.Entry<String, TypedValue> entry) {
+        if (Objects.isNull(entry)) {
+            return null;
+        }
+        String key = entry.getKey();
+        TypedValue value = entry.getValue();
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        switch (value.getKind()) {
+            case UNIT:
+                return TypedVariableWithValue.buildUnit(key, value.getType(), value.toUnit().getValue());
+            case COLLECTION:
+                return TypedVariableWithValue.buildCollection(key, value.getType(), tracingTypedValueToModelCollection(value.toCollection()));
+            case STRUCTURE:
+                return TypedVariableWithValue.buildStructure(key, value.getType(), tracingTypedValueToModel(value.toStructure().getValue()));
+        }
+        throw new IllegalStateException("Can't convert TypedValue of Kind '" + value.getKind() + "' to TypedVariableWithValue");
+    }
+
+    private static Collection<TypedVariableWithValue> tracingTypedValueToModelCollection(CollectionValue input) {
+        if (Objects.isNull(input)) {
+            return Collections.emptyList();
+        }
+        return input.getValue().stream().map(v -> tracingTypedValueToModel(Map.entry("", v))).collect(Collectors.toList());
     }
 
 }

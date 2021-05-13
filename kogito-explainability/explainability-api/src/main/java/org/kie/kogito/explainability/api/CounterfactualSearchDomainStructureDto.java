@@ -16,6 +16,9 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.Map;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,18 +29,15 @@ public class CounterfactualSearchDomainStructureDto extends CounterfactualSearch
     public static final String VALUE_FIELD = "value";
 
     @JsonProperty(VALUE_FIELD)
+    @NotNull(message = "value object must be provided.")
     private Map<String, CounterfactualSearchDomainDto> value;
 
     public CounterfactualSearchDomainStructureDto() {
     }
 
-    public CounterfactualSearchDomainStructureDto(String type) {
-        this(type, null);
-    }
-
-    public CounterfactualSearchDomainStructureDto(String type, Map<String, CounterfactualSearchDomainDto> value) {
+    public CounterfactualSearchDomainStructureDto(@NotNull String type, @NotNull Map<String, CounterfactualSearchDomainDto> value) {
         super(Kind.STRUCTURE, type);
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
     }
 
     public Map<String, CounterfactualSearchDomainDto> getValue() {

@@ -17,6 +17,9 @@ package org.kie.kogito.explainability.api;
 
 import java.util.Map;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 public class LIMEExplainabilityRequestDto extends BaseExplainabilityRequestDto {
@@ -27,7 +30,11 @@ public class LIMEExplainabilityRequestDto extends BaseExplainabilityRequestDto {
         super();
     }
 
-    public LIMEExplainabilityRequestDto(String executionId, String serviceUrl, ModelIdentifierDto modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
+    public LIMEExplainabilityRequestDto(@NotNull String executionId,
+            @NotBlank String serviceUrl,
+            @NotNull ModelIdentifierDto modelIdentifier,
+            @NotNull Map<String, TypedValue> inputs,
+            @NotNull Map<String, TypedValue> outputs) {
         super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
     }
 }

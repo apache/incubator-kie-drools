@@ -79,6 +79,7 @@ class ExplainabilityResultConsumerTest {
     private static final String TEST_OUTCOME_1_NAME = "outcome1";
 
     private static final String TEST_COUNTERFACTUAL_ID = "counterfactualId";
+    private static final String TEST_SOLUTION_ID = "solutionId";
 
     private static final Decision TEST_DECISION = new Decision(
             TEST_EXECUTION_ID, null, null, null, true, null, null, null,
@@ -168,7 +169,11 @@ class ExplainabilityResultConsumerTest {
     void testCorrectCounterfactualCloudEvent() {
         Message<String> message = mockMessage(buildCounterfactualCloudEventJsonString(CounterfactualExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID,
                 TEST_COUNTERFACTUAL_ID,
-                Boolean.TRUE, Collections.emptyMap(), Collections.emptyMap())));
+                TEST_SOLUTION_ID,
+                Boolean.TRUE,
+                CounterfactualExplainabilityResultDto.Stage.FINAL,
+                Collections.emptyMap(),
+                Collections.emptyMap())));
         doNothing().when(trustyService).storeExplainabilityResult(any(String.class), any(BaseExplainabilityResult.class));
 
         testNumberOfInvocations(message, 1);

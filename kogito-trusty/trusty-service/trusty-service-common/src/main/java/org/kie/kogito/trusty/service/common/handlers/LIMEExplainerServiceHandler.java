@@ -68,7 +68,8 @@ public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIM
                 ? Collections.emptyMap()
                 : decision.getOutcomes().stream().collect(Collectors.toUnmodifiableMap(DecisionOutcome::getOutcomeName, DecisionOutcome::getOutcomeId));
 
-        List<SaliencyModel> saliencies = dto.getSaliencies() == null ? null
+        List<SaliencyModel> saliencies = dto.getSaliencies() == null
+                ? Collections.emptyList()
                 : dto.getSaliencies().entrySet().stream()
                         .map(e -> saliencyFrom(outcomeNameToIdMap.get(e.getKey()), e.getKey(), e.getValue()))
                         .collect(Collectors.toList());
@@ -100,7 +101,7 @@ public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIM
     public LIMEExplainabilityResult getExplainabilityResultById(String executionId) {
         Storage<String, LIMEExplainabilityResult> storage = storageService.getLIMEResultStorage();
         if (!storage.containsKey(executionId)) {
-            throw new IllegalArgumentException(String.format("An explainability result with ID %s does not exist in the LIME results storage.", executionId));
+            throw new IllegalArgumentException(String.format("A LIME result for Execution ID '%s' does not exist in the LIME results storage.", executionId));
         }
         return storage.get(executionId);
     }
@@ -109,7 +110,7 @@ public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIM
     public void storeExplainabilityResult(String executionId, LIMEExplainabilityResult result) {
         Storage<String, LIMEExplainabilityResult> storage = storageService.getLIMEResultStorage();
         if (storage.containsKey(executionId)) {
-            throw new IllegalArgumentException(String.format("An explainability result with ID %s is already present in the LIME results storage.", executionId));
+            throw new IllegalArgumentException(String.format("A LIME result for Execution ID '%s' is already present in the LIME results storage.", executionId));
         }
         storage.put(executionId, result);
         LOG.info("Stored LIME explainability result for execution {}", executionId);

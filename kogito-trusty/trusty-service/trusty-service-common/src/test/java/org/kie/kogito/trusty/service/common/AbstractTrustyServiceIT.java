@@ -384,12 +384,21 @@ public abstract class AbstractTrustyServiceIT {
     public void testStoreExplainabilityResult_Counterfactual() {
         String executionId = "myCFExecution1Store";
 
+        TypedVariableWithValue input1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
+        TypedVariableWithValue input2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
+        TypedVariableWithValue output1 = TypedVariableWithValue.buildUnit("field3", "typeRef3", new IntNode(200));
+        TypedVariableWithValue output2 = TypedVariableWithValue.buildUnit("field4", "typeRef4", new IntNode(1000));
+
         trustyService.storeExplainabilityResult(executionId,
                 new CounterfactualExplainabilityResult(executionId,
                         "counterfactualId",
                         "solutionId",
                         ExplainabilityStatus.SUCCEEDED,
-                        "status"));
+                        "status",
+                        true,
+                        CounterfactualExplainabilityResult.Stage.FINAL,
+                        List.of(input1, input2),
+                        List.of(output1, output2)));
 
         CounterfactualExplainabilityResult result = trustyService.getExplainabilityResultById(executionId, CounterfactualExplainabilityResult.class);
         assertNotNull(result);
@@ -399,6 +408,9 @@ public abstract class AbstractTrustyServiceIT {
         Decision decision = new Decision();
         decision.setExecutionId(executionId);
         decision.setExecutionTimestamp(timestamp);
+        decision.setServiceUrl("serviceUrl");
+        decision.setExecutedModelNamespace("executedModelNamespace");
+        decision.setExecutedModelName("executedModelName");
         trustyService.storeDecision(decision.getExecutionId(), decision);
         return decision;
     }

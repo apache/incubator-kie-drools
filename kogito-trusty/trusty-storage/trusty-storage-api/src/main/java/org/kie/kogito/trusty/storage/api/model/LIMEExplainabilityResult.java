@@ -17,6 +17,9 @@
 package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.List;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,14 +32,18 @@ public class LIMEExplainabilityResult extends BaseExplainabilityResult {
     public static final String SALIENCIES_FIELD = "saliencies";
 
     @JsonProperty(SALIENCIES_FIELD)
+    @NotNull(message = "saliencies object must be provided.")
     private List<SaliencyModel> saliencies;
 
     public LIMEExplainabilityResult() {
     }
 
-    public LIMEExplainabilityResult(String executionId, ExplainabilityStatus status, String statusDetails, List<SaliencyModel> saliencies) {
+    public LIMEExplainabilityResult(@NotNull String executionId,
+            @NotNull ExplainabilityStatus status,
+            String statusDetails,
+            @NotNull List<SaliencyModel> saliencies) {
         super(executionId, status, statusDetails);
-        this.saliencies = saliencies;
+        this.saliencies = Objects.requireNonNull(saliencies);
     }
 
     public List<SaliencyModel> getSaliencies() {

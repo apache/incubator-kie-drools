@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -22,17 +26,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FeatureImportanceDto {
 
     @JsonProperty("featureName")
+    @NotNull(message = "featureName must be provided.")
     private String featureName;
 
     @JsonProperty("score")
+    @NotNull(message = "score must be provided.")
     private Double score;
 
     private FeatureImportanceDto() {
     }
 
-    public FeatureImportanceDto(String featureName, Double score) {
-        this.featureName = featureName;
-        this.score = score;
+    public FeatureImportanceDto(@NotNull String featureName,
+            @NotNull Double score) {
+        this.featureName = Objects.requireNonNull(featureName);
+        this.score = Objects.requireNonNull(score);
     }
 
     public String getFeatureName() {

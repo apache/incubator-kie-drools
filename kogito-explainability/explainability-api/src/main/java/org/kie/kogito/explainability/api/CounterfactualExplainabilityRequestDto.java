@@ -16,7 +16,9 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.Map;
+import java.util.Objects;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.kie.kogito.tracing.typedvalue.TypedValue;
@@ -38,22 +40,23 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
     private String counterfactualId;
 
     @JsonProperty(SEARCH_DOMAINS_FIELD)
+    @NotNull(message = "searchDomains object must be provided.")
     private Map<String, CounterfactualSearchDomainDto> searchDomains;
 
     private CounterfactualExplainabilityRequestDto() {
         super();
     }
 
-    public CounterfactualExplainabilityRequestDto(String executionId,
-            String counterfactualId,
-            String serviceUrl,
-            ModelIdentifierDto modelIdentifier,
-            Map<String, TypedValue> inputs,
-            Map<String, TypedValue> outputs,
-            Map<String, CounterfactualSearchDomainDto> searchDomains) {
+    public CounterfactualExplainabilityRequestDto(@NotNull String executionId,
+            @NotNull String counterfactualId,
+            @NotBlank String serviceUrl,
+            @NotNull ModelIdentifierDto modelIdentifier,
+            @NotNull Map<String, TypedValue> inputs,
+            @NotNull Map<String, TypedValue> outputs,
+            @NotNull Map<String, CounterfactualSearchDomainDto> searchDomains) {
         super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
-        this.counterfactualId = counterfactualId;
-        this.searchDomains = searchDomains;
+        this.counterfactualId = Objects.requireNonNull(counterfactualId);
+        this.searchDomains = Objects.requireNonNull(searchDomains);
     }
 
     public String getCounterfactualId() {

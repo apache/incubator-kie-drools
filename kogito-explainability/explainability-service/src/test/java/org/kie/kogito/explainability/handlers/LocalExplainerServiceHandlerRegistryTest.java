@@ -16,12 +16,15 @@
 package org.kie.kogito.explainability.handlers;
 
 import java.util.Collections;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.PredictionProviderFactory;
+import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
@@ -33,6 +36,7 @@ import org.kie.kogito.explainability.models.LIMEExplainabilityRequest;
 import org.kie.kogito.explainability.models.ModelIdentifier;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -54,6 +58,7 @@ public class LocalExplainerServiceHandlerRegistryTest {
     private LimeExplainerServiceHandler limeExplainerServiceHandler;
     private CounterfactualExplainerServiceHandler counterfactualExplainerServiceHandler;
     private PredictionProvider predictionProvider;
+    private Consumer<BaseExplainabilityResultDto> callback;
 
     private LocalExplainerServiceHandlerRegistry registry;
 
@@ -64,11 +69,14 @@ public class LocalExplainerServiceHandlerRegistryTest {
         CounterfactualExplainer counterfactualExplainer = mock(CounterfactualExplainer.class);
         limeExplainerServiceHandler = spy(new LimeExplainerServiceHandler(limeExplainer));
         counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(counterfactualExplainer));
+        PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
         predictionProvider = mock(PredictionProvider.class);
+        callback = mock(Consumer.class);
 
+        when(predictionProviderFactory.createPredictionProvider(any())).thenReturn(predictionProvider);
         Instance<LocalExplainerServiceHandler<?, ?, ?>> explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
-        registry = new LocalExplainerServiceHandlerRegistry(explanationHandlers);
+        registry = new LocalExplainerServiceHandlerRegistry(predictionProviderFactory, explanationHandlers);
     }
 
     @Test
@@ -92,9 +100,9 @@ public class LocalExplainerServiceHandlerRegistryTest {
                 Collections.emptyMap(),
                 Collections.emptyMap());
 
-        registry.explainAsyncWithResults(request, predictionProvider);
+        registry.explainAsyncWithResults(request, callback);
 
-        verify(limeExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(predictionProvider));
+        verify(limeExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(predictionProvider), eq(callback));
     }
 
     @Test
@@ -122,9 +130,9 @@ public class LocalExplainerServiceHandlerRegistryTest {
                 Collections.emptyMap(),
                 Collections.emptyMap());
 
-        registry.explainAsyncWithResults(request, predictionProvider);
+        registry.explainAsyncWithResults(request, callback);
 
-        verify(counterfactualExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(predictionProvider));
+        verify(counterfactualExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(predictionProvider), eq(callback));
     }
 
 }

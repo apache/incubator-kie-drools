@@ -16,6 +16,7 @@
 package org.kie.kogito.explainability.rest;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
@@ -35,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ExplainabilityApiV1IT {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String executionId = "test";
+    private static final String executionId = UUID.randomUUID().toString();
     private static final String serviceUrl = "http://localhost:8080";
 
     @Test
@@ -57,13 +58,9 @@ class ExplainabilityApiV1IT {
     @Test
     void testEndpointWithBadRequests() throws JsonProcessingException {
         LIMEExplainabilityRequestDto[] badRequests = new LIMEExplainabilityRequestDto[] {
-                new LIMEExplainabilityRequestDto(null, serviceUrl, new ModelIdentifierDto("test", "test"), Collections.emptyMap(), Collections.emptyMap()),
                 new LIMEExplainabilityRequestDto(executionId, serviceUrl, new ModelIdentifierDto("", "test"), Collections.emptyMap(), Collections.emptyMap()),
                 new LIMEExplainabilityRequestDto(executionId, serviceUrl, new ModelIdentifierDto("test", ""), Collections.emptyMap(), Collections.emptyMap()),
-                new LIMEExplainabilityRequestDto(executionId, serviceUrl, null, Collections.emptyMap(), Collections.emptyMap()),
                 new LIMEExplainabilityRequestDto(executionId, "", new ModelIdentifierDto("test", "test"), Collections.emptyMap(), Collections.emptyMap()),
-                new LIMEExplainabilityRequestDto(executionId, null, new ModelIdentifierDto("test", "test"), Collections.emptyMap(), Collections.emptyMap()),
-                new LIMEExplainabilityRequestDto(null, null, null, Collections.emptyMap(), Collections.emptyMap()),
         };
 
         for (int i = 0; i < badRequests.length; i++) {

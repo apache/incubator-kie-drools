@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
@@ -49,7 +51,9 @@ import com.fasterxml.jackson.databind.node.IntNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -113,9 +117,11 @@ public class LimeExplainerServiceHandlerTest {
                 Collections.emptyMap());
 
         Prediction prediction = handler.getPrediction(request);
+        assertTrue(prediction instanceof SimplePrediction);
+        SimplePrediction simplePrediction = (SimplePrediction) prediction;
 
-        assertTrue(prediction.getInput().getFeatures().isEmpty());
-        assertTrue(prediction.getOutput().getOutputs().isEmpty());
+        assertTrue(simplePrediction.getInput().getFeatures().isEmpty());
+        assertTrue(simplePrediction.getOutput().getOutputs().isEmpty());
     }
 
     @Test
@@ -239,6 +245,17 @@ public class LimeExplainerServiceHandlerTest {
     }
 
     @Test
+    public void testCreateIntermediateResultDto() {
+        LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
+                SERVICE_URL,
+                MODEL_IDENTIFIER,
+                Collections.emptyMap(),
+                Collections.emptyMap());
+
+        assertThrows(UnsupportedOperationException.class, () -> handler.createIntermediateResultDto(request, null));
+    }
+
+    @Test
     public void testCreateFailedResultDto() {
         LIMEExplainabilityRequest request = new LIMEExplainabilityRequest(EXECUTION_ID,
                 SERVICE_URL,
@@ -256,13 +273,26 @@ public class LimeExplainerServiceHandlerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExplainAsyncDelegation() {
         Prediction prediction = mock(Prediction.class);
-        PredictionProvider model = mock(PredictionProvider.class);
+        PredictionProvider predictionProvider = mock(PredictionProvider.class);
 
-        handler.explainAsync(prediction, model);
+        handler.explainAsync(prediction, predictionProvider);
 
-        verify(explainer).explainAsync(eq(prediction), eq(model));
+        verify(explainer).explainAsync(eq(prediction), eq(predictionProvider), any(Consumer.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExplainAsyncWithConsumerDelegation() {
+        Prediction prediction = mock(Prediction.class);
+        PredictionProvider predictionProvider = mock(PredictionProvider.class);
+        Consumer<Map<String, Saliency>> callback = mock(Consumer.class);
+
+        handler.explainAsync(prediction, predictionProvider, callback);
+
+        verify(explainer).explainAsync(eq(prediction), eq(predictionProvider), eq(callback));
     }
 
 }

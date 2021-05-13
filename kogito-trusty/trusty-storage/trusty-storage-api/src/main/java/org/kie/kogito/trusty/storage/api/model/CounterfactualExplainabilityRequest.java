@@ -18,6 +18,9 @@ package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,32 +34,37 @@ public class CounterfactualExplainabilityRequest {
     public static final String COUNTERFACTUAL_SEARCH_DOMAINS = "searchDomains";
 
     @JsonProperty(EXECUTION_ID_FIELD)
+    @NotNull(message = "executionId must be provided.")
     private String executionId;
 
     @JsonProperty(COUNTERFACTUAL_ID_FIELD)
+    @NotNull(message = "counterfactualId must be provided.")
     private String counterfactualId;
 
     @JsonProperty(COUNTERFACTUAL_GOALS)
+    @NotNull(message = "goals object must be provided.")
     private Collection<TypedVariableWithValue> goals;
 
     @JsonProperty(COUNTERFACTUAL_SEARCH_DOMAINS)
+    @NotNull(message = "searchDomains object must be provided.")
     private Collection<CounterfactualSearchDomain> searchDomains;
 
     public CounterfactualExplainabilityRequest() {
     }
 
-    public CounterfactualExplainabilityRequest(String executionId, String counterfactualId) {
+    public CounterfactualExplainabilityRequest(@NotNull String executionId,
+            @NotNull String counterfactualId) {
         this(executionId, counterfactualId, new ArrayList<>(), new ArrayList<>());
     }
 
-    public CounterfactualExplainabilityRequest(String executionId,
-            String counterfactualId,
-            Collection<TypedVariableWithValue> goals,
-            Collection<CounterfactualSearchDomain> searchDomains) {
-        this.executionId = executionId;
-        this.counterfactualId = counterfactualId;
-        this.goals = goals;
-        this.searchDomains = searchDomains;
+    public CounterfactualExplainabilityRequest(@NotNull String executionId,
+            @NotNull String counterfactualId,
+            @NotNull Collection<TypedVariableWithValue> goals,
+            @NotNull Collection<CounterfactualSearchDomain> searchDomains) {
+        this.executionId = Objects.requireNonNull(executionId);
+        this.counterfactualId = Objects.requireNonNull(counterfactualId);
+        this.goals = Objects.requireNonNull(goals);
+        this.searchDomains = Objects.requireNonNull(searchDomains);
     }
 
     public String getExecutionId() {

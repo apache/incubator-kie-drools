@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,7 +75,9 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
     }
 
     @Override
-    public CompletableFuture<Map<String, Saliency>> explainAsync(Prediction prediction, PredictionProvider model) {
+    public CompletableFuture<Map<String, Saliency>> explainAsync(Prediction prediction,
+            PredictionProvider model,
+            Consumer<Map<String, Saliency>> intermediateResultsConsumer) {
         PredictionInput originalInput = prediction.getInput();
         if (originalInput.getFeatures().isEmpty()) {
             throw new LocalExplanationException("cannot explain a prediction whose input is empty");

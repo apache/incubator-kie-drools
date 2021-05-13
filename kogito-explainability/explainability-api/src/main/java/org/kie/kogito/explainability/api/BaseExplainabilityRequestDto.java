@@ -16,6 +16,7 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -54,20 +55,26 @@ public abstract class BaseExplainabilityRequestDto {
     private ModelIdentifierDto modelIdentifier;
 
     @JsonProperty("inputs")
+    @NotNull(message = "inputs object must be provided.")
     private Map<String, TypedValue> inputs;
 
     @JsonProperty("outputs")
+    @NotNull(message = "outputs object must be provided.")
     private Map<String, TypedValue> outputs;
 
     protected BaseExplainabilityRequestDto() {
     }
 
-    public BaseExplainabilityRequestDto(String executionId, String serviceUrl, ModelIdentifierDto modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
-        this.executionId = executionId;
-        this.serviceUrl = serviceUrl;
-        this.modelIdentifier = modelIdentifier;
-        this.inputs = inputs;
-        this.outputs = outputs;
+    public BaseExplainabilityRequestDto(@NotNull String executionId,
+            @NotBlank String serviceUrl,
+            @NotNull ModelIdentifierDto modelIdentifier,
+            @NotNull Map<String, TypedValue> inputs,
+            @NotNull Map<String, TypedValue> outputs) {
+        this.executionId = Objects.requireNonNull(executionId);
+        this.serviceUrl = Objects.requireNonNull(serviceUrl);
+        this.modelIdentifier = Objects.requireNonNull(modelIdentifier);
+        this.inputs = Objects.requireNonNull(inputs);
+        this.outputs = Objects.requireNonNull(outputs);
     }
 
     public String getExecutionId() {

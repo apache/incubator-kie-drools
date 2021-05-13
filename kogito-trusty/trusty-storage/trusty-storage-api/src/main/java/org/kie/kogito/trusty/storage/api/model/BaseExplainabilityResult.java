@@ -16,6 +16,10 @@
 
 package org.kie.kogito.trusty.storage.api.model;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -37,9 +41,11 @@ public abstract class BaseExplainabilityResult {
     public static final String STATUS_DETAILS_FIELD = "statusDetails";
 
     @JsonProperty(EXECUTION_ID_FIELD)
+    @NotNull(message = "executionId must be provided.")
     private String executionId;
 
     @JsonProperty(STATUS_FIELD)
+    @NotNull(message = "status object must be provided.")
     private ExplainabilityStatus status;
 
     @JsonProperty(STATUS_DETAILS_FIELD)
@@ -48,9 +54,11 @@ public abstract class BaseExplainabilityResult {
     public BaseExplainabilityResult() {
     }
 
-    public BaseExplainabilityResult(String executionId, ExplainabilityStatus status, String statusDetails) {
-        this.executionId = executionId;
-        this.status = status;
+    public BaseExplainabilityResult(@NotNull String executionId,
+            @NotNull ExplainabilityStatus status,
+            String statusDetails) {
+        this.executionId = Objects.requireNonNull(executionId);
+        this.status = Objects.requireNonNull(status);
         this.statusDetails = statusDetails;
     }
 

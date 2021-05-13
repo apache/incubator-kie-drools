@@ -40,8 +40,6 @@ import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
 import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,7 +69,6 @@ class DecisionsApiV1IT {
     private static final String TEST_OUTCOME_ID = "FirstOutcome";
     private static final long TEST_EXECUTION_TIMESTAMP = 1591692950000L;
     private static final OffsetDateTime TEST_EXECUTION_DATE = OffsetDateTime.ofInstant(Instant.ofEpochMilli(TEST_EXECUTION_TIMESTAMP), ZoneId.of("UTC"));
-    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionsApiV1IT.class);
 
     @InjectMock
     TrustyService trustyService;

@@ -61,9 +61,6 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
     private final SolverConfig solverConfig;
     private final Executor executor;
 
-    public static final Consumer<CounterfactualResult> defaultIntermediateConsumer =
-            counterfactual -> logger.debug("Intermediate counterfactual: {}", counterfactual.getEntities());
-
     public static final Consumer<CounterfactualSolution> assignSolutionId =
             counterfactual -> counterfactual.setSolutionId(UUID.randomUUID());
 
@@ -122,7 +119,9 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
     }
 
     @Override
-    public CompletableFuture<CounterfactualResult> explainAsync(Prediction prediction, PredictionProvider model) {
+    public CompletableFuture<CounterfactualResult> explainAsync(Prediction prediction,
+            PredictionProvider model,
+            Consumer<CounterfactualResult> intermediateResultsConsumer) {
         CounterfactualPrediction cfPrediction = (CounterfactualPrediction) prediction;
         final PredictionFeatureDomain featureDomain = cfPrediction.getDomain();
         final List<Boolean> constraints = cfPrediction.getConstraints();
@@ -139,10 +138,6 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         final CompletableFuture<CounterfactualSolution> cfSolution = CompletableFuture.supplyAsync(() -> {
             try (SolverManager<CounterfactualSolution, UUID> solverManager =
                     SolverManager.create(solverConfig, new SolverManagerConfig())) {
-
-                final Consumer<CounterfactualResult> intermediateResultsConsumer =
-                        cfPrediction.getIntermediateConsumer() == null ? defaultIntermediateConsumer
-                                : cfPrediction.getIntermediateConsumer();
 
                 SolverJob<CounterfactualSolution, UUID> solverJob =
                         solverManager.solveAndListen(executionId, initial,
@@ -169,6 +164,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             return new CounterfactualResult(solution.getEntities(), cfOutputs.join(), solution.getScore().isFeasible(),
                     solution.getSolutionId(), solution.getExecutionId());
         });
+
     }
 
     public static class Builder {

@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -42,17 +46,20 @@ public abstract class CounterfactualSearchDomainDto {
     }
 
     @JsonProperty(KIND_FIELD)
+    @NotNull(message = "kind must be provided.")
     private CounterfactualSearchDomainDto.Kind kind;
 
     @JsonProperty(TYPE_FIELD)
+    @NotNull(message = "type object must be provided.")
     private String type;
 
     protected CounterfactualSearchDomainDto() {
     }
 
-    protected CounterfactualSearchDomainDto(CounterfactualSearchDomainDto.Kind kind, String type) {
-        this.kind = kind;
-        this.type = type;
+    protected CounterfactualSearchDomainDto(@NotNull CounterfactualSearchDomainDto.Kind kind,
+            @NotNull String type) {
+        this.kind = Objects.requireNonNull(kind);
+        this.type = Objects.requireNonNull(type);
     }
 
     public CounterfactualSearchDomainDto.Kind getKind() {

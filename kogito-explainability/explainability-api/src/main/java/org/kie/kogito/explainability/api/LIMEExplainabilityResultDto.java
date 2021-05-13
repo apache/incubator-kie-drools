@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,15 +28,19 @@ public class LIMEExplainabilityResultDto extends BaseExplainabilityResultDto {
     public static final String EXPLAINABILITY_TYPE_NAME = "lime";
 
     @JsonProperty("saliency")
+    @NotNull(message = "saliencies object must be provided.")
     private Map<String, SaliencyDto> saliencies;
 
     private LIMEExplainabilityResultDto() {
         super();
     }
 
-    private LIMEExplainabilityResultDto(String executionId, ExplainabilityStatus status, String statusDetails, Map<String, SaliencyDto> saliencies) {
+    private LIMEExplainabilityResultDto(@NotNull String executionId,
+            @NotNull ExplainabilityStatus status,
+            String statusDetails,
+            @NotNull Map<String, SaliencyDto> saliencies) {
         super(executionId, status, statusDetails);
-        this.saliencies = saliencies;
+        this.saliencies = Objects.requireNonNull(saliencies);
     }
 
     public Map<String, SaliencyDto> getSaliencies() {
@@ -44,6 +52,6 @@ public class LIMEExplainabilityResultDto extends BaseExplainabilityResultDto {
     }
 
     public static LIMEExplainabilityResultDto buildFailed(String executionId, String statusDetails) {
-        return new LIMEExplainabilityResultDto(executionId, ExplainabilityStatus.FAILED, statusDetails, null);
+        return new LIMEExplainabilityResultDto(executionId, ExplainabilityStatus.FAILED, statusDetails, Collections.emptyMap());
     }
 }

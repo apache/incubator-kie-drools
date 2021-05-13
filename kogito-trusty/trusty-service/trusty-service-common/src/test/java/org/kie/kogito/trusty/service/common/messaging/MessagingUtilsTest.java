@@ -18,8 +18,11 @@ package org.kie.kogito.trusty.service.common.messaging;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -223,4 +226,196 @@ class MessagingUtilsTest {
         assertEquals(1000, range.getLowerBound().asInt());
         assertEquals(2000, range.getUpperBound().asInt());
     }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    void tracingTypedValueToModelWhenMapIsNull() {
+        assertTrue(MessagingUtils.tracingTypedValueToModel((Map) null).isEmpty());
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    void tracingTypedValueToModelWhenMapEntryIsNull() {
+        assertNull(MessagingUtils.tracingTypedValueToModel((Map.Entry) null));
+    }
+
+    @Test
+    void tracingTypedValueToModelWhenMapEntryValueIsNull() {
+        //Map.entry(k, v) does not accept null values so use the long route
+        Map<String, TypedValue> map = new HashMap<>();
+        map.put("key", null);
+        Map.Entry<String, TypedValue> entry = map.entrySet().iterator().next();
+
+        assertNull(MessagingUtils.tracingTypedValueToModel(entry));
+    }
+
+    @Test
+    void modelToTracingTypedValueRoundTrip() {
+        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariable);
+
+        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("name", typedValue));
+        assertNotNull(result);
+        assertEquals(typedVariable.getName(), result.getName());
+        assertEquals(typedVariable.getKind(), result.getKind());
+        assertEquals(typedVariable.getTypeRef(), result.getTypeRef());
+        assertEquals(typedVariable.getValue(), result.getValue());
+        assertNull(result.getComponents());
+    }
+
+    @Test
+    void modelToTracingTypedValueCollectionRoundTrip() {
+        TypedVariableWithValue collectionItem1 = TypedVariableWithValue.buildUnit("item1", "string", new TextNode("sample1"));
+        TypedVariableWithValue collectionItem2 = TypedVariableWithValue.buildUnit("item2", "number", new IntNode(123));
+
+        TypedVariableWithValue typedVariableWithCollection = TypedVariableWithValue.buildCollection("collection",
+                "object",
+                List.of(collectionItem1, collectionItem2));
+
+        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariableWithCollection);
+
+        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("collection", typedValue));
+        assertNotNull(result);
+        assertEquals(typedVariableWithCollection.getName(), result.getName());
+        assertEquals(typedVariableWithCollection.getKind(), result.getKind());
+        assertEquals(typedVariableWithCollection.getTypeRef(), result.getTypeRef());
+        assertEquals(typedVariableWithCollection.getValue(), result.getValue());
+        assertNotNull(result.getComponents());
+        assertEquals(2, result.getComponents().size());
+
+        Iterator<TypedVariableWithValue> resultComponentIterator = result.getComponents().iterator();
+        TypedVariableWithValue resultComponent1 = resultComponentIterator.next();
+        assertNotNull(resultComponent1);
+        //Names are not converted to TypedValue and hence are not available on the return for collections
+        assertEquals("", resultComponent1.getName());
+        assertEquals(collectionItem1.getKind(), resultComponent1.getKind());
+        assertEquals(collectionItem1.getTypeRef(), resultComponent1.getTypeRef());
+        assertEquals(collectionItem1.getValue(), resultComponent1.getValue());
+        assertNull(resultComponent1.getComponents());
+
+        TypedVariableWithValue resultComponent2 = resultComponentIterator.next();
+        assertNotNull(resultComponent2);
+        //Names are not converted to TypedValue and hence are not available on the return for collections
+        assertEquals("", resultComponent2.getName());
+        assertEquals(collectionItem2.getKind(), resultComponent2.getKind());
+        assertEquals(collectionItem2.getTypeRef(), resultComponent2.getTypeRef());
+        assertEquals(collectionItem2.getValue(), resultComponent2.getValue());
+        assertNull(resultComponent2.getComponents());
+    }
+
+    @Test
+    void modelToTracingTypedValueStructureRoundTrip() {
+        TypedVariableWithValue structureItem1 = TypedVariableWithValue.buildUnit("child1", "string", new TextNode("sample1"));
+        TypedVariableWithValue structureItem2 = TypedVariableWithValue.buildUnit("child2", "number", new IntNode(123));
+        TypedVariableWithValue typedVariableWithStructure = TypedVariableWithValue.buildStructure("structure",
+                "object",
+                List.of(structureItem1, structureItem2));
+
+        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariableWithStructure);
+
+        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("structure", typedValue));
+        assertNotNull(result);
+        assertEquals(typedVariableWithStructure.getName(), result.getName());
+        assertEquals(typedVariableWithStructure.getKind(), result.getKind());
+        assertEquals(typedVariableWithStructure.getTypeRef(), result.getTypeRef());
+        assertEquals(typedVariableWithStructure.getValue(), result.getValue());
+        assertNotNull(result.getComponents());
+        assertEquals(2, result.getComponents().size());
+
+        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
+        Optional<TypedVariableWithValue> oResultComponent1 = result.getComponents().stream().filter(c -> c.getName().equals("child1")).findFirst();
+        assertTrue(oResultComponent1.isPresent());
+        TypedVariableWithValue resultComponent1 = oResultComponent1.get();
+        assertEquals(structureItem1.getName(), resultComponent1.getName());
+        assertEquals(structureItem1.getKind(), resultComponent1.getKind());
+        assertEquals(structureItem1.getTypeRef(), resultComponent1.getTypeRef());
+        assertEquals(structureItem1.getValue(), resultComponent1.getValue());
+        assertNull(resultComponent1.getComponents());
+
+        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
+        Optional<TypedVariableWithValue> oResultComponent2 = result.getComponents().stream().filter(c -> c.getName().equals("child2")).findFirst();
+        assertTrue(oResultComponent2.isPresent());
+        TypedVariableWithValue resultComponent2 = oResultComponent2.get();
+        assertEquals(structureItem2.getName(), resultComponent2.getName());
+        assertEquals(structureItem2.getKind(), resultComponent2.getKind());
+        assertEquals(structureItem2.getTypeRef(), resultComponent2.getTypeRef());
+        assertEquals(structureItem2.getValue(), resultComponent2.getValue());
+        assertNull(resultComponent2.getComponents());
+    }
+
+    @Test
+    void modelToTracingTypedValueStructureComplexRoundTrip() {
+        TypedVariableWithValue structureItem1 = TypedVariableWithValue.buildUnit("child1", "string", new TextNode("sample1"));
+
+        TypedVariableWithValue collectionItem1 = TypedVariableWithValue.buildUnit("item1", "string", new TextNode("sample1"));
+        TypedVariableWithValue collectionItem2 = TypedVariableWithValue.buildUnit("item2", "number", new IntNode(123));
+
+        TypedVariableWithValue typedVariableWithCollection = TypedVariableWithValue.buildCollection("collection",
+                "object",
+                List.of(collectionItem1, collectionItem2));
+
+        TypedVariableWithValue structureItem2 = TypedVariableWithValue.buildStructure("child2", "number", List.of(typedVariableWithCollection));
+        TypedVariableWithValue typedVariableWithStructure = TypedVariableWithValue.buildStructure("structure",
+                "object",
+                List.of(structureItem1, structureItem2));
+
+        TypedValue typedValue = MessagingUtils.modelToTracingTypedValue(typedVariableWithStructure);
+
+        TypedVariableWithValue result = MessagingUtils.tracingTypedValueToModel(Map.entry("structure", typedValue));
+        assertNotNull(result);
+        assertEquals(typedVariableWithStructure.getName(), result.getName());
+        assertEquals(typedVariableWithStructure.getKind(), result.getKind());
+        assertEquals(typedVariableWithStructure.getTypeRef(), result.getTypeRef());
+        assertEquals(typedVariableWithStructure.getValue(), result.getValue());
+        assertNotNull(result.getComponents());
+        assertEquals(2, result.getComponents().size());
+
+        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
+        Optional<TypedVariableWithValue> oResultComponent1 = result.getComponents().stream().filter(c -> c.getName().equals("child1")).findFirst();
+        assertTrue(oResultComponent1.isPresent());
+        TypedVariableWithValue resultComponent1 = oResultComponent1.get();
+        assertEquals(structureItem1.getName(), resultComponent1.getName());
+        assertEquals(structureItem1.getKind(), resultComponent1.getKind());
+        assertEquals(structureItem1.getTypeRef(), resultComponent1.getTypeRef());
+        assertEquals(structureItem1.getValue(), resultComponent1.getValue());
+        assertNull(resultComponent1.getComponents());
+
+        //TypedValue stores children in a Map. The original order of the children is therefore not preserved on the return for structures
+        Optional<TypedVariableWithValue> oResultComponent2 = result.getComponents().stream().filter(c -> c.getName().equals("child2")).findFirst();
+        assertTrue(oResultComponent2.isPresent());
+        TypedVariableWithValue resultComponent2 = oResultComponent2.get();
+        assertEquals(structureItem2.getName(), resultComponent2.getName());
+        assertEquals(structureItem2.getKind(), resultComponent2.getKind());
+        assertEquals(structureItem2.getTypeRef(), resultComponent2.getTypeRef());
+        assertEquals(structureItem2.getValue(), resultComponent2.getValue());
+        assertNotNull(resultComponent2.getComponents());
+        assertEquals(1, resultComponent2.getComponents().size());
+
+        TypedVariableWithValue resultComponent2Child1 = resultComponent2.getComponents().iterator().next();
+        assertEquals(typedVariableWithCollection.getName(), resultComponent2Child1.getName());
+        assertEquals(typedVariableWithCollection.getKind(), resultComponent2Child1.getKind());
+        assertEquals(typedVariableWithCollection.getTypeRef(), resultComponent2Child1.getTypeRef());
+        assertEquals(typedVariableWithCollection.getValue(), resultComponent2Child1.getValue());
+        assertNotNull(resultComponent2Child1.getComponents());
+        assertEquals(2, resultComponent2Child1.getComponents().size());
+
+        Iterator<TypedVariableWithValue> resultComponent2Child1Iterator = resultComponent2Child1.getComponents().iterator();
+        TypedVariableWithValue resultComponent2Child1Sibling1 = resultComponent2Child1Iterator.next();
+        assertNotNull(resultComponent2Child1Sibling1);
+        //Names are not converted to TypedValue and hence are not available on the return for collections
+        assertEquals("", resultComponent2Child1Sibling1.getName());
+        assertEquals(collectionItem1.getKind(), resultComponent2Child1Sibling1.getKind());
+        assertEquals(collectionItem1.getTypeRef(), resultComponent2Child1Sibling1.getTypeRef());
+        assertEquals(collectionItem1.getValue(), resultComponent2Child1Sibling1.getValue());
+        assertNull(resultComponent2Child1Sibling1.getComponents());
+
+        TypedVariableWithValue resultComponent2Child1Sibling2 = resultComponent2Child1Iterator.next();
+        assertNotNull(resultComponent2Child1Sibling2);
+        //Names are not converted to TypedValue and hence are not available on the return for collections
+        assertEquals("", resultComponent2Child1Sibling2.getName());
+        assertEquals(collectionItem2.getKind(), resultComponent2Child1Sibling2.getKind());
+        assertEquals(collectionItem2.getTypeRef(), resultComponent2Child1Sibling2.getTypeRef());
+        assertEquals(collectionItem2.getValue(), resultComponent2Child1Sibling2.getValue());
+        assertNull(resultComponent2Child1Sibling2.getComponents());
+    }
+
 }

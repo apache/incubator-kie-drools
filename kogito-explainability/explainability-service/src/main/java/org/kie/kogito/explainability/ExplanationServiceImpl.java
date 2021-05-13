@@ -17,13 +17,13 @@
 package org.kie.kogito.explainability;
 
 import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,16 +41,21 @@ public class ExplanationServiceImpl implements ExplanationService {
     }
 
     @Override
-    public CompletionStage<BaseExplainabilityResultDto> explainAsync(
-            BaseExplainabilityRequest request,
-            PredictionProvider predictionProvider) {
+    public CompletionStage<BaseExplainabilityResultDto> explainAsync(BaseExplainabilityRequest request) {
+        return explainAsync(request,
+                baseExplainabilityResultDto -> {
+                    /* NOP */});
+    }
+
+    @Override
+    public CompletionStage<BaseExplainabilityResultDto> explainAsync(BaseExplainabilityRequest request,
+            Consumer<BaseExplainabilityResultDto> intermediateResultConsumer) {
         LOG.debug("Explainability request {} with executionId {} for model {}:{}",
                 request.getClass().getSimpleName(),
                 request.getExecutionId(),
                 request.getModelIdentifier().getResourceType(),
                 request.getModelIdentifier().getResourceId());
 
-        return explainerServiceHandlerRegistry.explainAsyncWithResults(request, predictionProvider);
+        return explainerServiceHandlerRegistry.explainAsyncWithResults(request, intermediateResultConsumer);
     }
-
 }

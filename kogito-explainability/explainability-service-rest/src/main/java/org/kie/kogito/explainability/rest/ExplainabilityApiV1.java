@@ -33,10 +33,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 import io.smallrye.mutiny.Uni;
@@ -45,16 +43,13 @@ import io.smallrye.mutiny.Uni;
 public class ExplainabilityApiV1 {
 
     protected ExplanationService explanationService;
-    protected PredictionProviderFactory predictionProviderFactory;
     protected LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry;
 
     @Inject
     public ExplainabilityApiV1(
             ExplanationService explanationService,
-            PredictionProviderFactory predictionProviderFactory,
             LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry) {
         this.explanationService = explanationService;
-        this.predictionProviderFactory = predictionProviderFactory;
         this.explainerServiceHandlerRegistry = explainerServiceHandlerRegistry;
     }
 
@@ -70,8 +65,7 @@ public class ExplainabilityApiV1 {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> explain(@Valid BaseExplainabilityRequestDto requestDto) {
         BaseExplainabilityRequest request = explainerServiceHandlerRegistry.explainabilityRequestFrom(requestDto);
-        PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
-        CompletionStage<Response> result = explanationService.explainAsync(request, provider)
+        CompletionStage<Response> result = explanationService.explainAsync(request)
                 .thenApply(x -> Response.ok(x).build());
 
         return Uni.createFrom().completionStage(result);

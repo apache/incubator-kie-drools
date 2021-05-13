@@ -16,6 +16,7 @@
 package org.kie.kogito.trusty.service.common.handlers;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
@@ -25,12 +26,14 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
 import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -42,6 +45,8 @@ public class ExplainerServiceHandlerRegistryTest {
     private static final String EXECUTION_ID = "executionId";
 
     private static final String COUNTERFACTUAL_ID = "counterfactualId";
+
+    private static final String SOLUTION_ID = "solutionId";
 
     private LIMEExplainerServiceHandler limeExplainerServiceHandler;
     private CounterfactualExplainerServiceHandler counterfactualExplainerServiceHandler;
@@ -98,8 +103,14 @@ public class ExplainerServiceHandlerRegistryTest {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testCounterfactual_getExplainabilityResultById() {
+        Query query = mock(Query.class);
+        CounterfactualExplainabilityResult result = mock(CounterfactualExplainabilityResult.class);
         when(storageCounterfactual.containsKey(eq(EXECUTION_ID))).thenReturn(true);
+        when(storageCounterfactual.query()).thenReturn(query);
+        when(query.filter(any())).thenReturn(query);
+        when(query.execute()).thenReturn(List.of(result));
 
         registry.getExplainabilityResultById(EXECUTION_ID, CounterfactualExplainabilityResult.class);
 
@@ -120,7 +131,9 @@ public class ExplainerServiceHandlerRegistryTest {
     public void testCounterfactual_explainabilityResultFrom() {
         CounterfactualExplainabilityResultDto dto = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
+                SOLUTION_ID,
                 true,
+                CounterfactualExplainabilityResultDto.Stage.FINAL,
                 Collections.emptyMap(),
                 Collections.emptyMap());
 

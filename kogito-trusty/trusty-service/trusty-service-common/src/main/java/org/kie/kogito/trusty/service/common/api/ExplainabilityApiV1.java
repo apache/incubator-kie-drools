@@ -41,7 +41,6 @@ import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
 import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
@@ -70,14 +69,14 @@ public class ExplainabilityApiV1 {
                     description = "The execution ID.",
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
-        return retrieveExplainabilityResult(executionId, LIMEExplainabilityResult.class)
+        return retrieveLIMEExplainabilityResult(executionId)
                 .map(obj -> Response.ok(new SalienciesResponse(obj)).build())
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
     }
 
-    private <T extends BaseExplainabilityResult> Optional<T> retrieveExplainabilityResult(String executionId, Class<T> type) {
+    private Optional<LIMEExplainabilityResult> retrieveLIMEExplainabilityResult(String executionId) {
         try {
-            return Optional.ofNullable(trustyService.getExplainabilityResultById(executionId, type));
+            return Optional.ofNullable(trustyService.getExplainabilityResultById(executionId, LIMEExplainabilityResult.class));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

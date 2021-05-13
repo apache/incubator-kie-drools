@@ -16,6 +16,10 @@
 
 package org.kie.kogito.trusty.storage.api.model;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +40,7 @@ public class Execution {
     public final static String EXECUTION_TYPE_FIELD = "executionType";
 
     @JsonProperty(EXECUTION_ID_FIELD)
+    @NotNull(message = "executionId must be provided.")
     private String executionId;
 
     @JsonProperty(SOURCE_URL_FIELD)
@@ -69,10 +74,16 @@ public class Execution {
         this.executionType = executionType;
     }
 
-    public Execution(String executionId, String sourceUrl, String serviceUrl, Long executionTimestamp, Boolean hasSucceeded,
-            String executorName, String executedModelName, String executedModelNamespace,
+    public Execution(@NotNull String executionId,
+            String sourceUrl,
+            String serviceUrl,
+            Long executionTimestamp,
+            Boolean hasSucceeded,
+            String executorName,
+            String executedModelName,
+            String executedModelNamespace,
             ExecutionType executionType) {
-        this.executionId = executionId;
+        this.executionId = Objects.requireNonNull(executionId);
         this.sourceUrl = sourceUrl;
         this.serviceUrl = serviceUrl;
         this.executionTimestamp = executionTimestamp;

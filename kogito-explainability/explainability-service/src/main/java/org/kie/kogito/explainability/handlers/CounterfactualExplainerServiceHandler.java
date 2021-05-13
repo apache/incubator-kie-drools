@@ -16,17 +16,18 @@
 package org.kie.kogito.explainability.handlers;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.kogito.explainability.ConversionUtils;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
@@ -112,7 +113,6 @@ public class CounterfactualExplainerServiceHandler
                 featureDomain,
                 featureConstraints,
                 null,
-                null,
                 UUID.fromString(request.getExecutionId()));
     }
 
@@ -134,33 +134,9 @@ public class CounterfactualExplainerServiceHandler
     }
 
     @Override
-    @SuppressWarnings("unused")
-    //TODO See https://issues.redhat.com/browse/FAI-439
-    //When the results are passed back to TrustyService this will be completed.
     public BaseExplainabilityResultDto createSucceededResultDto(CounterfactualExplainabilityRequest request,
             CounterfactualResult result) {
-        List<Feature> features = result.getEntities().stream().map(CounterfactualEntity::asFeature).collect(Collectors.toList());
-        List<PredictionOutput> predictionOutputs = result.getOutput();
-        if (Objects.isNull(predictionOutputs)) {
-            throw new NullPointerException(String.format("Null Outputs produced for Explanation with ExecutionId '%s' and CounterfactualId '%s'",
-                    request.getExecutionId(),
-                    request.getCounterfactualId()));
-        } else if (predictionOutputs.isEmpty()) {
-            throw new IllegalArgumentException(String.format("No Outputs produced for Explanation with ExecutionId '%s' and CounterfactualId '%s'",
-                    request.getExecutionId(),
-                    request.getCounterfactualId()));
-        } else if (predictionOutputs.size() > 1) {
-            throw new IllegalArgumentException(String.format("Multiple Output sets produced for Explanation with ExecutionId '%s' and CounterfactualId '%s'",
-                    request.getExecutionId(),
-                    request.getCounterfactualId()));
-        }
-
-        List<Output> outputs = predictionOutputs.get(0).getOutputs();
-        return CounterfactualExplainabilityResultDto.buildSucceeded(request.getExecutionId(),
-                request.getCounterfactualId(),
-                result.isValid(),
-                Collections.emptyMap(),
-                Collections.emptyMap());
+        return buildResultDtoFromExplanation(request, result);
     }
 
     @Override
@@ -171,7 +147,44 @@ public class CounterfactualExplainerServiceHandler
     }
 
     @Override
-    public CompletableFuture<CounterfactualResult> explainAsync(Prediction prediction, PredictionProvider model) {
-        return explainer.explainAsync(prediction, model);
+    public BaseExplainabilityResultDto createIntermediateResultDto(CounterfactualExplainabilityRequest request, CounterfactualResult result) {
+        return buildResultDtoFromExplanation(request, result);
+    }
+
+    private CounterfactualExplainabilityResultDto buildResultDtoFromExplanation(CounterfactualExplainabilityRequest request,
+            CounterfactualResult result) {
+        List<Feature> features = result.getEntities().stream().map(CounterfactualEntity::asFeature).collect(Collectors.toList());
+        List<PredictionOutput> predictionOutputs = result.getOutput();
+        if (Objects.isNull(predictionOutputs)) {
+            throw new NullPointerException(String.format("Null Outputs produced for Explanation with ExecutionId '%s' and CounterfactualId '%s'",
+                    request.getExecutionId(),
+                    request.getCounterfactualId()));
+        } else if (predictionOutputs.isEmpty()) {
+            throw new IllegalStateException(String.format("No Outputs produced for Explanation with ExecutionId '%s' and CounterfactualId '%s'",
+                    request.getExecutionId(),
+                    request.getCounterfactualId()));
+        } else if (predictionOutputs.size() > 1) {
+            throw new IllegalStateException(String.format("Multiple Output sets produced for Explanation with ExecutionId '%s' and CounterfactualId '%s'",
+                    request.getExecutionId(),
+                    request.getCounterfactualId()));
+        }
+
+        List<Output> outputs = predictionOutputs.get(0).getOutputs();
+        return CounterfactualExplainabilityResultDto.buildSucceeded(request.getExecutionId(),
+                request.getCounterfactualId(),
+                result.getSolutionId().toString(),
+                result.isValid(),
+                CounterfactualExplainabilityResultDto.Stage.FINAL,
+                ConversionUtils.fromFeatureList(features),
+                ConversionUtils.fromOutputs(outputs));
+    }
+
+    @Override
+    public CompletableFuture<CounterfactualResult> explainAsync(Prediction prediction,
+            PredictionProvider predictionProvider,
+            Consumer<CounterfactualResult> intermediateResultsConsumer) {
+        return explainer.explainAsync(prediction,
+                predictionProvider,
+                intermediateResultsConsumer);
     }
 }

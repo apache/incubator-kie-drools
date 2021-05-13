@@ -17,6 +17,7 @@
 package org.kie.kogito.explainability.messaging;
 
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
@@ -50,5 +51,15 @@ class ExplainabilityMessagingHandlerLIMEIT extends BaseExplainabilityMessagingHa
     @Override
     protected void assertResult(BaseExplainabilityResultDto result) {
         assertTrue(result instanceof LIMEExplainabilityResultDto);
+    }
+
+    @Override
+    protected int getTotalExpectedEventCountWithIntermediateResults() {
+        return 1;
+    }
+
+    @Override
+    protected void mockExplainAsyncInvocationWithIntermediateResults(Consumer<BaseExplainabilityResultDto> callback) {
+        //LIME does not support intermediate results; so nothing to do!
     }
 }

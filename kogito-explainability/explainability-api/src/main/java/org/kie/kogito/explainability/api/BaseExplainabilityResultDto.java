@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -33,9 +37,11 @@ public abstract class BaseExplainabilityResultDto {
     public static final String EXPLAINABILITY_TYPE_FIELD = "type";
 
     @JsonProperty("executionId")
+    @NotNull(message = "executionId must be provided.")
     private String executionId;
 
     @JsonProperty("status")
+    @NotNull(message = "status must be provided.")
     private ExplainabilityStatus status;
 
     @JsonProperty("statusDetails")
@@ -44,9 +50,11 @@ public abstract class BaseExplainabilityResultDto {
     protected BaseExplainabilityResultDto() {
     }
 
-    protected BaseExplainabilityResultDto(String executionId, ExplainabilityStatus status, String statusDetails) {
-        this.executionId = executionId;
-        this.status = status;
+    protected BaseExplainabilityResultDto(@NotNull String executionId,
+            @NotNull ExplainabilityStatus status,
+            String statusDetails) {
+        this.executionId = Objects.requireNonNull(executionId);
+        this.status = Objects.requireNonNull(status);
         this.statusDetails = statusDetails;
     }
 

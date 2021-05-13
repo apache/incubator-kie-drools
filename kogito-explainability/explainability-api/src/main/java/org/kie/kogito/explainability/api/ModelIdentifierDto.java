@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Objects;
+
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,9 +38,10 @@ public class ModelIdentifierDto {
     public ModelIdentifierDto() {
     }
 
-    public ModelIdentifierDto(String resourceType, String resourceId) {
-        this.resourceType = resourceType;
-        this.resourceId = resourceId;
+    public ModelIdentifierDto(@NotBlank String resourceType,
+            @NotBlank String resourceId) {
+        this.resourceType = Objects.requireNonNull(resourceType);
+        this.resourceId = Objects.requireNonNull(resourceId);
     }
 
     public String getResourceType() {

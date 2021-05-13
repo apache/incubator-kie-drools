@@ -17,6 +17,8 @@ package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.Collection;
 
+import javax.validation.constraints.NotNull;
+
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -55,9 +57,9 @@ public class CounterfactualSearchDomain extends TypedVariable<CounterfactualSear
     public CounterfactualSearchDomain() {
     }
 
-    public CounterfactualSearchDomain(TypedValue.Kind kind,
-            String name,
-            String typeRef,
+    public CounterfactualSearchDomain(@NotNull TypedValue.Kind kind,
+            @NotNull String name,
+            @NotNull String typeRef,
             Collection<CounterfactualSearchDomain> components,
             Boolean isFixed,
             CounterfactualDomain domain) {

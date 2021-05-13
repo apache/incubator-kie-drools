@@ -15,29 +15,23 @@
  */
 package org.kie.kogito.explainability.handlers;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
-import org.kie.kogito.explainability.model.Saliency;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LimeExplainerProducerTest {
 
     @Test
     void produce() {
         LimeExplainerProducer producer = new LimeExplainerProducer(1, 2);
-        LocalExplainer<Map<String, Saliency>> limeExplainer = producer.produce();
+        LimeExplainer limeExplainer = producer.produce();
 
         assertNotNull(limeExplainer);
-        assertTrue(limeExplainer instanceof LimeExplainer);
-        assertEquals(1, ((LimeExplainer) limeExplainer).getLimeConfig().getNoOfSamples());
-        assertEquals(2, ((LimeExplainer) limeExplainer).getLimeConfig().getPerturbationContext().getNoOfPerturbations());
-        assertEquals(LimeConfig.DEFAULT_NO_OF_RETRIES, ((LimeExplainer) limeExplainer).getLimeConfig().getNoOfRetries());
+        assertEquals(1, limeExplainer.getLimeConfig().getNoOfSamples());
+        assertEquals(2, limeExplainer.getLimeConfig().getPerturbationContext().getNoOfPerturbations());
+        assertEquals(LimeConfig.DEFAULT_NO_OF_RETRIES, limeExplainer.getLimeConfig().getNoOfRetries());
     }
 }

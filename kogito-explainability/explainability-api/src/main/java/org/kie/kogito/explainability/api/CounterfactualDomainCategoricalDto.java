@@ -16,6 +16,9 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.Collection;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,13 +28,14 @@ public class CounterfactualDomainCategoricalDto extends CounterfactualDomainDto 
     public static final String CATEGORIES_FIELD = "categories";
 
     @JsonProperty(CATEGORIES_FIELD)
+    @NotNull(message = "categories object must be provided.")
     private Collection<JsonNode> categories;
 
     public CounterfactualDomainCategoricalDto() {
     }
 
-    public CounterfactualDomainCategoricalDto(Collection<JsonNode> categories) {
-        this.categories = categories;
+    public CounterfactualDomainCategoricalDto(@NotNull Collection<JsonNode> categories) {
+        this.categories = Objects.requireNonNull(categories);
     }
 
     @Override

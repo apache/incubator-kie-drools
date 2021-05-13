@@ -16,6 +16,9 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.List;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,13 +27,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SaliencyDto {
 
     @JsonProperty("featureImportance")
+    @NotNull(message = "featureImportance object must be provided.")
     private List<FeatureImportanceDto> featureImportance;
 
     private SaliencyDto() {
     }
 
-    public SaliencyDto(List<FeatureImportanceDto> featureImportance) {
-        this.featureImportance = featureImportance;
+    public SaliencyDto(@NotNull List<FeatureImportanceDto> featureImportance) {
+        this.featureImportance = Objects.requireNonNull(featureImportance);
     }
 
     public List<FeatureImportanceDto> getFeatureImportance() {

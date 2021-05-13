@@ -16,6 +16,9 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.Collection;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,18 +29,16 @@ public class CounterfactualSearchDomainCollectionDto extends CounterfactualSearc
     public static final String VALUE_FIELD = "value";
 
     @JsonProperty(VALUE_FIELD)
+    @NotNull(message = "value object must be provided.")
     private Collection<CounterfactualSearchDomainDto> value;
 
     public CounterfactualSearchDomainCollectionDto() {
     }
 
-    public CounterfactualSearchDomainCollectionDto(String type) {
-        this(type, null);
-    }
-
-    public CounterfactualSearchDomainCollectionDto(String type, Collection<CounterfactualSearchDomainDto> value) {
+    public CounterfactualSearchDomainCollectionDto(@NotNull String type,
+            @NotNull Collection<CounterfactualSearchDomainDto> value) {
         super(Kind.COLLECTION, type);
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
     }
 
     public Collection<CounterfactualSearchDomainDto> getValue() {

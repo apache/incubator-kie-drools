@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.handlers;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -96,12 +97,21 @@ public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler
     }
 
     @Override
+    public BaseExplainabilityResultDto createIntermediateResultDto(LIMEExplainabilityRequest request, Map<String, Saliency> result) {
+        throw new UnsupportedOperationException("Intermediate results are not supported by LIME.");
+    }
+
+    @Override
     public BaseExplainabilityResultDto createFailedResultDto(LIMEExplainabilityRequest request, Throwable throwable) {
         return LIMEExplainabilityResultDto.buildFailed(request.getExecutionId(), throwable.getMessage());
     }
 
     @Override
-    public CompletableFuture<Map<String, Saliency>> explainAsync(Prediction prediction, PredictionProvider model) {
-        return explainer.explainAsync(prediction, model);
+    public CompletableFuture<Map<String, Saliency>> explainAsync(Prediction prediction,
+            PredictionProvider predictionProvider,
+            Consumer<Map<String, Saliency>> intermediateResultsConsumer) {
+        return explainer.explainAsync(prediction,
+                predictionProvider,
+                intermediateResultsConsumer);
     }
 }

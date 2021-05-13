@@ -19,6 +19,8 @@ package org.kie.kogito.trusty.storage.api.model;
 import java.util.Collection;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -41,9 +43,16 @@ public class Decision extends Execution {
         super(ExecutionType.DECISION);
     }
 
-    public Decision(String executionId, String sourceUrl, String serviceUrl, Long executionTimestamp, Boolean hasSucceeded,
-            String executorName, String executedModelName, String executedModelNamespace,
-            List<DecisionInput> inputs, List<DecisionOutcome> outcomes) {
+    public Decision(@NotNull String executionId,
+            String sourceUrl,
+            String serviceUrl,
+            Long executionTimestamp,
+            Boolean hasSucceeded,
+            String executorName,
+            String executedModelName,
+            String executedModelNamespace,
+            List<DecisionInput> inputs,
+            List<DecisionOutcome> outcomes) {
         super(executionId, sourceUrl, serviceUrl, executionTimestamp, hasSucceeded, executorName,
                 executedModelName, executedModelNamespace, ExecutionType.DECISION);
         this.inputs = inputs;

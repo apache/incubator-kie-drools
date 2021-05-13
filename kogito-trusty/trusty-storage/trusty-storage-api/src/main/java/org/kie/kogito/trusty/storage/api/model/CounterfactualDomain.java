@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.trusty.storage.api.model;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -33,6 +35,7 @@ public abstract class CounterfactualDomain {
     public static final String RANGE = "range";
 
     @JsonProperty(TYPE)
+    @NotNull(message = "type object must be provided.")
     @SuppressWarnings("unused")
     protected Type type = getType();
 

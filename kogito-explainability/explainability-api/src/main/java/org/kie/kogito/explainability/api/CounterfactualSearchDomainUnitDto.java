@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,22 +29,22 @@ public class CounterfactualSearchDomainUnitDto extends CounterfactualSearchDomai
     public static final String DOMAIN_FIELD = "domain";
 
     @JsonProperty(IS_FIXED_FIELD)
+    @NotNull(message = "isFixed must be provided.")
     private Boolean isFixed;
 
     @JsonProperty(DOMAIN_FIELD)
+    @NotNull(message = "domain object must be provided.")
     private CounterfactualDomainDto domain;
 
     public CounterfactualSearchDomainUnitDto() {
     }
 
-    public CounterfactualSearchDomainUnitDto(String type) {
-        this(type, Boolean.TRUE, null);
-    }
-
-    public CounterfactualSearchDomainUnitDto(String type, Boolean isFixed, CounterfactualDomainDto domain) {
+    public CounterfactualSearchDomainUnitDto(@NotNull String type,
+            @NotNull Boolean isFixed,
+            @NotNull CounterfactualDomainDto domain) {
         super(CounterfactualSearchDomainDto.Kind.UNIT, type);
-        this.isFixed = isFixed;
-        this.domain = domain;
+        this.isFixed = Objects.requireNonNull(isFixed);
+        this.domain = Objects.requireNonNull(domain);
     }
 
     public Boolean isFixed() {

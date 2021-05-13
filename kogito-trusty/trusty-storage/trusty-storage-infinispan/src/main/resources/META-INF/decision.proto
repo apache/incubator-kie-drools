@@ -276,6 +276,18 @@ message CounterfactualExplainabilityResult {
     /* @Field(store = Store.YES) */
     optional string statusDetails = 5;
 
+    /* @Field(store = Store.YES) */
+    optional bool isValid = 6;
+
+    /* @Field(store = Store.YES) */
+    optional string stage = 7;
+
+    /* @Field(store = Store.YES) */
+    repeated TypedVariableWithValue inputs = 8;
+
+    /* @Field(store = Store.YES) */
+    repeated TypedVariableWithValue outputs = 9;
+
 }
 
 

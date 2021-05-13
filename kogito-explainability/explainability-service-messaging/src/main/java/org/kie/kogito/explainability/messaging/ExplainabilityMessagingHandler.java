@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.messaging;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -29,11 +30,9 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.ExplanationService;
-import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
-import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -55,7 +54,6 @@ public class ExplainabilityMessagingHandler {
     private final PublishSubject<String> eventSubject = PublishSubject.create();
 
     protected ExplanationService explanationService;
-    protected PredictionProviderFactory predictionProviderFactory;
     protected LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry;
 
     @Inject
@@ -64,10 +62,8 @@ public class ExplainabilityMessagingHandler {
     @Inject
     public ExplainabilityMessagingHandler(
             ExplanationService explanationService,
-            PredictionProviderFactory predictionProviderFactory,
             LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry) {
         this.explanationService = explanationService;
-        this.predictionProviderFactory = predictionProviderFactory;
         this.explainerServiceHandlerRegistry = explainerServiceHandlerRegistry;
     }
 
@@ -106,15 +102,20 @@ public class ExplainabilityMessagingHandler {
         LOGGER.info("Received CloudEvent with id {} from {}", cloudEvent.getId(), cloudEvent.getSource());
 
         BaseExplainabilityRequest request = explainerServiceHandlerRegistry.explainabilityRequestFrom(requestDto);
-        PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
 
         return explanationService
-                .explainAsync(request, provider)
+                .explainAsync(request, this::sendEvent)
                 .thenApply(this::sendEvent);
     }
 
     // Outgoing
     public Void sendEvent(BaseExplainabilityResultDto result) {
+        //This should never happen but let's protect against it 
+        if (Objects.isNull(result)) {
+            LOGGER.info("Request received to send null result. Skipping.");
+            return null;
+        }
+
         LOGGER.info("Explainability service emits explainability {} for execution with ID {}",
                 result.getClass().getSimpleName(),
                 result.getExecutionId());

@@ -15,12 +15,19 @@
  */
 package org.kie.kogito.trusty.service.common.handlers;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
 import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.query.AttributeFilter;
+import org.kie.kogito.persistence.api.query.QueryFilterFactory;
+import org.kie.kogito.trusty.service.common.messaging.MessagingUtils;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
@@ -56,27 +63,44 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
     public CounterfactualExplainabilityResult explainabilityResultFrom(CounterfactualExplainabilityResultDto dto, Decision decision) {
         return new CounterfactualExplainabilityResult(dto.getExecutionId(),
                 dto.getCounterfactualId(),
-                "solutionId",
+                dto.getSolutionId(),
                 statusFrom(dto.getStatus()),
-                dto.getStatusDetails());
+                dto.getStatusDetails(),
+                dto.isValid(),
+                stageFrom(dto.getStage()),
+                MessagingUtils.tracingTypedValueToModel(dto.getInputs()),
+                MessagingUtils.tracingTypedValueToModel(dto.getOutputs()));
     }
 
     @Override
     public CounterfactualExplainabilityResult getExplainabilityResultById(String executionId) {
         Storage<String, CounterfactualExplainabilityResult> storage = storageService.getCounterfactualResultStorage();
-        if (!storage.containsKey(executionId)) {
-            throw new IllegalArgumentException(String.format("An explainability result with ID %s does not exist in the Counterfactual results storage.", executionId));
+
+        AttributeFilter<String> filterExecutionId = QueryFilterFactory.equalTo(CounterfactualExplainabilityResult.EXECUTION_ID_FIELD, executionId);
+        List<CounterfactualExplainabilityResult> counterfactuals = storage.query().filter(Collections.singletonList(filterExecutionId)).execute();
+
+        if (Objects.isNull(counterfactuals) || counterfactuals.isEmpty()) {
+            throw new IllegalArgumentException(String.format("A Counterfactual result for Execution ID '%s' does not exist in the Counterfactual results storage.", executionId));
         }
-        return storage.get(executionId);
+        // TODO {manstis} See https://issues.redhat.com/browse/FAI-440. 
+        // CounterfactualExplainabilityResult is a single solution however we need to return a collection of solutions.
+        return counterfactuals.get(0);
     }
 
     @Override
     public void storeExplainabilityResult(String executionId, CounterfactualExplainabilityResult result) {
+        String solutionId = result.getSolutionId();
         Storage<String, CounterfactualExplainabilityResult> storage = storageService.getCounterfactualResultStorage();
-        if (storage.containsKey(executionId)) {
-            throw new IllegalArgumentException(String.format("An explainability result with ID %s is already present in the Counterfactual results storage.", executionId));
+        if (storage.containsKey(solutionId)) {
+            throw new IllegalArgumentException(
+                    String.format("A Counterfactual result for Execution ID '%s' and SolutionId '%s' is already present in the Counterfactual results storage.", executionId, solutionId));
         }
-        storage.put(executionId, result);
-        LOG.info("Stored explainability result for execution {}", executionId);
+        storage.put(solutionId, result);
+        LOG.info("Stored Counterfactual explainability result for execution {}", executionId);
     }
+
+    private CounterfactualExplainabilityResult.Stage stageFrom(CounterfactualExplainabilityResultDto.Stage stage) {
+        return stage.equals(CounterfactualExplainabilityResultDto.Stage.FINAL) ? CounterfactualExplainabilityResult.Stage.FINAL : CounterfactualExplainabilityResult.Stage.INTERMEDIATE;
+    }
+
 }

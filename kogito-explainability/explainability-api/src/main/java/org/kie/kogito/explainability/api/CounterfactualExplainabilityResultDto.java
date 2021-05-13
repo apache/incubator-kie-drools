@@ -17,6 +17,8 @@ package org.kie.kogito.explainability.api;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -30,53 +32,81 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
 
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
 
+    public static final String SOLUTION_ID_FIELD = "solutionId";
+
     public static final String IS_VALID_FIELD = "isValid";
+
+    public static final String STAGE_FIELD = "stage";
 
     public static final String INPUTS_FIELD = "inputs";
 
     public static final String OUTPUTS_FIELD = "outputs";
 
+    public enum Stage {
+        INTERMEDIATE,
+        FINAL
+    }
+
     @JsonProperty(COUNTERFACTUAL_ID_FIELD)
     @NotNull(message = "counterfactualId must be provided.")
     private String counterfactualId;
 
+    @JsonProperty(SOLUTION_ID_FIELD)
+    @NotNull(message = "solutionId must be provided.")
+    private String solutionId;
+
     @JsonProperty(IS_VALID_FIELD)
+    @NotNull(message = "isValid must be provided.")
     private Boolean isValid;
 
+    @JsonProperty(STAGE_FIELD)
+    @NotNull(message = "stage must be provided.")
+    private CounterfactualExplainabilityResultDto.Stage stage;
+
     @JsonProperty(INPUTS_FIELD)
+    @NotNull(message = "inputs object must be provided.")
     private Map<String, TypedValue> inputs;
 
     @JsonProperty(OUTPUTS_FIELD)
+    @NotNull(message = "outputs object must be provided.")
     private Map<String, TypedValue> outputs;
 
     private CounterfactualExplainabilityResultDto() {
         super();
     }
 
-    private CounterfactualExplainabilityResultDto(String executionId,
-            String counterfactualId,
-            ExplainabilityStatus status,
+    private CounterfactualExplainabilityResultDto(@NotNull String executionId,
+            @NotNull String counterfactualId,
+            @NotNull String solutionId,
+            @NotNull ExplainabilityStatus status,
             String statusDetails,
-            boolean isValid,
-            Map<String, TypedValue> inputs,
-            Map<String, TypedValue> outputs) {
+            @NotNull Boolean isValid,
+            @NotNull CounterfactualExplainabilityResultDto.Stage stage,
+            @NotNull Map<String, TypedValue> inputs,
+            @NotNull Map<String, TypedValue> outputs) {
         super(executionId, status, statusDetails);
-        this.counterfactualId = counterfactualId;
-        this.isValid = isValid;
-        this.inputs = inputs;
-        this.outputs = outputs;
+        this.counterfactualId = Objects.requireNonNull(counterfactualId);
+        this.solutionId = Objects.requireNonNull(solutionId);
+        this.isValid = Objects.requireNonNull(isValid);
+        this.stage = Objects.requireNonNull(stage);
+        this.inputs = Objects.requireNonNull(inputs);
+        this.outputs = Objects.requireNonNull(outputs);
     }
 
     public static CounterfactualExplainabilityResultDto buildSucceeded(String executionId,
             String counterfactualId,
+            String solutionId,
             Boolean isValid,
+            CounterfactualExplainabilityResultDto.Stage stage,
             Map<String, TypedValue> inputs,
             Map<String, TypedValue> outputs) {
         return new CounterfactualExplainabilityResultDto(executionId,
                 counterfactualId,
+                solutionId,
                 ExplainabilityStatus.SUCCEEDED,
                 null,
                 isValid,
+                stage,
                 inputs,
                 outputs);
     }
@@ -86,9 +116,11 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
             String statusDetails) {
         return new CounterfactualExplainabilityResultDto(executionId,
                 counterfactualId,
+                UUID.randomUUID().toString(),
                 ExplainabilityStatus.FAILED,
                 statusDetails,
                 Boolean.FALSE,
+                Stage.FINAL,
                 Collections.emptyMap(),
                 Collections.emptyMap());
     }
@@ -97,8 +129,16 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
         return counterfactualId;
     }
 
-    public Boolean getValid() {
+    public String getSolutionId() {
+        return solutionId;
+    }
+
+    public Boolean isValid() {
         return isValid;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 
     public Map<String, TypedValue> getInputs() {

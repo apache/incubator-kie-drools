@@ -15,6 +15,10 @@
  */
 package org.kie.kogito.explainability.api;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -24,17 +28,20 @@ public class CounterfactualDomainRangeDto extends CounterfactualDomainDto {
     public static final String UPPER_BOUND_FIELD = "upperBound";
 
     @JsonProperty(LOWER_BOUND_FIELD)
+    @NotNull(message = "lowerBound object must be provided.")
     private JsonNode lowerBound;
 
     @JsonProperty(UPPER_BOUND_FIELD)
+    @NotNull(message = "upperBound object must be provided.")
     private JsonNode upperBound;
 
     public CounterfactualDomainRangeDto() {
     }
 
-    public CounterfactualDomainRangeDto(JsonNode lowerBound, JsonNode upperBound) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
+    public CounterfactualDomainRangeDto(@NotNull JsonNode lowerBound,
+            @NotNull JsonNode upperBound) {
+        this.lowerBound = Objects.requireNonNull(lowerBound);
+        this.upperBound = Objects.requireNonNull(upperBound);
     }
 
     @Override

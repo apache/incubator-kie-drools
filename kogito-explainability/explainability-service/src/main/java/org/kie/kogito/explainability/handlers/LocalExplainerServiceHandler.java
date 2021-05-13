@@ -16,6 +16,7 @@
 package org.kie.kogito.explainability.handlers;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
@@ -28,8 +29,8 @@ import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
  * A local explainability handler that delegates explanation to a {@link LocalExplainer} and handles assembly
  * of the {@link BaseExplainabilityResultDto} for both success and failure states of explanation calculation.
  *
- * @param <R> the type of the local explanation request
  * @param <T> the type of local explanation generated
+ * @param <R> the type of the local explanation request
  */
 public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityRequest, D extends BaseExplainabilityRequestDto>
         extends LocalExplainer<T> {
@@ -38,22 +39,20 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
      * Checks whether an implementation supports a type of explanation.
      *
      * @param type The Trusty Service request type.
-     * @param <T>
      * @return true if the implementation supports the type of explanation.
      */
     // See https://issues.redhat.com/browse/FAI-457
     // We will not need the overloaded generic class when we only have one type of DTO
-    <T extends BaseExplainabilityRequest> boolean supports(Class<T> type);
+    <U extends BaseExplainabilityRequest> boolean supports(Class<U> type);
 
     /**
      * Checks whether an implementation supports a type of explanation.
      *
      * @param type The Explainability Service result type.
-     * @param <T>
      * @return true if the implementation supports the type of explanation.
      */
     // See https://issues.redhat.com/browse/FAI-457
-    <T extends BaseExplainabilityRequestDto> boolean supportsDto(Class<T> type);
+    <U extends BaseExplainabilityRequestDto> boolean supportsDto(Class<U> type);
 
     /**
      * Converts the result from the Explainability Service to that used by Trusty Service.
@@ -80,15 +79,19 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
      * - {@link LocalExplainerServiceHandler#createFailedResultDto(BaseExplainabilityRequest, Throwable)}
      *
      * @param request The explanation request.
-     * @param model The prediction model to explain. See {@link PredictionProvider}
+     * @param predictionProvider The prediction model to explain. See {@link PredictionProvider}
+     * @param intermediateResultsConsumer A consumer for intermediate results provided by the explainer.
      * @return
      */
     default CompletableFuture<BaseExplainabilityResultDto> explainAsyncWithResults(R request,
-            PredictionProvider model) {
+            PredictionProvider predictionProvider,
+            Consumer<BaseExplainabilityResultDto> intermediateResultsConsumer) {
         Prediction prediction = getPrediction(request);
-        return explainAsync(prediction, model)
-                .thenApply(input -> createSucceededResultDto(request, input))
-                .exceptionally(e -> createFailedResultDto(request, e));
+        return explainAsync(prediction,
+                predictionProvider,
+                s -> intermediateResultsConsumer.accept(createIntermediateResultDto(request, s)))
+                        .thenApply(input -> createSucceededResultDto(request, input))
+                        .exceptionally(e -> createFailedResultDto(request, e));
     }
 
     /**
@@ -108,5 +111,14 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
      * @return
      */
     BaseExplainabilityResultDto createFailedResultDto(R request, Throwable throwable);
+
+    /**
+     * Creates a DTO containing the "intermediate" information for an explanation calculation.
+     *
+     * @param request The original request.
+     * @param result The intermediate result from the LocalExplainer calculation.
+     * @return
+     */
+    BaseExplainabilityResultDto createIntermediateResultDto(R request, T result);
 
 }

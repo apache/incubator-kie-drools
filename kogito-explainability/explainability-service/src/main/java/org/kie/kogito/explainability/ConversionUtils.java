@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,8 +41,12 @@ import org.kie.kogito.explainability.model.domain.FeatureDomain;
 import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import io.vertx.core.json.JsonObject;
 
@@ -74,14 +79,6 @@ public class ConversionUtils {
         }
     }
 
-    public static FeatureDomain toFeatureDomain(String name, CounterfactualSearchDomainDto domain) {
-        if (domain.isUnit()) {
-            return toCounterfactualSearchDomain(domain.toUnit().getDomain()).orElse(null);
-        } else {
-            throw new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain kind %s", domain.getKind()));
-        }
-    }
-
     public static Boolean toFeatureConstraint(String name, CounterfactualSearchDomainDto domain) {
         if (domain.isUnit()) {
             return domain.toUnit().isFixed();
@@ -107,10 +104,6 @@ public class ConversionUtils {
 
     public static List<Feature> toFeatureList(Map<String, TypedValue> values) {
         return toList(values, ConversionUtils::toFeature);
-    }
-
-    public static List<FeatureDomain> toFeatureDomainList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
-        return toList(searchDomains, ConversionUtils::toFeatureDomain);
     }
 
     public static List<Boolean> toFeatureConstraintList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
@@ -204,6 +197,24 @@ public class ConversionUtils {
         return Optional.empty();
     }
 
+    /*
+     * ---------------------------------------
+     * Counterfactual Search Domain conversion
+     * ---------------------------------------
+     */
+
+    public static List<FeatureDomain> toFeatureDomainList(Map<String, CounterfactualSearchDomainDto> searchDomains) {
+        return toList(searchDomains, ConversionUtils::toFeatureDomain);
+    }
+
+    public static FeatureDomain toFeatureDomain(String name, CounterfactualSearchDomainDto domain) {
+        if (domain.isUnit()) {
+            return toCounterfactualSearchDomain(domain.toUnit().getDomain()).orElse(null);
+        } else {
+            throw new IllegalArgumentException(String.format("Unsupported CounterfactualSearchDomain kind %s", domain.getKind()));
+        }
+    }
+
     public static Optional<FeatureDomain> toCounterfactualSearchDomain(CounterfactualDomainDto domain) {
         if (domain instanceof CounterfactualDomainRangeDto) {
             CounterfactualDomainRangeDto range = (CounterfactualDomainRangeDto) domain;
@@ -226,6 +237,70 @@ public class ConversionUtils {
             }
         }
         return Optional.empty();
+    }
+
+    /*
+     * ------------------
+     * Results conversion
+     * ------------------
+     */
+    public static Map<String, TypedValue> fromFeatureList(List<Feature> features) {
+        return toMap(features, ConversionUtils::toTypeValuePair);
+    }
+
+    private static <T, V> Map<String, V> toMap(List<T> values, Function<T, Pair<String, V>> unitConverter) {
+        if (values == null) {
+            return Collections.emptyMap();
+        }
+        return values.stream()
+                .map(unitConverter)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+    }
+
+    private static Pair<String, TypedValue> toTypeValuePair(Feature feature) {
+        return Pair.of(feature.getName(), toTypedValue(feature));
+    }
+
+    private static TypedValue toTypedValue(Feature feature) {
+        String name = feature.getName();
+        Type type = feature.getType();
+        Value value = feature.getValue();
+        return toTypedValue(name, type, value);
+    }
+
+    private static TypedValue toTypedValue(String name, Type type, Value value) {
+        Object underlyingObject = value.getUnderlyingObject();
+        if (type.equals(Type.BOOLEAN)) {
+            if (underlyingObject instanceof Boolean) {
+                return new UnitValue(Boolean.class.getSimpleName(), BooleanNode.valueOf(((Boolean) underlyingObject)));
+            }
+        } else if (type.equals(Type.NUMBER)) {
+            if (underlyingObject instanceof Double) {
+                return new UnitValue(Double.class.getSimpleName(), new DoubleNode((Double) underlyingObject));
+            }
+        } else if (type.equals(Type.TEXT)) {
+            if (underlyingObject instanceof String) {
+                return new UnitValue(String.class.getSimpleName(), new TextNode((String) underlyingObject));
+            }
+        }
+        throw new IllegalArgumentException(String.format("Unable to convert '%s' with Type '%s' and Value '%s'", name, type, value));
+    }
+
+    public static Map<String, TypedValue> fromOutputs(List<Output> outputs) {
+        return toMap(outputs, ConversionUtils::toTypeValuePair);
+    }
+
+    private static Pair<String, TypedValue> toTypeValuePair(Output output) {
+        return Pair.of(output.getName(), toTypedValue(output));
+    }
+
+    private static TypedValue toTypedValue(Output output) {
+        String name = output.getName();
+        Type type = output.getType();
+        Value value = output.getValue();
+        Object underlyingObject = value.getUnderlyingObject();
+        return toTypedValue(name, type, value);
     }
 
 }
