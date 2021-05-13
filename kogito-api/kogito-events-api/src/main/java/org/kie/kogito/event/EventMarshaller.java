@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.services.event;
-
-import java.util.Optional;
-import java.util.function.Function;
+package org.kie.kogito.event;
 
 public interface EventMarshaller {
 
-    <T, P extends AbstractProcessDataEvent<T>> String marshall(T dataEvent, Function<T, P> cloudFunction,
-            Optional<Boolean> isCloudEvent);
+    <T> String marshall(T dataEvent);
 }

@@ -41,16 +41,13 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
                     .withQueryParameter(Collections.emptyMap())
                     .withHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
 
-    public CloudEventHttpOutgoingDecorator() {
-
-    }
-
     /**
      * Decorates a given payload with custom metadata needed by Http Outgoing processing
      *
      * @param payload of the given message
      * @param <T> Payload type
      */
+    @Override
     public <T> Message<T> decorate(T payload) {
         return Message.of(payload, HTTP_RESPONSE_METADATA);
     }

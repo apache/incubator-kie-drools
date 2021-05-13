@@ -30,12 +30,14 @@
 
   <description>Kogito Cloud Events</description>
 
-  <modules>
-    <module>cloudevents-utils</module>
-    <module>cloudevents-common-addon</module>
-    <module>cloudevents-quarkus-addon</module>
-    <module>cloudevents-spring-boot-addon</module>
-  </modules>
+    <modules>
+      <module>cloudevents-utils</module>
+      <module>cloudevents-common-addon</module>
+      <module>cloudevents-quarkus-addon</module>
+      <module>cloudevents-quarkus-multi-addon</module>
+      <module>cloudevents-quarkus-common-addon</module>
+      <module>cloudevents-spring-boot-addon</module>
+    </modules>
   <profiles>
     <profile>
       <id>default</id>

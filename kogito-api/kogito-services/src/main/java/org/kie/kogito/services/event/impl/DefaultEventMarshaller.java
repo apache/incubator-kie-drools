@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event.impl;
+package org.kie.kogito.services.event.impl;
 
-import java.util.Optional;
 import java.util.TimeZone;
-import java.util.function.Function;
 
-import org.kie.kogito.services.event.AbstractProcessDataEvent;
-import org.kie.kogito.services.event.EventMarshaller;
+import org.kie.kogito.event.EventMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,10 +44,7 @@ public class DefaultEventMarshaller implements EventMarshaller {
     }
 
     @Override
-    public <T, P extends AbstractProcessDataEvent<T>> String marshall(T dataEvent,
-            Function<T, P> cloudFunction,
-            Optional<Boolean> isCloudEvent) {
-        Object event = isCloudEvent.orElse(true) ? cloudFunction.apply(dataEvent) : dataEvent;
+    public <T> String marshall(T event) {
         logger.debug("Marshalling event {}", event);
         try {
             return mapper.writeValueAsString(event);

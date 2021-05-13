@@ -43,7 +43,8 @@
       <artifactId>kogito-events-api</artifactId>
       <optional>true</optional>
     </dependency>
-
+    
+    
     <!-- test -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -59,6 +60,10 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
 

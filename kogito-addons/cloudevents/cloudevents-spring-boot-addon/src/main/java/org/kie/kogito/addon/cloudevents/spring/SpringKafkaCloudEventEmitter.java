@@ -15,29 +15,56 @@
  */
 package org.kie.kogito.addon.cloudevents.spring;
 
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
-import org.kie.kogito.event.CloudEventEmitter;
+import javax.annotation.PostConstruct;
+
+import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.EventEmitter;
+import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.KogitoEventStreams;
+import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
  * Spring implementation delegating to kafka template
  */
 @Component
-public class SpringKafkaCloudEventEmitter implements CloudEventEmitter {
+public class SpringKafkaCloudEventEmitter implements EventEmitter {
 
     @Autowired
     org.springframework.kafka.core.KafkaTemplate<String, String> emitter;
     @Value(value = "${spring.kafka.bootstrap-servers}")
     String kafkaBootstrapAddress;
     @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + ":" + KogitoEventStreams.OUTGOING + "}")
-    String kafkaTopicName;
+    String defaultTopicName;
+    @Autowired
+    Environment env;
+    @Autowired
+    ObjectProvider<EventMarshaller> marshallerInstance;
+    private EventMarshaller marshaller;
+    @Autowired
+    ConfigBean configBean;
 
-    public CompletionStage<Void> emit(String e) {
-        return emitter.send(kafkaTopicName, e)
+    @PostConstruct
+    void init() {
+        marshaller = marshallerInstance.getIfAvailable(DefaultEventMarshaller::new);
+    }
+
+    @Override
+    public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {
+        return emitter
+                .send(
+                        env.getProperty("kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + "." + type,
+                                defaultTopicName),
+                        marshaller.marshall(configBean.useCloudEvents() ? processDecorator.map(d -> d
+                                .apply(e)).orElse(e) : e))
                 .completable()
                 .thenApply(r -> null); // discard return to comply with the signature
     }

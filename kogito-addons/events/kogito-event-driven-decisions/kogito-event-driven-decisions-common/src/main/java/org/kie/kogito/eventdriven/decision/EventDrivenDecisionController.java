@@ -31,8 +31,9 @@ import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
-import org.kie.kogito.event.CloudEventEmitter;
-import org.kie.kogito.event.CloudEventReceiver;
+import org.kie.kogito.event.EventEmitter;
+import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.SubscriptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,20 +51,20 @@ public class EventDrivenDecisionController {
 
     private DecisionModels decisionModels;
     private ConfigBean config;
-    private CloudEventEmitter eventEmitter;
-    private CloudEventReceiver eventReceiver;
+    private EventEmitter eventEmitter;
+    private EventReceiver eventReceiver;
 
     protected EventDrivenDecisionController() {
     }
 
-    protected EventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, CloudEventEmitter eventEmitter, CloudEventReceiver eventReceiver) {
+    protected EventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
         this.decisionModels = decisionModels;
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
     }
 
-    protected void setup(DecisionModels decisionModels, ConfigBean config, CloudEventEmitter eventEmitter, CloudEventReceiver eventReceiver) {
+    protected void setup(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
         this.decisionModels = decisionModels;
         this.config = config;
         this.eventEmitter = eventEmitter;
@@ -72,7 +73,7 @@ public class EventDrivenDecisionController {
     }
 
     protected void setup() {
-        eventReceiver.subscribe(this::handleEvent);
+        eventReceiver.subscribe(this::handleRequest, new SubscriptionInfo(CloudEvent.class));
     }
 
     void handleEvent(String event) {
@@ -85,8 +86,8 @@ public class EventDrivenDecisionController {
         buildEvaluationContext(event)
                 .map(this::processRequest)
                 .flatMap(this::buildResponseCloudEvent)
-                .flatMap(CloudEventUtils::encode)
-                .ifPresent(eventEmitter::emit);
+                .flatMap(CloudEventUtils::toDataEvent)
+                .ifPresent(e -> eventEmitter.emit(e, (String) e.get("type"), Optional.empty()));
     }
 
     private Optional<EvaluationContext> buildEvaluationContext(CloudEvent event) {

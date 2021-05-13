@@ -85,6 +85,16 @@ public class CloudEventUtils {
         }
     }
 
+    public static Optional<Map<String, Object>> toDataEvent(CloudEvent event) {
+        ObjectMapper mapper = Mapper.mapper();
+        try {
+            return Optional.of(mapper.readValue(mapper.writeValueAsBytes(event), Map.class));
+        } catch (IOException e) {
+            LOG.error("Unable to encode CloudEvent", e);
+            return Optional.empty();
+        }
+    }
+
     public static Optional<CloudEvent> decode(String json) {
         try {
             return Optional.of(Mapper.mapper().readValue(json, CloudEvent.class));

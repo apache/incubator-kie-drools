@@ -15,39 +15,19 @@
  */
 package org.kie.kogito.event.impl;
 
-import java.util.Optional;
-import java.util.TimeZone;
 import java.util.function.Function;
 
 import org.kie.kogito.Model;
-import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
-
 public class DefaultEventConsumerFactory implements EventConsumerFactory {
 
-    private ObjectMapper mapper;
-
-    public DefaultEventConsumerFactory() {
-        this(null);
-    }
-
-    public DefaultEventConsumerFactory(ObjectMapper mapper) {
-        if (mapper == null) {
-            this.mapper = new ObjectMapper().setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
-        } else {
-            this.mapper = mapper;
-        }
-    }
-
-    public <M extends Model, D, T extends AbstractProcessDataEvent<D>> EventConsumer<M> get(Function<D, M> function,
-            Class<D> dataEventClass, Class<T> cloudEventClass, Optional<Boolean> cloudEvents) {
-        return cloudEvents.orElse(true)
-                ? new CloudEventConsumer<>(function, dataEventClass, cloudEventClass, mapper)
-                : new DataEventConsumer<>(function, dataEventClass, mapper);
+    @Override
+    public <M extends Model, D> EventConsumer<M> get(Function<D, M> function, boolean cloudEvents) {
+        return cloudEvents
+                ? new CloudEventConsumer<>(function)
+                : new DataEventConsumer<>(function);
     }
 
 }

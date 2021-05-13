@@ -19,23 +19,24 @@ import java.util.Optional;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.InputTriggerAware;
+import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
+import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMessageConsumer<M extends Model, D, T extends AbstractProcessDataEvent<D>> {
+public abstract class AbstractMessageConsumer<M extends Model, D, T extends AbstractProcessDataEvent<D>> implements InputTriggerAware {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageConsumer.class);
 
     private Process<M> process;
     private Application application;
-    private EventConsumerFactory eventConsumerFactory;
-    private Optional<Boolean> useCloudEvents;
     private String trigger;
-    private Class<D> dataEventClass;
-    private Class<T> cloudEventClass;
+    private EventConsumer<M> eventConsumer;
 
     // in general we should favor the non-empty constructor
     // but there is an issue with Quarkus https://github.com/quarkusio/quarkus/issues/2949#issuecomment-513017781
@@ -43,47 +44,51 @@ public abstract class AbstractMessageConsumer<M extends Model, D, T extends Abst
     public AbstractMessageConsumer() {
     }
 
-    public AbstractMessageConsumer(
-            Application application,
+    public AbstractMessageConsumer(Application application,
             Process<M> process,
-            Class<D> dataEventClass,
-            Class<T> cloudEventClass,
             String trigger,
             EventConsumerFactory eventConsumerFactory,
-            Optional<Boolean> useCloudEvents) {
-        setParams(application,
-                process,
-                dataEventClass,
-                cloudEventClass,
-                trigger,
-                eventConsumerFactory,
-                useCloudEvents);
+            EventReceiver eventReceiver,
+            Class<D> dataEventClass,
+            Class<T> cloudEventClass,
+            boolean useCloudEvents) {
+        init(application, process, trigger, eventConsumerFactory, eventReceiver, dataEventClass, cloudEventClass, useCloudEvents);
     }
 
-    public void setParams(
-            Application application,
+    public void init(Application application,
             Process<M> process,
-            Class<D> dataEventClass,
-            Class<T> cloudEventClass,
             String trigger,
             EventConsumerFactory eventConsumerFactory,
-            Optional<Boolean> useCloudEvents) {
+            EventReceiver eventReceiver,
+            Class<D> dataEventClass,
+            Class<T> cloudEventClass,
+            boolean useCloudEvents) {
         this.process = process;
         this.application = application;
-        this.dataEventClass = dataEventClass;
-        this.cloudEventClass = cloudEventClass;
-        this.eventConsumerFactory = eventConsumerFactory;
         this.trigger = trigger;
-        this.useCloudEvents = useCloudEvents;
-
+        this.eventConsumer = eventConsumerFactory.get(this::eventToModel, useCloudEvents);
+        if (useCloudEvents) {
+            eventReceiver.subscribe(this::consumeCloud, new SubscriptionInfo<>(cloudEventClass, Optional.of(trigger)));
+        } else {
+            eventReceiver.subscribe(this::consume, new SubscriptionInfo<>(dataEventClass, Optional.of(trigger)));
+        }
         logger.info("Consumer for {} started.", dataEventClass);
     }
 
-    public void consume(String payload) {
+    public void consumeCloud(T payload) {
         logger.debug("Received: {} on thread {}", payload, Thread.currentThread().getName());
-        eventConsumerFactory.get(this::eventToModel, dataEventClass, cloudEventClass, useCloudEvents)
-                .consume(application, (Process<Model>) process, payload, trigger);
+        eventConsumer.consume(application, process, payload, trigger);
     }
 
-    protected abstract Model eventToModel(D event);
+    public void consume(D payload) {
+        logger.debug("Received: {} on thread {}", payload, Thread.currentThread().getName());
+        eventConsumer.consume(application, process, payload, trigger);
+    }
+
+    @Override
+    public String getInputTrigger() {
+        return trigger;
+    }
+
+    protected abstract M eventToModel(D event);
 }

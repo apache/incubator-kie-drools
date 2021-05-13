@@ -24,7 +24,6 @@ import javax.inject.Named;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.event.KogitoEventStreams;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +31,6 @@ import io.quarkus.runtime.Startup;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
-/**
- * Takes a @Channel event stream and re-exposes it as a Multi
- * (a subclass of {@link Publisher})
- * 
- * @see QuarkusCloudEventReceiver
- * @see QuarkusCloudEventEmitter
- */
 @Startup
 @ApplicationScoped
 public class QuarkusCloudEventPublisher {
@@ -68,14 +60,11 @@ public class QuarkusCloudEventPublisher {
     @Incoming(KogitoEventStreams.INCOMING)
     public CompletionStage<Void> onEvent(Message<String> message) {
         LOGGER.debug("Received message from channel {}: {}", KogitoEventStreams.INCOMING, message);
+        produce(message.getPayload());
         return message
                 .ack()
                 .exceptionally(e -> {
                     LOGGER.error("Failed to ack message", e);
-                    return null;
-                })
-                .thenApply(r -> {
-                    produce(message.getPayload());
                     return null;
                 });
     }

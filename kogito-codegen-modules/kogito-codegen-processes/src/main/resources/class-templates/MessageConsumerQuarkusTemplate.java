@@ -15,14 +15,12 @@
  */
 package $Package$;
 
-import io.smallrye.mutiny.Multi;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
-import org.reactivestreams.Publisher;
+import org.kie.kogito.event.EventReceiver;
 
 @io.quarkus.runtime.Startup
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
@@ -37,21 +35,19 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     ConfigBean configBean;
 
     @javax.inject.Inject
-    @javax.inject.Named(KogitoEventStreams.PUBLISHER) Publisher<String> eventPublisher;
+    EventReceiver eventReceiver;
 
     @javax.annotation.PostConstruct
     void init() {
-        setParams(application,
-              process,
-              $DataType$.class,
-              $DataEventType$.class,
-              "$Trigger$",
-              new DefaultEventConsumerFactory(),
-              configBean.useCloudEvents());
+        init(application,
+             process,
+             "$Trigger$",
+             new DefaultEventConsumerFactory(),
+             eventReceiver,
+             $DataType$.class,
+             $DataEventType$.class,
+             configBean.useCloudEvents());
 
-        Multi.createFrom().publisher(eventPublisher)
-                .subscribe()
-                .with(this::consume);
     }
 
     protected $Type$ eventToModel($DataType$ event) {

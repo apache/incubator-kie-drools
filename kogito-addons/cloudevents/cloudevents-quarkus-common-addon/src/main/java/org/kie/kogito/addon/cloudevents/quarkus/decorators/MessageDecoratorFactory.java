@@ -25,17 +25,24 @@ public final class MessageDecoratorFactory {
     private MessageDecoratorFactory() {
     }
 
+    public static MessageDecorator newInstance() {
+        return newInstance(true);
+    }
+
     /**
      * Builds a new {@link MessageDecorator} depending on the implementation being presented in the classpath.
      *
      * @return an instance of {@link MessageDecorator}
      */
-    public static MessageDecorator newInstance() {
-        try {
-            Class.forName(SMALLRYE_HTTP_METADATA_CLASS, false, MessageDecoratorFactory.class.getClassLoader());
-            return new CloudEventHttpOutgoingDecorator();
-        } catch (ClassNotFoundException e) {
-            return new NoOpMessageDecorator();
+    public static MessageDecorator newInstance(boolean useCloudEvent) {
+        if (useCloudEvent) {
+            try {
+                Class.forName(SMALLRYE_HTTP_METADATA_CLASS, false, MessageDecoratorFactory.class.getClassLoader());
+                return new CloudEventHttpOutgoingDecorator();
+            } catch (ClassNotFoundException e) {
+                // returning NoOpMessageDecorator (complementary comment forced by sonar) 
+            }
         }
+        return new NoOpMessageDecorator();
     }
 }

@@ -15,9 +15,13 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus;
 
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -25,8 +29,11 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecorator;
 import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecoratorFactory;
-import org.kie.kogito.event.CloudEventEmitter;
+import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.EventEmitter;
+import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.KogitoEventStreams;
+import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
 
 /**
  * the quarkus implementation just delegates to a real emitter,
@@ -34,19 +41,31 @@ import org.kie.kogito.event.KogitoEventStreams;
  *
  */
 @ApplicationScoped
-public class QuarkusCloudEventEmitter implements CloudEventEmitter {
+public class QuarkusCloudEventEmitter implements EventEmitter {
+
+    private MessageDecorator messageDecorator;
+
     @Inject
     @Channel(KogitoEventStreams.OUTGOING)
     Emitter<String> emitter;
 
-    final MessageDecorator messageDecorator;
+    @Inject
+    ConfigBean configBean;
 
-    public QuarkusCloudEventEmitter() {
-        this.messageDecorator = MessageDecoratorFactory.newInstance();
+    @Inject
+    Instance<EventMarshaller> marshallerInstance;
+    EventMarshaller marshaller;
+
+    @PostConstruct
+    private void init() {
+        marshaller = marshallerInstance.isResolvable() ? marshallerInstance.get() : new DefaultEventMarshaller();
+        messageDecorator = MessageDecoratorFactory.newInstance(configBean.useCloudEvents());
     }
 
-    public CompletionStage<Void> emit(String e) {
-        final Message<String> message = this.messageDecorator.decorate(e);
+    @Override
+    public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {
+        final Message<String> message = this.messageDecorator.decorate(marshaller.marshall(
+                configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e));
         emitter.send(message);
         return message.getAck().get();
     }

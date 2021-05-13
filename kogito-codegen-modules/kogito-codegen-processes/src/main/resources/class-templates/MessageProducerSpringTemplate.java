@@ -17,21 +17,15 @@ package org.kie.kogito.test;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.event.CloudEventEmitter;
-import org.kie.kogito.event.impl.DefaultEventMarshaller;
+import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.services.event.impl.AbstractMessageProducer;
 
 @org.springframework.stereotype.Component()
 public class MessageProducer extends AbstractMessageProducer<$DataType$, $DataEventType$> {
 
     @org.springframework.beans.factory.annotation.Autowired()
-    MessageProducer(
-            CloudEventEmitter emitter,
-            ConfigBean configBean) {
-        super(emitter,
-              new DefaultEventMarshaller(),
-              "$Trigger$",
-              configBean.useCloudEvents());
+    MessageProducer(EventEmitter emitter) {
+        super(emitter,"$Trigger$");
     }
 
     protected $DataEventType$ dataEventTypeConstructor($DataType$ e, KogitoProcessInstance pi, String trigger) {

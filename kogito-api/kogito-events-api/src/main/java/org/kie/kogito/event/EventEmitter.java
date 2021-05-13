@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event.impl;
+package org.kie.kogito.event;
 
-import org.kie.kogito.Model;
-import org.kie.kogito.services.event.EventConsumer;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public abstract class JacksonEventConsumer<M extends Model> implements EventConsumer<M> {
-
-    final ObjectMapper mapper;
-
-    public JacksonEventConsumer(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
+/**
+ * Generic emitter for events.
+ *
+ * Implementations provide their specific (usually injectable) behavior.
+ *
+ */
+public interface EventEmitter {
+    /**
+     * @param e object to emit
+     * @param type type of object to emit
+     * @param optional process decorator
+     */
+    <T> CompletionStage<Void> emit(T e,
+            String type,
+            Optional<Function<T, Object>> processDecorator);
 }

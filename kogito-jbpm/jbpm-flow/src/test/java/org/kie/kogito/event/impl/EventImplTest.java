@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
-import org.kie.kogito.event.CloudEventExtensionConstants;
+import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
@@ -32,7 +32,7 @@ import org.kie.kogito.process.Signal;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
-import org.kie.kogito.services.event.EventMarshaller;
+import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.ArgumentCaptor;
@@ -95,7 +95,12 @@ public class EventImplTest {
         }
 
         public DummyCloudEvent(DummyEvent dummyEvent) {
-            super("", dummyEvent, "1", null, null, null, null, null, null);
+            this(dummyEvent, null);
+        }
+
+        public DummyCloudEvent(DummyEvent dummyEvent, String referenceId) {
+            super("dummyTopic", dummyEvent, "1", "1", "1", "1", "1", "1", null);
+            super.kogitoReferenceId = referenceId;
         }
     }
 
@@ -132,18 +137,9 @@ public class EventImplTest {
 
     @Test
     void testSigCloudEvent() {
-        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.of(true));
+        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, true);
         final String trigger = "dummyTopic";
-        final String payload = "{ \"specversion\": \"0.3\"," +
-                "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
-                "\"source\": \"\"," +
-                "\"type\": \"dummyTopic\"," +
-                "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
-                "\"" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID + "\": \"1\"," +
-                "\"" + CloudEventExtensionConstants.PROCESS_INSTANCE_ID + "\": \"1\"," +
-                "\"data\": {\"dummyField\" : \"pepe\"}}";
-
-        consumer.consume(application, process, payload, trigger);
+        consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe"), "1"), trigger);
         ArgumentCaptor<Signal> signal = ArgumentCaptor.forClass(Signal.class);
         verify(processInstance, times(1)).send(signal.capture());
         assertEquals("1", signal.getValue().referenceId());
@@ -154,27 +150,18 @@ public class EventImplTest {
     @Test
     void testCloudEvent() {
         EventConsumer<DummyModel> consumer =
-                factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.empty());
+                factory.get(DummyModel::new, true);
         final String trigger = "dummyTopic";
-        final String payload = "{ \"specversion\": \"0.3\"," +
-                "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
-                "\"source\": \"\"," +
-                "\"type\": \"dummyTopic\"," +
-                "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
-                "\"" + CloudEventExtensionConstants.PROCESS_INSTANCE_ID + "\": \"1\"," +
-                "\"data\": {\"dummyField\" : \"pepe\"}}";
-
-        consumer.consume(application, process, payload, trigger);
+        consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger);
         verify(processInstance, times(1)).start(trigger, "1");
     }
 
     @Test
     void testDataEvent() {
         EventConsumer<DummyModel> consumer =
-                factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.of(false));
+                factory.get(DummyModel::new, false);
         final String trigger = "dummyTopic";
-        final String payload = "{\"dummyField\" : \"pepe\"}";
-        consumer.consume(application, process, payload, trigger);
+        consumer.consume(application, process, new DummyEvent("pepe"), trigger);
         verify(processInstance, times(1)).start(trigger, null);
     }
 
@@ -183,22 +170,21 @@ public class EventImplTest {
         DummyEvent dataEvent = new DummyEvent("pepe");
         assertEquals(
                 "{\"dummyField\":\"pepe\"}",
-                marshaller.marshall(dataEvent, DummyCloudEvent::new, Optional.of(false)));
+                marshaller.marshall(dataEvent));
     }
 
     @Test
-    void testCloudEventMarshaller() {
+    void testEventMarshaller() {
         DummyEvent dataEvent = new DummyEvent("pepe");
-        String jsonString = marshaller.marshall(dataEvent, DummyCloudEvent::new, Optional.empty());
+        String jsonString = marshaller.marshall(dataEvent);
         assertTrue(jsonString.contains("\"dummyField\":\"pepe\""));
-        assertTrue(jsonString.contains("\"" + CloudEventExtensionConstants.PROCESS_INSTANCE_ID + "\":\"1\""));
     }
 
     @Test
-    void testCloudEventPayloadException() {
-        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, DummyEvent.class, DummyCloudEvent.class, Optional.empty());
+    void testEventPayloadException() {
+        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, true);
         final String trigger = "dummyTopic";
         final String payload = "{ a = b }";
-        assertThrows(IllegalStateException.class, () -> consumer.consume(application, process, payload, trigger));
+        assertThrows(ClassCastException.class, () -> consumer.consume(application, process, payload, trigger));
     }
 }

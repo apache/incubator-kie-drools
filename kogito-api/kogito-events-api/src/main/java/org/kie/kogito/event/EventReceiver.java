@@ -17,27 +17,19 @@ package org.kie.kogito.event;
 
 import java.util.function.Consumer;
 
-import org.reactivestreams.Publisher;
-
 /**
  * Generic receiver for cloud events.
  *
  * Implementations provide their specific (usually injectable) behavior.
  *
  */
-public interface CloudEventReceiver {
+public interface EventReceiver {
 
     /**
      * Helper method to subscribe to the events.
      * 
      * @param consumer the consumer that will receive the events.
+     * @param clazz the type of object the event contains
      */
-    void subscribe(Consumer<String> consumer);
-
-    /**
-     * Give access to the underlying event {@link Publisher} for more advanced needs.
-     * 
-     * @return the event Publisher
-     */
-    Publisher<String> getEventPublisher();
+    <T> void subscribe(Consumer<T> consumer, SubscriptionInfo<T> subscription);
 }

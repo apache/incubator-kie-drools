@@ -22,7 +22,7 @@ import org.kie.kogito.KogitoGAV;
 
 public interface ConfigBean extends KogitoConfig {
 
-    Optional<Boolean> useCloudEvents();
+    boolean useCloudEvents();
 
     String getServiceUrl();
 

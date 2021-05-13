@@ -22,6 +22,8 @@ import org.kie.kogito.Application;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.impl.ProcessServiceImpl;
 
+
+
 @ApplicationScoped
 public class ProcessServiceProducer {
 

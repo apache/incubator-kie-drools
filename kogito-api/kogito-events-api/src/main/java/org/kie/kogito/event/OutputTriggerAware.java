@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,10 @@
  */
 package org.kie.kogito.event;
 
-import java.util.concurrent.CompletionStage;
-
 /**
- * Generic emitter for cloud events.
- *
- * Implementations provide their specific (usually injectable) behavior.
- *
+ * Indicates that a class is providing an output trigger.
+ * This is used to resolve all classes providing output triggers for a particular process
  */
-public interface CloudEventEmitter {
-
-    /**
-     * @param e cloud event payload in string form
-     */
-    CompletionStage<Void> emit(String e);
+public interface OutputTriggerAware {
+    String getOutputTrigger();
 }

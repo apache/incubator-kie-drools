@@ -31,21 +31,21 @@ public class $Type$MessageConsumer {
 
     ObjectMapper objectMapper;
 
-    Optional<Boolean> useCloudEvents = Optional.of(true);
+    boolean useCloudEvents = true;
 
     EventConsumerFactory eventConsumerFactory;
 
     public void configure() {
-        eventConsumerFactory = new DefaultEventConsumerFactory(objectMapper);
+        eventConsumerFactory = new DefaultEventConsumerFactory();
     }
 
-    public void consume(String payload) {
+    public void consume($DataType$ payload) {
         eventConsumerFactory
-            .get(event -> {
+            .<$Type$,$DataType$>get(event -> {
                 $Type$ model = new $Type$();
                 model.set$DataType$(event);
                 return model;
-            }, $DataType$.class, $DataEventType$.class, useCloudEvents)
+            }, useCloudEvents)
             .consume(application, process, payload, "$Trigger$");
     }
 }

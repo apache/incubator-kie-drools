@@ -20,8 +20,8 @@ import javax.inject.Inject;
 
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.decision.DecisionModels;
-import org.kie.kogito.event.CloudEventEmitter;
-import org.kie.kogito.event.CloudEventReceiver;
+import org.kie.kogito.event.EventEmitter;
+import org.kie.kogito.event.EventReceiver;
 
 import io.quarkus.runtime.Startup;
 
@@ -35,10 +35,10 @@ public class QuarkusEventDrivenDecisionController extends EventDrivenDecisionCon
     ConfigBean config;
 
     @Inject
-    CloudEventEmitter eventEmitter;
+    EventEmitter eventEmitter;
 
     @Inject
-    CloudEventReceiver eventReceiver;
+    EventReceiver eventReceiver;
 
     @PostConstruct
     private void onPostConstruct() {

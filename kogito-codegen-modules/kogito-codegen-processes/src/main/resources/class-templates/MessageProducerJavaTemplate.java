@@ -18,8 +18,8 @@ package com.myspace.demo;
 import java.util.Optional;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.event.impl.DefaultEventMarshaller;
-import org.kie.kogito.services.event.EventMarshaller;
+import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+import org.kie.kogito.event.EventMarshaller;
 
 public class MessageProducer {
 
@@ -38,16 +38,14 @@ public class MessageProducer {
     }
 
     private String marshall(KogitoProcessInstance pi, $Type$ eventData) {
-        return marshaller.marshall(eventData,
-                                   e -> new $DataEventType$("",
-                                                            e,
-                                                            pi.getStringId(),
-                                                            pi.getParentProcessInstanceStringId(),
-                                                            pi.getRootProcessInstanceId(),
-                                                            pi.getProcessId(),
-                                                            pi.getRootProcessId(),
-                                                            String.valueOf(pi.getState()),
-                                                            pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()),
-                                   useCloudEvents);
+        return marshaller.marshall(useCloudEvents.orElse(true) ? new $DataEventType$("",
+                eventData,
+                pi.getStringId(),
+                pi.getParentProcessInstanceStringId(),
+                pi.getRootProcessInstanceId(),
+                pi.getProcessId(),
+                pi.getRootProcessId(),
+                String.valueOf(pi.getState()),
+                pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()): eventData);
     }
 }

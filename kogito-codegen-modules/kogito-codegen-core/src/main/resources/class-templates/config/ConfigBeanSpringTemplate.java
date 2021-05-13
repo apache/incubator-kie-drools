@@ -21,8 +21,8 @@ public class ConfigBean extends org.kie.kogito.conf.StaticConfigBean {
     @org.springframework.beans.factory.annotation.Value("${kogito.service.url:#{null}}")
     java.util.Optional<java.lang.String> kogitoService;
 
-    @org.springframework.beans.factory.annotation.Value("${kogito.messaging.as-cloudevents:#{null}}")
-    java.util.Optional<Boolean> useCloudEvents = java.util.Optional.of(true);
+    @org.springframework.beans.factory.annotation.Value("${kogito.messaging.as-cloudevents:#{true}}")
+    boolean useCloudEvents;
 
     @javax.annotation.PostConstruct
     protected void init() {

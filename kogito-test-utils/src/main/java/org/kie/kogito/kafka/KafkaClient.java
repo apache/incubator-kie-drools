@@ -16,6 +16,7 @@
 package org.kie.kogito.kafka;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Properties;
@@ -58,8 +59,8 @@ public class KafkaClient {
         this.consumer = consumer;
     }
 
-    public void consume(String topic, Consumer<String> callback) {
-        consumer.subscribe(Collections.singletonList(topic));
+    public void consume(Collection<String> topics, Consumer<String> callback) {
+        consumer.subscribe(topics);
 
         CompletableFuture.runAsync(() -> {
             while (!shutdown) {
@@ -74,6 +75,10 @@ public class KafkaClient {
                 }
             }
         });
+    }
+
+    public void consume(String topic, Consumer<String> callback) {
+        consume(Collections.singletonList(topic), callback);
     }
 
     public void produce(String data, String topic) {
