@@ -16,6 +16,9 @@
 package org.kie.pmml.api.enums;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.OptionalDouble;
+import java.util.stream.DoubleStream;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -24,8 +27,6 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
  * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
  */
 public enum BUILTIN_FUNCTIONS {
-
-
 
     PLUS("+"),
     MINUS("-"),
@@ -117,23 +118,146 @@ public enum BUILTIN_FUNCTIONS {
 
     public Object getValue(final Object[] inputData) {
         switch (this) {
+            case AVG:
+                return avg(inputData);
+            case LOWERCASE:
+                return lowercase(inputData);
+            case MAX:
+                return max(inputData);
+            case MEDIAN:
+                return median(inputData);
+            case MIN:
+                return min(inputData);
+            case MINUS:
+                return minus(inputData);
+            case MULTI:
+                return multi(inputData);
+            case DIVISION:
+                return division(inputData);
             case PLUS:
                 return plus(inputData);
+            case PRODUCT:
+                return product(inputData);
+            case SUM:
+                return sum(inputData);
+            case UPPERCASE:
+                return uppercase(inputData);
             default:
                 throw new KiePMMLException("Unmanaged BUILTIN_FUNCTIONS " + this);
         }
     }
 
+    private double avg(final Object[] inputData) {
+        checkNumbers(inputData, inputData.length);
+        return Arrays.stream(inputData)
+                .mapToDouble(num -> ((Number)num).doubleValue())
+                .average()
+                .orElseThrow(() -> new IllegalArgumentException("Failed to find average value"));
+    }
+
+    private double division(final Object[] inputData) {
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return a / b;
+    }
+
+    private String lowercase(final Object[] inputData) {
+        checkStrings(inputData, 1);
+        return ((String) inputData[0]).toLowerCase();
+    }
+
+    private double max(final Object[] inputData) {
+        checkNumbers(inputData, inputData.length);
+        return Arrays.stream(inputData)
+                .mapToDouble(num -> ((Number)num).doubleValue())
+                .max()
+                .orElseThrow(() -> new KieEnumException("Failed to find maximum value"));
+    }
+
+    private double median(final Object[] inputData) {
+        checkNumbers(inputData, inputData.length);
+        DoubleStream sortedValues = Arrays.stream(inputData)
+                .mapToDouble(num -> ((Number)num).doubleValue())
+                .sorted();
+        OptionalDouble toReturn = inputData.length % 2 == 0 ?
+                sortedValues.skip(inputData.length / 2 - (long)1).limit(2).average() :
+                sortedValues.skip(inputData.length / 2).findFirst();
+        return toReturn.orElseThrow(() -> new KieEnumException("Failed to find median value"));
+    }
+
+    private double min(final Object[] inputData) {
+        checkNumbers(inputData, inputData.length);
+        return Arrays.stream(inputData)
+                .mapToDouble(num -> ((Number)num).doubleValue())
+                .min()
+                .orElseThrow(() -> new KieEnumException("Failed to find minimum value"));
+    }
+
+    private double minus(final Object[] inputData) {
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return a - b;
+    }
+
+    private double multi(final Object[] inputData) {
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return a * b;
+    }
+
     private double plus(final Object[] inputData) {
-        if (inputData.length != 2) {
-            throw new IllegalArgumentException("Expected two parameters for " + this);
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return a + b;
+    }
+
+    private double product(final Object[] inputData) {
+        checkNumbers(inputData, inputData.length);
+        return Arrays.stream(inputData)
+                .mapToDouble(num -> ((Number)num).doubleValue())
+                .reduce(1, (a, b) -> a * b);
+    }
+
+    private double sum(final Object[] inputData) {
+        checkNumbers(inputData, inputData.length);
+        return Arrays.stream(inputData)
+                .mapToDouble(num -> ((Number)num).doubleValue())
+                .sum();
+    }
+
+    private String uppercase(final Object[] inputData) {
+        checkStrings(inputData, 1);
+        return ((String) inputData[0]).toUpperCase();
+    }
+
+    private void checkNumbers(final Object[] inputData, final int expectedSize) {
+        checkLength(inputData, expectedSize);
+        for (Object object : inputData) {
+            if (!(object instanceof Number)) {
+                throw new IllegalArgumentException("Expected only Numbers for " + this);
+            }
         }
-        try {
-            double a = ((Number) inputData[0]).doubleValue();
-            double b = ((Number) inputData[1]).doubleValue();
-            return a + b;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Expected two numbers for " + this, e);
+    }
+
+    private void checkStrings(final Object[] inputData, final int expectedSize) {
+        checkLength(inputData, expectedSize);
+        for (Object object : inputData) {
+            if (!(object instanceof String)) {
+                throw new IllegalArgumentException("Expected only String for " + this);
+            }
+        }
+    }
+
+    private void checkLength(final Object[] inputData, final int expectedSize) {
+        if (inputData.length < 1) {
+            throw new IllegalArgumentException(String.format("Expected at least one parameter %s ", this));
+        }
+        if (inputData.length != expectedSize) {
+            throw new IllegalArgumentException(String.format("Expected %s parameters %s ", expectedSize, this));
         }
     }
 }

@@ -24,7 +24,7 @@ import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.Expression;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getVariableParametersExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getExpressionMethodDeclarationWithVariableParameters;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -47,8 +47,8 @@ public class DefineFunctionUtils {
     static MethodDeclaration getDefineFunctionMethodDeclaration(final DefineFunction defineFunction) {
         final Expression expression = defineFunction.getExpression();
         if (expression != null) {
-            return getVariableParametersExpressionMethodDeclaration(defineFunction.getName(), expression, defineFunction.getDataType(),
-                                                  defineFunction.getParameterFields());
+            return getExpressionMethodDeclarationWithVariableParameters(defineFunction.getName(), expression, defineFunction.getDataType(),
+                                                                        defineFunction.getParameterFields());
         } else {
             throw new KiePMMLException("Define Function without Expression are not supported, yet");
         }

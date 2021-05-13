@@ -26,7 +26,7 @@ import org.dmg.pmml.Expression;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getKiePMMLNameValueExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getExpressionMethodDeclarationWithKiePMMLNameValues;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -52,7 +52,7 @@ public class DerivedFieldFunctionUtils {
         final Expression expression = derivedField.getExpression();
         if (expression != null) {
             String methodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(), arityCounter.addAndGet(1));
-            return getKiePMMLNameValueExpressionMethodDeclaration(expression, derivedField.getDataType(), methodName);
+            return getExpressionMethodDeclarationWithKiePMMLNameValues(expression, derivedField.getDataType(), methodName);
         } else {
             throw new KiePMMLException("Derived field without Expression are not supported, yet");
         }
