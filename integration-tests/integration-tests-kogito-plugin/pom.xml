@@ -8,6 +8,18 @@
   <artifactId>integration-tests-kogito-plugin</artifactId>
   <name>Kogito :: Integration Tests :: Maven Plugin</name>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
       <groupId>org.kie.kogito</groupId>
@@ -32,13 +44,30 @@
       <artifactId>kogito-quarkus-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-management-addon</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
     </dependency>
   </dependencies>
 

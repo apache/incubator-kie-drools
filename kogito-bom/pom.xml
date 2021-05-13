@@ -2028,6 +2028,23 @@
         <type>test-jar</type>
       </dependency>
 
+      <!-- Integration tests -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-processes-persistence-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-processes-persistence-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-test-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>
