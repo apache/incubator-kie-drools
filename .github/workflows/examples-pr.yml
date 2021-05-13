@@ -1,0 +1,37 @@
+name: Examples Build
+
+on: [pull_request_target]
+
+jobs:
+  example-build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [11]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: Maven Build
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java-version }}
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build Chain ${{ matrix.java-version }}
+        id: build-chain
+        uses: kiegroup/github-action-build-chain@v2.5.4
+        with:
+          definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
+          starting-project: kiegroup/kogito-examples
+        env:
+          BUILD_MVN_OPTS: "-fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
+      - name: Publish Test Report
+        uses: scacap/action-surefire-report@v1
+        with:
+          report_paths: '**/*-reports/TEST-*.xml'
