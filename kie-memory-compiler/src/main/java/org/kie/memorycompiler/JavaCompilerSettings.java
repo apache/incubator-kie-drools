@@ -17,7 +17,6 @@ package org.kie.memorycompiler;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -119,7 +118,7 @@ public class JavaCompilerSettings {
     }
 
     public List<File> getClasspathLocations() {
-        return classpaths == null ? Collections.emptyList() : classpaths;
+        return classpaths;
     }
 
     public void addClasspath(File classpath) {
