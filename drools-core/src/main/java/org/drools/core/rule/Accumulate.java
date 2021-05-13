@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -49,8 +48,6 @@ public abstract class Accumulate extends ConditionalElement
     protected RuleConditionElement source;
     protected Declaration[]        requiredDeclarations;
     protected Declaration[]        innerDeclarationCache;
-
-    private Map<String, Declaration> outerDeclarationCache;
 
     protected List<Accumulate>     cloned           = Collections.emptyList();
 

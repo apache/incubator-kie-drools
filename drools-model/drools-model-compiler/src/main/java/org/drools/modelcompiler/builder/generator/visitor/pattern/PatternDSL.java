@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
@@ -115,7 +116,7 @@ public abstract class PatternDSL implements DSLNode {
 
     private Optional<String> findFirstInnerBinding(List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
         return constraintDescrs.stream()
-                .map( constraint -> ConstraintExpression.createConstraintExpression( patternType, constraint, isPositional(constraint) ).getExpression() )
+                .map( constraint -> ConstraintExpression.createConstraintExpression( context, patternType, constraint, isPositional(constraint) ).getExpression() )
                 .map( DrlxParseUtil::parseExpression )
                 .filter( drlx -> drlx.getBind() != null )
                 .map( drlx -> drlx.getBind().asString() )
@@ -131,7 +132,10 @@ public abstract class PatternDSL implements DSLNode {
 
             boolean isPositional = isPositional(constraint);
 
-            ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression(patternType, constraint, isPositional);
+            ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression(context, patternType, constraint, isPositional);
+            if (constraintExpression == null) {
+                continue;
+            }
 
             DrlxParseResult drlxParseResult;
             try {
@@ -202,14 +206,33 @@ public abstract class PatternDSL implements DSLNode {
     }
 
     void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {
-        DrlxParseResult drlxParseResult1 = patternConstraintParseResult.getDrlxParseResult();
+        DrlxParseResult drlxParseResult = patternConstraintParseResult.getDrlxParseResult();
         String expression = patternConstraintParseResult.getExpression();
 
-        drlxParseResult1.accept(
+        DrlxParseResult withBindingCheck = drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<DrlxParseResult>() {
+            @Override
+            public DrlxParseResult onSuccess(DrlxParseSuccess drlxParseResult) {
+
+                String exprBinding = drlxParseResult.getExprBinding();
+                if (exprBinding == null && !drlxParseResult.isPredicate() && !drlxParseResult.getImplicitCastExpression().isPresent()) {
+                    return new DrlxParseFail(new DescrBuildError(context.getRuleDescr(), context.getRuleDescr(), "",
+                                                                 String.format("Predicate '%s' must be a Boolean expression", drlxParseResult.getOriginalDrlConstraint())));
+                } else {
+                    return drlxParseResult;
+                }
+            }
+
+            @Override
+            public DrlxParseResult onFail(DrlxParseFail failure) {
+                return failure;
+            }
+        });
+
+        withBindingCheck.accept(
                 new ParseResultVoidVisitor() {
                     @Override
                     public void onSuccess( DrlxParseSuccess drlxParseResult ) {
-                        DSLNode constraint = drlxParseResult.getExpr() instanceof OOPathExpr ?
+                        DSLNode constraint = drlxParseResult.isOOPath() ?
                             new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult ) :
                             createSimpleConstraint( drlxParseResult, pattern );
                         constraint.buildPattern();

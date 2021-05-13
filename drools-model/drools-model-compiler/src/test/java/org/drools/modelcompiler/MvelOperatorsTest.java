@@ -24,11 +24,14 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 
 import static java.util.Arrays.asList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MvelOperatorsTest extends BaseModelTest {
@@ -530,5 +533,50 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         assertEquals(1, list.size());
         assertEquals("", list.get(0));
+    }
+
+    @Test
+    public void testContainsOnString() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( name contains \"test\" )" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        Person person1 = new Person("");
+        ksession.insert(new Person("mario", 47));
+        ksession.insert(new Person("atesta", 47));
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testContainsOnMapShouldntCompile() {
+        // BAPL-1957
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( itemsString contains \"test\" )" +
+                "then\n" +
+                "end ";
+
+        Results results = createKieBuilder( str ).getResults();
+        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
+    }
+
+    @Test
+    public void testContainsOnIntShouldntCompile() {
+        // BAPL-1957
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( age contains \"test\" )" +
+                "then\n" +
+                "end ";
+
+        Results results = createKieBuilder( str ).getResults();
+        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
     }
 }

@@ -170,6 +170,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                                                 "    // Considering exponent because it is != 1\n" +
                                                 "    return Math.pow(input, exponent) * coefficient;\n" +
                                                 "}", coefficient, exponent);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, body.toString());
     }
 
@@ -203,6 +204,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                                                 "    // Ignoring exponent because it is 1\n" +
                                                 "    return input * coefficient;\n" +
                                                 "}", coefficient);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, body.toString());
     }
 
@@ -228,6 +230,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                                                 "    // Considering exponent because it is != 1\n" +
                                                 "    return Math.pow(input, exponent) * coefficient;\n" +
                                                 "}", coefficient, exponent);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, body.toString());
     }
 
@@ -252,6 +255,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                                                 "    // Ignoring exponent because it is 1\n" +
                                                 "    return input * coefficient;\n" +
                                                 "}", coefficient);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, body.toString());
     }
 
@@ -308,6 +312,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                                  categoricalPredictors.get(2).getValue(),
                                  categoricalPredictors.get(2).getCoefficient()
         );
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, body.toString());
     }
 
@@ -358,6 +363,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                                          "    double coefficient = %s;\n" +
                                          "    return result.get() * coefficient;\n" +
                                          "}", fieldRef, coefficient);
+        expected = expected.replace("\n", System.lineSeparator());
         assertEquals(expected, body.toString());
     }
 

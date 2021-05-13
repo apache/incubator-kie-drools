@@ -1,7 +1,26 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.mvelcompiler;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -122,7 +141,7 @@ public class PreprocessPhase {
     private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
         PreprocessPhaseResult result = new StatementResult();
 
-        BlockStmt allNewStatements = new BlockStmt();
+        Deque<Statement> allNewStatements = new ArrayDeque<>();
 
         Optional<Expression> initScope = addTypeToInitialization(withStatement, allNewStatements);
         final Expression scope = initScope.orElse(withStatement.getWithObject());
@@ -138,15 +157,33 @@ public class PreprocessPhase {
 
         NodeList<Statement> bodyStatements = wrapToExpressionStmt(withStatement.getExpressions());
 
-        bodyStatements.forEach(allNewStatements::addStatement);
+        allNewStatements.addAll(bodyStatements);
 
-        // delete modify statement and replace its own block of statements
-        withStatement.replace(allNewStatements);
+        // delete modify statement and add the new statements to its children
+        Node parentNode = withStatement.getParentNode()
+                .orElseThrow(() -> new MvelCompilerException("A parent node is expected here"));
+
+        // We need to replace the with statement with the statements without nesting the new statements inside
+        // a BlockStmt otherwise other statements might reference the newly created instance
+        // See RuleChainingTest.testRuleChainingWithLogicalInserts
+        if(parentNode instanceof BlockStmt) {
+            BlockStmt parentBlock = (BlockStmt) parentNode;
+
+            Iterator<Statement> newStatementsReversed = allNewStatements.descendingIterator();
+            while(newStatementsReversed.hasNext()) {
+                parentBlock.getStatements().addAfter(newStatementsReversed.next(), withStatement);
+            }
+
+            withStatement.remove();
+        } else {
+            throw new MvelCompilerException("Expecting a BlockStmt as a parent");
+        }
+
 
         return result;
     }
 
-    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, BlockStmt allNewStatements) {
+    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, Deque<Statement> allNewStatements) {
         if (withStatement.getWithObject().isAssignExpr()) {
             AssignExpr assignExpr = withStatement.getWithObject().asAssignExpr();
             Expression assignExprValue = assignExpr.getValue();
@@ -159,7 +196,7 @@ public class PreprocessPhase {
                 String targetVariableName = ((DrlNameExpr) assignExprTarget).getNameAsString();
                 VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
                 AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
-                allNewStatements.addStatement(withTypeAssignmentExpr);
+                allNewStatements.add(new ExpressionStmt(withTypeAssignmentExpr));
                 return of(new DrlNameExpr(targetVariableName));
             }
         }

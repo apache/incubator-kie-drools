@@ -49,7 +49,7 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
 
     public Object modifyPrediction(Object prediction) {
         if (!(prediction instanceof Number)) {
-            // currently unimplemented
+            // TODO DROOLS-6345 TargetValue currently unimplemented - only direct number operations allowed
             return prediction;
         }
         double predictionDouble = (double) prediction;
@@ -58,7 +58,7 @@ public class KiePMMLTarget extends AbstractKiePMMLComponent {
         toReturn = applyRescaleFactor((double)toReturn);
         toReturn = applyRescaleConstant((double)toReturn);
         toReturn = applyCastInteger((double)toReturn);
-        // TargetValue currently unimplemented
+        // TODO DROOLS-6345 TargetValue currently unimplemented
         return toReturn;
     }
 

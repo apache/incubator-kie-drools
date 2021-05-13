@@ -58,8 +58,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class DroolsMvelParserTest {
@@ -144,6 +142,27 @@ public class DroolsMvelParserTest {
     @Test
     public void testParseInlineCastExpr() {
         String expr = "this#Person.name == \"Mark\"";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertEquals(expr, printConstraint(expression));
+    }
+
+    @Test
+    public void testParseInlineCastExpr2() {
+        String expr = "address#com.pkg.InternationalAddress.state.length == 5";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertEquals(expr, printConstraint(expression));
+    }
+
+    @Test
+    public void testParseInlineCastExpr3() {
+        String expr = "address#org.drools.mvel.compiler.LongAddress.country.substring(1)";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertEquals(expr, printConstraint(expression));
+    }
+
+    @Test
+    public void testParseInlineCastExpr4() {
+        String expr = "address#com.pkg.InternationalAddress.getState().length == 5";
         Expression expression = parseExpression( parser, expr ).getExpr();
         assertEquals(expr, printConstraint(expression));
     }
@@ -274,6 +293,15 @@ public class DroolsMvelParserTest {
     @Test
     public void testOOPathExpr() {
         String expr = "/wife/children[age > 10]/toys";
+        DrlxExpression drlx = parseExpression( parser, expr );
+        Expression expression = drlx.getExpr();
+        assertTrue(expression instanceof OOPathExpr);
+        assertEquals(expr, printConstraint(drlx));
+    }
+
+    @Test
+    public void testOOPathExprWithDot() {
+        String expr = "/wife.children/toys";
         DrlxExpression drlx = parseExpression( parser, expr );
         Expression expression = drlx.getExpr();
         assertTrue(expression instanceof OOPathExpr);

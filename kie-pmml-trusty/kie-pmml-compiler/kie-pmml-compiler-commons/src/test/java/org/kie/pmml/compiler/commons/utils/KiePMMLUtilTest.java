@@ -70,15 +70,20 @@ public class KiePMMLUtilTest {
     private static final String NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE =
             "NoModelNameNoSegmentIdNoSegmentTargetFieldSample.pmml";
     private static final String NO_TARGET_FIELD_SAMPLE = "NoTargetFieldSample.pmml";
+    private static final String MINING_WITH_SAME_NESTED_MODEL_NAMES = "MiningWithSameNestedModelNames.pmml";
 
     @Test
     public void loadString() throws IOException, JAXBException, SAXException {
         commonLoadString(NO_MODELNAME_SAMPLE_NAME);
+        commonLoadString(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
+        commonLoadString(MINING_WITH_SAME_NESTED_MODEL_NAMES);
     }
 
     @Test
     public void loadFile() throws JAXBException, IOException, SAXException {
         commonLoadFile(NO_MODELNAME_SAMPLE_NAME);
+        commonLoadFile(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
+        commonLoadFile(MINING_WITH_SAME_NESTED_MODEL_NAMES);
     }
 
     @Test
@@ -264,6 +269,7 @@ public class KiePMMLUtilTest {
         getMiningTargetFields(miningModel.getMiningSchema()).forEach(parentTargetField -> assertTrue(childrenTargetFields.contains(parentTargetField)));
     }
 
+
     @Test
     public void populateMissingOutputFieldDataType() {
         Random random = new Random();
@@ -408,5 +414,10 @@ public class KiePMMLUtilTest {
                 commonValidateMiningModel((MiningModel) segmentModel);
             }
         }
+        List<String> modelNames = toValidate.getSegmentation().getSegments()
+                .stream()
+                .map(segment -> segment.getModel().getModelName())
+                .collect(Collectors.toList());
+        assertEquals(modelNames.size(), modelNames.stream().distinct().count());
     }
 }

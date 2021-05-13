@@ -44,8 +44,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     private final KieBase knowledgeBase;
     private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase,
-                                   final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeInternalImpl(final KieBase knowledgeBase, final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }

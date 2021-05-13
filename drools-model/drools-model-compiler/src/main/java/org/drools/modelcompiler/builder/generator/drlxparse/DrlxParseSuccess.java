@@ -21,10 +21,11 @@ import java.util.Collection;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
 
 public interface DrlxParseSuccess extends DrlxParseResult {
 
-    boolean isValidExpression();
+    boolean isPredicate();
 
     String getExprBinding();
 
@@ -37,4 +38,8 @@ public interface DrlxParseSuccess extends DrlxParseResult {
     DrlxParseSuccess addAllWatchedProperties(Collection<String> watchedProperties);
 
     Optional<Expression> getImplicitCastExpression();
+
+    default boolean isOOPath() {
+        return getExpr() instanceof OOPathExpr;
+    }
 }

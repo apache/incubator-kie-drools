@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions
+	xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/"
+	xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/"
+	xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+	xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+	xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+	xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+	xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"
+	xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"
+	xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+	xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rss="http://purl.org/rss/2.0/"
+	xmlns:openapi="https://openapis.org/omg/extension/1.0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5"
+	id="_3404349f-5046-4ad3-ad15-7f1e27291ab5" name="DMN 1.4 expressions"
+	namespace="http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5"
+	exporter="Decision Modeler" exporterVersion="6.11.4.202006100837"
+	triso:logoChoice="Default">
+	
+	<semantic:inputData id="boolVar" name="Boolean Input">
+        <semantic:variable name="Boolean Input" typeRef="boolean"/>
+    </semantic:inputData>
+	
+	<semantic:inputData id="numberVar" name="Number Input">
+        <semantic:variable name="Number Input" typeRef="number"/>
+    </semantic:inputData>
+
+	<semantic:decision id="conditional" name="Conditional">
+		<semantic:variable name="Conditional" typeRef="string" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#boolVar"/>
+        </semantic:informationRequirement>
+		<boxedext:conditional typeRef="string">
+			<boxedext:if>
+				<semantic:literalExpression	typeRef="boolean">
+					<semantic:text>Boolean Input</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:if>
+			<boxedext:then>
+				<semantic:literalExpression	typeRef="string">
+					<semantic:text>"Conditional evaluated to TRUE"</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:then>
+			<boxedext:else>
+				<semantic:literalExpression	typeRef="string">
+					<semantic:text>"Conditional evaluated to FALSE"</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:else>
+		</boxedext:conditional>
+	</semantic:decision>
+
+
+	<semantic:decision id="non-boolean" name="Non boolean">
+		<semantic:variable name="Non boolean" typeRef="string" />
+		<boxedext:conditional typeRef="string">
+			<boxedext:if>
+				<semantic:literalExpression	typeRef="boolean">
+					<semantic:text>"hello"</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:if>
+			<boxedext:then>
+				<semantic:literalExpression	typeRef="string">
+					<semantic:text>"will not work"</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:then>
+			<boxedext:else>
+				<semantic:literalExpression	typeRef="string">
+					<semantic:text>"will not work"</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:else>
+		</boxedext:conditional>
+	</semantic:decision>
+
+
+	<semantic:decision id="addition" name="Addition">
+		<semantic:variable name="Addition" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:iterator typeRef="Any"  iteratorType="for" iteratorVariable="it">
+			<boxedext:in>
+		        <semantic:list typeRef="Any" >
+		            <semantic:literalExpression>
+		                <semantic:text>1</semantic:text>
+		            </semantic:literalExpression>
+		            <semantic:literalExpression>
+		                <semantic:text>2</semantic:text>
+		            </semantic:literalExpression>
+		            <semantic:literalExpression>
+		                <semantic:text>3</semantic:text>
+		            </semantic:literalExpression>
+		            <semantic:literalExpression >
+		                <semantic:text>4</semantic:text>
+		            </semantic:literalExpression>		        
+		        </semantic:list>
+			</boxedext:in>
+			<boxedext:return>
+			    <semantic:literalExpression >
+	                <semantic:text>it + Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:return>
+		</boxedext:iterator>
+	</semantic:decision>
+
+	<semantic:decision id="additiaon-partial" name="Addition Partial">
+		<semantic:variable name="Addition Partial" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:iterator typeRef="Any"  iteratorType="for" iteratorVariable="it">
+			<boxedext:in>
+		        <semantic:list typeRef="Any" >
+		            <semantic:literalExpression>
+		                <semantic:text>1</semantic:text>
+		            </semantic:literalExpression>
+		            <semantic:literalExpression>
+		                <semantic:text>2</semantic:text>
+		            </semantic:literalExpression>
+		            <semantic:literalExpression>
+		                <semantic:text>3</semantic:text>
+		            </semantic:literalExpression>
+		            <semantic:literalExpression >
+		                <semantic:text>4</semantic:text>
+		            </semantic:literalExpression>		        
+		        </semantic:list>
+			</boxedext:in>
+			<boxedext:return>
+			    <semantic:literalExpression >
+	                <semantic:text>if it = 1 then it else it + partial[-1] + Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:return>
+		</boxedext:iterator>
+	</semantic:decision>
+
+	<semantic:decision id="addition-range-close" name="Addition Range Close">
+		<semantic:variable name="Addition Range Close" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:iterator typeRef="Any"  iteratorType="for" iteratorVariable="it">
+			<boxedext:in>
+	            <semantic:literalExpression>
+	                <semantic:text>(1..4)</semantic:text>
+	            </semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:return>
+			    <semantic:literalExpression >
+	                <semantic:text>it + Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:return>
+		</boxedext:iterator>
+	</semantic:decision>
+
+	<semantic:decision id="addition-range-open" name="Addition Range Open">
+		<semantic:variable name="Addition Range Open" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:iterator typeRef="Any"  iteratorType="for" iteratorVariable="it">
+			<boxedext:in>
+	            <semantic:literalExpression>
+	                <semantic:text>(0..5)</semantic:text>
+	            </semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:return>
+			    <semantic:literalExpression >
+	                <semantic:text>it + Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:return>
+		</boxedext:iterator>
+	</semantic:decision>
+
+	<semantic:decision id="some-number" name="Number Greater Exists">
+		<semantic:variable name="Number Greater Exists" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:iterator typeRef="Any"  iteratorType="some" iteratorVariable="v">
+			<boxedext:in>
+	            <semantic:literalExpression>
+	                <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+	            </semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:return>
+			    <semantic:literalExpression >
+	                <semantic:text>v > Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:return>
+		</boxedext:iterator>
+	</semantic:decision>
+
+
+	<semantic:decision id="every-number" name="All Greater">
+		<semantic:variable name="All Greater" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:iterator typeRef="Any"  iteratorType="every" iteratorVariable="v">
+			<boxedext:in>
+	            <semantic:literalExpression>
+	                <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+	            </semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:return>
+			    <semantic:literalExpression >
+	                <semantic:text>v > Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:return>
+		</boxedext:iterator>
+	</semantic:decision>
+
+
+
+	<semantic:decision id="match-idx" name="Match by index">
+		<semantic:variable name="Match by index" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:filter typeRef="Any">
+			<boxedext:in>
+	            <semantic:literalExpression>
+	                <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+	            </semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:match>
+			    <semantic:literalExpression >
+	                <semantic:text>Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:match>
+		</boxedext:filter>
+	</semantic:decision>
+
+
+	<semantic:decision id="match-function" name="Match by Fnct">
+		<semantic:variable name="Match by Fnct" typeRef="Any" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#numberVar"/>
+        </semantic:informationRequirement>
+		<boxedext:filter typeRef="Any">
+			<boxedext:in>
+	            <semantic:literalExpression>
+	                <semantic:text>[1,2,3,4,5,6,7,8,9,10]</semantic:text>
+	            </semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:match>
+			    <semantic:literalExpression >
+	                <semantic:text>item > Number Input</semantic:text>
+	            </semantic:literalExpression>	
+			</boxedext:match>
+		</boxedext:filter>
+	</semantic:decision>
+
+
+</semantic:definitions>

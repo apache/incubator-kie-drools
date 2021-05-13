@@ -59,8 +59,7 @@ public class NodesPartitioningTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM failed with test2Partitions, testPartitioningWithSharedNodes, testChangePartitionOfAlphaSourceOfAlpha. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -190,10 +189,10 @@ public class NodesPartitioningTest {
 
     public static class Account {
         private final int number;
-        private final int uuid;
+        private final String uuid;
         private final Customer owner;
 
-        public Account( int number, int uuid, Customer owner ) {
+        public Account( int number, String uuid, Customer owner ) {
             this.number = number;
             this.uuid = uuid;
             this.owner = owner;
@@ -203,7 +202,7 @@ public class NodesPartitioningTest {
             return number;
         }
 
-        public int getUuid() {
+        public String getUuid() {
             return uuid;
         }
 
@@ -213,13 +212,13 @@ public class NodesPartitioningTest {
     }
 
     public static class Customer {
-        private final int uuid;
+        private final String uuid;
 
-        public Customer( int uuid ) {
+        public Customer( String uuid ) {
             this.uuid = uuid;
         }
 
-        public int getUuid() {
+        public String getUuid() {
             return uuid;
         }
     }

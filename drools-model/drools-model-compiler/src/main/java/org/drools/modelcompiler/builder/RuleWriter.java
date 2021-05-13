@@ -74,19 +74,25 @@ public class RuleWriter {
         List<RuleFileSource> rules = new ArrayList<>();
         for (CompilationUnit cu : rulesSource.getModelClasses()) {
             final Optional<ClassOrInterfaceDeclaration> classOptional = cu.findFirst(ClassOrInterfaceDeclaration.class);
-            if (classOptional.isPresent()) {
 
+            if (classOptional.isPresent()) {
                 String addFileName = classOptional.get().getNameAsString();
 
                 if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
-                    CompilationUnit postProcessedCU = cu.clone();
-                    new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
-                    if (checkNonExternalisedLambda) {
-                        checkNonExternalisedLambda(postProcessedCU);
+                    List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> replacedLambdaResult  =
+                                new ExecModelLambdaPostProcessor(pkgModel, cu).convertLambdas();
+
+                    for (ExecModelLambdaPostProcessor.ReplacedLambdaResult e : replacedLambdaResult) {
+                        e.replaceLambda();
                     }
-                    rules.add(new RuleFileSource(addFileName, postProcessedCU));
+
+                    if (checkNonExternalisedLambda) {
+                        checkNonExternalisedLambda(cu);
+                    }
+
+                    rules.add(new RuleFileSource(addFileName, cu, replacedLambdaResult));
                 } else {
-                    rules.add(new RuleFileSource(addFileName, cu));
+                    rules.add(new RuleFileSource(addFileName, cu, new ArrayList<>()));
                 }
             }
         }
@@ -100,6 +106,7 @@ public class RuleWriter {
         }
         StringBuilder sb = new StringBuilder();
         lambdaExprs.stream().forEach(lExpr -> sb.append(lExpr.toString() + "\n"));
+        sb.append("Generated class:\n").append(postProcessedCU).append("\n");
         throw new NonExternalisedLambdaFoundException("Non externalised lambda found in " + rulesFileName + "\n" + sb.toString());
     }
     public static boolean isCheckNonExternalisedLambda() {
@@ -113,10 +120,12 @@ public class RuleWriter {
 
         protected final CompilationUnit source;
         private final String name;
+        private List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> lambdaResults;
 
-        private RuleFileSource(String name, CompilationUnit source) {
+        private RuleFileSource(String name, CompilationUnit source, List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> lambdaResults) {
             this.name = name;
             this.source = source;
+            this.lambdaResults = lambdaResults;
         }
 
         public String getName() {
@@ -125,6 +134,10 @@ public class RuleWriter {
 
         public String getSource() {
             return prettyPrinter.print(source);
+        }
+
+        public List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> getLambdaResults() {
+            return lambdaResults;
         }
     }
 }

@@ -18,6 +18,7 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -39,6 +40,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -47,9 +49,11 @@ import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationException;
 import org.drools.modelcompiler.builder.errors.UnknownRuleUnitException;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
@@ -71,16 +75,18 @@ public class RuleContext {
     private final KnowledgeBuilderImpl kbuilder;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
+    private final RuleDescr ruleDescr;
+    private final int ruleIndex;
+
     private DRLIdGenerator idGenerator;
-    private RuleDescr descr;
-    private final boolean generatePatternDSL;
 
     private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
     private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
+    private Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
     private List<Expression> expressions = new ArrayList<>();
     private Map<String, String> namedConsequences = new HashMap<>();
+    private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
 
     private List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
@@ -112,40 +118,48 @@ public class RuleContext {
 
     private Optional<BaseDescr> currentConstraintDescr = empty();
 
+    private boolean hasCompilationError;
+
     public enum RuleDialect {
         JAVA,
         MVEL;
     }
 
-    public BaseDescr parentDesc = null;
+    private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, boolean generatePatternDSL) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+        this(kbuilder, packageModel, typeResolver, ruleDescr, -1);
+    }
+
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
-        this.generatePatternDSL = generatePatternDSL;
+        this.ruleDescr = ruleDescr;
+        processUnitData();
+        this.ruleIndex = ruleIndex;
     }
 
     private void findUnitDescr() {
-        if (descr == null) {
+        if (ruleDescr == null) {
             return;
         }
 
         boolean useNamingConvention = false;
         String unitName = null;
-        AnnotationDescr unitAnn = descr.getAnnotation( "Unit" );
+        AnnotationDescr unitAnn = ruleDescr.getAnnotation( "Unit" );
         if (unitAnn != null) {
             unitName = ( String ) unitAnn.getValue();
             unitName = unitName.substring( 0, unitName.length() - ".class".length() );
-        } else if (descr.getUnit() != null) {
-            unitName = descr.getUnit().getTarget();
+        } else if (ruleDescr.getUnit() != null) {
+            unitName = ruleDescr.getUnit().getTarget();
         } else {
-            if (descr.getResource() == null) {
+            if (ruleDescr.getResource() == null) {
                 return;
             }
-            String drlFile = descr.getResource().getSourcePath();
+            String drlFile = ruleDescr.getResource().getSourcePath();
             if (drlFile != null) {
                 String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
                 unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
@@ -180,10 +194,6 @@ public class RuleContext {
         }
     }
 
-    public boolean isPatternDSL() {
-        return generatePatternDSL;
-    }
-
     public RuleUnitDescription getRuleUnitDescr() {
         return ruleUnitDescr;
     }
@@ -192,11 +202,26 @@ public class RuleContext {
         return kbuilder;
     }
 
+    public int getRuleIndex() {
+        return ruleIndex;
+    }
+
+    public EvaluatorDefinition getEvaluatorDefinition(String opName) {
+        return kbuilder.getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
+    }
+
     public void addCompilationError( KnowledgeBuilderResult error ) {
+        hasCompilationError = true;
         if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
-            (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
+            (( BaseKnowledgeBuilderResultImpl ) error).setResource( ruleDescr.getResource() );
         }
-        kbuilder.addBuilderResult( error );
+        synchronized (kbuilder) {
+            kbuilder.addBuilderResult(error);
+        }
+    }
+
+    public boolean hasCompilationError() {
+        return hasCompilationError;
     }
 
     public boolean hasErrors() {
@@ -227,7 +252,7 @@ public class RuleContext {
     }
 
     public DeclarationSpec getDeclarationByIdWithException(String id) {
-        return getDeclarationById(id).orElseThrow(() -> new RuntimeException(id));
+        return getDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
     }
 
     private String getDeclarationKey( String id ) {
@@ -354,6 +379,21 @@ public class RuleContext {
         exprPointer.peek().accept(e);
     }
 
+    public void registerOOPathPatternExpr(String binding, MethodCallExpr patternExpr) {
+        if (ooPathBindingPatternExprs == null) {
+            ooPathBindingPatternExprs = new HashMap<>();
+        }
+        ooPathBindingPatternExprs.put( binding, patternExpr );
+    }
+
+    public void clearOOPathPatternExpr() {
+        ooPathBindingPatternExprs = null;
+    }
+
+    public MethodCallExpr getOOPathPatternExpr(String binding) {
+        return ooPathBindingPatternExprs == null ? null : ooPathBindingPatternExprs.get(binding);
+    }
+
     public void pushExprPointer(Consumer<Expression> p) {
         exprPointer.push(p);
     }
@@ -399,16 +439,11 @@ public class RuleContext {
     }
 
     public RuleDescr getRuleDescr() {
-        return descr;
-    }
-
-    public void setDescr(RuleDescr descr) {
-        this.descr = descr;
-        processUnitData();
+        return ruleDescr;
     }
 
     public String getRuleName() {
-        return descr.getName();
+        return ruleDescr.getName();
     }
 
     public RuleDialect getRuleDialect() {
@@ -437,6 +472,10 @@ public class RuleContext {
 
     public void setQueryName(Optional<String> queryName) {
         this.queryName = queryName;
+    }
+
+    public boolean isRecurisveQuery(String queryName) {
+        return this.queryName.isPresent() && this.queryName.get().equals(queryName);
     }
 
     public boolean isQuery() {
@@ -632,9 +671,17 @@ public class RuleContext {
         this.currentConstraintDescr = empty();
     }
 
+    public void setParentDescr( AndDescr parentDescr ) {
+        this.parentDescr = parentDescr;
+    }
+
+    public AndDescr getParentDescr() {
+        return parentDescr;
+    }
+
     @Override
     public String toString() {
-        return "RuleContext for " + descr.getNamespace() + "." + descr.getName();
+        return "RuleContext for " + ruleDescr.getNamespace() + "." + ruleDescr.getName();
     }
 }
 

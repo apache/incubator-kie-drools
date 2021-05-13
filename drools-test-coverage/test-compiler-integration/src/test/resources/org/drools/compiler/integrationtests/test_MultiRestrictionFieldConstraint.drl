@@ -47,7 +47,7 @@ end
 
 rule "4. ||  and && operator with ==  and != and strings"
     when
-        $person : Person( age > 30 && < 40 || > 10 && < 20, hair == "red" || == "blue" )
+        $person : Person( age ((> 30 && < 40) || (> 10 && < 20)), hair == "red" || == "blue" )
     then
         list4.add( $person );
 end  

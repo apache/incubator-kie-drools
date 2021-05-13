@@ -55,7 +55,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         runRule(str, new ControlFact());
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -87,7 +86,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         runRule(str, new ControlFact("123", "ABC"));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -120,7 +118,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         runRule(str, new ControlFact("123", "ABC"));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
@@ -153,7 +150,6 @@ public class SpecialUsageTest extends AbstractGraphTest {
         runRule(str, new ControlFact(), new ProductItem("Product1", new BigDecimal("100.0")));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);

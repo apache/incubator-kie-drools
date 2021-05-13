@@ -82,13 +82,13 @@ public class LhsParser {
 
         ConstraintParser constraintParser = new ConstraintParser(context, packageModel);
         for (BaseDescr constraintDescr : patternDescr.getConstraint().getDescrs()) {
-            parseConstraint( patternDescr, pattern, constraintParser, constraintDescr );
+            parseConstraint( context, patternDescr, pattern, constraintParser, constraintDescr );
         }
         return pattern;
     }
 
-    private void parseConstraint( PatternDescr patternDescr, Pattern pattern, ConstraintParser constraintParser, BaseDescr constraintDescr ) {
-        ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression( pattern.getPatternClass(), constraintDescr, false);
+    private void parseConstraint( RuleContext context, PatternDescr patternDescr, Pattern pattern, ConstraintParser constraintParser, BaseDescr constraintDescr ) {
+        ConstraintExpression constraintExpression = ConstraintExpression.createConstraintExpression( context, pattern.getPatternClass(), constraintDescr, false);
         DrlxParseResult drlxParseResult = constraintParser.drlxParse( pattern.getPatternClass(), patternDescr.getIdentifier(), constraintExpression, false);
         if (drlxParseResult.isSuccess()) {
             SingleDrlxParseSuccess result = ( SingleDrlxParseSuccess ) drlxParseResult;

@@ -35,28 +35,29 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
-import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
 
     public static String QUERY_METHOD_PREFIX = "query_";
 
-    public static void processQueryDef(PackageModel packageModel, QueryDescr queryDescr, RuleContext context) {
-        context.setDescr(queryDescr);
+    public static void processQueryDef(PackageModel packageModel, RuleContext context) {
+        QueryDescr queryDescr = ((QueryDescr) context.getRuleDescr());
+        packageModel.registerQueryName(queryDescr.getName());
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.setQueryName(Optional.of(queryDefVariableName));
@@ -100,11 +101,10 @@ public class QueryGenerator {
         }
     }
 
-    public static void processQuery(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, QueryDescr queryDescr) {
+    public static void processQuery(PackageModel packageModel, QueryDescr queryDescr) {
         String queryDefVariableName = toQueryDef(queryDescr.getName());
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
 
-        context.setDescr(queryDescr);
         context.addGlobalDeclarations(packageModel.getGlobals());
         context.setDialectFromAttributes(queryDescr.getAttributes().values());
 
@@ -124,7 +124,7 @@ public class QueryGenerator {
         MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, QUERY_METHOD_PREFIX + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();
-        ModelGenerator.createVariables(kbuilder, queryBody, packageModel, context);
+        ModelGenerator.createVariables(queryBody, packageModel, context);
         queryMethod.setBody(queryBody);
 
         String queryBuildVarName = toId( queryDescr.getName() ) + "_build";
@@ -138,6 +138,11 @@ public class QueryGenerator {
 
         queryBody.addStatement(new ReturnStmt(queryBuildVarName));
         packageModel.putQueryMethod(queryMethod);
+
+        RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
+        if (ruleUnitDescr != null) {
+            packageModel.putRuleUnit(ruleUnitDescr.getSimpleName());
+        }
     }
 
     private static void parseQueryParameters(RuleContext context, PackageModel packageModel, QueryDescr descr) {

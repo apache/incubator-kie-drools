@@ -76,7 +76,6 @@ public abstract class ParserTest {
 
         for (File file : files) {
             set.add(new Object[] {file, KieBaseTestConfiguration.CLOUD_EQUALITY});
-            set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
             set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
         }
 

@@ -93,7 +93,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 
-public class DMNEvaluatorCompiler {
+public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNEvaluatorCompiler.class );
 
@@ -126,6 +126,7 @@ public class DMNEvaluatorCompiler {
         }
     }
 
+    @Override
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
         if ( expression == null ) {
             if( node instanceof DecisionNode ) {

@@ -33,3 +33,10 @@ jobs:
           definition-file: https://raw.githubusercontent.com/${GROUP}/droolsjbpm-build-bootstrap/${BRANCH}/.ci/pull-request-config.yaml
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Check Surefire Report
+        if: ${{ always() }}
+        uses: ginxo/action-surefire-report@BXMSPROD-1311
+        with:
+          fail_on_test_failures: true
+          fail_if_no_tests: false
+          skip_check_run_creation: true

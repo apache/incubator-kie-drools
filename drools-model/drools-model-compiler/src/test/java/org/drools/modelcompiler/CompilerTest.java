@@ -1180,6 +1180,32 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalOperationsInConstraint() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    Person( $moneyDoubled : (money + money) )\n" +
+                "then\n" +
+                "    results.add($moneyDoubled);\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        ArrayList<BigDecimal> results = new ArrayList<>();
+        ksession1.setGlobal("results", results);
+
+        Person p1 = new Person();
+        p1.setMoney( new BigDecimal(1 ));
+        ksession1.insert( p1 );
+        assertEquals( 1, ksession1.fireAllRules() );
+
+        assertThat(results).containsExactly(BigDecimal.valueOf(2));
+
+    }
+
+    @Test
     public void testSingleQuoteString() {
         String str =
                 "rule R1 when\n" +
@@ -1253,6 +1279,97 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.insert( map );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testMapAccessBindingConstant() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "	 Map($type: \"type\", this[$type] == 'Goods' )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("type", "Goods");
+
+        ksession.insert( map );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testMapAccessBindingConstantJoin() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "rule R1 when\n" +
+                "$p : Person($name: \"Andrea\", " +
+                        "parentP.childrenMap[$name] != null," +
+                        "parentP.childrenMap[$name].name != null )\n" +
+                "then\n" +
+                "  results.add($p.getName());\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ArrayList<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person luca = new Person("Luca", 37);
+        luca.setParentP(luca); // avoid NPE
+        Person andrea = new Person("Andrea", 0);
+        andrea.setParentP(luca);
+
+        luca.getChildrenMap().put("Andrea", andrea);
+
+        ksession.insert( luca );
+        ksession.insert( andrea );
+        assertEquals( 2, ksession.fireAllRules() );
+
+        assertThat(results).containsExactlyInAnyOrder("Andrea", "Luca");
+    }
+
+    @Test
+    public void testMapAccessBinding() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                        "rule R1 when\n" +
+                        "    $s: String() \n" +
+                        "	 Map(this[$s] == 'Goods' )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("type", "Goods");
+
+        ksession.insert( map );
+        ksession.insert("type");
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testStringBinding() {
+        final String drl1 =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "	 String($t: \"type\")\n" +
+                "then\n" +
+                "  insert(new Result($t));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( "whatever" );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(results.iterator().next().getValue().toString(), "type");
     }
 
     @Test

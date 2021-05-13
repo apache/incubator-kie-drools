@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
@@ -125,6 +124,6 @@ public class KiePMMLTreeModelFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
-        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "algorithmName", String.format("\"%s\"", treeModel.getAlgorithmName()));
+        CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "algorithmName", String.format("\"%s\"", treeModel.getAlgorithmName()));
     }
 }

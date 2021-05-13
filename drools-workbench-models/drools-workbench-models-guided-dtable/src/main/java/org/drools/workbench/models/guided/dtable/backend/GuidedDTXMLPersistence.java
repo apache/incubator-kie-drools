@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper2;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper3;
@@ -53,7 +54,12 @@ public class GuidedDTXMLPersistence {
     private static final GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
-        xt = XStreamUtils.createTrustingXStream(new DomDriver());
+        xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
+        xt.addPermission(new WildcardTypePermission( new String[] {
+                "org.drools.workbench.models.guided.dtable.shared.**", 
+                "org.drools.workbench.models.datamodel.**",
+                "org.optaplanner.workbench.models.datamodel.rule.**"
+        }));
 
         //Legacy model
         xt.alias( "decision-table",

@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-trusty</artifactId>
-    <version>7.53.0-SNAPSHOT</version>
+    <version>7.55.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -18,6 +18,8 @@
     <module>kie-pmml-models-drools</module>
     <module>kie-pmml-models-mining</module>
     <module>kie-pmml-models-tests</module>
+    <module>kie-pmml-models-tree</module>
+    <module>kie-pmml-models-clustering</module>
   </modules>
 
 </project>

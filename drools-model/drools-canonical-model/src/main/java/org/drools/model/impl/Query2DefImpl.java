@@ -21,7 +21,7 @@ import org.drools.model.Query2Def;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
-import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query2DefImpl<T1, T2> extends QueryDefImpl implements ModelComponent, Query2Def<T1, T2> {

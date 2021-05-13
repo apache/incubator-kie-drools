@@ -33,31 +33,42 @@ import static org.junit.Assert.fail;
 
 public class RuleExecutionHelper {
 
-    protected static KieSession getKieSession(String... rules) {
+    public static KieSession getKieSession(String... rules) {
         return getKieSession(null, rules);
     }
 
-    protected static KieSession getKieSession(KieModuleModel model, String... stringRules) {
+    public static KieSession getKieSession(KieModuleModel model, String... stringRules) {
         return getKieContainer(model, stringRules).newKieSession();
     }
 
-    protected static KieContainer getKieContainer(KieModuleModel model, String... stringRules) {
+    public static KieSession getKieSession(KieFileSystem kfs) {
+        KieServices ks = KieServices.get();
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
+        List<Message> messages = kieBuilder.getResults().getMessages();
+        if (!messages.isEmpty()) {
+            fail(messages.toString());
+        }
+        KieContainer kieContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+        return kieContainer.newKieSession();
+    }
+
+    public static KieContainer getKieContainer(KieModuleModel model, String... stringRules) {
         return getKieContainer(model, toKieFiles(stringRules));
     }
 
-    protected static KieContainer getKieContainer(KieModuleModel model, KieFile... stringRules) {
+    public static KieContainer getKieContainer(KieModuleModel model, KieFile... stringRules) {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "kjar-test-" + UUID.randomUUID(), "1.0");
 
-        KieBuilder kieBuilder = createKieBuilder(ks, model, releaseId, stringRules);
+        createKieBuilder(ks, model, releaseId, stringRules);
         return ks.newKieContainer(releaseId);
     }
 
-    protected static KieBuilder createKieBuilder(KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... stringRules) {
+    public static KieBuilder createKieBuilder(KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... stringRules) {
         return createKieBuilder(ks, model, releaseId, true, stringRules);
     }
 
-    protected static KieBuilder createKieBuilder(KieServices ks, KieModuleModel model, ReleaseId releaseId, boolean failIfBuildError, KieFile... stringRules) {
+    public static KieBuilder createKieBuilder(KieServices ks, KieModuleModel model, ReleaseId releaseId, boolean failIfBuildError, KieFile... stringRules) {
         ks.getRepository().removeKieModule(releaseId);
 
         KieFileSystem kfs = ks.newKieFileSystem();

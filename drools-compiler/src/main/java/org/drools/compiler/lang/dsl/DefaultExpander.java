@@ -16,11 +16,6 @@
 
 package org.drools.compiler.lang.dsl;
 
-import org.drools.compiler.lang.Expander;
-import org.drools.compiler.lang.ExpanderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,12 +23,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.drools.compiler.lang.Expander;
+import org.drools.compiler.lang.ExpanderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default expander uses String templates to provide pseudo natural
@@ -78,10 +77,10 @@ public class DefaultExpander
     // Pattern for initial integer
     private static final Pattern        intPat       = Pattern.compile( "^(-?\\d+).*$" );
 
-    private final List<DSLMappingEntry> keywords     = new LinkedList<DSLMappingEntry>();
-    private final List<DSLMappingEntry> condition    = new LinkedList<DSLMappingEntry>();
-    private final List<DSLMappingEntry> consequence  = new LinkedList<DSLMappingEntry>();
-    private final List<DSLMappingEntry> cleanup      = new LinkedList<DSLMappingEntry>();
+    private final List<DSLMappingEntry> keywords     = new ArrayList<>();
+    private final List<DSLMappingEntry> condition    = new ArrayList<>();
+    private final List<DSLMappingEntry> consequence  = new ArrayList<>();
+    private final List<DSLMappingEntry> cleanup      = new ArrayList<>();
 
     private Map<String, Integer>        useKeyword;
     private Map<String, Integer>        useWhen;
@@ -706,7 +705,7 @@ public class DefaultExpander
 
     private void addError(final ExpanderException error) {
         if ( this.errors == Collections.EMPTY_LIST ) {
-            this.errors = new LinkedList<ExpanderException>();
+            this.errors = new ArrayList<ExpanderException>();
         }
         this.errors.add( error );
     }

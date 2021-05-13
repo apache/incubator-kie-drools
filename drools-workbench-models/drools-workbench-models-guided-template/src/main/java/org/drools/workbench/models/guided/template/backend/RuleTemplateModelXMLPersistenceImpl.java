@@ -18,6 +18,7 @@ package org.drools.workbench.models.guided.template.backend;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
 import org.drools.workbench.models.commons.backend.rule.DSLVariableValuesConverter;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
@@ -71,7 +72,12 @@ public class RuleTemplateModelXMLPersistenceImpl
     private static final RuleTemplateModelPersistence INSTANCE = new RuleTemplateModelXMLPersistenceImpl();
 
     protected RuleTemplateModelXMLPersistenceImpl() {
-        this.xt = XStreamUtils.createTrustingXStream(new DomDriver());
+        this.xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
+        this.xt.addPermission(new WildcardTypePermission( new String[] {
+                "org.drools.workbench.models.guided.template.shared.*",
+                "org.drools.workbench.models.datamodel.rule.*",
+                "org.drools.workbench.models.datamodel.imports.**"
+        }));
 
         this.xt.alias( "rule",
                        TemplateModel.class );
