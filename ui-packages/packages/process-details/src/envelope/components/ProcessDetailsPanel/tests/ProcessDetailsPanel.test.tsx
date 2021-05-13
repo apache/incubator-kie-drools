@@ -22,6 +22,7 @@ import {
 } from '@kogito-apps/management-console-shared';
 import ProcessDetailsPanel from '../ProcessDetailsPanel';
 import TestProcessDetailsDriver from '../../../tests/mocks/TestProcessDetailsDriver';
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
 const driver = new TestProcessDetailsDriver(
   '2d962eef-45b8-48a9-ad4e-9cde0ad6af89'

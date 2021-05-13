@@ -28,6 +28,7 @@ import { SelectColumn } from '@patternfly/react-table';
 import { JobStatus } from '@kogito-apps/management-console-shared';
 import { MockedJobsManagementDriver } from '../../../../api/mocks/MockedJobsManagementDriver';
 jest.mock('axios');
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const MockedIcon = (): React.ReactElement => {

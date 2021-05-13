@@ -1254,7 +1254,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                                                 <time
                                                   dateTime={"2019-10-22T03:40:44.000Z"}
                                                 >
-                                                  2 years ago
+                                                  8 months ago
                                                 </time>
                                               </t>
                                             </p>
@@ -1314,7 +1314,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                                                 <time
                                                   dateTime={"2021-04-22T14:53:04.000Z"}
                                                 >
-                                                  20 days ago
+                                                  in 10 months
                                                 </time>
                                               </t>
                                             </p>
@@ -1374,7 +1374,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                                                 <time
                                                   dateTime={"2019-10-22T05:40:44.000Z"}
                                                 >
-                                                  2 years ago
+                                                  8 months ago
                                                 </time>
                                               </t>
                                             </p>
