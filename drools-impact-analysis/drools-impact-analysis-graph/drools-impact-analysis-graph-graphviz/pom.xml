@@ -10,6 +10,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Drools :: Impact Analysis Graph :: Graphviz</name>
 
   <properties>
     <java.module.name>org.drools.impact.analysis.graph.graphviz</java.module.name>
