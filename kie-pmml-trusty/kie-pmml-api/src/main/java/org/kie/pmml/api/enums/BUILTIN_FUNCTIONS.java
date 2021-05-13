@@ -253,6 +253,9 @@ public enum BUILTIN_FUNCTIONS {
     }
 
     private void checkLength(final Object[] inputData, final int expectedSize) {
+        if (inputData.length < 1) {
+            throw new IllegalArgumentException(String.format("Expected at least one parameter %s ", this));
+        }
         if (inputData.length != expectedSize) {
             throw new IllegalArgumentException(String.format("Expected %s parameters %s ", expectedSize, this));
         }

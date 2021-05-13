@@ -108,6 +108,20 @@ public class BUILTIN_FUNCTIONSTest {
     }
 
     @Test
+    public void getSupportedValueEmptyInput() {
+        final Object[] input = {};
+        supportedBuiltinFunctions.forEach(builtinFunction -> {
+            try {
+                builtinFunction.getValue(input);
+                fail("Expecting IllegalArgumentException");
+            } catch (Exception e) {
+                assertTrue(e instanceof IllegalArgumentException);
+            }
+        });
+
+    }
+
+    @Test
     public void getUnsupportedValue() {
         final Object[] input = {35, 12};
         unsupportedBuiltinFunctions.forEach(builtinFunction -> {
