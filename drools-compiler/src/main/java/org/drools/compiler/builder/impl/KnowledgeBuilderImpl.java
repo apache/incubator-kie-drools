@@ -80,6 +80,7 @@ import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -219,6 +220,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private ReleaseId releaseId;
 
+    private BuildContext buildContext;
+
     /**
      * Use this when package is starting from scratch.
      */
@@ -325,6 +328,14 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     public void setReleaseId(ReleaseId releaseId ) {
         this.releaseId = releaseId;
+    }
+
+    public BuildContext getBuildContext() {
+        return buildContext;
+    }
+
+    public void setBuildContext(BuildContext buildContext) {
+        this.buildContext = buildContext;
     }
 
     Resource getCurrentResource() {

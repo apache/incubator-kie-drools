@@ -16,7 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -47,9 +46,8 @@ import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
-import static java.util.Collections.emptyList;
-
 import static com.github.javaparser.StaticJavaParser.parseImport;
+import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
@@ -63,7 +61,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final Map<String, PackageModel> packageModels = new HashMap<>();
     private final ReleaseId releaseId;
     private final boolean oneClassPerRule;
-    private final Collection<T> packageSources = new ArrayList<>();
+    private final Map<String, T> packageSources = new HashMap<>();
 
     private Map<String, CompositePackageDescr> compositePackagesMap;
 
@@ -112,6 +110,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
+        storeGeneratedPojosInPackages( packages );
         buildOtherDeclarations(packages);
         deregisterTypeDeclarations( packages );
         buildRules(packages);
@@ -128,15 +127,13 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     private Collection<CompositePackageDescr> findPackages( Collection<CompositePackageDescr> compositePackages ) {
-        Collection<CompositePackageDescr> packages;
         if (compositePackages != null && !compositePackages.isEmpty()) {
-            packages = compositePackages;
-        } else if (compositePackagesMap != null) {
-            packages = compositePackagesMap.values();
-        } else {
-            packages = emptyList();
+            return compositePackages;
         }
-        return packages;
+        if (compositePackagesMap != null) {
+            return compositePackagesMap.values();
+        }
+        return emptyList();
     }
 
     @Override
@@ -211,7 +208,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
             pkgModel.setOneClassPerRule( oneClassPerRule );
             if (getResults( ResultSeverity.ERROR ).isEmpty()) {
-                packageSources.add( sourcesGenerator.apply( pkgModel ) );
+                packageSources.put( pkgModel.getName(), sourcesGenerator.apply( pkgModel ) );
             }
         }
     }
@@ -234,6 +231,13 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
             allCompiledClasses.putAll(compileType(this, pkg.getPackageClassLoader(), allGeneratedPojos));
         }
+
+        ((CanonicalModelBuildContext) getBuildContext()).registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
+    }
+
+    private void storeGeneratedPojosInPackages(Collection<CompositePackageDescr> packages) {
+        Collection<GeneratedClassWithPackage> allGeneratedPojos = ((CanonicalModelBuildContext) getBuildContext()).getAllGeneratedPojos();
+        Map<String, Class<?>> allCompiledClasses = ((CanonicalModelBuildContext) getBuildContext()).getAllCompiledClasses();
 
         for (CompositePackageDescr packageDescr : packages) {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
@@ -282,6 +286,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     public Collection<T> getPackageSources() {
-        return packageSources;
+        return packageSources.values();
+    }
+
+    public T getPackageSource(String packageName) {
+        return packageSources.get(packageName);
     }
 }
