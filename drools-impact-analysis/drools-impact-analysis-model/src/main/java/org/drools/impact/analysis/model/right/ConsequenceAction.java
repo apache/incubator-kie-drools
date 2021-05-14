@@ -23,7 +23,7 @@ public class ConsequenceAction {
     }
 
     private final Type type;
-    private final Class<?> actionClass;
+    protected final Class<?> actionClass;
 
     public ConsequenceAction( Type type, Class<?> actionClass ) {
         this.type = type;

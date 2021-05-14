@@ -37,4 +37,21 @@ public class ParserTest {
         AnalysisModel analysisModel = new ModelBuilder().build( str );
         System.out.println(analysisModel);
     }
+
+    @Test
+    public void testInsert() {
+        String str =
+                "package mypkg;\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R1 when\n" +
+                        "  String(this == \"Start\")\n" +
+                        "then\n" +
+                        "  Person p = new Person();\n" +
+                        "  p.setName(\"John\");\n" +
+                        "  insert(p);\n" +
+                        "end";
+
+        AnalysisModel analysisModel = new ModelBuilder().build( str );
+        System.out.println(analysisModel);
+    }
 }

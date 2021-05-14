@@ -15,8 +15,8 @@
 package org.drools.impact.analysis.model.right;
 
 public class ModifiedProperty {
-    private final String property;
-    private final Object value;
+    protected final String property;
+    protected final Object value;
 
     public ModifiedProperty( String property ) {
         this(property, null);

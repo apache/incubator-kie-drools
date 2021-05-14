@@ -36,7 +36,8 @@ public class ModifyAction extends ConsequenceAction {
     @Override
     public String toString() {
         return "ModifyAction{" +
-                "modifiedProperties=" + modifiedProperties +
+                "actionClass=" + actionClass +
+                ", modifiedProperties=" + modifiedProperties +
                 '}';
     }
 }

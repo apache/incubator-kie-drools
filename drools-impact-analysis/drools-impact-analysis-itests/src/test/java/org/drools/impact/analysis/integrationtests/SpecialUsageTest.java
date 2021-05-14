@@ -122,7 +122,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
 
         generatePng(graph);
     }
