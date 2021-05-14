@@ -1,6 +1,6 @@
 name: Apps Build
 
-on: [pull_request_target]
+on: [pull_request]
 
 jobs:
   build-chain:
@@ -12,6 +12,23 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Maven Build
     steps:
+      - name: Disk space report before modification
+        shell: bash
+        run: |
+          echo "Available storage:"
+          df -h
+      # Inspired to maximize-build-space action https://github.com/easimon/maximize-build-space
+      - name: Free disk space (remove dotnet, android and haskell)
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+      - name: Disk space report after modification
+        shell: bash
+        run: |
+          echo "Available storage:"
+          df -h
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -29,8 +46,12 @@ jobs:
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
         env:
-          BUILD_MVN_OPTS: "-fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
+          BUILD_MVN_OPTS: "-Dmaven.test.failure.ignore=true -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
       - name: Publish Test Report
-        uses: scacap/action-surefire-report@v1
+        if: ${{ always() }}
+        uses: ginxo/action-surefire-report@BXMSPROD-1311
         with:
+          fail_on_test_failures: true
+          fail_if_no_tests: false
+          skip_check_run_creation: true
           report_paths: '**/*-reports/TEST-*.xml'
