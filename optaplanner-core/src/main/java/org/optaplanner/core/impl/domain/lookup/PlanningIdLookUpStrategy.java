@@ -38,7 +38,8 @@ public class PlanningIdLookUpStrategy implements LookUpStrategy {
         Object planningId = extractPlanningId(workingObject);
         if (planningId == null) {
             throw new IllegalStateException("The workingObject (" + workingObject
-                    + ") returns a null value for its @PlanningId member (" + planningIdMemberAccessor + ").");
+                    + ") returns a null value for its @" + PlanningId.class.getSimpleName()
+                    + " member (" + planningIdMemberAccessor + ").");
         }
         Object oldAddedObject = idToWorkingObjectMap.put(planningId, workingObject);
         if (oldAddedObject != null) {
@@ -52,7 +53,8 @@ public class PlanningIdLookUpStrategy implements LookUpStrategy {
         Object planningId = extractPlanningId(workingObject);
         if (planningId == null) {
             throw new IllegalStateException("The workingObject (" + workingObject
-                    + ") returns a null value for its @PlanningId member (" + planningIdMemberAccessor + ").");
+                    + ") returns a null value for its @" + PlanningId.class.getSimpleName()
+                    + " member (" + planningIdMemberAccessor + ").");
         }
         Object removedObject = idToWorkingObjectMap.remove(planningId);
         if (workingObject != removedObject) {

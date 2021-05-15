@@ -48,8 +48,8 @@ public interface PhaseFactory<Solution_> {
         } else if (NoChangePhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
             return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig);
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Unknown PhaseConfig type: (%s).", phaseConfig.getClass().getName()));
+            throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
+                    PhaseConfig.class.getSimpleName(), phaseConfig.getClass().getName()));
         }
     }
 

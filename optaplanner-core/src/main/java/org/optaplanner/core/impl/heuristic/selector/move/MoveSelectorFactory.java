@@ -74,14 +74,14 @@ public interface MoveSelectorFactory<Solution_> {
         } else if (KOptMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new KOptMoveSelectorFactory<>((KOptMoveSelectorConfig) moveSelectorConfig);
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Unknown MoveSelectorConfig type: (%s).", moveSelectorConfig.getClass().getName()));
+            throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
+                    MoveSelectorConfig.class.getSimpleName(), moveSelectorConfig.getClass().getName()));
         }
     }
 
     /**
      * Builds {@link MoveSelector} from the {@link MoveSelectorConfig} and provided parameters.
-     * 
+     *
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching

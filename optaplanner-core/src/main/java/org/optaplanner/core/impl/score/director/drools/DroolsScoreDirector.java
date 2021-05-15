@@ -24,6 +24,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.RuleEventManager;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -156,7 +157,7 @@ public class DroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
         }
         if (!getSolutionDescriptor().hasEntityDescriptor(entity.getClass())) {
             throw new IllegalArgumentException("The entity (" + entity + ") of class (" + entity.getClass()
-                    + ") is not a configured @PlanningEntity.");
+                    + ") is not a configured @" + PlanningEntity.class.getSimpleName() + ".");
         }
         if (kieSession.getFactHandle(entity) != null) {
             throw new IllegalArgumentException("The entity (" + entity

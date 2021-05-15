@@ -562,7 +562,8 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         }
         return "Shadow variable corruption in the " + workingLabel + " scoreDirector:\n"
                 + violationMessage
-                + "  Maybe there is a bug in the VariableListener of those shadow variable(s).";
+                + "  Maybe there is a bug in the " + VariableListener.class.getSimpleName()
+                + " of those shadow variable(s).";
     }
 
     /**

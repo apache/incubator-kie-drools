@@ -89,7 +89,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         nullable = planningVariableAnnotation.nullable();
         if (nullable && variableMemberAccessor.getType().isPrimitive()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableMemberAccessor.getName()
+                    + ") has a @" + PlanningVariable.class.getSimpleName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variableMemberAccessor.getType() + ").");
         }
@@ -101,7 +102,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         if (chained && !variableMemberAccessor.getType().isAssignableFrom(
                 entityDescriptor.getEntityClass())) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableMemberAccessor.getName()
+                    + ") has a @" + PlanningVariable.class.getSimpleName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with chained (" + chained + ") and propertyType (" + variableMemberAccessor.getType()
                     + ") which is not a superclass/interface of or the same as the entityClass ("
                     + entityDescriptor.getEntityClass() + ").\n"
@@ -110,7 +112,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         }
         if (chained && nullable) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableMemberAccessor.getName()
+                    + ") has a @" + PlanningVariable.class.getSimpleName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
     }
@@ -119,7 +122,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         String[] valueRangeProviderRefs = planningVariableAnnotation.valueRangeProviderRefs();
         if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + PlanningVariable.class.getSimpleName()
+                    + ") has a @" + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
         }
@@ -148,7 +151,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
             Collection<String> providerIds = descriptorPolicy.getValueRangeProviderIds();
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PlanningVariable.class.getSimpleName()
-                    + " property (" + variableMemberAccessor.getName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with a valueRangeProviderRef (" + valueRangeProviderRef
                     + ") that does not exist in a @" + ValueRangeProvider.class.getSimpleName()
                     + " on the solution class ("

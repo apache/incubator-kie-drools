@@ -32,8 +32,8 @@ public interface EntityPlacerFactory<Solution_> {
         } else if (QueuedValuePlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
             return new QueuedValuePlacerFactory<>((QueuedValuePlacerConfig) entityPlacerConfig);
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Unknown EntityPlacerConfig type: (%s).", entityPlacerConfig.getClass().getName()));
+            throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
+                    EntityPlacerConfig.class.getSimpleName(), entityPlacerConfig.getClass().getName()));
         }
     }
 
