@@ -12,18 +12,6 @@
   <name>Kogito :: Explainability Service Messaging</name>
   <artifactId>explainability-service-messaging</artifactId>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

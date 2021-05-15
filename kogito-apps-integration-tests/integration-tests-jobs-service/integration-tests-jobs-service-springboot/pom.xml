@@ -14,6 +14,18 @@
     <sonar.exclusions>**/KogitoApplication.java</sonar.exclusions>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${version.org.springframework.boot}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -36,7 +48,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
-      <version>${version.org.springframework.boot}</version>
       <exclusions>
         <exclusion>
           <groupId>org.junit.vintage</groupId>
