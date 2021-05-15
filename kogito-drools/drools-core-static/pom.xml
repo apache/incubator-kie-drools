@@ -21,7 +21,7 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core-reflective</artifactId>
-          <version>${version.org.kie7}</version>
+        <version>${version.org.kie7}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>

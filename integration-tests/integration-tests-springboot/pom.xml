@@ -8,119 +8,50 @@
   <artifactId>integration-tests-springboot</artifactId>
   <name>Kogito :: Integration Tests :: SpringBoot</name>
 
-  <properties>
-    <!-- Override version to match the one used by spring-kafka -->
-    <version.org.apache.kafka>2.5.0</version.org.apache.kafka>
-  </properties>
-  
   <dependencies>
-    <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-maven-plugin</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-springboot-starter</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>process-svg-springboot-addon</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <!-- Force resolving dependencies in local Maven repo, needed for it tests -->
-    <dependency>
-       <groupId>io.rest-assured</groupId>
-       <artifactId>json-schema-validator</artifactId>
-       <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
-       <version>${version.io.rest-assured.springboot}</version>
-       <scope>test</scope>
-    </dependency>
-
+    <!-- All the dependency of this module are here just to make Maven reactor aware that invoker tests need them -->
+    <!-- NOTE: don't change their scope because otherwise maven-invoker-plugin is not going to install them in localRepositoryPath  -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-maven-plugin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-springboot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>process-svg-springboot-addon</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-cloudevents-spring-boot-addon</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-test-utils</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-management-springboot-addon</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>task-management-springboot-addon</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-spring-boot-starter-remote</artifactId>
-      <version>${version.org.infinispan.starter}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-spring5-remote</artifactId>
-      <version>${version.org.infinispan}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor.kafka</groupId>
-      <artifactId>reactor-kafka</artifactId>
-      <version>${version.io.projectreactor.kafka}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-core</artifactId>
-      <version>${version.io.projectreactor}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-handler</artifactId>
-      <version>${version.io.netty}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-epoll</artifactId>
-      <version>${version.io.netty}</version>
-      <classifier>linux-x86_64</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.ben-manes.caffeine</groupId>
-      <artifactId>caffeine</artifactId>
-      <version>${version.com.github.ben-manes.caffeine}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${version.com.google.guava}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -132,10 +63,6 @@
           <configuration>
             <streamLogs>true</streamLogs>
             <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
-            <properties>
-              <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-              <container.image.kafka>${container.image.kafka}</container.image.kafka>
-            </properties>
           </configuration>
         </plugin>
       </plugins>
@@ -164,10 +91,11 @@
         </property>
       </activation>
       <dependencies>
+        <!-- All the dependency of this module are here just to make Maven reactor aware that invoker tests need them -->
+        <!-- NOTE: don't change their scope because otherwise maven-invoker-plugin is not going to install them in localRepositoryPath  -->
         <dependency>
           <groupId>org.kie.kogito</groupId>
           <artifactId>infinispan-persistence-addon</artifactId>
-          <scope>test</scope>
         </dependency>
       </dependencies>
       <build>
@@ -178,9 +106,6 @@
               <profiles>
                 <profile>persistence</profile>
               </profiles>
-              <properties>
-                <enable.resource.infinispan>true</enable.resource.infinispan>
-              </properties>
             </configuration>
             <executions>
               <execution>

@@ -15,8 +15,6 @@
     <properties>
         <java.version>@maven.compiler.release@</java.version>
         <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
-        <infinispan.version>@version.org.infinispan@</infinispan.version>
-        <rest-assured.version>@version.io.rest-assured@</rest-assured.version>
         <version.com.github.tomakehurst.wiremock>@version.com.github.tomakehurst.wiremock@</version.com.github.tomakehurst.wiremock>
     </properties>
     
@@ -91,20 +89,16 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
-            <version>@version.io.rest-assured.springboot@</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
-            <version>@version.io.rest-assured.springboot@</version>
             <scope>test</scope>
         </dependency>
 
@@ -120,7 +114,7 @@
             <version>@version.com.github.tomakehurst.wiremock@</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
           <groupId>org.springdoc</groupId>
           <artifactId>springdoc-openapi-ui</artifactId>
@@ -147,8 +141,7 @@
             <plugin>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-maven-plugin</artifactId>
-                <version>${project.version}
-                </version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
+                <version>${project.version}</version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
                 <extensions>true</extensions>
             </plugin>
             <plugin>
@@ -171,6 +164,10 @@
                     <includes>
                         <include>org/kie/kogito/integrationtests/springboot/*</include>
                     </includes>
+                    <systemPropertyVariables combine.children="append">
+                        <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
+                        <container.image.kafka>@container.image.kafka@</container.image.kafka>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

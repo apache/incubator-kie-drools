@@ -8,7 +8,7 @@
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-build-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../kogito-build-parent/pom.xml</relativePath>
+    <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-test-utils</artifactId>
@@ -72,6 +72,19 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
+      <version>${version.org.testcontainers}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>jdbc</artifactId>
+      <version>${version.org.testcontainers}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>database-commons</artifactId>
       <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>

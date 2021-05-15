@@ -54,7 +54,7 @@ Copyright headers format is enforced during build time. In order to automaticall
 mvn com.mycila:license-maven-plugin:format
 ```
 
-Make sure you have configured your IDE according to the [project codestyle](https://github.com/kiegroup/kogito-runtimes/tree/master/kogito-ide-config).
+Make sure you have configured your IDE according to the [project codestyle](https://github.com/kiegroup/kogito-runtimes/tree/master/kogito-build/kogito-ide-config).
 
 ### Requirements for Dependencies
 
@@ -95,7 +95,7 @@ Any dependency used in any KIE project must fulfill these hard requirements:
       Maven or Gradle are acceptable as build systems.
 
 Any dependency used in any KOGITO projects should fulfill these soft requirements:
-- **Edit dependencies** in **[kogito-build-parent](https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build-parent/pom.xml)**.
+- **Edit dependencies** in **[kogito-build-parent](https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build/kogito-build-parent/pom.xml)**.
     - Dependencies in subprojects should avoid overwriting the dependency versions of kogito-build-parent if there is no special case or need for that.
 
 - Only use dependencies with **an active community**.

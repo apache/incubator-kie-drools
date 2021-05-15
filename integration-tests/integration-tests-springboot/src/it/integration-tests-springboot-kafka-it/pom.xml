@@ -30,7 +30,6 @@
 
     <properties>
         <java.version>@maven.compiler.release@</java.version>
-        <rest-assured.version>@version.io.rest-assured@</rest-assured.version>
     </properties>
     
     <dependencyManagement>
@@ -90,12 +89,10 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
-            <version>@version.io.rest-assured.springboot@</version>
             <scope>test</scope>
         </dependency>
 
@@ -119,8 +116,7 @@
             <plugin>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-maven-plugin</artifactId>
-                <version>${project.version}
-                </version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
+                <version>${project.version}</version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
                 <extensions>true</extensions>
             </plugin>
             <plugin>
@@ -139,6 +135,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>@version.surefire.plugin@</version>
+                <configuration>
+                    <systemPropertyVariables combine.children="append">
+                        <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
+                        <container.image.kafka>@container.image.kafka@</container.image.kafka>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>

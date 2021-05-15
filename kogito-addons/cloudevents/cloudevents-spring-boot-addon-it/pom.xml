@@ -14,13 +14,10 @@
   <name>Kogito :: Add-Ons :: CloudEvents :: Spring Boot (ITs)</name>
   <description>Integration tests for for CloudEvents AddOn (Spring Boot)</description>
 
-  <properties>
-    <!-- Override version to match the one used by spring-kafka -->
-    <version.org.apache.kafka>2.5.0</version.org.apache.kafka>
-  </properties>
-
   <dependencies>
-    <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
+    <!-- All the dependency of this module are here just to make Maven reactor aware that invoker tests need them -->
+    <!-- NOTE: don't change their scope because otherwise maven-invoker-plugin is not going to install them in localRepositoryPath  -->
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-maven-plugin</artifactId>
       <version>${project.version}</version>
@@ -30,17 +27,14 @@
       <artifactId>kogito-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-springboot-starter</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-cloudevents-spring-boot-addon</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -36,12 +36,6 @@
       <artifactId>kogito-springboot-starter</artifactId>
       <version>${kogito.version}</version>
     </dependency>
-    
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-ui</artifactId>
-      <version>${version.org.springdoc}</version>
-    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

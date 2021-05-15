@@ -23,7 +23,7 @@
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-build-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../kogito-build-parent/pom.xml</relativePath>
+    <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-springboot</artifactId>
@@ -41,6 +41,17 @@
         <version>${version.org.springframework.boot}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-ui</artifactId>
+        <version>${version.org.springdoc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>${version.io.swagger.core.v3}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -81,6 +92,10 @@
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
     </dependency>
   </dependencies>
 </project>
