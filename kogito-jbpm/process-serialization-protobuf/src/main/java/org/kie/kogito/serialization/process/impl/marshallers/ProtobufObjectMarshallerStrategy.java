@@ -64,6 +64,9 @@ public class ProtobufObjectMarshallerStrategy implements ObjectMarshallerStrateg
         try {
             Any data = (Any) marshalled;
             BytesValue storedValue = data.unpack(BytesValue.class);
+            if (ByteString.EMPTY.equals(storedValue.getValue())) {
+                return null;
+            }
             return readObject(storedValue.getValue().toByteArray());
         } catch (InvalidProtocolBufferException e1) {
             throw new ProcessInstanceMarshallerException("Unexpected error during protobuf object unmarshalling", e1);

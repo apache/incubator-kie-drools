@@ -20,28 +20,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.exclusive.ExclusiveGroup;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
-import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
-import org.jbpm.process.core.datatype.impl.type.EnumDataType;
-import org.jbpm.process.core.datatype.impl.type.FloatDataType;
-import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
-import org.jbpm.process.core.datatype.impl.type.ListDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
-import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -71,7 +59,6 @@ import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kie.kogito.serialization.process.MarshallerContextName;
 import org.kie.kogito.serialization.process.MarshallerReaderContext;
-import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerException;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.CompositeContextNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.DynamicNodeInstanceContent;
@@ -101,20 +88,14 @@ import static org.kie.kogito.serialization.process.protobuf.ProtobufTypeRegistry
 
 public class ProtobufProcessInstanceReader {
 
-    private DataType[] dataTypes = { new BooleanDataType(),
-            new EnumDataType(),
-            new FloatDataType(),
-            new IntegerDataType(),
-            new ListDataType(),
-            new StringDataType()
-    };
-
     private RuleFlowProcessInstance ruleFlowProcessInstance;
     private MarshallerReaderContext context;
+    private ProtobufVariableReader varReader;
 
     public ProtobufProcessInstanceReader(MarshallerReaderContext context) {
         this.context = context;
-        ruleFlowProcessInstance = new RuleFlowProcessInstance();
+        this.ruleFlowProcessInstance = new RuleFlowProcessInstance();
+        this.varReader = new ProtobufVariableReader(context);
     }
 
     public RuleFlowProcessInstance read(InputStream input) throws IOException {
@@ -200,7 +181,7 @@ public class ProtobufProcessInstanceReader {
         processInstance.addContextInstance(VariableScope.VARIABLE_SCOPE, new VariableScopeInstance());
         if (workflowContext.getVariableCount() > 0) {
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-            buildVariables(workflowContext.getVariableList()).forEach(v -> variableScopeInstance.internalSetVariable(v.getName(), v.getValue()));
+            varReader.buildVariables(workflowContext.getVariableList()).forEach(v -> variableScopeInstance.internalSetVariable(v.getName(), v.getValue()));
         }
 
         if (workflowContext.getIterationLevelsCount() > 0) {
@@ -447,8 +428,8 @@ public class ProtobufProcessInstanceReader {
                 nodeInstance.internalSetTimerInstances(new ArrayList<>(content.getTimerInstanceIdList()));
             }
             nodeInstance.internalSetProcessInstanceId(content.getErrorHandlingProcessInstanceId());
-            buildVariables(content.getVariableList()).forEach(var -> nodeInstance.getWorkItem().getParameters().put(var.getName(), var.getValue()));
-            buildVariables(content.getResultList()).forEach(var -> nodeInstance.getWorkItem().getResults().put(var.getName(), var.getValue()));
+            varReader.buildVariables(content.getVariableList()).forEach(var -> nodeInstance.getWorkItem().getParameters().put(var.getName(), var.getValue()));
+            varReader.buildVariables(content.getResultList()).forEach(var -> nodeInstance.getWorkItem().getResults().put(var.getName(), var.getValue()));
             return nodeInstance;
         } catch (InvalidProtocolBufferException ex) {
             throw new ProcessInstanceMarshallerException("cannot unpack node instance", ex);
@@ -501,7 +482,7 @@ public class ProtobufProcessInstanceReader {
         container.addContextInstance(VariableScope.VARIABLE_SCOPE, new VariableScopeInstance());
         if (workflowContext.getVariableCount() > 0) {
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance) container.getContextInstance(VariableScope.VARIABLE_SCOPE);
-            buildVariables(workflowContext.getVariableList()).forEach(v -> variableScopeInstance.internalSetVariable(v.getName(), v.getValue()));
+            varReader.buildVariables(workflowContext.getVariableList()).forEach(v -> variableScopeInstance.internalSetVariable(v.getName(), v.getValue()));
         }
         if (workflowContext.getIterationLevelsCount() > 0) {
             container.getIterationLevels().putAll(buildIterationLevels(workflowContext.getIterationLevelsList()));
@@ -518,40 +499,6 @@ public class ProtobufProcessInstanceReader {
             exclusiveGroupInstance.addNodeInstance(kogitoNodeInstance);
         }
         return exclusiveGroupInstance;
-    }
-
-    private List<Variable> buildVariables(List<KogitoTypesProtobuf.Variable> variablesProtobuf) {
-        List<Variable> variables = new ArrayList<>();
-        for (KogitoTypesProtobuf.Variable var : variablesProtobuf) {
-            Variable storedVar = new Variable();
-            storedVar.setName(var.getName());
-            storedVar.setType(buildDataType(var.getDataType()));
-            Any value = var.getValue();
-            ObjectMarshallerStrategy strategy = context.findObjectUnmarshallerStrategyFor(value);
-            storedVar.setValue(strategy.unmarshall(value));
-            variables.add(storedVar);
-        }
-        return variables;
-    }
-
-    private DataType buildDataType(String dataType) {
-        try {
-            if (dataType == null || dataType.isEmpty()) {
-                return new UndefinedDataType();
-            }
-            Optional<DataType> foundDataType = Arrays.stream(dataTypes)
-                    .filter(e -> e.getStringType().equals(dataType))
-                    .findAny();
-            if (foundDataType.isPresent()) {
-                return foundDataType.get();
-            }
-
-            Class.forName(dataType);
-            return new ObjectDataType(dataType);
-        } catch (ClassNotFoundException e) {
-            return new UndefinedDataType();
-        }
-
     }
 
     private Map<String, Integer> buildIterationLevels(List<KogitoTypesProtobuf.IterationLevel> iterationLevel) {

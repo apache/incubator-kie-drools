@@ -58,7 +58,6 @@ import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.serialization.process.MarshallerWriterContext;
-import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.CompositeContextNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.DynamicNodeInstanceContent;
 import org.kie.kogito.serialization.process.protobuf.KogitoNodeInstanceContentsProtobuf.EventNodeInstanceContent;
@@ -88,9 +87,11 @@ import static org.kie.kogito.serialization.process.protobuf.ProtobufTypeRegistry
 public class ProtobufProcessInstanceWriter {
 
     private MarshallerWriterContext context;
+    private ProtobufVariableWriter varWriter;
 
     public ProtobufProcessInstanceWriter(MarshallerWriterContext context) {
         this.context = context;
+        this.varWriter = new ProtobufVariableWriter(context);
     }
 
     public void writeProcessInstance(WorkflowProcessInstanceImpl workFlow, OutputStream os) throws IOException {
@@ -191,7 +192,7 @@ public class ProtobufProcessInstanceWriter {
         KogitoTypesProtobuf.WorkflowContext.Builder workflowContextBuilder = KogitoTypesProtobuf.WorkflowContext.newBuilder();
         workflowContextBuilder.addAllNodeInstance(buildNodeInstances(nodeInstances));
         workflowContextBuilder.addAllExclusiveGroup(buildGroups(exclusiveGroupInstances));
-        workflowContextBuilder.addAllVariable(buildVariables(variables));
+        workflowContextBuilder.addAllVariable(varWriter.buildVariables(variables));
         workflowContextBuilder.addAllIterationLevels(buildIterationLevels(iterationlevels));
         return workflowContextBuilder.build();
 
@@ -415,8 +416,8 @@ public class ProtobufProcessInstanceWriter {
                 .setPhaseId(workItem.getPhaseId())
                 .setPhaseStatus(workItem.getPhaseStatus())
                 .setStartDate(workItem.getStartDate().getTime())
-                .addAllVariable(buildVariables(new ArrayList<>(workItem.getParameters().entrySet())))
-                .addAllResult(buildVariables(new ArrayList<>(workItem.getResults().entrySet())));
+                .addAllVariable(varWriter.buildVariables(new ArrayList<>(workItem.getParameters().entrySet())))
+                .addAllResult(varWriter.buildVariables(new ArrayList<>(workItem.getResults().entrySet())));
 
         if (workItem.getCompleteDate() != null) {
             builder.setCompleteDate(workItem.getCompleteDate().getTime());
@@ -447,24 +448,6 @@ public class ProtobufProcessInstanceWriter {
         }
 
         return groupProtobuf;
-    }
-
-    private List<KogitoTypesProtobuf.Variable> buildVariables(List<Map.Entry<String, Object>> variables) {
-        Comparator<Map.Entry<String, Object>> comparator = (o1, o2) -> o1.getKey().compareTo(o2.getKey());
-        Collections.sort(variables, comparator);
-
-        List<KogitoTypesProtobuf.Variable> variablesProtobuf = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : variables) {
-            KogitoTypesProtobuf.Variable.Builder variableBuilder = KogitoTypesProtobuf.Variable.newBuilder();
-            variableBuilder.setName(entry.getKey());
-            if (entry.getValue() != null) {
-                Object value = entry.getValue();
-                ObjectMarshallerStrategy strategy = context.findObjectMarshallerStrategyFor(value);
-                variableBuilder.setDataType(entry.getValue().getClass().getName()).setValue((Any) strategy.marshall(value));
-            }
-            variablesProtobuf.add(variableBuilder.build());
-        }
-        return variablesProtobuf;
     }
 
     private List<KogitoTypesProtobuf.IterationLevel> buildIterationLevels(List<Entry<String, Integer>> iterationlevels) {
